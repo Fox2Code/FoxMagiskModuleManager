@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Fox\'s Magisk Module Manager</string>
+    <string name="app_name_short">Fox\'s Mmm</string>
+    <string name="fail_root_magisk">Failed to get access to Root or Magisk</string>
+    <string name="loading">Loading…</string>
+    <string name="updatable">Updatable</string>
+    <string name="installed">Installed</string>
+    <string name="online_repo">Online Repo</string>
+    <string name="showcase_mode">The application is in showcase mode</string>
+    <string name="failed_download">Failed to download file.</string>
+    <string name="slow_modules">Modules took too long to boot, consider disabling some modules</string>
+    <string name="fail_internet">Fail to connect to the internet</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Preference Titles -->
+    <string name="showcase_mode_pref">Showcase mode</string>
+    <string name="showcase_mode_desc">Showcase mode prevent manager to do action on modules</string>
+    <string name="pref_category_settings">Settings</string>
+    <string name="pref_category_info">Info</string>
+    <string name="show_licenses">Show licenses</string>
+    <string name="licenses">Licences</string>
+    <string name="show_incompatible_pref">Show incompatible modules</string>
+    <string name="show_incompatible_desc">Show modules that are incompatible with your device based on their metadata</string>
+    <string name="magisk_outdated">Magisk is outdated!</string>
+    <string name="pref_category_repos">Repos</string>
+    <string name="repo_main_desc">The repository hosting Magisk Modules</string>
+    <string name="repo_main_alt">An alternative to Magisk-Modules-Repo with fewer restrictions.</string>
+    <string name="master_delete">Delete the module files?</string>
+    <string name="master_delete_no">Keep files</string>
+    <string name="master_delete_yes">Delete files</string>
+    <string name="master_delete_fail">Failed to delete the module files</string>
+    <string name="theme_pref">Theme</string>
+    <string name="module_id_prefix">Module id: </string>
+    <string name="install_from_storage">Install module from storage</string>
+    <string name="invalid_format">The selected module is in an invalid format</string>
+    <string name="local_install_title">Local install</string>
+    <string name="source_code">Source code</string>
+    <string name="last_updated">Last update:</string>
+    <string name="magisk_builtin_module">Magisk builtin module</string>
+</resources>
