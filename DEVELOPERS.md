@@ -3,9 +3,7 @@
 Note: This doc assume you already read the
 [official Magisk module developer guide](https://topjohnwu.github.io/Magisk/guides.html)
 
-Also note that *Fox's Magisk Module Manager* will be shorten to fox *Fox's Mmm* in this doc
-
-Index:
+Index:  
 - [Properties](DEVELOPERS.md#properties)
 - [Installer commands](DEVELOPERS.md#installer-commands)
 
@@ -13,6 +11,7 @@ Index:
 
 In addition to the following magisk properties
 ```properties
+# Magisk supported properties
 id=<string>
 name=<string>
 version=<string>
@@ -21,7 +20,7 @@ author=<string>
 description=<string>
 ```
 
-This the app manager support these new properties
+This the manager support these new properties
 ```properties
 # Fox's Mmm supported properties
 minApi=<int>
@@ -39,12 +38,13 @@ config=<package>
 - `support` support link to direct users when they need support for you modules
 - `donate` donate link to direct users to where they can financially support your project
 - `config` package name of the application that configure your module
-  (Note: Locally installed module don't show the button on the install screen)
+  (Note: The icon won't appear in the module list if the module and target app is not installed)
 
 Note: Fox's Mmm use fallback 
 [here](app/src/main/java/com/fox2code/mmm/utils/PropUtils.java#L21)
 for some modules  
-Theses values are only used if not defined in the `module.prop` files
+Theses values are only used if not defined in the `module.prop` files  
+So the original module maker can still override them
 
 ## Installer commands
 
@@ -56,7 +56,8 @@ All the commands start with it `#!`, by default the manager process command as l
 unless `#!useExt` is sent to indicate that the app is ready to use commands
 
 Commands:
-- `useExt`: Enable the execution of commands
+- `useExt`: Tell the manager you would like to use commands
+  (Note: Any command executed before this one will just appear as log in the console)
 - `addLine <arg>`: Add line to the terminal, this commands can be useful if 
   you want to display text that start with `#!` inside the terminal
 - `setLastLine <arg>`: Set the last line of text displayed in the terminal
@@ -66,9 +67,8 @@ Commands:
 - `showLoading`: Show an indeterminate progress bar
   (Note: the bar is automatically hidden when the install finish)
 - `hideLoading`: Hide the indeterminate progress bar if previously shown
-- `setSupportLink <url>`: Set support link when loading finishes  
-  (Note: It override the config button if loaded from repo, it's recommended
-  to only use this command when the script fail, or don't have any config app)
+- `setSupportLink <url>`: Set support link to show when the install finish  
+  (Note: Modules installed from repo will not show the config button if a link is set)
 
 Note: 
 The current behavior with unknown command is to ignore them, 
@@ -91,6 +91,7 @@ And there is an instance of it in use
 mmm_exec showLoading
 ui_print "The installer doesn't support mmm_exec"
 mmm_exec setLastLine "The installer support mmm_exec"
+# Wait simulate module doing something
 sleep 5
 mmm_exec hideLoading
 mmm_exec setSupportLink https://github.com/Fox2Code/FoxMagiskModuleManager
