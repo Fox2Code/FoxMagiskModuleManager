@@ -42,7 +42,7 @@ config=<package>
   (Note: Locally installed module don't show the button on the install screen)
 
 Note: Fox's Mmm use fallback 
-[here](app/src/main/java/com/fox2code/mmm/utils/PropUtils.java)
+[here](app/src/main/java/com/fox2code/mmm/utils/PropUtils.java#L21)
 for some modules  
 Theses values are only used if not defined in the `module.prop` files
 
