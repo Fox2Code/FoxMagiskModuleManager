@@ -96,7 +96,7 @@ public final class RepoManager {
 
     private final Object repoUpdateLock = new Object();
     private boolean repoUpdating;
-    private boolean repoLastResult = false;
+    private boolean repoLastResult = true;
 
     public boolean isRepoUpdating() {
         return this.repoUpdating;
