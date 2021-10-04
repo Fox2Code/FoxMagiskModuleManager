@@ -20,6 +20,7 @@ import com.fox2code.mmm.utils.IntentHelper;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.topjohnwu.superuser.CallbackList;
 import com.topjohnwu.superuser.Shell;
+import com.topjohnwu.superuser.internal.UiThreadHandler;
 import com.topjohnwu.superuser.io.SuFile;
 
 import java.io.File;
@@ -127,17 +128,24 @@ public class InstallerActivity extends CompatActivity {
             return;
         }
         InstallerController installerController = new InstallerController(
-                this.progressIndicator, this.installerTerminal);
+                this.progressIndicator, this.installerTerminal, file.getAbsoluteFile());
         InstallerMonitor installerMonitor = new InstallerMonitor(installScript);
         boolean success = Shell.su("export MMM_EXT_SUPPORT=1",
                 "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
                 "sh \"" + installScript.getAbsolutePath() + "\"" +
                         " /dev/null 1 \"" + file.getAbsolutePath() + "\"")
                 .to(installerController, installerMonitor).exec().isSuccess();
+        // Wait one UI cycle before disabling controller or processing results
+        UiThreadHandler.runAndWait(() -> {}); // to avoid race conditions
         installerController.disable();
         String message = "- Install successful";
         if (!success) {
-            message = installerMonitor.doCleanUp();
+            // Workaround busybox-ndk install recognized as failed when successful
+            if (this.installerTerminal.getLastLine().trim().equals("Done!")) {
+                success = true;
+            } else {
+                message = installerMonitor.doCleanUp();
+            }
         }
         this.setInstallStateFinished(success, message,
                 installerController.getSupportLink());
@@ -146,12 +154,15 @@ public class InstallerActivity extends CompatActivity {
     public static class InstallerController extends CallbackList<String> {
         private final LinearProgressIndicator progressIndicator;
         private final InstallerTerminal terminal;
+        private final File moduleFile;
         private boolean enabled, useExt;
         private String supportLink = "";
 
-        private InstallerController(LinearProgressIndicator progressIndicator, InstallerTerminal terminal) {
+        private InstallerController(LinearProgressIndicator progressIndicator,
+                                    InstallerTerminal terminal,File moduleFile) {
             this.progressIndicator = progressIndicator;
             this.terminal = terminal;
+            this.moduleFile = moduleFile;
             this.enabled = true;
             this.useExt = false;
         }
@@ -167,7 +178,9 @@ public class InstallerActivity extends CompatActivity {
             if (this.useExt && s.startsWith("#!")) {
                 this.processCommand(s);
             } else {
-                this.terminal.addLine(s);
+                this.terminal.addLine(s.replace(
+                        this.moduleFile.getAbsolutePath(),
+                        this.moduleFile.getName()));
             }
         }
 

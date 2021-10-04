@@ -73,6 +73,14 @@ public class InstallerTerminal extends RecyclerView.Adapter<InstallerTerminal.Te
         }
     }
 
+    public String getLastLine() {
+        synchronized (lock) {
+            int size = this.terminal.size();
+            return size == 0 ? "" :
+                    this.terminal.get(size - 1);
+        }
+    }
+
     public void removeLastLine() {
         synchronized (lock) {
             int size = this.terminal.size();
