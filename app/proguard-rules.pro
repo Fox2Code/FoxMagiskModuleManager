@@ -39,6 +39,14 @@
 #-renamesourcefileattribute SourceFile
 
 
+# Remove verbose and debug on release builds
+-assumenosideeffects class android.util.Log {
+    int v(java.lang.String, java.lang.String);
+    int v(java.lang.String, java.lang.String, java.lang.Throwable);
+    int d(java.lang.String, java.lang.String);
+    int d(java.lang.String, java.lang.String, java.lang.Throwable);
+}
+
 # This is just some proguard rules testes, might do a separate lib after
 # Made to help optimise the libraries and not the app directly
 -assumenosideeffects class * extends android.content.res.Resources {
