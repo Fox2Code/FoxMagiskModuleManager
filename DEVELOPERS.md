@@ -56,11 +56,12 @@ All the commands start with it `#!`, by default the manager process command as l
 unless `#!useExt` is sent to indicate that the app is ready to use commands
 
 Commands:
-- `useExt`: Tell the manager you would like to use commands
+- `useExt`: Tell the manager you would like to use commands  
   (Note: Any command executed before this one will just appear as log in the console)
 - `addLine <arg>`: Add line to the terminal, this commands can be useful if 
   you want to display text that start with `#!` inside the terminal
-- `setLastLine <arg>`: Set the last line of text displayed in the terminal
+- `setLastLine <arg>`: Set the last line of text displayed in the terminal  
+  (Note: If the terminal is empty it will just add a new line)
 - `clearTerminal`: Clear the terminal of any text, making it empty
 - `scrollUp`: Scroll up at the top of the terminal
 - `scrollDown`: Scroll down at the bottom of the terminal
@@ -91,7 +92,7 @@ And there is an instance of it in use
 mmm_exec showLoading
 ui_print "The installer doesn't support mmm_exec"
 mmm_exec setLastLine "The installer support mmm_exec"
-# Wait simulate module doing something
+# Wait to simulate the module doing something
 sleep 5
 mmm_exec hideLoading
 mmm_exec setSupportLink https://github.com/Fox2Code/FoxMagiskModuleManager
