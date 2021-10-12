@@ -56,8 +56,8 @@ public enum NotificationType implements NotificationTypeCst {
         CompatActivity compatActivity = CompatActivity.getCompatActivity(v);
         final File module = new File(compatActivity.getCacheDir(),
                 "installer" + File.separator + "module.zip");
-        IntentHelper.openFileTo(compatActivity, module, (d, s) -> {
-            if (s) {
+        IntentHelper.openFileTo(compatActivity, module, (d, u, s) -> {
+            if (s == IntentHelper.RESPONSE_FILE) {
                 try {
                     boolean needPatch;
                     try (ZipFile zipFile = new ZipFile(d)) {
@@ -86,6 +86,10 @@ public enum NotificationType implements NotificationTypeCst {
                     Toast.makeText(compatActivity,
                             R.string.invalid_format, Toast.LENGTH_SHORT).show();
                 }
+            } else if (s == IntentHelper.RESPONSE_URL) {
+                IntentHelper.openInstaller(compatActivity, u.toString(),
+                        compatActivity.getString(
+                                R.string.remote_install_title), null);
             }
         });
     }, true) {

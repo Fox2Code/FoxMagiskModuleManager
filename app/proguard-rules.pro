@@ -46,6 +46,12 @@
     int d(java.lang.String, java.lang.String);
     int d(java.lang.String, java.lang.String, java.lang.Throwable);
 }
+-assumenosideeffects class androidx.loader.app.LoaderManager {
+    static void enableDebugLogging(boolean);
+}
+-assumevalues class androidx.loader.app.LoaderManagerImpl {
+    static boolean DEBUG return false;
+}
 
 # This is just some proguard rules testes, might do a separate lib after
 # Made to help optimise the libraries and not the app directly

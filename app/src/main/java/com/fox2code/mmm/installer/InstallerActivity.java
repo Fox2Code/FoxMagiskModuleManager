@@ -2,6 +2,8 @@ package com.fox2code.mmm.installer;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -40,9 +42,9 @@ public class InstallerActivity extends CompatActivity {
         this.moduleCache = new File(this.getCacheDir(), "installer");
         if (!this.moduleCache.exists() && !this.moduleCache.mkdirs())
             Log.e(TAG, "Failed to mkdir module cache dir!");
+        super.onCreate(savedInstanceState);
         this.setDisplayHomeAsUpEnabled(false);
         this.setOnBackPressedCallback(DISABLE_BACK_BUTTON);
-        super.onCreate(savedInstanceState);
         final Intent intent = this.getIntent();
         final String target;
         final String name;
@@ -64,8 +66,21 @@ public class InstallerActivity extends CompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setTitle(name);
         setContentView(R.layout.installer);
+        int background;
+        int foreground;
+        if (MainApplication.getINSTANCE().isLightTheme() &&
+                !MainApplication.isForceDarkTerminal()) {
+            background = Color.WHITE;
+            foreground = Color.BLACK;
+        } else {
+            background = Color.BLACK;
+            foreground = Color.WHITE;
+        }
+        findViewById(R.id.install_horizontal_scroller)
+                .setBackground(new ColorDrawable(background));
         this.progressIndicator = findViewById(R.id.progress_bar);
-        this.installerTerminal = new InstallerTerminal(findViewById(R.id.install_terminal));
+        this.installerTerminal = new InstallerTerminal(
+                findViewById(R.id.install_terminal), foreground);
         this.progressIndicator.setVisibility(View.GONE);
         this.progressIndicator.setIndeterminate(true);
         if (urlMode) {

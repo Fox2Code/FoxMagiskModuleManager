@@ -2,6 +2,7 @@ package com.fox2code.mmm;
 
 import android.annotation.SuppressLint;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
@@ -11,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -250,7 +253,10 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 Resources.Theme theme = this.cardView.getContext().getTheme();
                 TypedValue value = new TypedValue();
                 theme.resolveAttribute(backgroundAttr, value, true);
-                this.cardView.setCardBackgroundColor(value.data);
+                @ColorInt int color = value.data;
+                // Fix card background being invisible on light theme
+                if (color == Color.WHITE) color = 0xFFF8F8F8;
+                this.cardView.setCardBackgroundColor(color);
             } else {
                 this.cardView.setBackground(null);
             }

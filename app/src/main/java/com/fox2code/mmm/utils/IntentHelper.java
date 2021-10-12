@@ -1,13 +1,16 @@
 package com.fox2code.mmm.utils;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -15,12 +18,16 @@ import androidx.core.app.ActivityOptionsCompat;
 
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.R;
 import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.installer.InstallerActivity;
 import com.fox2code.mmm.markdown.MarkdownActivity;
+import com.topjohnwu.superuser.io.SuFileInputStream;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -144,50 +151,78 @@ public class IntentHelper {
         return (Activity) context;
     }
 
+    public static final int RESPONSE_ERROR = 0;
+    public static final int RESPONSE_FILE = 1;
+    public static final int RESPONSE_URL = 2;
+
+    @SuppressLint("SdCardPath")
     public static void openFileTo(CompatActivity compatActivity, File destination,
-                                      OnFileReceivedCallback callback) {
+                                  OnFileReceivedCallback callback) {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT).setType("application/zip");
         intent.setFlags(intent.getFlags() & ~Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
+        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, false);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         Bundle param = ActivityOptionsCompat.makeCustomAnimation(compatActivity,
                 android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
         compatActivity.startActivityForResult(intent, param, (result, data) -> {
-            String name = destination.getName();
-            if (data == null || result != Activity.RESULT_OK) {
-                callback.onReceived(destination, false);
+            Uri uri = data == null ? null : data.getData();
+            if (uri == null || (result == Activity.RESULT_CANCELED && !((
+                    ContentResolver.SCHEME_FILE.equals(uri.getScheme())
+                            && uri.getPath() != null &&
+                            (uri.getPath().startsWith("/sdcard/") ||
+                                    uri.getPath().startsWith("/data/"))
+                    ) || ContentResolver.SCHEME_ANDROID_RESOURCE.equals(uri.getScheme())))) {
+                callback.onReceived(destination, null, RESPONSE_ERROR);
                 return;
             }
-            Uri uri = data.getData();
-            if (uri == null || "http".equals(uri.getScheme()) ||
+            Log.d("IntentHelper", "FilePicker returned " + uri.toString());
+            if ("http".equals(uri.getScheme()) ||
                     "https".equals(uri.getScheme())) {
-                callback.onReceived(destination, false);
+                callback.onReceived(destination, uri, RESPONSE_URL);
                 return;
+            }
+            if (ContentResolver.SCHEME_FILE.equals(uri.getScheme()) ||
+                    (result != Activity.RESULT_OK && result != Activity.RESULT_FIRST_USER)) {
+                Toast.makeText(compatActivity,
+                        R.string.file_picker_wierd,
+                        Toast.LENGTH_SHORT).show();
             }
             InputStream inputStream = null;
             OutputStream outputStream = null;
             boolean success = false;
             try {
-                inputStream = compatActivity.getContentResolver()
-                        .openInputStream(uri);
+                if (ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
+                    String path = uri.getPath();
+                    if (path.startsWith("/sdcard/")) { // Fix file paths
+                        path = Environment.getExternalStorageDirectory()
+                                .getAbsolutePath() + path.substring(7);
+                    }
+                    inputStream = SuFileInputStream.open(
+                            new File(path).getAbsoluteFile());
+                } else {
+                    inputStream = compatActivity.getContentResolver()
+                            .openInputStream(uri);
+                }
                 outputStream = new FileOutputStream(destination);
                 Files.copy(inputStream, outputStream);
-                String newName = uri.getLastPathSegment();
-                if (newName.endsWith(".zip")) name = newName;
                 success = true;
             } catch (Exception e) {
                 Log.e("IntentHelper", "fail copy", e);
+                Toast.makeText(compatActivity,
+                        R.string.file_picker_failure,
+                        Toast.LENGTH_SHORT).show();
             } finally {
                 Files.closeSilently(inputStream);
                 Files.closeSilently(outputStream);
                 if (!success && destination.exists() && !destination.delete())
                     Log.e("IntentHelper", "Failed to delete artefact!");
             }
-            callback.onReceived(destination, success);
+            callback.onReceived(destination, uri, success ? RESPONSE_FILE : RESPONSE_ERROR);
         });
     }
 
     public interface OnFileReceivedCallback {
-        void onReceived(File target,boolean success);
+        void onReceived(File target,Uri uri,int response);
     }
 }

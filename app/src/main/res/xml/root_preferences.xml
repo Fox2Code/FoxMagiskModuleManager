@@ -12,6 +12,12 @@
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
+            app:key="pref_force_dark_terminal"
+            app:icon="@drawable/ic_baseline_list_24"
+            app:title="@string/force_dark_terminal_title" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
             app:key="pref_showcase_mode"
             app:icon="@drawable/ic_baseline_monitor_24"
             app:title="@string/showcase_mode_pref"

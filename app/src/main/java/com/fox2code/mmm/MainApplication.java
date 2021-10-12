@@ -1,5 +1,6 @@
 package com.fox2code.mmm;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -70,6 +71,10 @@ public class MainApplication extends Application implements CompatActivity.Appli
         return getSharedPreferences().getBoolean("pref_show_incompatible", false);
     }
 
+    public static boolean isForceDarkTerminal() {
+        return getSharedPreferences().getBoolean("pref_force_dark_terminal", false);
+    }
+
     public static boolean hasGottenRootAccess() {
         return getSharedPreferences().getBoolean("has_root_access", false);
     }
@@ -117,6 +122,23 @@ public class MainApplication extends Application implements CompatActivity.Appli
     public int getManagerThemeResId() {
         return managerThemeResId;
     }
+
+    @SuppressLint("NonConstantResourceId")
+    public boolean isLightTheme() {
+        switch (this.managerThemeResId) {
+            case R.style.Theme_MagiskModuleManager:
+                return (this.getResources().getConfiguration().uiMode
+                        & Configuration.UI_MODE_NIGHT_MASK)
+                        != Configuration.UI_MODE_NIGHT_YES;
+            case R.style.Theme_MagiskModuleManager_Light:
+                return true;
+            case R.style.Theme_MagiskModuleManager_Dark:
+                return false;
+            default:
+                throw new IllegalStateException("Non manager theme!");
+        }
+    }
+
 
     @Override
     public void onCreate() {

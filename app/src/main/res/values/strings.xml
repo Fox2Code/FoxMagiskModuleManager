@@ -37,4 +37,8 @@
     <string name="source_code">Source code</string>
     <string name="last_updated">Last update:</string>
     <string name="magisk_builtin_module">Magisk builtin module</string>
+    <string name="force_dark_terminal_title">Force dark mode terminal</string>
+    <string name="file_picker_failure">Your current file picker failed to give access to the file.</string>
+    <string name="remote_install_title">Remote install</string>
+    <string name="file_picker_wierd">Your file picker returned a non standard response.</string>
 </resources>

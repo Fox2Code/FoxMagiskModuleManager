@@ -16,21 +16,21 @@ public class InstallerTerminal extends RecyclerView.Adapter<InstallerTerminal.Te
     private final RecyclerView recyclerView;
     private final ArrayList<String> terminal;
     private final Object lock = new Object();
+    private final int foreground;
 
-    public InstallerTerminal(RecyclerView recyclerView) {
+    public InstallerTerminal(RecyclerView recyclerView,int foreground) {
         recyclerView.setLayoutManager(
                 new LinearLayoutManager(recyclerView.getContext()));
         this.recyclerView = recyclerView;
+        this.foreground = foreground;
         this.terminal = new ArrayList<>();
-        this.recyclerView.setBackground(
-                new ColorDrawable(Color.BLACK));
         this.recyclerView.setAdapter(this);
     }
 
     @NonNull
     @Override
     public TextViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new TextViewHolder(new TextView(parent.getContext()));
+        return new TextViewHolder(new TextView(parent.getContext()), this.foreground);
     }
 
     @Override
@@ -116,11 +116,11 @@ public class InstallerTerminal extends RecyclerView.Adapter<InstallerTerminal.Te
     public static class TextViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
 
-        public TextViewHolder(@NonNull TextView itemView) {
+        public TextViewHolder(@NonNull TextView itemView,int foreground) {
             super(itemView);
             this.textView = itemView;
             itemView.setTypeface(Typeface.MONOSPACE);
-            itemView.setTextColor(Color.WHITE);
+            itemView.setTextColor(foreground);
             itemView.setTextSize(12);
             itemView.setLines(1);
             itemView.setText(" ");

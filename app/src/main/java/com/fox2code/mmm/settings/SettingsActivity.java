@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.StyleRes;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
@@ -14,6 +15,7 @@ import com.fox2code.mmm.repo.RepoData;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.mikepenz.aboutlibraries.LibsBuilder;
+import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 public class SettingsActivity extends CompatActivity {
     @Override
@@ -37,7 +39,9 @@ public class SettingsActivity extends CompatActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             getPreferenceManager().setSharedPreferencesName("mmm");
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
-            findPreference("pref_theme").setOnPreferenceChangeListener((preference, newValue) -> {
+            ListPreference themePreference = findPreference("pref_theme");
+            themePreference.setSummaryProvider(p -> themePreference.getEntry());
+            themePreference.setOnPreferenceChangeListener((preference, newValue) -> {
                 @StyleRes int themeResId;
                 switch (String.valueOf(newValue)) {
                     default:
@@ -55,6 +59,9 @@ public class SettingsActivity extends CompatActivity {
                 CompatActivity.getCompatActivity(this).setThemeRecreate(themeResId);
                 return true;
             });
+            if ("dark".equals(themePreference.getValue())) {
+                findPreference("pref_force_dark_terminal").setEnabled(false);
+            }
 
             setRepoNameResolution("pref_repo_main", RepoManager.MAGISK_REPO,
                     "Magisk Modules Repo (Official)", RepoManager.MAGISK_REPO_HOMEPAGE);
