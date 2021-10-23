@@ -28,6 +28,7 @@ public class ModuleInfo {
     // Community restrictions
     public int minMagisk;
     public int minApi;
+    public int maxApi;
     // Module status (0 if not from Module Manager)
     public int flags;
 

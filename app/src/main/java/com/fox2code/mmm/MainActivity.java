@@ -90,7 +90,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
             public void onPathReceived(String path) {
                 Log.i(TAG, "Got magisk path: " + path);
                 if (InstallerInitializer.peekMagiskVersion() <
-                        Constants.MAGISK_VER_CODE_PATH_SUPPORT)
+                        Constants.MAGISK_VER_CODE_INSTALL_COMMAND)
                     moduleViewListBuilder.addNotification(NotificationType.MAGISK_OUTDATED);
                 if (!MainApplication.isShowcaseMode())
                     moduleViewListBuilder.addNotification(NotificationType.INSTALL_FROM_STORAGE);
@@ -159,7 +159,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
             @Override
             public void onPathReceived(String path) {
                 if (InstallerInitializer.peekMagiskVersion() <
-                        Constants.MAGISK_VER_CODE_PATH_SUPPORT)
+                        Constants.MAGISK_VER_CODE_INSTALL_COMMAND)
                     moduleViewListBuilder.addNotification(NotificationType.MAGISK_OUTDATED);
                 if (!MainApplication.isShowcaseMode())
                     moduleViewListBuilder.addNotification(NotificationType.INSTALL_FROM_STORAGE);

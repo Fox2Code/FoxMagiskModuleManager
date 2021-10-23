@@ -1,6 +1,8 @@
 package com.fox2code.mmm.settings;
 
 import android.os.Bundle;
+import android.text.method.Touch;
+import android.widget.Toast;
 
 import androidx.annotation.StyleRes;
 import androidx.fragment.app.FragmentTransaction;
@@ -8,9 +10,12 @@ import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
+import com.fox2code.mmm.BuildConfig;
+import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.compat.CompatActivity;
+import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.repo.RepoData;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.utils.IntentHelper;
@@ -18,8 +23,11 @@ import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 public class SettingsActivity extends CompatActivity {
+    private static int devModeStep = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        devModeStep = 0;
         super.onCreate(savedInstanceState);
         this.setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.settings_activity);
@@ -41,7 +49,13 @@ public class SettingsActivity extends CompatActivity {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
             ListPreference themePreference = findPreference("pref_theme");
             themePreference.setSummaryProvider(p -> themePreference.getEntry());
+            themePreference.setOnPreferenceClickListener(p -> {
+                // You need to reboot your device at least once to be able to access dev-mode
+                if (!MainApplication.isFirstBoot()) devModeStep = 1;
+                return false;
+            });
             themePreference.setOnPreferenceChangeListener((preference, newValue) -> {
+                devModeStep = 0;
                 @StyleRes int themeResId;
                 switch (String.valueOf(newValue)) {
                     default:
@@ -62,6 +76,10 @@ public class SettingsActivity extends CompatActivity {
             if ("dark".equals(themePreference.getValue())) {
                 findPreference("pref_force_dark_terminal").setEnabled(false);
             }
+            if (InstallerInitializer.peekMagiskVersion() < Constants.MAGISK_VER_CODE_INSTALL_COMMAND
+                    || !MainApplication.isDeveloper()) {
+                findPreference("pref_use_magisk_install_command").setVisible(false);
+            }
 
             setRepoNameResolution("pref_repo_main", RepoManager.MAGISK_REPO,
                     "Magisk Modules Repo (Official)", RepoManager.MAGISK_REPO_HOMEPAGE);
@@ -71,10 +89,19 @@ public class SettingsActivity extends CompatActivity {
                     .withFields(R.string.class.getFields()).withShowLoadingProgress(false)
                     .withLicenseShown(true).withAboutMinimalDesign(false);
             findPreference("pref_source_code").setOnPreferenceClickListener(p -> {
+                if (devModeStep == 2 && (BuildConfig.DEBUG || !MainApplication.isDeveloper())) {
+                    devModeStep = 0;
+                    MainApplication.getSharedPreferences().edit()
+                            .putBoolean("developer", true).apply();
+                    Toast.makeText(getContext(), // Tell the user something changed
+                            R.string.dev_mode_enabled, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
                 IntentHelper.openUrl(p.getContext(), "https://github.com/Fox2Code/FoxMagiskModuleManager");
                 return true;
             });
             findPreference("pref_show_licenses").setOnPreferenceClickListener(p -> {
+                devModeStep = devModeStep == 1 ? 2 : 0;
                 CompatActivity compatActivity = getCompatActivity(this);
                 compatActivity.setOnBackPressedCallback(this);
                 compatActivity.setTitle(R.string.licenses);

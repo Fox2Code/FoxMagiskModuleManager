@@ -41,4 +41,10 @@
     <string name="file_picker_failure">Your current file picker failed to give access to the file.</string>
     <string name="remote_install_title">Remote install</string>
     <string name="file_picker_wierd">Your file picker returned a non standard response.</string>
+    <string name="use_magisk_install_command_pref">Use magisk module install command</string>
+    <string name="use_magisk_install_command_desc">
+        During test it caused problems to the module install error diagnosis tool,
+        so I hid this option behind dev-mode, enable this at your own risk!
+    </string>
+    <string name="dev_mode_enabled">Developer mode enabled</string>
 </resources>

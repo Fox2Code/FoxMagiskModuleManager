@@ -4,6 +4,7 @@ public class Constants {
     public static final int MAGISK_VER_CODE_FLAT_MODULES = 19000;
     public static final int MAGISK_VER_CODE_UTIL_INSTALL = 20400;
     public static final int MAGISK_VER_CODE_PATH_SUPPORT = 21000;
+    public static final int MAGISK_VER_CODE_INSTALL_COMMAND = 21200;
     public static final int MAGISK_VER_CODE_MAGISK_ZYGOTE = 23002;
     public static final String INTENT_INSTALL_INTERNAL =
             BuildConfig.APPLICATION_ID + ".intent.action.INSTALL_MODULE_INTERNAL";

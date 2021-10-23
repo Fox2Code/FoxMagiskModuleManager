@@ -136,20 +136,32 @@ public class InstallerActivity extends CompatActivity {
 
     private void doInstall(File file) {
         Log.i(TAG, "Installing: " + moduleCache.getName());
-        File installScript = this.extractCompatScript();
-        if (installScript == null) {
-            this.setInstallStateFinished(false,
-                    "! Failed to extract module install script", "");
-            return;
-        }
         InstallerController installerController = new InstallerController(
                 this.progressIndicator, this.installerTerminal, file.getAbsoluteFile());
-        InstallerMonitor installerMonitor = new InstallerMonitor(installScript);
-        boolean success = Shell.su("export MMM_EXT_SUPPORT=1",
-                "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
-                "sh \"" + installScript.getAbsolutePath() + "\"" +
-                        " /dev/null 1 \"" + file.getAbsolutePath() + "\"")
-                .to(installerController, installerMonitor).exec().isSuccess();
+        InstallerMonitor installerMonitor;
+        Shell.Job installJob;
+        if (MainApplication.isUsingMagiskCommand()) {
+            installerMonitor = new InstallerMonitor(new File(InstallerInitializer
+                    .peekMagiskPath().equals("/sbin") ? "/sbin/magisk" : "/system/bin/magisk"));
+            installJob = Shell.su("export MMM_EXT_SUPPORT=1",
+                    "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
+                    "magisk --install-module \"" + file.getAbsolutePath() + "\"")
+                    .to(installerController, installerMonitor);
+        } else {
+            File installScript = this.extractCompatScript();
+            if (installScript == null) {
+                this.setInstallStateFinished(false,
+                        "! Failed to extract module install script", "");
+                return;
+            }
+            installerMonitor = new InstallerMonitor(installScript);
+            installJob = Shell.su("export MMM_EXT_SUPPORT=1",
+                    "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
+                    "sh \"" + installScript.getAbsolutePath() + "\"" +
+                            " /dev/null 1 \"" + file.getAbsolutePath() + "\"")
+                    .to(installerController, installerMonitor);
+        }
+        boolean success = installJob.exec().isSuccess();
         // Wait one UI cycle before disabling controller or processing results
         UiThreadHandler.runAndWait(() -> {}); // to avoid race conditions
         installerController.disable();
@@ -261,7 +273,7 @@ public class InstallerActivity extends CompatActivity {
     public static class InstallerMonitor extends CallbackList<String> {
         private static final String DEFAULT_ERR = "! Install failed";
         private final String installScriptPath;
-        public String lastCommand;
+        public String lastCommand = "";
 
         public InstallerMonitor(File installScript) {
             super(Runnable::run);

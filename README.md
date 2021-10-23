@@ -5,6 +5,16 @@ So I made my own app to do that! :3
 
 **This app is not officially supported by Magisk or it's developers**
 
+## Requirements
+
+Minimum:
+- Android 5.0+
+- Magisk 19.0+
+
+Recommended:
+- Android 6.0+
+- Magisk 21.2+
+
 ## For users
 
 Related commits:  
@@ -24,12 +34,14 @@ If a module is in both repo, the manager will just pick the most up to date vers
 
 ## For developers
 
-The manager can read new meta keys to allow modules to customize their entry
+The manager can read new meta keys to allow modules to customize their own entry
 
-It use `module.prop` the `minApi=<int>` and `minMagisk=<int>` properties to detect compatibility  
-And use the `support=<url>` and `donate=<url>` key to detect module related links
+It also use `minApi`, `maxApi` and `minMagisk` in the `module.prop` to detect compatibility  
+And support the `support` and `donate` properties to allow them to add their own support links  
+(Note: the manager use fallback values for some modules, see developer documentation for more info)
 
-It also add new ways to control the installer ui via a new `#!` command system
+It also add new ways to control the installer ui via a new `#!` command system  
+It allow module developers to have a more customizable install experience
 
 For more information please check the [developer documentation](DEVELOPERS.md)
 

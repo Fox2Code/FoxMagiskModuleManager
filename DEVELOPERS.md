@@ -24,6 +24,7 @@ This the manager support these new properties
 ```properties
 # Fox's Mmm supported properties
 minApi=<int>
+maxApi=<int>
 minMagisk=<int>
 support=<url>
 donate=<url>
@@ -31,7 +32,7 @@ config=<package>
 ```
 (Note: All urls must start with `https://`, or else will be ignored)
 
-- `minApi` tell the manager which is the minimum SDK version required for the module  
+- `minApi` and `maxApi` tell the manager which is the SDK version range the module support  
   (See: [Codenames, Tags, and Build Numbers](https://source.android.com/setup/start/build-numbers))
 - `minMagisk` tell the manager which is the minimum Magisk version required for the module
   (Often for magisk `xx.y` the version code is `xxy00`)

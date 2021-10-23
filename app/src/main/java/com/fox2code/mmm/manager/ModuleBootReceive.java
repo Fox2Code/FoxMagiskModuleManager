@@ -19,6 +19,7 @@ public class ModuleBootReceive extends BroadcastReceiver {
         InstallerInitializer.tryGetMagiskPathAsync(new InstallerInitializer.Callback() {
             @Override
             public void onPathReceived(String path) {
+                MainApplication.notifyBootListenerCompleted();
                 ModuleManager.getINSTANCE().scan();
             }
 

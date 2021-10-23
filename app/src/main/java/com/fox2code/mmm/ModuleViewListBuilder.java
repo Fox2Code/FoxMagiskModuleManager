@@ -72,7 +72,9 @@ public class ModuleViewListBuilder {
             repoManager.runAfterUpdate(() -> {
                 Log.i(TAG, "A2: " + repoManager.getModules().size());
                 for (RepoModule repoModule : repoManager.getModules().values()) {
-                    if (!showIncompatible && (repoModule.moduleInfo.minApi > Build.VERSION.SDK_INT ||
+                    ModuleInfo moduleInfo = repoModule.moduleInfo;
+                    if (!showIncompatible && (moduleInfo.minApi > Build.VERSION.SDK_INT ||
+                            (moduleInfo.maxApi != 0 && moduleInfo.maxApi < Build.VERSION.SDK_INT) ||
                             // Only check Magisk compatibility if root is present
                             (InstallerInitializer.peekMagiskPath() != null &&
                                     repoModule.moduleInfo.minMagisk >

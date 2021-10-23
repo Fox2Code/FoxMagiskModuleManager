@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 public class PropUtils {
+    private static final HashMap<String, String> moduleSupportsFallbacks = new HashMap<>();
     private static final HashMap<String, String> moduleConfigsFallbacks = new HashMap<>();
     private static final HashMap<String, Integer> moduleMinApiFallbacks = new HashMap<>();
     private static final int RIRU_MIN_API;
@@ -19,6 +20,11 @@ public class PropUtils {
     // Note: These fallback values may not be up-to-date
     // They are only used if modules don't define the metadata
     static {
+        // Support are pages or groups where the user can get support for the module
+        moduleSupportsFallbacks.put("aospill", "https://t.me/PannekoX");
+        moduleSupportsFallbacks.put("quickstepswitcher", "https://t.me/QuickstepSwitcherSupport");
+        moduleSupportsFallbacks.put("riru_edxposed", "https://t.me/EdXposed");
+        moduleSupportsFallbacks.put("riru_lsposed", "https://github.com/LSPosed/LSPosed/issues/");
         // Config are application installed by modules that allow them to be configured
         moduleConfigsFallbacks.put("quickstepswitcher", "xyz.paphonb.quickstepswitcher");
         moduleConfigsFallbacks.put("riru_edxposed", "org.meowcat.edxposed.manager");
@@ -107,6 +113,13 @@ public class PropUtils {
                             moduleInfo.minApi = 0;
                         }
                         break;
+                    case "maxApi":
+                        try {
+                            moduleInfo.maxApi = Integer.parseInt(value);
+                        } catch (Exception e) {
+                            moduleInfo.maxApi = 0;
+                        }
+                        break;
                 }
             }
         }
@@ -129,6 +142,9 @@ public class PropUtils {
             else if (moduleInfo.id.startsWith("riru_")
                     || moduleInfo.id.startsWith("riru-"))
                 moduleInfo.minApi = RIRU_MIN_API;
+        }
+        if (moduleInfo.support == null) {
+            moduleInfo.support = moduleSupportsFallbacks.get(moduleInfo.id);
         }
         if (moduleInfo.config == null) {
             moduleInfo.config = moduleConfigsFallbacks.get(moduleInfo.id);

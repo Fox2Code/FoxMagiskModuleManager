@@ -29,6 +29,13 @@
             app:icon="@drawable/ic_baseline_hide_source_24"
             app:title="@string/show_incompatible_pref"
             app:summary="@string/show_incompatible_desc"/>
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="pref_use_magisk_install_command"
+            app:icon="@drawable/ic_baseline_numbers_24"
+            app:title="@string/use_magisk_install_command_pref"
+            app:summary="@string/use_magisk_install_command_desc"/>
     </PreferenceCategory>
 
     <PreferenceCategory

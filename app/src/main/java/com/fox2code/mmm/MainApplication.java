@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.SystemClock;
+import android.text.SpannableStringBuilder;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StyleRes;
@@ -27,7 +29,17 @@ import io.noties.markwon.Markwon;
 import io.noties.markwon.html.HtmlPlugin;
 import io.noties.markwon.image.ImagesPlugin;
 import io.noties.markwon.image.network.OkHttpNetworkSchemeHandler;
+import io.noties.markwon.syntax.Prism4jTheme;
+import io.noties.markwon.syntax.Prism4jThemeDarkula;
+import io.noties.markwon.syntax.Prism4jThemeDefault;
+import io.noties.markwon.syntax.SyntaxHighlightPlugin;
+import io.noties.prism4j.Prism4j;
+import io.noties.prism4j.annotations.PrismBundle;
 
+@PrismBundle(
+        includeAll = true,
+        grammarLocatorClassName = ".Prism4jGrammarLocator"
+)
 public class MainApplication extends Application implements CompatActivity.ApplicationCallbacks {
     private static final String timeFormatString = "dd MMM yyyy"; // Example: 13 july 2001
     private static Locale timeFormatLocale =
@@ -38,6 +50,7 @@ public class MainApplication extends Application implements CompatActivity.Appli
     private static final int secret;
     private static SharedPreferences bootSharedPreferences;
     private static MainApplication INSTANCE;
+    private static boolean firstBoot;
 
     static {
         Shell.setDefaultBuilder(shellBuilder = Shell.Builder.create()
@@ -75,6 +88,32 @@ public class MainApplication extends Application implements CompatActivity.Appli
         return getSharedPreferences().getBoolean("pref_force_dark_terminal", false);
     }
 
+    public static boolean isDeveloper() {
+        return BuildConfig.DEBUG ||
+                getSharedPreferences().getBoolean("developer", false);
+    }
+
+    public static boolean isUsingMagiskCommand() {
+        return InstallerInitializer.peekMagiskVersion() >= Constants.MAGISK_VER_CODE_INSTALL_COMMAND
+                && getSharedPreferences().getBoolean("pref_use_magisk_install_command", false)
+                && isDeveloper();
+    }
+
+    public static boolean isFirstBoot() {
+        return firstBoot;
+    }
+
+    public static void notifyBootListenerCompleted() {
+        if (MainApplication.bootSharedPreferences != null) {
+            MainApplication.bootSharedPreferences.edit()
+                    .putBoolean("first_boot", false).apply();
+        } else if (MainApplication.INSTANCE != null) {
+            MainApplication.getSharedPreferences().edit()
+                    .putBoolean("first_boot", false).apply();
+        }
+        firstBoot = false;
+    }
+
     public static boolean hasGottenRootAccess() {
         return getSharedPreferences().getBoolean("has_root_access", false);
     }
@@ -104,18 +143,48 @@ public class MainApplication extends Application implements CompatActivity.Appli
     public Markwon getMarkwon() {
         if (this.markwon != null)
             return this.markwon;
-        ContextThemeWrapper contextThemeWrapper = this.markwonThemeContext =
-                new ContextThemeWrapper(this, this.managerThemeResId);
+        ContextThemeWrapper contextThemeWrapper = this.markwonThemeContext;
+        if (contextThemeWrapper == null)
+            contextThemeWrapper = this.markwonThemeContext =
+                        new ContextThemeWrapper(this, this.managerThemeResId);
         Markwon markwon = Markwon.builder(contextThemeWrapper).usePlugin(HtmlPlugin.create())
+                .usePlugin(SyntaxHighlightPlugin.create(
+                        new Prism4j(new Prism4jGrammarLocator()), new Prism4jSwitchTheme()))
                 .usePlugin(ImagesPlugin.create().addSchemeHandler(
                         OkHttpNetworkSchemeHandler.create(Http.getHttpclientWithCache()))).build();
         return this.markwon = markwon;
+    }
+
+    private class Prism4jSwitchTheme implements Prism4jTheme {
+        private final Prism4jTheme light = new Prism4jThemeDefault(Color.TRANSPARENT);
+        private final Prism4jTheme dark = new Prism4jThemeDarkula(Color.TRANSPARENT);
+
+        private Prism4jTheme getTheme() {
+            return isLightTheme() ? this.light : this.dark;
+        }
+
+        @Override
+        public int background() {
+            return this.getTheme().background();
+        }
+
+        @Override
+        public int textColor() {
+            return this.getTheme().textColor();
+        }
+
+        @Override
+        public void apply(@NonNull String language, @NonNull Prism4j.Syntax syntax,
+                          @NonNull SpannableStringBuilder builder, int start, int end) {
+            this.getTheme().apply(language, syntax, builder, start, end);
+        }
     }
 
     public void setManagerThemeResId(@StyleRes int resId) {
         this.managerThemeResId = resId;
         if (this.markwonThemeContext != null)
             this.markwonThemeContext.setTheme(resId);
+        this.markwon = null;
     }
 
     @StyleRes
@@ -144,13 +213,22 @@ public class MainApplication extends Application implements CompatActivity.Appli
     public void onCreate() {
         INSTANCE = this;
         super.onCreate();
+        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
         // We are only one process so it's ok to do this
         SharedPreferences bootPrefs = MainApplication.bootSharedPreferences =
                 this.getSharedPreferences("mmm_boot", MODE_PRIVATE);
         long lastBoot = System.currentTimeMillis() - SystemClock.elapsedRealtime();
         long lastBootPrefs = bootPrefs.getLong("last_boot", 0);
         if (lastBootPrefs == 0 || Math.abs(lastBoot - lastBootPrefs) > 100) {
-            bootPrefs.edit().clear().putLong("last_boot", lastBoot).apply();
+            boolean firstBoot = sharedPreferences.getBoolean("first_boot", true);
+            bootPrefs.edit().clear().putLong("last_boot", lastBoot)
+                    .putBoolean("first_boot", firstBoot).apply();
+            if (firstBoot) {
+                sharedPreferences.edit().putBoolean("first_boot", false).apply();
+            }
+            MainApplication.firstBoot = firstBoot;
+        } else {
+            MainApplication.firstBoot = bootPrefs.getBoolean("first_boot", false);
         }
         @StyleRes int themeResId;
         switch (getSharedPreferences().getString("pref_theme", "system")) {

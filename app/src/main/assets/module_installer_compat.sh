@@ -29,6 +29,19 @@ mount /data 2>/dev/null
 . /data/adb/magisk/util_functions.sh
 [ $MAGISK_VER_CODE -lt 19000 ] && require_new_magisk
 
+# Add grep_get_prop implementation if missing
+if ! type grep_get_prop &>/dev/null; then
+grep_get_prop() {
+  local result=$(grep_prop $@)
+  if [ -z "$result" ]; then
+    # Fallback to getprop
+    getprop "$1"
+  else
+    echo $result
+  fi
+}
+fi
+
 if [ $MAGISK_VER_CODE -ge 20400 ]; then
   # New Magisk have complete installation logic within util_functions.sh
   install_module
@@ -84,6 +97,7 @@ mount_partitions
 
 # Detect version and architecture
 api_level_arch_detect
+API=$(grep_get_prop ro.build.version.sdk)
 
 # Setup busybox and binaries
 $BOOTMODE && boot_actions || recovery_actions

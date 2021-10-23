@@ -42,7 +42,7 @@ public enum NotificationType implements NotificationTypeCst {
         public boolean shouldRemove() {
             return InstallerInitializer.peekMagiskPath() == null ||
                     InstallerInitializer.peekMagiskVersion() >=
-                            Constants.MAGISK_VER_CODE_PATH_SUPPORT;
+                            Constants.MAGISK_VER_CODE_INSTALL_COMMAND;
         }
     },
     NO_INTERNET(R.string.fail_internet, R.drawable.ic_baseline_cloud_off_24) {

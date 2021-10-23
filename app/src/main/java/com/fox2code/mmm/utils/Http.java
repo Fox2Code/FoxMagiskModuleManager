@@ -50,15 +50,15 @@ public class Http {
                             InetAddress.getByName("2606:4700:4700::0064"),
                             InetAddress.getByName("2606:4700:4700::6400")
                     ).resolvePrivateAddresses(true).build());
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
+        } catch (UnknownHostException|RuntimeException e) {
+            Log.e("Http", "Failed to init DoH", e);
         }
         httpClient = httpclientBuilder.build();
         MainApplication mainApplication = MainApplication.getINSTANCE();
         if (mainApplication != null) {
             httpclientBuilder.cache(new Cache(
                     new File(mainApplication.getCacheDir(), "http_cache"),
-                    1024L * 1024L)); // 1Mo of cache
+                    2L * 1024L * 1024L)); // 2Mib of cache
             httpclientBuilder.cookieJar(new CDNCookieJar());
             httpClientCachable = httpclientBuilder.build();
         } else {
