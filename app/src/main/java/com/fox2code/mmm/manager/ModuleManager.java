@@ -1,6 +1,7 @@
 package com.fox2code.mmm.manager;
 
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.utils.PropUtils;
@@ -11,6 +12,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public final class ModuleManager {
+    private static final String TAG = "ModuleManager";
+
     private static final int FLAG_MM_INVALID = ModuleInfo.FLAG_METADATA_INVALID;
     private static final int FLAG_MM_UNPROCESSED = 0x40000000;
     private static final int FLAGS_RESET_INIT = FLAG_MM_INVALID |
@@ -117,6 +120,7 @@ public final class ModuleManager {
                     PropUtils.readProperties(moduleInfo,
                             "/data/adb/modules/" + module + "/module.prop");
                 } catch (Exception e) {
+                    Log.d(TAG, "Failed to parse metadata!", e);
                     moduleInfo.flags |= FLAG_MM_INVALID;
                 }
             }
@@ -136,6 +140,7 @@ public final class ModuleManager {
                     PropUtils.readProperties(moduleInfo,
                             "/data/adb/modules_update/" + module + "/module.prop");
                 } catch (Exception e) {
+                    Log.d(TAG, "Failed to parse metadata!", e);
                     moduleInfo.flags |= FLAG_MM_INVALID;
                 }
             }

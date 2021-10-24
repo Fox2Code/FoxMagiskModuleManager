@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class PropUtils {
     private static final HashMap<String, String> moduleSupportsFallbacks = new HashMap<>();
@@ -24,7 +25,8 @@ public class PropUtils {
         moduleSupportsFallbacks.put("aospill", "https://t.me/PannekoX");
         moduleSupportsFallbacks.put("quickstepswitcher", "https://t.me/QuickstepSwitcherSupport");
         moduleSupportsFallbacks.put("riru_edxposed", "https://t.me/EdXposed");
-        moduleSupportsFallbacks.put("riru_lsposed", "https://github.com/LSPosed/LSPosed/issues/");
+        moduleSupportsFallbacks.put("riru_lsposed", "https://github.com/LSPosed/LSPosed/issues");
+        moduleSupportsFallbacks.put("substratum", "https://github.com/substratum/substratum/issues");
         // Config are application installed by modules that allow them to be configured
         moduleConfigsFallbacks.put("quickstepswitcher", "xyz.paphonb.quickstepswitcher");
         moduleConfigsFallbacks.put("riru_edxposed", "org.meowcat.edxposed.manager");
@@ -44,7 +46,7 @@ public class PropUtils {
     }
 
     public static void readProperties(ModuleInfo moduleInfo, String file) throws IOException {
-        boolean readId = false, readVersionCode = false;
+        boolean readId = false, readIdSec = false, readVersionCode = false;
         try (BufferedReader bufferedReader = new BufferedReader(
                 new InputStreamReader(SuFileInputStream.open(file), StandardCharsets.UTF_8))) {
             String line;
@@ -63,7 +65,12 @@ public class PropUtils {
                         }
                         break;
                     case "name":
+                        if (readIdSec && !moduleInfo.id.equals(value))
+                            throw new IOException("Duplicate module name!");
                         moduleInfo.name = value;
+                        if (moduleInfo.id.equals(value)) {
+                            readIdSec = true;
+                        }
                         break;
                     case "version":
                         moduleInfo.version = value;
@@ -124,7 +131,13 @@ public class PropUtils {
             }
         }
         if (!readId) {
-            throw new IOException("Didn't read module id at least once!");
+            if (readIdSec) {
+                // Using the name for module id is not really appropriate, so beautify it a bit
+                moduleInfo.name = moduleInfo.id.substring(0, 1).toUpperCase(Locale.ROOT) +
+                        moduleInfo.id.substring(1).replace('_', ' ');
+            } else {
+                throw new IOException("Didn't read module id at least once!");
+            }
         }
         if (!readVersionCode) {
             throw new IOException("Didn't read module versionCode at least once!");
