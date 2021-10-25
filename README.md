@@ -21,9 +21,9 @@ Related commits:
 - [`Remove online section in modules fragment`](https://github.com/topjohnwu/Magisk/commit/f5c982355a2e3380b2b64af4b0caa8f4f7cf9157)
 - [`Cleanup unused code`](https://github.com/topjohnwu/Magisk/commit/8d59caf635591eb23813d75601039bb138f5716b)
 
-Note: These changes didn't hit canary, beta, or release yet.
+Note: These changes didn't hit beta, or release yet, but are already live on canary builds.
 
-The app currently use these two repo as their modules sources:  
+The app currently use these two repo as it's module sources:  
 [https://github.com/Magisk-Modules-Alt-Repo](https://github.com/Magisk-Modules-Alt-Repo)  
 [https://github.com/Magisk-Modules-Repo](https://github.com/Magisk-Modules-Repo)
 
