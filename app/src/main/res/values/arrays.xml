@@ -1,5 +1,5 @@
 <resources>
-    <string-array name="theme_values">
+    <string-array name="theme_values" translatable="false">
         <item>system</item>
         <item>dark</item>
         <item>light</item>

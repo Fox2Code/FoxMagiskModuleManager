@@ -1,10 +1,4 @@
 <resources>
-    <string-array name="theme_values">
-        <item>跟隨系統</item>
-        <item>深色主題</item>
-        <item>淺色主題</item>
-    </string-array>
-
     <string-array name="theme_values_names">
         <item>跟隨系統</item>
         <item>深色主題</item>
