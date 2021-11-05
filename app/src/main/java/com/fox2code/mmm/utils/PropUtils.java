@@ -23,6 +23,10 @@ public class PropUtils {
     static {
         // Support are pages or groups where the user can get support for the module
         moduleSupportsFallbacks.put("aospill", "https://t.me/PannekoX");
+        moduleSupportsFallbacks.put("bromitewebview", "https://t.me/androidacy_discussions");
+        moduleSupportsFallbacks.put("fontrevival", "https://t.me/androidacy_discussions");
+        moduleSupportsFallbacks.put("MagiskHidePropsConf", "https://forum.xda-developers.com/t" +
+                "/module-magiskhide-props-config-safetynet-prop-edits-and-more-v6-1-1.3789228/");
         moduleSupportsFallbacks.put("quickstepswitcher", "https://t.me/QuickstepSwitcherSupport");
         moduleSupportsFallbacks.put("riru_edxposed", "https://t.me/EdXposed");
         moduleSupportsFallbacks.put("riru_lsposed", "https://github.com/LSPosed/LSPosed/issues");
