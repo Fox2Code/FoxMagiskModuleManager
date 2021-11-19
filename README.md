@@ -27,7 +27,8 @@ The app currently use these two repo as it's module sources, with it's benefits 
 [https://github.com/Magisk-Modules-Alt-Repo](https://github.com/Magisk-Modules-Alt-Repo)  
 - Accepting new modules [here](https://github.com/Magisk-Modules-Alt-Repo/submission)
 - Less restrictive than the original repo
-- Officially supported by Fox's mmm
+- Officially supported by Fox's mmm  
+
 [https://github.com/Magisk-Modules-Repo](https://github.com/Magisk-Modules-Repo)  
 - No longer accept new modules
 - May be shut down at any moment
