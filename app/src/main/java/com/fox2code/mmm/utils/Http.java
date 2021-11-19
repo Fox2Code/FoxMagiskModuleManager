@@ -37,6 +37,7 @@ public class Http {
         OkHttpClient.Builder httpclientBuilder = new OkHttpClient.Builder();
         httpclientBuilder.connectTimeout(11, TimeUnit.SECONDS);
         try {
+            httpclientBuilder.cookieJar(new CDNCookieJar());
             httpclientBuilder.dns(new DnsOverHttps.Builder().client(httpclientBuilder.build()).url(
                     Objects.requireNonNull(HttpUrl.parse("https://cloudflare-dns.com/dns-query")))
                     .bootstrapDnsHosts(
@@ -53,6 +54,7 @@ public class Http {
         } catch (UnknownHostException|RuntimeException e) {
             Log.e("Http", "Failed to init DoH", e);
         }
+        httpclientBuilder.cookieJar(CookieJar.NO_COOKIES);
         httpClient = httpclientBuilder.build();
         MainApplication mainApplication = MainApplication.getINSTANCE();
         if (mainApplication != null) {
@@ -139,7 +141,10 @@ public class Http {
      * Cookie jar that allow CDN cookies, reset on app relaunch
      * Note: An argument can be made that it allow tracking but
      * caching is a better attack vector for tracking, this system
-     * only exist to help CDN and cache to work together.
+     * only exist to improve CDN response time, any other cookies
+     * that are not CDN related are just simply ignored.
+     *
+     * Note: CDNCookies are only stored in RAM unlike https cache
      * */
     private static class CDNCookieJar implements CookieJar {
         private final HashMap<String, Cookie> cookieMap = new HashMap<>();
