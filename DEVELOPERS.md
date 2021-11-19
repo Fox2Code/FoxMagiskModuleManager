@@ -3,6 +3,9 @@
 Note: This doc assume you already read the
 [official Magisk module developer guide](https://topjohnwu.github.io/Magisk/guides.html)
 
+Note: official repo do not accept new modules anymore, submit
+[here](https://github.com/Magisk-Modules-Alt-Repo/submission) instead.
+
 Index:  
 - [Properties](DEVELOPERS.md#properties)
 - [Installer commands](DEVELOPERS.md#installer-commands)

@@ -23,14 +23,23 @@ Related commits:
 
 Note: These changes didn't hit beta, or release yet, but are already live on canary builds.
 
-The app currently use these two repo as it's module sources:  
+The app currently use these two repo as it's module sources, with it's benefits and drawback:  
 [https://github.com/Magisk-Modules-Alt-Repo](https://github.com/Magisk-Modules-Alt-Repo)  
-[https://github.com/Magisk-Modules-Repo](https://github.com/Magisk-Modules-Repo)
+- Accepting new modules [here](https://github.com/Magisk-Modules-Alt-Repo/submission)
+- Less restrictive than the original repo
+- Officially supported by Fox's mmm
+[https://github.com/Magisk-Modules-Repo](https://github.com/Magisk-Modules-Repo)  
+- No longer accept new modules
+- May be shut down at any moment
+- Official app dropped support for it
+- Officially supported by Fox's mmm
 
-As the main repo may shutting down due to the main app no longer supporting it.  
-I recommend submitting your modules [here](https://github.com/Magisk-Modules-Alt-Repo/submission) instead
+As the main repo may shutting down due to the main app no longer supporting it, 
+and also stopped accepting new modules, it is recommended to submit your modules
+[here](https://github.com/Magisk-Modules-Alt-Repo/submission)
 
-If a module is in both repo, the manager will just pick the most up to date version of the module
+If a module is in both repo, the manager will just pick the most up to date version of the module,
+allowing developers to switch repo at their own pace if they want to.
 
 ## For developers
 
