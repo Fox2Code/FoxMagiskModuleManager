@@ -13,8 +13,9 @@
     <string name="title_activity_settings">SettingsActivity</string>
 
     <!-- Preference Titles -->
-    <string name="showcase_mode_pref">Showcase mode</string>
-    <string name="showcase_mode_desc">Showcase mode prevent manager to do action on modules</string>
+    <!-- Note: Lockdown mode used to be called showcase mode -->
+    <string name="showcase_mode_pref">Lockdown mode</string>
+    <string name="showcase_mode_desc">Lockdown mode prevent manager to do action on modules</string>
     <string name="pref_category_settings">Settings</string>
     <string name="pref_category_info">Info</string>
     <string name="show_licenses">Show licenses</string>
