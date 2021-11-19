@@ -6,15 +6,15 @@
     <string name="updatable">更新</string>
     <string name="installed">安裝</string>
     <string name="online_repo">線上倉庫</string>
-    <string name="showcase_mode">此應用處於展示模式</string>
+    <string name="showcase_mode">目前處於鎖定模式</string>
     <string name="failed_download">安裝檔下載失敗</string>
     <string name="slow_modules">因模塊導致啟動時間過長，考慮禁用部分模塊</string>
     <string name="fail_internet">無法連線到網路</string>
     <string name="title_activity_settings">設定活動</string>
 
     <!-- Preference Titles -->
-    <string name="showcase_mode_pref">展示模式</string>
-    <string name="showcase_mode_desc">展示模式阻止管理器對模塊進行操作</string>
+    <string name="showcase_mode_pref">鎖定模式</string>
+    <string name="showcase_mode_desc">鎖定模式阻止管理器對模塊進行操作</string>
     <string name="pref_category_settings">設定</string>
     <string name="pref_category_info">訊息</string>
     <string name="show_licenses">顯示開放原始碼許可</string>
