@@ -52,7 +52,7 @@ public class AppUpdateManager {
                 JSONArray releases = new JSONArray(new String(Http.doHttpGet(
                         RELEASES_API_URL, false), StandardCharsets.UTF_8));
                 String latestRelease = null, latestPreRelease = null;
-                for (int i = releases.length() - 1; i > 0; i--) {
+                for (int i = 0; i < releases.length(); i++) {
                     JSONObject release = releases.getJSONObject(i);
                     // Skip invalid entries
                     if (release.getBoolean("draft")) continue;
@@ -61,8 +61,9 @@ public class AppUpdateManager {
                     if (version.startsWith("v"))
                         version = version.substring(1);
                     if (preRelease) {
-                        latestPreRelease = version;
-                    } else {
+                        if (latestPreRelease == null)
+                            latestPreRelease = version;
+                    } else if (latestRelease == null) {
                         latestRelease = version;
                         if (latestPreRelease == null)
                             preReleaseNewer = false;
