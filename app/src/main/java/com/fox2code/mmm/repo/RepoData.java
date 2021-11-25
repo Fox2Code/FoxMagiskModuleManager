@@ -54,7 +54,9 @@ public class RepoData {
     List<RepoModule> populate(JSONObject jsonObject) throws JSONException {
         List<RepoModule> newModules = new ArrayList<>();
         synchronized (this.populateLock) {
-            String name = jsonObject.getString("name");
+            String name = jsonObject.getString("name").trim();
+            String nameForModules = name.endsWith(" (Official)") ?
+                    name.substring(0, name.length() - 11) : name;
             long lastUpdate = jsonObject.getLong("last_update");
             for (RepoModule repoModule : this.moduleHashMap.values()) {
                 repoModule.processed = false;
@@ -80,6 +82,7 @@ public class RepoData {
                     }
                 }
                 repoModule.processed = true;
+                repoModule.repoName = nameForModules;
                 repoModule.lastUpdated = moduleLastUpdate;
                 repoModule.notesUrl = moduleNotesUrl;
                 repoModule.propUrl = modulePropsUrl;

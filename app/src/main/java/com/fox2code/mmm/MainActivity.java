@@ -123,6 +123,8 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                 });
                 if (!RepoManager.getINSTANCE().hasConnectivity())
                     moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
+                else if (AppUpdateManager.getAppUpdateManager().checkUpdate(true))
+                    moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
                 moduleViewListBuilder.appendRemoteModules();
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
                 Log.i(TAG, "Finished app opening state!");
@@ -180,6 +182,8 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                     moduleViewListBuilder.addNotification(NotificationType.SHOWCASE_MODE);
                 if (!RepoManager.getINSTANCE().hasConnectivity())
                     moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
+                else if (AppUpdateManager.getAppUpdateManager().checkUpdate(true))
+                    moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
                 moduleViewListBuilder.appendRemoteModules();
                 Log.i(TAG, "Common Before applyTo");
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);

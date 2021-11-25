@@ -6,11 +6,18 @@
     <string name="updatable">Updatable</string>
     <string name="installed">Installed</string>
     <string name="online_repo">Online Repo</string>
-    <string name="showcase_mode">The application is in showcase mode</string>
+    <string name="showcase_mode">The application is in lockdown mode</string>
     <string name="failed_download">Failed to download file.</string>
     <string name="slow_modules">Modules took too long to boot, consider disabling some modules</string>
     <string name="fail_internet">Fail to connect to the internet</string>
     <string name="title_activity_settings">SettingsActivity</string>
+    <string name="app_update_available">Application update available</string>
+    <string name="app_update">Update</string>
+
+    <!-- Module section translation -->
+    <string name="module_last_update">Last update:</string>
+    <string name="module_repo">Repo:</string>
+    <string name="module_by">by</string>
 
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
@@ -36,8 +43,8 @@
     <string name="invalid_format">The selected module is in an invalid format</string>
     <string name="local_install_title">Local install</string>
     <string name="source_code">Source code</string>
-    <string name="last_updated">Last update:</string>
     <string name="magisk_builtin_module">Magisk builtin module</string>
+    <string name="substratum_builtin_module">Substratum builtin module</string>
     <string name="force_dark_terminal_title">Force dark mode terminal</string>
     <string name="file_picker_failure">Your current file picker failed to give access to the file.</string>
     <string name="remote_install_title">Remote install</string>
@@ -45,7 +52,8 @@
     <string name="use_magisk_install_command_pref">Use magisk module install command</string>
     <string name="use_magisk_install_command_desc">
         During test it caused problems to the module install error diagnosis tool,
-        so I hid this option behind dev-mode, enable this at your own risk!
+        so I hid this option behind developer mode, enable this at your own risk!
     </string>
     <string name="dev_mode_enabled">Developer mode enabled</string>
+    <string name="force_english_pref">Force English language</string>
 </resources>

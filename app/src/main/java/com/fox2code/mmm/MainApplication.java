@@ -15,6 +15,7 @@ import androidx.annotation.StyleRes;
 import androidx.appcompat.view.ContextThemeWrapper;
 
 import com.fox2code.mmm.compat.CompatActivity;
+import com.fox2code.mmm.compat.CompatThemeWrapper;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.utils.GMSProviderInstaller;
 import com.fox2code.mmm.utils.Http;
@@ -84,6 +85,10 @@ public class MainApplication extends Application implements CompatActivity.Appli
         return getSharedPreferences().getBoolean("pref_show_incompatible", false);
     }
 
+    public static boolean isForceEnglish() {
+        return getSharedPreferences().getBoolean("pref_force_english", false);
+    }
+
     public static boolean isForceDarkTerminal() {
         return getSharedPreferences().getBoolean("pref_force_dark_terminal", false);
     }
@@ -137,22 +142,29 @@ public class MainApplication extends Application implements CompatActivity.Appli
 
     @StyleRes
     private int managerThemeResId = R.style.Theme_MagiskModuleManager;
-    private ContextThemeWrapper markwonThemeContext;
+    private Boolean nightModeOverride = null;
+    private CompatThemeWrapper markwonThemeContext;
     private Markwon markwon;
 
     public Markwon getMarkwon() {
         if (this.markwon != null)
             return this.markwon;
-        ContextThemeWrapper contextThemeWrapper = this.markwonThemeContext;
-        if (contextThemeWrapper == null)
+        CompatThemeWrapper contextThemeWrapper = this.markwonThemeContext;
+        if (contextThemeWrapper == null) {
             contextThemeWrapper = this.markwonThemeContext =
-                        new ContextThemeWrapper(this, this.managerThemeResId);
+                    new CompatThemeWrapper(this, this.managerThemeResId);
+            contextThemeWrapper.setForceEnglish(isForceEnglish());
+        }
         Markwon markwon = Markwon.builder(contextThemeWrapper).usePlugin(HtmlPlugin.create())
                 .usePlugin(SyntaxHighlightPlugin.create(
                         new Prism4j(new Prism4jGrammarLocator()), new Prism4jSwitchTheme()))
                 .usePlugin(ImagesPlugin.create().addSchemeHandler(
                         OkHttpNetworkSchemeHandler.create(Http.getHttpclientWithCache()))).build();
         return this.markwon = markwon;
+    }
+
+    public CompatThemeWrapper getMarkwonThemeContext() {
+        return markwonThemeContext;
     }
 
     private class Prism4jSwitchTheme implements Prism4jTheme {
@@ -180,10 +192,22 @@ public class MainApplication extends Application implements CompatActivity.Appli
         }
     }
 
+    @SuppressLint("NonConstantResourceId")
     public void setManagerThemeResId(@StyleRes int resId) {
         this.managerThemeResId = resId;
-        if (this.markwonThemeContext != null)
+        switch (this.managerThemeResId) {
+            case R.style.Theme_MagiskModuleManager:
+                this.nightModeOverride = null;
+            case R.style.Theme_MagiskModuleManager_Light:
+                this.nightModeOverride = Boolean.FALSE;
+            case R.style.Theme_MagiskModuleManager_Dark:
+                this.nightModeOverride = Boolean.TRUE;
+            default:
+        }
+        if (this.markwonThemeContext != null) {
+            this.markwonThemeContext.setNightModeOverride(this.nightModeOverride);
             this.markwonThemeContext.setTheme(resId);
+        }
         this.markwon = null;
     }
 
@@ -250,11 +274,15 @@ public class MainApplication extends Application implements CompatActivity.Appli
 
     @Override
     public void onCreateCompatActivity(CompatActivity compatActivity) {
+        compatActivity.setNightModeOverride(this.nightModeOverride);
+        compatActivity.setForceEnglish(isForceEnglish());
         compatActivity.setTheme(this.managerThemeResId);
     }
 
     @Override
     public void onRefreshUI(CompatActivity compatActivity) {
+        compatActivity.setNightModeOverride(this.nightModeOverride);
+        compatActivity.setForceEnglish(isForceEnglish());
         compatActivity.setThemeRecreate(this.managerThemeResId);
     }
 

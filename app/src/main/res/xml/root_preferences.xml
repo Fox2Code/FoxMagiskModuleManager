@@ -12,6 +12,12 @@
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
+            app:key="pref_force_english"
+            app:icon="@drawable/ic_baseline_language_24"
+            app:title="@string/force_english_pref" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
             app:key="pref_force_dark_terminal"
             app:icon="@drawable/ic_baseline_list_24"
             app:title="@string/force_dark_terminal_title" />
@@ -54,6 +60,10 @@
     </PreferenceCategory>
     <PreferenceCategory
         app:title="@string/pref_category_info">
+        <Preference
+            app:key="pref_update"
+            app:icon="@drawable/ic_baseline_system_update_24"
+            app:title="@string/app_update" />
         <Preference
             app:key="pref_source_code"
             app:icon="@drawable/ic_github"

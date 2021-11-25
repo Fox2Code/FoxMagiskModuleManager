@@ -36,7 +36,8 @@ public enum ActionButtonType {
         @Override
         public void update(ImageButton button, ModuleHolder moduleHolder) {
             int icon = moduleHolder.hasUpdate() ?
-                    R.drawable.ic_baseline_update_24 : R.drawable.ic_baseline_download_24;
+                    R.drawable.ic_baseline_update_24 :
+                    R.drawable.ic_baseline_system_update_24;
             button.setImageResource(icon);
         }
 

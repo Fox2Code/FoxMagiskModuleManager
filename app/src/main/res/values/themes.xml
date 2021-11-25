@@ -79,6 +79,4 @@
 
     <style name="Theme.MagiskModuleManager"
         parent="Theme.MagiskModuleManager.Light" />
-    <style name="Theme.MagiskModuleManager.Transparent"
-        parent="Theme.MagiskModuleManager.Transparent.Light" />
 </resources>

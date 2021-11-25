@@ -24,7 +24,7 @@ interface NotificationTypeCst {
 }
 
 public enum NotificationType implements NotificationTypeCst {
-    SHOWCASE_MODE(R.string.showcase_mode, R.drawable.ic_baseline_monitor_24,
+    SHOWCASE_MODE(R.string.showcase_mode, R.drawable.ic_baseline_lock_24,
             R.attr.colorPrimary, R.attr.colorOnPrimary) {
         @Override
         public boolean shouldRemove() {
@@ -49,6 +49,16 @@ public enum NotificationType implements NotificationTypeCst {
         @Override
         public boolean shouldRemove() {
             return RepoManager.getINSTANCE().hasConnectivity();
+        }
+    },
+    UPDATE_AVAILABLE(R.string.app_update_available, R.drawable.ic_baseline_system_update_24,
+            R.attr.colorPrimary, R.attr.colorOnPrimary, v -> {
+        IntentHelper.openUrl(v.getContext(),
+                "https://github.com/Fox2Code/FoxMagiskModuleManager/releases");
+    }, false) {
+        @Override
+        public boolean shouldRemove() {
+            return !AppUpdateManager.getAppUpdateManager().peekShouldUpdate();
         }
     },
     INSTALL_FROM_STORAGE(R.string.install_from_storage, R.drawable.ic_baseline_storage_24,

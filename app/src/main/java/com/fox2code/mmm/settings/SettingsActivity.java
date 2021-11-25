@@ -9,12 +9,15 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.SwitchPreference;
 
+import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.compat.CompatActivity;
+import com.fox2code.mmm.compat.CompatThemeWrapper;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.repo.RepoData;
 import com.fox2code.mmm.repo.RepoManager;
@@ -31,8 +34,8 @@ public class SettingsActivity extends CompatActivity {
         super.onCreate(savedInstanceState);
         this.setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.settings_activity);
+        setTitle(R.string.app_name);
         if (savedInstanceState == null) {
-            setTitle(R.string.app_name);
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.settings, new SettingsFragment())
@@ -73,6 +76,16 @@ public class SettingsActivity extends CompatActivity {
                 CompatActivity.getCompatActivity(this).setThemeRecreate(themeResId);
                 return true;
             });
+            Preference forceEnglish = findPreference("pref_force_english");
+            forceEnglish.setOnPreferenceChangeListener((preference, newValue) -> {
+                CompatThemeWrapper compatThemeWrapper =
+                        MainApplication.getINSTANCE().getMarkwonThemeContext();
+                if (compatThemeWrapper != null) {
+                    compatThemeWrapper.setForceEnglish(
+                            Boolean.parseBoolean(String.valueOf(newValue)));
+                }
+                return true;
+            });
             if ("dark".equals(themePreference.getValue())) {
                 findPreference("pref_force_dark_terminal").setEnabled(false);
             }
@@ -88,6 +101,14 @@ public class SettingsActivity extends CompatActivity {
             final LibsBuilder libsBuilder = new LibsBuilder()
                     .withFields(R.string.class.getFields()).withShowLoadingProgress(false)
                     .withLicenseShown(true).withAboutMinimalDesign(false);
+            Preference update = findPreference("pref_update");
+            update.setVisible(AppUpdateManager.getAppUpdateManager().peekHasUpdate());
+            update.setOnPreferenceClickListener(p -> {
+                devModeStep = 0;
+                IntentHelper.openUrl(p.getContext(),
+                        "https://github.com/Fox2Code/FoxMagiskModuleManager/releases");
+                return true;
+            });
             findPreference("pref_source_code").setOnPreferenceClickListener(p -> {
                 if (devModeStep == 2 && (BuildConfig.DEBUG || !MainApplication.isDeveloper())) {
                     devModeStep = 0;
@@ -97,7 +118,8 @@ public class SettingsActivity extends CompatActivity {
                             R.string.dev_mode_enabled, Toast.LENGTH_SHORT).show();
                     return true;
                 }
-                IntentHelper.openUrl(p.getContext(), "https://github.com/Fox2Code/FoxMagiskModuleManager");
+                IntentHelper.openUrl(p.getContext(),
+                        "https://github.com/Fox2Code/FoxMagiskModuleManager");
                 return true;
             });
             findPreference("pref_show_licenses").setOnPreferenceClickListener(p -> {

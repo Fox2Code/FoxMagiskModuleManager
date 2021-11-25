@@ -83,6 +83,10 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
         return timeStamp <= 0 ? "" :
                 MainApplication.formatTime(timeStamp);
     }
+    public String getRepoName() {
+        if (this.repoModule == null) return "";
+        return this.repoModule.repoName;
+    }
 
     public boolean hasFlag(int flag) {
         return this.moduleInfo != null && this.moduleInfo.hasFlag(flag);

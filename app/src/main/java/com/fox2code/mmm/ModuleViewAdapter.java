@@ -15,11 +15,13 @@ import android.widget.TextView;
 import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
+import com.fox2code.mmm.repo.RepoModule;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
@@ -142,6 +144,11 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
             this.initState = false;
         }
 
+        @NonNull
+        public final String getString(@StringRes int resId) {
+            return this.itemView.getContext().getString(resId);
+        }
+
         @SuppressLint("SetTextI18n")
         public boolean update(ModuleHolder moduleHolder) {
             this.initState = true;
@@ -170,16 +177,21 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
 
                 ModuleInfo moduleInfo = moduleHolder.getMainModuleInfo();
                 this.titleText.setText(moduleInfo.name);
-                this.creditText.setText(moduleInfo.version + " by " + moduleInfo.author);
+                this.creditText.setText(moduleInfo.version + " " +
+                        this.getString(R.string.module_by) + " " + moduleInfo.author);
                 this.descriptionText.setText(moduleInfo.description);
                 String updateText = moduleHolder.getUpdateTimeText();
                 if (!updateText.isEmpty()) {
                     this.updateText.setVisibility(View.VISIBLE);
-                    this.updateText.setText(this.updateText.getContext()
-                            .getString(R.string.last_updated) + " " + updateText);
+                    this.updateText.setText(
+                            this.getString(R.string.module_last_update) + " " + updateText + "\n" +
+                            this.getString(R.string.module_repo) + " " + moduleHolder.getRepoName());
                 } else if (moduleHolder.moduleId.equals("hosts")) {
                     this.updateText.setVisibility(View.VISIBLE);
                     this.updateText.setText(R.string.magisk_builtin_module);
+                } else if (moduleHolder.moduleId.equals("substratum")) {
+                    this.updateText.setVisibility(View.VISIBLE);
+                    this.updateText.setText(R.string.substratum_builtin_module);
                 } else {
                     this.updateText.setVisibility(View.GONE);
                 }

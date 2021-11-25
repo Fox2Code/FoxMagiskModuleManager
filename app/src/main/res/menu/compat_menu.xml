@@ -2,6 +2,7 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/compat_menu_item"
+        android:visible="false"
         android:enabled="false"
         android:icon="@null"
         android:title=""

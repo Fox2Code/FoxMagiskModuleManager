@@ -5,6 +5,7 @@ import com.fox2code.mmm.manager.ModuleInfo;
 public class RepoModule {
     public final ModuleInfo moduleInfo;
     public final String id;
+    public String repoName;
     public long lastUpdated;
     public String propUrl;
     public String zipUrl;

@@ -21,10 +21,11 @@ import androidx.fragment.app.Fragment;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.R;
 
+import java.util.Locale;
 import java.util.Objects;
 
 /**
- * I will probably outsource this to a separate library
+ * I will probably outsource this to a separate library later
  */
 public class CompatActivity extends AppCompatActivity {
     public static final int INTENT_ACTIVITY_REQUEST_CODE = 0x01000000;
@@ -38,6 +39,7 @@ public class CompatActivity extends AppCompatActivity {
         }
     };
 
+    private final CompatConfigHelper compatConfigHelper = new CompatConfigHelper(this);
     private CompatActivity.OnActivityResultCallback onActivityResultCallback;
     private CompatActivity.OnBackPressedCallback onBackPressedCallback;
     private MenuItem.OnMenuItemClickListener menuClickListener;
@@ -45,7 +47,10 @@ public class CompatActivity extends AppCompatActivity {
     private boolean onCreateCalled = false;
     private boolean isRefreshUi = false;
     private int drawableResId;
-    MenuItem menuItem;
+    private MenuItem menuItem;
+    // CompatConfigHelper
+    private boolean forceEnglish;
+    private Boolean nightModeOverride;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,6 +60,8 @@ public class CompatActivity extends AppCompatActivity {
         }
         super.onCreate(savedInstanceState);
         this.onCreateCalled = true;
+        this.checkResourcesOverrides(
+                this.forceEnglish, this.nightModeOverride);
     }
 
     @Override
@@ -88,6 +95,8 @@ public class CompatActivity extends AppCompatActivity {
             } finally {
                 this.isRefreshUi = false;
             }
+            this.checkResourcesOverrides(
+                    this.forceEnglish, this.nightModeOverride);
         }
     }
 
@@ -128,6 +137,7 @@ public class CompatActivity extends AppCompatActivity {
             this.menuItem.setOnMenuItemClickListener(this.menuClickListener);
             this.menuItem.setIcon(this.drawableResId);
             this.menuItem.setEnabled(true);
+            this.menuItem.setVisible(true);
         }
     }
 
@@ -138,6 +148,7 @@ public class CompatActivity extends AppCompatActivity {
             this.menuItem.setOnMenuItemClickListener(null);
             this.menuItem.setIcon(null);
             this.menuItem.setEnabled(false);
+            this.menuItem.setVisible(false);
         }
     }
 
@@ -161,12 +172,16 @@ public class CompatActivity extends AppCompatActivity {
 
     @Override
     protected void onApplyThemeResource(Resources.Theme theme, int resid, boolean first) {
-        super.onApplyThemeResource(theme, resid, first);
         if (resid != 0 && this.setThemeDynamic == resid) {
+            super.onApplyThemeResource(theme, resid, first);
             Activity parent = this.getParent();
             (parent == null ? this : parent).recreate();
             super.overridePendingTransition(
                     android.R.anim.fade_in, android.R.anim.fade_out);
+        } else {
+            this.compatConfigHelper.checkResourcesOverrides(theme,
+                    this.forceEnglish, this.nightModeOverride);
+            super.onApplyThemeResource(theme, resid, first);
         }
     }
 
@@ -199,6 +214,7 @@ public class CompatActivity extends AppCompatActivity {
             this.menuItem.setOnMenuItemClickListener(this.menuClickListener);
             this.menuItem.setIcon(this.drawableResId);
             this.menuItem.setEnabled(true);
+            this.menuItem.setVisible(true);
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -222,6 +238,27 @@ public class CompatActivity extends AppCompatActivity {
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    public void setForceEnglish(boolean forceEnglish) {
+        if (this.forceEnglish == forceEnglish) return;
+        this.forceEnglish = forceEnglish;
+        this.checkResourcesOverrides(forceEnglish, this.nightModeOverride);
+    }
+
+    public void setNightModeOverride(Boolean nightModeOverride) {
+        if (this.nightModeOverride == nightModeOverride) return;
+        this.nightModeOverride = nightModeOverride;
+        this.checkResourcesOverrides(this.forceEnglish, nightModeOverride);
+    }
+
+    private void checkResourcesOverrides(boolean forceEnglish,Boolean nightModeOverride) {
+        if (this.isRefreshUi || !this.onCreateCalled) return; // Wait before reload
+        this.compatConfigHelper.checkResourcesOverrides(forceEnglish, nightModeOverride);
+    }
+
+    public Locale getUserLocale() {
+        return this.compatConfigHelper.getUserLocale();
     }
 
     public static CompatActivity getCompatActivity(View view) {
