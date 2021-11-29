@@ -1,0 +1,7 @@
+<resources>
+    <string-array name="theme_values_names">
+        <item>システムの設定を使用</item>
+        <item>ダーク</item>
+        <item>ライト</item>
+    </string-array>
+</resources>
