@@ -11,7 +11,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.net.Proxy;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -22,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.Cache;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
+import okhttp3.Dns;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -31,30 +34,44 @@ import okhttp3.dnsoverhttps.DnsOverHttps;
 
 public class Http {
     private static final OkHttpClient httpClient;
-    private static final OkHttpClient httpClientCachable;
+    private static final OkHttpClient httpClientWithCache;
 
     static {
         OkHttpClient.Builder httpclientBuilder = new OkHttpClient.Builder();
-        httpclientBuilder.connectTimeout(11, TimeUnit.SECONDS);
+        // Default is 10, extend it a bit for slow mobile connections.
+        httpclientBuilder.connectTimeout(15, TimeUnit.SECONDS);
+        httpclientBuilder.writeTimeout(15, TimeUnit.SECONDS);
+        httpclientBuilder.readTimeout(15, TimeUnit.SECONDS);
+        httpclientBuilder.proxy(Proxy.NO_PROXY); // Do not use system proxy
+        Dns dns = Dns.SYSTEM;
         try {
+            InetAddress[] cloudflareBootstrap = new InetAddress[] {
+                    InetAddress.getByName("162.159.36.1"),
+                    InetAddress.getByName("162.159.46.1"),
+                    InetAddress.getByName("1.1.1.1"),
+                    InetAddress.getByName("1.0.0.1"),
+                    InetAddress.getByName("162.159.132.53"),
+                    InetAddress.getByName("2606:4700:4700::1111"),
+                    InetAddress.getByName("2606:4700:4700::1001"),
+                    InetAddress.getByName("2606:4700:4700::0064"),
+                    InetAddress.getByName("2606:4700:4700::6400")
+            };
+            dns = s -> {
+                if ("cloudflare-dns.com".equals(s)) {
+                    return Arrays.asList(cloudflareBootstrap);
+                }
+                return Dns.SYSTEM.lookup(s);
+            };
+            httpclientBuilder.dns(dns);
             httpclientBuilder.cookieJar(new CDNCookieJar());
-            httpclientBuilder.dns(new DnsOverHttps.Builder().client(httpclientBuilder.build()).url(
+            dns = new DnsOverHttps.Builder().client(httpclientBuilder.build()).url(
                     Objects.requireNonNull(HttpUrl.parse("https://cloudflare-dns.com/dns-query")))
-                    .bootstrapDnsHosts(
-                            InetAddress.getByName("162.159.36.1"),
-                            InetAddress.getByName("162.159.46.1"),
-                            InetAddress.getByName("1.1.1.1"),
-                            InetAddress.getByName("1.0.0.1"),
-                            InetAddress.getByName("162.159.132.53"),
-                            InetAddress.getByName("2606:4700:4700::1111"),
-                            InetAddress.getByName("2606:4700:4700::1001"),
-                            InetAddress.getByName("2606:4700:4700::0064"),
-                            InetAddress.getByName("2606:4700:4700::6400")
-                    ).resolvePrivateAddresses(true).build());
+                    .bootstrapDnsHosts(cloudflareBootstrap).resolvePrivateAddresses(true).build();
         } catch (UnknownHostException|RuntimeException e) {
             Log.e("Http", "Failed to init DoH", e);
         }
         httpclientBuilder.cookieJar(CookieJar.NO_COOKIES);
+        httpclientBuilder.dns(dns);
         httpClient = httpclientBuilder.build();
         MainApplication mainApplication = MainApplication.getINSTANCE();
         if (mainApplication != null) {
@@ -62,9 +79,9 @@ public class Http {
                     new File(mainApplication.getCacheDir(), "http_cache"),
                     2L * 1024L * 1024L)); // 2Mib of cache
             httpclientBuilder.cookieJar(new CDNCookieJar());
-            httpClientCachable = httpclientBuilder.build();
+            httpClientWithCache = httpclientBuilder.build();
         } else {
-            httpClientCachable = httpClient;
+            httpClientWithCache = httpClient;
         }
     }
 
@@ -73,7 +90,7 @@ public class Http {
     }
 
     public static OkHttpClient getHttpclientWithCache() {
-        return httpClientCachable;
+        return httpClientWithCache;
     }
 
     private static Request.Builder makeRequestBuilder() {
@@ -82,7 +99,7 @@ public class Http {
     }
 
     public static byte[] doHttpGet(String url,boolean allowCache) throws IOException {
-        Response response = (allowCache ? httpClientCachable : httpClient).newCall(
+        Response response = (allowCache ? httpClientWithCache : httpClient).newCall(
                 makeRequestBuilder().url(url).get().build()
         ).execute();
         // 200 == success, 304 == cache valid

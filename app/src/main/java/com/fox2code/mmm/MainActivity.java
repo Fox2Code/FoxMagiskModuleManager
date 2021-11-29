@@ -14,6 +14,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.installer.InstallerInitializer;
@@ -32,7 +33,6 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
     private ModuleViewAdapter moduleViewAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView moduleList;
-    private LinearLayout searchContainer;
     private CardView searchCard;
     private SearchView searchView;
     private boolean initMode;
@@ -55,7 +55,6 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         this.progressIndicator = findViewById(R.id.progress_bar);
         this.swipeRefreshLayout = findViewById(R.id.swipe_refresh);
         this.moduleList = findViewById(R.id.module_list);
-        this.searchContainer = findViewById(R.id.search_container);
         this.searchCard = findViewById(R.id.search_card);
         this.searchView = findViewById(R.id.search_bar);
         this.moduleViewAdapter = new ModuleViewAdapter();
@@ -134,7 +133,6 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
     }
 
     private void cardIconifyUpdate() {
-        this.moduleViewListBuilder.setFooterPx(this.searchContainer.getHeight());
         boolean iconified = this.searchView.isIconified();
         int backgroundAttr = iconified ?
                 R.attr.colorSecondary : R.attr.colorPrimarySurface;
@@ -201,7 +199,6 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         }
         this.progressIndicator.setVisibility(View.VISIBLE);
         this.progressIndicator.setProgressCompat(0, false);
-        this.moduleViewListBuilder.setFooterPx(this.searchContainer.getHeight());
         // this.swipeRefreshLayout.setRefreshing(true); ??
         new Thread(() -> {
             RepoManager.getINSTANCE().update(value -> runOnUiThread(() ->

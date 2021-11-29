@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 
 import com.fox2code.mmm.installer.InstallerInitializer;
@@ -54,7 +55,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
     }
 
     public boolean isModuleHolder() {
-        return this.notificationType == null && this.separator == null;
+        return this.notificationType == null && this.separator == null && this.footerPx == 0;
     }
 
     public ModuleInfo getMainModuleInfo() {
@@ -124,7 +125,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
 
     public boolean shouldRemove() {
         return this.notificationType != null ? this.notificationType.shouldRemove() :
-                this.moduleInfo == null && (this.repoModule == null);
+                this.footerPx == 0 && this.moduleInfo == null && this.repoModule == null;
     }
 
     public void getButtons(Context context, List<ActionButtonType> buttonTypeList, boolean showcaseMode) {
@@ -230,6 +231,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
         }
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "ModuleHolder{" +

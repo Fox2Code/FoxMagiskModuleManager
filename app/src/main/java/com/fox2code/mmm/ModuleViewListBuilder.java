@@ -29,7 +29,6 @@ public class ModuleViewListBuilder {
     private final Activity activity;
     @NonNull
     private String query = "";
-    private int footerPx;
     private boolean noUpdate;
 
     public ModuleViewListBuilder(Activity activity) {
@@ -142,9 +141,6 @@ public class ModuleViewListBuilder {
         this.activity.runOnUiThread(() -> {
             final EnumSet<NotificationType> oldNotifications =
                     EnumSet.noneOf(NotificationType.class);
-            if (this.footerPx != 0) {
-                moduleHolders.add(new ModuleHolder(this.footerPx));
-            }
             boolean isTop = !moduleList.canScrollVertically(-1);
             boolean isBottom = !isTop && !moduleList.canScrollVertically(1);
             int oldNotificationsLen = 0;
@@ -192,10 +188,6 @@ public class ModuleViewListBuilder {
             if (isTop) moduleList.scrollToPosition(0);
             if (isBottom) moduleList.scrollToPosition(newLen);
         });
-    }
-
-    public void setFooterPx(int footerPx) {
-        this.footerPx = Math.max(footerPx, 0);
     }
 
     private boolean matchFilter(ModuleHolder moduleHolder) {
