@@ -16,13 +16,16 @@
 
     <application
         android:name=".MainApplication"
-        android:allowBackup="false"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
+        android:supportsRtl="@bool/lang_support_rtl"
         android:testOnly="false"
-        android:theme="@style/Theme.MagiskModuleManager">
+        android:theme="@style/Theme.MagiskModuleManager"
+        android:fullBackupContent="@xml/full_backup_content"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        tools:targetApi="s">
         <receiver android:name="com.fox2code.mmm.manager.ModuleBootReceive"
             android:exported="true">
             <intent-filter>

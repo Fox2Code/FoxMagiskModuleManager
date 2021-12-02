@@ -55,6 +55,15 @@ It allow module developers to have a more customizable install experience
 
 For more information please check the [developer documentation](DEVELOPERS.md)
 
+## For translators
+See [`app/src/main/res/values/strings.xml`](https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/app/src/main/res/values/strings.xml)
+and [`app/src/main/res/values/arrays.xml`](https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/app/src/main/res/values/arrays.xml)
+
+If your language is right to left you should make a copy of [`app/src/main/res/values/bools.xml`](https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/app/src/main/res/values/bools.xml)
+and set `lang_support_rtl` to `true`.
+
+Translators are not expected to have any previous coding experience.
+
 ## Screenshots
 
 Main activity:  
