@@ -9,10 +9,13 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.SystemClock;
 import android.text.SpannableStringBuilder;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StyleRes;
-import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.emoji2.text.DefaultEmojiCompatConfig;
+import androidx.emoji2.text.EmojiCompat;
+import androidx.emoji2.text.FontRequestEmojiCompatConfig;
 
 import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.compat.CompatThemeWrapper;
@@ -270,6 +273,20 @@ public class MainApplication extends Application implements CompatActivity.Appli
         this.setManagerThemeResId(themeResId);
         // Update SSL Ciphers if update is possible
         GMSProviderInstaller.installIfNeeded(this);
+        // Update emoji config
+        FontRequestEmojiCompatConfig fontRequestEmojiCompatConfig =
+                DefaultEmojiCompatConfig.create(this);
+        if (fontRequestEmojiCompatConfig != null) {
+            fontRequestEmojiCompatConfig.setReplaceAll(true);
+            fontRequestEmojiCompatConfig
+                    .setMetadataLoadStrategy(EmojiCompat.LOAD_STRATEGY_MANUAL);
+            EmojiCompat emojiCompat = EmojiCompat.init(fontRequestEmojiCompatConfig);
+            new Thread(() -> {
+                Log.d("MainApplication", "Loading emoji compat...");
+                emojiCompat.load();
+                Log.d("MainApplication", "Emoji compat loaded!");
+            }, "Emoji compat init.").start();
+        }
     }
 
     @Override

@@ -30,6 +30,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import okhttp3.brotli.BrotliInterceptor;
 import okhttp3.dnsoverhttps.DnsOverHttps;
 
 public class Http {
@@ -42,6 +43,7 @@ public class Http {
         httpclientBuilder.connectTimeout(15, TimeUnit.SECONDS);
         httpclientBuilder.writeTimeout(15, TimeUnit.SECONDS);
         httpclientBuilder.readTimeout(15, TimeUnit.SECONDS);
+        httpclientBuilder.addInterceptor(BrotliInterceptor.INSTANCE);
         httpclientBuilder.proxy(Proxy.NO_PROXY); // Do not use system proxy
         Dns dns = Dns.SYSTEM;
         try {
@@ -94,8 +96,7 @@ public class Http {
     }
 
     private static Request.Builder makeRequestBuilder() {
-        return new Request.Builder().header("Connection", "keep-alive")
-                .header("Upgrade-Insecure-Requests", "1");
+        return new Request.Builder().header("Upgrade-Insecure-Requests", "1");
     }
 
     public static byte[] doHttpGet(String url,boolean allowCache) throws IOException {
