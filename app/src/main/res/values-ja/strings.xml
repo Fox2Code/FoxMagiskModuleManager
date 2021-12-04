@@ -1,0 +1,43 @@
+<resources>
+    <string name="fail_root_magisk">RootまたはMagiskへのアクセスに失敗しました</string>
+    <string name="loading">読み込み中…</string>
+    <string name="updatable">アップデートが利用可能</string>
+    <string name="installed">インストール済</string>
+    <string name="online_repo">オンラインのリポジトリ</string>
+    <string name="showcase_mode">アプリは現在ショーケースモードです</string>
+    <string name="failed_download">ファイルのダウンロードに失敗しました</string>
+    <string name="fail_internet">インターネットに接続できませんでした</string>
+    <string name="app_update_available">アプリのアップデートが利用可能</string>
+    <string name="app_update">アップデート</string>
+
+    <!-- Module section translation -->
+    <string name="module_last_update">最終更新:</string>
+    <string name="module_repo">リポジトリ:</string>
+    <string name="module_by">作者:</string>
+
+    <!-- Preference Titles -->
+    <!-- Note: Lockdown mode used to be called showcase mode -->
+    <string name="showcase_mode_pref">ショーケースモード</string>
+    <string name="showcase_mode_desc">ショーケースモードは Manager がモジュールに対して操作を行うことを阻止します</string>
+    <string name="pref_category_settings">アプリ設定</string>
+    <string name="pref_category_info">アプリ情報</string>
+    <string name="show_licenses">ライセンスを表示</string>
+    <string name="licenses">ライセンス</string>
+    <string name="show_incompatible_pref">互換性のないモジュールも表示する</string>
+    <string name="show_incompatible_desc">メタデータを基に、この端末に互換性がないとされたモジュールも表示します</string>
+    <string name="pref_category_repos">リポジトリ</string>
+    <string name="repo_main_desc">Magiskモジュールをホスティングしているリポジトリです</string>
+    <string name="repo_main_alt">いくらかの制約がある Magisk-Modules-Repo の代替です</string>
+    <string name="master_delete">モジュールのファイルを削除しますか？</string>
+    <string name="master_delete_no">ファイルを保持する</string>
+    <string name="master_delete_yes">ファイルを削除する</string>
+    <string name="master_delete_fail">モジュールのファイル削除に失敗しました</string>
+    <string name="theme_pref">テーマ</string>
+    <string name="module_id_prefix">モジュールID: </string>
+    <string name="install_from_storage">ストレージからモジュールをインストール</string>
+    <string name="invalid_format">選択されたモジュールは不正なフォーマットです</string>
+    <string name="local_install_title">ローカルインストール</string>
+    <string name="source_code">ソースコード</string>
+    <string name="dev_mode_enabled">開発者モードが有効です</string>
+    <string name="force_english_pref">Force English language</string>
+</resources>
