@@ -7,7 +7,7 @@ buildscript {
     }
     project.ext.latestAboutLibsRelease = "8.9.4"
     dependencies {
-        classpath "com.android.tools.build:gradle:7.0.3"
+        classpath 'com.android.tools.build:gradle:7.0.4'
         classpath "com.mikepenz.aboutlibraries.plugin:aboutlibraries-plugin:${latestAboutLibsRelease}"
 
         // NOTE: Do not place your application dependencies here; they belong
