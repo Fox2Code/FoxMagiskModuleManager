@@ -56,4 +56,9 @@
     </string>
     <string name="dev_mode_enabled">Developer mode enabled</string>
     <string name="force_english_pref">Force English language</string>
+    <string name="disable_low_quality_module_filter_pref">Disable low quality module filter</string>
+    <string name="disable_low_quality_module_filter_desc">
+        Some modules do not declare their metadata properly,causing visual glitches,
+        and/or indicating poor module quality, disable at your own risk!
+    </string>
 </resources>

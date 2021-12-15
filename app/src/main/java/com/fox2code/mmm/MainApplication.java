@@ -101,6 +101,11 @@ public class MainApplication extends Application implements CompatActivity.Appli
                 getSharedPreferences().getBoolean("developer", false);
     }
 
+    public static boolean isDisableLowQualityModuleFilter() {
+        return getSharedPreferences().getBoolean("pref_disable_low_quality_module_filter",
+                false) && isDeveloper();
+    }
+
     public static boolean isUsingMagiskCommand() {
         return InstallerInitializer.peekMagiskVersion() >= Constants.MAGISK_VER_CODE_INSTALL_COMMAND
                 && getSharedPreferences().getBoolean("pref_use_magisk_install_command", false)

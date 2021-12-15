@@ -18,7 +18,7 @@ public class ModuleInfo {
     public final String id;
     public String name;
     public String version;
-    public int versionCode;
+    public long versionCode;
     public String author;
     public String description;
     // Community meta

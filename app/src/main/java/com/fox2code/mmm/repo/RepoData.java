@@ -1,6 +1,7 @@
 package com.fox2code.mmm.repo;
 
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.utils.Files;
@@ -66,6 +67,8 @@ public class RepoData {
             for (int i = 0; i < len; i++) {
                 JSONObject module = array.getJSONObject(i);
                 String moduleId = module.getString("id");
+                // Deny remote modules ids shorter than 3 chars long or that start with a digit
+                if (moduleId.length() < 3 || Character.isDigit(moduleId.charAt(0))) continue;
                 long moduleLastUpdate = module.getLong("last_update");
                 String moduleNotesUrl = module.getString("notes_url");
                 String modulePropsUrl = module.getString("prop_url");
@@ -108,8 +111,12 @@ public class RepoData {
         File file = new File(this.cacheRoot, repoModule.id + ".prop");
         if (file.exists()) {
             try {
-                PropUtils.readProperties(repoModule.moduleInfo, file.getAbsolutePath());
-                repoModule.moduleInfo.flags &= ~ModuleInfo.FLAG_METADATA_INVALID;
+                ModuleInfo moduleInfo = repoModule.moduleInfo;
+                PropUtils.readProperties(moduleInfo, file.getAbsolutePath());
+                moduleInfo.flags &= ~ModuleInfo.FLAG_METADATA_INVALID;
+                if (moduleInfo.version == null) {
+                    moduleInfo.version = "v" + moduleInfo.versionCode;
+                }
                 return true;
             } catch (Exception ignored) {
                 file.delete();

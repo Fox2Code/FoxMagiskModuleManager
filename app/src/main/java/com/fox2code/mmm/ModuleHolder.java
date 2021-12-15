@@ -11,6 +11,7 @@ import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.repo.RepoModule;
 import com.fox2code.mmm.utils.IntentHelper;
+import com.fox2code.mmm.utils.PropUtils;
 
 import java.util.Comparator;
 import java.util.List;
@@ -125,7 +126,9 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
 
     public boolean shouldRemove() {
         return this.notificationType != null ? this.notificationType.shouldRemove() :
-                this.footerPx == 0 && this.moduleInfo == null && this.repoModule == null;
+                this.footerPx == 0 && this.moduleInfo == null && (this.repoModule == null ||
+                        (PropUtils.isLowQualityModule(this.repoModule.moduleInfo) &&
+                                !MainApplication.isDisableLowQualityModuleFilter()));
     }
 
     public void getButtons(Context context, List<ActionButtonType> buttonTypeList, boolean showcaseMode) {

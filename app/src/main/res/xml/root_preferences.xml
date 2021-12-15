@@ -39,6 +39,13 @@
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
+            app:key="pref_disable_low_quality_module_filter"
+            app:icon="@drawable/ic_baseline_warning_24"
+            app:title="@string/disable_low_quality_module_filter_pref"
+            app:summary="@string/disable_low_quality_module_filter_desc"/>
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
             app:key="pref_use_magisk_install_command"
             app:icon="@drawable/ic_baseline_numbers_24"
             app:title="@string/use_magisk_install_command_pref"

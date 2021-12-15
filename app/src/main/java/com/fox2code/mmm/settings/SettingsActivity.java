@@ -89,6 +89,9 @@ public class SettingsActivity extends CompatActivity {
             if ("dark".equals(themePreference.getValue())) {
                 findPreference("pref_force_dark_terminal").setEnabled(false);
             }
+            if (!MainApplication.isDeveloper()) {
+                findPreference("pref_disable_low_quality_module_filter").setVisible(false);
+            }
             if (InstallerInitializer.peekMagiskVersion() < Constants.MAGISK_VER_CODE_INSTALL_COMMAND
                     || !MainApplication.isDeveloper()) {
                 findPreference("pref_use_magisk_install_command").setVisible(false);

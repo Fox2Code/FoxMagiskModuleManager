@@ -1,6 +1,7 @@
 package com.fox2code.mmm.utils;
 
 import android.os.Build;
+import android.text.TextUtils;
 
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.topjohnwu.superuser.io.SuFileInputStream;
@@ -81,7 +82,7 @@ public class PropUtils {
                         break;
                     case "versionCode":
                         readVersionCode = true;
-                        moduleInfo.versionCode = Integer.parseInt(value);
+                        moduleInfo.versionCode = Long.parseLong(value);
                         break;
                     case "author":
                         moduleInfo.author = value;
@@ -166,5 +167,16 @@ public class PropUtils {
         if (moduleInfo.config == null) {
             moduleInfo.config = moduleConfigsFallbacks.get(moduleInfo.id);
         }
+    }
+
+    // Some module are really so low quality that it has become very annoying.
+    public static boolean isLowQualityModule(ModuleInfo moduleInfo) {
+        final String description;
+        return moduleInfo == null || moduleInfo.hasFlag(ModuleInfo.FLAG_METADATA_INVALID)
+                || moduleInfo.name.length() < 3 || moduleInfo.versionCode < 0
+                || moduleInfo.author == null || !TextUtils.isGraphic(moduleInfo.author)
+                || (description = moduleInfo.description) == null || !TextUtils.isGraphic(description)
+                || description.toLowerCase(Locale.ROOT).equals(moduleInfo.name.toLowerCase(Locale.ROOT))
+                || description.length() < Math.min(Math.max(moduleInfo.name.length() + 4, 16), 24);
     }
 }

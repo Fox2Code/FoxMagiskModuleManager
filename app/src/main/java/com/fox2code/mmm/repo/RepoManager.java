@@ -9,6 +9,7 @@ import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.utils.Files;
 import com.fox2code.mmm.utils.Hashes;
 import com.fox2code.mmm.utils.Http;
+import com.fox2code.mmm.utils.PropUtils;
 
 import java.io.File;
 import java.util.HashMap;
@@ -147,6 +148,7 @@ public final class RepoManager {
             updateListener.update(STEP1 / repoDatas.length * (i + 1));
         }
         int updatedModules = 0;
+        boolean allowLowQualityModules = MainApplication.isDisableLowQualityModuleFilter();
         for (int i = 0; i < repoUpdaters.length; i++) {
             List<RepoModule> repoModules = repoUpdaters[i].toUpdate();
             RepoData repoData = repoDatas[i];
@@ -154,8 +156,9 @@ public final class RepoManager {
                 try {
                     Files.write(new File(repoData.cacheRoot, repoModule.id + ".prop"),
                             Http.doHttpGet(repoModule.propUrl, false));
-                    if (repoDatas[i].tryLoadMetadata(repoModule)) {
-                        // Note: registeredRepoModule may not null if registered by multiple repos
+                    if (repoDatas[i].tryLoadMetadata(repoModule) && (allowLowQualityModules ||
+                            !PropUtils.isLowQualityModule(repoModule.moduleInfo))) {
+                        // Note: registeredRepoModule may not be null if registered by multiple repos
                         RepoModule registeredRepoModule = this.modules.get(repoModule.id);
                         if (registeredRepoModule == null) {
                             this.modules.put(repoModule.id, repoModule);
