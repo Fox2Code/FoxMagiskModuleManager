@@ -64,6 +64,12 @@ public class MainApplication extends Application implements CompatActivity.Appli
         secret = new Random().nextInt();
     }
 
+    public MainApplication() {
+        if (INSTANCE != null)
+            throw new IllegalStateException("Duplicate application instance!");
+        INSTANCE = this;
+    }
+
     public static Shell build(String... command) {
         return shellBuilder.build(command);
     }
@@ -167,7 +173,7 @@ public class MainApplication extends Application implements CompatActivity.Appli
                 .usePlugin(SyntaxHighlightPlugin.create(
                         new Prism4j(new Prism4jGrammarLocator()), new Prism4jSwitchTheme()))
                 .usePlugin(ImagesPlugin.create().addSchemeHandler(
-                        OkHttpNetworkSchemeHandler.create(Http.getHttpclientWithCache()))).build();
+                        OkHttpNetworkSchemeHandler.create(Http.getHttpClientWithCache()))).build();
         return this.markwon = markwon;
     }
 
@@ -243,7 +249,6 @@ public class MainApplication extends Application implements CompatActivity.Appli
 
     @Override
     public void onCreate() {
-        INSTANCE = this;
         super.onCreate();
         SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
         // We are only one process so it's ok to do this

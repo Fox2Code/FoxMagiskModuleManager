@@ -1,5 +1,7 @@
 package com.fox2code.mmm.utils;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -13,9 +15,11 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.Proxy;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -34,6 +38,7 @@ import okhttp3.brotli.BrotliInterceptor;
 import okhttp3.dnsoverhttps.DnsOverHttps;
 
 public class Http {
+    private static final String TAG = "Http";
     private static final OkHttpClient httpClient;
     private static final OkHttpClient httpClientWithCache;
 
@@ -70,28 +75,34 @@ public class Http {
                     Objects.requireNonNull(HttpUrl.parse("https://cloudflare-dns.com/dns-query")))
                     .bootstrapDnsHosts(cloudflareBootstrap).resolvePrivateAddresses(true).build();
         } catch (UnknownHostException|RuntimeException e) {
-            Log.e("Http", "Failed to init DoH", e);
+            Log.e(TAG, "Failed to init DoH", e);
         }
         httpclientBuilder.cookieJar(CookieJar.NO_COOKIES);
-        httpclientBuilder.dns(dns);
-        httpClient = httpclientBuilder.build();
         MainApplication mainApplication = MainApplication.getINSTANCE();
         if (mainApplication != null) {
+            httpclientBuilder.dns(new FallBackDNS(mainApplication, dns, "github.com",
+                    "api.github.com", "raw.githubusercontent.com", "camo.githubusercontent.com",
+                    "user-images.githubusercontent.com", "cdn.jsdelivr.net", "img.shields.io",
+                    "magisk-modules-repo.github.io", "www.androidacy.com"));
+            httpClient = httpclientBuilder.build();
             httpclientBuilder.cache(new Cache(
                     new File(mainApplication.getCacheDir(), "http_cache"),
                     2L * 1024L * 1024L)); // 2Mib of cache
             httpclientBuilder.cookieJar(new CDNCookieJar());
             httpClientWithCache = httpclientBuilder.build();
+            Log.i(TAG, "Initialized Http successfully!");
         } else {
-            httpClientWithCache = httpClient;
+            httpclientBuilder.dns(dns);
+            httpClientWithCache = httpClient = httpclientBuilder.build();
+            Log.e(TAG, "Initialized Http too soon!");
         }
     }
 
-    public static OkHttpClient getHttpclientNoCache() {
+    public static OkHttpClient getHttpClient() {
         return httpClient;
     }
 
-    public static OkHttpClient getHttpclientWithCache() {
+    public static OkHttpClient getHttpClientWithCache() {
         return httpClientWithCache;
     }
 
@@ -206,5 +217,86 @@ public class Http {
 
     public interface ProgressListener {
         void onUpdate(int downloaded,int total, boolean done);
+    }
+
+    /**
+     * FallBackDNS store successful DNS request to return them later
+     * can help make the app to work later when the current DNS system
+     * isn't functional or available.
+     *
+     * Note: DNS Cache is stored in user data.
+     * */
+    private static class FallBackDNS implements Dns {
+        private final Dns parent;
+        private final SharedPreferences sharedPreferences;
+        private final HashSet<String> fallbacks;
+        private final HashMap<String, List<InetAddress>> fallbackCache;
+
+        public FallBackDNS(Context context, Dns parent, String... fallbacks) {
+            this.sharedPreferences = context.getSharedPreferences(
+                    "mmm_dns", Context.MODE_PRIVATE);
+            this.parent = parent;
+            this.fallbacks = new HashSet<>(Arrays.asList(fallbacks));
+            this.fallbackCache = new HashMap<>();
+        }
+
+        @NonNull
+        @Override
+        public List<InetAddress> lookup(@NonNull String s) throws UnknownHostException {
+            if (this.fallbacks.contains(s)) {
+                List<InetAddress> addresses = this.fallbackCache.get(s);
+                if (addresses != null)
+                    return addresses;
+                try {
+                    addresses = this.parent.lookup(s);
+                    if (addresses.isEmpty() || addresses.get(0).isLoopbackAddress())
+                        throw new UnknownHostException(s);
+                    this.fallbackCache.put(s, addresses);
+                    this.sharedPreferences.edit().putString(
+                            s.replace('.', '_'), toString(addresses)).apply();
+                } catch (UnknownHostException e) {
+                    String key = this.sharedPreferences.getString(
+                            s.replace('.', '_'), "");
+                    if (!key.isEmpty()) try {
+                        addresses = fromString(key);
+                        this.fallbackCache.put(s, addresses);
+                        return addresses;
+                    } catch (UnknownHostException e2) {
+                        this.sharedPreferences.edit().remove(
+                                s.replace('.', '_')).apply();
+                    }
+                    throw e;
+                }
+
+                return addresses;
+            } else {
+                return this.parent.lookup(s);
+            }
+        }
+
+        @NonNull
+        private static String toString(@NonNull List<InetAddress> inetAddresses) {
+            if (inetAddresses.isEmpty()) return "";
+            Iterator<InetAddress> inetAddressIterator = inetAddresses.iterator();
+            StringBuilder stringBuilder = new StringBuilder();
+            while (true) {
+                stringBuilder.append(inetAddressIterator.next().getHostAddress());
+                if (!inetAddressIterator.hasNext())
+                    return stringBuilder.toString();
+                stringBuilder.append("|");
+            }
+        }
+
+        @NonNull
+        private static List<InetAddress> fromString(@NonNull String string)
+                throws UnknownHostException {
+            if (string.isEmpty()) return Collections.emptyList();
+            String[] strings = string.split("\\|");
+            ArrayList<InetAddress> inetAddresses = new ArrayList<>(strings.length);
+            for (String address : strings) {
+                inetAddresses.add(InetAddress.getByName(address));
+            }
+            return inetAddresses;
+        }
     }
 }

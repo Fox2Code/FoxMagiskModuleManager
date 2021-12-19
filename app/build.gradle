@@ -10,8 +10,8 @@ android {
         applicationId "com.fox2code.mmm"
         minSdk 21
         targetSdk 31
-        versionCode 13
-        versionName "0.2.3"
+        versionCode 14
+        versionName "0.2.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -50,8 +50,8 @@ configurations {
 dependencies {
     // UI
     implementation 'androidx.appcompat:appcompat:1.4.0'
-    implementation 'androidx.emoji2:emoji2:1.0.0'
-    implementation 'androidx.emoji2:emoji2-views-helper:1.0.0'
+    implementation 'androidx.emoji2:emoji2:1.0.1'
+    implementation 'androidx.emoji2:emoji2-views-helper:1.0.1'
     implementation 'androidx.preference:preference:1.1.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
