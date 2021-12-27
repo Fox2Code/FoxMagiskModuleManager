@@ -112,8 +112,8 @@ public class ModuleViewListBuilder {
                     }
                 }
                 newNotificationsLen = this.notifications.size() - special;
-                EnumSet<ModuleHolder.Type> headerTypes = EnumSet.of(
-                        ModuleHolder.Type.NOTIFICATION, ModuleHolder.Type.SEPARATOR);
+                EnumSet<ModuleHolder.Type> headerTypes = EnumSet.of(ModuleHolder.Type.SEPARATOR,
+                        ModuleHolder.Type.NOTIFICATION, ModuleHolder.Type.FOOTER);
                 Iterator<ModuleHolder> moduleHolderIterator = this.mappedModuleHolders.values().iterator();
                 synchronized (this.queryLock) {
                     while (moduleHolderIterator.hasNext()) {

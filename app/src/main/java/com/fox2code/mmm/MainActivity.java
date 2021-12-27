@@ -21,6 +21,7 @@ import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.ModuleManager;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.settings.SettingsActivity;
+import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
@@ -180,7 +181,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                     moduleViewListBuilder.addNotification(NotificationType.SHOWCASE_MODE);
                 if (!RepoManager.getINSTANCE().hasConnectivity())
                     moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
-                else if (AppUpdateManager.getAppUpdateManager().checkUpdate(true))
+                else if (AppUpdateManager.getAppUpdateManager().checkUpdate(false))
                     moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
                 moduleViewListBuilder.appendRemoteModules();
                 Log.i(TAG, "Common Before applyTo");
@@ -201,8 +202,14 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         this.progressIndicator.setProgressCompat(0, false);
         // this.swipeRefreshLayout.setRefreshing(true); ??
         new Thread(() -> {
+            Http.cleanDnsCache(); // Allow DNS reload from network
             RepoManager.getINSTANCE().update(value -> runOnUiThread(() ->
-                    this.progressIndicator.setProgressCompat((int) (value * PRECISION), true)));
+                    this.progressIndicator.setProgressCompat(
+                            (int) (value * PRECISION), true)));
+            if (!RepoManager.getINSTANCE().hasConnectivity())
+                moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
+            else if (AppUpdateManager.getAppUpdateManager().checkUpdate(true))
+                moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
             runOnUiThread(() -> {
                 this.progressIndicator.setVisibility(View.GONE);
                 this.swipeRefreshLayout.setRefreshing(false);

@@ -10,10 +10,14 @@ So I made my own app to do that! :3
 Minimum:
 - Android 5.0+
 - Magisk 19.0+
+- An internet connection
 
 Recommended:
 - Android 6.0+
 - Magisk 21.2+
+- An internet connection
+
+Note: This app may require the use of a VPN in countries with a state wide firewall.
 
 ## For users
 

@@ -41,6 +41,7 @@ public class Http {
     private static final String TAG = "Http";
     private static final OkHttpClient httpClient;
     private static final OkHttpClient httpClientWithCache;
+    private static final FallBackDNS fallbackDNS;
 
     static {
         OkHttpClient.Builder httpclientBuilder = new OkHttpClient.Builder();
@@ -80,10 +81,11 @@ public class Http {
         httpclientBuilder.cookieJar(CookieJar.NO_COOKIES);
         MainApplication mainApplication = MainApplication.getINSTANCE();
         if (mainApplication != null) {
-            httpclientBuilder.dns(new FallBackDNS(mainApplication, dns, "github.com",
-                    "api.github.com", "raw.githubusercontent.com", "camo.githubusercontent.com",
-                    "user-images.githubusercontent.com", "cdn.jsdelivr.net", "img.shields.io",
-                    "magisk-modules-repo.github.io", "www.androidacy.com"));
+            httpclientBuilder.dns(fallbackDNS = new FallBackDNS(mainApplication, dns,
+                    "github.com", "api.github.com", "raw.githubusercontent.com",
+                    "camo.githubusercontent.com", "user-images.githubusercontent.com",
+                    "cdn.jsdelivr.net", "img.shields.io", "magisk-modules-repo.github.io",
+                    "www.androidacy.com"));
             httpClient = httpclientBuilder.build();
             httpclientBuilder.cache(new Cache(
                     new File(mainApplication.getCacheDir(), "http_cache"),
@@ -92,6 +94,7 @@ public class Http {
             httpClientWithCache = httpclientBuilder.build();
             Log.i(TAG, "Initialized Http successfully!");
         } else {
+            fallbackDNS = null;
             httpclientBuilder.dns(dns);
             httpClientWithCache = httpClient = httpclientBuilder.build();
             Log.e(TAG, "Initialized Http too soon!");
@@ -164,6 +167,12 @@ public class Http {
         inputStream.close();
         progressListener.onUpdate((int) (downloaded / divider), (int) (target / divider), true);
         return byteArrayOutputStream.toByteArray();
+    }
+
+    public static void cleanDnsCache() {
+        if (Http.fallbackDNS != null) {
+            Http.fallbackDNS.cleanDnsCache();
+        }
     }
 
     /**
@@ -244,33 +253,41 @@ public class Http {
         @Override
         public List<InetAddress> lookup(@NonNull String s) throws UnknownHostException {
             if (this.fallbacks.contains(s)) {
-                List<InetAddress> addresses = this.fallbackCache.get(s);
-                if (addresses != null)
-                    return addresses;
-                try {
-                    addresses = this.parent.lookup(s);
-                    if (addresses.isEmpty() || addresses.get(0).isLoopbackAddress())
-                        throw new UnknownHostException(s);
-                    this.fallbackCache.put(s, addresses);
-                    this.sharedPreferences.edit().putString(
-                            s.replace('.', '_'), toString(addresses)).apply();
-                } catch (UnknownHostException e) {
-                    String key = this.sharedPreferences.getString(
-                            s.replace('.', '_'), "");
-                    if (!key.isEmpty()) try {
-                        addresses = fromString(key);
-                        this.fallbackCache.put(s, addresses);
+                List<InetAddress> addresses;
+                synchronized (this.fallbackCache) {
+                    addresses = this.fallbackCache.get(s);
+                    if (addresses != null)
                         return addresses;
-                    } catch (UnknownHostException e2) {
-                        this.sharedPreferences.edit().remove(
-                                s.replace('.', '_')).apply();
+                    try {
+                        addresses = this.parent.lookup(s);
+                        if (addresses.isEmpty() || addresses.get(0).isLoopbackAddress())
+                            throw new UnknownHostException(s);
+                        this.fallbackCache.put(s, addresses);
+                        this.sharedPreferences.edit().putString(
+                                s.replace('.', '_'), toString(addresses)).apply();
+                    } catch (UnknownHostException e) {
+                        String key = this.sharedPreferences.getString(
+                                s.replace('.', '_'), "");
+                        if (key.isEmpty()) throw e;
+                        try {
+                            addresses = fromString(key);
+                            this.fallbackCache.put(s, addresses);
+                        } catch (UnknownHostException e2) {
+                            this.sharedPreferences.edit().remove(
+                                    s.replace('.', '_')).apply();
+                            throw e;
+                        }
                     }
-                    throw e;
                 }
-
                 return addresses;
             } else {
                 return this.parent.lookup(s);
+            }
+        }
+
+        void cleanDnsCache() {
+            synchronized (this.fallbackCache) {
+                this.fallbackCache.clear();
             }
         }
 

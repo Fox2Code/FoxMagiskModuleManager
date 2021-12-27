@@ -21,10 +21,9 @@ public final class ModuleManager {
             ModuleInfo.FLAG_MODULE_UNINSTALLING | ModuleInfo.FLAG_MODULE_ACTIVE;
     private static final int FLAGS_RESET_UPDATE = FLAG_MM_INVALID | FLAG_MM_UNPROCESSED;
     private final HashMap<String, ModuleInfo> moduleInfos;
-    private final HashMap<String, ModuleInfo> invalidModules;
     private final SharedPreferences bootPrefs;
     private final Object scanLock = new Object();
-    private boolean scanning, lastScanResult;
+    private boolean scanning;
 
     private static final ModuleManager INSTANCE = new ModuleManager();
 
@@ -34,19 +33,17 @@ public final class ModuleManager {
 
     private ModuleManager() {
         this.moduleInfos = new HashMap<>();
-        this.invalidModules = new HashMap<>();
         this.bootPrefs = MainApplication.getBootSharedPreferences();
     }
 
     // MultiThread friendly method
-    public final boolean scan() {
+    public final void scan() {
         if (!this.scanning) {
             // Do scan
             synchronized (scanLock) {
                 this.scanning = true;
                 try {
-                    this.lastScanResult =
-                            this.scanInternal();
+                    this.scanInternal();
                 } finally {
                     this.scanning = false;
                 }
@@ -55,7 +52,6 @@ public final class ModuleManager {
             // Wait for current scan
             synchronized (scanLock) {}
         }
-        return this.lastScanResult;
     }
 
     // Pause execution until the scan is completed if one is currently running
@@ -69,13 +65,9 @@ public final class ModuleManager {
         }
     }
 
-    private boolean scanInternal() {
+    private void scanInternal() {
         boolean firstScan = this.bootPrefs.getBoolean("mm_first_scan", true);
-        boolean changed = false;
         SharedPreferences.Editor editor = firstScan ? this.bootPrefs.edit() : null;
-        // Reset existing ModuleInfo
-        this.moduleInfos.putAll(this.invalidModules);
-        this.invalidModules.clear();
         for (ModuleInfo v : this.moduleInfos.values()) {
             v.flags |= FLAG_MM_UNPROCESSED;
             v.flags &= ~FLAGS_RESET_INIT;
@@ -94,7 +86,6 @@ public final class ModuleManager {
                 if (moduleInfo == null) {
                     moduleInfo = new ModuleInfo(module);
                     moduleInfos.put(module, moduleInfo);
-                    changed = true;
                     // Shis should not really happen, but let's handles theses cases anyway
                     moduleInfo.flags |= ModuleInfo.FLAG_MODULE_UPDATING_ONLY;
                 }
@@ -118,7 +109,7 @@ public final class ModuleManager {
                 }
                 try {
                     PropUtils.readProperties(moduleInfo,
-                            "/data/adb/modules/" + module + "/module.prop");
+                            "/data/adb/modules/" + module + "/module.prop", true);
                 } catch (Exception e) {
                     Log.d(TAG, "Failed to parse metadata!", e);
                     moduleInfo.flags |= FLAG_MM_INVALID;
@@ -132,13 +123,12 @@ public final class ModuleManager {
                 if (moduleInfo == null) {
                     moduleInfo = new ModuleInfo(module);
                     moduleInfos.put(module, moduleInfo);
-                    changed = true;
                 }
                 moduleInfo.flags &= ~FLAGS_RESET_UPDATE;
                 moduleInfo.flags |= ModuleInfo.FLAG_MODULE_UPDATING;
                 try {
                     PropUtils.readProperties(moduleInfo,
-                            "/data/adb/modules_update/" + module + "/module.prop");
+                            "/data/adb/modules_update/" + module + "/module.prop", true);
                 } catch (Exception e) {
                     Log.d(TAG, "Failed to parse metadata!", e);
                     moduleInfo.flags |= FLAG_MM_INVALID;
@@ -152,10 +142,6 @@ public final class ModuleManager {
             if ((moduleInfo.flags & FLAG_MM_UNPROCESSED) != 0) {
                 moduleInfoIterator.remove();
                 continue; // Don't process fallbacks if unreferenced
-            } else if ((moduleInfo.flags & FLAG_MM_INVALID) != 0) {
-                moduleInfo.flags &=~ FLAG_MM_INVALID;
-                this.invalidModules.put(moduleInfo.id, moduleInfo);
-                moduleInfoIterator.remove();
             }
             if (moduleInfo.name == null || (moduleInfo.name.equals(moduleInfo.id))) {
                 moduleInfo.name = Character.toUpperCase(moduleInfo.id.charAt(0)) +
@@ -169,17 +155,11 @@ public final class ModuleManager {
             editor.putBoolean("mm_first_scan", false);
             editor.apply();
         }
-        return changed;
     }
 
     public HashMap<String, ModuleInfo> getModules() {
         this.afterScan();
         return this.moduleInfos;
-    }
-
-    public HashMap<String, ModuleInfo> getInvalidModules() {
-        this.afterScan();
-        return invalidModules;
     }
 
     public boolean setEnabledState(ModuleInfo moduleInfo, boolean checked) {

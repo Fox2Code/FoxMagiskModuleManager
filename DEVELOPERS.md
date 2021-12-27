@@ -12,7 +12,7 @@ Index:
 
 ## Properties
 
-In addition to the following magisk properties
+In addition to the following required magisk properties
 ```properties
 # Magisk supported properties
 id=<string>
@@ -22,8 +22,9 @@ versionCode=<int>
 author=<string>
 description=<string>
 ```
+(Note: The Fox's mmm will not show the module if theses values are not filled properly)
 
-This the manager support these new properties
+This the manager support these new optional properties
 ```properties
 # Fox's Mmm supported properties
 minApi=<int>
@@ -38,7 +39,7 @@ config=<package>
 - `minApi` and `maxApi` tell the manager which is the SDK version range the module support  
   (See: [Codenames, Tags, and Build Numbers](https://source.android.com/setup/start/build-numbers))
 - `minMagisk` tell the manager which is the minimum Magisk version required for the module
-  (Often for magisk `xx.y` the version code is `xxy00`)
+  (Often for magisk `xx.y` the version code is `xxyzz`, `zz` being non `00` on canary builds)
 - `support` support link to direct users when they need support for you modules
 - `donate` donate link to direct users to where they can financially support your project
 - `config` package name of the application that configure your module

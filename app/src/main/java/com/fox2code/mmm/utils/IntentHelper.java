@@ -38,7 +38,7 @@ public class IntentHelper {
             context.startActivity(myIntent);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(context, "No application can handle this request."
-                    + " Please install a webbrowser",  Toast.LENGTH_SHORT).show();
+                    + " Please install a web-browser",  Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }

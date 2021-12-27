@@ -37,13 +37,13 @@ public class AppUpdateManager {
 
     // Return true if should show a notification
     public boolean checkUpdate(boolean force) {
-        if (this.peekShouldUpdate())
+        if (!force && this.peekShouldUpdate())
             return true;
         long lastChecked = this.lastChecked;
-        if (!force && lastChecked != 0 &&
+        if (lastChecked != 0 &&
                 // Avoid spam calls by putting a 10 seconds timer
                 lastChecked < System.currentTimeMillis() - 10000L)
-            return false;
+            return force && this.peekShouldUpdate();
         synchronized (this.updateLock) {
             if (lastChecked != this.lastChecked)
                 return this.peekShouldUpdate();

@@ -261,6 +261,9 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 int backgroundAttr = R.attr.colorBackgroundFloating;
                 if (type == ModuleHolder.Type.NOTIFICATION) {
                     backgroundAttr = moduleHolder.notificationType.backgroundAttr;
+                } else if (type == ModuleHolder.Type.INSTALLED &&
+                        moduleHolder.hasFlag(ModuleInfo.FLAG_METADATA_INVALID)) {
+                    backgroundAttr = R.attr.colorError;
                 }
                 Resources.Theme theme = this.cardView.getContext().getTheme();
                 TypedValue value = new TypedValue();

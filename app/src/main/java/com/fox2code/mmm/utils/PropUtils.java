@@ -50,39 +50,83 @@ public class PropUtils {
         moduleMinApiFallbacks.put("riru-core", RIRU_MIN_API = Build.VERSION_CODES.M);
     }
 
-    public static void readProperties(ModuleInfo moduleInfo, String file) throws IOException {
-        boolean readId = false, readIdSec = false, readVersionCode = false;
+    public static void readProperties(ModuleInfo moduleInfo, String file,boolean local) throws IOException {
+        boolean readId = false, readIdSec = false, readName = false,
+                readVersionCode = false, readVersion = false, invalid = false;
         try (BufferedReader bufferedReader = new BufferedReader(
                 new InputStreamReader(SuFileInputStream.open(file), StandardCharsets.UTF_8))) {
             String line;
+            int lineNum = 0;
             while ((line = bufferedReader.readLine()) != null) {
+                lineNum++;
                 int index = line.indexOf('=');
                 if (index == -1 || line.startsWith("#"))
                     continue;
                 String key = line.substring(0, index);
                 String value = line.substring(index + 1).trim();
+                // name and id have their own implementation
+                if (isInvalidValue(key)) {
+                    if (local) {
+                        invalid = true;
+                        continue;
+                    } else throw new IOException("Invalid key at line " + lineNum);
+                } else if (isInvalidValue(value) && !key.equals("id") && !key.equals("name")) {
+                    if (local) {
+                        invalid = true;
+                        continue;
+                    } else throw new IOException("Invalid value for key " + key);
+                }
                 switch (key) {
                     case "id":
+                        if (isInvalidValue(value)) {
+                            if (local) {
+                                invalid = true;
+                                break;
+                            } throw new IOException("Invalid module id!");
+                        }
                         readId = true;
                         if (!moduleInfo.id.equals(value)) {
-                            throw new IOException(file + " has an non matching module id! "+
-                                    "(Expected \"" + moduleInfo.id + "\" got \"" + value + "\"");
+                            if (local) {
+                                invalid = true;
+                            } else {
+                                throw new IOException(file + " has an non matching module id! " +
+                                        "(Expected \"" + moduleInfo.id + "\" got \"" + value + "\"");
+                            }
                         }
                         break;
                     case "name":
-                        if (readIdSec && !moduleInfo.id.equals(value))
-                            throw new IOException("Duplicate module name!");
+                        if (readName) {
+                            if (local) {
+                                invalid = true;
+                                break;
+                            } else throw new IOException("Duplicate module name!");
+                        }
+                        if (isInvalidValue(value)) {
+                            if (local) {
+                                invalid = true;
+                                break;
+                            } throw new IOException("Invalid module name!");
+                        }
+                        readName = true;
                         moduleInfo.name = value;
                         if (moduleInfo.id.equals(value)) {
                             readIdSec = true;
                         }
                         break;
                     case "version":
+                        readVersion = true;
                         moduleInfo.version = value;
                         break;
                     case "versionCode":
                         readVersionCode = true;
-                        moduleInfo.versionCode = Long.parseLong(value);
+                        try {
+                            moduleInfo.versionCode = Long.parseLong(value);
+                        } catch (RuntimeException e) {
+                            if (local) {
+                                invalid = true;
+                                moduleInfo.versionCode = 0;
+                            } else throw e;
+                        }
                         break;
                     case "author":
                         moduleInfo.author = value;
@@ -92,14 +136,14 @@ public class PropUtils {
                         break;
                     case "support":
                         // Do not accept invalid or too broad support links
-                        if (!value.startsWith("https://") ||
+                        if (isInvalidURL(value) ||
                                 "https://forum.xda-developers.com/".equals(value))
                             break;
                         moduleInfo.support = value;
                         break;
                     case "donate":
                         // Do not accept invalid donate links
-                        if (!value.startsWith("https://")) break;
+                        if (isInvalidURL(value)) break;
                         moduleInfo.donate = value;
                         break;
                     case "config":
@@ -136,21 +180,27 @@ public class PropUtils {
             }
         }
         if (!readId) {
-            if (readIdSec) {
+            if (readIdSec && local) {
                 // Using the name for module id is not really appropriate, so beautify it a bit
-                moduleInfo.name = moduleInfo.id.substring(0, 1).toUpperCase(Locale.ROOT) +
-                        moduleInfo.id.substring(1).replace('_', ' ');
+                moduleInfo.name = makeNameFromId(moduleInfo.id);
+            } else if (local) { // Allow local module to not declare ids
+                invalid = true;
             } else {
                 throw new IOException("Didn't read module id at least once!");
             }
         }
         if (!readVersionCode) {
-            throw new IOException("Didn't read module versionCode at least once!");
+            if (local) {
+                invalid = true;
+                moduleInfo.versionCode = 0;
+            } else {
+                throw new IOException("Didn't read module versionCode at least once!");
+            }
         }
-        if (moduleInfo.name == null) {
-            moduleInfo.name = moduleInfo.id;
+        if (moduleInfo.name == null || !readName) {
+            moduleInfo.name = makeNameFromId(moduleInfo.id);
         }
-        if (moduleInfo.version == null) {
+        if (moduleInfo.version == null || !readVersion) {
             moduleInfo.version = "v" + moduleInfo.versionCode;
         }
         if (moduleInfo.minApi == 0) {
@@ -167,6 +217,16 @@ public class PropUtils {
         if (moduleInfo.config == null) {
             moduleInfo.config = moduleConfigsFallbacks.get(moduleInfo.id);
         }
+        // All local modules should have an author
+        // set to "Unknown" if author is missing.
+        if (local && moduleInfo.author == null) {
+            moduleInfo.author = "Unknown";
+        }
+        if (invalid) {
+            moduleInfo.flags |= ModuleInfo.FLAG_METADATA_INVALID;
+            // This shouldn't happen but just in case
+            if (!local) throw new IOException("Invalid properties!");
+        }
     }
 
     // Some module are really so low quality that it has become very annoying.
@@ -178,5 +238,21 @@ public class PropUtils {
                 || (description = moduleInfo.description) == null || !TextUtils.isGraphic(description)
                 || description.toLowerCase(Locale.ROOT).equals(moduleInfo.name.toLowerCase(Locale.ROOT))
                 || description.length() < Math.min(Math.max(moduleInfo.name.length() + 4, 16), 24);
+    }
+
+    private static boolean isInvalidValue(String name) {
+        return !TextUtils.isGraphic(name) || name.indexOf('\0') != -1;
+    }
+
+    private static boolean isInvalidURL(String url) {
+        int i = url.indexOf('/', 8);
+        int e = url.indexOf('.', 8);
+        return i == -1 || e == -1 || e >= i || !url.startsWith("https://")
+                || url.length() <= 12 || url.indexOf('\0') != -1;
+    }
+
+    private static String makeNameFromId(String moduleId) {
+        return moduleId.substring(0, 1).toUpperCase(Locale.ROOT) +
+                moduleId.substring(1).replace('_', ' ');
     }
 }

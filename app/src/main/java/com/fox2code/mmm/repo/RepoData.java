@@ -112,7 +112,7 @@ public class RepoData {
         if (file.exists()) {
             try {
                 ModuleInfo moduleInfo = repoModule.moduleInfo;
-                PropUtils.readProperties(moduleInfo, file.getAbsolutePath());
+                PropUtils.readProperties(moduleInfo, file.getAbsolutePath(), false);
                 moduleInfo.flags &= ~ModuleInfo.FLAG_METADATA_INVALID;
                 if (moduleInfo.version == null) {
                     moduleInfo.version = "v" + moduleInfo.versionCode;
