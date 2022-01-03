@@ -6,8 +6,8 @@
     </string-array>
 
     <string-array name="theme_values_names">
-        <item>System</item>
-        <item>Dark</item>
-        <item>Light</item>
+        <item>跟随系统</item>
+        <item>深色模式</item>
+        <item>明亮模式</item>
     </string-array>
 </resources>
