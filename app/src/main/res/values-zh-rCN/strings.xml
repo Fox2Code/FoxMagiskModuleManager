@@ -1,0 +1,64 @@
+<resources>
+    <string name="app_name">Fox\'s Magisk模块管理器</string>
+    <string name="app_name_short">Fox\'s Mmm</string>
+    <string name="fail_root_magisk">无法访问Root权限或者您没有安装Magisk</string>
+    <string name="loading">加载中…</string>
+    <string name="updatable">可更新</string>
+    <string name="installed">已安装</string>
+    <string name="online_repo">线上仓库</string>
+    <string name="showcase_mode">应用程序处于锁定模式</string>
+    <string name="failed_download">下载文件失败</string>
+    <string name="slow_modules">模块启动时间过长，考虑禁用一些模块</string>
+    <string name="fail_internet">无法连接到互联网</string>
+    <string name="title_activity_settings">设置活动</string>
+    <string name="app_update_available">应用程序有更新可用</string>
+    <string name="app_update">更新</string>
+
+    <!-- Module section translation -->
+    <string name="module_last_update">最后更新:</string>
+    <string name="module_repo">仓库:</string>
+    <string name="module_by">来自</string>
+
+    <!-- Preference Titles -->
+    <!-- Note: Lockdown mode used to be called showcase mode -->
+    <string name="showcase_mode_pref">锁定模式</string>
+    <string name="showcase_mode_desc">锁定模式阻止管理器对模块执行操作</string>
+    <string name="pref_category_settings">设置</string>
+    <string name="pref_category_info">信息</string>
+    <string name="show_licenses">显示许可证</string>
+    <string name="licenses">执照</string>
+    <string name="show_incompatible_pref">显示不兼容的模块</string>
+    <string name="show_incompatible_desc">根据元数据显示与您的设备不兼容的模块</string>
+    <string name="magisk_outdated">Magisk 已过时!</string>
+    <string name="pref_category_repos">仓库</string>
+    <string name="repo_main_desc">托管 Magisk 模块的存储库</string>
+    <string name="repo_main_alt">Magisk-Modules-Repo 的替代方案，限制更少</string>
+    <string name="master_delete">删除这个模块?</string>
+    <string name="master_delete_no">保留文件</string>
+    <string name="master_delete_yes">删除文件</string>
+    <string name="master_delete_fail">无法删除模块文件</string>
+    <string name="theme_pref">主题</string>
+    <string name="module_id_prefix">模块ID: </string>
+    <string name="install_from_storage">从存储空间安装模块</string>
+    <string name="invalid_format">所选模块的格式无效</string>
+    <string name="local_install_title">本地安装</string>
+    <string name="source_code">源代码</string>
+    <string name="magisk_builtin_module">Magisk 置模块</string>
+    <string name="substratum_builtin_module">底层内置模块</string>
+    <string name="force_dark_terminal_title">强制深色模式模式终端</string>
+    <string name="file_picker_failure">您当前的文件管理器无法访问该文件</string>
+    <string name="remote_install_title">远程安装</string>
+    <string name="file_picker_wierd">您的文件管理器返回了非标准响应</string>
+    <string name="use_magisk_install_command_pref">使用 magisk 模块安装命令</string>
+    <string name="use_magisk_install_command_desc">
+        测试过程中导致模块安装错误诊断工具出现问题,
+        所以我把这个选项隐藏在开发者模式后面，启用这个后由您自己承担风险!
+    </string>
+    <string name="dev_mode_enabled">开发者模式开启</string>
+    <string name="force_english_pref">强制设定语言为英语</string>
+    <string name="disable_low_quality_module_filter_pref">禁用低质量模块过滤器</string>
+    <string name="disable_low_quality_module_filter_desc">
+        一些模块没有正确声明它们的元数据，导致视觉故障,
+        或指示模块质量不佳，请自担风险禁用!
+    </string>
+</resources>
