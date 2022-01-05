@@ -33,7 +33,7 @@
     <string name="pref_category_repos">Репозитории</string>
     <string name="repo_main_desc">Официальный репозиторий Magisk Modules.</string>
     <string name="repo_main_alt">Альтернативный репозиторий Magisk-Modules-Repo с меньшим количеством ограничений.</string>
-    <string name="master_delete">Удалите файлы модуля?</string>
+    <string name="master_delete">Удалить файлы модуля?</string>
     <string name="master_delete_no">Оставить файлы</string>
     <string name="master_delete_yes">Удалить файлы</string>
     <string name="master_delete_fail">Не удалось удалить файлы модуля</string>
