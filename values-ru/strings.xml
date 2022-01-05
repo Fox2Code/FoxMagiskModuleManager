@@ -1,0 +1,64 @@
+<resources>
+    <string name="app_name">Fox\'s Magisk Module Manager</string>
+    <string name="app_name_short">Fox\'s Mmm</string>
+    <string name="fail_root_magisk">Не удалось получить доступ к Root или Magisk</string>
+    <string name="loading">Загрузка…</string>
+    <string name="updatable">Доступно обновление</string>
+    <string name="installed">Установленные</string>
+    <string name="online_repo">Репозиторий</string>
+    <string name="showcase_mode">Приложение находится в режиме блокировки</string>
+    <string name="failed_download">Не удалось скачать файл.</string>
+    <string name="slow_modules">Модули загружались слишком долго, рассмотрите возможность отключения некоторых модулей</string>
+    <string name="fail_internet">Не удается подключиться к Интернету</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="app_update_available">Доступно обновление приложения</string>
+    <string name="app_update">Обновить</string>
+
+    <!-- Module section translation -->
+    <string name="module_last_update">Посл. обновление:</string>
+    <string name="module_repo">Репозиторий:</string>
+    <string name="module_by">"\nАвтор:"</string>
+
+    <!-- Preference Titles -->
+    <!-- Note: Lockdown mode used to be called showcase mode -->
+    <string name="showcase_mode_pref">Режим блокировки</string>
+    <string name="showcase_mode_desc">Режим блокировки не позволяет диспетчеру выполнять действия с модулями.</string>
+    <string name="pref_category_settings">Настройки</string>
+    <string name="pref_category_info">Информация</string>
+    <string name="show_licenses">Показать лицензии</string>
+    <string name="licenses">Лицензии</string>
+    <string name="show_incompatible_pref">Показать несовместимые модули</string>
+    <string name="show_incompatible_desc">Показать модули несовместимые с вашим устройством, на основе их метаданных.</string>
+    <string name="magisk_outdated">Magisk устарел!</string>
+    <string name="pref_category_repos">Репозитории</string>
+    <string name="repo_main_desc">Официальный репозиторий Magisk Modules.</string>
+    <string name="repo_main_alt">Альтернативный репозиторий Magisk-Modules-Repo с меньшим количеством ограничений.</string>
+    <string name="master_delete">Удалите файлы модуля?</string>
+    <string name="master_delete_no">Оставить файлы</string>
+    <string name="master_delete_yes">Удалить файлы</string>
+    <string name="master_delete_fail">Не удалось удалить файлы модуля</string>
+    <string name="theme_pref">Тема</string>
+    <string name="module_id_prefix">ID модуля: </string>
+    <string name="install_from_storage">Установить модуль из хранилища</string>
+    <string name="invalid_format">Выбранный модуль имеет недопустимый формат</string>
+    <string name="local_install_title">Локальная установка</string>
+    <string name="source_code">Исходный код</string>
+    <string name="magisk_builtin_module">Встроенный модуль Magisk</string>
+    <string name="substratum_builtin_module">Substratum builtin module</string>
+    <string name="force_dark_terminal_title">"Принудительно включить тёмный режим терминала"</string>
+    <string name="file_picker_failure">Вашей текущей программе выбора файлов не удалось предоставить доступ к файлу.</string>
+    <string name="remote_install_title">Удаленная установка</string>
+    <string name="file_picker_wierd">Программа выбора файлов вернула нестандартный ответ.</string>
+    <string name="use_magisk_install_command_pref">Использовать команду установки модуля</string>
+    <string name="use_magisk_install_command_desc">
+        Во время теста это вызвало проблемы с инструментом диагностики ошибок установки модуля,
+        поэтому я спрятал эту опцию за режимом разработчика, включайте ее на свой страх и риск!
+    </string>
+    <string name="dev_mode_enabled">Режим разработчика включен</string>
+    <string name="force_english_pref">Принудительно использовать английский язык</string>
+    <string name="disable_low_quality_module_filter_pref">Отключить фильтр модулей низкого качества</string>
+    <string name="disable_low_quality_module_filter_desc">
+        Некоторые модули не объявляют свои метаданные должным образом, что вызывает визуальные сбои,
+        и/или указывает на низкое качество модуля, отключайте на свой страх и риск!
+    </string>
+</resources>
