@@ -54,7 +54,7 @@
         Questo ha causato dei problemi durante i test per l\' installazione dei moduli,
         per questo l\'opzione e\' disponibile solo in modalita\' sviluppatore, abilita a tuo rischio e pericolo!
     </string>
-    <string name="dev_mode_enabled">Modalita\' sviluppatore attivata/string>
+    <string name="dev_mode_enabled">Modalita\' sviluppatore attivata</string>
     <string name="force_english_pref">Forza la lingua inglese</string>
     <string name="disable_low_quality_module_filter_pref">Disabilita il filtro qualita\' per i moduli</string>
     <string name="disable_low_quality_module_filter_desc">
