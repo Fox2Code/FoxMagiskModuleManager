@@ -1,0 +1,64 @@
+<resources>
+    <string name="app_name">Fox\'s Magisk Module Manager</string>
+    <string name="app_name_short">Fox\'s Mmm</string>
+    <string name="fail_root_magisk">Impossibile ottenere l\'accesso al Root o a Magisk</string>
+    <string name="loading">Caricamento</string>
+    <string name="updatable">Aggiornamento disponibile</string>
+    <string name="installed">Installato</string>
+    <string name="online_repo">Online Repo</string>
+    <string name="showcase_mode">L\'applicazione e\' in modalita\' protetta </string>
+    <string name="failed_download">Scaricamento del file non riuscito.</string>
+    <string name="slow_modules">L\'avvio dei moduli e\' lento, prova a disabilitarne alcuni</string>
+    <string name="fail_internet">Impossibilie connettersi a internet</string>
+    <string name="title_activity_settings">Impostazione attivita\'</string>
+    <string name="app_update_available">Aggiornamento disponibile</string>
+    <string name="app_update">Aggiornamento</string>
+
+    <!-- Module section translation -->
+    <string name="module_last_update">Ultimo aggiornamento:</string>
+    <string name="module_repo">Repo:</string>
+    <string name="module_by">da</string>
+
+    <!-- Preference Titles -->
+    <!-- Note: Lockdown mode used to be called showcase mode -->
+    <string name="showcase_mode_pref">Modalita\' protetta</string>
+    <string name="showcase_mode_desc">La modalita\' protetta impedisce la modifica dei moduli da parte del gestore</string>
+    <string name="pref_category_settings">Impostazioni</string>
+    <string name="pref_category_info">Info</string>
+    <string name="show_licenses">Mostra le autorizzazioni</string>
+    <string name="licenses">Autorizzazioni</string>
+    <string name="show_incompatible_pref">Mostra moduli incompatibili</string>
+    <string name="show_incompatible_desc">Mostra i moduli che in base ai metadati sono incompatibili con il tuo dispositivo </string>
+    <string name="magisk_outdated">Magisk non e\' aggiornato!</string>
+    <string name="pref_category_repos">Repos</string>
+    <string name="repo_main_desc">La repository che fornisce i moduli Magisk</string>
+    <string name="repo_main_alt">Un\' alternativa alla Repository di default con meno restrizioni.</string>
+    <string name="master_delete">Rimuovere i dati del modulo?</string>
+    <string name="master_delete_no">Mantieni i dati</string>
+    <string name="master_delete_yes">Rimuovi i dati</string>
+    <string name="master_delete_fail">Impossibile rimuovere i dati del modulo</string>
+    <string name="theme_pref">Tema</string>
+    <string name="module_id_prefix">Id del modulo: </string>
+    <string name="install_from_storage">Installa un modulo dalla memoria di archiviazione</string>
+    <string name="invalid_format">Il modulo selezionato ha un formato non valido</string>
+    <string name="local_install_title">Installazione locale</string>
+    <string name="source_code">Codice sorgente</string>
+    <string name="magisk_builtin_module">Modulo di Magisk integrato</string>
+    <string name="substratum_builtin_module">modulo del sottostrato integrato</string>
+    <string name="force_dark_terminal_title">Forza il terminale in modalita\' scura</string>
+    <string name="file_picker_failure">Il tuo gestore file non ha potuto accedere ai dati sul dispositivo.</string>
+    <string name="remote_install_title">Installazione remota</string>
+    <string name="file_picker_wierd">Il tuo gestore file ha fornito una risposta non valida.</string>
+    <string name="use_magisk_install_command_pref">Usa il comando di installazione del modulo magisk</string>
+    <string name="use_magisk_install_command_desc">
+        Questo ha causato dei problemi durante i test per l\' installazione dei moduli,
+        per questo l\'opzione e\' disponibile solo in modalita\' sviluppatore, abilita a tuo rischio e pericolo!
+    </string>
+    <string name="dev_mode_enabled">Modalita\' sviluppatore attivata</string>
+    <string name="force_english_pref">Forza la lingua inglese</string>
+    <string name="disable_low_quality_module_filter_pref">Disabilita il filtro qualita\' per i moduli</string>
+    <string name="disable_low_quality_module_filter_desc">
+        Alcuni moduli non forniscono correttamente i loro metadati,causando errori grafici,
+        e/o indicando bassa qualita\', disabilita a tuo rischio e pericolo!
+    </string>
+</resources>
