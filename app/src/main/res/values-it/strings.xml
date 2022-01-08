@@ -5,11 +5,11 @@
     <string name="loading">Caricamento</string>
     <string name="updatable">Aggiornamento disponibile</string>
     <string name="installed">Installato</string>
-    <string name="online_repo">Online Repo</string>
+    <string name="online_repo">Repository Online</string>
     <string name="showcase_mode">L\'applicazione e\' in modalita\' protetta </string>
     <string name="failed_download">Scaricamento del file non riuscito.</string>
     <string name="slow_modules">L\'avvio dei moduli e\' lento, prova a disabilitarne alcuni</string>
-    <string name="fail_internet">Impossibilie connettersi a internet</string>
+    <string name="fail_internet">Impossibile connettersi a internet</string>
     <string name="title_activity_settings">Impostazione attivita\'</string>
     <string name="app_update_available">Aggiornamento disponibile</string>
     <string name="app_update">Aggiornamento</string>
