@@ -177,8 +177,11 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
 
                 ModuleInfo moduleInfo = moduleHolder.getMainModuleInfo();
                 this.titleText.setText(moduleInfo.name);
-                this.creditText.setText(moduleInfo.version + " " +
-                        this.getString(R.string.module_by) + " " + moduleInfo.author);
+                this.creditText.setText((localModuleInfo == null ||
+                        moduleInfo.version.equals(localModuleInfo.version) ? moduleInfo.version :
+                        localModuleInfo.version + " (" + this.getString(
+                                R.string.module_last_update) + moduleInfo.version + ")") +
+                        " " + this.getString(R.string.module_by) + " " + moduleInfo.author);
                 this.descriptionText.setText(moduleInfo.description);
                 String updateText = moduleHolder.getUpdateTimeText();
                 if (!updateText.isEmpty()) {

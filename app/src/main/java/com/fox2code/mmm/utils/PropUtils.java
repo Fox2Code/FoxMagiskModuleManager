@@ -129,7 +129,8 @@ public class PropUtils {
                         }
                         break;
                     case "author":
-                        moduleInfo.author = value;
+                        moduleInfo.author = value.endsWith(" development team") ?
+                                value.substring(0, value.length() - 17) : value;
                         break;
                     case "description":
                         moduleInfo.description = value;
@@ -200,7 +201,8 @@ public class PropUtils {
         if (moduleInfo.name == null || !readName) {
             moduleInfo.name = makeNameFromId(moduleInfo.id);
         }
-        if (moduleInfo.version == null || !readVersion) {
+        // We can't accept too long version names for usability reason.
+        if (moduleInfo.version == null || !readVersion || moduleInfo.version.length() > 16) {
             moduleInfo.version = "v" + moduleInfo.versionCode;
         }
         if (moduleInfo.minApi == 0) {
