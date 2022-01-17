@@ -34,7 +34,7 @@ The app currently use these two repo as it's module sources, with it's benefits 
 - Officially supported by Fox's mmm  
 
 [https://github.com/Magisk-Modules-Repo](https://github.com/Magisk-Modules-Repo)  
-- No longer accept new modules
+- No longer accept new modules or update to existing modules
 - May be shut down at any moment
 - Official app dropped support for it
 - Officially supported by Fox's mmm
@@ -45,6 +45,11 @@ and also stopped accepting new modules, it is recommended to submit your modules
 
 If a module is in both repo, the manager will just pick the most up to date version of the module,
 allowing developers to switch repo at their own pace if they want to.
+
+## Screenshots
+
+Main activity:  
+[<img src="screenshot.jpg" width="250"/>](screenshot.jpg)
 
 ## For developers
 
@@ -68,7 +73,13 @@ and set `lang_support_rtl` to `true`.
 
 Translators are not expected to have any previous coding experience.
 
-## Screenshots
+## I want to add my own repo
 
-Main activity:  
-[<img src="screenshot.jpg" width="250"/>](screenshot.jpg)
+To add you own repo to Fox's mmm it need to follow theses conditions:
+- The module repo or one of it's owners must be known.
+- Modules in the repo must be monitored, and malicious modules must be removed.
+- Module repo must have a valid, automatically or frequently updated `modules.json`
+  ([Example](https://github.com/Magisk-Modules-Alt-Repo/json/blob/main/modules.json))
+
+If all of these conditions are met you can open an issue for review.  
+(And don't forget to include a link to the `modules.json`)
