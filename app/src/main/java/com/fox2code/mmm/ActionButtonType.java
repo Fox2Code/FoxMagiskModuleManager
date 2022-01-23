@@ -43,10 +43,12 @@ public enum ActionButtonType {
 
         @Override
         public void doAction(ImageButton button, ModuleHolder moduleHolder) {
-            RepoModule repoModule = moduleHolder.repoModule;
-            if (repoModule == null) return;
-            IntentHelper.openInstaller(button.getContext(), repoModule.zipUrl,
-                    repoModule.moduleInfo.name, repoModule.moduleInfo.config);
+            ModuleInfo moduleInfo = moduleHolder.getMainModuleInfo();
+            if (moduleInfo == null) return;
+            String updateZipUrl = moduleHolder.getUpdateZipUrl();
+            if (updateZipUrl == null) return;
+            IntentHelper.openInstaller(button.getContext(), updateZipUrl,
+                    moduleInfo.name, moduleInfo.config);
         }
     },
     UNINSTALL() {

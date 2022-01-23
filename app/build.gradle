@@ -10,8 +10,8 @@ android {
         applicationId "com.fox2code.mmm"
         minSdk 21
         targetSdk 32
-        versionCode 17
-        versionName "0.2.6"
+        versionCode 18
+        versionName "0.2.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -31,8 +31,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
-    lintOptions {
+    lint {
         disable 'MissingTranslation'
     }
 }

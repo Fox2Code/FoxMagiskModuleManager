@@ -59,21 +59,11 @@ public class SettingsActivity extends CompatActivity {
             });
             themePreference.setOnPreferenceChangeListener((preference, newValue) -> {
                 devModeStep = 0;
-                @StyleRes int themeResId;
-                switch (String.valueOf(newValue)) {
-                    default:
-                    case "system":
-                        themeResId = R.style.Theme_MagiskModuleManager;
-                        break;
-                    case "dark":
-                        themeResId = R.style.Theme_MagiskModuleManager_Dark;
-                        break;
-                    case "light":
-                        themeResId = R.style.Theme_MagiskModuleManager_Light;
-                        break;
-                }
-                MainApplication.getINSTANCE().setManagerThemeResId(themeResId);
-                CompatActivity.getCompatActivity(this).setThemeRecreate(themeResId);
+                UiThreadHandler.handler.postDelayed(() -> {
+                    MainApplication.getINSTANCE().updateTheme();
+                    CompatActivity.getCompatActivity(this).setThemeRecreate(
+                            MainApplication.getINSTANCE().getManagerThemeResId());
+                }, 1);
                 return true;
             });
             Preference forceEnglish = findPreference("pref_force_english");

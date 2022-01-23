@@ -2,11 +2,14 @@ package com.fox2code.mmm.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.installer.InstallerInitializer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -22,10 +25,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
+import okhttp3.ConnectionSpec;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.Dns;
@@ -79,17 +84,30 @@ public class Http {
             Log.e(TAG, "Failed to init DoH", e);
         }
         httpclientBuilder.cookieJar(CookieJar.NO_COOKIES);
+        httpclientBuilder.addInterceptor(chain -> {
+            Request.Builder request = chain.request().newBuilder();
+            if (InstallerInitializer.peekMagiskPath() != null) {
+                request.header("User-Agent", // Declare Magisk version to the server
+                        "Magisk/" + InstallerInitializer.peekMagiskVersion());
+            }
+            if (chain.request().header("Accept-Language") == null) {
+                request.header("Accept-Language", // Send system language to the server
+                        Resources.getSystem().getConfiguration().locale.toLanguageTag());
+            }
+            return chain.proceed(request.build());
+        });
         MainApplication mainApplication = MainApplication.getINSTANCE();
         if (mainApplication != null) {
+            // Fallback DNS cache responses in case request fail but already succeeded once in the past
             httpclientBuilder.dns(fallbackDNS = new FallBackDNS(mainApplication, dns,
                     "github.com", "api.github.com", "raw.githubusercontent.com",
                     "camo.githubusercontent.com", "user-images.githubusercontent.com",
                     "cdn.jsdelivr.net", "img.shields.io", "magisk-modules-repo.github.io",
-                    "www.androidacy.com"));
+                    "www.androidacy.com", "api.androidacy.com"));
             httpClient = httpclientBuilder.build();
             httpclientBuilder.cache(new Cache(
                     new File(mainApplication.getCacheDir(), "http_cache"),
-                    2L * 1024L * 1024L)); // 2Mib of cache
+                    16L * 1024L * 1024L)); // 16Mib of cache
             httpclientBuilder.cookieJar(new CDNCookieJar());
             httpClientWithCache = httpclientBuilder.build();
             Log.i(TAG, "Initialized Http successfully!");
@@ -315,5 +333,35 @@ public class Http {
             }
             return inetAddresses;
         }
+    }
+
+    /**
+     * Change URL to appropriate url and force Magisk link to use latest version.
+     */
+    public static String updateLink(String string) {
+        if (string.startsWith("https://cdn.jsdelivr.net/gh/Magisk-Modules-Repo/")) {
+            int start = string.lastIndexOf('@'),
+                    end = string.lastIndexOf('/');
+            if ((end - 8) <= start) return string; // Skip if not a commit id
+            return string.substring(0, start + 1) + "master" + string.substring(end);
+        }
+        if (string.startsWith("https://github.com/Magisk-Modules-Repo/")) {
+            int i = string.lastIndexOf("/archive/");
+            if (i != -1) return string.substring(0, i + 9) + "master.zip";
+        }
+        return fixUpLink(string);
+    }
+
+    /**
+     * Change URL to appropriate url
+     */
+    public static String fixUpLink(String string) {
+        if (string.startsWith("https://raw.githubusercontent.com/")) {
+            String[] tokens = string.substring(34).split("/", 4);
+            if (tokens.length != 4) return string;
+            return "https://cdn.jsdelivr.net/gh/" +
+                    tokens[0] + "/" + tokens[1] + "@" + tokens[2] + "/" + tokens[3];
+        }
+        return string;
     }
 }

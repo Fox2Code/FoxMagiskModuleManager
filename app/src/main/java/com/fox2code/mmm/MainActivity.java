@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.installer.InstallerInitializer;
+import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.settings.SettingsActivity;
@@ -115,16 +116,42 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                     progressIndicator.setMax(PRECISION);
                 });
                 Log.i(TAG, "Scanning for modules!");
-                RepoManager.getINSTANCE().update(value -> runOnUiThread(() ->
-                        progressIndicator.setProgressCompat((int) (value * PRECISION), true)));
+                final int max = ModuleManager.getINSTANCE().getUpdatableModuleCount();
+                RepoManager.getINSTANCE().update(value -> runOnUiThread(max == 0 ? () ->
+                        progressIndicator.setProgressCompat(
+                                (int) (value * PRECISION), true) :() ->
+                        progressIndicator.setProgressCompat(
+                                (int) (value * PRECISION * 0.75F), true)));
+                if (!RepoManager.getINSTANCE().hasConnectivity()) {
+                    moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
+                } else {
+                    if (AppUpdateManager.getAppUpdateManager().checkUpdate(true))
+                        moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
+                    if (max != 0) {
+                        int current = 0;
+                        for (LocalModuleInfo localModuleInfo :
+                                ModuleManager.getINSTANCE().getModules().values()) {
+                            if (localModuleInfo.updateJson != null) {
+                                try {
+                                    localModuleInfo.checkModuleUpdate();
+                                } catch (Exception e) {
+                                    Log.e("MainActivity", "Failed to fetch update of: "
+                                            + localModuleInfo.id, e);
+                                }
+                                current++;
+                                final int currentTmp = current;
+                                runOnUiThread(() -> progressIndicator.setProgressCompat(
+                                        (int) ((1F * currentTmp / max) * PRECISION * 0.25F
+                                                + (PRECISION * 0.75F)), true));
+                            }
+                        }
+                    }
+                }
                 runOnUiThread(() -> {
+                    progressIndicator.setProgressCompat(PRECISION, true);
                     progressIndicator.setVisibility(View.GONE);
                     searchView.setEnabled(true);
                 });
-                if (!RepoManager.getINSTANCE().hasConnectivity())
-                    moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
-                else if (AppUpdateManager.getAppUpdateManager().checkUpdate(true))
-                    moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
                 moduleViewListBuilder.appendRemoteModules();
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
                 Log.i(TAG, "Finished app opening state!");
@@ -156,6 +183,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         this.cardIconifyUpdate();
         this.moduleViewListBuilder.setQuery(null);
         Log.i(TAG, "Item After");
+        this.moduleViewListBuilder.refreshNotificationsUI(this.moduleViewAdapter);
         InstallerInitializer.tryGetMagiskPathAsync(new InstallerInitializer.Callback() {
             @Override
             public void onPathReceived(String path) {

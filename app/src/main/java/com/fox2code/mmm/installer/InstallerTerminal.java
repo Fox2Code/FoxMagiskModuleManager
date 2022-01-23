@@ -1,8 +1,6 @@
 package com.fox2code.mmm.installer;
 
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.view.ViewGroup;
 import android.widget.TextView;
 

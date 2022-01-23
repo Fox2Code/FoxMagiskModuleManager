@@ -212,10 +212,13 @@ public class MainApplication extends Application implements CompatActivity.Appli
         switch (this.managerThemeResId) {
             case R.style.Theme_MagiskModuleManager:
                 this.nightModeOverride = null;
+                break;
             case R.style.Theme_MagiskModuleManager_Light:
                 this.nightModeOverride = Boolean.FALSE;
+                break;
             case R.style.Theme_MagiskModuleManager_Dark:
                 this.nightModeOverride = Boolean.TRUE;
+                break;
             default:
         }
         if (this.markwonThemeContext != null) {
@@ -223,6 +226,25 @@ public class MainApplication extends Application implements CompatActivity.Appli
             this.markwonThemeContext.setTheme(resId);
         }
         this.markwon = null;
+    }
+
+    public void updateTheme() {
+        @StyleRes int themeResId;
+        String theme;
+        switch (theme = getSharedPreferences().getString("pref_theme", "system")) {
+            default:
+                Log.w("MainApplication", "Unknown theme id: " + theme);
+            case "system":
+                themeResId = R.style.Theme_MagiskModuleManager;
+                break;
+            case "dark":
+                themeResId = R.style.Theme_MagiskModuleManager_Dark;
+                break;
+            case "light":
+                themeResId = R.style.Theme_MagiskModuleManager_Light;
+                break;
+        }
+        this.setManagerThemeResId(themeResId);
     }
 
     @StyleRes
@@ -267,20 +289,7 @@ public class MainApplication extends Application implements CompatActivity.Appli
         } else {
             MainApplication.firstBoot = bootPrefs.getBoolean("first_boot", false);
         }
-        @StyleRes int themeResId;
-        switch (getSharedPreferences().getString("pref_theme", "system")) {
-            default:
-            case "system":
-                themeResId = R.style.Theme_MagiskModuleManager;
-                break;
-            case "dark":
-                themeResId = R.style.Theme_MagiskModuleManager_Dark;
-                break;
-            case "light":
-                themeResId = R.style.Theme_MagiskModuleManager_Light;
-                break;
-        }
-        this.setManagerThemeResId(themeResId);
+        this.updateTheme();
         // Update SSL Ciphers if update is possible
         GMSProviderInstaller.installIfNeeded(this);
         // Update emoji config

@@ -11,6 +11,8 @@ public class Constants {
     public static final String EXTRA_INSTALL_PATH = "extra_install_path";
     public static final String EXTRA_INSTALL_NAME = "extra_install_name";
     public static final String EXTRA_INSTALL_CONFIG = "extra_install_config";
+    public static final String EXTRA_INSTALL_NO_PATCH = "extra_install_no_patch";
+    public static final String EXTRA_INSTALL_NO_EXTENSIONS = "extra_install_no_extensions";
     public static final String EXTRA_MARKDOWN_URL = "extra_markdown_url";
     public static final String EXTRA_MARKDOWN_TITLE = "extra_markdown_title";
     public static final String EXTRA_MARKDOWN_CONFIG = "extra_markdown_config";

@@ -4,10 +4,19 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.R;
+import com.fox2code.mmm.utils.Files;
 import com.fox2code.mmm.utils.PropUtils;
 import com.topjohnwu.superuser.Shell;
 import com.topjohnwu.superuser.io.SuFile;
+import com.topjohnwu.superuser.io.SuFileInputStream;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -20,9 +29,10 @@ public final class ModuleManager {
             ModuleInfo.FLAG_MODULE_DISABLED | ModuleInfo.FLAG_MODULE_UPDATING |
             ModuleInfo.FLAG_MODULE_UNINSTALLING | ModuleInfo.FLAG_MODULE_ACTIVE;
     private static final int FLAGS_RESET_UPDATE = FLAG_MM_INVALID | FLAG_MM_UNPROCESSED;
-    private final HashMap<String, ModuleInfo> moduleInfos;
+    private final HashMap<String, LocalModuleInfo> moduleInfos;
     private final SharedPreferences bootPrefs;
     private final Object scanLock = new Object();
+    private int updatableModuleCount = 0;
     private boolean scanning;
 
     private static final ModuleManager INSTANCE = new ModuleManager();
@@ -75,16 +85,18 @@ public final class ModuleManager {
             v.version = null;
             v.versionCode = 0;
             v.author = null;
-            v.description = "No description found.";
+            v.description = "";
             v.support = null;
             v.config = null;
         }
         String[] modules = new SuFile("/data/adb/modules").list();
         if (modules != null) {
             for (String module : modules) {
-                ModuleInfo moduleInfo = moduleInfos.get(module);
+                if (!new SuFile("/data/adb/modules/" + module).isDirectory())
+                    continue; // Ignore non directory files inside modules folder
+                LocalModuleInfo moduleInfo = moduleInfos.get(module);
                 if (moduleInfo == null) {
-                    moduleInfo = new ModuleInfo(module);
+                    moduleInfo = new LocalModuleInfo(module);
                     moduleInfos.put(module, moduleInfo);
                     // Shis should not really happen, but let's handles theses cases anyway
                     moduleInfo.flags |= ModuleInfo.FLAG_MODULE_UPDATING_ONLY;
@@ -119,9 +131,9 @@ public final class ModuleManager {
         String[] modules_update = new SuFile("/data/adb/modules_update").list();
         if (modules_update != null) {
             for (String module : modules_update) {
-                ModuleInfo moduleInfo = moduleInfos.get(module);
+                LocalModuleInfo moduleInfo = moduleInfos.get(module);
                 if (moduleInfo == null) {
-                    moduleInfo = new ModuleInfo(module);
+                    moduleInfo = new LocalModuleInfo(module);
                     moduleInfos.put(module, moduleInfo);
                 }
                 moduleInfo.flags &= ~FLAGS_RESET_UPDATE;
@@ -135,19 +147,28 @@ public final class ModuleManager {
                 }
             }
         }
-        Iterator<ModuleInfo> moduleInfoIterator =
+        this.updatableModuleCount = 0;
+        Iterator<LocalModuleInfo> moduleInfoIterator =
                 this.moduleInfos.values().iterator();
         while (moduleInfoIterator.hasNext()) {
-            ModuleInfo moduleInfo = moduleInfoIterator.next();
+            LocalModuleInfo moduleInfo = moduleInfoIterator.next();
             if ((moduleInfo.flags & FLAG_MM_UNPROCESSED) != 0) {
                 moduleInfoIterator.remove();
                 continue; // Don't process fallbacks if unreferenced
+            }
+            if (moduleInfo.updateJson != null) {
+                this.updatableModuleCount++;
+            } else {
+                moduleInfo.updateVersion = null;
+                moduleInfo.updateVersionCode = Long.MIN_VALUE;
+                moduleInfo.updateZipUrl = null;
+                moduleInfo.updateChangeLog = null;
             }
             if (moduleInfo.name == null || (moduleInfo.name.equals(moduleInfo.id))) {
                 moduleInfo.name = Character.toUpperCase(moduleInfo.id.charAt(0)) +
                         moduleInfo.id.substring(1).replace('_', ' ');
             }
-            if (moduleInfo.version == null) {
+            if (moduleInfo.version == null || moduleInfo.version.trim().isEmpty()) {
                 moduleInfo.version = "v" + moduleInfo.versionCode;
             }
         }
@@ -157,9 +178,14 @@ public final class ModuleManager {
         }
     }
 
-    public HashMap<String, ModuleInfo> getModules() {
+    public HashMap<String, LocalModuleInfo> getModules() {
         this.afterScan();
         return this.moduleInfos;
+    }
+
+    public int getUpdatableModuleCount() {
+        this.afterScan();
+        return this.updatableModuleCount;
     }
 
     public boolean setEnabledState(ModuleInfo moduleInfo, boolean checked) {
@@ -200,8 +226,28 @@ public final class ModuleManager {
 
     public boolean masterClear(ModuleInfo moduleInfo) {
         if (moduleInfo.hasFlag(ModuleInfo.FLAG_MODULE_ACTIVE)) return false;
-        Shell.su("rm -rf /data/adb/modules/" + moduleInfo.id + "/").exec();
-        Shell.su("rm -rf /data/adb/modules_update/" + moduleInfo.id + "/").exec();
+        String escapedId = moduleInfo.id.replace("\\", "\\\\")
+                .replace("\"", "\\\"").replace(" ", "\\ ");
+        try { // Check for module that declare having file outside their own folder.
+            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
+                    SuFileInputStream.open("/data/adb/modules/." + moduleInfo.id + "-files"),
+                            StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    line = line.trim().replace(' ', '.');
+                    if (!line.startsWith("/data/adb/") || line.contains("*") ||
+                            line.contains("/../") || line.endsWith("/..") ||
+                            line.startsWith("/data/adb/modules") ||
+                            line.equals("/data/adb/magisk.db")) continue;
+                    line = line.replace("\\", "\\\\")
+                            .replace("\"", "\\\"");
+                    Shell.su("rm -rf \"" + line + "\"").exec();
+                }
+            }
+        } catch (IOException ignored) {}
+        Shell.su("rm -rf /data/adb/modules/" + escapedId + "/").exec();
+        Shell.su("rm -f /data/adb/modules/." + escapedId + "-files").exec();
+        Shell.su("rm -rf /data/adb/modules_update/" + escapedId + "/").exec();
         moduleInfo.flags = ModuleInfo.FLAG_METADATA_INVALID;
         return true;
     }

@@ -2,6 +2,7 @@ package com.fox2code.mmm.installer;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -12,10 +13,12 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.fox2code.mmm.ActionButtonType;
+import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.compat.CompatActivity;
+import com.fox2code.mmm.utils.FastException;
 import com.fox2code.mmm.utils.Files;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
@@ -48,6 +51,8 @@ public class InstallerActivity extends CompatActivity {
         final Intent intent = this.getIntent();
         final String target;
         final String name;
+        final boolean noPatch;
+        final boolean noExtensions;
         // Should we allow 3rd part app to install modules?
         if (Constants.INTENT_INSTALL_INTERNAL.equals(intent.getAction())) {
             if (!MainApplication.checkSecret(intent)) {
@@ -55,13 +60,17 @@ public class InstallerActivity extends CompatActivity {
                 this.forceBackPressed();
                 return;
             }
-            target = intent.getExtras().getString(Constants.EXTRA_INSTALL_PATH);
-            name = intent.getExtras().getString(Constants.EXTRA_INSTALL_NAME);
+            target = intent.getStringExtra(Constants.EXTRA_INSTALL_PATH);
+            name = intent.getStringExtra(Constants.EXTRA_INSTALL_NAME);
+            noPatch = intent.getBooleanExtra(Constants.EXTRA_INSTALL_NO_PATCH, false);
+            noExtensions = intent.getBooleanExtra(// Allow intent to disable extensions
+                    Constants.EXTRA_INSTALL_NO_EXTENSIONS, false);
         } else {
             Toast.makeText(this, "Unknown intent!", Toast.LENGTH_SHORT).show();
             this.forceBackPressed();
             return;
         }
+        Log.i(TAG, "Install link: " + target);
         boolean urlMode = target.startsWith("http://") || target.startsWith("https://");
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setTitle(name);
@@ -103,23 +112,29 @@ public class InstallerActivity extends CompatActivity {
                             this.progressIndicator.setProgressCompat(progress, true);
                         });
                     });
-                    this.runOnUiThread(() -> {
-                                this.installerTerminal.addLine("- Patching " + name);
-                                this.progressIndicator.setVisibility(View.GONE);
-                                this.progressIndicator.setIndeterminate(true);
-                    });
-                    Log.i(TAG, "Patching: " + moduleCache.getName());
-                    try (OutputStream outputStream = new FileOutputStream(moduleCache)) {
-                        Files.patchModuleSimple(rawModule, outputStream);
-                        outputStream.flush();
-                    } finally {
-                        //noinspection UnusedAssignment (Important for GC)
-                        rawModule = null;
+                    if (noPatch) {
+                        try (OutputStream outputStream = new FileOutputStream(moduleCache)) {
+                            outputStream.write(rawModule);
+                            outputStream.flush();
+                        }
+                    } else {
+                        this.runOnUiThread(() -> {
+                            this.installerTerminal.addLine("- Patching " + name);
+                            this.progressIndicator.setVisibility(View.GONE);
+                            this.progressIndicator.setIndeterminate(true);
+                        });
+                        Log.i(TAG, "Patching: " + moduleCache.getName());
+                        try (OutputStream outputStream = new FileOutputStream(moduleCache)) {
+                            Files.patchModuleSimple(rawModule, outputStream);
+                            outputStream.flush();
+                        }
                     }
+                    //noinspection UnusedAssignment (Important to avoid OutOfMemoryError)
+                    rawModule = null;
                     this.runOnUiThread(() -> {
                         this.installerTerminal.addLine("- Installing " + name);
                     });
-                    this.doInstall(moduleCache);
+                    this.doInstall(moduleCache, noExtensions);
                 } catch (IOException e) {
                     Log.e(TAG, "Failed to download module zip", e);
                     this.setInstallStateFinished(false,
@@ -129,24 +144,36 @@ public class InstallerActivity extends CompatActivity {
         } else {
             this.installerTerminal.addLine("- Installing " + name);
             new Thread(() -> this.doInstall(
-                    this.toDelete = new File(target)),
+                    this.toDelete = new File(target), noExtensions),
                     "Install Thread").start();
         }
     }
 
-    private void doInstall(File file) {
+    private void doInstall(File file,boolean noExtensions) {
         Log.i(TAG, "Installing: " + moduleCache.getName());
         InstallerController installerController = new InstallerController(
-                this.progressIndicator, this.installerTerminal, file.getAbsoluteFile());
+                this.progressIndicator, this.installerTerminal,
+                file.getAbsoluteFile(), noExtensions);
         InstallerMonitor installerMonitor;
         Shell.Job installJob;
-        if (MainApplication.isUsingMagiskCommand()) {
+        if (MainApplication.isUsingMagiskCommand() || noExtensions) {
             installerMonitor = new InstallerMonitor(new File(InstallerInitializer
                     .peekMagiskPath().equals("/sbin") ? "/sbin/magisk" : "/system/bin/magisk"));
-            installJob = Shell.su("export MMM_EXT_SUPPORT=1",
-                    "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
-                    "magisk --install-module \"" + file.getAbsolutePath() + "\"")
-                    .to(installerController, installerMonitor);
+            if (noExtensions) {
+                installJob = Shell.su( // No Extensions
+                        "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
+                        "magisk --install-module \"" + file.getAbsolutePath() + "\"")
+                        .to(installerController, installerMonitor);
+            } else {
+                installJob = Shell.su("export MMM_EXT_SUPPORT=1",
+                        "export MMM_USER_LANGUAGE=" + (MainApplication.isForceEnglish() ?
+                                "en-US" : Resources.getSystem()
+                                .getConfiguration().locale.toLanguageTag()),
+                        "export MMM_APP_VERSION=" + BuildConfig.VERSION_NAME,
+                        "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
+                        "magisk --install-module \"" + file.getAbsolutePath() + "\"")
+                        .to(installerController, installerMonitor);
+            }
         } else {
             File installScript = this.extractCompatScript();
             if (installScript == null) {
@@ -156,6 +183,10 @@ public class InstallerActivity extends CompatActivity {
             }
             installerMonitor = new InstallerMonitor(installScript);
             installJob = Shell.su("export MMM_EXT_SUPPORT=1",
+                    "export MMM_USER_LANGUAGE=" + (MainApplication.isForceEnglish() ?
+                            "en-US" : Resources.getSystem()
+                            .getConfiguration().locale.toLanguageTag()),
+                    "export MMM_APP_VERSION=" + BuildConfig.VERSION_NAME,
                     "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
                     "sh \"" + installScript.getAbsolutePath() + "\"" +
                             " /dev/null 1 \"" + file.getAbsolutePath() + "\"")
@@ -182,14 +213,17 @@ public class InstallerActivity extends CompatActivity {
         private final LinearProgressIndicator progressIndicator;
         private final InstallerTerminal terminal;
         private final File moduleFile;
+        private final boolean noExtension;
         private boolean enabled, useExt;
         private String supportLink = "";
 
         private InstallerController(LinearProgressIndicator progressIndicator,
-                                    InstallerTerminal terminal,File moduleFile) {
+                                    InstallerTerminal terminal,File moduleFile,
+                                    boolean noExtension) {
             this.progressIndicator = progressIndicator;
             this.terminal = terminal;
             this.moduleFile = moduleFile;
+            this.noExtension = noExtension;
             this.enabled = true;
             this.useExt = false;
         }
@@ -198,7 +232,7 @@ public class InstallerActivity extends CompatActivity {
         public void onAddElement(String s) {
             if (!this.enabled) return;
             Log.d(TAG, "MSG: " + s);
-            if ("#!useExt".equals(s)) {
+            if ("#!useExt".equals(s.trim()) && !this.noExtension) {
                 this.useExt = true;
                 return;
             }
@@ -216,7 +250,7 @@ public class InstallerActivity extends CompatActivity {
             final String command;
             int i = rawCommand.indexOf(' ');
             if (i != -1) {
-                arg = rawCommand.substring(i + 1);
+                arg = rawCommand.substring(i + 1).trim();
                 command = rawCommand.substring(2, i);
             } else {
                 arg = "";
@@ -239,7 +273,35 @@ public class InstallerActivity extends CompatActivity {
                     this.terminal.scrollDown();
                     break;
                 case "showLoading":
+                    if (!arg.isEmpty()) {
+                        try {
+                            short s = Short.parseShort(arg);
+                            if (s <= 0) throw FastException.INSTANCE;
+                            this.progressIndicator.setMax(s);
+                            this.progressIndicator.setIndeterminate(false);
+                        } catch (Exception ignored) {
+                            this.progressIndicator.setProgressCompat(0, true);
+                            this.progressIndicator.setMax(100);
+                            if (this.progressIndicator.getVisibility() == View.VISIBLE) {
+                                this.progressIndicator.setVisibility(View.GONE);
+                            }
+                            this.progressIndicator.setIndeterminate(true);
+                        }
+                    } else if (!rawCommand.trim().equals("#!showLoading")) {
+                        this.progressIndicator.setProgressCompat(0, true);
+                        this.progressIndicator.setMax(100);
+                        if (this.progressIndicator.getVisibility() == View.VISIBLE) {
+                            this.progressIndicator.setVisibility(View.GONE);
+                        }
+                        this.progressIndicator.setIndeterminate(true);
+                    }
                     this.progressIndicator.setVisibility(View.VISIBLE);
+                    break;
+                case "setLoading":
+                    try {
+                        this.progressIndicator.setProgressCompat(
+                                Short.parseShort(arg), true);
+                    } catch (Exception ignored) {}
                     break;
                 case "hideLoading":
                     this.progressIndicator.setVisibility(View.GONE);

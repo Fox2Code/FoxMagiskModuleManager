@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fox2code.mmm.installer.InstallerInitializer;
+import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
 import com.fox2code.mmm.repo.RepoManager;
@@ -49,7 +50,7 @@ public class ModuleViewListBuilder {
             ModuleManager moduleManager = ModuleManager.getINSTANCE();
             moduleManager.runAfterScan(() -> {
                 Log.i(TAG, "A1: " + moduleManager.getModules().size());
-                for (ModuleInfo moduleInfo : moduleManager.getModules().values()) {
+                for (LocalModuleInfo moduleInfo : moduleManager.getModules().values()) {
                     ModuleHolder moduleHolder = this.mappedModuleHolders.get(moduleInfo.id);
                     if (moduleHolder == null) {
                         this.mappedModuleHolders.put(moduleInfo.id,
@@ -188,6 +189,12 @@ public class ModuleViewListBuilder {
             if (isTop) moduleList.scrollToPosition(0);
             if (isBottom) moduleList.scrollToPosition(newLen);
         });
+    }
+
+    public void refreshNotificationsUI(ModuleViewAdapter moduleViewAdapter) {
+        final int notificationCount = this.notifications.size();
+        notifySizeChanged(moduleViewAdapter, 0,
+                notificationCount, notificationCount);
     }
 
     private boolean matchFilter(ModuleHolder moduleHolder) {

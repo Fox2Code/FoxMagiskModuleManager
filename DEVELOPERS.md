@@ -55,7 +55,7 @@ So the original module maker can still override them
 
 The Fox's Mmm also allow better control over it's installer interface
 
-Fox's Mmm defined the variable `MMM_EXT_SUPPORT` to expose it's extension support
+Fox's Mmm define the variable `MMM_EXT_SUPPORT` to expose it's extensions support
 
 All the commands start with it `#!`, by default the manager process command as log output
 unless `#!useExt` is sent to indicate that the app is ready to use commands
@@ -70,15 +70,21 @@ Commands:
 - `clearTerminal`: Clear the terminal of any text, making it empty
 - `scrollUp`: Scroll up at the top of the terminal
 - `scrollDown`: Scroll down at the bottom of the terminal
-- `showLoading`: Show an indeterminate progress bar
-  (Note: the bar is automatically hidden when the install finish)
+- `showLoading <max>`: Show an indeterminate progress bar
+  (Note: Status bar is indeterminate if 0 is provided)
+- `setLoading <progress>`: Set loading progress if the bar is not indeterminate.
 - `hideLoading`: Hide the indeterminate progress bar if previously shown
 - `setSupportLink <url>`: Set support link to show when the install finish  
   (Note: Modules installed from repo will not show the config button if a link is set)
 
+Variables:
+- `MMM_EXT_SUPPORT` declared if extensions are supported
+- `MMM_USER_LANGUAGE` the current user selected language
+- `MMM_APP_VERSION` display version of the app (Ex: `x.y.z`)
+
 Note: 
 The current behavior with unknown command is to ignore them, 
-I may add or remove commands in the future depending of how they are used
+I may add or remove commands/variables in the future depending of how they are used
 
 A wrapper script to use theses commands could be
 ```sh

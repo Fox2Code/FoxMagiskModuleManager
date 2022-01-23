@@ -28,6 +28,7 @@ public class RepoUpdater {
     public int fetchIndex() {
         try {
             this.indexRaw = Http.doHttpGet(this.repoData.url, false);
+            if (this.repoData.special) this.repoData.updateSpecialTimes(true);
             this.toUpdate = this.repoData.populate(new JSONObject(
                     new String(this.indexRaw, StandardCharsets.UTF_8)));
             // Since we reuse instances this should work

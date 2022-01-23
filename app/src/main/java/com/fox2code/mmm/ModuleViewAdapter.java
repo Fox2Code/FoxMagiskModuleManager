@@ -19,6 +19,7 @@ import androidx.annotation.StringRes;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
 import com.fox2code.mmm.repo.RepoModule;
@@ -164,7 +165,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
             boolean showCaseMode = MainApplication.isShowcaseMode();
             if (moduleHolder.isModuleHolder()) {
                 this.buttonAction.setVisibility(View.GONE);
-                ModuleInfo localModuleInfo = moduleHolder.moduleInfo;
+                LocalModuleInfo localModuleInfo = moduleHolder.moduleInfo;
                 if (localModuleInfo != null) {
                     this.switchMaterial.setVisibility(View.VISIBLE);
                     this.switchMaterial.setChecked((localModuleInfo.flags &
@@ -177,12 +178,27 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
 
                 ModuleInfo moduleInfo = moduleHolder.getMainModuleInfo();
                 this.titleText.setText(moduleInfo.name);
-                this.creditText.setText((localModuleInfo == null ||
-                        moduleInfo.version.equals(localModuleInfo.version) ? moduleInfo.version :
-                        localModuleInfo.version + " (" + this.getString(
-                                R.string.module_last_update) + moduleInfo.version + ")") +
-                        " " + this.getString(R.string.module_by) + " " + moduleInfo.author);
-                this.descriptionText.setText(moduleInfo.description);
+                if (localModuleInfo == null || moduleInfo.versionCode >
+                        localModuleInfo.updateVersionCode) {
+                    this.creditText.setText((localModuleInfo == null ||
+                            moduleInfo.version.equals(localModuleInfo.version) ?
+                            moduleInfo.version : localModuleInfo.version + " (" +
+                            this.getString(R.string.module_last_update) +
+                            moduleInfo.version + ")") + " " +
+                            this.getString(R.string.module_by) + " " + moduleInfo.author);
+                } else {
+                    this.creditText.setText((
+                            localModuleInfo.version.equals(localModuleInfo.updateVersion) ?
+                                    localModuleInfo.version : localModuleInfo.version + " (" +
+                            this.getString(R.string.module_last_update) +
+                                    localModuleInfo.updateVersion + ")") + " " +
+                            this.getString(R.string.module_by) + " " + localModuleInfo.author);
+                }
+                if (moduleInfo.description == null || moduleInfo.description.isEmpty()) {
+                    this.descriptionText.setText(R.string.no_desc_found);
+                } else {
+                    this.descriptionText.setText(moduleInfo.description);
+                }
                 String updateText = moduleHolder.getUpdateTimeText();
                 if (!updateText.isEmpty()) {
                     this.updateText.setVisibility(View.VISIBLE);
@@ -262,20 +278,32 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     this.cardView.setBackground(this.background);
                 }
                 int backgroundAttr = R.attr.colorBackgroundFloating;
+                int foregroundAttr = R.attr.colorOnBackground;
                 if (type == ModuleHolder.Type.NOTIFICATION) {
+                    foregroundAttr = moduleHolder.notificationType.foregroundAttr;
                     backgroundAttr = moduleHolder.notificationType.backgroundAttr;
                 } else if (type == ModuleHolder.Type.INSTALLED &&
                         moduleHolder.hasFlag(ModuleInfo.FLAG_METADATA_INVALID)) {
+                    foregroundAttr = R.attr.colorOnError;
                     backgroundAttr = R.attr.colorError;
                 }
                 Resources.Theme theme = this.cardView.getContext().getTheme();
                 TypedValue value = new TypedValue();
                 theme.resolveAttribute(backgroundAttr, value, true);
-                @ColorInt int color = value.data;
+                @ColorInt int bgColor = value.data;
+                theme.resolveAttribute(foregroundAttr, value, true);
+                @ColorInt int fgColor = value.data;
                 // Fix card background being invisible on light theme
-                if (color == Color.WHITE) color = 0xFFF8F8F8;
-                this.cardView.setCardBackgroundColor(color);
+                if (bgColor == Color.WHITE) bgColor = 0xFFF8F8F8;
+                this.titleText.setTextColor(fgColor);
+                this.buttonAction.setColorFilter(fgColor);
+                this.cardView.setCardBackgroundColor(bgColor);
             } else {
+                Resources.Theme theme = this.titleText.getContext().getTheme();
+                TypedValue value = new TypedValue();
+                theme.resolveAttribute(R.attr.colorOnBackground, value, true);
+                this.buttonAction.setColorFilter(value.data);
+                this.titleText.setTextColor(value.data);
                 this.cardView.setBackground(null);
             }
             if (type == ModuleHolder.Type.FOOTER) {

@@ -21,6 +21,7 @@ public class ModuleInfo {
     public long versionCode;
     public String author;
     public String description;
+    public String updateJson;
     // Community meta
     public String support;
     public String donate;
@@ -35,6 +36,23 @@ public class ModuleInfo {
     public ModuleInfo(String id) {
         this.id = id;
         this.name = id;
+    }
+
+    public ModuleInfo(ModuleInfo moduleInfo) {
+        this.id = moduleInfo.id;
+        this.name = moduleInfo.name;
+        this.version = moduleInfo.version;
+        this.versionCode = moduleInfo.versionCode;
+        this.author = moduleInfo.author;
+        this.description = moduleInfo.description;
+        this.updateJson = moduleInfo.updateJson;
+        this.support = moduleInfo.support;
+        this.donate = moduleInfo.donate;
+        this.config = moduleInfo.config;
+        this.minMagisk = moduleInfo.minMagisk;
+        this.minApi = moduleInfo.minApi;
+        this.maxApi = moduleInfo.maxApi;
+        this.flags = moduleInfo.flags;
     }
 
     public boolean hasFlag(int flag) {

@@ -41,8 +41,8 @@ public class AppUpdateManager {
             return true;
         long lastChecked = this.lastChecked;
         if (lastChecked != 0 &&
-                // Avoid spam calls by putting a 10 seconds timer
-                lastChecked < System.currentTimeMillis() - 10000L)
+                // Avoid spam calls by putting a 60 seconds timer
+                lastChecked < System.currentTimeMillis() - 60000L)
             return force && this.peekShouldUpdate();
         synchronized (this.updateLock) {
             if (lastChecked != this.lastChecked)

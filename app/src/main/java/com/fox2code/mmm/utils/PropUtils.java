@@ -8,15 +8,22 @@ import com.topjohnwu.superuser.io.SuFileInputStream;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Objects;
 
 public class PropUtils {
     private static final HashMap<String, String> moduleSupportsFallbacks = new HashMap<>();
     private static final HashMap<String, String> moduleConfigsFallbacks = new HashMap<>();
     private static final HashMap<String, Integer> moduleMinApiFallbacks = new HashMap<>();
+    private static final HashSet<String> moduleImportantProp = new HashSet<>(Arrays.asList(
+            "id", "name", "version", "versionCode"
+    ));
     private static final int RIRU_MIN_API;
 
     // Note: These fallback values may not be up-to-date
@@ -50,11 +57,23 @@ public class PropUtils {
         moduleMinApiFallbacks.put("riru-core", RIRU_MIN_API = Build.VERSION_CODES.M);
     }
 
-    public static void readProperties(ModuleInfo moduleInfo, String file,boolean local) throws IOException {
+    public static void readProperties(ModuleInfo moduleInfo, String file,
+                                      boolean local) throws IOException {
+        readProperties(moduleInfo, SuFileInputStream.open(file), file, local);
+    }
+
+    public static void readProperties(ModuleInfo moduleInfo, String file,
+                                      String name, boolean local) throws IOException {
+        readProperties(moduleInfo, SuFileInputStream.open(file), name, local);
+    }
+
+    public static void readProperties(ModuleInfo moduleInfo, InputStream inputStream,
+                                      String name, boolean local) throws IOException {
         boolean readId = false, readIdSec = false, readName = false,
-                readVersionCode = false, readVersion = false, invalid = false;
+                readVersionCode = false, readVersion = false, readDescription = false,
+                readUpdateJson = false, invalid = false;
         try (BufferedReader bufferedReader = new BufferedReader(
-                new InputStreamReader(SuFileInputStream.open(file), StandardCharsets.UTF_8))) {
+                new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             String line;
             int lineNum = 0;
             while ((line = bufferedReader.readLine()) != null) {
@@ -70,11 +89,15 @@ public class PropUtils {
                         invalid = true;
                         continue;
                     } else throw new IOException("Invalid key at line " + lineNum);
-                } else if (isInvalidValue(value) && !key.equals("id") && !key.equals("name")) {
-                    if (local) {
-                        invalid = true;
-                        continue;
-                    } else throw new IOException("Invalid value for key " + key);
+                } else {
+                    if (value.isEmpty() && !moduleImportantProp.contains(key))
+                        continue; // allow empty values to pass.
+                    if (isInvalidValue(value)) {
+                        if (local) {
+                            invalid = true;
+                            continue;
+                        } else throw new IOException("Invalid value for key " + key);
+                    }
                 }
                 switch (key) {
                     case "id":
@@ -89,7 +112,7 @@ public class PropUtils {
                             if (local) {
                                 invalid = true;
                             } else {
-                                throw new IOException(file + " has an non matching module id! " +
+                                throw new IOException(name + " has an non matching module id! " +
                                         "(Expected \"" + moduleInfo.id + "\" got \"" + value + "\"");
                             }
                         }
@@ -134,6 +157,12 @@ public class PropUtils {
                         break;
                     case "description":
                         moduleInfo.description = value;
+                        readDescription = true;
+                        break;
+                    case "updateJson":
+                        if (isInvalidURL(value)) break;
+                        moduleInfo.updateJson = Http.fixUpLink(value);
+                        readUpdateJson = true;
                         break;
                     case "support":
                         // Do not accept invalid or too broad support links
@@ -198,12 +227,18 @@ public class PropUtils {
                 throw new IOException("Didn't read module versionCode at least once!");
             }
         }
-        if (moduleInfo.name == null || !readName) {
+        if (!readName || isInvalidValue(moduleInfo.name)) {
             moduleInfo.name = makeNameFromId(moduleInfo.id);
         }
         // We can't accept too long version names for usability reason.
-        if (moduleInfo.version == null || !readVersion || moduleInfo.version.length() > 16) {
+        if (!readVersion || moduleInfo.version.length() > 16) {
             moduleInfo.version = "v" + moduleInfo.versionCode;
+        }
+        if (!readDescription || isInvalidValue(moduleInfo.description)) {
+            moduleInfo.description = "";
+        }
+        if (!readUpdateJson) {
+            moduleInfo.updateJson = null;
         }
         if (moduleInfo.minApi == 0) {
             Integer minApiFallback = moduleMinApiFallbacks.get(moduleInfo.id);

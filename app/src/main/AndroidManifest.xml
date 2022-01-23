@@ -28,6 +28,7 @@
         android:theme="@style/Theme.MagiskModuleManager"
         android:fullBackupContent="@xml/full_backup_content"
         android:dataExtractionRules="@xml/data_extraction_rules"
+        android:usesCleartextTraffic="false"
         tools:targetApi="s">
         <receiver android:name="com.fox2code.mmm.manager.ModuleBootReceive"
             android:exported="true">
@@ -39,7 +40,7 @@
             android:name=".settings.SettingsActivity"
             android:parentActivityName=".MainActivity"
             android:exported="true"
-            android:label="@string/title_activity_settings" >
+            android:label="@string/title_activity_settings">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
             </intent-filter>

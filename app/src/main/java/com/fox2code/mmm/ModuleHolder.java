@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 
 import com.fox2code.mmm.installer.InstallerInitializer;
+import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.repo.RepoModule;
 import com.fox2code.mmm.utils.IntentHelper;
@@ -24,7 +25,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
     public final NotificationType notificationType;
     public final Type separator;
     public final int footerPx;
-    public ModuleInfo moduleInfo;
+    public LocalModuleInfo moduleInfo;
     public RepoModule repoModule;
 
     public ModuleHolder(String moduleId) {
@@ -60,7 +61,15 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
     }
 
     public ModuleInfo getMainModuleInfo() {
-        return this.repoModule != null ? this.repoModule.moduleInfo : this.moduleInfo;
+        return this.repoModule != null && (this.moduleInfo == null ||
+                this.moduleInfo.versionCode < this.repoModule.moduleInfo.versionCode)
+                ? this.repoModule.moduleInfo : this.moduleInfo;
+    }
+
+    public String getUpdateZipUrl() {
+        return this.moduleInfo == null || (this.repoModule != null &&
+                this.moduleInfo.updateVersionCode < this.repoModule.lastUpdated) ?
+                this.repoModule.zipUrl : this.moduleInfo.updateZipUrl;
     }
 
     public String getMainModuleName() {
@@ -103,10 +112,9 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
             return Type.NOTIFICATION;
         } else if (this.moduleInfo == null) {
             return Type.INSTALLABLE;
-        } else if (this.repoModule == null) {
-            return Type.INSTALLED;
-        } else if (this.moduleInfo.versionCode <
-                this.repoModule.moduleInfo.versionCode) {
+        } else if (this.moduleInfo.versionCode < this.moduleInfo.updateVersionCode ||
+                (this.repoModule != null && this.moduleInfo.versionCode <
+                        this.repoModule.moduleInfo.versionCode)) {
             return Type.UPDATABLE;
         } else {
             return Type.INSTALLED;
@@ -139,7 +147,8 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
         if (this.repoModule != null) {
             buttonTypeList.add(ActionButtonType.INFO);
         }
-        if (this.repoModule != null && !showcaseMode &&
+        if ((this.repoModule != null || (this.moduleInfo != null &&
+                this.moduleInfo.updateZipUrl != null)) && !showcaseMode &&
                 InstallerInitializer.peekMagiskPath() != null) {
             buttonTypeList.add(ActionButtonType.UPDATE_INSTALL);
         }

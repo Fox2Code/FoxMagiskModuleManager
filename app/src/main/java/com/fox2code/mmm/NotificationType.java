@@ -122,7 +122,7 @@ public enum NotificationType implements NotificationTypeCst {
     public final boolean special;
 
     NotificationType(@StringRes int textId, int iconId) {
-        this(textId, iconId, R.attr.colorError, R.attr.colorOnError);
+        this(textId, iconId, R.attr.colorError, R.attr.colorOnPrimary); //R.attr.colorOnError);
     }
 
     NotificationType(@StringRes int textId, int iconId, int backgroundAttr, int foregroundAttr) {

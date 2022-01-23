@@ -1,6 +1,5 @@
 package com.fox2code.mmm.compat;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 

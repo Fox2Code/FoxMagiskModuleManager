@@ -22,11 +22,17 @@ public final class RepoManager {
             "https://magisk-modules-repo.github.io/submission/modules.json";
     public static final String MAGISK_REPO =
             "https://raw.githubusercontent.com/Magisk-Modules-Repo/submission/modules/modules.json";
+    public static final String MAGISK_REPO_JSDELIVR =
+            "https://cdn.jsdelivr.net/gh/Magisk-Modules-Repo/submission@modules/modules.json";
     public static final String MAGISK_ALT_REPO =
             "https://raw.githubusercontent.com/Magisk-Modules-Alt-Repo/json/main/modules.json";
+    public static final String MAGISK_ALT_REPO_JSDELIVR =
+            "https://cdn.jsdelivr.net/gh/Magisk-Modules-Alt-Repo/json@main/modules.json";
 
-    public static final String MAGISK_REPO_HOMEPAGE = "https://github.com/Magisk-Modules-Repo";
-    public static final String MAGISK_ALT_REPO_HOMEPAGE = "https://github.com/Magisk-Modules-Alt-Repo";
+    public static final String MAGISK_REPO_HOMEPAGE =
+            "https://github.com/Magisk-Modules-Repo";
+    public static final String MAGISK_ALT_REPO_HOMEPAGE =
+            "https://github.com/Magisk-Modules-Alt-Repo";
 
     private static final Object lock = new Object();
     private static RepoManager INSTANCE;
@@ -56,8 +62,8 @@ public final class RepoManager {
         this.repoData = new LinkedHashMap<>();
         this.modules = new HashMap<>();
         // We do not have repo list config yet.
-        this.addRepoData(MAGISK_REPO);
-        this.addRepoData(MAGISK_ALT_REPO);
+        this.addRepoData(MAGISK_REPO_JSDELIVR);
+        this.addRepoData(MAGISK_ALT_REPO_JSDELIVR);
         // Populate default cache
         for (RepoData repoData:this.repoData.values()) {
             for (RepoModule repoModule:repoData.moduleHashMap.values()) {
@@ -77,6 +83,14 @@ public final class RepoManager {
     }
 
     public RepoData get(String url) {
+        switch (url) {
+            case MAGISK_REPO_MANAGER:
+            case MAGISK_REPO:
+                url = MAGISK_REPO_JSDELIVR;
+                break;
+            case MAGISK_ALT_REPO:
+                url = MAGISK_ALT_REPO_JSDELIVR;
+        }
         return this.repoData.get(url);
     }
 
@@ -154,6 +168,8 @@ public final class RepoManager {
             RepoData repoData = repoDatas[i];
             for (RepoModule repoModule:repoModules) {
                 try {
+                    repoData.storeMetadata(repoModule,
+                            Http.doHttpGet(repoModule.propUrl, false));
                     Files.write(new File(repoData.cacheRoot, repoModule.id + ".prop"),
                             Http.doHttpGet(repoModule.propUrl, false));
                     if (repoDatas[i].tryLoadMetadata(repoModule) && (allowLowQualityModules ||
@@ -208,8 +224,10 @@ public final class RepoManager {
         switch (url) {
             case MAGISK_REPO_MANAGER:
             case MAGISK_REPO:
+            case MAGISK_REPO_JSDELIVR:
                 return "magisk_repo";
             case MAGISK_ALT_REPO:
+            case MAGISK_ALT_REPO_JSDELIVR:
                 return "magisk_alt_repo";
             default:
                 return "repo_" + Hashes.hashSha1(url);
@@ -221,7 +239,8 @@ public final class RepoManager {
         File cacheRoot = new File(this.mainApplication.getCacheDir(), id);
         SharedPreferences sharedPreferences = this.mainApplication
                 .getSharedPreferences("mmm_" + id, Context.MODE_PRIVATE);
-        RepoData repoData = new RepoData(url, cacheRoot, sharedPreferences);
+        RepoData repoData = new RepoData(url, cacheRoot,
+                sharedPreferences, id.equals("magisk_repo"));
         this.repoData.put(url, repoData);
         return repoData;
     }

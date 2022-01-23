@@ -7,6 +7,7 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -117,8 +118,13 @@ public class CompatActivity extends AppCompatActivity {
     }
 
     public void setDisplayHomeAsUpEnabled(boolean showHomeAsUp) {
-        androidx.appcompat.app.ActionBar compatActionBar = this.getSupportActionBar();
-
+        androidx.appcompat.app.ActionBar compatActionBar;
+        try {
+            compatActionBar = this.getSupportActionBar();
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to call getSupportActionBar", e);
+            compatActionBar = null; // Allow fallback to builtin actionBar.
+        }
         if (compatActionBar != null) {
             compatActionBar.setDisplayHomeAsUpEnabled(showHomeAsUp);
         } else {
@@ -192,7 +198,13 @@ public class CompatActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            androidx.appcompat.app.ActionBar compatActionBar = this.getSupportActionBar();
+            androidx.appcompat.app.ActionBar compatActionBar;
+            try {
+                compatActionBar = this.getSupportActionBar();
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to call getSupportActionBar", e);
+                compatActionBar = null; // Allow fallback to builtin actionBar.
+            }
             android.app.ActionBar actionBar = this.getActionBar();
             if (compatActionBar != null ? (compatActionBar.getDisplayOptions() &
                     androidx.appcompat.app.ActionBar.DISPLAY_HOME_AS_UP) != 0 :

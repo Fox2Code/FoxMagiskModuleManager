@@ -8,14 +8,15 @@
             app:title="@string/theme_pref"
             app:defaultValue="system"
             app:entries="@array/theme_values_names"
-            app:entryValues="@array/theme_values" />
+            app:entryValues="@array/theme_values"
+            app:singleLineTitle="false"	/>
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
             app:key="pref_force_english"
             app:icon="@drawable/ic_baseline_language_24"
             app:title="@string/force_english_pref"
-            app:singleLineTitle="false"/>
+            app:singleLineTitle="false" />
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
@@ -30,7 +31,8 @@
             app:key="pref_showcase_mode"
             app:icon="@drawable/ic_baseline_lock_24"
             app:title="@string/showcase_mode_pref"
-            app:summary="@string/showcase_mode_desc"/>
+            app:summary="@string/showcase_mode_desc"
+            app:singleLineTitle="false"	/>
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
@@ -63,26 +65,31 @@
             app:key="pref_repo_main"
             app:icon="@drawable/ic_baseline_extension_24"
             app:summary="@string/repo_main_desc"
-            app:title="@string/loading" />
+            app:title="@string/loading"
+            app:singleLineTitle="false"	/>
         <Preference
             app:key="pref_repo_alt"
             app:icon="@drawable/ic_baseline_extension_24"
             app:summary="@string/repo_main_alt"
-            app:title="@string/loading" />
+            app:title="@string/loading"
+            app:singleLineTitle="false"	/>
     </PreferenceCategory>
     <PreferenceCategory
         app:title="@string/pref_category_info">
         <Preference
             app:key="pref_update"
             app:icon="@drawable/ic_baseline_system_update_24"
-            app:title="@string/app_update" />
+            app:title="@string/app_update"
+            app:singleLineTitle="false"	/>
         <Preference
             app:key="pref_source_code"
             app:icon="@drawable/ic_github"
-            app:title="@string/source_code" />
+            app:title="@string/source_code"
+            app:singleLineTitle="false"	/>
         <Preference
             app:key="pref_show_licenses"
             app:icon="@drawable/ic_baseline_info_24"
-            app:title="@string/show_licenses" />
+            app:title="@string/show_licenses"
+            app:singleLineTitle="false"	/>
     </PreferenceCategory>
 </PreferenceScreen>
