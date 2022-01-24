@@ -13,6 +13,13 @@
     <string name="title_activity_settings">设置活动</string>
     <string name="app_update_available">应用程序有更新可用</string>
     <string name="app_update">更新</string>
+    <string name="no_desc_found">未找到说明</string>
+    <string name="download_module">下载模块</string>
+    <string name="install_module">安装模块</string>
+    <string name="update_module">更新模块</string>
+    <string name="changelog">变更日志</string>
+    <string name="support">支持</string>
+    <string name="donate">捐赠</string>
 
     <!-- Module section translation -->
     <string name="module_last_update">最后更新:</string>
@@ -61,4 +68,17 @@
         一些模块没有正确声明它们的元数据，导致视觉故障,
         或指示模块质量不佳，请自担风险禁用!
     </string>
+    <string name="dns_over_https_pref">通过 https 的 DNS</string>
+    <string name="dns_over_https_desc">在某些情况下可能会解决连接问题</string>
+    <string name="disable_extensions_pref">禁用扩展</string>
+    <string name="disable_extensions_desc">
+        禁用 Fox\'s Mmm 扩展, 这可以防止模块使用
+        终端扩展, 如果模块滥用 Fox\'s Mmm 的扩展, 这会有用
+    </string>
+    <string name="warp_text_pref">文字换行</string>
+    <string name="warp_text_desc">
+        将文本换行至新行，而不是将所有文本放在同一行
+    </string>
+    <string name="repo_enabled">启用仓库</string>
+    <string name="repo_disabled">禁用仓库</string>
 </resources>
