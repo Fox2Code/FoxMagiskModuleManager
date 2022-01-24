@@ -40,7 +40,7 @@
     <string name="master_delete_fail">Fehler beim Löschen der Moduldateien</string>
     <string name="theme_pref">Theme</string>
     <string name="module_id_prefix">Module id: </string>
-    <string name="install_from_storage">Modul aus dem internen Speicher installieren</string>
+    <string name="install_from_storage">Modul aus dem Speicher installieren</string>
     <string name="invalid_format">Das ausgewählte Modul hat ein ungültiges Format</string>
     <string name="local_install_title">Lokale Installation</string>
     <string name="source_code">Quellcode</string>
@@ -52,7 +52,7 @@
     <string name="file_picker_wierd">Ihr Dateimanager hat eine nicht standardmäßige Antwort zurückgegeben.</string>
     <string name="use_magisk_install_command_pref">Magisk-Modul Installationsbefehl verwenden</string>
     <string name="use_magisk_install_command_desc">
-        W�hrend des Tests verursachte es Probleme mit dem Fehlerdiagnosetool für die Modulinstallation.
+        Während des Tests verursachte es Probleme mit dem Fehlerdiagnosetool für die Modulinstallation.
         Daher habe ich diese Option hinter dem Entwicklermodus versteckt, aktivieren Sie dies auf eigene Gefahr!
     </string>
     <string name="dev_mode_enabled">Entwicklermodus aktiviert</string>
