@@ -230,9 +230,11 @@ public class PropUtils {
         if (!readName || isInvalidValue(moduleInfo.name)) {
             moduleInfo.name = makeNameFromId(moduleInfo.id);
         }
-        // We can't accept too long version names for usability reason.
-        if (!readVersion || moduleInfo.version.length() > 16) {
+        if (!readVersion) {
             moduleInfo.version = "v" + moduleInfo.versionCode;
+        } else {
+            moduleInfo.version = shortenVersionName(
+                    moduleInfo.version, moduleInfo.versionCode);
         }
         if (!readDescription || isInvalidValue(moduleInfo.description)) {
             moduleInfo.description = "";
@@ -291,5 +293,16 @@ public class PropUtils {
     private static String makeNameFromId(String moduleId) {
         return moduleId.substring(0, 1).toUpperCase(Locale.ROOT) +
                 moduleId.substring(1).replace('_', ' ');
+    }
+
+    // Make versionName no longer than 16 charters to avoid UI overflow.
+    public static String shortenVersionName(String versionName, long versionCode) {
+        if (versionName == null) return "v" + versionCode;
+        if (versionName.length() <= 16) return versionName;
+        int i = versionName.lastIndexOf('.');
+        if (i != -1 && i <= 16 && versionName.indexOf('.') != i
+                && versionName.indexOf(' ') == -1)
+            return versionName.substring(0, i);
+        return "v" + versionCode;
     }
 }
