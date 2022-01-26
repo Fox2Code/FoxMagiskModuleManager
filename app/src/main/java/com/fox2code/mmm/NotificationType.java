@@ -21,6 +21,7 @@ import java.util.zip.ZipFile;
 
 interface NotificationTypeCst {
     String TAG = "NotificationType";
+    boolean ROOTLESS_TEST = true;
 }
 
 public enum NotificationType implements NotificationTypeCst {
@@ -88,7 +89,9 @@ public enum NotificationType implements NotificationTypeCst {
                     } else {
                         IntentHelper.openInstaller(compatActivity, d.getAbsolutePath(),
                                 compatActivity.getString(
-                                        R.string.local_install_title), null);
+                                        R.string.local_install_title), null, false,
+                                BuildConfig.DEBUG && // Use debug mode if no root
+                                        InstallerInitializer.peekMagiskPath() == null);
                     }
                 } catch (IOException ignored) {
                     if (d.exists() && !d.delete())
@@ -99,14 +102,17 @@ public enum NotificationType implements NotificationTypeCst {
             } else if (s == IntentHelper.RESPONSE_URL) {
                 IntentHelper.openInstaller(compatActivity, u.toString(),
                         compatActivity.getString(
-                                R.string.remote_install_title), null);
+                                R.string.remote_install_title), null, false,
+                        BuildConfig.DEBUG && // Use debug mode if no root
+                                InstallerInitializer.peekMagiskPath() == null);
             }
         });
     }, true) {
         @Override
         public boolean shouldRemove() {
-            return MainApplication.isShowcaseMode() ||
-                    InstallerInitializer.peekMagiskPath() == null;
+            return (!(ROOTLESS_TEST && BuildConfig.DEBUG)) &&
+                    (MainApplication.isShowcaseMode() ||
+                            InstallerInitializer.peekMagiskPath() == null);
         }
     };
 

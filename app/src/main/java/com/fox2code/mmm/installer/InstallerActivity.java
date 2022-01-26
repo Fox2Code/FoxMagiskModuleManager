@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.fox2code.mmm.ActionButtonType;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
@@ -39,6 +41,7 @@ public class InstallerActivity extends CompatActivity {
     public InstallerTerminal installerTerminal;
     private File moduleCache;
     private File toDelete;
+    private boolean textWrap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,7 @@ public class InstallerActivity extends CompatActivity {
         final String name;
         final boolean noPatch;
         final boolean noExtensions;
+        final boolean rootless;
         // Should we allow 3rd part app to install modules?
         if (Constants.INTENT_INSTALL_INTERNAL.equals(intent.getAction())) {
             if (!MainApplication.checkSecret(intent)) {
@@ -65,6 +69,8 @@ public class InstallerActivity extends CompatActivity {
             noPatch = intent.getBooleanExtra(Constants.EXTRA_INSTALL_NO_PATCH, false);
             noExtensions = intent.getBooleanExtra(// Allow intent to disable extensions
                     Constants.EXTRA_INSTALL_NO_EXTENSIONS, false);
+            rootless = intent.getBooleanExtra(// For debug only
+                    Constants.EXTRA_INSTALL_TEST_ROOTLESS, false);
         } else {
             Toast.makeText(this, "Unknown intent!", Toast.LENGTH_SHORT).show();
             this.forceBackPressed();
@@ -74,7 +80,9 @@ public class InstallerActivity extends CompatActivity {
         boolean urlMode = target.startsWith("http://") || target.startsWith("https://");
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setTitle(name);
-        setContentView(R.layout.installer);
+        setContentView((this.textWrap =
+                MainApplication.isTextWrapEnabled()) ?
+                R.layout.installer_wrap :R.layout.installer);
         int background;
         int foreground;
         if (MainApplication.getINSTANCE().isLightTheme() &&
@@ -85,11 +93,13 @@ public class InstallerActivity extends CompatActivity {
             background = Color.BLACK;
             foreground = Color.WHITE;
         }
-        findViewById(R.id.install_horizontal_scroller)
-                .setBackground(new ColorDrawable(background));
+        View horizontalScroller = findViewById(R.id.install_horizontal_scroller);
+        RecyclerView installTerminal;
         this.progressIndicator = findViewById(R.id.progress_bar);
         this.installerTerminal = new InstallerTerminal(
-                findViewById(R.id.install_terminal), foreground);
+                installTerminal = findViewById(R.id.install_terminal), foreground);
+        (horizontalScroller != null ? horizontalScroller : installTerminal)
+                .setBackground(new ColorDrawable(background));
         this.progressIndicator.setVisibility(View.GONE);
         this.progressIndicator.setIndeterminate(true);
         if (urlMode) {
@@ -134,7 +144,7 @@ public class InstallerActivity extends CompatActivity {
                     this.runOnUiThread(() -> {
                         this.installerTerminal.addLine("- Installing " + name);
                     });
-                    this.doInstall(moduleCache, noExtensions);
+                    this.doInstall(moduleCache, noExtensions, rootless);
                 } catch (IOException e) {
                     Log.e(TAG, "Failed to download module zip", e);
                     this.setInstallStateFinished(false,
@@ -144,19 +154,32 @@ public class InstallerActivity extends CompatActivity {
         } else {
             this.installerTerminal.addLine("- Installing " + name);
             new Thread(() -> this.doInstall(
-                    this.toDelete = new File(target), noExtensions),
+                    this.toDelete = new File(target), noExtensions, rootless),
                     "Install Thread").start();
         }
     }
 
-    private void doInstall(File file,boolean noExtensions) {
+    private void doInstall(File file,boolean noExtensions,boolean rootless) {
         Log.i(TAG, "Installing: " + moduleCache.getName());
         InstallerController installerController = new InstallerController(
                 this.progressIndicator, this.installerTerminal,
                 file.getAbsoluteFile(), noExtensions);
         InstallerMonitor installerMonitor;
         Shell.Job installJob;
-        if (MainApplication.isUsingMagiskCommand() || noExtensions) {
+        if (rootless) { // rootless is only used for debugging
+            File installScript = this.extractInstallScript("module_installer_test.sh");
+            if (installScript == null) {
+                this.setInstallStateFinished(false,
+                        "! Failed to extract test install script", "");
+                return;
+            }
+            installerMonitor = new InstallerMonitor(installScript);
+            installJob = Shell.sh("export MMM_EXT_SUPPORT=1",
+                    "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
+                    "sh \"" + installScript.getAbsolutePath() + "\"" +
+                            " /dev/null 1 \"" + file.getAbsolutePath() + "\"")
+                    .to(installerController, installerMonitor);
+        } else if (MainApplication.isUsingMagiskCommand() || noExtensions) {
             installerMonitor = new InstallerMonitor(new File(InstallerInitializer
                     .peekMagiskPath().equals("/sbin") ? "/sbin/magisk" : "/system/bin/magisk"));
             if (noExtensions) {
@@ -170,12 +193,13 @@ public class InstallerActivity extends CompatActivity {
                                 "en-US" : Resources.getSystem()
                                 .getConfiguration().locale.toLanguageTag()),
                         "export MMM_APP_VERSION=" + BuildConfig.VERSION_NAME,
+                        "export MMM_TEXT_WRAP=" + (this.textWrap ? "1" : "0"),
                         "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
                         "magisk --install-module \"" + file.getAbsolutePath() + "\"")
                         .to(installerController, installerMonitor);
             }
         } else {
-            File installScript = this.extractCompatScript();
+            File installScript = this.extractInstallScript("module_installer_compat.sh");
             if (installScript == null) {
                 this.setInstallStateFinished(false,
                         "! Failed to extract module install script", "");
@@ -187,6 +211,7 @@ public class InstallerActivity extends CompatActivity {
                             "en-US" : Resources.getSystem()
                             .getConfiguration().locale.toLanguageTag()),
                     "export MMM_APP_VERSION=" + BuildConfig.VERSION_NAME,
+                    "export MMM_TEXT_WRAP=" + (this.textWrap ? "1" : "0"),
                     "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
                     "sh \"" + installScript.getAbsolutePath() + "\"" +
                             " /dev/null 1 \"" + file.getAbsolutePath() + "\"")
@@ -370,16 +395,16 @@ public class InstallerActivity extends CompatActivity {
 
     private static boolean didExtract = false;
 
-    private File extractCompatScript() {
-        File compatInstallScript = new File(this.moduleCache, "module_installer_compat.sh");
+    private File extractInstallScript(String script) {
+        File compatInstallScript = new File(this.moduleCache, script);
         if (!compatInstallScript.exists() || compatInstallScript.length() == 0 || !didExtract) {
             try {
                 Files.write(compatInstallScript, Files.readAllBytes(
-                        this.getAssets().open("module_installer_compat.sh")));
+                        this.getAssets().open(script)));
                 didExtract = true;
             } catch (IOException e) {
                 compatInstallScript.delete();
-                Log.e(TAG, "Failed to extract module_installer_compat.sh", e);
+                Log.e(TAG, "Failed to extract " + script, e);
                 return null;
             }
         }

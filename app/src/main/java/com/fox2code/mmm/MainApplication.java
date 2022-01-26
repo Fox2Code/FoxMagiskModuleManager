@@ -102,6 +102,10 @@ public class MainApplication extends Application implements CompatActivity.Appli
         return getSharedPreferences().getBoolean("pref_force_dark_terminal", false);
     }
 
+    public static boolean isTextWrapEnabled() {
+        return getSharedPreferences().getBoolean("pref_wrap_text", false);
+    }
+
     public static boolean isDeveloper() {
         return BuildConfig.DEBUG ||
                 getSharedPreferences().getBoolean("developer", false);

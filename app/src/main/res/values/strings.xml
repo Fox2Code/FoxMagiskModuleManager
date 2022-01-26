@@ -75,9 +75,10 @@
         Disable Fox\'s Mmm extensions, this prevent modules from using
         terminal extensions, useful if a module misuse Fox\'s Mmm extensions.
     </string>
-    <string name="warp_text_pref">Warp text</string>
-    <string name="warp_text_desc">
-        Warp text to new line instead of putting all text on the same line
+    <string name="wrap_text_pref">Wrap text</string>
+    <string name="wrap_text_desc">
+        Wrap text to a new line instead of putting
+        all text on the same line when installing a module
     </string>
     <string name="repo_enabled">Repo enabled</string>
     <string name="repo_disabled">Repo disabled</string>

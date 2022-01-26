@@ -81,6 +81,7 @@ Variables:
 - `MMM_EXT_SUPPORT` declared if extensions are supported
 - `MMM_USER_LANGUAGE` the current user selected language
 - `MMM_APP_VERSION` display version of the app (Ex: `x.y.z`)
+- `MMM_TEXT_WRAP` is set to `1` if text wrapping is enabled
 
 Note: 
 The current behavior with unknown command is to ignore them, 

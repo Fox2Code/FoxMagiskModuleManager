@@ -75,8 +75,8 @@
         禁用 Fox\'s Mmm 扩展, 这可以防止模块使用
         终端扩展, 如果模块滥用 Fox\'s Mmm 的扩展, 这会有用
     </string>
-    <string name="warp_text_pref">文字换行</string>
-    <string name="warp_text_desc">
+    <string name="wrap_text_pref">文字换行</string>
+    <string name="wrap_text_desc">
         将文本换行至新行，而不是将所有文本放在同一行
     </string>
     <string name="repo_enabled">启用仓库</string>

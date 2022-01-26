@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.core.app.ActivityOptionsCompat;
 
+import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
@@ -88,6 +89,11 @@ public class IntentHelper {
     }
 
     public static void openInstaller(Context context, String url, String title, String config) {
+        openInstaller(context, url, title, config, false, false);
+    }
+
+    public static void openInstaller(Context context, String url, String title, String config,
+                                       boolean noPatch,boolean testDebug) {
         try {
             Intent intent = new Intent(context, InstallerActivity.class);
             intent.setAction(Constants.INTENT_INSTALL_INTERNAL);
@@ -96,6 +102,10 @@ public class IntentHelper {
             intent.putExtra(Constants.EXTRA_INSTALL_NAME, title);
             if (config != null && !config.isEmpty())
                 intent.putExtra(Constants.EXTRA_INSTALL_CONFIG, config);
+            if (noPatch)
+                intent.putExtra(Constants.EXTRA_INSTALL_NO_PATCH, true);
+            if (testDebug && BuildConfig.DEBUG)
+                intent.putExtra(Constants.EXTRA_INSTALL_TEST_ROOTLESS, true);
             startActivity(context, intent, true);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(context,
@@ -158,6 +168,12 @@ public class IntentHelper {
     @SuppressLint("SdCardPath")
     public static void openFileTo(CompatActivity compatActivity, File destination,
                                   OnFileReceivedCallback callback) {
+        File destinationFolder;
+        if (destination == null || (destinationFolder = destination.getParentFile()) == null ||
+                (!destinationFolder.isDirectory() && !destinationFolder.mkdirs())) {
+            callback.onReceived(destination, null, RESPONSE_ERROR);
+            return;
+        }
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT).setType("application/zip");
         intent.setFlags(intent.getFlags() & ~Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
