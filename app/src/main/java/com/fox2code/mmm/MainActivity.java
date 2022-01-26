@@ -13,8 +13,6 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.installer.InstallerInitializer;

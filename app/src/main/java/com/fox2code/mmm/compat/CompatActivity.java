@@ -231,6 +231,11 @@ public class CompatActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    public void startActivityForResult(Intent intent,
+                                       OnActivityResultCallback onActivityResultCallback) {
+        this.startActivityForResult(intent, null, onActivityResultCallback);
+    }
+
     @SuppressWarnings("deprecation")
     public void startActivityForResult(Intent intent, @Nullable Bundle options,
                                        OnActivityResultCallback onActivityResultCallback) {
