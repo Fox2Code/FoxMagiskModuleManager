@@ -51,7 +51,7 @@ public class MainApplication extends Application implements CompatActivity.Appli
     private static SimpleDateFormat timeFormat =
             new SimpleDateFormat(timeFormatString, timeFormatLocale);
     private static final Shell.Builder shellBuilder;
-    private static final int secret;
+    private static final long secret;
     private static SharedPreferences bootSharedPreferences;
     private static MainApplication INSTANCE;
     private static boolean firstBoot;
@@ -61,7 +61,7 @@ public class MainApplication extends Application implements CompatActivity.Appli
                 .setFlags(Shell.FLAG_REDIRECT_STDERR)
                 .setTimeout(10).setInitializers(InstallerInitializer.class)
         );
-        secret = new Random().nextInt();
+        secret = new Random().nextLong();
     }
 
     public MainApplication() {
@@ -79,7 +79,7 @@ public class MainApplication extends Application implements CompatActivity.Appli
     }
 
     public static boolean checkSecret(Intent intent) {
-        return intent.getIntExtra("secret", ~secret) == secret;
+        return intent.getLongExtra("secret", ~secret) == secret;
     }
 
     public static SharedPreferences getSharedPreferences() {

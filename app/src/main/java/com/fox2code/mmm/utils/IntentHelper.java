@@ -208,7 +208,7 @@ public class IntentHelper {
                 Files.copy(inputStream, outputStream);
                 success = true;
             } catch (Exception e) {
-                Log.e("IntentHelper", "fail copy", e);
+                Log.e("IntentHelper", "failed copy of " + uri, e);
                 Toast.makeText(compatActivity,
                         R.string.file_picker_failure,
                         Toast.LENGTH_SHORT).show();
