@@ -1,0 +1,85 @@
+<resources>
+    <string name="app_name">Trình quản lý mô-đun Magisk của Fox</string>
+    <string name="app_name_short">Fox\'s Mmm</string>
+    <string name="fail_root_magisk">Không thể truy cập vào Root hoặc Magisk</string>
+    <string name="loading">Loading…</string>
+    <string name="updatable">Có thể cập nhật</string>
+    <string name="installed">Cài đặt</string>
+    <string name="online_repo">Repo trực tuyến</string>
+    <string name="showcase_mode">Ứng dụng đang ở chế độ khóa</string>
+    <string name="failed_download">Không thể tải xuống tệp.</string>
+    <string name="slow_modules">Các mô-đun mất quá nhiều thời gian để khởi động, hãy xem xét việc tắt một số mô-đun</string>
+    <string name="fail_internet">Không kết nối được với Internet</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="app_update_available">Cập nhật ứng dụng có sẵn</string>
+    <string name="app_update">Cập nhật</string>
+    <string name="no_desc_found">Không tìm thấy mô tả.</string>
+    <string name="download_module">Tải xuống mô-đun</string>
+    <string name="install_module">Cài đặt mô-đun</string>
+    <string name="update_module">Cập nhật mô-đun</string>
+    <string name="changelog">Changelog</string>
+    <string name="support">Hỗ trợ</string>
+    <string name="donate">Ủng hộ</string>
+
+    <!-- Module section translation -->
+    <string name="module_last_update">Cập nhật lần cuối:</string>
+    <string name="module_repo">Repo:</string>
+    <string name="module_by">bởi</string>
+
+    <!-- Preference Titles -->
+    <!-- Note: Lockdown mode used to be called showcase mode -->
+    <string name="showcase_mode_pref">Chế độ trưng bày</string>
+    <string name="showcase_mode_desc">Chế độ trưng bày ngăn trình quản lý thực hiện hành động trên các mô-đun</string>
+    <string name="pref_category_settings">Cài đặt</string>
+    <string name="pref_category_info">Thông tin</string>
+    <string name="show_licenses">Hiển thị giấy phép</string>
+    <string name="licenses">Giấy phép</string>
+    <string name="show_incompatible_pref">Hiển thị các mô-đun không tương thích</string>
+    <string name="show_incompatible_desc">Hiển thị các mô-đun không tương thích với thiết bị của bạn dựa trên dữ liệu thô của chúng</string>
+    <string name="magisk_outdated">Magisk đã lỗi thời!</string>
+    <string name="pref_category_repos">Repos</string>
+    <string name="repo_main_desc">Kho lưu trữ Mô-đun Magisk</string>
+    <string name="repo_main_alt">Một giải pháp thay thế cho Magisk-Modules-Repo với ít hạn chế hơn.</string>
+    <string name="master_delete">Xóa các tệp mô-đun?</string>
+    <string name="master_delete_no">Giữ các tập tin</string>
+    <string name="master_delete_yes">Xóa các tập tin</string>
+    <string name="master_delete_fail">Không xóa được các tệp mô-đun</string>
+    <string name="theme_pref">Chủ đề</string>
+    <string name="module_id_prefix">Id mô-đun:</string>
+    <string name="install_from_storage">Cài đặt mô-đun từ bộ nhớ</string>
+    <string name="invalid_format">Mô-đun đã chọn có định dạng không hợp lệ</string>
+    <string name="local_install_title">Cài đặt cục bộ</string>
+    <string name="source_code">Mã nguồn</string>
+    <string name="magisk_builtin_module">Mô-đun nội trang Magisk</string>
+    <string name="substratum_builtin_module">Mô-đun nội trang lớp dưới</string>
+    <string name="force_dark_terminal_title">Buộc thiết bị đầu cuối chế độ tối</string>
+    <string name="file_picker_failure">Bộ chọn tệp hiện tại của bạn không thể cấp quyền truy cập vào tệp.</string>
+    <string name="remote_install_title">Cài đặt từ xa</string>
+    <string name="file_picker_wierd">Bộ chọn tệp của bạn đã trả lại một phản hồi không chuẩn.</string>
+    <string name="use_magisk_install_command_pref">Sử dụng lệnh cài đặt mô-đun magisk</string>
+    <string name="use_magisk_install_command_desc">
+        Trong quá trình kiểm tra, nó đã gây ra sự cố cho công cụ chẩn đoán lỗi cài đặt mô-đun,
+         vì vậy tôi đã ẩn tùy chọn này trong chế độ nhà phát triển, hãy tự chịu rủi ro khi bật tùy chọn này!
+    </string>
+    <string name="dev_mode_enabled">Đã bật chế độ nhà phát triển</string>
+    <string name="force_english_pref">Bắt buộc ngôn ngữ tiếng Anh</string>
+    <string name="disable_low_quality_module_filter_pref">Tắt bộ lọc mô-đun chất lượng thấp</string>
+    <string name="disable_low_quality_module_filter_desc">
+        Một số mô-đun không khai báo siêu dữ liệu của chúng đúng cách, gây ra lỗi hình ảnh,
+         và / hoặc cho biết chất lượng mô-đun kém, bạn tự chịu rủi ro khi vô hiệu hóa!
+    </string>
+    <string name="dns_over_https_pref">Dns trên https</string>
+    <string name="dns_over_https_desc">Có thể khắc phục sự cố kết nối trong một số trường hợp.</string>
+    <string name="disable_extensions_pref">Tắt tiện ích mở rộng</string>
+    <string name="disable_extensions_desc">
+        Tắt tiện ích mở rộng Mmm của Fox, điều này ngăn không cho các mô-đun sử dụng
+         phần mở rộng Terminal Emulator, hữu ích nếu một mô-đun sử dụng sai phần mở rộng Mmm của Fox.
+    </string>
+    <string name="wrap_text_pref">Gói gọn văn bản</string>
+    <string name="wrap_text_desc">
+        Gói văn bản thành một dòng mới thay vì đặt
+         tất cả văn bản trên cùng một dòng khi cài đặt một mô-đun
+    </string>
+    <string name="repo_enabled">Đã bật repo</string>
+    <string name="repo_disabled">Repo bị vô hiệu hóa</string>
+</resources>
