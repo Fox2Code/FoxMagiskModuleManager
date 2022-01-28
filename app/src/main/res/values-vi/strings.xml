@@ -32,7 +32,7 @@
 
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
-	<string name="manage_repo_pref">Quản lý kho</string>
+	<string name="manage_repos_pref">Quản lý kho</string>
     <string name="showcase_mode_pref">Chế độ khóa</string>
     <string name="showcase_mode_desc">Chế độ khóa ngăn trình quản lý thực hiện hành động trên các mô-đun</string>
     <string name="pref_category_settings">Cài đặt</string>
