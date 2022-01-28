@@ -134,6 +134,23 @@ public class CompatActivity extends AppCompatActivity {
         }
     }
 
+    public void hideActionBar() {
+        androidx.appcompat.app.ActionBar compatActionBar;
+        try {
+            compatActionBar = this.getSupportActionBar();
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to call getSupportActionBar", e);
+            compatActionBar = null; // Allow fallback to builtin actionBar.
+        }
+        if (compatActionBar != null) {
+            compatActionBar.hide();
+        } else {
+            android.app.ActionBar actionBar = this.getActionBar();
+            if (actionBar != null)
+                actionBar.hide();
+        }
+    }
+
     public void setActionBarExtraMenuButton(@DrawableRes int drawableResId,
                                             MenuItem.OnMenuItemClickListener menuClickListener) {
         Objects.requireNonNull(menuClickListener);

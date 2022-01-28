@@ -7,6 +7,7 @@ import android.os.Build;
 import android.system.ErrnoException;
 import android.system.Os;
 import android.util.Log;
+import android.webkit.CookieManager;
 
 import androidx.annotation.NonNull;
 
@@ -28,12 +29,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
-import okhttp3.ConnectionSpec;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.Dns;
@@ -50,6 +50,7 @@ public class Http {
     private static final OkHttpClient httpClient;
     private static final OkHttpClient httpClientWithCache;
     private static final FallBackDNS fallbackDNS;
+    private static final String androidacyUA;
 
     static {
         MainApplication mainApplication = MainApplication.getINSTANCE();
@@ -66,6 +67,7 @@ public class Http {
             }
             throw error;
         }
+        CookieManager.getInstance().setAcceptCookie(true);
         OkHttpClient.Builder httpclientBuilder = new OkHttpClient.Builder();
         // Default is 10, extend it a bit for slow mobile connections.
         httpclientBuilder.connectTimeout(15, TimeUnit.SECONDS);
@@ -93,7 +95,7 @@ public class Http {
                 return Dns.SYSTEM.lookup(s);
             };
             httpclientBuilder.dns(dns);
-            httpclientBuilder.cookieJar(new CDNCookieJar());
+            httpclientBuilder.cookieJar(new CDNCookieJar(false));
             dns = new DnsOverHttps.Builder().client(httpclientBuilder.build()).url(
                     Objects.requireNonNull(HttpUrl.parse("https://cloudflare-dns.com/dns-query")))
                     .bootstrapDnsHosts(cloudflareBootstrap).resolvePrivateAddresses(true).build();
@@ -101,7 +103,7 @@ public class Http {
             Log.e(TAG, "Failed to init DoH", e);
         }
         httpclientBuilder.cookieJar(CookieJar.NO_COOKIES);
-        final String androidacyUA = // User-Agent format was agreed on telegram
+        androidacyUA = // User-Agent format was agreed on telegram
                 "Mozilla/5.0 (Linux; Android " + Build.VERSION.RELEASE + "; " + Build.DEVICE +")" +
                 " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36"
                 + " FoxMmm/" + BuildConfig.VERSION_CODE;
@@ -125,11 +127,11 @@ public class Http {
                 "camo.githubusercontent.com", "user-images.githubusercontent.com",
                 "cdn.jsdelivr.net", "img.shields.io", "magisk-modules-repo.github.io",
                 "www.androidacy.com", "api.androidacy.com"));
+        httpclientBuilder.cookieJar(new CDNCookieJar(true));
         httpClient = httpclientBuilder.build();
         httpclientBuilder.cache(new Cache(
                 new File(mainApplication.getCacheDir(), "http_cache"),
                 16L * 1024L * 1024L)); // 16Mib of cache
-        httpclientBuilder.cookieJar(new CDNCookieJar());
         httpClientWithCache = httpclientBuilder.build();
         Log.i(TAG, "Initialized Http successfully!");
     }
@@ -208,6 +210,10 @@ public class Http {
         }
     }
 
+    public static String getAndroidacyUA() {
+        return androidacyUA;
+    }
+
     /**
      * Cookie jar that allow CDN cookies, reset on app relaunch
      * Note: An argument can be made that it allow tracking but
@@ -219,11 +225,21 @@ public class Http {
      * */
     private static class CDNCookieJar implements CookieJar {
         private final HashMap<String, Cookie> cookieMap = new HashMap<>();
+        private final boolean androidacySupport;
+
+        private CDNCookieJar(boolean androidacySupport) {
+            this.androidacySupport = androidacySupport;
+        }
 
         @NonNull
         @Override
         public List<Cookie> loadForRequest(@NonNull HttpUrl httpUrl) {
             if (!httpUrl.isHttps()) return Collections.emptyList();
+            if (this.androidacySupport && httpUrl.host().endsWith(".androidacy.com")) {
+                String cookies = CookieManager.getInstance().getCookie(httpUrl.uri().toString());
+                if (cookies == null || cookies.isEmpty()) return Collections.emptyList();
+
+            }
             Cookie cookies = cookieMap.get(httpUrl.url().getHost());
             return cookies == null || cookies.expiresAt() < System.currentTimeMillis() ?
                     Collections.emptyList() : Collections.singletonList(cookies);
