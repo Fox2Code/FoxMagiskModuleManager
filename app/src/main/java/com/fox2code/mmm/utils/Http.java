@@ -3,6 +3,9 @@ package com.fox2code.mmm.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.Build;
+import android.system.ErrnoException;
+import android.system.Os;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -49,6 +52,20 @@ public class Http {
     private static final FallBackDNS fallbackDNS;
 
     static {
+        MainApplication mainApplication = MainApplication.getINSTANCE();
+        if (mainApplication == null) {
+            Error error = new Error("Initialized Http too soon!");
+            error.fillInStackTrace();
+            Log.e(TAG, "Initialized Http too soon!", error);
+            System.out.flush();
+            System.err.flush();
+            try {
+                Os.kill(Os.getpid(), 9);
+            } catch (ErrnoException e) {
+                System.exit(9);
+            }
+            throw error;
+        }
         OkHttpClient.Builder httpclientBuilder = new OkHttpClient.Builder();
         // Default is 10, extend it a bit for slow mobile connections.
         httpclientBuilder.connectTimeout(15, TimeUnit.SECONDS);
@@ -84,9 +101,15 @@ public class Http {
             Log.e(TAG, "Failed to init DoH", e);
         }
         httpclientBuilder.cookieJar(CookieJar.NO_COOKIES);
+        final String androidacyUA = // User-Agent format was agreed on telegram
+                "Mozilla/5.0 (Linux; Android " + Build.VERSION.RELEASE + "; " + Build.DEVICE +")" +
+                " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36"
+                + " FoxMmm/" + BuildConfig.VERSION_CODE;
         httpclientBuilder.addInterceptor(chain -> {
             Request.Builder request = chain.request().newBuilder();
-            if (InstallerInitializer.peekMagiskPath() != null) {
+            if (chain.request().url().host().endsWith(".androidacy.com")) {
+                request.header("User-Agent", androidacyUA);
+            } else if (InstallerInitializer.peekMagiskPath() != null) {
                 request.header("User-Agent", // Declare Magisk version to the server
                         "Magisk/" + InstallerInitializer.peekMagiskVersion());
             }
@@ -96,27 +119,19 @@ public class Http {
             }
             return chain.proceed(request.build());
         });
-        MainApplication mainApplication = MainApplication.getINSTANCE();
-        if (mainApplication != null) {
-            // Fallback DNS cache responses in case request fail but already succeeded once in the past
-            httpclientBuilder.dns(fallbackDNS = new FallBackDNS(mainApplication, dns,
-                    "github.com", "api.github.com", "raw.githubusercontent.com",
-                    "camo.githubusercontent.com", "user-images.githubusercontent.com",
-                    "cdn.jsdelivr.net", "img.shields.io", "magisk-modules-repo.github.io",
-                    "www.androidacy.com", "api.androidacy.com"));
-            httpClient = httpclientBuilder.build();
-            httpclientBuilder.cache(new Cache(
-                    new File(mainApplication.getCacheDir(), "http_cache"),
-                    16L * 1024L * 1024L)); // 16Mib of cache
-            httpclientBuilder.cookieJar(new CDNCookieJar());
-            httpClientWithCache = httpclientBuilder.build();
-            Log.i(TAG, "Initialized Http successfully!");
-        } else {
-            fallbackDNS = null;
-            httpclientBuilder.dns(dns);
-            httpClientWithCache = httpClient = httpclientBuilder.build();
-            Log.e(TAG, "Initialized Http too soon!");
-        }
+        // Fallback DNS cache responses in case request fail but already succeeded once in the past
+        httpclientBuilder.dns(fallbackDNS = new FallBackDNS(mainApplication, dns,
+                "github.com", "api.github.com", "raw.githubusercontent.com",
+                "camo.githubusercontent.com", "user-images.githubusercontent.com",
+                "cdn.jsdelivr.net", "img.shields.io", "magisk-modules-repo.github.io",
+                "www.androidacy.com", "api.androidacy.com"));
+        httpClient = httpclientBuilder.build();
+        httpclientBuilder.cache(new Cache(
+                new File(mainApplication.getCacheDir(), "http_cache"),
+                16L * 1024L * 1024L)); // 16Mib of cache
+        httpclientBuilder.cookieJar(new CDNCookieJar());
+        httpClientWithCache = httpclientBuilder.build();
+        Log.i(TAG, "Initialized Http successfully!");
     }
 
     public static OkHttpClient getHttpClient() {

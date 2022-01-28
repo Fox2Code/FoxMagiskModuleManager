@@ -56,28 +56,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".deeplink.DeepLinkActivity"
-            android:exported="true"
-            android:label="@string/app_name_short"
-            android:permission="android.permission.INTERNET">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:host="mmm.fox2code.com"
-                    android:scheme="https" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:host="${applicationId}"
-                    android:scheme="app" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".installer.InstallerActivity"
             android:parentActivityName=".MainActivity"
             android:exported="false"

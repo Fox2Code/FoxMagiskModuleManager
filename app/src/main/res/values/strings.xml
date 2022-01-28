@@ -18,16 +18,21 @@
     <string name="install_module">Install module</string>
     <string name="update_module">Update module</string>
     <string name="changelog">Changelog</string>
+    <string name="website">Website</string>
     <string name="support">Support</string>
     <string name="donate">Donate</string>
+    <string name="submit_modules">Submit a module</string>
 
     <!-- Module section translation -->
     <string name="module_last_update">Last update:</string>
     <string name="module_repo">Repo:</string>
     <string name="module_by">by</string>
+    <string name="module_downloads">Downloads:</string>
+    <string name="module_stars">Stars:</string>
 
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
+    <string name="manage_repos_pref">Manage repos</string>
     <string name="showcase_mode_pref">Lockdown mode</string>
     <string name="showcase_mode_desc">Lockdown mode prevent manager to do action on modules</string>
     <string name="pref_category_settings">Settings</string>
