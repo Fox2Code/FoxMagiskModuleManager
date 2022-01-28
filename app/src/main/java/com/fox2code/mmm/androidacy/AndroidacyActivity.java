@@ -11,6 +11,7 @@ import android.webkit.WebViewClient;
 
 import androidx.annotation.Nullable;
 
+import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.compat.CompatActivity;
@@ -21,6 +22,12 @@ import com.fox2code.mmm.utils.IntentHelper;
  * Per Androidacy repo implementation agreement, no request of this WebView shall be modified.
  */
 public class AndroidacyActivity extends CompatActivity {
+    static {
+        if (BuildConfig.DEBUG) {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
+    }
+
     private WebView webView;
 
     @Override

@@ -91,8 +91,7 @@ public class SettingsActivity extends CompatActivity {
                     "Magisk Modules Repo (Official)", RepoManager.MAGISK_REPO_HOMEPAGE);
             setRepoNameResolution("pref_repo_alt", RepoManager.MAGISK_ALT_REPO,
                     "Magisk Modules Alt Repo", RepoManager.MAGISK_ALT_REPO_HOMEPAGE);
-            final LibsBuilder libsBuilder = new LibsBuilder()
-                    .withFields(R.string.class.getFields()).withShowLoadingProgress(false)
+            final LibsBuilder libsBuilder = new LibsBuilder().withShowLoadingProgress(false)
                     .withLicenseShown(true).withAboutMinimalDesign(false);
             Preference update = findPreference("pref_update");
             update.setVisible(AppUpdateManager.getAppUpdateManager().peekHasUpdate());
