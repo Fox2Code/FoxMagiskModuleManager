@@ -127,6 +127,15 @@ public class SettingsActivity extends CompatActivity {
                         .commit();
                 return true;
             });
+            if (BuildConfig.DEBUG) {
+                Preference debugPref = findPreference("pref_debug_button");
+                debugPref.setVisible(true);
+                debugPref.setOnPreferenceClickListener(preference -> {
+                    IntentHelper.openUrlAndroidacy(this.getContext(),
+                            "https://www.androidacy.com/modules-repo");
+                    return true;
+                });
+            }
         }
 
         private void setRepoNameResolution(String preferenceName,String url,

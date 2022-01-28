@@ -11,6 +11,7 @@ import android.webkit.WebViewClient;
 
 import androidx.annotation.Nullable;
 
+import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.utils.Http;
@@ -19,17 +20,18 @@ import com.fox2code.mmm.utils.IntentHelper;
 /**
  * Per Androidacy repo implementation agreement, no request of this WebView shall be modified.
  */
-public class AndoridacyActivity extends CompatActivity {
+public class AndroidacyActivity extends CompatActivity {
     private WebView webView;
 
     @Override
-    @SuppressLint("SetJavaScriptEnabled")
+    @SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface"})
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = this.getIntent();
         Uri uri;
-        if (intent == null || (uri = intent.getData()) == null
-                || !uri.getHost().endsWith(".androidacy.com")) {
+        if (!MainApplication.checkSecret(intent) ||
+                (uri = intent.getData()) == null ||
+                !uri.getHost().endsWith(".androidacy.com")) {
             this.forceBackPressed();
             return;
         }
@@ -43,14 +45,16 @@ public class AndoridacyActivity extends CompatActivity {
         this.webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                if (request.isForMainFrame() && // Don't open non andoridacy urls inside WebView
-                        !request.getUrl().getHost().endsWith(".androidacy.com")) {
+                // Don't open non andoridacy urls inside WebView
+                if (request.isForMainFrame() && !(request.getUrl().getScheme().equals("intent") ||
+                        request.getUrl().getHost().endsWith(".androidacy.com"))) {
                     IntentHelper.openUrl(view.getContext(), request.getUrl().toString());
                     return true;
                 }
                 return false;
             }
         });
+        this.webView.addJavascriptInterface(new AndroidacyWebAPI(this), "mmm");
         this.webView.loadUrl(uri.toString());
     }
 

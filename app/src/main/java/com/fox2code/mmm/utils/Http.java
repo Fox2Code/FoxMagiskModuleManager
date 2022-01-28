@@ -238,7 +238,12 @@ public class Http {
             if (this.androidacySupport && httpUrl.host().endsWith(".androidacy.com")) {
                 String cookies = CookieManager.getInstance().getCookie(httpUrl.uri().toString());
                 if (cookies == null || cookies.isEmpty()) return Collections.emptyList();
-
+                String[] splitCookies = cookies.split(";");
+                ArrayList<Cookie> cookieList = new ArrayList<>(splitCookies.length);
+                for (String cookie : splitCookies) {
+                    cookieList.add(Cookie.parse(httpUrl, cookie));
+                }
+                return cookieList;
             }
             Cookie cookies = cookieMap.get(httpUrl.url().getHost());
             return cookies == null || cookies.expiresAt() < System.currentTimeMillis() ?
@@ -248,6 +253,13 @@ public class Http {
         @Override
         public void saveFromResponse(@NonNull HttpUrl httpUrl, @NonNull List<Cookie> cookies) {
             if (!httpUrl.isHttps()) return;
+            if (this.androidacySupport && httpUrl.host().endsWith(".androidacy.com")) {
+                for (Cookie cookie : cookies) {
+                    CookieManager.getInstance().setCookie(
+                            httpUrl.uri().toString(), cookie.toString());
+                }
+                return;
+            }
             String host = httpUrl.url().getHost();
             Iterator<Cookie> cookieIterator = cookies.iterator();
             Cookie cdnCookie = cookieMap.get(host);

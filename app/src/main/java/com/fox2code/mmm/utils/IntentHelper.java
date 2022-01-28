@@ -20,6 +20,7 @@ import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
+import com.fox2code.mmm.androidacy.AndroidacyActivity;
 import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.installer.InstallerActivity;
 import com.fox2code.mmm.markdown.MarkdownActivity;
@@ -36,6 +37,21 @@ public class IntentHelper {
     public static void openUrl(Context context, String url) {
         try {
             Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            context.startActivity(myIntent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(context, "No application can handle this request."
+                    + " Please install a web-browser",  Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
+    public static void openUrlAndroidacy(Context context, String url) {
+        Uri uri = Uri.parse(url);
+        try {
+            Intent myIntent = new Intent(
+                    Constants.INTENT_ANDROIDACY_INTERNAL,
+                    uri, context, AndroidacyActivity.class);
+            MainApplication.addSecret(myIntent);
             context.startActivity(myIntent);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(context, "No application can handle this request."

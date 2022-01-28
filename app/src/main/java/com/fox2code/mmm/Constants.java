@@ -8,6 +8,8 @@ public class Constants {
     public static final int MAGISK_VER_CODE_MAGISK_ZYGOTE = 23002;
     public static final String INTENT_INSTALL_INTERNAL =
             BuildConfig.APPLICATION_ID + ".intent.action.INSTALL_MODULE_INTERNAL";
+    public static final String INTENT_ANDROIDACY_INTERNAL =
+            BuildConfig.APPLICATION_ID + ".intent.action.OPEN_ANDROIDACY_INTERNAL";
     public static final String EXTRA_INSTALL_PATH = "extra_install_path";
     public static final String EXTRA_INSTALL_NAME = "extra_install_name";
     public static final String EXTRA_INSTALL_CONFIG = "extra_install_config";

@@ -99,5 +99,11 @@
             app:icon="@drawable/ic_baseline_info_24"
             app:title="@string/show_licenses"
             app:singleLineTitle="false"	/>
+        <!-- Only used in debug builds for debugging features -->
+        <Preference
+            app:key="pref_debug_button"
+            app:icon="@drawable/ic_baseline_bug_report_24"
+            app:isPreferenceVisible="false"
+            app:singleLineTitle="false"	/>
     </PreferenceCategory>
 </PreferenceScreen>

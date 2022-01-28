@@ -79,7 +79,7 @@ public class MainApplication extends Application implements CompatActivity.Appli
     }
 
     public static boolean checkSecret(Intent intent) {
-        return intent.getLongExtra("secret", ~secret) == secret;
+        return intent != null && intent.getLongExtra("secret", ~secret) == secret;
     }
 
     public static SharedPreferences getSharedPreferences() {

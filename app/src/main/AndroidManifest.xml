@@ -71,10 +71,13 @@
             android:theme="@style/Theme.MagiskModuleManager">
         </activity>
         <activity
-            android:name=".androidacy.AndoridacyActivity"
+            android:name=".androidacy.AndroidacyActivity"
             android:parentActivityName=".MainActivity"
             android:exported="false"
             android:theme="@style/Theme.MagiskModuleManager">
+            <intent-filter>
+                <action android:name="${applicationId}.intent.action.OPEN_ANDROIDACY_INTERNAL" />
+            </intent-filter>
         </activity>
         <activity android:name="com.mikepenz.aboutlibraries.ui.LibsActivity"
             tools:node="remove"/>
