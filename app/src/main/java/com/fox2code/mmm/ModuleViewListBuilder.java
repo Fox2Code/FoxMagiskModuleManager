@@ -31,6 +31,7 @@ public class ModuleViewListBuilder {
     @NonNull
     private String query = "";
     private boolean noUpdate;
+    private int footerPx;
 
     public ModuleViewListBuilder(Activity activity) {
         this.activity = activity;
@@ -100,7 +101,8 @@ public class ModuleViewListBuilder {
         try {
             synchronized (this.updateLock) {
                 // Build start
-                moduleHolders = new ArrayList<>();
+                moduleHolders = new ArrayList<>(Math.min(64,
+                        this.mappedModuleHolders.size() + 5));
                 int special = 0;
                 Iterator<NotificationType> notificationTypeIterator = this.notifications.iterator();
                 while (notificationTypeIterator.hasNext()) {
@@ -133,6 +135,9 @@ public class ModuleViewListBuilder {
                     }
                 }
                 Collections.sort(moduleHolders, ModuleHolder::compareTo);
+                if (this.footerPx != 0) { // Footer is always last
+                    moduleHolders.add(new ModuleHolder(this.footerPx));
+                }
                 Log.i(TAG, "Got " + moduleHolders.size() + " entries!");
                 // Build end
             }
@@ -198,10 +203,27 @@ public class ModuleViewListBuilder {
     }
 
     private boolean matchFilter(ModuleHolder moduleHolder) {
-        if (this.query.isEmpty()) return true;
         ModuleInfo moduleInfo = moduleHolder.getMainModuleInfo();
-        return moduleInfo.id.toLowerCase(Locale.ROOT).contains(this.query) ||
-                moduleInfo.name.toLowerCase(Locale.ROOT).contains(this.query);
+        String query = this.query;
+        String idLw = moduleInfo.id.toLowerCase(Locale.ROOT);
+        String nameLw = moduleInfo.name.toLowerCase(Locale.ROOT);
+        String authorLw = moduleInfo.author.toLowerCase(Locale.ROOT);
+        if (query.isEmpty() || query.equals(idLw) ||
+                query.equals(nameLw) || query.equals(authorLw)) {
+            moduleHolder.filterLevel = 0; // Lower = better
+            return true;
+        }
+        if (idLw.contains(query) || nameLw.contains(query)) {
+            moduleHolder.filterLevel = 1;
+            return true;
+        }
+        if (authorLw.contains(query) || (moduleInfo.description != null &&
+                moduleInfo.description.toLowerCase(Locale.ROOT).contains(query))) {
+            moduleHolder.filterLevel = 2;
+            return true;
+        }
+        moduleHolder.filterLevel = 3;
+        return false;
     }
 
     private static void notifySizeChanged(ModuleViewAdapter moduleViewAdapter,
@@ -241,5 +263,14 @@ public class ModuleViewListBuilder {
             this.query = newQuery;
         }
         return true;
+    }
+
+    public void setFooterPx(int footerPx) {
+        if (this.footerPx != footerPx) {
+            synchronized (this.updateLock) {
+                this.footerPx = footerPx;
+            }
+            this.noUpdate = false;
+        }
     }
 }

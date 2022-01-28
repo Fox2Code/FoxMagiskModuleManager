@@ -167,6 +167,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         theme.resolveAttribute(backgroundAttr, value, true);
         this.searchCard.setCardBackgroundColor(value.data);
         this.searchCard.setAlpha(iconified ? 0.70F : 1F);
+        this.moduleViewListBuilder.setFooterPx(this.searchCard.getHeight());
     }
 
     @Override

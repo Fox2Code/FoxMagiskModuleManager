@@ -27,6 +27,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
     public final int footerPx;
     public LocalModuleInfo moduleInfo;
     public RepoModule repoModule;
+    public int filterLevel;
 
     public ModuleHolder(String moduleId) {
         this.moduleId = Objects.requireNonNull(moduleId);
@@ -209,12 +210,16 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
         UPDATABLE(R.string.updatable, true) {
             @Override
             public int compare(ModuleHolder o1, ModuleHolder o2) {
+                int cmp = Integer.compare(o1.filterLevel, o2.filterLevel);
+                if (cmp != 0) return cmp;
                 return Long.compare(o2.repoModule.lastUpdated, o1.repoModule.lastUpdated);
             }
         },
         INSTALLED(R.string.installed, true) {
             @Override
             public int compare(ModuleHolder o1, ModuleHolder o2) {
+                int cmp = Integer.compare(o1.filterLevel, o2.filterLevel);
+                if (cmp != 0) return cmp;
                 return o1.getMainModuleName().compareTo(o2.getMainModuleName());
             }
         },
@@ -222,6 +227,8 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
         INSTALLABLE(R.string.online_repo, true) {
             @Override
             public int compare(ModuleHolder o1, ModuleHolder o2) {
+                int cmp = Integer.compare(o1.filterLevel, o2.filterLevel);
+                if (cmp != 0) return cmp;
                 return Long.compare(o2.repoModule.lastUpdated, o1.repoModule.lastUpdated);
             }
         },
