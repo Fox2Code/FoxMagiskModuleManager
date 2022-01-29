@@ -181,7 +181,14 @@ public class PropUtils {
                         break;
                     case "minMagisk":
                         try {
-                            moduleInfo.minMagisk = Integer.parseInt(value);
+                            int i = value.indexOf('.');
+                            if (i == -1) {
+                                moduleInfo.minMagisk = Integer.parseInt(value);
+                            } else {
+                                moduleInfo.minMagisk = // Allow 24.1 to mean 24100
+                                        (Integer.parseInt(value.substring(0, i)) * 1000) +
+                                                (Integer.parseInt(value.substring(i + 1)) * 100);
+                            }
                         } catch (Exception e) {
                             moduleInfo.minMagisk = 0;
                         }
