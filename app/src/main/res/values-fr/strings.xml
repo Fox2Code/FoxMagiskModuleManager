@@ -1,0 +1,90 @@
+<resources>
+    <string name="app_name">Gestionnaire de modules Magisk de Fox</string>
+    <string name="app_name_short">Mmm de Fox</string>
+    <string name="fail_root_magisk">Échec de l\’accès à la racine ou à Magisk</string>
+    <string name="loading">Chargement…</string>
+    <string name="updatable">Actualisable</string>
+    <string name="installed">Installé</string>
+    <string name="online_repo">Dépôt en ligne</string>
+    <string name="showcase_mode">L\’application est en mode verrouillage</string>
+    <string name="failed_download">Échec du téléchargement du fichier.</string>
+    <string name="slow_modules">Les modules mettent trop de temps à démarrer, envisagez de désactiver certains modules</string>
+    <string name="fail_internet">Échec de la connexion à internet</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="app_update_available">Mis-à-jour de l\’application disponible</string>
+    <string name="app_update">Mis-à-jour</string>
+    <string name="no_desc_found">Aucune description trouvée.</string>
+    <string name="download_module">Mode téléchargement</string>
+    <string name="install_module">Installation du module</string>
+    <string name="update_module">Mis-à-jour du module</string>
+    <string name="changelog">Journal des modifications</string>
+    <string name="website">Site web</string>
+    <string name="support">Support</string>
+    <string name="donate">Dons</string>
+    <string name="submit_modules">Soumettre un module</string>
+
+    <!-- Module section translation -->
+    <string name="module_last_update">Dernière mis-à-jour:</string>
+    <string name="module_repo">Dépôt:</string>
+    <string name="module_by">par</string>
+    <string name="module_downloads">Téléchargements:</string>
+    <string name="module_stars">Étoiles:</string>
+
+    <!-- Preference Titles -->
+    <!-- Note: Lockdown mode used to be called showcase mode -->
+    <string name="manage_repos_pref">Gestion des dépôts</string>
+    <string name="showcase_mode_pref">Mode verrouillage</string>
+    <string name="showcase_mode_desc">Le mode verrouillage empêche toute action du gestionnaire sur les modules</string>
+    <string name="pref_category_settings">Réglages</string>
+    <string name="pref_category_info">Infos</string>
+    <string name="show_licenses">Afficher les licenses</string>
+    <string name="licenses">Licences</string>
+    <string name="show_incompatible_pref">Afficher les modules incompatibles</string>
+    <string name="show_incompatible_desc">Afficher les modules qui sont incompatibles avec votre périphérique basé sur leurs métadonnées</string>
+    <string name="magisk_outdated">Magisk est périmé!</string>
+    <string name="pref_category_repos">Dépôts</string>
+    <string name="repo_main_desc">Le dépôt héberge les Modules Magisk</string>
+    <string name="repo_main_alt">Une alternative à Magisk-Modules-Repo avec moins de restrictions.</string>
+    <string name="master_delete">Supprimer les fichiers du modules?</string>
+    <string name="master_delete_no">Conserver les fichiers</string>
+    <string name="master_delete_yes">Supprimer les fichiers</string>
+    <string name="master_delete_fail">Échec de suppression des fichiers du module</string>
+    <string name="theme_pref">Thème</string>
+    <string name="module_id_prefix">Id du module: </string>
+    <string name="install_from_storage">Installer un module module depuis le stockage</string>
+    <string name="invalid_format">Le module sélectionné est dans un format invalide</string>
+    <string name="local_install_title">Installation locale</string>
+    <string name="source_code">Code source</string>
+    <string name="magisk_builtin_module">Module intégré à Magisk</string>
+    <string name="substratum_builtin_module">Module intégré à Substratum</string>
+    <string name="force_dark_terminal_title">Forcer le mode sombre au terminal</string>
+    <string name="file_picker_failure">Votre sélecteur de fichiers actuel n\’a pas réussi à donner accès au fichier</string>
+    <string name="remote_install_title">Installation à distance</string>
+    <string name="file_picker_wierd">Votre sélecteur de fichier n\’a pas renvoyé une réponse standart.</string>
+    <string name="use_magisk_install_command_pref">Utiliser la commande d\’installation de module</string>
+    <string name="use_magisk_install_command_desc">
+        Pendant le test, il a causé des problèmes à l'outil de diagnostic d'erreur d'installation du module,
+        donc j'ai caché cette option derrière le mode développeur, activez-la à vos risques et périls!
+    </string>
+    <string name="dev_mode_enabled">Mode développeur activé</string>
+    <string name="force_english_pref">Forcer la langue Anglaise</string>
+    <string name="disable_low_quality_module_filter_pref">Désactiver le filtre de module de basse qualité</string>
+    <string name="disable_low_quality_module_filter_desc">
+        Certains modules ne déclarent pas leur métadonnées correctement, causant des bugs visuels,
+        et/ou indicant une qualité de module and/or indiquant une mauvaise qualité du module, à désactiver à vos risques et périls!
+    </string>
+    <string name="dns_over_https_pref">DNS sur https</string>
+    <string name="dns_over_https_desc">Pourrait corriger les problèmes de connexions dans certains cas.</string>
+    <string name="disable_extensions_pref">Désactiver les extensions</string>
+    <string name="disable_extensions_desc">
+        Désactive les extensions de Mmm de Fox, celà évite que les modules utilisent
+        les extensions du terminal, très pratique si un module useful si un module utilise mal les extensions Mmm de Fox.
+    </string>
+    <string name="wrap_text_pref">Mise en forme du texte</string>
+    <string name="wrap_text_desc">
+        Mise en forme du texte avec une nouvelle ligne au lieu de mettre
+        tout le texte sur la même ligne lors de l'installation d'un module
+    </string>
+    <string name="repo_enabled">Dépôt activé</string>
+    <string name="repo_disabled">Dépôt désactivé</string>
+</resources>
