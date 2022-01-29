@@ -22,6 +22,7 @@ import com.fox2code.mmm.R;
 import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.utils.FastException;
 import com.fox2code.mmm.utils.Files;
+import com.fox2code.mmm.utils.Hashes;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
@@ -54,6 +55,7 @@ public class InstallerActivity extends CompatActivity {
         final Intent intent = this.getIntent();
         final String target;
         final String name;
+        final String checksum;
         final boolean noPatch;
         final boolean noExtensions;
         final boolean rootless;
@@ -66,6 +68,7 @@ public class InstallerActivity extends CompatActivity {
             }
             target = intent.getStringExtra(Constants.EXTRA_INSTALL_PATH);
             name = intent.getStringExtra(Constants.EXTRA_INSTALL_NAME);
+            checksum = intent.getStringExtra(Constants.EXTRA_INSTALL_CHECKSUM);
             noPatch = intent.getBooleanExtra(Constants.EXTRA_INSTALL_NO_PATCH, false);
             noExtensions = intent.getBooleanExtra(// Allow intent to disable extensions
                     Constants.EXTRA_INSTALL_NO_EXTENSIONS, false);
@@ -122,6 +125,15 @@ public class InstallerActivity extends CompatActivity {
                             this.progressIndicator.setProgressCompat(progress, true);
                         });
                     });
+                    if (checksum != null && !checksum.isEmpty()) {
+                        Log.d(TAG, "Checking for checksum: " + checksum);
+                        this.installerTerminal.addLine("- Checking file integrity");
+                        if (!Hashes.checkSumMatch(rawModule, checksum)) {
+                            this.setInstallStateFinished(false,
+                                    "! File integrity check failed", "");
+                            return;
+                        }
+                    }
                     if (noPatch) {
                         try (OutputStream outputStream = new FileOutputStream(moduleCache)) {
                             outputStream.write(rawModule);
@@ -152,12 +164,30 @@ public class InstallerActivity extends CompatActivity {
                 }
             }, "Module download Thread").start();
         } else {
+            final File moduleFile = new File(target);
+            if (checksum != null && !checksum.isEmpty()) {
+                Log.d(TAG, "Checking for checksum: " + checksum);
+                this.installerTerminal.addLine("- Checking file integrity");
+                try {
+                    if (!Hashes.checkSumMatch(Files.readSU(moduleFile), checksum)) {
+                        this.setInstallStateFinished(false,
+                                "! File integrity check failed", "");
+                        return;
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "Failed to read file for checksum check", e);
+                    this.setInstallStateFinished(false,
+                            "! File integrity check failed", "");
+                    return;
+                }
+            }
             this.installerTerminal.addLine("- Installing " + name);
             new Thread(() -> this.doInstall(
-                    this.toDelete = new File(target), noExtensions, rootless),
+                    this.toDelete = moduleFile, noExtensions, rootless),
                     "Install Thread").start();
         }
     }
+
 
     private void doInstall(File file,boolean noExtensions,boolean rootless) {
         Log.i(TAG, "Installing: " + moduleCache.getName());

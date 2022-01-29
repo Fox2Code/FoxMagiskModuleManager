@@ -12,6 +12,7 @@ import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.PropUtils;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -230,7 +231,8 @@ public final class RepoManager {
             case MAGISK_ALT_REPO_JSDELIVR:
                 return "magisk_alt_repo";
             default:
-                return "repo_" + Hashes.hashSha1(url);
+                return "repo_" + Hashes.hashSha1(
+                        url.getBytes(StandardCharsets.UTF_8));
         }
     }
 

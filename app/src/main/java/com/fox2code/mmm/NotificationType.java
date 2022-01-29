@@ -89,7 +89,7 @@ public enum NotificationType implements NotificationTypeCst {
                     } else {
                         IntentHelper.openInstaller(compatActivity, d.getAbsolutePath(),
                                 compatActivity.getString(
-                                        R.string.local_install_title), null, false,
+                                        R.string.local_install_title), null, null, false,
                                 BuildConfig.DEBUG && // Use debug mode if no root
                                         InstallerInitializer.peekMagiskPath() == null);
                     }
@@ -102,7 +102,7 @@ public enum NotificationType implements NotificationTypeCst {
             } else if (s == IntentHelper.RESPONSE_URL) {
                 IntentHelper.openInstaller(compatActivity, u.toString(),
                         compatActivity.getString(
-                                R.string.remote_install_title), null, false,
+                                R.string.remote_install_title), null, null, false,
                         BuildConfig.DEBUG && // Use debug mode if no root
                                 InstallerInitializer.peekMagiskPath() == null);
             }

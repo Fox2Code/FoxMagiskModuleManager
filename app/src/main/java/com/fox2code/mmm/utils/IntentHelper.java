@@ -104,12 +104,13 @@ public class IntentHelper {
         }
     }
 
-    public static void openInstaller(Context context, String url, String title, String config) {
-        openInstaller(context, url, title, config, false, false);
+    public static void openInstaller(Context context, String url, String title,
+                                     String config, String checksum) {
+        openInstaller(context, url, title, config, checksum, false, false);
     }
 
     public static void openInstaller(Context context, String url, String title, String config,
-                                       boolean noPatch,boolean testDebug) {
+                                       String checksum, boolean noPatch,boolean testDebug) {
         try {
             Intent intent = new Intent(context, InstallerActivity.class);
             intent.setAction(Constants.INTENT_INSTALL_INTERNAL);
@@ -118,6 +119,8 @@ public class IntentHelper {
             intent.putExtra(Constants.EXTRA_INSTALL_NAME, title);
             if (config != null && !config.isEmpty())
                 intent.putExtra(Constants.EXTRA_INSTALL_CONFIG, config);
+            if (checksum != null && !checksum.isEmpty())
+                intent.putExtra(Constants.EXTRA_INSTALL_CHECKSUM, checksum);
             if (noPatch)
                 intent.putExtra(Constants.EXTRA_INSTALL_NO_PATCH, true);
             if (testDebug && BuildConfig.DEBUG)

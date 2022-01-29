@@ -118,6 +118,7 @@ public class RepoData {
                 String moduleNotesUrl = module.getString("notes_url");
                 String modulePropsUrl = module.getString("prop_url");
                 String moduleZipUrl = module.getString("zip_url");
+                String moduleChecksum = module.optString("checksum");
                 if (moduleLastUpdateSpecial != null) { // Fix last update time
                     Log.d("RepoData", "Data: " + moduleLastUpdate + " -> " +
                             moduleLastUpdateSpecial + " for " + moduleId);
@@ -147,6 +148,7 @@ public class RepoData {
                 repoModule.notesUrl = moduleNotesUrl;
                 repoModule.propUrl = modulePropsUrl;
                 repoModule.zipUrl = moduleZipUrl;
+                repoModule.checksum = moduleChecksum;
             }
             // Remove no longer existing modules
             Iterator<RepoModule> moduleInfoIterator = this.moduleHashMap.values().iterator();

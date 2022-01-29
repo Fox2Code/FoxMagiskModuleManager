@@ -47,8 +47,9 @@ public enum ActionButtonType {
             if (moduleInfo == null) return;
             String updateZipUrl = moduleHolder.getUpdateZipUrl();
             if (updateZipUrl == null) return;
+            String updateZipChecksum = moduleHolder.getUpdateZipChecksum();
             IntentHelper.openInstaller(button.getContext(), updateZipUrl,
-                    moduleInfo.name, moduleInfo.config);
+                    moduleInfo.name, moduleInfo.config, updateZipChecksum);
         }
     },
     UNINSTALL() {

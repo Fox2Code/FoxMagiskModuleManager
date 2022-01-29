@@ -10,6 +10,7 @@ public class RepoModule {
     public String propUrl;
     public String zipUrl;
     public String notesUrl;
+    public String checksum;
     boolean processed;
 
     public RepoModule(String id) {

@@ -69,8 +69,16 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
 
     public String getUpdateZipUrl() {
         return this.moduleInfo == null || (this.repoModule != null &&
-                this.moduleInfo.updateVersionCode < this.repoModule.lastUpdated) ?
+                this.moduleInfo.updateVersionCode <
+                        this.repoModule.moduleInfo.versionCode) ?
                 this.repoModule.zipUrl : this.moduleInfo.updateZipUrl;
+    }
+
+    public String getUpdateZipChecksum() {
+        return this.moduleInfo == null || (this.repoModule != null &&
+                this.moduleInfo.updateVersionCode <
+                        this.repoModule.moduleInfo.versionCode) ?
+                this.repoModule.checksum : this.moduleInfo.updateChecksum;
     }
 
     public String getMainModuleName() {
