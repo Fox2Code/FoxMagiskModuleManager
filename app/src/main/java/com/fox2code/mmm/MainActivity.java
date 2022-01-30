@@ -106,6 +106,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
             }
 
             public void commonNext() {
+                moduleViewListBuilder.setFooterPx(searchCard.getHeight()); // Fix an edge case
                 if (MainApplication.isShowcaseMode())
                     moduleViewListBuilder.addNotification(NotificationType.SHOWCASE_MODE);
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);

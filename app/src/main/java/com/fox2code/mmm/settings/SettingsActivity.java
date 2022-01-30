@@ -1,15 +1,14 @@
 package com.fox2code.mmm.settings;
 
 import android.os.Bundle;
-import android.text.method.Touch;
 import android.widget.Toast;
 
-import androidx.annotation.StyleRes;
+import androidx.annotation.StringRes;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.SwitchPreference;
 
 import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.BuildConfig;
@@ -50,6 +49,11 @@ public class SettingsActivity extends CompatActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             getPreferenceManager().setSharedPreferencesName("mmm");
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
+            findPreference("pref_manage_repos").setOnPreferenceClickListener(p -> {
+                devModeStep = 0;
+                openFragment(new RepoFragment(), R.string.manage_repos_pref);
+                return true;
+            });
             ListPreference themePreference = findPreference("pref_theme");
             themePreference.setSummaryProvider(p -> themePreference.getEntry());
             themePreference.setOnPreferenceClickListener(p -> {
@@ -87,10 +91,6 @@ public class SettingsActivity extends CompatActivity {
                 findPreference("pref_use_magisk_install_command").setVisible(false);
             }
 
-            setRepoNameResolution("pref_repo_main", RepoManager.MAGISK_REPO,
-                    "Magisk Modules Repo (Official)", RepoManager.MAGISK_REPO_HOMEPAGE);
-            setRepoNameResolution("pref_repo_alt", RepoManager.MAGISK_ALT_REPO,
-                    "Magisk Modules Alt Repo", RepoManager.MAGISK_ALT_REPO_HOMEPAGE);
             final LibsBuilder libsBuilder = new LibsBuilder().withShowLoadingProgress(false)
                     .withLicenseShown(true).withAboutMinimalDesign(false);
             Preference update = findPreference("pref_update");
@@ -116,14 +116,7 @@ public class SettingsActivity extends CompatActivity {
             });
             findPreference("pref_show_licenses").setOnPreferenceClickListener(p -> {
                 devModeStep = devModeStep == 1 ? 2 : 0;
-                CompatActivity compatActivity = getCompatActivity(this);
-                compatActivity.setOnBackPressedCallback(this);
-                compatActivity.setTitle(R.string.licenses);
-                compatActivity.getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.settings, libsBuilder.supportFragment())
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .commit();
+                openFragment(libsBuilder.supportFragment(), R.string.licenses);
                 return true;
             });
             if (BuildConfig.DEBUG) {
@@ -137,17 +130,15 @@ public class SettingsActivity extends CompatActivity {
             }
         }
 
-        private void setRepoNameResolution(String preferenceName,String url,
-                                           String fallbackTitle,String homepage) {
-            Preference preference = findPreference(preferenceName);
-            if (preference == null) return;
-            RepoData repoData = RepoManager.getINSTANCE().get(url);
-            preference.setTitle(repoData == null ? fallbackTitle :
-                    repoData.getNameOrFallback(fallbackTitle));
-            preference.setOnPreferenceClickListener(p -> {
-                IntentHelper.openUrl(getCompatActivity(this), homepage);
-                return true;
-            });
+        private void openFragment(Fragment fragment, @StringRes int title) {
+            CompatActivity compatActivity = getCompatActivity(this);
+            compatActivity.setOnBackPressedCallback(this);
+            compatActivity.setTitle(title);
+            compatActivity.getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.settings, fragment)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commit();
         }
 
         @Override
@@ -158,6 +149,59 @@ public class SettingsActivity extends CompatActivity {
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .commit();
             return true;
+        }
+    }
+
+    public static class RepoFragment extends PreferenceFragmentCompat {
+
+        @Override
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            getPreferenceManager().setSharedPreferencesName("mmm");
+            setPreferencesFromResource(R.xml.repo_preferences, rootKey);
+            setRepoData("pref_repo_main", RepoManager.MAGISK_REPO,
+                    "Magisk Modules Repo (Official)", RepoManager.MAGISK_REPO_HOMEPAGE,
+                    null, null);
+            setRepoData("pref_repo_alt", RepoManager.MAGISK_ALT_REPO,
+                    "Magisk Modules Alt Repo", RepoManager.MAGISK_ALT_REPO_HOMEPAGE,
+                    null,
+                    "https://github.com/Magisk-Modules-Alt-Repo/submission/issues");
+            // Androidacy backend not yet implemented!
+            setRepoData("pref_repo_androidacy", null,
+                    "Androidacy Magisk Modules Repo",
+                    RepoManager.ANDROIDACY_MAGISK_REPO_HOMEPAGE,
+                    "https://t.me/androidacy_discussions",
+                    "https://www.androidacy.com/module-repository-applications/");
+        }
+
+        private void setRepoData(String preferenceName, String url,
+                                 String fallbackTitle, String homepage,
+                                 String supportUrl, String submissionUrl) {
+            Preference preference = findPreference(preferenceName);
+            if (preference == null) return;
+            RepoData repoData = RepoManager.getINSTANCE().get(url);
+            preference.setTitle(repoData == null ? fallbackTitle :
+                    repoData.getNameOrFallback(fallbackTitle));
+            preference = findPreference(preferenceName + "_website");
+            if (preference != null && homepage != null) {
+                preference.setOnPreferenceClickListener(p -> {
+                    IntentHelper.openUrl(getCompatActivity(this), homepage);
+                    return true;
+                });
+            }
+            preference = findPreference(preferenceName + "_support");
+            if (preference != null && supportUrl != null) {
+                preference.setOnPreferenceClickListener(p -> {
+                    IntentHelper.openUrl(getCompatActivity(this), supportUrl);
+                    return true;
+                });
+            }
+            preference = findPreference(preferenceName + "_submit");
+            if (preference != null && submissionUrl != null) {
+                preference.setOnPreferenceClickListener(p -> {
+                    IntentHelper.openUrl(getCompatActivity(this), submissionUrl);
+                    return true;
+                });
+            }
         }
     }
 }

@@ -34,6 +34,8 @@ public final class RepoManager {
             "https://github.com/Magisk-Modules-Repo";
     public static final String MAGISK_ALT_REPO_HOMEPAGE =
             "https://github.com/Magisk-Modules-Alt-Repo";
+    public static final String ANDROIDACY_MAGISK_REPO_HOMEPAGE =
+            "https://www.androidacy.com/modules-repo";
 
     private static final Object lock = new Object();
     private static RepoManager INSTANCE;
@@ -84,6 +86,7 @@ public final class RepoManager {
     }
 
     public RepoData get(String url) {
+        if (url == null) return null;
         switch (url) {
             case MAGISK_REPO_MANAGER:
             case MAGISK_REPO:

@@ -2,6 +2,12 @@
 
     <PreferenceCategory
         app:title="@string/pref_category_settings">
+        <Preference
+            app:key="pref_manage_repos"
+            app:icon="@drawable/ic_baseline_extension_24"
+            app:title="@string/manage_repos_pref"
+            app:singleLineTitle="false"	/>
+
         <ListPreference
             app:key="pref_theme"
             app:icon="@drawable/ic_baseline_palette_24"
@@ -67,21 +73,6 @@
             app:singleLineTitle="false"	/>
     </PreferenceCategory>
 
-    <PreferenceCategory
-        app:title="@string/pref_category_repos">
-        <Preference
-            app:key="pref_repo_main"
-            app:icon="@drawable/ic_baseline_extension_24"
-            app:summary="@string/repo_main_desc"
-            app:title="@string/loading"
-            app:singleLineTitle="false"	/>
-        <Preference
-            app:key="pref_repo_alt"
-            app:icon="@drawable/ic_baseline_extension_24"
-            app:summary="@string/repo_main_alt"
-            app:title="@string/loading"
-            app:singleLineTitle="false"	/>
-    </PreferenceCategory>
     <PreferenceCategory
         app:title="@string/pref_category_info">
         <Preference

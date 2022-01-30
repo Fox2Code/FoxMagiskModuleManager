@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+        app:key="pref_repo_main"
+        app:title="@string/loading">
+        <Preference
+            app:key="pref_repo_main_website"
+            app:icon="@drawable/ic_baseline_language_24"
+            app:title="@string/website"
+            app:singleLineTitle="false"	/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:key="pref_repo_alt"
+        app:title="@string/loading">
+        <Preference
+            app:key="pref_repo_alt_website"
+            app:icon="@drawable/ic_baseline_language_24"
+            app:title="@string/website"
+            app:singleLineTitle="false"	/>
+        <Preference
+            app:key="pref_repo_alt_submit"
+            app:icon="@drawable/ic_baseline_upload_file_24"
+            app:title="@string/submit_modules"
+            app:singleLineTitle="false"	/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:key="pref_repo_androidacy"
+        app:title="@string/loading">
+        <Preference
+            app:key="pref_repo_androidacy_website"
+            app:icon="@drawable/ic_baseline_language_24"
+            app:title="@string/website"
+            app:singleLineTitle="false"	/>
+        <Preference
+            app:key="pref_repo_androidacy_support"
+            app:icon="@drawable/ic_baseline_telegram_24"
+            app:title="@string/support"
+            app:singleLineTitle="false"	/>
+        <Preference
+            app:key="pref_repo_androidacy_submit"
+            app:icon="@drawable/ic_baseline_upload_file_24"
+            app:title="@string/submit_modules"
+            app:singleLineTitle="false"	/>
+    </PreferenceCategory>
+</PreferenceScreen>
