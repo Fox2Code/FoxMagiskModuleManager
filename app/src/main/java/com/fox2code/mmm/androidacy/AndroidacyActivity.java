@@ -11,9 +11,12 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.webkit.WebSettingsCompat;
+import androidx.webkit.WebViewClientCompat;
+import androidx.webkit.WebViewFeature;
 
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
@@ -33,7 +36,8 @@ public class AndroidacyActivity extends CompatActivity {
         }
     }
 
-    private WebView webView;
+    WebView webView;
+    boolean backOnResume;
 
     @Override
     @SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface"})
@@ -52,7 +56,7 @@ public class AndroidacyActivity extends CompatActivity {
         String title = intent.getStringExtra(Constants.EXTRA_ANDROIDACY_ACTIONBAR_TITLE);
         String config = intent.getStringExtra(Constants.EXTRA_ANDROIDACY_ACTIONBAR_CONFIG);
         this.setContentView(R.layout.webview);
-        if (title == null || title.isEmpty()) {
+        if (allowInstall || title == null || title.isEmpty()) {
             this.hideActionBar();
         } else { // Only used for note section
             this.setTitle(title);
@@ -77,10 +81,14 @@ public class AndroidacyActivity extends CompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { // Make website follow app theme
             webSettings.setForceDark(MainApplication.getINSTANCE().isLightTheme() ?
                     WebSettings.FORCE_DARK_OFF : WebSettings.FORCE_DARK_ON);
+        } else if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+            WebSettingsCompat.setForceDark(webSettings, MainApplication.getINSTANCE().isLightTheme() ?
+                    WebSettingsCompat.FORCE_DARK_OFF : WebSettingsCompat.FORCE_DARK_ON);
         }
-        this.webView.setWebViewClient(new WebViewClient() {
+        this.webView.setWebViewClient(new WebViewClientCompat() {
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+            public boolean shouldOverrideUrlLoading(
+                    @NonNull WebView view, @NonNull WebResourceRequest request) {
                 // Don't open non andoridacy urls inside WebView
                 if (request.isForMainFrame() && !(request.getUrl().getScheme().equals("intent") ||
                         request.getUrl().getHost().endsWith(".androidacy.com"))) {
@@ -113,6 +121,15 @@ public class AndroidacyActivity extends CompatActivity {
             webView.goBack();
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (this.backOnResume) {
+            this.backOnResume = false;
+            this.forceBackPressed();
         }
     }
 }

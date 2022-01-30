@@ -137,6 +137,7 @@ public class AndroidacyRepoData extends RepoData {
             moduleInfo.version = jsonObject.optString(
                     "version", "v" + moduleInfo.versionCode);
             moduleInfo.author = jsonObject.optString("author", "Unknown");
+            moduleInfo.description = jsonObject.optString("description", "");
             moduleInfo.minApi = jsonObject.getInt("minApi");
             moduleInfo.maxApi = jsonObject.getInt("maxApi");
             String minMagisk = jsonObject.getString("minMagisk");

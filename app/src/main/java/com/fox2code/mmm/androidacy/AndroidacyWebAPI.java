@@ -81,6 +81,7 @@ public class AndroidacyWebAPI {
                 moduleUrl + " " + installTitle + " " + checksum);
         Uri uri = Uri.parse(moduleUrl);
         if (uri.getScheme().equals("https") && uri.getHost().endsWith(".androidacy.com")) {
+            this.activity.backOnResume = true;
             IntentHelper.openInstaller(this.activity,
                     moduleUrl, installTitle, null, checksum);
         } else {

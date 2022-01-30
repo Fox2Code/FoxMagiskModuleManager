@@ -55,7 +55,8 @@ public enum ActionButtonType {
             if (updateZipUrl == null) return;
             if (updateZipUrl.startsWith("https://www.androidacy.com/")) {
                 IntentHelper.openUrlAndroidacy(
-                        button.getContext(), updateZipUrl, true);
+                        button.getContext(), updateZipUrl, true,
+                        moduleInfo.name, moduleInfo.config);
                 return;
             }
             String updateZipChecksum = moduleHolder.getUpdateZipChecksum();
