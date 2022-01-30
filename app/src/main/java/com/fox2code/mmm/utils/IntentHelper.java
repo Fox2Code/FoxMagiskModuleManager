@@ -27,9 +27,7 @@ import com.fox2code.mmm.markdown.MarkdownActivity;
 import com.topjohnwu.superuser.io.SuFileInputStream;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -46,12 +44,21 @@ public class IntentHelper {
     }
 
     public static void openUrlAndroidacy(Context context, String url,boolean allowInstall) {
+        openUrlAndroidacy(context, url, allowInstall, null, null);
+    }
+
+    public static void openUrlAndroidacy(Context context, String url, boolean allowInstall,
+                                         String title,String config) {
         Uri uri = Uri.parse(url);
         try {
             Intent myIntent = new Intent(
                     Constants.INTENT_ANDROIDACY_INTERNAL,
                     uri, context, AndroidacyActivity.class);
             myIntent.putExtra(Constants.EXTRA_ANDROIDACY_ALLOW_INSTALL, allowInstall);
+            if (title != null)
+                myIntent.putExtra(Constants.EXTRA_ANDROIDACY_ACTIONBAR_TITLE, title);
+            if (config != null)
+                myIntent.putExtra(Constants.EXTRA_ANDROIDACY_ACTIONBAR_CONFIG, config);
             MainApplication.addSecret(myIntent);
             context.startActivity(myIntent);
         } catch (ActivityNotFoundException e) {

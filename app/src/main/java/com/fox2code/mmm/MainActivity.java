@@ -32,6 +32,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
     public LinearProgressIndicator progressIndicator;
     private ModuleViewAdapter moduleViewAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private long swipeRefreshBlocker = 0;
     private RecyclerView moduleList;
     private CardView searchCard;
     private SearchView searchView;
@@ -54,6 +55,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         this.setTitle(R.string.app_name);
         this.progressIndicator = findViewById(R.id.progress_bar);
         this.swipeRefreshLayout = findViewById(R.id.swipe_refresh);
+        this.swipeRefreshBlocker = Long.MAX_VALUE;
         this.moduleList = findViewById(R.id.module_list);
         this.searchCard = findViewById(R.id.search_card);
         this.searchView = findViewById(R.id.search_bar);
@@ -106,6 +108,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
             }
 
             public void commonNext() {
+                swipeRefreshBlocker = System.currentTimeMillis() + 5_000L;
                 moduleViewListBuilder.setFooterPx(searchCard.getHeight()); // Fix an edge case
                 if (MainApplication.isShowcaseMode())
                     moduleViewListBuilder.addNotification(NotificationType.SHOWCASE_MODE);
@@ -222,12 +225,15 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
 
     @Override
     public void onRefresh() {
-        if (this.initMode || this.progressIndicator == null ||
+        if (this.swipeRefreshBlocker > System.currentTimeMillis() ||
+                this.initMode || this.progressIndicator == null ||
                 this.progressIndicator.getVisibility() == View.VISIBLE) {
+            this.swipeRefreshLayout.setRefreshing(false);
             return; // Do not double scan
         }
         this.progressIndicator.setVisibility(View.VISIBLE);
         this.progressIndicator.setProgressCompat(0, false);
+        this.swipeRefreshBlocker = System.currentTimeMillis() + 5_000L;
         // this.swipeRefreshLayout.setRefreshing(true); ??
         new Thread(() -> {
             Http.cleanDnsCache(); // Allow DNS reload from network

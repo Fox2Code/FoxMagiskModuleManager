@@ -10,6 +10,7 @@ import android.util.Log;
 import android.webkit.CookieManager;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
@@ -22,6 +23,7 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.Proxy;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,7 +31,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -38,12 +39,15 @@ import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.Dns;
 import okhttp3.HttpUrl;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okhttp3.brotli.BrotliInterceptor;
 import okhttp3.dnsoverhttps.DnsOverHttps;
+import okio.BufferedSink;
 
 public class Http {
     private static final String TAG = "Http";
@@ -152,8 +156,29 @@ public class Http {
         Response response = (allowCache ? httpClientWithCache : httpClient).newCall(
                 makeRequestBuilder().url(url).get().build()
         ).execute();
-        // 200 == success, 304 == cache valid
-        if (response.code() != 200 && (response.code() != 304 || !allowCache)) {
+        // 200/204 == success, 304 == cache valid
+        if (response.code() != 200 && response.code() != 204 &&
+                (response.code() != 304 || !allowCache)) {
+            throw new IOException("Received error code: "+ response.code());
+        }
+        ResponseBody responseBody = response.body();
+        // Use cache api if used cached response
+        if (responseBody == null && response.code() == 304) {
+            response = response.cacheResponse();
+            if (response != null)
+                responseBody = response.body();
+        }
+        return responseBody == null ? new byte[0] : responseBody.bytes();
+    }
+
+    public static byte[] doHttpPost(String url,String data,boolean allowCache) throws IOException {
+        Response response = (allowCache ? httpClientWithCache : httpClient).newCall(
+                makeRequestBuilder().url(url).post(JsonRequestBody.from(data))
+                        .header("Content-Type", "application/json").build()
+        ).execute();
+        // 200/204 == success, 304 == cache valid
+        if (response.code() != 200 && response.code() != 204 &&
+                (response.code() != 304 || !allowCache)) {
             throw new IOException("Received error code: "+ response.code());
         }
         ResponseBody responseBody = response.body();
@@ -169,7 +194,7 @@ public class Http {
     public static byte[] doHttpGet(String url,ProgressListener progressListener) throws IOException {
         Log.d("Http", "Progress URL: " + url);
         Response response = httpClient.newCall(makeRequestBuilder().url(url).get().build()).execute();
-        if (response.code() != 200) {
+        if (response.code() != 200 && response.code() != 204) {
             throw new IOException("Received error code: "+ response.code());
         }
         ResponseBody responseBody = Objects.requireNonNull(response.body());
@@ -375,6 +400,40 @@ public class Http {
                 inetAddresses.add(InetAddress.getByName(address));
             }
             return inetAddresses;
+        }
+    }
+
+    private static class JsonRequestBody extends RequestBody {
+        private static final MediaType JSON_MEDIA_TYPE = MediaType.get("application/json");
+        private static final JsonRequestBody EMPTY = new JsonRequestBody(new byte[0]);
+
+        static JsonRequestBody from(String data) {
+            if (data == null || data.length() == 0) {
+                return EMPTY;
+            }
+            return new JsonRequestBody(data.getBytes(StandardCharsets.UTF_8));
+        }
+
+        final byte[] data;
+
+        private JsonRequestBody(byte[] data) {
+            this.data = data;
+        }
+
+        @Nullable
+        @Override
+        public MediaType contentType() {
+            return JSON_MEDIA_TYPE;
+        }
+
+        @Override
+        public long contentLength() {
+            return this.data.length;
+        }
+
+        @Override
+        public void writeTo(@NonNull BufferedSink bufferedSink) throws IOException {
+            bufferedSink.write(this.data);
         }
     }
 

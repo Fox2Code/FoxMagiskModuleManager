@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.androidacy.AndroidacyRepoData;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.utils.Files;
 import com.fox2code.mmm.utils.Hashes;
@@ -29,6 +30,8 @@ public final class RepoManager {
             "https://raw.githubusercontent.com/Magisk-Modules-Alt-Repo/json/main/modules.json";
     public static final String MAGISK_ALT_REPO_JSDELIVR =
             "https://cdn.jsdelivr.net/gh/Magisk-Modules-Alt-Repo/json@main/modules.json";
+    public static final String ANDROIDACY_MAGISK_REPO_ENDPOINT =
+            "https://api.androidacy.com/magisk/repo";
 
     public static final String MAGISK_REPO_HOMEPAGE =
             "https://github.com/Magisk-Modules-Repo";
@@ -67,6 +70,7 @@ public final class RepoManager {
         // We do not have repo list config yet.
         this.addRepoData(MAGISK_REPO_JSDELIVR);
         this.addRepoData(MAGISK_ALT_REPO_JSDELIVR);
+        this.addAndroidacyRepoData();
         // Populate default cache
         for (RepoData repoData:this.repoData.values()) {
             for (RepoModule repoModule:repoData.moduleHashMap.values()) {
@@ -79,7 +83,8 @@ public final class RepoManager {
                         this.modules.put(repoModule.id, repoModule);
                     }
                 } else {
-                    Log.e(TAG, "Detected module with invalid metadata: " + repoModule.id);
+                    Log.e(TAG, "Detected module with invalid metadata: " +
+                            repoModule.repoName + "/" + repoModule.id);
                 }
             }
         }
@@ -103,7 +108,11 @@ public final class RepoManager {
         synchronized (this.repoUpdateLock) {
             repoData = this.repoData.get(url);
             if (repoData == null) {
-                return this.addRepoData(url);
+                if (ANDROIDACY_MAGISK_REPO_ENDPOINT.equals(url)) {
+                    return this.addAndroidacyRepoData();
+                } else {
+                    return this.addRepoData(url);
+                }
             }
         }
         return repoData;
@@ -170,13 +179,16 @@ public final class RepoManager {
         for (int i = 0; i < repoUpdaters.length; i++) {
             List<RepoModule> repoModules = repoUpdaters[i].toUpdate();
             RepoData repoData = repoDatas[i];
+            Log.d(TAG, "Registering " + repoData.name);
             for (RepoModule repoModule:repoModules) {
                 try {
-                    repoData.storeMetadata(repoModule,
-                            Http.doHttpGet(repoModule.propUrl, false));
-                    Files.write(new File(repoData.cacheRoot, repoModule.id + ".prop"),
-                            Http.doHttpGet(repoModule.propUrl, false));
-                    if (repoDatas[i].tryLoadMetadata(repoModule) && (allowLowQualityModules ||
+                    if (repoModule.propUrl != null) {
+                        repoData.storeMetadata(repoModule,
+                                Http.doHttpGet(repoModule.propUrl, false));
+                        Files.write(new File(repoData.cacheRoot, repoModule.id + ".prop"),
+                                Http.doHttpGet(repoModule.propUrl, false));
+                    }
+                    if (repoData.tryLoadMetadata(repoModule) && (allowLowQualityModules ||
                             !PropUtils.isLowQualityModule(repoModule.moduleInfo))) {
                         // Note: registeredRepoModule may not be null if registered by multiple repos
                         RepoModule registeredRepoModule = this.modules.get(repoModule.id);
@@ -233,6 +245,8 @@ public final class RepoManager {
             case MAGISK_ALT_REPO:
             case MAGISK_ALT_REPO_JSDELIVR:
                 return "magisk_alt_repo";
+            case ANDROIDACY_MAGISK_REPO_ENDPOINT:
+                return "androidacy_repo";
             default:
                 return "repo_" + Hashes.hashSha1(
                         url.getBytes(StandardCharsets.UTF_8));
@@ -247,6 +261,16 @@ public final class RepoManager {
         RepoData repoData = new RepoData(url, cacheRoot,
                 sharedPreferences, id.equals("magisk_repo"));
         this.repoData.put(url, repoData);
+        return repoData;
+    }
+
+    private RepoData addAndroidacyRepoData() {
+        File cacheRoot = new File(this.mainApplication.getCacheDir(), "androidacy_repo");
+        SharedPreferences sharedPreferences = this.mainApplication
+                .getSharedPreferences("mmm_androidacy_repo", Context.MODE_PRIVATE);
+        RepoData repoData = new AndroidacyRepoData(
+                ANDROIDACY_MAGISK_REPO_ENDPOINT, cacheRoot, sharedPreferences);
+        this.repoData.put(ANDROIDACY_MAGISK_REPO_ENDPOINT, repoData);
         return repoData;
     }
 }

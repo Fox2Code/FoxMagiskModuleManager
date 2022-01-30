@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Objects;
 
 public class PropUtils {
     private static final HashMap<String, String> moduleSupportsFallbacks = new HashMap<>();
@@ -275,6 +274,23 @@ public class PropUtils {
         }
     }
 
+    public static void applyFallbacks(ModuleInfo moduleInfo) {
+        if (moduleInfo.support == null || moduleInfo.support.isEmpty()) {
+            moduleInfo.support = moduleSupportsFallbacks.get(moduleInfo.id);
+        }
+        if (moduleInfo.config == null || moduleInfo.config.isEmpty()) {
+            moduleInfo.config = moduleConfigsFallbacks.get(moduleInfo.id);
+        }
+        if (moduleInfo.minApi == 0) {
+            Integer minApiFallback = moduleMinApiFallbacks.get(moduleInfo.id);
+            if (minApiFallback != null)
+                moduleInfo.minApi = minApiFallback;
+            else if (moduleInfo.id.startsWith("riru_")
+                    || moduleInfo.id.startsWith("riru-"))
+                moduleInfo.minApi = RIRU_MIN_API;
+        }
+    }
+
     // Some module are really so low quality that it has become very annoying.
     public static boolean isLowQualityModule(ModuleInfo moduleInfo) {
         final String description;
@@ -290,7 +306,7 @@ public class PropUtils {
         return !TextUtils.isGraphic(name) || name.indexOf('\0') != -1;
     }
 
-    private static boolean isInvalidURL(String url) {
+    public static boolean isInvalidURL(String url) {
         int i = url.indexOf('/', 8);
         int e = url.indexOf('.', 8);
         return i == -1 || e == -1 || e >= i || !url.startsWith("https://")

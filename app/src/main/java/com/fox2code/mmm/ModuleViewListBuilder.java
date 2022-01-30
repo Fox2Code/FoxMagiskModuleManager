@@ -207,7 +207,8 @@ public class ModuleViewListBuilder {
         String query = this.query;
         String idLw = moduleInfo.id.toLowerCase(Locale.ROOT);
         String nameLw = moduleInfo.name.toLowerCase(Locale.ROOT);
-        String authorLw = moduleInfo.author.toLowerCase(Locale.ROOT);
+        String authorLw = moduleInfo.author == null ? "" :
+                moduleInfo.author.toLowerCase(Locale.ROOT);
         if (query.isEmpty() || query.equals(idLw) ||
                 query.equals(nameLw) || query.equals(authorLw)) {
             moduleHolder.filterLevel = 0; // Lower = better

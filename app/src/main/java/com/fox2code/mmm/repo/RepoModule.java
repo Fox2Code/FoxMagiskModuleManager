@@ -1,5 +1,7 @@
 package com.fox2code.mmm.repo;
 
+import androidx.annotation.StringRes;
+
 import com.fox2code.mmm.manager.ModuleInfo;
 
 public class RepoModule {
@@ -11,7 +13,10 @@ public class RepoModule {
     public String zipUrl;
     public String notesUrl;
     public String checksum;
-    boolean processed;
+    public boolean processed;
+    @StringRes
+    public int qualityText;
+    public int qualityValue;
 
     public RepoModule(String id) {
         this.moduleInfo = new ModuleInfo(id);

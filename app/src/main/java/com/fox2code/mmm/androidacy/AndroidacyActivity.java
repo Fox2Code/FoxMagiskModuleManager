@@ -2,9 +2,12 @@ package com.fox2code.mmm.androidacy;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -46,8 +49,26 @@ public class AndroidacyActivity extends CompatActivity {
         }
         boolean allowInstall = intent.getBooleanExtra(
                 Constants.EXTRA_ANDROIDACY_ALLOW_INSTALL, false);
+        String title = intent.getStringExtra(Constants.EXTRA_ANDROIDACY_ACTIONBAR_TITLE);
+        String config = intent.getStringExtra(Constants.EXTRA_ANDROIDACY_ACTIONBAR_CONFIG);
         this.setContentView(R.layout.webview);
-        this.hideActionBar();
+        if (title == null || title.isEmpty()) {
+            this.hideActionBar();
+        } else { // Only used for note section
+            this.setTitle(title);
+            this.setDisplayHomeAsUpEnabled(true);
+            if (config != null && !config.isEmpty()) {
+                String configPkg = IntentHelper.getPackageOfConfig(config);
+                try {
+                    this.getPackageManager().getPackageInfo(configPkg, 0);
+                    this.setActionBarExtraMenuButton(R.drawable.ic_baseline_app_settings_alt_24,
+                            menu -> {
+                                IntentHelper.openConfig(this, config);
+                                return true;
+                            });
+                } catch (PackageManager.NameNotFoundException ignored) {}
+            }
+        }
         this.webView = this.findViewById(R.id.webView);
         WebSettings webSettings = this.webView.getSettings();
         webSettings.setUserAgentString(Http.getAndroidacyUA());
@@ -67,6 +88,17 @@ public class AndroidacyActivity extends CompatActivity {
                     return true;
                 }
                 return false;
+            }
+        });
+        this.webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback,
+                                             FileChooserParams fileChooserParams) {
+                CompatActivity.getCompatActivity(webView).startActivityForResult(
+                        fileChooserParams.createIntent(), (code, data) ->
+                                filePathCallback.onReceiveValue(
+                                        FileChooserParams.parseResult(code, data)));
+                return true;
             }
         });
         this.webView.addJavascriptInterface(

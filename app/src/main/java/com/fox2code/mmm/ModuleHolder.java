@@ -153,7 +153,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
         if (this.moduleInfo != null && !showcaseMode) {
             buttonTypeList.add(ActionButtonType.UNINSTALL);
         }
-        if (this.repoModule != null) {
+        if (this.repoModule != null && this.repoModule.notesUrl != null) {
             buttonTypeList.add(ActionButtonType.INFO);
         }
         if ((this.repoModule != null || (this.moduleInfo != null &&

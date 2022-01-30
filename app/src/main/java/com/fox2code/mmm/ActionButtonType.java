@@ -11,17 +11,23 @@ import androidx.annotation.DrawableRes;
 import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
-import com.fox2code.mmm.repo.RepoModule;
 import com.fox2code.mmm.utils.IntentHelper;
 
 public enum ActionButtonType {
     INFO(R.drawable.ic_baseline_info_24) {
         @Override
         public void doAction(ImageButton button, ModuleHolder moduleHolder) {
-            IntentHelper.openMarkdown(button.getContext(),
-                    moduleHolder.repoModule.notesUrl,
-                    moduleHolder.repoModule.moduleInfo.name,
-                    moduleHolder.getMainModuleConfig());
+            String notesUrl = moduleHolder.repoModule.notesUrl;
+            if (notesUrl.startsWith("https://api.androidacy.com/magisk/readme/?module=") ||
+                    notesUrl.startsWith("https://www.androidacy.com/")) {
+                IntentHelper.openUrlAndroidacy(button.getContext(), notesUrl, false,
+                        moduleHolder.repoModule.moduleInfo.name,
+                        moduleHolder.getMainModuleConfig());
+            } else {
+                IntentHelper.openMarkdown(button.getContext(), notesUrl,
+                        moduleHolder.repoModule.moduleInfo.name,
+                        moduleHolder.getMainModuleConfig());
+            }
         }
 
         @Override
@@ -47,6 +53,11 @@ public enum ActionButtonType {
             if (moduleInfo == null) return;
             String updateZipUrl = moduleHolder.getUpdateZipUrl();
             if (updateZipUrl == null) return;
+            if (updateZipUrl.startsWith("https://www.androidacy.com/")) {
+                IntentHelper.openUrlAndroidacy(
+                        button.getContext(), updateZipUrl, true);
+                return;
+            }
             String updateZipChecksum = moduleHolder.getUpdateZipChecksum();
             IntentHelper.openInstaller(button.getContext(), updateZipUrl,
                     moduleInfo.name, moduleInfo.config, updateZipChecksum);

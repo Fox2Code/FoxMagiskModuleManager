@@ -160,22 +160,25 @@ public class SettingsActivity extends CompatActivity {
             setPreferencesFromResource(R.xml.repo_preferences, rootKey);
             setRepoData("pref_repo_main", RepoManager.MAGISK_REPO,
                     "Magisk Modules Repo (Official)", RepoManager.MAGISK_REPO_HOMEPAGE,
-                    null, null);
+                    null, null,null);
             setRepoData("pref_repo_alt", RepoManager.MAGISK_ALT_REPO,
                     "Magisk Modules Alt Repo", RepoManager.MAGISK_ALT_REPO_HOMEPAGE,
-                    null,
+                    null, null,
                     "https://github.com/Magisk-Modules-Alt-Repo/submission/issues");
             // Androidacy backend not yet implemented!
-            setRepoData("pref_repo_androidacy", null,
-                    "Androidacy Magisk Modules Repo",
+            setRepoData("pref_repo_androidacy",
+                    RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT,
+                    "Androidacy Modules Repo",
                     RepoManager.ANDROIDACY_MAGISK_REPO_HOMEPAGE,
                     "https://t.me/androidacy_discussions",
+                    "https://patreon.com/androidacy",
                     "https://www.androidacy.com/module-repository-applications/");
         }
 
         private void setRepoData(String preferenceName, String url,
                                  String fallbackTitle, String homepage,
-                                 String supportUrl, String submissionUrl) {
+                                 String supportUrl, String donateUrl,
+                                 String submissionUrl) {
             Preference preference = findPreference(preferenceName);
             if (preference == null) return;
             RepoData repoData = RepoManager.getINSTANCE().get(url);
@@ -197,6 +200,13 @@ public class SettingsActivity extends CompatActivity {
             if (preference != null && supportUrl != null) {
                 preference.setOnPreferenceClickListener(p -> {
                     IntentHelper.openUrl(getCompatActivity(this), supportUrl);
+                    return true;
+                });
+            }
+            preference = findPreference(preferenceName + "_donate");
+            if (preference != null && donateUrl != null) {
+                preference.setOnPreferenceClickListener(p -> {
+                    IntentHelper.openUrl(getCompatActivity(this), donateUrl);
                     return true;
                 });
             }

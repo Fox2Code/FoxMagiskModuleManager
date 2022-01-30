@@ -28,9 +28,9 @@ public class MarkdownActivity extends CompatActivity {
         super.onCreate(savedInstanceState);
         this.setDisplayHomeAsUpEnabled(true);
         Intent intent = this.getIntent();
-        if (intent == null || !MainApplication.checkSecret(intent)) {
+        if (!MainApplication.checkSecret(intent)) {
             Log.e(TAG, "Impersonation detected!");
-            this.onBackPressed();
+            this.forceBackPressed();
             return;
         }
         String url = intent.getExtras()

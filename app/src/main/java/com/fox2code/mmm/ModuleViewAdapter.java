@@ -13,7 +13,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
-import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.cardview.widget.CardView;
@@ -22,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
-import com.fox2code.mmm.repo.RepoModule;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 

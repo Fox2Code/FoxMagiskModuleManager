@@ -27,6 +27,9 @@ public class RepoUpdater {
 
     public int fetchIndex() {
         try {
+            if (!this.repoData.prepare()) {
+                return 0;
+            }
             this.indexRaw = Http.doHttpGet(this.repoData.url, false);
             if (this.repoData.special) this.repoData.updateSpecialTimes(true);
             this.toUpdate = this.repoData.populate(new JSONObject(

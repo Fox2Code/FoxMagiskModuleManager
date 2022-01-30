@@ -4,17 +4,13 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.fox2code.mmm.MainApplication;
-import com.fox2code.mmm.R;
-import com.fox2code.mmm.utils.Files;
 import com.fox2code.mmm.utils.PropUtils;
 import com.topjohnwu.superuser.Shell;
 import com.topjohnwu.superuser.io.SuFile;
 import com.topjohnwu.superuser.io.SuFileInputStream;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;

@@ -19,7 +19,6 @@ import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -40,7 +39,7 @@ public class RepoData {
     private final Map<String, Long> specialTimes;
     private long specialLastUpdate;
 
-    RepoData(String url, File cacheRoot, SharedPreferences cachedPreferences) {
+    protected RepoData(String url, File cacheRoot, SharedPreferences cachedPreferences) {
         this(url, cacheRoot, cachedPreferences, false);
     }
 
@@ -95,7 +94,11 @@ public class RepoData {
         }
     }
 
-    List<RepoModule> populate(JSONObject jsonObject) throws JSONException {
+    protected boolean prepare() {
+        return true;
+    }
+
+    protected List<RepoModule> populate(JSONObject jsonObject) throws JSONException {
         List<RepoModule> newModules = new ArrayList<>();
         synchronized (this.populateLock) {
             String name = jsonObject.getString("name").trim();

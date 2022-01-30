@@ -122,4 +122,12 @@ public class AndroidacyWebAPI {
         LocalModuleInfo localModuleInfo = ModuleManager.getINSTANCE().getModules().get(moduleId);
         return localModuleInfo != null ? localModuleInfo.updateVersionCode : -1L;
     }
+
+    /**
+     * Hide action bar if visible, the action bar is only visible by default on notes.
+     */
+    @JavascriptInterface
+    public void hideActionBar() {
+        this.activity.hideActionBar();
+    }
 }

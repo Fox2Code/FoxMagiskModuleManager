@@ -37,6 +37,11 @@
             app:title="@string/support"
             app:singleLineTitle="false"	/>
         <Preference
+            app:key="pref_repo_androidacy_donate"
+            app:icon="@drawable/ic_patreon"
+            app:title="@string/donate"
+            app:singleLineTitle="false"	/>
+        <Preference
             app:key="pref_repo_androidacy_submit"
             app:icon="@drawable/ic_baseline_upload_file_24"
             app:title="@string/submit_modules"
