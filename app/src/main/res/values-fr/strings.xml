@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Gestionnaire de modules Magisk de Fox</string>
-    <string name="app_name_short">Mmm de Fox</string>
+    <string name="app_name_short">Gestionnaire de Fox</string>
     <string name="fail_root_magisk">Échec de l\’accès à la racine ou à Magisk</string>
     <string name="loading">Chargement…</string>
     <string name="updatable">Actualisable</string>
@@ -63,8 +63,8 @@
     <string name="file_picker_wierd">Votre sélecteur de fichier n\’a pas renvoyé une réponse standart.</string>
     <string name="use_magisk_install_command_pref">Utiliser la commande d\’installation de module</string>
     <string name="use_magisk_install_command_desc">
-        Pendant le test, il a causé des problèmes à l'outil de diagnostic d'erreur d'installation du module,
-        donc j'ai caché cette option derrière le mode développeur, activez-la à vos risques et périls!
+        Pendant le test, il a causé des problèmes à l\’outil de diagnostic d\’erreur d\’installation du module,
+        donc j\’ai caché cette option derrière le mode développeur, activez-la à vos risques et périls!
     </string>
     <string name="dev_mode_enabled">Mode développeur activé</string>
     <string name="force_english_pref">Forcer la langue Anglaise</string>
@@ -77,13 +77,13 @@
     <string name="dns_over_https_desc">Pourrait corriger les problèmes de connexions dans certains cas.</string>
     <string name="disable_extensions_pref">Désactiver les extensions</string>
     <string name="disable_extensions_desc">
-        Désactive les extensions de Mmm de Fox, celà évite que les modules utilisent
-        les extensions du terminal, très pratique si un module useful si un module utilise mal les extensions Mmm de Fox.
+        Désactive les extensions du Gestionnaire de Fox, celà empêche les modules d\’utiliser
+        les extensions du terminal, très pratique si un module n\’utilise pas correctement les extensions du Gestionnaire de Fox.
     </string>
     <string name="wrap_text_pref">Mise en forme du texte</string>
     <string name="wrap_text_desc">
         Mise en forme du texte avec une nouvelle ligne au lieu de mettre
-        tout le texte sur la même ligne lors de l'installation d'un module
+        tout le texte sur la même ligne lors de l\’installation d\’un module
     </string>
     <string name="repo_enabled">Dépôt activé</string>
     <string name="repo_disabled">Dépôt désactivé</string>
