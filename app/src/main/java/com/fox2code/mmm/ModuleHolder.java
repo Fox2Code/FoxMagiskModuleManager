@@ -163,13 +163,17 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
         }
         String config = this.getMainModuleConfig();
         if (config != null) {
-            String pkg = IntentHelper.getPackageOfConfig(config);
-            try {
-                context.getPackageManager().getPackageInfo(pkg, 0);
+            if (config.startsWith("https://www.androidacy.com/")) {
                 buttonTypeList.add(ActionButtonType.CONFIG);
-            } catch (PackageManager.NameNotFoundException e) {
-                Log.w(TAG, "Config package \"" + pkg +
-                        "\" missing for module \"" + this.moduleId + "\"");
+            } else {
+                String pkg = IntentHelper.getPackageOfConfig(config);
+                try {
+                    context.getPackageManager().getPackageInfo(pkg, 0);
+                    buttonTypeList.add(ActionButtonType.CONFIG);
+                } catch (PackageManager.NameNotFoundException e) {
+                    Log.w(TAG, "Config package \"" + pkg +
+                            "\" missing for module \"" + this.moduleId + "\"");
+                }
             }
         }
         ModuleInfo moduleInfo = this.getMainModuleInfo();

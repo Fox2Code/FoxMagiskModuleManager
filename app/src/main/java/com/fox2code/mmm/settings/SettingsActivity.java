@@ -124,7 +124,7 @@ public class SettingsActivity extends CompatActivity {
                 debugPref.setVisible(true);
                 debugPref.setOnPreferenceClickListener(preference -> {
                     IntentHelper.openUrlAndroidacy(this.getContext(),
-                            "https://www.androidacy.com/modules-repo");
+                            "https://www.androidacy.com/modules-repo", true);
                     return true;
                 });
             }
@@ -184,7 +184,12 @@ public class SettingsActivity extends CompatActivity {
             preference = findPreference(preferenceName + "_website");
             if (preference != null && homepage != null) {
                 preference.setOnPreferenceClickListener(p -> {
-                    IntentHelper.openUrl(getCompatActivity(this), homepage);
+                    if (homepage.startsWith("https://www.androidacy.com/")) {
+                        IntentHelper.openUrlAndroidacy(
+                                getCompatActivity(this), homepage, true);
+                    } else {
+                        IntentHelper.openUrl(getCompatActivity(this), homepage);
+                    }
                     return true;
                 });
             }
@@ -198,7 +203,12 @@ public class SettingsActivity extends CompatActivity {
             preference = findPreference(preferenceName + "_submit");
             if (preference != null && submissionUrl != null) {
                 preference.setOnPreferenceClickListener(p -> {
-                    IntentHelper.openUrl(getCompatActivity(this), submissionUrl);
+                    if (submissionUrl.startsWith("https://www.androidacy.com/")) {
+                        IntentHelper.openUrlAndroidacy(
+                                getCompatActivity(this), submissionUrl, true);
+                    } else {
+                        IntentHelper.openUrl(getCompatActivity(this), submissionUrl);
+                    }
                     return true;
                 });
             }

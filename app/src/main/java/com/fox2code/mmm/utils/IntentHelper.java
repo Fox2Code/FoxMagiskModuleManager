@@ -45,12 +45,13 @@ public class IntentHelper {
         }
     }
 
-    public static void openUrlAndroidacy(Context context, String url) {
+    public static void openUrlAndroidacy(Context context, String url,boolean allowInstall) {
         Uri uri = Uri.parse(url);
         try {
             Intent myIntent = new Intent(
                     Constants.INTENT_ANDROIDACY_INTERNAL,
                     uri, context, AndroidacyActivity.class);
+            myIntent.putExtra(Constants.EXTRA_ANDROIDACY_ALLOW_INSTALL, allowInstall);
             MainApplication.addSecret(myIntent);
             context.startActivity(myIntent);
         } catch (ActivityNotFoundException e) {

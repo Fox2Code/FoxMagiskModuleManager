@@ -3,6 +3,7 @@ package com.fox2code.mmm.androidacy;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -12,6 +13,7 @@ import android.webkit.WebViewClient;
 import androidx.annotation.Nullable;
 
 import com.fox2code.mmm.BuildConfig;
+import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.compat.CompatActivity;
@@ -42,6 +44,8 @@ public class AndroidacyActivity extends CompatActivity {
             this.forceBackPressed();
             return;
         }
+        boolean allowInstall = intent.getBooleanExtra(
+                Constants.EXTRA_ANDROIDACY_ALLOW_INSTALL, false);
         this.setContentView(R.layout.webview);
         this.hideActionBar();
         this.webView = this.findViewById(R.id.webView);
@@ -49,6 +53,10 @@ public class AndroidacyActivity extends CompatActivity {
         webSettings.setUserAgentString(Http.getAndroidacyUA());
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { // Make website follow app theme
+            webSettings.setForceDark(MainApplication.getINSTANCE().isLightTheme() ?
+                    WebSettings.FORCE_DARK_OFF : WebSettings.FORCE_DARK_ON);
+        }
         this.webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -61,7 +69,8 @@ public class AndroidacyActivity extends CompatActivity {
                 return false;
             }
         });
-        this.webView.addJavascriptInterface(new AndroidacyWebAPI(this), "mmm");
+        this.webView.addJavascriptInterface(
+                new AndroidacyWebAPI(this, allowInstall), "mmm");
         this.webView.loadUrl(uri.toString());
     }
 

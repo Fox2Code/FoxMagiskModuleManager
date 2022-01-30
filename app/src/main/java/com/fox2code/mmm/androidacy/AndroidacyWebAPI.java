@@ -15,9 +15,11 @@ import com.fox2code.mmm.utils.IntentHelper;
 public class AndroidacyWebAPI {
     private static final String TAG = "AndroidacyWebAPI";
     private final AndroidacyActivity activity;
+    private final boolean allowInstall;
 
-    public AndroidacyWebAPI(AndroidacyActivity activity) {
+    public AndroidacyWebAPI(AndroidacyActivity activity, boolean allowInstall) {
         this.activity = activity;
+        this.allowInstall = allowInstall;
     }
 
     @JavascriptInterface
@@ -61,7 +63,7 @@ public class AndroidacyWebAPI {
      */
     @JavascriptInterface
     public boolean canInstall() {
-        return InstallerInitializer.peekMagiskPath() != null &&
+        return this.allowInstall && this.hasRoot() &&
                 !MainApplication.isShowcaseMode();
     }
 
@@ -70,8 +72,8 @@ public class AndroidacyWebAPI {
      */
     @JavascriptInterface
     public void install(String moduleUrl, String installTitle,String checksum) {
-        if (MainApplication.isShowcaseMode() ||
-                InstallerInitializer.peekMagiskPath() == null) {
+        if (!this.allowInstall || !this.hasRoot() ||
+                MainApplication.isShowcaseMode()) {
             // With lockdown mode enabled or lack of root, install should not have any effect
             return;
         }

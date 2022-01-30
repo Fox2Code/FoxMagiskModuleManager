@@ -95,7 +95,13 @@ public enum ActionButtonType {
     CONFIG(R.drawable.ic_baseline_app_settings_alt_24) {
         @Override
         public void doAction(ImageButton button, ModuleHolder moduleHolder) {
-            IntentHelper.openConfig(button.getContext(), moduleHolder.getMainModuleConfig());
+            String config = moduleHolder.getMainModuleConfig();
+            if (config == null) return;
+            if (config.startsWith("https://www.androidacy.com/")) {
+                IntentHelper.openUrlAndroidacy(button.getContext(), config, false);
+            } else {
+                IntentHelper.openConfig(button.getContext(), config);
+            }
         }
     },
     SUPPORT() {
