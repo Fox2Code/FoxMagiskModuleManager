@@ -7,7 +7,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 
-import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.repo.RepoModule;
@@ -103,6 +102,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
         return timeStamp <= 0 ? "" :
                 MainApplication.formatTime(timeStamp);
     }
+
     public String getRepoName() {
         if (this.repoModule == null) return "";
         return this.repoModule.repoName;
@@ -157,8 +157,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
             buttonTypeList.add(ActionButtonType.INFO);
         }
         if ((this.repoModule != null || (this.moduleInfo != null &&
-                this.moduleInfo.updateZipUrl != null)) && !showcaseMode &&
-                InstallerInitializer.peekMagiskPath() != null) {
+                this.moduleInfo.updateZipUrl != null))) {
             buttonTypeList.add(ActionButtonType.UPDATE_INSTALL);
         }
         String config = this.getMainModuleConfig();

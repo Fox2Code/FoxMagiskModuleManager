@@ -68,6 +68,7 @@ public class AndroidacyWebAPI {
      */
     @JavascriptInterface
     public boolean canInstall() {
+        // With lockdown mode enabled or lack of root, install should not have any effect
         return this.allowInstall && this.hasRoot() &&
                 !MainApplication.isShowcaseMode();
     }
@@ -77,9 +78,7 @@ public class AndroidacyWebAPI {
      */
     @JavascriptInterface
     public void install(String moduleUrl, String installTitle,String checksum) {
-        if (!this.allowInstall || !this.hasRoot() ||
-                MainApplication.isShowcaseMode()) {
-            // With lockdown mode enabled or lack of root, install should not have any effect
+        if (!this.canInstall()) {
             return;
         }
         Log.d(TAG, "Received install request: " +
@@ -154,7 +153,7 @@ public class AndroidacyWebAPI {
      */
     @JavascriptInterface
     public String getAndroidacyModuleFile(String moduleId, String moduleFile) {
-        if (!this.isAndroidacyModule(moduleId)) return "";
+        if (moduleFile == null || !this.isAndroidacyModule(moduleId)) return "";
         File moduleFolder = new File("/data/adb/modules/" + moduleId);
         File absModuleFile = new File(moduleFolder, moduleFile).getAbsoluteFile();
         if (!absModuleFile.getPath().startsWith(moduleFolder.getPath())) return "";
@@ -163,6 +162,24 @@ public class AndroidacyWebAPI {
                     .getAbsoluteFile()), StandardCharsets.UTF_8);
         } catch (IOException e) {
             return "";
+        }
+    }
+
+    /**
+     * Create an ".androidacy" file with {@param content} as content
+     * Return true if action succeeded
+     */
+    @JavascriptInterface
+    public boolean setAndroidacyModuleMeta(String moduleId, String content) {
+        if (content == null || !this.isAndroidacyModule(moduleId)) return false;
+        File androidacyMetaFile = new File(
+                "/data/adb/modules/" + moduleId + "/.andoridacy");
+        try {
+            Files.writeSU(androidacyMetaFile,
+                    content.getBytes(StandardCharsets.UTF_8));
+            return true;
+        } catch (IOException e) {
+            return false;
         }
     }
 }

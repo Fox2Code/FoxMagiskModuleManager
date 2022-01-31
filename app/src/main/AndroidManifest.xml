@@ -16,6 +16,8 @@
     <!-- Supposed to fix bugs with old firmware, only requested on pre Marshmallow -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="22" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="22" />
 
     <application
         android:name=".MainApplication"

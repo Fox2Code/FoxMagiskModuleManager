@@ -158,7 +158,7 @@ public final class ModuleManager {
                 moduleInfo.updateVersion = null;
                 moduleInfo.updateVersionCode = Long.MIN_VALUE;
                 moduleInfo.updateZipUrl = null;
-                moduleInfo.updateChangeLog = null;
+                moduleInfo.updateChangeLog = "";
             }
             if (moduleInfo.name == null || (moduleInfo.name.equals(moduleInfo.id))) {
                 moduleInfo.name = Character.toUpperCase(moduleInfo.id.charAt(0)) +

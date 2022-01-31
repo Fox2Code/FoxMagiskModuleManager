@@ -14,7 +14,7 @@ public class LocalModuleInfo extends ModuleInfo {
     public String updateVersion;
     public long updateVersionCode = Long.MIN_VALUE;
     public String updateZipUrl;
-    public String updateChangeLog;
+    public String updateChangeLog = "";
     public String updateChecksum;
 
     public LocalModuleInfo(String id) {
@@ -34,11 +34,13 @@ public class LocalModuleInfo extends ModuleInfo {
                 if (this.updateZipUrl.isEmpty()) throw FastException.INSTANCE;
                 this.updateVersion = PropUtils.shortenVersionName(
                         this.updateVersion.trim(), this.updateVersionCode);
+                if (this.updateChangeLog.length() > 1000)
+                    this.updateChangeLog = this.updateChangeLog.substring(0, 1000);
             } catch (Exception e) {
                 this.updateVersion = null;
                 this.updateVersionCode = Long.MIN_VALUE;
                 this.updateZipUrl = null;
-                this.updateChangeLog = null;
+                this.updateChangeLog = "";
                 this.updateChecksum = null;
                 Log.w("LocalModuleInfo",
                         "Failed update checking for module: " + this.id, e);

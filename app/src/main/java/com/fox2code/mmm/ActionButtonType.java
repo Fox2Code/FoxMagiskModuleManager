@@ -1,17 +1,22 @@
 package com.fox2code.mmm;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.DrawableRes;
+import androidx.appcompat.app.AlertDialog;
 
 import com.fox2code.mmm.compat.CompatActivity;
+import com.fox2code.mmm.compat.CompatDisplay;
+import com.fox2code.mmm.installer.InstallerInitializer;
+import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
 import com.fox2code.mmm.utils.IntentHelper;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public enum ActionButtonType {
     INFO(R.drawable.ic_baseline_info_24) {
@@ -53,15 +58,63 @@ public enum ActionButtonType {
             if (moduleInfo == null) return;
             String updateZipUrl = moduleHolder.getUpdateZipUrl();
             if (updateZipUrl == null) return;
+            // Androidacy manage the selection between download and install
             if (updateZipUrl.startsWith("https://www.androidacy.com/")) {
                 IntentHelper.openUrlAndroidacy(
                         button.getContext(), updateZipUrl, true,
                         moduleInfo.name, moduleInfo.config);
                 return;
             }
-            String updateZipChecksum = moduleHolder.getUpdateZipChecksum();
-            IntentHelper.openInstaller(button.getContext(), updateZipUrl,
-                    moduleInfo.name, moduleInfo.config, updateZipChecksum);
+            boolean hasRoot = InstallerInitializer.peekMagiskPath() != null
+                    && !MainApplication.isShowcaseMode();
+            MaterialAlertDialogBuilder builder =
+                    new MaterialAlertDialogBuilder(button.getContext());
+            builder.setTitle(moduleInfo.name).setCancelable(true)
+                    .setIcon(R.drawable.ic_baseline_extension_24);
+            String desc;
+            if (moduleInfo instanceof LocalModuleInfo) {
+                LocalModuleInfo localModuleInfo = (LocalModuleInfo) moduleInfo;
+                desc = localModuleInfo.updateChangeLog.isEmpty() ?
+                        moduleInfo.description : localModuleInfo.updateChangeLog;
+            } else {
+                desc = moduleInfo.description;
+            }
+
+            if (desc == null || desc.isEmpty()) {
+                builder.setMessage(R.string.no_desc_found);
+            } else {
+                if (desc.length() == 1000) {
+                    int lastDot = desc.lastIndexOf('.');
+                    if (lastDot == -1) {
+                        int lastSpace = desc.lastIndexOf(' ');
+                        if (lastSpace == -1)
+                            desc = desc.substring(0, lastSpace);
+                    } else {
+                        desc = desc.substring(0, lastDot + 1);
+                    }
+                }
+                builder.setMessage(desc);
+            }
+            Log.d("Test", "URL: " + updateZipUrl);
+            builder.setNegativeButton(R.string.download_module, (x, y) ->
+                    IntentHelper.openUrl(button.getContext(), updateZipUrl, true));
+            if (hasRoot) {
+                builder.setPositiveButton(moduleHolder.hasUpdate() ?
+                        R.string.update_module : R.string.install_module, (x, y) -> {
+                    String updateZipChecksum = moduleHolder.getUpdateZipChecksum();
+                    IntentHelper.openInstaller(button.getContext(), updateZipUrl,
+                            moduleInfo.name, moduleInfo.config, updateZipChecksum);
+                });
+            }
+            int dim5dp = CompatDisplay.dpToPixel(5);
+            builder.setBackgroundInsetStart(dim5dp).setBackgroundInsetEnd(dim5dp);
+            AlertDialog alertDialog = builder.show();
+            for (int i = -3; i < 0; i++) {
+                Button alertButton = alertDialog.getButton(i);
+                if (alertButton != null && alertButton.getPaddingStart() > dim5dp) {
+                    alertButton.setPadding(dim5dp, dim5dp, dim5dp, dim5dp);
+                }
+            }
         }
     },
     UNINSTALL() {

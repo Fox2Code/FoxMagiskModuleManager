@@ -33,9 +33,17 @@ import java.io.OutputStream;
 
 public class IntentHelper {
     public static void openUrl(Context context, String url) {
+        openUrl(context, url, false);
+    }
+
+    public static void openUrl(Context context, String url, boolean forceBrowser) {
         try {
             Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            context.startActivity(myIntent);
+            myIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            if (forceBrowser) {
+                myIntent.addCategory(Intent.CATEGORY_BROWSABLE);
+            }
+            startActivity(context, myIntent, false);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(context, "No application can handle this request."
                     + " Please install a web-browser",  Toast.LENGTH_SHORT).show();
@@ -60,7 +68,7 @@ public class IntentHelper {
             if (config != null)
                 myIntent.putExtra(Constants.EXTRA_ANDROIDACY_ACTIONBAR_CONFIG, config);
             MainApplication.addSecret(myIntent);
-            context.startActivity(myIntent);
+            startActivity(context, myIntent, true);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(context, "No application can handle this request."
                     + " Please install a web-browser",  Toast.LENGTH_SHORT).show();
@@ -155,13 +163,15 @@ public class IntentHelper {
 
     public static void startActivity(Context context, Intent intent,boolean sameApp)
             throws ActivityNotFoundException {
-        int flags = intent.getFlags();
-        if (sameApp) {
-            flags &= ~Intent.FLAG_ACTIVITY_NEW_TASK;
-            // flags |= Intent.FLAG_ACTIVITY_REORDER_TO_FRONT;
-        } else {
+        int flags = intent.getFlags() &
+                ~(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+        if (!sameApp) {
             flags &= ~Intent.FLAG_ACTIVITY_MULTIPLE_TASK;
-            flags |= Intent.FLAG_ACTIVITY_NEW_TASK;
+            if (intent.getData() == null) {
+                flags |= Intent.FLAG_ACTIVITY_NEW_TASK;
+            } else {
+                flags |= Intent.FLAG_ACTIVITY_NEW_DOCUMENT;
+            }
         }
         intent.setFlags(flags);
         Activity activity = getActivity(context);

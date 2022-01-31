@@ -6,9 +6,20 @@ Note: This doc assume you already read the
 Note: official repo do not accept new modules anymore, submit
 [here](https://github.com/Magisk-Modules-Alt-Repo/submission) instead.
 
-Index:  
+Index:
+- [Special notes](DEVELOPERS.md#special-notes)
 - [Properties](DEVELOPERS.md#properties)
 - [Installer commands](DEVELOPERS.md#installer-commands)
+
+## Special notes
+
+MitM: Certificate pinning is only available since Android 7.0, 
+any issue regarding MitM that can only be performed of 
+Android versions that doesn't support this feature will be ignored. 
+
+App hiding: I don't intent on hiding the app, the package names should always be 
+`com.fox2code.mmm` or starts with `com.fox2code.mmm.`, however I notice the presence of 
+my app is causing issues due to it existing, I may add an hiding feature to the app.
 
 ## Properties
 

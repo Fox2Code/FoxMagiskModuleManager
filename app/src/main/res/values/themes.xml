@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.MagiskModuleManager.Light" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <style name="Theme.MagiskModuleManager.Light" parent="Theme.MaterialComponents.Light">
         <item name="android:isLightTheme"
             tools:targetApi="q">true</item>
         <item name="isLightTheme">true</item>
@@ -21,6 +21,8 @@
         <item name="android:activityCloseExitAnimation">@*android:anim/slide_out_right</item> -->
         <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+        <item name="android:dialogCornerRadius" tools:targetApi="p">8dp</item>
+        <item name="dialogCornerRadius">8dp</item>
     </style>
 
     <!-- Base application theme. -->
@@ -46,6 +48,8 @@
         <item name="android:activityCloseExitAnimation">@*android:anim/slide_out_right</item> -->
         <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+        <item name="android:dialogCornerRadius" tools:targetApi="p">6dp</item>
+        <item name="dialogCornerRadius">6dp</item>
     </style>
 
     <!-- Base application theme. -->
