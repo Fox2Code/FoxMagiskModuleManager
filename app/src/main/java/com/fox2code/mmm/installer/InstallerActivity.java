@@ -43,6 +43,7 @@ public class InstallerActivity extends CompatActivity {
     private File moduleCache;
     private File toDelete;
     private boolean textWrap;
+    private boolean canceled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +51,10 @@ public class InstallerActivity extends CompatActivity {
         if (!this.moduleCache.exists() && !this.moduleCache.mkdirs())
             Log.e(TAG, "Failed to mkdir module cache dir!");
         super.onCreate(savedInstanceState);
-        this.setDisplayHomeAsUpEnabled(false);
-        this.setOnBackPressedCallback(DISABLE_BACK_BUTTON);
+        this.setDisplayHomeAsUpEnabled(true);
+        this.setOnBackPressedCallback(a -> {
+            this.canceled = true; return false;
+        });
         final Intent intent = this.getIntent();
         final String target;
         final String name;
@@ -125,6 +128,7 @@ public class InstallerActivity extends CompatActivity {
                             this.progressIndicator.setProgressCompat(progress, true);
                         });
                     });
+                    if (this.canceled) return;
                     if (checksum != null && !checksum.isEmpty()) {
                         Log.d(TAG, "Checking for checksum: " + checksum);
                         this.installerTerminal.addLine("- Checking file integrity");
@@ -134,6 +138,7 @@ public class InstallerActivity extends CompatActivity {
                             return;
                         }
                     }
+                    if (this.canceled) return;
                     if (noPatch) {
                         try (OutputStream outputStream = new FileOutputStream(moduleCache)) {
                             outputStream.write(rawModule);
@@ -151,8 +156,9 @@ public class InstallerActivity extends CompatActivity {
                             outputStream.flush();
                         }
                     }
+                    if (this.canceled) return;
                     //noinspection UnusedAssignment (Important to avoid OutOfMemoryError)
-                    rawModule = null;
+                    rawModule = null; // Because reference is kept when calling doInstall
                     this.runOnUiThread(() -> {
                         this.installerTerminal.addLine("- Installing " + name);
                     });
@@ -180,6 +186,7 @@ public class InstallerActivity extends CompatActivity {
                             "! File integrity check failed", "");
                     return;
                 }
+                if (this.canceled) return;
             }
             this.installerTerminal.addLine("- Installing " + name);
             new Thread(() -> this.doInstall(
@@ -190,6 +197,9 @@ public class InstallerActivity extends CompatActivity {
 
 
     private void doInstall(File file,boolean noExtensions,boolean rootless) {
+        this.setOnBackPressedCallback(DISABLE_BACK_BUTTON);
+        this.setDisplayHomeAsUpEnabled(false);
+        if (this.canceled) return;
         Log.i(TAG, "Installing: " + moduleCache.getName());
         InstallerController installerController = new InstallerController(
                 this.progressIndicator, this.installerTerminal,
@@ -420,15 +430,12 @@ public class InstallerActivity extends CompatActivity {
         }
     }
 
-    private static boolean didExtract = false;
-
     private File extractInstallScript(String script) {
         File compatInstallScript = new File(this.moduleCache, script);
-        if (!compatInstallScript.exists() || compatInstallScript.length() == 0 || !didExtract) {
+        if (!compatInstallScript.exists() || compatInstallScript.length() == 0) {
             try {
                 Files.write(compatInstallScript, Files.readAllBytes(
                         this.getAssets().open(script)));
-                didExtract = true;
             } catch (IOException e) {
                 compatInstallScript.delete();
                 Log.e(TAG, "Failed to extract " + script, e);
