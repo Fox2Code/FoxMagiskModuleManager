@@ -10,7 +10,12 @@ import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
+import com.fox2code.mmm.utils.Files;
 import com.fox2code.mmm.utils.IntentHelper;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class AndroidacyWebAPI {
     private static final String TAG = "AndroidacyWebAPI";
@@ -130,5 +135,34 @@ public class AndroidacyWebAPI {
     @JavascriptInterface
     public void hideActionBar() {
         this.activity.hideActionBar();
+    }
+
+    /**
+     * Return true if the module is an Andoridacy module.
+     */
+    @JavascriptInterface
+    public boolean isAndroidacyModule(String moduleId) {
+        LocalModuleInfo localModuleInfo = ModuleManager.getINSTANCE().getModules().get(moduleId);
+        return localModuleInfo != null && ("Androidacy".equals(localModuleInfo.author) ||
+                (localModuleInfo.config != null &&
+                        localModuleInfo.config.startsWith("https://www.androidacy.com/")));
+    }
+
+    /**
+     * get a module file, return an empty string if not
+     * an Andoridacy module or if file doesn't exists.
+     */
+    @JavascriptInterface
+    public String getAndroidacyModuleFile(String moduleId, String moduleFile) {
+        if (!this.isAndroidacyModule(moduleId)) return "";
+        File moduleFolder = new File("/data/adb/modules/" + moduleId);
+        File absModuleFile = new File(moduleFolder, moduleFile).getAbsoluteFile();
+        if (!absModuleFile.getPath().startsWith(moduleFolder.getPath())) return "";
+        try {
+            return new String(Files.readSU(absModuleFile
+                    .getAbsoluteFile()), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            return "";
+        }
     }
 }

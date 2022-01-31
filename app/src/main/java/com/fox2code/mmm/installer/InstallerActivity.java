@@ -209,14 +209,30 @@ public class InstallerActivity extends CompatActivity {
                     "sh \"" + installScript.getAbsolutePath() + "\"" +
                             " /dev/null 1 \"" + file.getAbsolutePath() + "\"")
                     .to(installerController, installerMonitor);
-        } else if (MainApplication.isUsingMagiskCommand() || noExtensions) {
-            installerMonitor = new InstallerMonitor(new File(InstallerInitializer
-                    .peekMagiskPath().equals("/sbin") ? "/sbin/magisk" : "/system/bin/magisk"));
+        } else {
+            String installCommand;
+            File installExecutable;
+            if (InstallerInitializer.peekMagiskVersion() >=
+                    Constants.MAGISK_VER_CODE_INSTALL_COMMAND &&
+                    (noExtensions || MainApplication.isUsingMagiskCommand())) {
+                installCommand = "magisk --install-module \"" + file.getAbsolutePath() + "\"";
+                installExecutable = new File(InstallerInitializer.peekMagiskPath()
+                        .equals("/sbin") ? "/sbin/magisk" : "/system/bin/magisk");
+            } else {
+                installExecutable = this.extractInstallScript("module_installer_compat.sh");
+                if (installExecutable == null) {
+                    this.setInstallStateFinished(false,
+                            "! Failed to extract module install script", "");
+                    return;
+                }
+                installCommand = "sh \"" + installExecutable.getAbsolutePath() + "\"" +
+                        " /dev/null 1 \"" + file.getAbsolutePath() + "\"";
+            }
+            installerMonitor = new InstallerMonitor(installExecutable);
             if (noExtensions) {
                 installJob = Shell.su( // No Extensions
                         "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
-                        "magisk --install-module \"" + file.getAbsolutePath() + "\"")
-                        .to(installerController, installerMonitor);
+                        installCommand).to(installerController, installerMonitor);
             } else {
                 installJob = Shell.su("export MMM_EXT_SUPPORT=1",
                         "export MMM_USER_LANGUAGE=" + (MainApplication.isForceEnglish() ?
@@ -225,27 +241,8 @@ public class InstallerActivity extends CompatActivity {
                         "export MMM_APP_VERSION=" + BuildConfig.VERSION_NAME,
                         "export MMM_TEXT_WRAP=" + (this.textWrap ? "1" : "0"),
                         "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
-                        "magisk --install-module \"" + file.getAbsolutePath() + "\"")
-                        .to(installerController, installerMonitor);
+                        installCommand).to(installerController, installerMonitor);
             }
-        } else {
-            File installScript = this.extractInstallScript("module_installer_compat.sh");
-            if (installScript == null) {
-                this.setInstallStateFinished(false,
-                        "! Failed to extract module install script", "");
-                return;
-            }
-            installerMonitor = new InstallerMonitor(installScript);
-            installJob = Shell.su("export MMM_EXT_SUPPORT=1",
-                    "export MMM_USER_LANGUAGE=" + (MainApplication.isForceEnglish() ?
-                            "en-US" : Resources.getSystem()
-                            .getConfiguration().locale.toLanguageTag()),
-                    "export MMM_APP_VERSION=" + BuildConfig.VERSION_NAME,
-                    "export MMM_TEXT_WRAP=" + (this.textWrap ? "1" : "0"),
-                    "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
-                    "sh \"" + installScript.getAbsolutePath() + "\"" +
-                            " /dev/null 1 \"" + file.getAbsolutePath() + "\"")
-                    .to(installerController, installerMonitor);
         }
         boolean success = installJob.exec().isSuccess();
         // Wait one UI cycle before disabling controller or processing results

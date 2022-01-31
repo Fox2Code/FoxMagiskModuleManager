@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config>
+        <domain includeSubdomains="true">androidacy.com</domain>
+        <pin-set expiration="2023-01-02">
+            <pin digest="SHA-256">V6pbbd2/CCaa1dr+vGnpUrA1xoZ/GgncNuYzD26dikw=</pin>
+            <pin digest="SHA-256">FEzVOUp4dF3gI0ZVPRJhFbSJVXR+uQmMH65xhs1glH4=</pin>
+        </pin-set>
+    </domain-config>
+</network-security-config>

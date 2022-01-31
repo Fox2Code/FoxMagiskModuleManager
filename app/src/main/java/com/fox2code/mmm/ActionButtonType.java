@@ -110,7 +110,7 @@ public enum ActionButtonType {
             String config = moduleHolder.getMainModuleConfig();
             if (config == null) return;
             if (config.startsWith("https://www.androidacy.com/")) {
-                IntentHelper.openUrlAndroidacy(button.getContext(), config, false);
+                IntentHelper.openUrlAndroidacy(button.getContext(), config, true);
             } else {
                 IntentHelper.openConfig(button.getContext(), config);
             }
