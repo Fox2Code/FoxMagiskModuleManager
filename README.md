@@ -46,6 +46,10 @@ and also stopped accepting new modules, it is recommended to submit your modules
 If a module is in both repo, the manager will just pick the most up to date version of the module,
 allowing developers to switch repo at their own pace if they want to.
 
+Note: If you or a friend uploaded a module and it doesn't appear in your module 
+list you can disable the low quality filter in the app settings.  
+Go to the [developer documentation](DEVELOPERS.md) for more info.
+
 ## Screenshots
 
 Main activity:  

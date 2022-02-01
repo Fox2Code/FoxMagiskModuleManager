@@ -21,6 +21,11 @@ App hiding: I don't intent on hiding the app, the package names should always be
 `com.fox2code.mmm` or starts with `com.fox2code.mmm.`, however I notice the presence of 
 my app is causing issues due to it existing, I may add an hiding feature to the app.
 
+Low quality module filter: Implemented at `com.fox2code.mmm.utils.PropUtils.isLowQualityModule`, 
+it is a check that verify that the module is declaring the minimum required to 
+allow the app to show your module to the user without hurting his experience.  
+Filling all basic Magisk properties is often enough to not get filtered out by it.
+
 ## Properties
 
 In addition to the following required magisk properties
