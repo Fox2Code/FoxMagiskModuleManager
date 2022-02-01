@@ -30,8 +30,9 @@ public class ModuleViewListBuilder {
     private final Activity activity;
     @NonNull
     private String query = "";
-    private boolean noUpdate;
+    private boolean updating;
     private int footerPx;
+    private ModuleSorter moduleSorter = ModuleSorter.UPDATE;
 
     public ModuleViewListBuilder(Activity activity) {
         this.activity = activity;
@@ -94,9 +95,9 @@ public class ModuleViewListBuilder {
         }
     }
 
-    public void applyTo(RecyclerView moduleList, ModuleViewAdapter moduleViewAdapter) {
-        if (this.noUpdate) return;
-        this.noUpdate = true;
+    public void applyTo(final RecyclerView moduleList,final ModuleViewAdapter moduleViewAdapter) {
+        if (this.updating) return;
+        this.updating = true;
         final ArrayList<ModuleHolder> moduleHolders;
         final int newNotificationsLen;
         try {
@@ -128,14 +129,27 @@ public class ModuleViewListBuilder {
                             ModuleHolder.Type type = moduleHolder.getType();
                             if (matchFilter(moduleHolder)) {
                                 if (headerTypes.add(type)) {
-                                    moduleHolders.add(new ModuleHolder(type));
+                                    ModuleHolder separator = new ModuleHolder(type);
+                                    if (type == ModuleHolder.Type.INSTALLABLE) {
+                                        ModuleSorter moduleSorter = this.moduleSorter;
+                                        separator.filterLevel = this.moduleSorter.icon;
+                                        separator.onClickListener = v -> {
+                                            if (this.updating || this.moduleSorter != moduleSorter)
+                                                return; // Do not allow spams calls
+                                            this.moduleSorter = this.moduleSorter.next();
+                                            new Thread(() -> // Apply async
+                                                    this.applyTo(moduleList, moduleViewAdapter),
+                                                    "Sorter apply Thread").start();
+                                        };
+                                    }
+                                    moduleHolders.add(separator);
                                 }
                                 moduleHolders.add(moduleHolder);
                             }
                         }
                     }
                 }
-                Collections.sort(moduleHolders, ModuleHolder::compareTo);
+                Collections.sort(moduleHolders, this.moduleSorter);
                 if (this.footerPx != 0) { // Footer is always last
                     moduleHolders.add(new ModuleHolder(this.footerPx));
                 }
@@ -143,7 +157,7 @@ public class ModuleViewListBuilder {
                 // Build end
             }
         } finally {
-            this.noUpdate = false;
+            this.updating = false;
         }
         this.activity.runOnUiThread(() -> {
             final EnumSet<NotificationType> oldNotifications =
@@ -272,7 +286,6 @@ public class ModuleViewListBuilder {
             synchronized (this.updateLock) {
                 this.footerPx = footerPx;
             }
-            this.noUpdate = false;
         }
     }
 }

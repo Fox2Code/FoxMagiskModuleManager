@@ -3,6 +3,7 @@ package com.fox2code.mmm;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
@@ -24,6 +25,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
     public final NotificationType notificationType;
     public final Type separator;
     public final int footerPx;
+    public View.OnClickListener onClickListener;
     public LocalModuleInfo moduleInfo;
     public RepoModule repoModule;
     public int filterLevel;
@@ -205,21 +207,21 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
     }
 
     public enum Type implements Comparator<ModuleHolder> {
-        SEPARATOR(R.string.loading, false) {
+        SEPARATOR(R.string.loading, false, false) {
             @Override
             @SuppressWarnings("ConstantConditions")
             public int compare(ModuleHolder o1, ModuleHolder o2) {
                 return o1.separator.compareTo(o2.separator);
             }
         },
-        NOTIFICATION(R.string.loading, true) {
+        NOTIFICATION(R.string.loading, true, false) {
             @Override
             @SuppressWarnings("ConstantConditions")
             public int compare(ModuleHolder o1, ModuleHolder o2) {
                 return o1.notificationType.compareTo(o2.notificationType);
             }
         },
-        UPDATABLE(R.string.updatable, true) {
+        UPDATABLE(R.string.updatable, true, true) {
             @Override
             public int compare(ModuleHolder o1, ModuleHolder o2) {
                 int cmp = Integer.compare(o1.filterLevel, o2.filterLevel);
@@ -227,7 +229,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
                 return Long.compare(o2.repoModule.lastUpdated, o1.repoModule.lastUpdated);
             }
         },
-        INSTALLED(R.string.installed, true) {
+        INSTALLED(R.string.installed, true, true) {
             @Override
             public int compare(ModuleHolder o1, ModuleHolder o2) {
                 int cmp = Integer.compare(o1.filterLevel, o2.filterLevel);
@@ -235,8 +237,8 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
                 return o1.getMainModuleName().compareTo(o2.getMainModuleName());
             }
         },
-        SPECIAL_NOTIFICATIONS(R.string.loading, true),
-        INSTALLABLE(R.string.online_repo, true) {
+        SPECIAL_NOTIFICATIONS(R.string.loading, true, false),
+        INSTALLABLE(R.string.online_repo, true, true) {
             @Override
             public int compare(ModuleHolder o1, ModuleHolder o2) {
                 int cmp = Integer.compare(o1.filterLevel, o2.filterLevel);
@@ -244,15 +246,17 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
                 return Long.compare(o2.repoModule.lastUpdated, o1.repoModule.lastUpdated);
             }
         },
-        FOOTER(R.string.loading, false);
+        FOOTER(R.string.loading, false, false);
 
         @StringRes
         public final int title;
         public final boolean hasBackground;
+        public final boolean moduleHolder;
 
-        Type(@StringRes int title, boolean hasBackground) {
+        Type(@StringRes int title, boolean hasBackground, boolean moduleHolder) {
             this.title = title;
             this.hasBackground = hasBackground;
+            this.moduleHolder = moduleHolder;
         }
 
         // Note: This method should only be called if both element have the same type

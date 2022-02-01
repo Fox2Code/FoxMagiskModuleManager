@@ -93,12 +93,14 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
             // Apply default
             this.cardView.setOnClickListener(v -> {
                 ModuleHolder moduleHolder = this.moduleHolder;
-                if (moduleHolder != null &&
-                        moduleHolder.notificationType != null) {
-                    View.OnClickListener onClickListener =
-                            moduleHolder.notificationType.onClickListener;
-                    if (onClickListener != null)
+                if (moduleHolder != null) {
+                    View.OnClickListener onClickListener = moduleHolder.onClickListener;
+                    if (onClickListener != null) {
                         onClickListener.onClick(v);
+                    } else if (moduleHolder.notificationType != null) {
+                        onClickListener = moduleHolder.notificationType.onClickListener;
+                        if (onClickListener != null) onClickListener.onClick(v);
+                    }
                 }
             });
             this.switchMaterial.setEnabled(false);
@@ -239,9 +241,14 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     this.titleText.setTypeface(Typeface.DEFAULT);
                 }
             } else {
-                this.buttonAction.setVisibility(
-                        type == ModuleHolder.Type.NOTIFICATION ?
-                                View.VISIBLE : View.GONE);
+                if (type == ModuleHolder.Type.SEPARATOR && moduleHolder.filterLevel != 0) {
+                    this.buttonAction.setVisibility(View.VISIBLE);
+                    this.buttonAction.setImageResource(moduleHolder.filterLevel);
+                } else {
+                    this.buttonAction.setVisibility(
+                            type == ModuleHolder.Type.NOTIFICATION ?
+                                    View.VISIBLE : View.GONE);
+                }
                 this.switchMaterial.setVisibility(View.GONE);
                 this.creditText.setVisibility(View.GONE);
                 this.descriptionText.setVisibility(View.GONE);
@@ -258,11 +265,13 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     NotificationType notificationType = moduleHolder.notificationType;
                     this.titleText.setText(notificationType.textId);
                     this.buttonAction.setImageResource(notificationType.iconId);
-                    this.cardView.setClickable(notificationType.onClickListener != null);
+                    this.cardView.setClickable(
+                            notificationType.onClickListener != null ||
+                                    moduleHolder.onClickListener != null);
                     this.titleText.setTypeface(notificationType.special ?
                             Typeface.DEFAULT_BOLD : Typeface.DEFAULT);
                 } else {
-                    this.cardView.setClickable(false);
+                    this.cardView.setClickable(moduleHolder.onClickListener != null);
                     this.titleText.setTypeface(Typeface.DEFAULT);
                 }
             }

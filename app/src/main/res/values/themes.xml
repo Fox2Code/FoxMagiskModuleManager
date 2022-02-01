@@ -21,8 +21,8 @@
         <item name="android:activityCloseExitAnimation">@*android:anim/slide_out_right</item> -->
         <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
-        <item name="android:dialogCornerRadius" tools:targetApi="p">8dp</item>
-        <item name="dialogCornerRadius">8dp</item>
+        <item name="android:dialogCornerRadius" tools:targetApi="p">@dimen/card_corner_radius</item>
+        <item name="dialogCornerRadius">@dimen/card_corner_radius</item>
     </style>
 
     <!-- Base application theme. -->
@@ -48,8 +48,8 @@
         <item name="android:activityCloseExitAnimation">@*android:anim/slide_out_right</item> -->
         <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
-        <item name="android:dialogCornerRadius" tools:targetApi="p">6dp</item>
-        <item name="dialogCornerRadius">6dp</item>
+        <item name="android:dialogCornerRadius" tools:targetApi="p">@dimen/card_corner_radius</item>
+        <item name="dialogCornerRadius">@dimen/card_corner_radius</item>
     </style>
 
     <!-- Base application theme. -->
