@@ -68,8 +68,8 @@ public final class RepoManager {
         this.repoData = new LinkedHashMap<>();
         this.modules = new HashMap<>();
         // We do not have repo list config yet.
-        this.addRepoData(MAGISK_REPO_JSDELIVR);
-        this.addRepoData(MAGISK_ALT_REPO_JSDELIVR);
+        this.addRepoData(MAGISK_REPO);
+        this.addRepoData(MAGISK_ALT_REPO);
         this.addAndroidacyRepoData();
         // Populate default cache
         for (RepoData repoData:this.repoData.values()) {
@@ -93,12 +93,12 @@ public final class RepoManager {
     public RepoData get(String url) {
         if (url == null) return null;
         switch (url) {
+            case MAGISK_REPO_JSDELIVR:
             case MAGISK_REPO_MANAGER:
-            case MAGISK_REPO:
-                url = MAGISK_REPO_JSDELIVR;
+                url = MAGISK_REPO;
                 break;
-            case MAGISK_ALT_REPO:
-                url = MAGISK_ALT_REPO_JSDELIVR;
+            case MAGISK_ALT_REPO_JSDELIVR:
+                url = MAGISK_ALT_REPO;
         }
         return this.repoData.get(url);
     }

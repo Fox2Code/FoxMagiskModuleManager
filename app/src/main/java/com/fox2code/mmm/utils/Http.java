@@ -113,11 +113,16 @@ public class Http {
                 + " FoxMmm/" + BuildConfig.VERSION_CODE;
         httpclientBuilder.addInterceptor(chain -> {
             Request.Builder request = chain.request().newBuilder();
-            if (chain.request().url().host().endsWith(".androidacy.com")) {
+            request.header("Upgrade-Insecure-Requests", "1");
+            String host = chain.request().url().host();
+            if (host.endsWith(".androidacy.com")) {
                 request.header("User-Agent", androidacyUA);
-            } else if (InstallerInitializer.peekMagiskPath() != null) {
-                request.header("User-Agent", // Declare Magisk version to the server
-                        "Magisk/" + InstallerInitializer.peekMagiskVersion());
+            } else if (!(host.equals("github.com") || host.endsWith(".github.com") ||
+                    host.endsWith(".jsdelivr.net") || host.endsWith(".githubusercontent.com"))) {
+                if (InstallerInitializer.peekMagiskPath() != null) {
+                    request.header("User-Agent", // Declare Magisk version to the server
+                            "Magisk/" + InstallerInitializer.peekMagiskVersion());
+                }
             }
             if (chain.request().header("Accept-Language") == null) {
                 request.header("Accept-Language", // Send system language to the server
@@ -148,13 +153,9 @@ public class Http {
         return httpClientWithCache;
     }
 
-    private static Request.Builder makeRequestBuilder() {
-        return new Request.Builder().header("Upgrade-Insecure-Requests", "1");
-    }
-
     public static byte[] doHttpGet(String url,boolean allowCache) throws IOException {
-        Response response = (allowCache ? httpClientWithCache : httpClient).newCall(
-                makeRequestBuilder().url(url).get().build()
+        Response response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(
+                new Request.Builder().url(url).get().build()
         ).execute();
         // 200/204 == success, 304 == cache valid
         if (response.code() != 200 && response.code() != 204 &&
@@ -172,8 +173,8 @@ public class Http {
     }
 
     public static byte[] doHttpPost(String url,String data,boolean allowCache) throws IOException {
-        Response response = (allowCache ? httpClientWithCache : httpClient).newCall(
-                makeRequestBuilder().url(url).post(JsonRequestBody.from(data))
+        Response response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(
+                new Request.Builder().url(url).post(JsonRequestBody.from(data))
                         .header("Content-Type", "application/json").build()
         ).execute();
         // 200/204 == success, 304 == cache valid
@@ -193,7 +194,8 @@ public class Http {
 
     public static byte[] doHttpGet(String url,ProgressListener progressListener) throws IOException {
         Log.d("Http", "Progress URL: " + url);
-        Response response = httpClient.newCall(makeRequestBuilder().url(url).get().build()).execute();
+        Response response = getHttpClient().newCall(
+                new Request.Builder().url(url).get().build()).execute();
         if (response.code() != 200 && response.code() != 204) {
             throw new IOException("Received error code: "+ response.code());
         }
@@ -442,25 +444,37 @@ public class Http {
      */
     public static String updateLink(String string) {
         if (string.startsWith("https://cdn.jsdelivr.net/gh/Magisk-Modules-Repo/")) {
-            int start = string.lastIndexOf('@'),
-                    end = string.lastIndexOf('/');
+            String tmp = string.substring(48);
+            int start = tmp.lastIndexOf('@'),
+                    end = tmp.lastIndexOf('/');
             if ((end - 8) <= start) return string; // Skip if not a commit id
-            return string.substring(0, start + 1) + "master" + string.substring(end);
+            return "https://raw.githubusercontent.com/" +
+                    tmp.substring(0, start) + "/master" + string.substring(end);
         }
         if (string.startsWith("https://github.com/Magisk-Modules-Repo/")) {
             int i = string.lastIndexOf("/archive/");
-            if (i != -1) return string.substring(0, i + 9) + "master.zip";
+            if (i != -1 && string.indexOf('/', i + 9) == -1)
+                return string.substring(0, i + 9) + "master.zip";
         }
-        return fixUpLink(string);
+        return string;
     }
 
     /**
-     * Change URL to appropriate url
+     * Change GitHub user-content url to jsdelivr url
+     * (Unused but kept as a documentation)
      */
-    public static String fixUpLink(String string) {
+    public static String cdnIfyLink(String string) {
         if (string.startsWith("https://raw.githubusercontent.com/")) {
             String[] tokens = string.substring(34).split("/", 4);
             if (tokens.length != 4) return string;
+            return "https://cdn.jsdelivr.net/gh/" +
+                    tokens[0] + "/" + tokens[1] + "@" + tokens[2] + "/" + tokens[3];
+        }
+        if (string.startsWith("https://github.com/")) {
+            int i = string.lastIndexOf("/archive/");
+            if (i == -1 || string.indexOf('/', i + 9) != -1)
+                return string; // Not an archive link
+            String[] tokens = string.substring(19).split("/", 4);
             return "https://cdn.jsdelivr.net/gh/" +
                     tokens[0] + "/" + tokens[1] + "@" + tokens[2] + "/" + tokens[3];
         }

@@ -160,7 +160,7 @@ public class PropUtils {
                         break;
                     case "updateJson":
                         if (isInvalidURL(value)) break;
-                        moduleInfo.updateJson = Http.fixUpLink(value);
+                        moduleInfo.updateJson = value;
                         readUpdateJson = true;
                         break;
                     case "support":

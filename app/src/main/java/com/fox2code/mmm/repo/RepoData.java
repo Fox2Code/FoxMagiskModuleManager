@@ -138,10 +138,6 @@ public class RepoData {
                     moduleNotesUrl = Http.updateLink(moduleNotesUrl);
                     modulePropsUrl = Http.updateLink(modulePropsUrl);
                     moduleZipUrl = Http.updateLink(moduleZipUrl);
-                } else {
-                    moduleNotesUrl = Http.fixUpLink(moduleNotesUrl);
-                    modulePropsUrl = Http.fixUpLink(modulePropsUrl);
-                    moduleZipUrl = Http.fixUpLink(moduleZipUrl);
                 }
                 RepoModule repoModule = this.moduleHashMap.get(moduleId);
                 if (repoModule == null) {
