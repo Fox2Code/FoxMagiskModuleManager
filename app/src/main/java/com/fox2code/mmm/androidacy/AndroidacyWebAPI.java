@@ -173,7 +173,7 @@ public class AndroidacyWebAPI {
     public boolean setAndroidacyModuleMeta(String moduleId, String content) {
         if (content == null || !this.isAndroidacyModule(moduleId)) return false;
         File androidacyMetaFile = new File(
-                "/data/adb/modules/" + moduleId + "/.andoridacy");
+                "/data/adb/modules/" + moduleId + "/.androidacy");
         try {
             Files.writeSU(androidacyMetaFile,
                     content.getBytes(StandardCharsets.UTF_8));
