@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.fox2code.mmm.R;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.utils.Files;
 import com.fox2code.mmm.utils.Http;
@@ -27,6 +30,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class RepoData {
+    private static final String TAG = "RepoData";
     private final Object populateLock = new Object();
     public final String url;
     public final File cacheRoot;
@@ -36,7 +40,7 @@ public class RepoData {
     public final HashMap<String, RepoModule> moduleHashMap;
     public long lastUpdate;
     public String name;
-    private final Map<String, Long> specialTimes;
+    private final Map<String, SpecialData> specialData;
     private long specialLastUpdate;
 
     protected RepoData(String url, File cacheRoot, SharedPreferences cachedPreferences) {
@@ -51,7 +55,7 @@ public class RepoData {
         this.special = special;
         this.moduleHashMap = new HashMap<>();
         this.name = this.url; // Set url as default name
-        this.specialTimes = special ? new HashMap<>() : Collections.emptyMap();
+        this.specialData = special ? new HashMap<>() : Collections.emptyMap();
         if (!this.cacheRoot.isDirectory()) {
             this.cacheRoot.mkdirs();
         } else {
@@ -63,10 +67,13 @@ public class RepoData {
                                 Files.read(this.metaDataCache), StandardCharsets.UTF_8));
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            this.specialTimes.put(jsonObject.getString("name"),
-                                    Objects.requireNonNull(ISO_OFFSET_DATE_TIME.parse(
-                                            jsonObject.getString("pushed_at"))).getTime());
-                            Log.d("RepoData", "Got " +
+                            this.specialData.put(
+                                    jsonObject.getString("name"), new SpecialData(
+                                            Objects.requireNonNull(ISO_OFFSET_DATE_TIME.parse(
+                                                    jsonObject.getString(
+                                                            "pushed_at"))).getTime(),
+                                            jsonObject.optInt("stargazers_count")));
+                            Log.d(TAG, "Got " +
                                     jsonObject.getString("name") + " from local storage!");
                         }
                         this.specialLastUpdate = metaDataCacheSpecial.lastModified();
@@ -79,6 +86,10 @@ public class RepoData {
                 }
             }
             if (this.metaDataCache.exists()) {
+                this.lastUpdate = metaDataCache.lastModified();
+                if (this.lastUpdate > System.currentTimeMillis()) {
+                    this.lastUpdate = 0; // Don't allow time travel
+                }
                 try {
                     List<RepoModule> modules = this.populate(new JSONObject(
                             new String(Files.read(this.metaDataCache), StandardCharsets.UTF_8)));
@@ -108,7 +119,6 @@ public class RepoData {
             for (RepoModule repoModule : this.moduleHashMap.values()) {
                 repoModule.processed = false;
             }
-            Log.d("RepoData", "Data: " + this.specialTimes.toString());
             JSONArray array = jsonObject.getJSONArray("modules");
             int len = array.length();
             for (int i = 0; i < len; i++) {
@@ -116,16 +126,15 @@ public class RepoData {
                 String moduleId = module.getString("id");
                 // Deny remote modules ids shorter than 3 chars long or that start with a digit
                 if (moduleId.length() < 3 || Character.isDigit(moduleId.charAt(0))) continue;
-                Long moduleLastUpdateSpecial = this.specialTimes.get(moduleId);
+                SpecialData moduleSpecialData = this.specialData.get(moduleId);
                 long moduleLastUpdate = module.getLong("last_update");
                 String moduleNotesUrl = module.getString("notes_url");
                 String modulePropsUrl = module.getString("prop_url");
                 String moduleZipUrl = module.getString("zip_url");
                 String moduleChecksum = module.optString("checksum");
-                if (moduleLastUpdateSpecial != null) { // Fix last update time
-                    Log.d("RepoData", "Data: " + moduleLastUpdate + " -> " +
-                            moduleLastUpdateSpecial + " for " + moduleId);
-                    moduleLastUpdate = Math.max(moduleLastUpdate, moduleLastUpdateSpecial);
+                String moduleStars = module.optString("stars");
+                if (moduleSpecialData != null) { // Fix last update time
+                    moduleLastUpdate = Math.max(moduleLastUpdate, moduleSpecialData.time);
                     moduleNotesUrl = Http.updateLink(moduleNotesUrl);
                     modulePropsUrl = Http.updateLink(modulePropsUrl);
                     moduleZipUrl = Http.updateLink(moduleZipUrl);
@@ -152,6 +161,15 @@ public class RepoData {
                 repoModule.propUrl = modulePropsUrl;
                 repoModule.zipUrl = moduleZipUrl;
                 repoModule.checksum = moduleChecksum;
+                if (moduleSpecialData != null) {
+                    repoModule.qualityValue = moduleSpecialData.stars;
+                    repoModule.qualityText = R.string.module_stars;
+                } else if (!moduleStars.isEmpty()) {
+                    try {
+                        repoModule.qualityValue = Integer.parseInt(moduleStars);
+                        repoModule.qualityText = R.string.module_stars;
+                    } catch (NumberFormatException ignored) {}
+                }
             }
             // Remove no longer existing modules
             Iterator<RepoModule> moduleInfoIterator = this.moduleHashMap.values().iterator();
@@ -184,6 +202,12 @@ public class RepoData {
                 if (moduleInfo.version == null) {
                     moduleInfo.version = "v" + moduleInfo.versionCode;
                 }
+                SpecialData moduleSpecialData =
+                        this.specialData.get(repoModule.id);
+                if (moduleSpecialData != null) {
+                    repoModule.qualityValue = moduleSpecialData.stars;
+                    repoModule.qualityText = R.string.module_stars;
+                }
                 return true;
             } catch (Exception ignored) {
                 file.delete();
@@ -200,20 +224,24 @@ public class RepoData {
     public void updateSpecialTimes(boolean force) throws IOException, JSONException {
         if (!this.special) return;
         synchronized (this.populateLock) {
-            if (this.specialLastUpdate == 0L ||
-                    (force && this.specialLastUpdate < System.currentTimeMillis() - 60000L)) {
+            if (this.specialLastUpdate == 0L || (force && (this.specialData.isEmpty() ||
+                    this.specialLastUpdate < System.currentTimeMillis() - 60000L))) {
                 File metaDataCacheSpecial = new File(cacheRoot, "modules_times.json");
-                this.specialTimes.clear();
+                this.specialData.clear();
                 try {
+                    // Requesting only 32 most recently pushed repos
                     byte[] data = Http.doHttpGet(
-                            "https://api.github.com/users/Magisk-Modules-Repo/repos",
-                            false);
+                            "https://api.github.com/users/Magisk-Modules-Repo/" +
+                                    "repos?sort=pushed&per_page=32", false);
                     JSONArray jsonArray = new JSONArray(new String(data, StandardCharsets.UTF_8));
                     for (int i = 0;i < jsonArray.length();i++) {
                         JSONObject jsonObject = jsonArray.optJSONObject(i);
-                        this.specialTimes.put(jsonObject.getString("name"),
-                                    Objects.requireNonNull(ISO_OFFSET_DATE_TIME.parse(
-                                            jsonObject.getString("pushed_at"))).getTime());
+                        this.specialData.put(
+                                jsonObject.getString("name"), new SpecialData(
+                                        Objects.requireNonNull(ISO_OFFSET_DATE_TIME.parse(
+                                                jsonObject.getString(
+                                                        "pushed_at"))).getTime(),
+                                        jsonObject.optInt("stargazers_count")));
                     }
                     Files.write(metaDataCacheSpecial, data);
                     this.specialLastUpdate = System.currentTimeMillis();
@@ -228,5 +256,23 @@ public class RepoData {
         return this.name == null ||
                 this.name.equals(this.url) ?
                 fallback : this.name;
+    }
+
+    private static class SpecialData {
+        SpecialData(long time, int stars) {
+            this.time = time; this.stars = stars;
+        }
+
+        final long time;
+        final int stars;
+
+        @NonNull
+        @Override
+        public String toString() {
+            return "SpecialData{" +
+                    "time=" + time +
+                    ", stars=" + stars +
+                    '}';
+        }
     }
 }

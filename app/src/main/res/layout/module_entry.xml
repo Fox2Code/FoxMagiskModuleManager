@@ -76,105 +76,117 @@
                 android:layout_below="@+id/credit_text"
                 app:layout_constraintTop_toBottomOf="@id/credit_text" />
 
-            <TextView
-                android:id="@+id/updated_text"
-                android:textSize="12sp"
-                android:text="@string/loading"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="bottom"
+                android:layout_margin="0dp"
+                android:background="@null"
                 app:layout_constraintTop_toBottomOf="@+id/description_text"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent" />
+                app:layout_constraintLeft_toLeftOf="parent">
+                <TextView
+                    android:id="@+id/updated_text"
+                    android:textSize="12sp"
+                    android:text="@string/loading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="bottom"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent" />
 
-            <!-- Module actions -->
+                <!-- Module actions -->
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/button_action1"
-                android:textSize="16sp"
-                android:visibility="gone"
-                android:src="@drawable/ic_baseline_error_24"
-                android:layout_width="@dimen/module_action_icon_size"
-                android:layout_height="@dimen/module_action_icon_size"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                app:layout_constraintTop_toBottomOf="@id/description_text"
-                app:layout_constraintRight_toRightOf="parent"
-                android:importantForAccessibility="no"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="3dp"
-                android:layout_marginBottom="4dp"
-                tools:ignore="RtlHardcoded" />
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/button_action1"
+                    android:textSize="16sp"
+                    android:visibility="gone"
+                    android:src="@drawable/ic_baseline_error_24"
+                    android:layout_width="@dimen/module_action_icon_size"
+                    android:layout_height="@dimen/module_action_icon_size"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:importantForAccessibility="no"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="3dp"
+                    android:layout_marginBottom="1dp"
+                    tools:ignore="RtlHardcoded" />
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/button_action2"
-                android:textSize="16sp"
-                android:visibility="gone"
-                android:src="@drawable/ic_baseline_error_24"
-                android:layout_width="@dimen/module_action_icon_size"
-                android:layout_height="@dimen/module_action_icon_size"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                app:layout_constraintTop_toBottomOf="@id/description_text"
-                app:layout_constraintRight_toLeftOf="@id/button_action1"
-                android:importantForAccessibility="no"
-                android:layout_marginLeft="8dp"
-                tools:ignore="RtlHardcoded" />
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/button_action2"
+                    android:textSize="16sp"
+                    android:visibility="gone"
+                    android:src="@drawable/ic_baseline_error_24"
+                    android:layout_width="@dimen/module_action_icon_size"
+                    android:layout_height="@dimen/module_action_icon_size"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/button_action1"
+                    android:importantForAccessibility="no"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginBottom="1dp"
+                    tools:ignore="RtlHardcoded" />
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/button_action3"
-                android:textSize="16sp"
-                android:visibility="gone"
-                android:src="@drawable/ic_baseline_error_24"
-                android:layout_width="@dimen/module_action_icon_size"
-                android:layout_height="@dimen/module_action_icon_size"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                app:layout_constraintTop_toBottomOf="@id/description_text"
-                app:layout_constraintRight_toLeftOf="@id/button_action2"
-                android:importantForAccessibility="no"
-                android:layout_marginLeft="8dp"
-                tools:ignore="RtlHardcoded" />
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/button_action3"
+                    android:textSize="16sp"
+                    android:visibility="gone"
+                    android:src="@drawable/ic_baseline_error_24"
+                    android:layout_width="@dimen/module_action_icon_size"
+                    android:layout_height="@dimen/module_action_icon_size"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/button_action2"
+                    android:importantForAccessibility="no"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginBottom="1dp"
+                    tools:ignore="RtlHardcoded" />
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/button_action4"
-                android:textSize="16sp"
-                android:visibility="gone"
-                android:src="@drawable/ic_baseline_error_24"
-                android:layout_width="@dimen/module_action_icon_size"
-                android:layout_height="@dimen/module_action_icon_size"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                app:layout_constraintTop_toBottomOf="@id/description_text"
-                app:layout_constraintRight_toLeftOf="@id/button_action3"
-                android:importantForAccessibility="no"
-                android:layout_marginLeft="8dp"
-                tools:ignore="RtlHardcoded" />
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/button_action4"
+                    android:textSize="16sp"
+                    android:visibility="gone"
+                    android:src="@drawable/ic_baseline_error_24"
+                    android:layout_width="@dimen/module_action_icon_size"
+                    android:layout_height="@dimen/module_action_icon_size"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/button_action3"
+                    android:importantForAccessibility="no"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginBottom="1dp"
+                    tools:ignore="RtlHardcoded" />
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/button_action5"
-                android:textSize="16sp"
-                android:visibility="gone"
-                android:src="@drawable/ic_baseline_error_24"
-                android:layout_width="@dimen/module_action_icon_size"
-                android:layout_height="@dimen/module_action_icon_size"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                app:layout_constraintTop_toBottomOf="@id/description_text"
-                app:layout_constraintRight_toLeftOf="@id/button_action4"
-                android:importantForAccessibility="no"
-                android:layout_marginLeft="8dp"
-                tools:ignore="RtlHardcoded" />
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/button_action5"
+                    android:textSize="16sp"
+                    android:visibility="gone"
+                    android:src="@drawable/ic_baseline_error_24"
+                    android:layout_width="@dimen/module_action_icon_size"
+                    android:layout_height="@dimen/module_action_icon_size"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/button_action4"
+                    android:importantForAccessibility="no"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginBottom="1dp"
+                    tools:ignore="RtlHardcoded" />
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/button_action6"
-                android:textSize="16sp"
-                android:visibility="gone"
-                android:src="@drawable/ic_baseline_error_24"
-                android:layout_width="@dimen/module_action_icon_size"
-                android:layout_height="@dimen/module_action_icon_size"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                app:layout_constraintTop_toBottomOf="@id/description_text"
-                app:layout_constraintRight_toLeftOf="@id/button_action5"
-                android:importantForAccessibility="no"
-                android:layout_marginLeft="8dp"
-                tools:ignore="RtlHardcoded" />
-
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/button_action6"
+                    android:textSize="16sp"
+                    android:visibility="gone"
+                    android:src="@drawable/ic_baseline_error_24"
+                    android:layout_width="@dimen/module_action_icon_size"
+                    android:layout_height="@dimen/module_action_icon_size"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/button_action5"
+                    android:importantForAccessibility="no"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginBottom="1dp"
+                    tools:ignore="RtlHardcoded" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>

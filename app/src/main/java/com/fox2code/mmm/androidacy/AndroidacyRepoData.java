@@ -28,6 +28,12 @@ public class AndroidacyRepoData extends RepoData {
     public AndroidacyRepoData(String url, File cacheRoot,
                                  SharedPreferences cachedPreferences) {
         super(url, cacheRoot, cachedPreferences);
+        if (this.metaDataCache.exists()) {
+            this.androidacyBlockade = this.metaDataCache.lastModified() + 5_000L;
+            if (this.androidacyBlockade - 10_000L > System.currentTimeMillis()) {
+                this.androidacyBlockade = 0; // Don't allow time travel
+            }
+        }
     }
 
     @Override
@@ -185,6 +191,13 @@ public class AndroidacyRepoData extends RepoData {
 
     @Override
     public boolean tryLoadMetadata(RepoModule repoModule) {
-        return true;
+        if (this.moduleHashMap.containsKey(repoModule.id)) {
+            repoModule.moduleInfo.flags &=
+                    ~ModuleInfo.FLAG_METADATA_INVALID;
+            return true;
+        }
+        repoModule.moduleInfo.flags |=
+                ModuleInfo.FLAG_METADATA_INVALID;
+        return false;
     }
 }

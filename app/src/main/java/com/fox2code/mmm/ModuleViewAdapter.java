@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
+import com.fox2code.mmm.repo.RepoModule;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
@@ -199,10 +200,14 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 }
                 String updateText = moduleHolder.getUpdateTimeText();
                 if (!updateText.isEmpty()) {
+                    RepoModule repoModule = moduleHolder.repoModule;
                     this.updateText.setVisibility(View.VISIBLE);
                     this.updateText.setText(
                             this.getString(R.string.module_last_update) + " " + updateText + "\n" +
-                            this.getString(R.string.module_repo) + " " + moduleHolder.getRepoName());
+                            this.getString(R.string.module_repo) + " " + moduleHolder.getRepoName() +
+                                    (repoModule.qualityText == 0 ? "" : (
+                                            "\n" + this.getString(repoModule.qualityText) +
+                                                    " " + repoModule.qualityValue)));
                 } else if (moduleHolder.moduleId.equals("hosts")) {
                     this.updateText.setVisibility(View.VISIBLE);
                     this.updateText.setText(R.string.magisk_builtin_module);

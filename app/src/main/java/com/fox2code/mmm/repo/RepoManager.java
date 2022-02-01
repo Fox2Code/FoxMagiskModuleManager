@@ -182,7 +182,8 @@ public final class RepoManager {
             Log.d(TAG, "Registering " + repoData.name);
             for (RepoModule repoModule:repoModules) {
                 try {
-                    if (repoModule.propUrl != null) {
+                    if (repoModule.propUrl != null &&
+                            !repoModule.propUrl.isEmpty()) {
                         repoData.storeMetadata(repoModule,
                                 Http.doHttpGet(repoModule.propUrl, false));
                         Files.write(new File(repoData.cacheRoot, repoModule.id + ".prop"),
