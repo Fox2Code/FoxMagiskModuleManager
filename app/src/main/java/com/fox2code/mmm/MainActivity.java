@@ -214,6 +214,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                     moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
                 else if (AppUpdateManager.getAppUpdateManager().checkUpdate(false))
                     moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
+                RepoManager.getINSTANCE().updateEnabledStates();
                 moduleViewListBuilder.appendRemoteModules();
                 Log.i(TAG, "Common Before applyTo");
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);

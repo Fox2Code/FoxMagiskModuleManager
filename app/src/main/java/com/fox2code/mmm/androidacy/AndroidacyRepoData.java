@@ -111,7 +111,7 @@ public class AndroidacyRepoData extends RepoData {
             lastLastUpdate = Math.max(lastLastUpdate, lastUpdate);
             RepoModule repoModule = this.moduleHashMap.get(moduleId);
             if (repoModule == null) {
-                repoModule = new RepoModule(moduleId);
+                repoModule = new RepoModule(this, moduleId);
                 repoModule.moduleInfo.flags = 0;
                 this.moduleHashMap.put(moduleId, repoModule);
                 newModules.add(repoModule);

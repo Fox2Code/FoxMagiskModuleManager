@@ -228,6 +228,11 @@ public final class RepoManager {
         return hasInternet;
     }
 
+    public void updateEnabledStates() {
+        for (RepoData repoData:this.repoData.values())
+                repoData.updateEnabledState();
+    }
+
     public HashMap<String, RepoModule> getModules() {
         this.afterUpdate();
         return this.modules;

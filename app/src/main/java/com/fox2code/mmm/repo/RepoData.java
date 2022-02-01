@@ -6,6 +6,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.utils.Files;
@@ -33,6 +34,7 @@ public class RepoData {
     private static final String TAG = "RepoData";
     private final Object populateLock = new Object();
     public final String url;
+    public final String id;
     public final File cacheRoot;
     public final SharedPreferences cachedPreferences;
     public final File metaDataCache;
@@ -40,6 +42,7 @@ public class RepoData {
     public final HashMap<String, RepoModule> moduleHashMap;
     public long lastUpdate;
     public String name;
+    private boolean enabled; // Cache for speed
     private final Map<String, SpecialData> specialData;
     private long specialLastUpdate;
 
@@ -49,12 +52,15 @@ public class RepoData {
 
     RepoData(String url, File cacheRoot, SharedPreferences cachedPreferences,boolean special) {
         this.url = url;
+        this.id = RepoManager.internalIdOfUrl(url);
         this.cacheRoot = cacheRoot;
         this.cachedPreferences = cachedPreferences;
         this.metaDataCache = new File(cacheRoot, "modules.json");
         this.special = special;
         this.moduleHashMap = new HashMap<>();
         this.name = this.url; // Set url as default name
+        this.enabled = MainApplication.getSharedPreferences()
+                .getBoolean("pref_" + this.id + "_enabled", true);
         this.specialData = special ? new HashMap<>() : Collections.emptyMap();
         if (!this.cacheRoot.isDirectory()) {
             this.cacheRoot.mkdirs();
@@ -141,7 +147,7 @@ public class RepoData {
                 }
                 RepoModule repoModule = this.moduleHashMap.get(moduleId);
                 if (repoModule == null) {
-                    repoModule = new RepoModule(moduleId);
+                    repoModule = new RepoModule(this, moduleId);
                     this.moduleHashMap.put(moduleId, repoModule);
                     newModules.add(repoModule);
                 } else {
@@ -252,6 +258,21 @@ public class RepoData {
         return this.name == null ||
                 this.name.equals(this.url) ?
                 fallback : this.name;
+    }
+
+    public boolean isEnabled() {
+        return this.enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+        MainApplication.getSharedPreferences().edit()
+                .putBoolean("pref_" + this.id + "_enabled", enabled).apply();
+    }
+
+    public void updateEnabledState() {
+        this.enabled = MainApplication.getSharedPreferences()
+                .getBoolean("pref_" + this.id + "_enabled", true);
     }
 
     private static class SpecialData {

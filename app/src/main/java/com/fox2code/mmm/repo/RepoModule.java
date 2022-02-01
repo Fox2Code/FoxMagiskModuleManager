@@ -5,6 +5,7 @@ import androidx.annotation.StringRes;
 import com.fox2code.mmm.manager.ModuleInfo;
 
 public class RepoModule {
+    public final RepoData repoData;
     public final ModuleInfo moduleInfo;
     public final String id;
     public String repoName;
@@ -18,7 +19,8 @@ public class RepoModule {
     public int qualityText;
     public int qualityValue;
 
-    public RepoModule(String id) {
+    public RepoModule(RepoData repoData, String id) {
+        this.repoData = repoData;
         this.moduleInfo = new ModuleInfo(id);
         this.id = id;
         this.moduleInfo.flags |=

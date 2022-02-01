@@ -3,12 +3,15 @@ package com.fox2code.mmm.settings;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.SwitchPreference;
+import androidx.preference.SwitchPreferenceCompat;
 
 import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.BuildConfig;
@@ -158,16 +161,15 @@ public class SettingsActivity extends CompatActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             getPreferenceManager().setSharedPreferencesName("mmm");
             setPreferencesFromResource(R.xml.repo_preferences, rootKey);
-            setRepoData("pref_repo_main", RepoManager.MAGISK_REPO,
+            setRepoData(RepoManager.MAGISK_REPO,
                     "Magisk Modules Repo (Official)", RepoManager.MAGISK_REPO_HOMEPAGE,
                     null, null,null);
-            setRepoData("pref_repo_alt", RepoManager.MAGISK_ALT_REPO,
+            setRepoData(RepoManager.MAGISK_ALT_REPO,
                     "Magisk Modules Alt Repo", RepoManager.MAGISK_ALT_REPO_HOMEPAGE,
                     null, null,
                     "https://github.com/Magisk-Modules-Alt-Repo/submission/issues");
             // Androidacy backend not yet implemented!
-            setRepoData("pref_repo_androidacy",
-                    RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT,
+            setRepoData(RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT,
                     "Androidacy Modules Repo",
                     RepoManager.ANDROIDACY_MAGISK_REPO_HOMEPAGE,
                     "https://t.me/androidacy_discussions",
@@ -175,15 +177,31 @@ public class SettingsActivity extends CompatActivity {
                     "https://www.androidacy.com/module-repository-applications/");
         }
 
-        private void setRepoData(String preferenceName, String url,
+        private void setRepoData(String url,
                                  String fallbackTitle, String homepage,
                                  String supportUrl, String donateUrl,
                                  String submissionUrl) {
+            String preferenceName = "pref_" + RepoManager.internalIdOfUrl(url);
             Preference preference = findPreference(preferenceName);
             if (preference == null) return;
-            RepoData repoData = RepoManager.getINSTANCE().get(url);
+            final RepoData repoData = RepoManager.getINSTANCE().get(url);
             preference.setTitle(repoData == null ? fallbackTitle :
                     repoData.getNameOrFallback(fallbackTitle));
+            preference = findPreference(preferenceName + "_enabled");
+            if (preference != null) {
+                if (repoData == null) {
+                    preference.setTitle(R.string.repo_disabled);
+                    preference.setEnabled(false);
+                } else {
+                    preference.setTitle(repoData.isEnabled() ?
+                            R.string.repo_enabled : R.string.repo_disabled);
+                    preference.setOnPreferenceChangeListener((p, newValue) -> {
+                        p.setTitle(((Boolean) newValue) ?
+                                R.string.repo_enabled : R.string.repo_disabled);
+                        return true;
+                    });
+                }
+            }
             preference = findPreference(preferenceName + "_website");
             if (preference != null && homepage != null) {
                 preference.setOnPreferenceClickListener(p -> {

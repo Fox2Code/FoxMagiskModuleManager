@@ -26,6 +26,12 @@ public class RepoUpdater {
     }
 
     public int fetchIndex() {
+        if (!this.repoData.isEnabled()) {
+            this.indexRaw = null;
+            this.toUpdate = Collections.emptyList();
+            this.toApply = Collections.emptySet();
+            return 0;
+        }
         try {
             if (!this.repoData.prepare()) {
                 return 0;

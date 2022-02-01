@@ -1,48 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory
-        app:key="pref_repo_main"
+        app:key="pref_magisk_repo"
         app:title="@string/loading">
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="pref_magisk_repo_enabled"
+            app:icon="@drawable/ic_baseline_extension_24"
+            app:switchTextOn="@string/repo_enabled"
+            app:switchTextOff="@string/repo_enabled"
+            app:singleLineTitle="false"	/>
         <Preference
-            app:key="pref_repo_main_website"
+            app:key="pref_magisk_repo_website"
             app:icon="@drawable/ic_baseline_language_24"
             app:title="@string/website"
             app:singleLineTitle="false"	/>
     </PreferenceCategory>
     <PreferenceCategory
-        app:key="pref_repo_alt"
+        app:key="pref_magisk_alt_repo"
         app:title="@string/loading">
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="pref_magisk_alt_repo_enabled"
+            app:icon="@drawable/ic_baseline_extension_24"
+            app:switchTextOn="@string/repo_enabled"
+            app:switchTextOff="@string/repo_enabled"
+            app:singleLineTitle="false"	/>
         <Preference
-            app:key="pref_repo_alt_website"
+            app:key="pref_magisk_alt_repo_website"
             app:icon="@drawable/ic_baseline_language_24"
             app:title="@string/website"
             app:singleLineTitle="false"	/>
         <Preference
-            app:key="pref_repo_alt_submit"
+            app:key="pref_magisk_alt_repo_submit"
             app:icon="@drawable/ic_baseline_upload_file_24"
             app:title="@string/submit_modules"
             app:singleLineTitle="false"	/>
     </PreferenceCategory>
     <PreferenceCategory
-        app:key="pref_repo_androidacy"
+        app:key="pref_androidacy_repo"
         app:title="@string/loading">
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="pref_androidacy_repo_enabled"
+            app:icon="@drawable/ic_baseline_extension_24"
+            app:switchTextOn="@string/repo_enabled"
+            app:switchTextOff="@string/repo_enabled"
+            app:singleLineTitle="false"	/>
         <Preference
-            app:key="pref_repo_androidacy_website"
+            app:key="pref_androidacy_repo_website"
             app:icon="@drawable/ic_baseline_language_24"
             app:title="@string/website"
             app:singleLineTitle="false"	/>
         <Preference
-            app:key="pref_repo_androidacy_support"
+            app:key="pref_androidacy_repo_support"
             app:icon="@drawable/ic_baseline_telegram_24"
             app:title="@string/support"
             app:singleLineTitle="false"	/>
         <Preference
-            app:key="pref_repo_androidacy_donate"
+            app:key="pref_androidacy_repo_donate"
             app:icon="@drawable/ic_patreon"
             app:title="@string/donate"
             app:singleLineTitle="false"	/>
         <Preference
-            app:key="pref_repo_androidacy_submit"
+            app:key="pref_androidacy_repo_submit"
             app:icon="@drawable/ic_baseline_upload_file_24"
             app:title="@string/submit_modules"
             app:singleLineTitle="false"	/>

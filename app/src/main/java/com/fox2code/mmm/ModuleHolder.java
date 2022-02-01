@@ -143,9 +143,10 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
 
     public boolean shouldRemove() {
         return this.notificationType != null ? this.notificationType.shouldRemove() :
-                this.footerPx == 0 && this.moduleInfo == null && (this.repoModule == null ||
-                        (PropUtils.isLowQualityModule(this.repoModule.moduleInfo) &&
-                                !MainApplication.isDisableLowQualityModuleFilter()));
+                this.footerPx == 0 && this.moduleInfo == null &&
+                        (this.repoModule == null || !this.repoModule.repoData.isEnabled() ||
+                                (PropUtils.isLowQualityModule(this.repoModule.moduleInfo) &&
+                                        !MainApplication.isDisableLowQualityModuleFilter()));
     }
 
     public void getButtons(Context context, List<ActionButtonType> buttonTypeList, boolean showcaseMode) {

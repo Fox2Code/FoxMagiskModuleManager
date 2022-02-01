@@ -73,6 +73,7 @@ public class ModuleViewListBuilder {
             repoManager.runAfterUpdate(() -> {
                 Log.i(TAG, "A2: " + repoManager.getModules().size());
                 for (RepoModule repoModule : repoManager.getModules().values()) {
+                    if (!repoModule.repoData.isEnabled()) continue;
                     ModuleInfo moduleInfo = repoModule.moduleInfo;
                     if (!showIncompatible && (moduleInfo.minApi > Build.VERSION.SDK_INT ||
                             (moduleInfo.maxApi != 0 && moduleInfo.maxApi < Build.VERSION.SDK_INT) ||
