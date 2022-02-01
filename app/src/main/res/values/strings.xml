@@ -74,7 +74,10 @@
         and/or indicating poor module quality, disable at your own risk!
     </string>
     <string name="dns_over_https_pref">Dns over https</string>
-    <string name="dns_over_https_desc">May fix connections issues in some cases.</string>
+    <string name="dns_over_https_desc">
+        May fix connections issues in some cases.
+        (Does not apply to WebView)
+    </string>
     <string name="disable_extensions_pref">Disable extensions</string>
     <string name="disable_extensions_desc">
         Disable Fox\'s Mmm extensions, this prevent modules from using

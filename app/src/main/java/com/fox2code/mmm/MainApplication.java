@@ -106,6 +106,10 @@ public class MainApplication extends Application implements CompatActivity.Appli
         return getSharedPreferences().getBoolean("pref_wrap_text", false);
     }
 
+    public static boolean isDohEnabled() {
+        return getSharedPreferences().getBoolean("pref_dns_over_https", true);
+    }
+
     public static boolean isDeveloper() {
         return BuildConfig.DEBUG ||
                 getSharedPreferences().getBoolean("developer", false);

@@ -21,7 +21,6 @@ import java.util.zip.ZipFile;
 
 interface NotificationTypeCst {
     String TAG = "NotificationType";
-    boolean ROOTLESS_TEST = true;
 }
 
 public enum NotificationType implements NotificationTypeCst {
@@ -110,7 +109,7 @@ public enum NotificationType implements NotificationTypeCst {
     }, true) {
         @Override
         public boolean shouldRemove() {
-            return (!(ROOTLESS_TEST && BuildConfig.DEBUG)) &&
+            return !BuildConfig.DEBUG &&
                     (MainApplication.isShowcaseMode() ||
                             InstallerInitializer.peekMagiskPath() == null);
         }
@@ -135,11 +134,13 @@ public enum NotificationType implements NotificationTypeCst {
         this(textId, iconId, backgroundAttr, foregroundAttr, null);
     }
 
-    NotificationType(@StringRes int textId, int iconId, int backgroundAttr, int foregroundAttr, View.OnClickListener onClickListener) {
-        this(textId, iconId, backgroundAttr, foregroundAttr, null, false);
+    NotificationType(@StringRes int textId, int iconId, int backgroundAttr, int foregroundAttr,
+                     View.OnClickListener onClickListener) {
+        this(textId, iconId, backgroundAttr, foregroundAttr, onClickListener, false);
     }
 
-    NotificationType(@StringRes int textId, int iconId, int backgroundAttr, int foregroundAttr, View.OnClickListener onClickListener, boolean special) {
+    NotificationType(@StringRes int textId, int iconId, int backgroundAttr, int foregroundAttr,
+                     View.OnClickListener onClickListener, boolean special) {
         this.textId = textId;
         this.iconId = iconId;
         this.backgroundAttr = backgroundAttr;

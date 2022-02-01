@@ -23,6 +23,7 @@ import com.fox2code.mmm.compat.CompatThemeWrapper;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.repo.RepoData;
 import com.fox2code.mmm.repo.RepoManager;
+import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
@@ -81,6 +82,10 @@ public class SettingsActivity extends CompatActivity {
                     compatThemeWrapper.setForceEnglish(
                             Boolean.parseBoolean(String.valueOf(newValue)));
                 }
+                return true;
+            });
+            findPreference("pref_dns_over_https").setOnPreferenceChangeListener((p, v) -> {
+                Http.setDoh((Boolean) v);
                 return true;
             });
             if ("dark".equals(themePreference.getValue())) {

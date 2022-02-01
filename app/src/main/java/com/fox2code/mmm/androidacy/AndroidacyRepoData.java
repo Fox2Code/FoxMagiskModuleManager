@@ -107,6 +107,8 @@ public class AndroidacyRepoData extends RepoData {
         for (int i = 0; i < len; i++) {
             jsonObject = jsonArray.getJSONObject(i);
             String moduleId = jsonObject.getString("codename");
+            // Deny remote modules ids shorter than 3 chars
+            if (moduleId.length() < 3) continue;
             long lastUpdate = jsonObject.getLong("updated_at") * 1000;
             lastLastUpdate = Math.max(lastLastUpdate, lastUpdate);
             RepoModule repoModule = this.moduleHashMap.get(moduleId);

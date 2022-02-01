@@ -52,9 +52,12 @@ import okio.BufferedSink;
 public class Http {
     private static final String TAG = "Http";
     private static final OkHttpClient httpClient;
+    private static final OkHttpClient httpClientDoH;
     private static final OkHttpClient httpClientWithCache;
+    private static final OkHttpClient httpClientWithCacheDoH;
     private static final FallBackDNS fallbackDNS;
     private static final String androidacyUA;
+    private static boolean doh;
 
     static {
         MainApplication mainApplication = MainApplication.getINSTANCE();
@@ -131,26 +134,33 @@ public class Http {
             return chain.proceed(request.build());
         });
         // Fallback DNS cache responses in case request fail but already succeeded once in the past
-        httpclientBuilder.dns(fallbackDNS = new FallBackDNS(mainApplication, dns,
+        fallbackDNS = new FallBackDNS(mainApplication, dns,
                 "github.com", "api.github.com", "raw.githubusercontent.com",
                 "camo.githubusercontent.com", "user-images.githubusercontent.com",
                 "cdn.jsdelivr.net", "img.shields.io", "magisk-modules-repo.github.io",
-                "www.androidacy.com", "api.androidacy.com"));
+                "www.androidacy.com", "api.androidacy.com");
         httpclientBuilder.cookieJar(new CDNCookieJar(true));
+        httpclientBuilder.dns(Dns.SYSTEM);
         httpClient = httpclientBuilder.build();
+        httpclientBuilder.dns(fallbackDNS);
+        httpClientDoH = httpclientBuilder.build();
         httpclientBuilder.cache(new Cache(
                 new File(mainApplication.getCacheDir(), "http_cache"),
                 16L * 1024L * 1024L)); // 16Mib of cache
+        httpclientBuilder.dns(Dns.SYSTEM);
         httpClientWithCache = httpclientBuilder.build();
+        httpclientBuilder.dns(fallbackDNS);
+        httpClientWithCacheDoH = httpclientBuilder.build();
         Log.i(TAG, "Initialized Http successfully!");
+        doh = MainApplication.isDohEnabled();
     }
 
     public static OkHttpClient getHttpClient() {
-        return httpClient;
+        return doh ? httpClientDoH : httpClient;
     }
 
     public static OkHttpClient getHttpClientWithCache() {
-        return httpClientWithCache;
+        return doh ? httpClientWithCacheDoH : httpClientWithCache;
     }
 
     public static byte[] doHttpGet(String url,boolean allowCache) throws IOException {
@@ -239,6 +249,11 @@ public class Http {
 
     public static String getAndroidacyUA() {
         return androidacyUA;
+    }
+
+    public static void setDoh(boolean doh) {
+        Log.d(TAG, "DoH: " + Http.doh + " -> " + doh);
+        Http.doh = doh;
     }
 
     /**

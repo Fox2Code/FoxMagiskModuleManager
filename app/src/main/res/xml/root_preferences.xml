@@ -71,6 +71,14 @@
             app:title="@string/use_magisk_install_command_pref"
             app:summary="@string/use_magisk_install_command_desc"
             app:singleLineTitle="false"	/>
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="pref_dns_over_https"
+            app:icon="@drawable/ic_baseline_security_24"
+            app:title="@string/dns_over_https_pref"
+            app:summary="@string/dns_over_https_desc"
+            app:singleLineTitle="false"	/>
     </PreferenceCategory>
 
     <PreferenceCategory
