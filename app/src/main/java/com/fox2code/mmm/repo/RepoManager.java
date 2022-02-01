@@ -68,9 +68,9 @@ public final class RepoManager {
         this.repoData = new LinkedHashMap<>();
         this.modules = new HashMap<>();
         // We do not have repo list config yet.
-        this.addRepoData(MAGISK_REPO);
         this.addRepoData(MAGISK_ALT_REPO);
         this.addAndroidacyRepoData();
+        this.addRepoData(MAGISK_REPO);
         // Populate default cache
         for (RepoData repoData:this.repoData.values()) {
             for (RepoModule repoModule:repoData.moduleHashMap.values()) {
@@ -264,8 +264,7 @@ public final class RepoManager {
         File cacheRoot = new File(this.mainApplication.getCacheDir(), id);
         SharedPreferences sharedPreferences = this.mainApplication
                 .getSharedPreferences("mmm_" + id, Context.MODE_PRIVATE);
-        RepoData repoData = new RepoData(url, cacheRoot,
-                sharedPreferences, id.equals("magisk_repo"));
+        RepoData repoData = new RepoData(url, cacheRoot, sharedPreferences);
         this.repoData.put(url, repoData);
         return repoData;
     }

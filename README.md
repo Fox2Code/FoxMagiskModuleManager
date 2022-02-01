@@ -34,12 +34,10 @@ The app currently use these two repo as it's module sources, with it's benefits 
 - Officially supported by Fox's mmm  
 
 [https://github.com/Magisk-Modules-Repo](https://github.com/Magisk-Modules-Repo)  
-- No longer accept new modules or update to existing modules
-  (Fox's MMM use a workaround to get latest version of modules, because the 
-  method used by the official Magisk app give outdated versions of the modules)
+- No longer accept new modules or receive update to existing modules
 - May be shut down at any moment
 - Official app dropped support for it
-- Officially supported by Fox's mmm
+- End of life support by Fox's mmm
 
 As the main repo may shutting down due to the main app no longer supporting it, 
 and also stopped accepting new modules, it is recommended to submit your modules
