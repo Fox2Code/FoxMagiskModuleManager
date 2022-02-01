@@ -10,7 +10,7 @@ android {
         applicationId "com.fox2code.mmm"
         minSdk 21
         targetSdk 32
-        versionCode 21
+        versionCode 22
         versionName "3.0.0-dev1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
