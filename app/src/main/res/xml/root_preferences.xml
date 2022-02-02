@@ -94,6 +94,11 @@
             app:title="@string/source_code"
             app:singleLineTitle="false"	/>
         <Preference
+            app:key="pref_support"
+            app:icon="@drawable/ic_baseline_telegram_24"
+            app:title="@string/support"
+            app:singleLineTitle="false"	/>
+        <Preference
             app:key="pref_show_licenses"
             app:icon="@drawable/ic_baseline_info_24"
             app:title="@string/show_licenses"

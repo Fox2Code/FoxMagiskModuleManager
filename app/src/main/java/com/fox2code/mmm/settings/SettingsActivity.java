@@ -122,6 +122,11 @@ public class SettingsActivity extends CompatActivity {
                         "https://github.com/Fox2Code/FoxMagiskModuleManager");
                 return true;
             });
+            findPreference("pref_support").setOnPreferenceClickListener(p -> {
+                devModeStep = 0;
+                IntentHelper.openUrl(p.getContext(), "https://t.me/Fox2Code_Chat");
+                return true;
+            });
             findPreference("pref_show_licenses").setOnPreferenceClickListener(p -> {
                 devModeStep = devModeStep == 1 ? 2 : 0;
                 openFragment(libsBuilder.supportFragment(), R.string.licenses);
