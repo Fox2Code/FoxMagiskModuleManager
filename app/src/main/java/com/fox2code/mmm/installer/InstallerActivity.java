@@ -197,9 +197,11 @@ public class InstallerActivity extends CompatActivity {
 
 
     private void doInstall(File file,boolean noExtensions,boolean rootless) {
-        this.setOnBackPressedCallback(DISABLE_BACK_BUTTON);
-        this.setDisplayHomeAsUpEnabled(false);
         if (this.canceled) return;
+        UiThreadHandler.runAndWait(() -> {
+            this.setOnBackPressedCallback(DISABLE_BACK_BUTTON);
+            this.setDisplayHomeAsUpEnabled(false);
+        });
         Log.i(TAG, "Installing: " + moduleCache.getName());
         InstallerController installerController = new InstallerController(
                 this.progressIndicator, this.installerTerminal,

@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
         gradlePluginPortal()
     }
-    project.ext.latestAboutLibsRelease = "10.0.0-b08"
+    project.ext.latestAboutLibsRelease = "10.0.0-b09"
     dependencies {
         classpath 'com.android.tools.build:gradle:7.1.0'
         classpath "com.mikepenz.aboutlibraries.plugin:aboutlibraries-plugin:${latestAboutLibsRelease}"

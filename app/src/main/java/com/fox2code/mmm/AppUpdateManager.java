@@ -25,6 +25,7 @@ public class AppUpdateManager {
     private String latestPreRelease;
     private long lastChecked;
     private boolean preReleaseNewer;
+    private boolean lastCheckSuccess;
 
     private AppUpdateManager() {
         this.latestRelease = MainApplication.getBootSharedPreferences()
@@ -85,7 +86,9 @@ public class AppUpdateManager {
                 Log.d(TAG, "Latest pre-release: " + latestPreRelease);
                 Log.d(TAG, "Latest pre-release newer: " + preReleaseNewer);
                 this.lastChecked = System.currentTimeMillis();
+                this.lastCheckSuccess = true;
             } catch (Exception ioe) {
+                this.lastCheckSuccess = false;
                 Log.e("AppUpdateManager", "Failed to check releases", ioe);
             }
         }
@@ -101,5 +104,9 @@ public class AppUpdateManager {
     public boolean peekHasUpdate() {
         return !BuildConfig.VERSION_NAME.equals(this.preReleaseNewer ?
                 this.latestPreRelease : this.latestRelease);
+    }
+
+    public boolean isLastCheckSuccess() {
+        return lastCheckSuccess;
     }
 }

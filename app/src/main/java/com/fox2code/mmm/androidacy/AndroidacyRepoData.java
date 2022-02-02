@@ -43,7 +43,7 @@ public class AndroidacyRepoData extends RepoData {
         if (this.androidacyBlockade > time) return false;
         this.androidacyBlockade = time + 5_000L;
         String cookies = CookieManager.getInstance().getCookie("https://.androidacy.com/");
-        int start = cookies.indexOf("USER=");
+        int start = cookies == null ? -1 : cookies.indexOf("USER=");
         String token = null;
         if (start != -1) {
             int end = cookies.indexOf(";", start);
@@ -73,7 +73,7 @@ public class AndroidacyRepoData extends RepoData {
                 token = new String(Http.doHttpPost(
                         "https://api.androidacy.com/auth/register",
                         "",true), StandardCharsets.UTF_8);
-                CookieManager.getInstance().setCookie(".androidacy.com",
+                CookieManager.getInstance().setCookie("https://.androidacy.com/",
                         "USER="+ token + "; expires=Fri, 31 Dec 9999 23:59:59 GMT;" +
                                 " path=/; secure; domain=.androidacy.com");
             } catch (Exception e) {

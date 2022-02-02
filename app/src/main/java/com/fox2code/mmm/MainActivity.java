@@ -124,7 +124,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                                 (int) (value * PRECISION), true) :() ->
                         progressIndicator.setProgressCompat(
                                 (int) (value * PRECISION * 0.75F), true)));
-                if (!RepoManager.getINSTANCE().hasConnectivity()) {
+                if (!NotificationType.NO_INTERNET.shouldRemove()) {
                     moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
                 } else {
                     if (AppUpdateManager.getAppUpdateManager().checkUpdate(true))
@@ -210,7 +210,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                 Log.i(TAG, "Common Before");
                 if (MainApplication.isShowcaseMode())
                     moduleViewListBuilder.addNotification(NotificationType.SHOWCASE_MODE);
-                if (!RepoManager.getINSTANCE().hasConnectivity())
+                if (!NotificationType.NO_INTERNET.shouldRemove())
                     moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
                 else if (AppUpdateManager.getAppUpdateManager().checkUpdate(false))
                     moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
@@ -241,7 +241,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
             RepoManager.getINSTANCE().update(value -> runOnUiThread(() ->
                     this.progressIndicator.setProgressCompat(
                             (int) (value * PRECISION), true)));
-            if (!RepoManager.getINSTANCE().hasConnectivity())
+            if (!NotificationType.NO_INTERNET.shouldRemove())
                 moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
             else if (AppUpdateManager.getAppUpdateManager().checkUpdate(true))
                 moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
@@ -249,7 +249,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                 this.progressIndicator.setVisibility(View.GONE);
                 this.swipeRefreshLayout.setRefreshing(false);
             });
-            if (!RepoManager.getINSTANCE().hasConnectivity()) {
+            if (!NotificationType.NO_INTERNET.shouldRemove()) {
                 this.moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
             }
             this.moduleViewListBuilder.appendRemoteModules();

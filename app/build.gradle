@@ -10,8 +10,8 @@ android {
         applicationId "com.fox2code.mmm"
         minSdk 21
         targetSdk 32
-        versionCode 22
-        versionName "3.0.0-dev1"
+        versionCode 23
+        versionName "3.0.0-dev2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -37,9 +37,7 @@ android {
 }
 
 aboutLibraries {
-    additionalLicenses {
-        LGPL_3_0_only
-    }
+    additionalLicenses = ["LGPL_3_0_only"]
 }
 
 configurations {
