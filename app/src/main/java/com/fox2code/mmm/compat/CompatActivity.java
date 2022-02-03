@@ -13,10 +13,13 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.CallSuper;
+import androidx.annotation.Dimension;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
+import androidx.annotation.Px;
 import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.fox2code.mmm.Constants;
@@ -24,6 +27,9 @@ import com.fox2code.mmm.R;
 
 import java.util.Locale;
 import java.util.Objects;
+
+import rikka.insets.WindowInsetsHelper;
+import rikka.layoutinflater.view.LayoutInflaterFactory;
 
 /**
  * I will probably outsource this to a separate library later
@@ -55,6 +61,10 @@ public class CompatActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        if (!this.onCreateCalled) {
+            this.getLayoutInflater().setFactory2(new LayoutInflaterFactory(this.getDelegate())
+                    .addOnViewCreatedListener(WindowInsetsHelper.Companion.getLISTENER()));
+        }
         Application application = this.getApplication();
         if (application instanceof ApplicationCallbacks) {
             ((ApplicationCallbacks) application).onCreateCompatActivity(this);
@@ -149,6 +159,38 @@ public class CompatActivity extends AppCompatActivity {
             if (actionBar != null)
                 actionBar.hide();
         }
+    }
+
+    @Dimension @Px
+    public int getActionBarHeight() {
+        androidx.appcompat.app.ActionBar compatActionBar;
+        try {
+            compatActionBar = this.getSupportActionBar();
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to call getSupportActionBar", e);
+            compatActionBar = null; // Allow fallback to builtin actionBar.
+        }
+        if (compatActionBar != null) {
+            return compatActionBar.isShowing() ? compatActionBar.getHeight() : 0;
+        } else {
+            android.app.ActionBar actionBar = this.getActionBar();
+            return actionBar != null && actionBar.isShowing() ? actionBar.getHeight() : 0;
+        }
+    }
+
+    public int getNavigationBarHeight() { // How to improve this?
+        int height = WindowInsetsCompat.CONSUMED.getInsets(
+                WindowInsetsCompat.Type.navigationBars()).bottom;
+        if (height == 0) { // Fallback to system resources
+            int id = Resources.getSystem().getIdentifier(
+                    "config_showNavigationBar", "bool", "android");
+            if (id > 0 && Resources.getSystem().getBoolean(id)) {
+                id = Resources.getSystem().getIdentifier(
+                        "navigation_bar_height", "dimen", "android");
+                if (id > 0) return Resources.getSystem().getDimensionPixelSize(id);
+            }
+        }
+        return height;
     }
 
     public void setActionBarExtraMenuButton(@DrawableRes int drawableResId,

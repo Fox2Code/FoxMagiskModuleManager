@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 
 import com.fox2code.mmm.compat.CompatActivity;
@@ -53,6 +54,9 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         });
         setContentView(R.layout.activity_main);
         this.setTitle(R.string.app_name);
+        this.getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         this.progressIndicator = findViewById(R.id.progress_bar);
         this.swipeRefreshLayout = findViewById(R.id.swipe_refresh);
         this.swipeRefreshBlocker = Long.MAX_VALUE;
@@ -86,6 +90,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         });
         this.searchView.setEnabled(false); // Enabled later
         this.cardIconifyUpdate();
+        this.updateScreenInsets();
         InstallerInitializer.tryGetMagiskPathAsync(new InstallerInitializer.Callback() {
             @Override
             public void onPathReceived(String path) {
@@ -109,7 +114,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
 
             public void commonNext() {
                 swipeRefreshBlocker = System.currentTimeMillis() + 5_000L;
-                moduleViewListBuilder.setFooterPx(searchCard.getHeight()); // Fix an edge case
+                updateScreenInsets(); // Fix an edge case
                 if (MainApplication.isShowcaseMode())
                     moduleViewListBuilder.addNotification(NotificationType.SHOWCASE_MODE);
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
@@ -171,7 +176,11 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         theme.resolveAttribute(backgroundAttr, value, true);
         this.searchCard.setCardBackgroundColor(value.data);
         this.searchCard.setAlpha(iconified ? 0.70F : 1F);
-        this.moduleViewListBuilder.setFooterPx(this.searchCard.getHeight());
+    }
+
+    private void updateScreenInsets() {
+        this.moduleViewListBuilder.setFooterPx(
+                this.getNavigationBarHeight() + this.searchCard.getHeight());
     }
 
     @Override
@@ -184,6 +193,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         this.searchView.clearFocus();
         this.searchView.setIconified(true);
         this.cardIconifyUpdate();
+        this.updateScreenInsets();
         this.moduleViewListBuilder.setQuery(null);
         Log.i(TAG, "Item After");
         this.moduleViewListBuilder.refreshNotificationsUI(this.moduleViewAdapter);

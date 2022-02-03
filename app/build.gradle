@@ -56,6 +56,8 @@ dependencies {
     implementation 'androidx.webkit:webkit:1.4.0'
     implementation 'com.google.android.material:material:1.5.0'
     implementation "com.mikepenz:aboutlibraries:${latestAboutLibsRelease}"
+    implementation "dev.rikka.rikkax.layoutinflater:layoutinflater:1.2.0"
+    implementation "dev.rikka.rikkax.insets:insets:1.1.1"
 
     // Utils
     implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.9.3'
