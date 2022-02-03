@@ -125,6 +125,11 @@
     int getChildDrawingOrder(int);
     int getChildCount();
 }
+-assumenosideeffects class * extends android.content.Intent {
+    java.lang.String getAction();
+    android.net.Uri getData();
+    int getFlags();
+}
 -assumenosideeffects class * extends android.app.Activity {
     android.view.View findViewById(int);
     android.content.Intent getIntent();
