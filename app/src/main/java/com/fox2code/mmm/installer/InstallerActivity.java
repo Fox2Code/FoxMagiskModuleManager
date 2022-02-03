@@ -117,6 +117,7 @@ public class InstallerActivity extends CompatActivity {
                 if (moduleCache.exists() && !moduleCache.delete() &&
                         !new SuFile(moduleCache.getAbsolutePath()).delete())
                     Log.e(TAG, "Failed to delete module cache");
+                String errMessage = "Failed to download module zip";
                 try {
                     Log.i(TAG, "Downloading: " + target);
                     byte[] rawModule = Http.doHttpGet(target,(progress, max, done) -> {
@@ -145,6 +146,7 @@ public class InstallerActivity extends CompatActivity {
                             outputStream.flush();
                         }
                     } else {
+                        errMessage = "Failed to patch module zip";
                         this.runOnUiThread(() -> {
                             this.installerTerminal.addLine("- Patching " + name);
                             this.progressIndicator.setVisibility(View.GONE);
@@ -162,11 +164,12 @@ public class InstallerActivity extends CompatActivity {
                     this.runOnUiThread(() -> {
                         this.installerTerminal.addLine("- Installing " + name);
                     });
+                    errMessage = "Failed to install module zip";
                     this.doInstall(moduleCache, noExtensions, rootless);
                 } catch (IOException e) {
-                    Log.e(TAG, "Failed to download module zip", e);
+                    Log.e(TAG, errMessage, e);
                     this.setInstallStateFinished(false,
-                            "! Failed to download module zip", "");
+                            "! " + errMessage, "");
                 }
             }, "Module download Thread").start();
         } else {
