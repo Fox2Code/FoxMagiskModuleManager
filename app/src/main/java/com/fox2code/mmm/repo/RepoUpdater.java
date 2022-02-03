@@ -34,6 +34,9 @@ public class RepoUpdater {
         }
         try {
             if (!this.repoData.prepare()) {
+                this.indexRaw = null;
+                this.toUpdate = Collections.emptyList();
+                this.toApply = Collections.emptySet();
                 return 0;
             }
             this.indexRaw = Http.doHttpGet(this.repoData.url, false);
