@@ -15,8 +15,13 @@ import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
+import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import java.nio.charset.StandardCharsets;
+
+import io.noties.markwon.Markwon;
 
 public enum ActionButtonType {
     INFO(R.drawable.ic_baseline_info_24) {
@@ -71,28 +76,23 @@ public enum ActionButtonType {
                     new MaterialAlertDialogBuilder(button.getContext());
             builder.setTitle(moduleInfo.name).setCancelable(true)
                     .setIcon(R.drawable.ic_baseline_extension_24);
-            String desc;
+            CharSequence desc = moduleInfo.description;
+            final boolean noPatch;
             if (moduleInfo instanceof LocalModuleInfo) {
                 LocalModuleInfo localModuleInfo = (LocalModuleInfo) moduleInfo;
-                desc = localModuleInfo.updateChangeLog.isEmpty() ?
-                        moduleInfo.description : localModuleInfo.updateChangeLog;
+                if (!localModuleInfo.updateChangeLog.isEmpty()) {
+                    Markwon markwon = MainApplication.getINSTANCE().getMarkwon();
+                    // Re-render each time in cse of config changes
+                    desc = markwon.render(markwon.parse(localModuleInfo.updateChangeLog));
+                }
+                noPatch = true;
             } else {
-                desc = moduleInfo.description;
+                noPatch = false;
             }
 
-            if (desc == null || desc.isEmpty()) {
+            if (desc == null || desc.length() == 0) {
                 builder.setMessage(R.string.no_desc_found);
             } else {
-                if (desc.length() == 1000) {
-                    int lastDot = desc.lastIndexOf('.');
-                    if (lastDot == -1) {
-                        int lastSpace = desc.lastIndexOf(' ');
-                        if (lastSpace == -1)
-                            desc = desc.substring(0, lastSpace);
-                    } else {
-                        desc = desc.substring(0, lastDot + 1);
-                    }
-                }
                 builder.setMessage(desc);
             }
             Log.d("Test", "URL: " + updateZipUrl);
@@ -103,7 +103,7 @@ public enum ActionButtonType {
                         R.string.update_module : R.string.install_module, (x, y) -> {
                     String updateZipChecksum = moduleHolder.getUpdateZipChecksum();
                     IntentHelper.openInstaller(button.getContext(), updateZipUrl,
-                            moduleInfo.name, moduleInfo.config, updateZipChecksum);
+                            moduleInfo.name, moduleInfo.config, updateZipChecksum, noPatch);
                 });
             }
             int dim5dp = CompatDisplay.dpToPixel(5);

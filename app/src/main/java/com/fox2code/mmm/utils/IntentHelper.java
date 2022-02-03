@@ -126,6 +126,11 @@ public class IntentHelper {
     }
 
     public static void openInstaller(Context context, String url, String title, String config,
+                                     String checksum, boolean noPatch) {
+        openInstaller(context, url, title, config, checksum, noPatch, false);
+    }
+
+    public static void openInstaller(Context context, String url, String title, String config,
                                        String checksum, boolean noPatch,boolean testDebug) {
         try {
             Intent intent = new Intent(context, InstallerActivity.class);
