@@ -150,7 +150,7 @@ public class AndroidacyWebAPI {
 
     /**
      * get a module file, return an empty string if not
-     * an Andoridacy module or if file doesn't exists.
+     * an Androidacy module or if file doesn't exists.
      */
     @JavascriptInterface
     public String getAndroidacyModuleFile(String moduleId, String moduleFile) {
