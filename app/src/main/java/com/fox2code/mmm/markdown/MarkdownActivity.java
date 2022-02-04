@@ -59,10 +59,12 @@ public class MarkdownActivity extends CompatActivity {
         TextView textView = findViewById(R.id.markdownView);
         new Thread(() -> {
             try {
+                Log.d(TAG, "Downloading");
                 String markdown = new String(Http.doHttpGet(url, true), StandardCharsets.UTF_8);
-                Log.i(TAG, "Download successful");
+                Log.d(TAG, "Done!");
                 runOnUiThread(() -> {
-                    MainApplication.getINSTANCE().getMarkwon().setMarkdown(textView, markdown);
+                    MainApplication.getINSTANCE().getMarkwon().setMarkdown(
+                            textView, MarkdownUrlLinker.urlLinkify(markdown));
                     if (markdownBackground != null) {
                         markdownBackground.setClickable(true);
                         markdownBackground.setOnClickListener(v -> this.onBackPressed());
