@@ -188,10 +188,9 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                             moduleInfo.version + ")") + " " +
                             this.getString(R.string.module_by) + " " + moduleInfo.author);
                 } else {
-                    this.creditText.setText((
+                    this.creditText.setText(localModuleInfo.version + (
                             localModuleInfo.version.equals(localModuleInfo.updateVersion) ?
-                                    localModuleInfo.version : localModuleInfo.version + " (" +
-                            this.getString(R.string.module_last_update) +
+                                    "" : " (" + this.getString(R.string.module_last_update) +
                                     localModuleInfo.updateVersion + ")") + " " +
                             this.getString(R.string.module_by) + " " + localModuleInfo.author);
                 }
@@ -206,7 +205,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     this.updateText.setVisibility(View.VISIBLE);
                     this.updateText.setText(
                             this.getString(R.string.module_last_update) + " " + updateText + "\n" +
-                            this.getString(R.string.module_repo) + " " + moduleHolder.getRepoName() +
+                                    this.getString(R.string.module_repo) + " " + moduleHolder.getRepoName() +
                                     (repoModule.qualityText == 0 ? "" : (
                                             "\n" + this.getString(repoModule.qualityText) +
                                                     " " + repoModule.qualityValue)));
@@ -227,10 +226,14 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     ImageButton imageButton = this.actionsButtons[i];
                     if (i < this.actionButtonsTypes.size()) {
                         imageButton.setVisibility(View.VISIBLE);
+                        imageButton.setImportantForAccessibility(
+                                View.IMPORTANT_FOR_ACCESSIBILITY_AUTO);
                         this.actionButtonsTypes.get(i)
                                 .update(imageButton, moduleHolder);
                     } else {
                         imageButton.setVisibility(View.GONE);
+                        imageButton.setImportantForAccessibility(
+                                View.IMPORTANT_FOR_ACCESSIBILITY_NO);
                     }
                 }
                 this.cardView.setClickable(false);
@@ -260,6 +263,8 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 this.actionButtonsTypes.clear();
                 for (ImageButton button:this.actionsButtons) {
                     button.setVisibility(View.GONE);
+                    button.setImportantForAccessibility(
+                            View.IMPORTANT_FOR_ACCESSIBILITY_NO);
                 }
                 if (type == ModuleHolder.Type.NOTIFICATION) {
                     NotificationType notificationType = moduleHolder.notificationType;
