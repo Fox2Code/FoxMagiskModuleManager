@@ -22,7 +22,9 @@ public class MarkdownUrlLinker {
                     '\n' == url.charAt(index - 1) ||
                     ' ' == url.charAt(index - 1)) {
                 int endDomain = url.indexOf('/', index + 9);
-                if (endDomain != -1 && endDomain < end) {
+                char endCh = url.charAt(end - 1);
+                if (endDomain != -1 && endDomain < end &&
+                        endCh != '>' && endCh != ')' && endCh != ']') {
                     linkifyTasks.add(new LinkifyTask(index, end));
                     extra += (end - index) + 4;
                     if (BuildConfig.DEBUG) {
