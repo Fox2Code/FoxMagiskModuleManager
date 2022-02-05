@@ -18,16 +18,21 @@
     <string name="install_module">安装模块</string>
     <string name="update_module">更新模块</string>
     <string name="changelog">变更日志</string>
+    <string name="website">网站</string>
     <string name="support">支持</string>
     <string name="donate">捐赠</string>
+    <string name="submit_modules">提交一个模块</string>
 
     <!-- Module section translation -->
     <string name="module_last_update">最后更新:</string>
     <string name="module_repo">仓库:</string>
     <string name="module_by">来自</string>
+    <string name="module_downloads">下载:</string>
+    <string name="module_stars">收藏:</string>
 
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
+    <string name="manage_repos_pref">管理仓库</string>
     <string name="showcase_mode_pref">锁定模式</string>
     <string name="showcase_mode_desc">锁定模式阻止管理器对模块执行操作</string>
     <string name="pref_category_settings">设置</string>
@@ -69,7 +74,10 @@
         或指示模块质量不佳，请自担风险禁用!
     </string>
     <string name="dns_over_https_pref">通过 https 的 DNS</string>
-    <string name="dns_over_https_desc">在某些情况下可能会解决连接问题</string>
+    <string name="dns_over_https_desc">
+        在某些情况下可能会修复连接问题
+        (不适用于 WebView)
+    </string>
     <string name="disable_extensions_pref">禁用扩展</string>
     <string name="disable_extensions_desc">
         禁用 Fox\'s Mmm 扩展, 这可以防止模块使用
@@ -77,7 +85,8 @@
     </string>
     <string name="wrap_text_pref">文字换行</string>
     <string name="wrap_text_desc">
-        将文本换行至新行，而不是将所有文本放在同一行
+        将文本换行至新行，
+        而不是将所有文本放在同一行
     </string>
     <string name="repo_enabled">启用仓库</string>
     <string name="repo_disabled">禁用仓库</string>
