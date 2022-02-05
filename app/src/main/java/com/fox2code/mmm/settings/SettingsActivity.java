@@ -132,15 +132,6 @@ public class SettingsActivity extends CompatActivity {
                 openFragment(libsBuilder.supportFragment(), R.string.licenses);
                 return true;
             });
-            if (BuildConfig.DEBUG) {
-                Preference debugPref = findPreference("pref_debug_button");
-                debugPref.setVisible(true);
-                debugPref.setOnPreferenceClickListener(preference -> {
-                    IntentHelper.openUrlAndroidacy(this.getContext(),
-                            "https://www.androidacy.com/modules-repo", true);
-                    return true;
-                });
-            }
         }
 
         private void openFragment(Fragment fragment, @StringRes int title) {
