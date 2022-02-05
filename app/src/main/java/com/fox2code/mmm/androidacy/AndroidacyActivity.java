@@ -30,6 +30,8 @@ import com.fox2code.mmm.utils.IntentHelper;
  * Per Androidacy repo implementation agreement, no request of this WebView shall be modified.
  */
 public class AndroidacyActivity extends CompatActivity {
+    private static final String REFERRER = "utm_source=FoxMMM&utm_medium=app";
+
     static {
         if (BuildConfig.DEBUG) {
             WebView.setWebContentsDebuggingEnabled(true);
@@ -50,6 +52,22 @@ public class AndroidacyActivity extends CompatActivity {
                 !uri.getHost().endsWith(".androidacy.com")) {
             this.forceBackPressed();
             return;
+        }
+        String url = uri.toString();
+        int i;
+        if (!url.startsWith("https://") || // Checking twice
+                (i = url.indexOf("/", 8)) == -1 ||
+                !url.substring(8, i).endsWith(".androidacy.com")) {
+            this.forceBackPressed();
+            return;
+        }
+        if (!url.endsWith(REFERRER) && (url.startsWith("https://www.androidacy.com/") ||
+                url.startsWith("https://api.androidacy.com/magisk/readme/"))) {
+            if (url.lastIndexOf('/') < url.lastIndexOf('?')) {
+                url = url + '&' + REFERRER;
+            } else {
+                url = url + '?' + REFERRER;
+            }
         }
         boolean allowInstall = intent.getBooleanExtra(
                 Constants.EXTRA_ANDROIDACY_ALLOW_INSTALL, false);
@@ -111,7 +129,7 @@ public class AndroidacyActivity extends CompatActivity {
         });
         this.webView.addJavascriptInterface(
                 new AndroidacyWebAPI(this, allowInstall), "mmm");
-        this.webView.loadUrl(uri.toString());
+        this.webView.loadUrl(url);
     }
 
     @Override
