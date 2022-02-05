@@ -62,7 +62,7 @@ public class AndroidacyActivity extends CompatActivity {
             return;
         }
         if (!url.endsWith(REFERRER) && (url.startsWith("https://www.androidacy.com/") ||
-                url.startsWith("https://api.androidacy.com/magisk/readme/"))) {
+                url.startsWith("https://api.androidacy.com/magisk/"))) {
             if (url.lastIndexOf('/') < url.lastIndexOf('?')) {
                 url = url + '&' + REFERRER;
             } else {
