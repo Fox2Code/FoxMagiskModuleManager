@@ -122,9 +122,8 @@ public enum ActionButtonType {
         public void update(ImageButton button, ModuleHolder moduleHolder) {
             int icon = moduleHolder.hasFlag(ModuleInfo.FLAG_MODULE_UNINSTALLING) ?
                     R.drawable.ic_baseline_delete_outline_24 : (
-                            // We can't trust active flag on first boot
-                            MainApplication.isFirstBoot() ||
-                    moduleHolder.hasFlag(ModuleInfo.FLAG_MODULE_ACTIVE)) ?
+                    !moduleHolder.hasFlag(ModuleInfo.FLAG_MODULE_UPDATING) ||
+                    moduleHolder.hasFlag(ModuleInfo.FLAGS_MODULE_ACTIVE)) ?
                             R.drawable.ic_baseline_delete_24 :
                             R.drawable.ic_baseline_delete_forever_24;
             button.setImageResource(icon);
@@ -132,8 +131,14 @@ public enum ActionButtonType {
 
         @Override
         public void doAction(ImageButton button, ModuleHolder moduleHolder) {
+            if (!moduleHolder.hasFlag(ModuleInfo.FLAGS_MODULE_ACTIVE |
+                    ModuleInfo.FLAG_MODULE_UNINSTALLING) &&
+                    moduleHolder.hasFlag(ModuleInfo.FLAG_MODULE_UPDATING)) {
+                doActionLong(button, moduleHolder);
+                return;
+            }
             if (!ModuleManager.getINSTANCE().setUninstallState(moduleHolder.moduleInfo,
-                    !moduleHolder.moduleInfo.hasFlag(ModuleInfo.FLAG_MODULE_UNINSTALLING))) {
+                    !moduleHolder.hasFlag(ModuleInfo.FLAG_MODULE_UNINSTALLING))) {
                 Log.e("ActionButtonType", "Failed to switch uninstalled state!");
             }
             update(button, moduleHolder);
@@ -142,8 +147,7 @@ public enum ActionButtonType {
         @Override
         public boolean doActionLong(ImageButton button, ModuleHolder moduleHolder) {
             // We can't trust active flag on first boot
-            if (moduleHolder.moduleInfo.hasFlag(ModuleInfo.FLAG_MODULE_ACTIVE)
-                    || MainApplication.isFirstBoot()) return false;
+            if (moduleHolder.moduleInfo.hasFlag(ModuleInfo.FLAGS_MODULE_ACTIVE)) return false;
             new AlertDialog.Builder(button.getContext()).setTitle(R.string.master_delete)
                     .setPositiveButton(R.string.master_delete_yes, (v, i) -> {
                         if (!ModuleManager.getINSTANCE().masterClear(moduleHolder.moduleInfo)) {

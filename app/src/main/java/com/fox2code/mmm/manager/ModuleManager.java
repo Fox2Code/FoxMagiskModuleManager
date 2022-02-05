@@ -72,6 +72,7 @@ public final class ModuleManager {
     }
 
     private void scanInternal() {
+        boolean firstBoot = MainApplication.isFirstBoot();
         boolean firstScan = this.bootPrefs.getBoolean("mm_first_scan", true);
         SharedPreferences.Editor editor = firstScan ? this.bootPrefs.edit() : null;
         for (ModuleInfo v : this.moduleInfos.values()) {
@@ -102,11 +103,16 @@ public final class ModuleManager {
                         "/data/adb/modules/" + module + "/disable").exists();
                 if (disabled) {
                     moduleInfo.flags |= ModuleInfo.FLAG_MODULE_DISABLED;
+                    if (firstBoot && firstScan) {
+                        editor.putBoolean("module_" + moduleInfo.id + "_active", true);
+                        moduleInfo.flags |= ModuleInfo.FLAG_MODULE_MAYBE_ACTIVE;
+                    }
                 } else {
                     if (firstScan) {
                         moduleInfo.flags |= ModuleInfo.FLAG_MODULE_ACTIVE;
                         editor.putBoolean("module_" + moduleInfo.id + "_active", true);
-                    } else if (bootPrefs.getBoolean("module_" + moduleInfo.id + "_active", false)) {
+                    } else if (!moduleInfo.hasFlag(ModuleInfo.FLAG_MODULE_MAYBE_ACTIVE) &&
+                            bootPrefs.getBoolean("module_" + moduleInfo.id + "_active", false)) {
                         moduleInfo.flags |= ModuleInfo.FLAG_MODULE_ACTIVE;
                     }
                 }
@@ -221,7 +227,7 @@ public final class ModuleManager {
     }
 
     public boolean masterClear(ModuleInfo moduleInfo) {
-        if (moduleInfo.hasFlag(ModuleInfo.FLAG_MODULE_ACTIVE)) return false;
+        if (moduleInfo.hasFlag(ModuleInfo.FLAGS_MODULE_ACTIVE)) return false;
         String escapedId = moduleInfo.id.replace("\\", "\\\\")
                 .replace("\"", "\\\"").replace(" ", "\\ ");
         try { // Check for module that declare having file outside their own folder.

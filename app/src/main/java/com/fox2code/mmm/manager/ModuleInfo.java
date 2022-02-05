@@ -11,6 +11,10 @@ public class ModuleInfo {
     public static final int FLAG_MODULE_ACTIVE = 0x04;
     public static final int FLAG_MODULE_UNINSTALLING = 0x08;
     public static final int FLAG_MODULE_UPDATING_ONLY = 0x10;
+    public static final int FLAG_MODULE_MAYBE_ACTIVE = 0x20;
+
+    public static final int FLAGS_MODULE_ACTIVE =
+            FLAG_MODULE_ACTIVE | FLAG_MODULE_MAYBE_ACTIVE;
 
     public static final int FLAG_METADATA_INVALID = 0x80000000;
 
