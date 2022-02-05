@@ -69,8 +69,8 @@ public final class RepoManager {
         this.modules = new HashMap<>();
         // We do not have repo list config yet.
         this.addRepoData(MAGISK_ALT_REPO);
-        this.addAndroidacyRepoData();
         this.addRepoData(MAGISK_REPO);
+        this.addAndroidacyRepoData();
         // Populate default cache
         for (RepoData repoData:this.repoData.values()) {
             for (RepoModule repoModule:repoData.moduleHashMap.values()) {

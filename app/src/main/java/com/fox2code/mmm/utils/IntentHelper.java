@@ -122,16 +122,11 @@ public class IntentHelper {
 
     public static void openInstaller(Context context, String url, String title,
                                      String config, String checksum) {
-        openInstaller(context, url, title, config, checksum, false, false);
+        openInstaller(context, url, title, config, checksum, false);
     }
 
     public static void openInstaller(Context context, String url, String title, String config,
-                                     String checksum, boolean noPatch) {
-        openInstaller(context, url, title, config, checksum, noPatch, false);
-    }
-
-    public static void openInstaller(Context context, String url, String title, String config,
-                                       String checksum, boolean noPatch,boolean testDebug) {
+                                       String checksum,boolean testDebug) {
         try {
             Intent intent = new Intent(context, InstallerActivity.class);
             intent.setAction(Constants.INTENT_INSTALL_INTERNAL);
@@ -142,8 +137,6 @@ public class IntentHelper {
                 intent.putExtra(Constants.EXTRA_INSTALL_CONFIG, config);
             if (checksum != null && !checksum.isEmpty())
                 intent.putExtra(Constants.EXTRA_INSTALL_CHECKSUM, checksum);
-            if (noPatch)
-                intent.putExtra(Constants.EXTRA_INSTALL_NO_PATCH, true);
             if (testDebug && BuildConfig.DEBUG)
                 intent.putExtra(Constants.EXTRA_INSTALL_TEST_ROOTLESS, true);
             startActivity(context, intent, true);
@@ -234,7 +227,7 @@ public class IntentHelper {
                 callback.onReceived(destination, null, RESPONSE_ERROR);
                 return;
             }
-            Log.d("IntentHelper", "FilePicker returned " + uri.toString());
+            Log.d("IntentHelper", "FilePicker returned " + uri);
             if ("http".equals(uri.getScheme()) ||
                     "https".equals(uri.getScheme())) {
                 callback.onReceived(destination, uri, RESPONSE_URL);

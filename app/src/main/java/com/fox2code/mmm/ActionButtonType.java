@@ -85,9 +85,6 @@ public enum ActionButtonType {
                     // Re-render each time in cse of config changes
                     desc = markwon.render(markwon.parse(localModuleInfo.updateChangeLog));
                 }
-                noPatch = true;
-            } else {
-                noPatch = false;
             }
 
             if (desc == null || desc.length() == 0) {
@@ -103,7 +100,7 @@ public enum ActionButtonType {
                         R.string.update_module : R.string.install_module, (x, y) -> {
                     String updateZipChecksum = moduleHolder.getUpdateZipChecksum();
                     IntentHelper.openInstaller(button.getContext(), updateZipUrl,
-                            moduleInfo.name, moduleInfo.config, updateZipChecksum, noPatch);
+                            moduleInfo.name, moduleInfo.config, updateZipChecksum);
                 });
             }
             int dim5dp = CompatDisplay.dpToPixel(5);

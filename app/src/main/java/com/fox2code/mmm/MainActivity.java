@@ -262,6 +262,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
             if (!NotificationType.NO_INTERNET.shouldRemove()) {
                 this.moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
             }
+            RepoManager.getINSTANCE().updateEnabledStates();
             this.moduleViewListBuilder.appendRemoteModules();
             this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
         },"Repo update thread").start();

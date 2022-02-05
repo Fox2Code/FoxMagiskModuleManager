@@ -31,10 +31,13 @@ import com.topjohnwu.superuser.Shell;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 import com.topjohnwu.superuser.io.SuFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class InstallerActivity extends CompatActivity {
     private static final String TAG = "InstallerActivity";
@@ -59,7 +62,6 @@ public class InstallerActivity extends CompatActivity {
         final String target;
         final String name;
         final String checksum;
-        final boolean noPatch;
         final boolean noExtensions;
         final boolean rootless;
         // Should we allow 3rd part app to install modules?
@@ -72,7 +74,6 @@ public class InstallerActivity extends CompatActivity {
             target = intent.getStringExtra(Constants.EXTRA_INSTALL_PATH);
             name = intent.getStringExtra(Constants.EXTRA_INSTALL_NAME);
             checksum = intent.getStringExtra(Constants.EXTRA_INSTALL_CHECKSUM);
-            noPatch = intent.getBooleanExtra(Constants.EXTRA_INSTALL_NO_PATCH, false);
             noExtensions = intent.getBooleanExtra(// Allow intent to disable extensions
                     Constants.EXTRA_INSTALL_NO_EXTENSIONS, false);
             rootless = intent.getBooleanExtra(// For debug only
@@ -140,7 +141,31 @@ public class InstallerActivity extends CompatActivity {
                         }
                     }
                     if (this.canceled) return;
+                    Files.fixJavaZipHax(rawModule);
+                    boolean noPatch = false;
+                    boolean isModule = false;
+                    errMessage = "File is not a valid zip file";
+                    try (ZipInputStream zipInputStream = new ZipInputStream(
+                            new ByteArrayInputStream(rawModule))) {
+                        ZipEntry zipEntry;
+                        while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+                            String entryName = zipEntry.getName();
+                            if (entryName.equals("module.prop")) {
+                                noPatch = true;
+                                isModule = true;
+                                break;
+                            } else if (entryName.endsWith("/module.prop")) {
+                                isModule = true;
+                            }
+                        }
+                    }
+                    if (!isModule) {
+                        this.setInstallStateFinished(false,
+                                "! File is not a valid magisk module", "");
+                        return;
+                    }
                     if (noPatch) {
+                        errMessage = "Failed to save module zip";
                         try (OutputStream outputStream = new FileOutputStream(moduleCache)) {
                             outputStream.write(rawModule);
                             outputStream.flush();

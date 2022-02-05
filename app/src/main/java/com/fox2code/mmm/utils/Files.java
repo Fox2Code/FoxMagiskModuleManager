@@ -64,17 +64,13 @@ public class Files {
         return buffer.toByteArray();
     }
 
-
-    public static byte[] patchModuleSimple(byte[] bytes) throws IOException {
-        ByteArrayOutputStream byteArrayOutputStream =
-                new ByteArrayOutputStream((int) (bytes.length * 1.2F));
-        patchModuleSimple(bytes, byteArrayOutputStream);
-        return byteArrayOutputStream.toByteArray();
+    public static void fixJavaZipHax(byte[] bytes) {
+        if (bytes.length > 8 && bytes[0x6] == 0x0 && bytes[0x7] == 0x0 && bytes[0x8] == 0x8)
+            bytes[0x7] = 0x8; // Known hax to prevent java zip file read
     }
 
     public static void patchModuleSimple(byte[] bytes,OutputStream outputStream) throws IOException {
-        if (bytes[0x6] == 0x0 && bytes[0x7] == 0x0 && bytes[0x8] == 0x8) bytes[0x7] = 0x8;
-        patchModuleSimple(new ByteArrayInputStream(bytes), outputStream);
+        fixJavaZipHax(bytes); patchModuleSimple(new ByteArrayInputStream(bytes), outputStream);
     }
 
     public static void patchModuleSimple(InputStream inputStream,OutputStream outputStream) throws IOException {
