@@ -228,12 +228,14 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                         imageButton.setVisibility(View.VISIBLE);
                         imageButton.setImportantForAccessibility(
                                 View.IMPORTANT_FOR_ACCESSIBILITY_AUTO);
-                        this.actionButtonsTypes.get(i)
-                                .update(imageButton, moduleHolder);
+                        ActionButtonType button = this.actionButtonsTypes.get(i);
+                        button.update(imageButton, moduleHolder);
+                        imageButton.setContentDescription(button.name());
                     } else {
                         imageButton.setVisibility(View.GONE);
                         imageButton.setImportantForAccessibility(
                                 View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+                        imageButton.setContentDescription(null);
                     }
                 }
                 this.cardView.setClickable(false);
@@ -265,6 +267,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     button.setVisibility(View.GONE);
                     button.setImportantForAccessibility(
                             View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+                    button.setContentDescription(null);
                 }
                 if (type == ModuleHolder.Type.NOTIFICATION) {
                     NotificationType notificationType = moduleHolder.notificationType;
