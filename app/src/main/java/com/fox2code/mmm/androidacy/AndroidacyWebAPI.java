@@ -1,10 +1,12 @@
 package com.fox2code.mmm.androidacy;
 
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 
+import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.LocalModuleInfo;
@@ -182,5 +184,39 @@ public class AndroidacyWebAPI {
         } catch (IOException e) {
             return false;
         }
+    }
+
+    /**
+     * Return current app version code
+     */
+    @JavascriptInterface
+    public int getAppVersionCode() {
+        return BuildConfig.VERSION_CODE;
+    }
+
+    /**
+     * Return current app version name
+     */
+    @JavascriptInterface
+    public String getAppVersionName() {
+        return BuildConfig.VERSION_NAME;
+    }
+
+    /**
+     * Return current magisk version code or 0 if not applicable
+     */
+    @JavascriptInterface
+    public int getMagiskVersionCode() {
+        return InstallerInitializer.peekMagiskPath() == null ? 0 :
+                InstallerInitializer.peekMagiskVersion();
+    }
+
+    /**
+     * Return current android sdk-int version code, see:
+     * https://source.android.com/setup/start/build-numbers
+     */
+    @JavascriptInterface
+    public int getAndroidVersionCode() {
+        return Build.VERSION.SDK_INT;
     }
 }
