@@ -64,7 +64,8 @@ public enum ActionButtonType {
             String updateZipUrl = moduleHolder.getUpdateZipUrl();
             if (updateZipUrl == null) return;
             // Androidacy manage the selection between download and install
-            if (updateZipUrl.startsWith("https://www.androidacy.com/")) {
+            if (updateZipUrl.startsWith("https://www.androidacy.com/") ||
+                updateZipUrl.startsWith("https://api.androidacy.com/magisk/info/?module=")) {
                 IntentHelper.openUrlAndroidacy(
                         button.getContext(), updateZipUrl, true,
                         moduleInfo.name, moduleInfo.config);

@@ -130,6 +130,8 @@ public class AndroidacyRepoData extends RepoData {
             repoModule.notesUrl = filterURL(
                     jsonObject.optString("notesUrl", ""));
             if (repoModule.zipUrl == null)
+                repoModule.zipUrl = "https://api.androidacy.com/magisk/info/?module=" + moduleId;
+            if (repoModule.zipUrl == null)
                 repoModule.zipUrl = jsonObject.getString("url");
             if (repoModule.notesUrl == null) {
                 repoModule.notesUrl = // Fallback url in case the API doesn't return one
