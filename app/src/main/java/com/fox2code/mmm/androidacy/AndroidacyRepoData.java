@@ -129,12 +129,12 @@ public class AndroidacyRepoData extends RepoData {
                     jsonObject.optString("zipUrl", ""));
             repoModule.notesUrl = filterURL(
                     jsonObject.optString("notesUrl", ""));
-            if (repoModule.zipUrl == null)
-                repoModule.zipUrl = "https://api.androidacy.com/magisk/info/?module=" + moduleId;
-            if (repoModule.zipUrl == null)
-                repoModule.zipUrl = jsonObject.getString("url");
+            if (repoModule.zipUrl == null)  {
+                repoModule.zipUrl = // Fallback url in case the API doesn't have zipUrl
+                        "https://api.androidacy.com/magisk/info/?module=" + moduleId;
+            }
             if (repoModule.notesUrl == null) {
-                repoModule.notesUrl = // Fallback url in case the API doesn't return one
+                repoModule.notesUrl = // Fallback url in case the API doesn't have notesUrl
                         "https://api.androidacy.com/magisk/readme/?module=" + moduleId;
             }
             repoModule.qualityText = R.string.module_downloads;
