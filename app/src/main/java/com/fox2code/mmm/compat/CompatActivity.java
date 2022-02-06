@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -17,6 +18,7 @@ import androidx.annotation.Dimension;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
+import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowInsetsCompat;
@@ -50,6 +52,7 @@ public class CompatActivity extends AppCompatActivity {
     private CompatActivity.OnActivityResultCallback onActivityResultCallback;
     private CompatActivity.OnBackPressedCallback onBackPressedCallback;
     private MenuItem.OnMenuItemClickListener menuClickListener;
+    private CharSequence menuContentDescription;
     @StyleRes private int setThemeDynamic = 0;
     private boolean onCreateCalled = false;
     private boolean isRefreshUi = false;
@@ -195,11 +198,29 @@ public class CompatActivity extends AppCompatActivity {
 
     public void setActionBarExtraMenuButton(@DrawableRes int drawableResId,
                                             MenuItem.OnMenuItemClickListener menuClickListener) {
+        this.setActionBarExtraMenuButton(drawableResId,
+                menuClickListener, null);
+    }
+
+    public void setActionBarExtraMenuButton(@DrawableRes int drawableResId,
+                                            MenuItem.OnMenuItemClickListener menuClickListener,
+                                            @StringRes int menuContentDescription) {
+        this.setActionBarExtraMenuButton(drawableResId,
+                menuClickListener, this.getString(menuContentDescription));
+    }
+
+    public void setActionBarExtraMenuButton(@DrawableRes int drawableResId,
+                                            MenuItem.OnMenuItemClickListener menuClickListener,
+                                            CharSequence menuContentDescription) {
         Objects.requireNonNull(menuClickListener);
         this.drawableResId = drawableResId;
         this.menuClickListener = menuClickListener;
+        this.menuContentDescription = menuContentDescription;
         if (this.menuItem != null) {
             this.menuItem.setOnMenuItemClickListener(this.menuClickListener);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                this.menuItem.setContentDescription(this.menuContentDescription);
+            }
             this.menuItem.setIcon(this.drawableResId);
             this.menuItem.setEnabled(true);
             this.menuItem.setVisible(true);
@@ -209,8 +230,12 @@ public class CompatActivity extends AppCompatActivity {
     public void removeActionBarExtraMenuButton() {
         this.drawableResId = 0;
         this.menuClickListener = null;
+        this.menuContentDescription = null;
         if (this.menuItem != null) {
             this.menuItem.setOnMenuItemClickListener(null);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                this.menuItem.setContentDescription(null);
+            }
             this.menuItem.setIcon(null);
             this.menuItem.setEnabled(false);
             this.menuItem.setVisible(false);

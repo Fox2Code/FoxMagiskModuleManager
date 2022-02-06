@@ -51,7 +51,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         this.setActionBarExtraMenuButton(R.drawable.ic_baseline_settings_24, v -> {
             IntentHelper.startActivity(this, SettingsActivity.class);
             return true;
-        });
+        }, R.string.pref_category_settings);
         setContentView(R.layout.activity_main);
         this.setTitle(R.string.app_name);
         this.getWindow().setFlags(

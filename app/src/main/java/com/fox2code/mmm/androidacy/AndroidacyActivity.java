@@ -3,6 +3,7 @@ package com.fox2code.mmm.androidacy;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,9 +12,11 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.webkit.WebResourceErrorCompat;
 import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewClientCompat;
 import androidx.webkit.WebViewFeature;
@@ -104,6 +107,8 @@ public class AndroidacyActivity extends CompatActivity {
                     WebSettingsCompat.FORCE_DARK_OFF : WebSettingsCompat.FORCE_DARK_ON);
         }
         this.webView.setWebViewClient(new WebViewClientCompat() {
+            private String pageUrl;
+
             @Override
             public boolean shouldOverrideUrlLoading(
                     @NonNull WebView view, @NonNull WebResourceRequest request) {
@@ -114,6 +119,33 @@ public class AndroidacyActivity extends CompatActivity {
                     return true;
                 }
                 return false;
+            }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                this.pageUrl = url;
+            }
+
+            private void onReceivedError(String url,int errorCode) {
+                if ((url.startsWith("https://api.androidacy.com/magisk/") ||
+                        url.equals(pageUrl)) && (errorCode == 419 || errorCode == 429)) {
+                    Toast.makeText(AndroidacyActivity.this,
+                            "Too many requests!", Toast.LENGTH_LONG).show();
+                    AndroidacyActivity.this.runOnUiThread(AndroidacyActivity.this::onBackPressed);
+                }
+            }
+
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                this.onReceivedError(failingUrl, errorCode);
+            }
+
+            @Override
+            public void onReceivedError(@NonNull WebView view, @NonNull WebResourceRequest request,
+                                        @NonNull WebResourceErrorCompat error) {
+                if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_RESOURCE_ERROR_GET_CODE)) {
+                    this.onReceivedError(request.getUrl().toString(), error.getErrorCode());
+                }
             }
         });
         this.webView.setWebChromeClient(new WebChromeClient() {

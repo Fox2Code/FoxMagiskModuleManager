@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -25,9 +26,12 @@ import com.fox2code.mmm.utils.Http;
 import com.topjohnwu.superuser.Shell;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Random;
+import java.util.Set;
 
 import io.noties.markwon.Markwon;
 import io.noties.markwon.html.HtmlPlugin;
@@ -275,7 +279,6 @@ public class MainApplication extends Application implements CompatActivity.Appli
                 throw new IllegalStateException("Non manager theme!");
         }
     }
-
 
     @Override
     public void onCreate() {

@@ -32,12 +32,14 @@ public class AndroidacyWebAPI {
     @JavascriptInterface
     public void forceQuit(String error) {
         Toast.makeText(this.activity, error, Toast.LENGTH_LONG).show();
-        this.activity.forceBackPressed();
+        this.activity.runOnUiThread(
+                this.activity::forceBackPressed);
     }
 
     @JavascriptInterface
     public void cancel() {
-        this.activity.forceBackPressed();
+        this.activity.runOnUiThread(
+                this.activity::forceBackPressed);
     }
 
     /**
