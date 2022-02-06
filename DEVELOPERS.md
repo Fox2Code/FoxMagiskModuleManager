@@ -38,7 +38,7 @@ versionCode=<int>
 author=<string>
 description=<string>
 ```
-(Note: The Fox's mmm will not show the module if theses values are not filled properly)
+Note: The Fox's mmm will not show the module if theses values are not filled properly
 
 This the manager support these new optional properties
 ```properties
@@ -50,7 +50,8 @@ support=<url>
 donate=<url>
 config=<package>
 ```
-(Note: All urls must start with `https://`, or else will be ignored)
+Note: All urls must start with `https://`, or else will be ignored
+Note²: For `minMagisk`, `XX.Y` is parsed as `XXY00`, so you can just put the Magisk version name.
 
 - `minApi` and `maxApi` tell the manager which is the SDK version range the module support  
   (See: [Codenames, Tags, and Build Numbers](https://source.android.com/setup/start/build-numbers))

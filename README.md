@@ -27,11 +27,19 @@ Related commits:
 
 Note: These changes didn't hit beta, or release yet, but are already live on canary builds.
 
-The app currently use these two repo as it's module sources, with it's benefits and drawback:  
+The app currently use these three repo as it's module sources, with it's benefits and drawback:  
+(Note: Each module repo can be disabled in the settings of the app)
+
 [https://github.com/Magisk-Modules-Alt-Repo](https://github.com/Magisk-Modules-Alt-Repo)  
 - Accepting new modules [here](https://github.com/Magisk-Modules-Alt-Repo/submission)
 - Less restrictive than the original repo
-- Officially supported by Fox's mmm  
+- Officially supported by Fox's mmm
+
+[https://www.androidacy.com/modules-repo/](https://www.androidacy.com/modules-repo/)
+- Accepting new modules [here](https://www.androidacy.com/module-repository-applications/)
+- Modules downloadable easily outside the app
+- Officially supported by Fox's mmm
+- Contains ads
 
 [https://github.com/Magisk-Modules-Repo](https://github.com/Magisk-Modules-Repo)  
 - No longer accept new modules or receive update to existing modules
@@ -40,11 +48,10 @@ The app currently use these two repo as it's module sources, with it's benefits 
 - End of life support by Fox's mmm
 
 As the main repo may shutting down due to the main app no longer supporting it, 
-and also stopped accepting new modules, it is recommended to submit your modules
-[here](https://github.com/Magisk-Modules-Alt-Repo/submission)
+stopped accepting new modules, and also no longer receive updates
 
-If a module is in both repo, the manager will just pick the most up to date version of the module,
-allowing developers to switch repo at their own pace if they want to.
+If a module is in multiple repos, the manager will just pick the most up to date version 
+of the module, allowing developers to switch repo at their own pace if they want to.
 
 Note: If you or a friend uploaded a module and it doesn't appear in your module 
 list you can disable the low quality filter in the app settings.  
@@ -61,6 +68,7 @@ The manager can read new meta keys to allow modules to customize their own entry
 
 It also use `minApi`, `maxApi` and `minMagisk` in the `module.prop` to detect compatibility  
 And support the `support` and `donate` properties to allow them to add their own support links  
+And if you want to be event fancier you can setup `config` to your own config app.  
 (Note: the manager use fallback values for some modules, see developer documentation for more info)
 
 It also add new ways to control the installer ui via a new `#!` command system  
@@ -80,7 +88,7 @@ Translators are not expected to have any previous coding experience.
 ## I want to add my own repo
 
 To add you own repo to Fox's mmm it need to follow theses conditions:
-- The module repo or one of it's owners must be known.
+- The module repo or at least one of it's owners must be known.
 - Modules in the repo must be monitored, and malicious modules must be removed.
 - Module repo must have a valid, automatically or frequently updated `modules.json`
   ([Example](https://github.com/Magisk-Modules-Alt-Repo/json/blob/main/modules.json))
