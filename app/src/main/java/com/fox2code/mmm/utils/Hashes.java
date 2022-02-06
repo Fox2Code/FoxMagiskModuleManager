@@ -81,7 +81,7 @@ public class Hashes {
                         checksum.length() * 8 + "bit checksums");
                 return false;
         }
-        Log.d(TAG, "Checksum result (data: " + hash+ ",expected: " + checksum);
+        Log.d(TAG, "Checksum result (data: " + hash+ ",expected: " + checksum + ")");
         return hash.equals(checksum.toLowerCase(Locale.ROOT));
     }
 }

@@ -133,7 +133,9 @@ public class InstallerActivity extends CompatActivity {
                     if (this.canceled) return;
                     if (checksum != null && !checksum.isEmpty()) {
                         Log.d(TAG, "Checking for checksum: " + checksum);
-                        this.installerTerminal.addLine("- Checking file integrity");
+                        this.runOnUiThread(() -> {
+                            this.installerTerminal.addLine("- Checking file integrity");
+                        });
                         if (!Hashes.checkSumMatch(rawModule, checksum)) {
                             this.setInstallStateFinished(false,
                                     "! File integrity check failed", "");
