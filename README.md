@@ -90,8 +90,31 @@ Translators are not expected to have any previous coding experience.
 To add you own repo to Fox's mmm it need to follow theses conditions:
 - The module repo or at least one of it's owners must be known.
 - Modules in the repo must be monitored, and malicious modules must be removed.
-- Module repo must have a valid, automatically or frequently updated `modules.json`
+- Module repo must have a valid, working, automatically or frequently updated `modules.json`
   ([Example](https://github.com/Magisk-Modules-Alt-Repo/json/blob/main/modules.json))
+  
+In addition of these initial condition the repo must follow these rules:
+- Repos must process and take-down off their repo module where it's removal was requested
+  by their original author, even if their licences legally allow their distributions.
+- Repos may collect and store "mixed anonymous data" without user permission
+  (Anonymous means no personal data, usernames, email, or IP addresses)
+  (Mixed means users data must be split and not that separate data is not linkable together)
+- Temporary storage of IPs address without user consent is allowed for rate limiting, GeoIP,
+  security reason, and must not be used for any other purpose without user consent.
+  (GeoIP is the process of getting the country of an IP address)
+- Repos may not collect and/or distribute any personal data without user explicit consent
+- Modules owners must be aware that their modules are being hosted on the repository  
+  (This rule doesn't apply for modules from `Magisk-Modules-Repo` last updated before 2022)
+- Modules owners must be aware of any change made of the distributed version of their modules.
 
 If all of these conditions are met you can open an issue for review.  
 (And don't forget to include a link to the `modules.json`)
+
+If an existing repo is not respecting theses rules please open an issue.  
+If a repo is repeatedly violating these rule will be removed from the app.  
+Last update of theses rules are: 6 February 2022
+
+Please note that these rules does not apply retroactively.
+If your post an issue about rules violation they must violate both the version of
+the rules at the moment of the incident and the latest version of the rules.  
+(This paragraph doesn't apply for legal requests or illegal behaviour)
