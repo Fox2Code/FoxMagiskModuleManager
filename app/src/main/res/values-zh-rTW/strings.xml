@@ -13,14 +13,26 @@
     <string name="title_activity_settings">設定活動</string>
     <string name="app_update_available">可用的應用程序更新</string>
     <string name="app_update">更新</string>
+    <string name="no_desc_found">未找到說明</string>
+    <string name="download_module">下載模組</string>
+    <string name="install_module">安裝模組</string>
+    <string name="update_module">更新模組</string>
+    <string name="changelog">變更日誌</string>
+    <string name="website">網站</string>
+    <string name="support">支援</string>
+    <string name="donate">捐贈</string>
+    <string name="submit_modules">提交一個模組</string>
 
     <!-- Module section translation -->
     <string name="module_last_update">最後更新:</string>
     <string name="module_repo">倉庫：</string>
-    <string name="module_by">作者：</string>
+    <string name="module_by">來自</string>
+    <string name="module_downloads">下載:</string>
+    <string name="module_stars">收藏:</string>
 
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
+    <string name="manage_repos_pref">管理倉庫</string>
     <string name="showcase_mode_pref">鎖定模式</string>
     <string name="showcase_mode_desc">鎖定模式阻止管理器對模組進行操作</string>
     <string name="pref_category_settings">設定</string>
@@ -61,4 +73,21 @@
         一些模組沒有正確宣告他們的詮釋資訊，導致顯示上的問題。
         這代表可能這個模組可能會產生一點問題。
     </string>
+    <string name="dns_over_https_pref">加密的 HTTPS 協定進行 DNS 解析請求</string>
+    <string name="dns_over_https_desc">
+        在某些情況下可能會修復連線問題
+        (不適用於 WebView)
+    </string>
+    <string name="disable_extensions_pref">禁用擴充套件</string>
+    <string name="disable_extensions_desc">
+        禁用 Fox\'s Mmm 擴充套件, 這可以防止模組使用
+        終端擴充套件, 如果模組濫用 Fox\'s Mmm 的擴充套件, 這將會很有用。
+    </string>
+    <string name="wrap_text_pref">文字換行</string>
+    <string name="wrap_text_desc">
+        將文字換行至新行，
+        而不是將所有文字放在同一行。
+    </string>
+    <string name="repo_enabled">啟用倉庫</string>
+    <string name="repo_disabled">禁用倉庫</string>
 </resources>
