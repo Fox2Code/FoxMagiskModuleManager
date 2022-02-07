@@ -5,6 +5,9 @@ So I made my own app to do that! :3
 
 **This app is not officially supported by Magisk or it's developers**
 
+**The Modules shown in this app are not affiliated with this app**  
+(Please contact repo owners instead)
+
 ## Requirements
 
 Minimum:
@@ -21,11 +24,8 @@ Note: This app may require the use of a VPN in countries with a state wide firew
 
 ## For users
 
-Related commits:  
-- [`Remove online section in modules fragment`](https://github.com/topjohnwu/Magisk/commit/f5c982355a2e3380b2b64af4b0caa8f4f7cf9157)
-- [`Cleanup unused code`](https://github.com/topjohnwu/Magisk/commit/8d59caf635591eb23813d75601039bb138f5716b)
-
-Note: These changes didn't hit beta, or release yet, but are already live on canary builds.
+To install the app go to [releases](https://github.com/Fox2Code/FoxMagiskModuleManager/releases), 
+and download and install the latest `.apk` on to your device.
 
 The app currently use these three repo as it's module sources, with it's benefits and drawback:  
 (Note: Each module repo can be disabled in the settings of the app)
@@ -47,8 +47,8 @@ The app currently use these three repo as it's module sources, with it's benefit
 - Official app dropped support for it
 - End of life support by Fox's mmm
 
-As the main repo may shutting down due to the main app no longer supporting it, 
-stopped accepting new modules, and also no longer receive updates
+As the main repo may shutting down due to the main app no longer supporting it, stopped 
+accepting new modules, and also no longer receive updates since the 21 December 2021.
 
 If a module is in multiple repos, the manager will just pick the most up to date version 
 of the module, allowing developers to switch repo at their own pace if they want to.
