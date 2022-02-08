@@ -28,7 +28,7 @@
     <string name="module_repo">Репозиторий:</string>
     <string name="module_by">| автор:"</string>
     <string name="module_downloads">Всего скачали:</string>
-    <string name="module_stars">В избранных у</string>
+    <string name="module_stars">В избранном у</string>
 
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
