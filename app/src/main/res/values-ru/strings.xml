@@ -1,39 +1,51 @@
 <resources>
-    <string name="app_name">Fox\'s Magisk Module Manager</string>
-    <string name="app_name_short">Fox\'s Mmm</string>
-    <string name="fail_root_magisk">Не удалось получить доступ к Root или Magisk</string>
+    <string name="app_name">Менеджер модулей Magisk Fox’а</string>
+    <string name="app_name_short">МмM Fox’а</string>
+    <string name="fail_root_magisk">Не удалось получить доступ к Root-правам или Magisk</string>
     <string name="loading">Загрузка…</string>
     <string name="updatable">Доступно обновление</string>
     <string name="installed">Установленные</string>
-    <string name="online_repo">Репозиторий</string>
-    <string name="showcase_mode">Приложение находится в режиме блокировки</string>
+    <string name="online_repo">Онлайн-репозитории</string>
+    <string name="showcase_mode">Активна защита от изменений</string>
     <string name="failed_download">Не удалось скачать файл.</string>
-    <string name="slow_modules">Модули загружались слишком долго, рассмотрите возможность отключения некоторых модулей</string>
+    <string name="slow_modules">Модули слишком долго запускались, рассмотрите вариант отключения некоторых из них</string>
     <string name="fail_internet">Не удается подключиться к Интернету</string>
     <string name="title_activity_settings">SettingsActivity</string>
-    <string name="app_update_available">Доступно обновление приложения</string>
+    <string name="app_update_available">Вышла новая версия приложения</string>
     <string name="app_update">Обновить</string>
+    <string name="no_desc_found">Описание не прилагается.</string>
+    <string name="download_module">Скачать</string>
+    <string name="install_module">Установить</string>
+    <string name="update_module">Обновить</string>
+    <string name="changelog">Изменения</string>
+    <string name="website">Сайт</string>
+    <string name="support">Помощь</string>
+    <string name="donate">Поддержать</string>
+    <string name="submit_modules">Разместить свой модуль</string>
 
     <!-- Module section translation -->
     <string name="module_last_update">Посл. обновление:</string>
     <string name="module_repo">Репозиторий:</string>
-    <string name="module_by">"\nАвтор:"</string>
+    <string name="module_by">| автор:"</string>
+    <string name="module_downloads">Всего скачали:</string>
+    <string name="module_stars">В избранных у</string>
 
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
-    <string name="showcase_mode_pref">Режим блокировки</string>
-    <string name="showcase_mode_desc">Режим блокировки не позволяет диспетчеру выполнять действия с модулями.</string>
+    <string name="manage_repos_pref">Выбранные репозитории</string>
+    <string name="showcase_mode_pref">Защита от изменений</string>
+    <string name="showcase_mode_desc">Режим блокировки, не позволяющий менеджеру выполнять действия с модулями</string>
     <string name="pref_category_settings">Настройки</string>
     <string name="pref_category_info">Информация</string>
     <string name="show_licenses">Показать лицензии</string>
     <string name="licenses">Лицензии</string>
-    <string name="show_incompatible_pref">Показать несовместимые модули</string>
-    <string name="show_incompatible_desc">Показать модули несовместимые с вашим устройством, на основе их метаданных.</string>
+    <string name="show_incompatible_pref">Несовместимые модули</string>
+    <string name="show_incompatible_desc">Показывать непригодные для вашего устройства (исходя из метаданных) модули</string>
     <string name="magisk_outdated">Magisk устарел!</string>
     <string name="pref_category_repos">Репозитории</string>
-    <string name="repo_main_desc">Официальный репозиторий Magisk Modules.</string>
-    <string name="repo_main_alt">Альтернативный репозиторий Magisk-Modules-Repo с меньшим количеством ограничений.</string>
-    <string name="master_delete">Удалить файлы модуля?</string>
+    <string name="repo_main_desc">Официальный репозиторий с модулями для Magisk</string>
+    <string name="repo_main_alt">Аналог Magisk-Modules-Repo с менее строгими ограничениями.</string>
+    <string name="master_delete">Удалить загрузочные файлы?</string>
     <string name="master_delete_no">Оставить файлы</string>
     <string name="master_delete_yes">Удалить файлы</string>
     <string name="master_delete_fail">Не удалось удалить файлы модуля</string>
@@ -44,21 +56,38 @@
     <string name="local_install_title">Локальная установка</string>
     <string name="source_code">Исходный код</string>
     <string name="magisk_builtin_module">Встроенный модуль Magisk</string>
-    <string name="substratum_builtin_module">Substratum builtin module</string>
-    <string name="force_dark_terminal_title">"Принудительно включить тёмный режим терминала"</string>
-    <string name="file_picker_failure">Вашей текущей программе выбора файлов не удалось предоставить доступ к файлу.</string>
+    <string name="substratum_builtin_module">Встроенный модуль Substratum</string>
+    <string name="force_dark_terminal_title">Терминал всегда с тёмной темой</string>
+    <string name="file_picker_failure">Установленное по умолчанию средство выбора файлов не смогло предоставить доступ к файлу.</string>
     <string name="remote_install_title">Удаленная установка</string>
-    <string name="file_picker_wierd">Программа выбора файлов вернула нестандартный ответ.</string>
+    <string name="file_picker_wierd">Средство выбора файлов вернуло нестандартный ответ.</string>
     <string name="use_magisk_install_command_pref">Использовать команду установки модуля</string>
     <string name="use_magisk_install_command_desc">
         Во время теста это вызвало проблемы с инструментом диагностики ошибок установки модуля,
         поэтому я спрятал эту опцию за режимом разработчика, включайте ее на свой страх и риск!
     </string>
     <string name="dev_mode_enabled">Режим разработчика включен</string>
-    <string name="force_english_pref">Принудительно использовать английский язык</string>
-    <string name="disable_low_quality_module_filter_pref">Отключить фильтр модулей низкого качества</string>
+    <string name="force_english_pref">Интерфейс всегда на английском языке</string>
+    <string name="disable_low_quality_module_filter_pref">Отключить фильтрацию спорных модулей</string>
     <string name="disable_low_quality_module_filter_desc">
-        Некоторые модули не объявляют свои метаданные должным образом, что вызывает визуальные сбои,
-        и/или указывает на низкое качество модуля, отключайте на свой страх и риск!
+        У некоторых модулей некорректно указаны метаданные, что вызывает визуальные глюки,
+        и/или указывает на плохую реализацию всего модуля, отключайте опцию на свой страх и риск!
     </string>
+    <string name="dns_over_https_pref">DNS поверх HTTPS</string>
+    <string name="dns_over_https_desc">
+        Используйте при проблемах с подключением к сети.
+        (Не распространяется на WebView)
+    </string>
+    <string name="disable_extensions_pref">Отключить расширения</string>
+    <string name="disable_extensions_desc">
+        Отключает расширения МмM Fox’а, тем самым не давая модулям
+        использовать встроенный терминал, полезно, если модуль некорректно работает с расширениями МмM Fox’а.
+    </string>
+    <string name="wrap_text_pref">Перенос по словам</string>
+    <string name="wrap_text_desc">
+        Переносить текст на другую строку, чтобы
+        не помещать всё на одной во время установки модуля
+    </string>
+    <string name="repo_enabled">Репо включен</string>
+    <string name="repo_disabled">Репо отключен</string>
 </resources>
