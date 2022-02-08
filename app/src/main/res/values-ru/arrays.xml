@@ -1,6 +1,6 @@
 <resources>
     <string-array name="theme_values_names">
-        <item>Системная</item>
+        <item>Как в системе</item>
         <item>Тёмная</item>
         <item>Светлая</item>
     </string-array>
