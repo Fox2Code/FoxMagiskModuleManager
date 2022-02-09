@@ -74,7 +74,10 @@
         et/ou indicant une qualité de module and/or indiquant une mauvaise qualité du module, à désactiver à vos risques et périls!
     </string>
     <string name="dns_over_https_pref">DNS sur https</string>
-    <string name="dns_over_https_desc">Pourrait corriger les problèmes de connexions dans certains cas.</string>
+    <string name="dns_over_https_desc">
+        Pourrait corriger les problèmes de connexions dans certains cas.
+        (Ne s\’applique pas à WebView)
+    </string>
     <string name="disable_extensions_pref">Désactiver les extensions</string>
     <string name="disable_extensions_desc">
         Désactive les extensions du Gestionnaire de Fox, celà empêche les modules d\’utiliser
