@@ -42,6 +42,17 @@ grep_get_prop() {
 }
 fi
 
+# prevent old modules from disabling hidden_apis, please use LSPosed library instead.
+# See: https://github.com/LSPosed/AndroidHiddenApiBypass
+settings() {
+  if [ "$1" == "put" ] && [ "$2" == "global" ] && ([ "$3" == "hidden_api_policy" ] || \
+  [ "$3" == "hidden_api_policy_p_apps" ] || [ "$3" == "hidden_api_policy_pre_p_apps" ]); then
+    true
+  else
+    "$(which settings)" "$@"
+  fi
+}
+
 if [ $MAGISK_VER_CODE -ge 20400 ]; then
   # New Magisk have complete installation logic within util_functions.sh
   install_module
