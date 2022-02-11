@@ -81,6 +81,9 @@ public class SettingsActivity extends CompatActivity {
                 }
                 return true;
             });
+            if (!MainApplication.isDeveloper()) {
+                forceEnglish.setVisible(false);
+            }
             findPreference("pref_dns_over_https").setOnPreferenceChangeListener((p, v) -> {
                 Http.setDoh((Boolean) v);
                 return true;
