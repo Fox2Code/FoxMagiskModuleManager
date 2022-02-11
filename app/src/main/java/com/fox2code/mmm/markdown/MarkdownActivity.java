@@ -17,6 +17,7 @@ import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 
@@ -60,7 +61,18 @@ public class MarkdownActivity extends CompatActivity {
         new Thread(() -> {
             try {
                 Log.d(TAG, "Downloading");
-                String markdown = new String(Http.doHttpGet(url, true), StandardCharsets.UTF_8);
+                byte[] rawMarkdown;
+                try {
+                    rawMarkdown = Http.doHttpGet(url, true);
+                } catch (IOException e) {
+                    // Workaround GitHub README.md case sensitivity issue
+                    if (url.startsWith("https://raw.githubusercontent.com/") &&
+                            url.endsWith("/README.md")) { // Try with lowercase version
+                        rawMarkdown = Http.doHttpGet(url.substring(0,
+                                url.length() - 9) + "readme.md", true);
+                    } else throw e;
+                }
+                String markdown = new String(rawMarkdown, StandardCharsets.UTF_8);
                 Log.d(TAG, "Done!");
                 runOnUiThread(() -> {
                     MainApplication.getINSTANCE().getMarkwon().setMarkdown(
