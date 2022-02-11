@@ -11,8 +11,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import io.noties.markwon.Markwon;
-
 public class LocalModuleInfo extends ModuleInfo {
     public String updateVersion;
     public long updateVersionCode = Long.MIN_VALUE;

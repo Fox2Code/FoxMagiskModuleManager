@@ -15,11 +15,8 @@ import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
-import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
-import java.nio.charset.StandardCharsets;
 
 import io.noties.markwon.Markwon;
 
@@ -78,7 +75,6 @@ public enum ActionButtonType {
             builder.setTitle(moduleInfo.name).setCancelable(true)
                     .setIcon(R.drawable.ic_baseline_extension_24);
             CharSequence desc = moduleInfo.description;
-            final boolean noPatch;
             if (moduleInfo instanceof LocalModuleInfo) {
                 LocalModuleInfo localModuleInfo = (LocalModuleInfo) moduleInfo;
                 if (!localModuleInfo.updateChangeLog.isEmpty()) {

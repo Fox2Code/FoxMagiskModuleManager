@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -37,6 +38,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 public class InstallerActivity extends CompatActivity {
@@ -87,8 +89,8 @@ public class InstallerActivity extends CompatActivity {
         boolean urlMode = target.startsWith("http://") || target.startsWith("https://");
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setTitle(name);
-        setContentView((this.textWrap =
-                MainApplication.isTextWrapEnabled()) ?
+        this.textWrap = MainApplication.isTextWrapEnabled();
+        setContentView(this.textWrap ?
                 R.layout.installer_wrap :R.layout.installer);
         int background;
         int foreground;
@@ -252,6 +254,30 @@ public class InstallerActivity extends CompatActivity {
                             " /dev/null 1 \"" + file.getAbsolutePath() + "\"")
                     .to(installerController, installerMonitor);
         } else {
+            String arch32 = "true"; // Do nothing by default
+            if (Build.SUPPORTED_32_BIT_ABIS.length == 0) {
+                boolean needs32bit = false;
+                try (ZipFile zipFile = new ZipFile(file)) {
+                    if (zipFile.getEntry( // Check if module hard require 32bit support
+                            "common/addon/Volume-Key-Selector/tools/arm64/keycheck") == null &&
+                            zipFile.getEntry(
+                                    "common/addon/Volume-Key-Selector/install.sh") != null) {
+                        needs32bit = true;
+                    }
+                } catch (IOException ignored) {}
+                if (needs32bit) {
+                    this.setInstallStateFinished(false,
+                            "! This module can't be installed on a 64bit only system",
+                            null);
+                    return;
+                }
+            } else {
+                // Restore Magisk legacy stuff for retro compatibility
+                if (Build.SUPPORTED_32_BIT_ABIS[0].contains("arm"))
+                    arch32 = "export ARCH32=arm";
+                if (Build.SUPPORTED_32_BIT_ABIS[0].contains("x86"))
+                    arch32 = "export ARCH32=x86";
+            }
             String installCommand;
             File installExecutable;
             if (InstallerInitializer.peekMagiskVersion() >=
@@ -272,11 +298,11 @@ public class InstallerActivity extends CompatActivity {
             }
             installerMonitor = new InstallerMonitor(installExecutable);
             if (noExtensions) {
-                installJob = Shell.su( // No Extensions
+                installJob = Shell.su(arch32, // No Extensions
                         "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
                         installCommand).to(installerController, installerMonitor);
             } else {
-                installJob = Shell.su("export MMM_EXT_SUPPORT=1",
+                installJob = Shell.su(arch32, "export MMM_EXT_SUPPORT=1",
                         "export MMM_USER_LANGUAGE=" + (MainApplication.isForceEnglish() ?
                                 "en-US" : Resources.getSystem()
                                 .getConfiguration().locale.toLanguageTag()),
@@ -428,12 +454,14 @@ public class InstallerActivity extends CompatActivity {
 
     public static class InstallerMonitor extends CallbackList<String> {
         private static final String DEFAULT_ERR = "! Install failed";
-        private final String installScriptPath;
+        private final String installScriptErr;
         public String lastCommand = "";
 
         public InstallerMonitor(File installScript) {
             super(Runnable::run);
-            this.installScriptPath = installScript.getAbsolutePath();
+            this.installScriptErr =
+                    installScript.getAbsolutePath() +
+                            ": /data/adb/modules_update/";
         }
 
         @Override
@@ -443,8 +471,7 @@ public class InstallerActivity extends CompatActivity {
         }
 
         private String doCleanUp() {
-            String installScriptErr =
-                    this.installScriptPath + ": /data/adb/modules_update/";
+            String installScriptErr = this.installScriptErr;
             // This block is mainly to help fixing customize.sh syntax errors
             if (this.lastCommand.startsWith(installScriptErr)) {
                 installScriptErr = this.lastCommand.substring(installScriptErr.length());
