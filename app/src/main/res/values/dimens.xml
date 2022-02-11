@@ -4,5 +4,5 @@
     <dimen name="card_corner_radius">8dp</dimen>
     <dimen name="markdown_side_clearance">0dp</dimen>
     <dimen name="markdown_topdown_clearance">32dp</dimen>
-    <dimen name="markdown_border_content">0dp</dimen>
+    <dimen name="markdown_border_content">8dp</dimen>
 </resources>

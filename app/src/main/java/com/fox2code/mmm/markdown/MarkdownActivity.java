@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +42,12 @@ public class MarkdownActivity extends CompatActivity {
                 .getString(Constants.EXTRA_MARKDOWN_TITLE);
         String config = intent.getExtras()
                 .getString(Constants.EXTRA_MARKDOWN_CONFIG);
-        if (title != null && !title.isEmpty()) setTitle(title);
+        if (title != null && !title.isEmpty()) {
+            setTitle(title);
+        }
+        this.getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         if (config != null && !config.isEmpty()) {
             String configPkg = IntentHelper.getPackageOfConfig(config);
             try {
@@ -75,6 +82,8 @@ public class MarkdownActivity extends CompatActivity {
                 String markdown = new String(rawMarkdown, StandardCharsets.UTF_8);
                 Log.d(TAG, "Done!");
                 runOnUiThread(() -> {
+                    findViewById(R.id.markdownFooter)
+                            .setMinimumHeight(this.getNavigationBarHeight());
                     MainApplication.getINSTANCE().getMarkwon().setMarkdown(
                             textView, MarkdownUrlLinker.urlLinkify(markdown));
                     if (markdownBackground != null) {
@@ -91,5 +100,12 @@ public class MarkdownActivity extends CompatActivity {
                 });
             }
         }, "Markdown load thread").start();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        View footer = findViewById(R.id.markdownFooter);
+        if (footer != null) footer.setMinimumHeight(this.getNavigationBarHeight());
     }
 }

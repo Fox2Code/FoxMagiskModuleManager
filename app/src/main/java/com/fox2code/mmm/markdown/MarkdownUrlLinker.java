@@ -15,8 +15,9 @@ public class MarkdownUrlLinker {
         ArrayList<LinkifyTask> linkifyTasks = new ArrayList<>();
         int extra = 0;
         while (index != -1) {
-            int end = Math.min(url.indexOf('\n', index),
-                    url.indexOf(' ', index));
+            int end = url.indexOf(' ', index);
+            end = end == -1 ? url.indexOf('\n', index) :
+                    Math.min(url.indexOf('\n', index), end);
             if (end == -1) end = url.length();
             if (index == 0 ||
                     '\n' == url.charAt(index - 1) ||
