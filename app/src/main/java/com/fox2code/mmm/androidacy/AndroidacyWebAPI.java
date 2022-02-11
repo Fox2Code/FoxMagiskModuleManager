@@ -220,4 +220,12 @@ public class AndroidacyWebAPI {
     public int getAndroidVersionCode() {
         return Build.VERSION.SDK_INT;
     }
+
+    /**
+     * Return current navigation bar height or 0 if not visible
+     */
+    @JavascriptInterface
+    public int getNavigationBarHeight() {
+        return this.activity.getNavigationBarHeight();
+    }
 }
