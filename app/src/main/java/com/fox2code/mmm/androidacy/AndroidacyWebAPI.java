@@ -129,7 +129,7 @@ public class AndroidacyWebAPI {
     @JavascriptInterface
     public long getModuleVersionCode(String moduleId) {
         LocalModuleInfo localModuleInfo = ModuleManager.getINSTANCE().getModules().get(moduleId);
-        return localModuleInfo != null ? localModuleInfo.updateVersionCode : -1L;
+        return localModuleInfo != null ? localModuleInfo.versionCode : -1L;
     }
 
     /**
