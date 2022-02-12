@@ -49,8 +49,9 @@
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:shape="ring"
             android:background="@null"
-            app:cardCornerRadius="@dimen/card_corner_radius"
+            app:cardCornerRadius="75dp"
             app:strokeColor="@android:color/transparent"
             app:strokeWidth="0dp">
             <androidx.appcompat.widget.SearchView
