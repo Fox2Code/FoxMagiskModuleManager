@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Fox - Manager module Magisk</string>
+    <string name="app_name_short">Fox\'s Mmm</string>
+    <string name="fail_root_magisk">Obținerea accesului la rădăcină sau Magisk a eșuat</string>
+    <string name="loading">Se încarcă…</string>
+    <string name="updatable">Actualizabil</string>
+    <string name="installed">Instalat</string>
+    <string name="online_repo">Depozit online</string>
+    <string name="showcase_mode">Aplicația este în modul blocare</string>
+    <string name="failed_download">Descărcarea fișierului a eșuat.</string>
+    <string name="slow_modules">A durat prea mult pentru pornirea modulelor, ia în considerare dezactivarea unor module</string>
+    <string name="fail_internet">Conectarea la internet a eșuat</string>
+    <string name="title_activity_settings">Setări activitate</string>
+    <string name="app_update_available">Actualizare aplicație disponibilă</string>
+    <string name="app_update">Actualizați</string>
+    <string name="no_desc_found">Nicio descriere găsită.</string>
+    <string name="download_module">Descărcare modul</string>
+    <string name="install_module">Instalare modul</string>
+    <string name="update_module">Actualizare modul</string>
+    <string name="changelog">Istoric modificări</string>
+    <string name="website">Site web</string>
+    <string name="support">Suport</string>
+    <string name="donate">Donează</string>
+    <string name="submit_modules">Trimite un modul</string>
+    <!-- Module section translation -->
+    <string name="module_last_update">Ultima actualizare:</string>
+    <string name="module_repo">Depozit:</string>
+    <string name="module_by">de la</string>
+    <string name="module_downloads">Descărcări:</string>
+    <string name="module_stars">Stele:</string>
+    <!-- Preference Titles -->
+    <!-- Note: Lockdown mode used to be called showcase mode -->
+    <string name="manage_repos_pref">Gestionează depozitele</string>
+    <string name="showcase_mode_pref">Mod blocare</string>
+    <string name="showcase_mode_desc">Modul de blocare împiedică managerul să facă acțiuni asupra modulelor</string>
+    <string name="pref_category_settings">Setări</string>
+    <string name="pref_category_info">Informații</string>
+    <string name="show_licenses">Afişează licenţa</string>
+    <string name="licenses">Licențe</string>
+    <string name="show_incompatible_pref">Arată modulele incompatibile</string>
+    <string name="show_incompatible_desc">Arată module incompatibile cu dispozitivul tău pe baza metadatelor lor</string>
+    <string name="magisk_outdated">Magisk este învechit!</string>
+    <string name="pref_category_repos">Depozite</string>
+    <string name="repo_main_desc">Depozitul care găzduiește modulele Magisk</string>
+    <string name="repo_main_alt">O alternativă la Magisk-Modules-Repo cu mai puține restricții.</string>
+    <string name="master_delete">Ștergi fișierele modulului?</string>
+    <string name="master_delete_no">Păstrează fișierele</string>
+    <string name="master_delete_yes">Șterge fișierele</string>
+    <string name="master_delete_fail">Ștergerea fișierelor modulului a eșuat</string>
+    <string name="theme_pref">Temă</string>
+    <string name="module_id_prefix">ID modul:</string>
+    <string name="install_from_storage">Instalare modul de pe stocare</string>
+    <string name="invalid_format">Modulul selectat este într-un format greșit</string>
+    <string name="local_install_title">Instalare locală</string>
+    <string name="source_code">Cod sursă</string>
+    <string name="magisk_builtin_module">Modul încorporat Magisk</string>
+    <string name="substratum_builtin_module">Modul încorporat Substratum</string>
+    <string name="force_dark_terminal_title">Forțează terminal întunecat</string>
+    <string name="file_picker_failure">Selectorul de fișiere curent nu a reușit să permită accesul la fișier.</string>
+    <string name="remote_install_title">Instalare la distanță</string>
+    <string name="file_picker_wierd">Selectorul tău de fișiere a returnat un răspuns non-standard.</string>
+    <string name="use_magisk_install_command_pref">Folosește comanda de instalare modul Magisk</string>
+    <string name="use_magisk_install_command_desc">        În timpul testului, a cauzat probleme la instalarea instrumentului de diagnosticare a erorilor,
+        așa că am ascuns această opțiune în spatele modului dezvoltator, activați acest lucru pe propriul risc!
+    </string>
+    <string name="dev_mode_enabled">Mod dezvoltator activat</string>
+    <string name="force_english_pref">Forțează limba engleză</string>
+    <string name="disable_low_quality_module_filter_pref">Dezactivează filtrul de module de calitate slabă</string>
+    <string name="disable_low_quality_module_filter_desc">        Unele module nu declară corect metadatele, cauzând erori vizuale,
+        și/sau indicând calitatea proastă a modulelor, dezactivează pe propriul risc!
+    </string>
+    <string name="dns_over_https_pref">Dns prin https</string>
+    <string name="dns_over_https_desc">        Poate rezolva problemele de conexiune în unele cazuri.
+        (Nu se aplică WebView)
+    </string>
+    <string name="disable_extensions_pref">Dezactivează extensiile</string>
+    <string name="disable_extensions_desc">        Dezactivează extensiile Fox\'s Mmm, acest lucru împiedică modulele să folosească
+        extensii terminal, util dacă un modul folosește în mod abuziv extensiile Fox\'s Mmm.
+    </string>
+    <string name="wrap_text_pref">Încadrează textul</string>
+    <string name="wrap_text_desc">        Se încadrează textul la o linie nouă în loc să fie pus
+        tot textul pe aceeași linie atunci când se instalează un modul
+    </string>
+    <string name="repo_enabled">Depozit activat</string>
+    <string name="repo_disabled">Depozit dezactivat</string>
+</resources>
