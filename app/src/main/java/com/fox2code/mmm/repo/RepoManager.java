@@ -20,12 +20,6 @@ import java.util.List;
 
 public final class RepoManager {
     private static final String TAG = "RepoManager";
-    private static final String MAGISK_REPO_MANAGER =
-            "https://magisk-modules-repo.github.io/submission/modules.json";
-    public static final String MAGISK_REPO =
-            "https://raw.githubusercontent.com/Magisk-Modules-Repo/submission/modules/modules.json";
-    public static final String MAGISK_REPO_JSDELIVR =
-            "https://cdn.jsdelivr.net/gh/Magisk-Modules-Repo/submission@modules/modules.json";
     public static final String MAGISK_ALT_REPO =
             "https://raw.githubusercontent.com/Magisk-Modules-Alt-Repo/json/main/modules.json";
     public static final String MAGISK_ALT_REPO_JSDELIVR =
@@ -33,15 +27,13 @@ public final class RepoManager {
     public static final String ANDROIDACY_MAGISK_REPO_ENDPOINT =
             "https://api.androidacy.com/magisk/repo";
 
-    public static final String MAGISK_REPO_HOMEPAGE =
-            "https://github.com/Magisk-Modules-Repo";
     public static final String MAGISK_ALT_REPO_HOMEPAGE =
             "https://github.com/Magisk-Modules-Alt-Repo";
     public static final String ANDROIDACY_MAGISK_REPO_HOMEPAGE =
             "https://www.androidacy.com/modules-repo";
 
     private static final Object lock = new Object();
-    private static RepoManager INSTANCE;
+    private static volatile RepoManager INSTANCE;
 
     public static RepoManager getINSTANCE() {
         if (INSTANCE == null) {
@@ -69,7 +61,6 @@ public final class RepoManager {
         this.modules = new HashMap<>();
         // We do not have repo list config yet.
         this.addRepoData(MAGISK_ALT_REPO);
-        this.addRepoData(MAGISK_REPO);
         this.addAndroidacyRepoData();
         // Populate default cache
         for (RepoData repoData:this.repoData.values()) {
@@ -92,13 +83,8 @@ public final class RepoManager {
 
     public RepoData get(String url) {
         if (url == null) return null;
-        switch (url) {
-            case MAGISK_REPO_JSDELIVR:
-            case MAGISK_REPO_MANAGER:
-                url = MAGISK_REPO;
-                break;
-            case MAGISK_ALT_REPO_JSDELIVR:
-                url = MAGISK_ALT_REPO;
+        if (MAGISK_ALT_REPO_JSDELIVR.equals(url)) {
+            url = MAGISK_ALT_REPO;
         }
         return this.repoData.get(url);
     }
@@ -244,10 +230,6 @@ public final class RepoManager {
 
     public static String internalIdOfUrl(String url) {
         switch (url) {
-            case MAGISK_REPO_MANAGER:
-            case MAGISK_REPO:
-            case MAGISK_REPO_JSDELIVR:
-                return "magisk_repo";
             case MAGISK_ALT_REPO:
             case MAGISK_ALT_REPO_JSDELIVR:
                 return "magisk_alt_repo";

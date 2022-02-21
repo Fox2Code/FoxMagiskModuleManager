@@ -162,9 +162,6 @@ public class SettingsActivity extends CompatActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             getPreferenceManager().setSharedPreferencesName("mmm");
             setPreferencesFromResource(R.xml.repo_preferences, rootKey);
-            setRepoData(RepoManager.MAGISK_REPO,
-                    "Magisk Modules Repo (Official)", RepoManager.MAGISK_REPO_HOMEPAGE,
-                    null, null,null);
             setRepoData(RepoManager.MAGISK_ALT_REPO,
                     "Magisk Modules Alt Repo", RepoManager.MAGISK_ALT_REPO_HOMEPAGE,
                     null, null,
