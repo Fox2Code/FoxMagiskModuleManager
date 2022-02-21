@@ -1,0 +1,93 @@
+<resources>
+    <string name="app_name">Fox\'s Magisk Module Manager</string>
+    <string name="app_name_short">Fox\'s Mmm</string>
+    <string name="fail_root_magisk">Não foi possível ter acesso root ou ao Magisk.</string>
+    <string name="loading">Carregando…</string>
+    <string name="updatable">Atualização disponível</string>
+    <string name="installed">Instalado</string>
+    <string name="online_repo">Repositório online</string>
+    <string name="showcase_mode">O aplicativo está no modo lockdown.</string>
+    <string name="failed_download">Não foi possível baixar o arquivo.</string>
+    <string name="slow_modules">Os módulos demoraram muito para inicializar, considere remover alguns.</string>
+    <string name="fail_internet">Não foi possível conectar à internet.</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="app_update_available">Atualização disponível</string>
+    <string name="app_update">Atualizar</string>
+    <string name="no_desc_found">Nenhuma descrição encontrada.</string>
+    <string name="download_module">Baixar módulo</string>
+    <string name="install_module">Instalar módulo</string>
+    <string name="update_module">Atualizar módulo</string>
+    <string name="changelog">Changelog</string>
+    <string name="website">Website</string>
+    <string name="support">Suporte</string>
+    <string name="donate">Doar</string>
+    <string name="submit_modules">Enviar um módulo</string>
+
+    <!-- Module section translation -->
+    <string name="module_last_update">Última atualização:</string>
+    <string name="module_repo">Repositório:</string>
+    <string name="module_by">por</string>
+    <string name="module_downloads">Downloads:</string>
+    <string name="module_stars">Estrelas:</string>
+
+    <!-- Preference Titles -->
+    <!-- Note: Lockdown mode used to be called showcase mode -->
+    <string name="manage_repos_pref">Gerenciar repositórios</string>
+    <string name="showcase_mode_pref">Modo lockdown</string>
+    <string name="showcase_mode_desc">O modo lockdown previne que o app faça qualquer alteração nos módulos.</string>
+    <string name="pref_category_settings">Configurações</string>
+    <string name="pref_category_info">Info</string>
+    <string name="show_licenses">Mostrar licenças</string>
+    <string name="licenses">Licenças</string>
+    <string name="show_incompatible_pref">Mostrar módulos incompatíveis</string>
+    <string name="show_incompatible_desc">Mostra módulos que são incompatíveis com seu dispositivo baseado nas informações deles.</string>
+    <string name="magisk_outdated">Magisk desatualizado!</string>
+    <string name="pref_category_repos">Repositórios</string>
+    <string name="repo_main_desc">Repositório que hospeda os módulos do Magisk</string>
+    <string name="repo_main_alt">Uma alternativa com menos restrições ao Magisk-Modules-Repo.</string>
+    <string name="master_delete">Deletar os arquivos do módulo?</string>
+    <string name="master_delete_no">Não deletar</string>
+    <string name="master_delete_yes">Deletar arquivos</string>
+    <string name="master_delete_fail">Não foi possível deletar os arquivos do módulo</string>
+    <string name="theme_pref">Tema</string>
+    <string name="module_id_prefix">ID do módulo: </string>
+    <string name="install_from_storage">Instalar módulo armazenado localmente</string>
+    <string name="invalid_format">O módulo selecionado está com um formato inválido.</string>
+    <string name="local_install_title">Instalação local</string>
+    <string name="source_code">Código fonte</string>
+    <string name="magisk_builtin_module">Módulo builtin do Magisk</string>
+    <string name="substratum_builtin_module">Módulo builtin do Substratum</string>
+    <string name="force_dark_terminal_title">Forçar terminal com modo escuro</string>
+    <string name="file_picker_failure">Seu gerenciador de arquivos não conseguiu dar acesso a este arquivo.</string>
+    <string name="remote_install_title">Instalação remota</string>
+    <string name="file_picker_wierd">Seu gerenciador de arquivos retornou uma resposta não esperada.</string>
+    <string name="use_magisk_install_command_pref">Usar comando de instalação do Magisk</string>
+    <string name="use_magisk_install_command_desc">
+        Durante testes esta opção causou problemas na ferramenta de diagnósticos de erro do module install,
+        então eu escondi esta opção no modo de desenvolvedor, habilite por sua conta e risco!
+    </string>
+    <string name="dev_mode_enabled">Modo desenvolvedor habilitado</string>
+    <string name="force_english_pref">Forçar uso do inglês</string>
+    <string name="disable_low_quality_module_filter_pref">Desabilitar filtro de módulos de baixa qualidade</string>
+    <string name="disable_low_quality_module_filter_desc">
+        Alguns módulos não declaram a metadata corretamente, causando glitchs visuais.
+        Isto indica que o módulo é de baixa qualidade, desabilite por sua conta e risco!
+    </string>
+    <string name="dns_over_https_pref">DNS over HTTPS</string>
+    <string name="dns_over_https_desc">
+        Em alguns casos pode consertar erros de conexão.
+        (Não se aplica ao WebView)
+    </string>
+    <string name="disable_extensions_pref">Desabilitar extensões</string>
+    <string name="disable_extensions_desc">
+        Desabilita as extensões do Fox\'s Mmm, isto previne que os módulos usem
+        extensão do terminal, útil se algum módulo fazer algum uso indevido de extensões do Fox\'s Mmm.
+    </string>
+    <string name="wrap_text_pref">Quebrar texto</string>
+    <string name="wrap_text_desc">
+        Pula uma linha ao invés de colocar
+        todo o texto na mesma linha durante a instalação de um módulo
+    </string>
+    <string name="repo_enabled">Repositório habilitado</string>
+    <string name="repo_disabled">Repositório desabilitado</string>
+</resources>
