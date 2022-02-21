@@ -28,7 +28,8 @@ To install the app go to [releases](https://github.com/Fox2Code/FoxMagiskModuleM
 and download and install the latest `.apk` on to your device.
 
 The app currently use these three repo as it's module sources, with it's benefits and drawback:  
-(Note: Each module repo can be disabled in the settings of the app)
+(Note: Each module repo can be disabled in the settings of the app)  
+(Note²: I do not own or monitor any of the repo, **download at your own risk**)
 
 [https://github.com/Magisk-Modules-Alt-Repo](https://github.com/Magisk-Modules-Alt-Repo)  
 - Accepting new modules [here](https://github.com/Magisk-Modules-Alt-Repo/submission)
@@ -45,7 +46,7 @@ The app currently use these three repo as it's module sources, with it's benefit
 - No longer accept new modules or receive update to existing modules
 - May be shut down at any moment
 - Official app dropped support for it
-- End of life support by Fox's mmm
+- No longer supported by Fox's mmm
 
 As the main repo may shutting down due to the main app no longer supporting it, stopped 
 accepting new modules, and also no longer receive updates since the 21 December 2021.
