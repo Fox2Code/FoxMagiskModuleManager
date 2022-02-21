@@ -1,0 +1,13 @@
+<resources>
+    <string-array name="theme_values" translatable="false">
+        <item>system</item>
+        <item>dark</item>
+        <item>light</item>
+    </string-array>
+
+    <string-array name="theme_values_names">
+        <item>Sistema</item>
+        <item>Escuro</item>
+        <item>Claro</item>
+    </string-array>
+</resources>
