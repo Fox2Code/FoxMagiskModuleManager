@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -196,6 +197,35 @@ public class CompatActivity extends AppCompatActivity {
             android.app.ActionBar actionBar = this.getActionBar();
             return actionBar != null && actionBar.isShowing() ? actionBar.getHeight() : 0;
         }
+    }
+
+    public void setActionBarBackground(Drawable drawable) {
+        androidx.appcompat.app.ActionBar compatActionBar;
+        try {
+            compatActionBar = this.getSupportActionBar();
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to call getSupportActionBar", e);
+            compatActionBar = null; // Allow fallback to builtin actionBar.
+        }
+        if (compatActionBar != null) {
+            compatActionBar.setBackgroundDrawable(drawable);
+        } else {
+            android.app.ActionBar actionBar = this.getActionBar();
+            if (actionBar != null)
+                actionBar.setBackgroundDrawable(drawable);
+        }
+    }
+
+    @Dimension @Px
+    public int getStatusBarHeight() { // How to improve this?
+        int height = WindowInsetsCompat.CONSUMED.getInsets(
+                WindowInsetsCompat.Type.statusBars()).top;
+        if (height == 0) { // Fallback to system resources
+            int id = Resources.getSystem().getIdentifier(
+                    "status_bar_height", "dimen", "android");
+            if (id > 0) return Resources.getSystem().getDimensionPixelSize(id);
+        }
+        return height;
     }
 
     public int getNavigationBarHeight() { // How to improve this?

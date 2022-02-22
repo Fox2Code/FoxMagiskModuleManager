@@ -24,7 +24,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
     public final String moduleId;
     public final NotificationType notificationType;
     public final Type separator;
-    public final int footerPx;
+    public int footerPx;
     public View.OnClickListener onClickListener;
     public LocalModuleInfo moduleInfo;
     public RepoModule repoModule;
@@ -34,32 +34,33 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
         this.moduleId = Objects.requireNonNull(moduleId);
         this.notificationType = null;
         this.separator = null;
-        this.footerPx = 0;
+        this.footerPx = -1;
     }
 
     public ModuleHolder(NotificationType notificationType) {
         this.moduleId = "";
         this.notificationType = Objects.requireNonNull(notificationType);
         this.separator = null;
-        this.footerPx = 0;
+        this.footerPx = -1;
     }
 
     public ModuleHolder(Type separator) {
         this.moduleId = "";
         this.notificationType = null;
         this.separator = separator;
-        this.footerPx = 0;
+        this.footerPx = -1;
     }
 
-    public ModuleHolder(int footerPx) {
+    public ModuleHolder(int footerPx,boolean header) {
         this.moduleId = "";
         this.notificationType = null;
         this.separator = null;
         this.footerPx = footerPx;
+        this.filterLevel = header ? 1 : 0;
     }
 
     public boolean isModuleHolder() {
-        return this.notificationType == null && this.separator == null && this.footerPx == 0;
+        return this.notificationType == null && this.separator == null && this.footerPx == -1;
     }
 
     public ModuleInfo getMainModuleInfo() {
@@ -115,7 +116,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
     }
 
     public Type getType() {
-        if (this.footerPx != 0) {
+        if (this.footerPx != -1) {
             return Type.FOOTER;
         } else if (this.separator != null) {
             return Type.SEPARATOR;
@@ -145,7 +146,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
 
     public boolean shouldRemove() {
         return this.notificationType != null ? this.notificationType.shouldRemove() :
-                this.footerPx == 0 && this.moduleInfo == null &&
+                this.footerPx == -1 && this.moduleInfo == null &&
                         (this.repoModule == null || !this.repoModule.repoData.isEnabled() ||
                                 (PropUtils.isLowQualityModule(this.repoModule.moduleInfo) &&
                                         !MainApplication.isDisableLowQualityModuleFilter()));
@@ -207,6 +208,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
     }
 
     public enum Type implements Comparator<ModuleHolder> {
+        HEADER(R.string.loading, false, false),
         SEPARATOR(R.string.loading, false, false) {
             @Override
             @SuppressWarnings("ConstantConditions")

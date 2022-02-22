@@ -23,6 +23,7 @@ import java.util.Locale;
 
 public class ModuleViewListBuilder {
     private static final String TAG = "ModuleViewListBuilder";
+    private static final Runnable RUNNABLE = () -> {};
     private final EnumSet<NotificationType> notifications = EnumSet.noneOf(NotificationType.class);
     private final HashMap<String, ModuleHolder> mappedModuleHolders = new HashMap<>();
     private final Object updateLock = new Object();
@@ -31,8 +32,10 @@ public class ModuleViewListBuilder {
     @NonNull
     private String query = "";
     private boolean updating;
+    private int headerPx;
     private int footerPx;
     private ModuleSorter moduleSorter = ModuleSorter.UPDATE;
+    private Runnable updateInsets = RUNNABLE;
 
     public ModuleViewListBuilder(Activity activity) {
         this.activity = activity;
@@ -100,6 +103,7 @@ public class ModuleViewListBuilder {
         this.updating = true;
         final ArrayList<ModuleHolder> moduleHolders;
         final int newNotificationsLen;
+        final ModuleHolder[] headerFooter = new ModuleHolder[2];
         try {
             synchronized (this.updateLock) {
                 // Build start
@@ -150,9 +154,12 @@ public class ModuleViewListBuilder {
                     }
                 }
                 Collections.sort(moduleHolders, this.moduleSorter);
-                if (this.footerPx != 0) { // Footer is always last
-                    moduleHolders.add(new ModuleHolder(this.footerPx));
-                }
+                // Header is always first
+                moduleHolders.add(0, headerFooter[0] =
+                        new ModuleHolder(this.headerPx, true));
+                // Footer is always last
+                moduleHolders.add(headerFooter[1] =
+                        new ModuleHolder(this.footerPx, false));
                 Log.i(TAG, "Got " + moduleHolders.size() + " entries!");
                 // Build end
             }
@@ -160,6 +167,7 @@ public class ModuleViewListBuilder {
             this.updating = false;
         }
         this.activity.runOnUiThread(() -> {
+            this.updateInsets = RUNNABLE;
             final EnumSet<NotificationType> oldNotifications =
                     EnumSet.noneOf(NotificationType.class);
             boolean isTop = !moduleList.canScrollVertically(-1);
@@ -172,7 +180,8 @@ public class ModuleViewListBuilder {
                     oldNotifications.add(notificationType);
                     if (!notificationType.special)
                         oldNotificationsLen++;
-                }
+                } else if (moduleHolder.footerPx != -1)
+                    oldNotificationsLen++; // Fix header
                 if (moduleHolder.separator == ModuleHolder.Type.INSTALLABLE)
                     break;
                 oldOfflineModulesLen++;
@@ -208,6 +217,13 @@ public class ModuleViewListBuilder {
             }
             if (isTop) moduleList.scrollToPosition(0);
             if (isBottom) moduleList.scrollToPosition(newLen);
+            this.updateInsets = () -> {
+                headerFooter[0].footerPx = this.headerPx;
+                headerFooter[1].footerPx = this.footerPx;
+                notifySizeChanged(moduleViewAdapter, 0, 1, 1);
+                notifySizeChanged(moduleViewAdapter,
+                        moduleHolders.size(), 1, 1);
+            };
         });
     }
 
@@ -281,11 +297,23 @@ public class ModuleViewListBuilder {
         return true;
     }
 
+    public void setHeaderPx(int headerPx) {
+        if (this.headerPx != headerPx) {
+            synchronized (this.updateLock) {
+                this.headerPx = headerPx;
+            }
+        }
+    }
+
     public void setFooterPx(int footerPx) {
         if (this.footerPx != footerPx) {
             synchronized (this.updateLock) {
                 this.footerPx = footerPx;
             }
         }
+    }
+
+    public void updateInsets() {
+        this.updateInsets.run();
     }
 }

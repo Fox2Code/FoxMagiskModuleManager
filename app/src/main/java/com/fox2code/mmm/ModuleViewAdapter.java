@@ -26,6 +26,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdapter.ViewHolder> {
     private static final boolean DEBUG = false;
@@ -182,14 +183,16 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 if (localModuleInfo == null || moduleInfo.versionCode >
                         localModuleInfo.updateVersionCode) {
                     this.creditText.setText((localModuleInfo == null ||
-                            moduleInfo.version.equals(localModuleInfo.version) ?
+                            Objects.equals(moduleInfo.version, localModuleInfo.version) ?
                             moduleInfo.version : localModuleInfo.version + " (" +
                             this.getString(R.string.module_last_update) +
                             moduleInfo.version + ")") + " " +
                             this.getString(R.string.module_by) + " " + moduleInfo.author);
                 } else {
                     this.creditText.setText(localModuleInfo.version + (
-                            localModuleInfo.version.equals(localModuleInfo.updateVersion) ?
+                            (localModuleInfo.updateVersion != null &&
+                                    Objects.equals(localModuleInfo.version,
+                                            localModuleInfo.updateVersion)) ?
                                     "" : " (" + this.getString(R.string.module_last_update) +
                                     localModuleInfo.updateVersion + ")") + " " +
                             this.getString(R.string.module_by) + " " + localModuleInfo.author);

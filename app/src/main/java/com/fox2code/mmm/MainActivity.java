@@ -3,17 +3,24 @@ package com.fox2code.mmm;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.PixelFormat;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 
 import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.installer.InstallerInitializer;
@@ -25,6 +32,9 @@ import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
+import eightbitlab.com.blurview.BlurView;
+import eightbitlab.com.blurview.RenderScriptBlur;
+
 public class MainActivity extends CompatActivity implements SwipeRefreshLayout.OnRefreshListener,
         SearchView.OnQueryTextListener, SearchView.OnCloseListener {
     private static final String TAG = "MainActivity";
@@ -33,7 +43,11 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
     public LinearProgressIndicator progressIndicator;
     private ModuleViewAdapter moduleViewAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private int swipeRefreshLayoutOrigStartOffset;
+    private int swipeRefreshLayoutOrigEndOffset;
     private long swipeRefreshBlocker = 0;
+    private TextView actionBarPadding;
+    private BlurView actionBarBlur;
     private RecyclerView moduleList;
     private CardView searchCard;
     private SearchView searchView;
@@ -55,10 +69,24 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         setContentView(R.layout.activity_main);
         this.setTitle(R.string.app_name);
         this.getWindow().setFlags(
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION |
+                        WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION |
+                        WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            WindowManager.LayoutParams layoutParams = this.getWindow().getAttributes();
+            layoutParams.layoutInDisplayCutoutMode = // Support cutout in Android 9
+                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            this.getWindow().setAttributes(layoutParams);
+        }
+        this.actionBarPadding = findViewById(R.id.action_bar_padding);
+        this.actionBarBlur = findViewById(R.id.action_bar_blur);
         this.progressIndicator = findViewById(R.id.progress_bar);
         this.swipeRefreshLayout = findViewById(R.id.swipe_refresh);
+        this.swipeRefreshLayoutOrigStartOffset =
+                this.swipeRefreshLayout.getProgressViewStartOffset();
+        this.swipeRefreshLayoutOrigEndOffset =
+                this.swipeRefreshLayout.getProgressViewEndOffset();
         this.swipeRefreshBlocker = Long.MAX_VALUE;
         this.moduleList = findViewById(R.id.module_list);
         this.searchCard = findViewById(R.id.search_card);
@@ -68,6 +96,11 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         this.moduleList.setLayoutManager(new LinearLayoutManager(this));
         this.moduleList.setItemViewCacheSize(4); // Default is 2
         this.swipeRefreshLayout.setOnRefreshListener(this);
+        this.actionBarBlur.setupWith(this.moduleList).setFrameClearDrawable(
+                this.getWindow().getDecorView().getBackground())
+                .setBlurAlgorithm(new RenderScriptBlur(this))
+                .setBlurRadius(5F).setBlurAutoUpdate(true)
+                .setHasFixedTransformationMatrix(true);
         this.moduleList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -158,6 +191,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                     progressIndicator.setProgressCompat(PRECISION, true);
                     progressIndicator.setVisibility(View.GONE);
                     searchView.setEnabled(true);
+                    setActionBarBackground(null);
                 });
                 moduleViewListBuilder.appendRemoteModules();
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
@@ -175,12 +209,29 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         TypedValue value = new TypedValue();
         theme.resolveAttribute(backgroundAttr, value, true);
         this.searchCard.setCardBackgroundColor(value.data);
-        this.searchCard.setAlpha(iconified ? 0.70F : 1F);
+        this.searchCard.setAlpha(iconified ? 0.80F : 1F);
     }
 
     private void updateScreenInsets() {
-        this.moduleViewListBuilder.setFooterPx(
-                this.getNavigationBarHeight() + this.searchCard.getHeight());
+        this.runOnUiThread(() -> this.updateScreenInsets(
+                this.getResources().getConfiguration()));
+    }
+
+    private void updateScreenInsets(Configuration configuration) {
+        boolean landscape = configuration.orientation ==
+                Configuration.ORIENTATION_LANDSCAPE;
+        int statusBarHeight = getStatusBarHeight();
+        int actionBarHeight = getActionBarHeight();
+        int combinedBarsHeight = statusBarHeight + actionBarHeight;
+        this.actionBarPadding.setMinHeight(combinedBarsHeight);
+        this.swipeRefreshLayout.setProgressViewOffset(false,
+                swipeRefreshLayoutOrigStartOffset + combinedBarsHeight,
+                swipeRefreshLayoutOrigEndOffset + combinedBarsHeight);
+        this.moduleViewListBuilder.setHeaderPx(actionBarHeight);
+        this.moduleViewListBuilder.setFooterPx((landscape ? 0 :
+                this.getNavigationBarHeight()) + this.searchCard.getHeight());
+        this.moduleViewListBuilder.updateInsets();
+        this.actionBarBlur.invalidate();
     }
 
     @Override
@@ -232,6 +283,12 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
             }
         });
         this.initMode = false;
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        this.updateScreenInsets(newConfig);
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override
