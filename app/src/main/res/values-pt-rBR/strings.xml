@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Fox\'s Magisk Module Manager</string>
     <string name="app_name_short">Fox\'s Mmm</string>
-    <string name="fail_root_magisk">Não foi possível ter acesso root ou ao Magisk.</string>
+    <string name="fail_root_magisk">Não foi possível obter acesso root e/ou ao Magisk.</string>
     <string name="loading">Carregando…</string>
     <string name="updatable">Atualização disponível</string>
     <string name="installed">Instalado</string>
@@ -40,19 +40,19 @@
     <string name="show_licenses">Mostrar licenças</string>
     <string name="licenses">Licenças</string>
     <string name="show_incompatible_pref">Mostrar módulos incompatíveis</string>
-    <string name="show_incompatible_desc">Mostra módulos que são incompatíveis com seu dispositivo baseado nas informações deles.</string>
+    <string name="show_incompatible_desc">Mostra módulos que são incompatíveis com seu dispositivo. Essa informação é obtida na metadata do módulo.</string>
     <string name="magisk_outdated">Magisk desatualizado!</string>
     <string name="pref_category_repos">Repositórios</string>
     <string name="repo_main_desc">Repositório que hospeda os módulos do Magisk</string>
-    <string name="repo_main_alt">Uma alternativa com menos restrições ao Magisk-Modules-Repo.</string>
+    <string name="repo_main_alt">Uma alternativa ao Magisk-Modules-Repo com menos restrições.</string>
     <string name="master_delete">Deletar os arquivos do módulo?</string>
-    <string name="master_delete_no">Não deletar</string>
-    <string name="master_delete_yes">Deletar arquivos</string>
+    <string name="master_delete_no">Não</string>
+    <string name="master_delete_yes">Deletar</string>
     <string name="master_delete_fail">Não foi possível deletar os arquivos do módulo</string>
     <string name="theme_pref">Tema</string>
     <string name="module_id_prefix">ID do módulo: </string>
     <string name="install_from_storage">Instalar módulo armazenado localmente</string>
-    <string name="invalid_format">O módulo selecionado está com um formato inválido.</string>
+    <string name="invalid_format">O módulo selecionado está em um formato inválido.</string>
     <string name="local_install_title">Instalação local</string>
     <string name="source_code">Código fonte</string>
     <string name="magisk_builtin_module">Módulo builtin do Magisk</string>
@@ -64,14 +64,14 @@
     <string name="use_magisk_install_command_pref">Usar comando de instalação do Magisk</string>
     <string name="use_magisk_install_command_desc">
         Durante testes esta opção causou problemas na ferramenta de diagnósticos de erro do module install,
-        então eu escondi esta opção no modo de desenvolvedor, habilite por sua conta e risco!
+        então eu escondi esta opção no modo de desenvolvedor. Habilite por sua conta e risco!
     </string>
     <string name="dev_mode_enabled">Modo desenvolvedor habilitado</string>
     <string name="force_english_pref">Forçar uso do inglês</string>
     <string name="disable_low_quality_module_filter_pref">Desabilitar filtro de módulos de baixa qualidade</string>
     <string name="disable_low_quality_module_filter_desc">
         Alguns módulos não declaram a metadata corretamente, causando glitchs visuais.
-        Isto indica que o módulo é de baixa qualidade, desabilite por sua conta e risco!
+        Isso indica que o módulo é de baixa qualidade, desabilite por sua conta e risco!
     </string>
     <string name="dns_over_https_pref">DNS over HTTPS</string>
     <string name="dns_over_https_desc">
@@ -81,7 +81,7 @@
     <string name="disable_extensions_pref">Desabilitar extensões</string>
     <string name="disable_extensions_desc">
         Desabilita as extensões do Fox\'s Mmm, isto previne que os módulos usem
-        extensão do terminal, útil se algum módulo fazer algum uso indevido de extensões do Fox\'s Mmm.
+        extensões do terminal. Útil se algum módulo fazer algum uso indevido de extensões do Fox\'s Mmm.
     </string>
     <string name="wrap_text_pref">Quebrar texto</string>
     <string name="wrap_text_desc">
