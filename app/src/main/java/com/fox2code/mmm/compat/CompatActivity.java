@@ -164,6 +164,23 @@ public class CompatActivity extends AppCompatActivity {
         }
     }
 
+    public void showActionBar() {
+        androidx.appcompat.app.ActionBar compatActionBar;
+        try {
+            compatActionBar = this.getSupportActionBar();
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to call getSupportActionBar", e);
+            compatActionBar = null; // Allow fallback to builtin actionBar.
+        }
+        if (compatActionBar != null) {
+            compatActionBar.show();
+        } else {
+            android.app.ActionBar actionBar = this.getActionBar();
+            if (actionBar != null)
+                actionBar.show();
+        }
+    }
+
     @Dimension @Px
     public int getActionBarHeight() {
         androidx.appcompat.app.ActionBar compatActionBar;

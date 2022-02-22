@@ -132,6 +132,10 @@ public class InstallerActivity extends CompatActivity {
                             this.progressIndicator.setProgressCompat(progress, true);
                         });
                     });
+                    this.runOnUiThread(() -> {
+                        this.progressIndicator.setVisibility(View.GONE);
+                        this.progressIndicator.setIndeterminate(true);
+                    });
                     if (this.canceled) return;
                     if (checksum != null && !checksum.isEmpty()) {
                         Log.d(TAG, "Checking for checksum: " + checksum);
@@ -178,8 +182,6 @@ public class InstallerActivity extends CompatActivity {
                         errMessage = "Failed to patch module zip";
                         this.runOnUiThread(() -> {
                             this.installerTerminal.addLine("- Patching " + name);
-                            this.progressIndicator.setVisibility(View.GONE);
-                            this.progressIndicator.setIndeterminate(true);
                         });
                         Log.i(TAG, "Patching: " + moduleCache.getName());
                         try (OutputStream outputStream = new FileOutputStream(moduleCache)) {

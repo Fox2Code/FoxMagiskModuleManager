@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.DrawableRes;
 import androidx.appcompat.app.AlertDialog;
 
+import com.fox2code.mmm.androidacy.AndroidacyUtil;
 import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.compat.CompatDisplay;
 import com.fox2code.mmm.installer.InstallerInitializer;
@@ -160,7 +161,7 @@ public enum ActionButtonType {
         public void doAction(ImageButton button, ModuleHolder moduleHolder) {
             String config = moduleHolder.getMainModuleConfig();
             if (config == null) return;
-            if (config.startsWith("https://www.androidacy.com/")) {
+            if (AndroidacyUtil.isAndroidacyLink(config)) {
                 IntentHelper.openUrlAndroidacy(button.getContext(), config, true);
             } else {
                 IntentHelper.openConfig(button.getContext(), config);

@@ -42,14 +42,14 @@ public class InstallerInitializer extends Shell.Initializer {
     }
 
     public static void tryGetMagiskPathAsync(Callback callback,boolean forceCheck) {
-        String MAGISK_PATH = InstallerInitializer.MAGISK_PATH;
-        if (MAGISK_PATH != null && !forceCheck) {
-            callback.onPathReceived(MAGISK_PATH);
-            return;
-        }
+        final String MAGISK_PATH = InstallerInitializer.MAGISK_PATH;
         Thread thread = new Thread("Magisk GetPath Thread") {
             @Override
             public void run() {
+                if (MAGISK_PATH != null && !forceCheck) {
+                    callback.onPathReceived(MAGISK_PATH);
+                    return;
+                }
                 int error;
                 String MAGISK_PATH = null;
                 try {

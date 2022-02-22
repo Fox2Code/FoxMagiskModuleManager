@@ -84,4 +84,25 @@ public class Hashes {
         Log.d(TAG, "Checksum result (data: " + hash+ ",expected: " + checksum + ")");
         return hash.equals(checksum.toLowerCase(Locale.ROOT));
     }
+
+    public static boolean checkSumValid(String checksum) {
+        if (checksum == null) return false;
+        switch (checksum.length()) {
+            case 0:
+            default:
+                return false;
+            case 32:
+            case 40:
+            case 64:
+            case 128:
+                final int len = checksum.length();
+                for (int i = 0; i < len; i++) {
+                    char c = checksum.charAt(i);
+                    if (c < '0' || c > 'f') return false;
+                    if (c > '9' && // Easier working with bits
+                            (c & 0b01011111) < 'A') return false;
+                }
+                return true;
+        }
+    }
 }
