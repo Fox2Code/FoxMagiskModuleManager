@@ -13,6 +13,7 @@ import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
 import com.fox2code.mmm.utils.Files;
+import com.fox2code.mmm.utils.Hashes;
 import com.fox2code.mmm.utils.IntentHelper;
 
 import java.io.File;
@@ -23,21 +24,30 @@ public class AndroidacyWebAPI {
     private static final String TAG = "AndroidacyWebAPI";
     private final AndroidacyActivity activity;
     private final boolean allowInstall;
+    boolean consumedAction;
 
     public AndroidacyWebAPI(AndroidacyActivity activity, boolean allowInstall) {
         this.activity = activity;
         this.allowInstall = allowInstall;
     }
 
+    public void forceQuitRaw(String error) {
+        Toast.makeText(this.activity, error, Toast.LENGTH_LONG).show();
+        this.activity.runOnUiThread(this.activity::forceBackPressed);
+        this.activity.backOnResume = true; // Set backOnResume just in case
+    }
+
     @JavascriptInterface
     public void forceQuit(String error) {
-        Toast.makeText(this.activity, error, Toast.LENGTH_LONG).show();
-        this.activity.runOnUiThread(
-                this.activity::forceBackPressed);
+        if (this.consumedAction) return;
+        this.consumedAction = true;
+        this.forceQuitRaw(error);
     }
 
     @JavascriptInterface
     public void cancel() {
+        if (this.consumedAction) return;
+        this.consumedAction = true;
         this.activity.runOnUiThread(
                 this.activity::forceBackPressed);
     }
@@ -47,6 +57,8 @@ public class AndroidacyWebAPI {
      */
     @JavascriptInterface
     public void openUrl(String url) {
+        if (this.consumedAction) return;
+        this.consumedAction = true;
         Log.d(TAG, "Received openUrl request: " + url);
         if (Uri.parse(url).getScheme().equals("https")) {
             IntentHelper.openUrl(this.activity, url);
@@ -82,19 +94,25 @@ public class AndroidacyWebAPI {
      */
     @JavascriptInterface
     public void install(String moduleUrl, String installTitle,String checksum) {
-        if (!this.canInstall()) {
+        if (this.consumedAction || !this.canInstall()) {
             return;
         }
+        this.consumedAction = true;
         Log.d(TAG, "Received install request: " +
                 moduleUrl + " " + installTitle + " " + checksum);
         Uri uri = Uri.parse(moduleUrl);
-        if (uri.getScheme().equals("https") && uri.getHost().endsWith(".androidacy.com")) {
-            this.activity.backOnResume = true;
-            IntentHelper.openInstaller(this.activity,
-                    moduleUrl, installTitle, null, checksum);
-        } else {
-            this.activity.forceBackPressed();
+        if (!AndroidacyUtil.isAndroidacyLink(moduleUrl, uri)) {
+            this.forceQuitRaw("Non Androidacy module link used on Androidacy");
+            return;
         }
+        if (checksum != null) checksum = checksum.trim();
+        if (!Hashes.checkSumValid(checksum)) {
+            this.forceQuitRaw("Androidacy didn't provided a valid checksum");
+            return;
+        }
+        this.activity.backOnResume = true;
+        IntentHelper.openInstaller(this.activity,
+                moduleUrl, installTitle, null, checksum);
     }
 
     /**
@@ -137,7 +155,25 @@ public class AndroidacyWebAPI {
      */
     @JavascriptInterface
     public void hideActionBar() {
-        this.activity.hideActionBar();
+        if (this.consumedAction) return;
+        this.consumedAction = true;
+        this.activity.runOnUiThread(() -> {
+            this.activity.hideActionBar();
+            this.consumedAction = false;
+        });
+    }
+
+    /**
+     * Show action bar if not visible, the action bar is only visible by default on notes.
+     */
+    @JavascriptInterface
+    public void showActionBar() {
+        if (this.consumedAction) return;
+        this.consumedAction = true;
+        this.activity.runOnUiThread(() -> {
+            this.activity.showActionBar();
+            this.consumedAction = false;
+        });
     }
 
     /**
@@ -147,8 +183,7 @@ public class AndroidacyWebAPI {
     public boolean isAndroidacyModule(String moduleId) {
         LocalModuleInfo localModuleInfo = ModuleManager.getINSTANCE().getModules().get(moduleId);
         return localModuleInfo != null && ("Androidacy".equals(localModuleInfo.author) ||
-                (localModuleInfo.config != null &&
-                        localModuleInfo.config.startsWith("https://www.androidacy.com/")));
+                AndroidacyUtil.isAndroidacyLink(localModuleInfo.config));
     }
 
     /**
@@ -157,7 +192,8 @@ public class AndroidacyWebAPI {
      */
     @JavascriptInterface
     public String getAndroidacyModuleFile(String moduleId, String moduleFile) {
-        if (moduleFile == null || !this.isAndroidacyModule(moduleId)) return "";
+        if (moduleFile == null || this.consumedAction ||
+                !this.isAndroidacyModule(moduleId)) return "";
         File moduleFolder = new File("/data/adb/modules/" + moduleId);
         File absModuleFile = new File(moduleFolder, moduleFile).getAbsoluteFile();
         if (!absModuleFile.getPath().startsWith(moduleFolder.getPath())) return "";
@@ -175,7 +211,8 @@ public class AndroidacyWebAPI {
      */
     @JavascriptInterface
     public boolean setAndroidacyModuleMeta(String moduleId, String content) {
-        if (content == null || !this.isAndroidacyModule(moduleId)) return false;
+        if (content == null || this.consumedAction ||
+                !this.isAndroidacyModule(moduleId)) return false;
         File androidacyMetaFile = new File(
                 "/data/adb/modules/" + moduleId + "/.androidacy");
         try {

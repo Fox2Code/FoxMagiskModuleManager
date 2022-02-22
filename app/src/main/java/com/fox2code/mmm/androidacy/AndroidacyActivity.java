@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
@@ -33,6 +34,7 @@ import com.fox2code.mmm.utils.IntentHelper;
  * Per Androidacy repo implementation agreement, no request of this WebView shall be modified.
  */
 public class AndroidacyActivity extends CompatActivity {
+    private static final String TAG = "AndroidacyActivity";
     private static final String REFERRER = "utm_source=FoxMMM&utm_medium=app";
 
     static {
@@ -42,6 +44,7 @@ public class AndroidacyActivity extends CompatActivity {
     }
 
     WebView webView;
+    AndroidacyWebAPI androidacyWebAPI;
     boolean backOnResume;
 
     @Override
@@ -51,16 +54,14 @@ public class AndroidacyActivity extends CompatActivity {
         Intent intent = this.getIntent();
         Uri uri;
         if (!MainApplication.checkSecret(intent) ||
-                (uri = intent.getData()) == null ||
-                !uri.getHost().endsWith(".androidacy.com")) {
+                (uri = intent.getData()) == null) {
+            Log.w(TAG, "Impersonation detected");
             this.forceBackPressed();
             return;
         }
         String url = uri.toString();
-        int i;
-        if (!url.startsWith("https://") || // Checking twice
-                (i = url.indexOf("/", 8)) == -1 ||
-                !url.substring(8, i).endsWith(".androidacy.com")) {
+        if (!AndroidacyUtil.isAndroidacyLink(url, uri)) {
+            Log.w(TAG, "Calling non androidacy link in secure WebView: " + url);
             this.forceBackPressed();
             return;
         }
@@ -112,9 +113,9 @@ public class AndroidacyActivity extends CompatActivity {
             @Override
             public boolean shouldOverrideUrlLoading(
                     @NonNull WebView view, @NonNull WebResourceRequest request) {
-                // Don't open non andoridacy urls inside WebView
+                // Don't open non Androidacy urls inside WebView
                 if (request.isForMainFrame() && !(request.getUrl().getScheme().equals("intent") ||
-                        request.getUrl().getHost().endsWith(".androidacy.com"))) {
+                        AndroidacyUtil.isAndroidacyLink(request.getUrl()))) {
                     IntentHelper.openUrl(view.getContext(), request.getUrl().toString());
                     return true;
                 }
@@ -159,7 +160,7 @@ public class AndroidacyActivity extends CompatActivity {
                 return true;
             }
         });
-        this.webView.addJavascriptInterface(
+        this.webView.addJavascriptInterface(androidacyWebAPI =
                 new AndroidacyWebAPI(this, allowInstall), "mmm");
         this.webView.loadUrl(url);
     }
@@ -180,6 +181,8 @@ public class AndroidacyActivity extends CompatActivity {
         if (this.backOnResume) {
             this.backOnResume = false;
             this.forceBackPressed();
+        } else if (this.androidacyWebAPI != null) {
+            this.androidacyWebAPI.consumedAction = false;
         }
     }
 }
