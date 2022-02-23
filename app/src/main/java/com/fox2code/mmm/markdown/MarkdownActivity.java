@@ -43,8 +43,9 @@ public class MarkdownActivity extends CompatActivity {
         String config = intent.getExtras()
                 .getString(Constants.EXTRA_MARKDOWN_CONFIG);
         if (title != null && !title.isEmpty()) {
-            setTitle(title);
+            this.setTitle(title);
         }
+        setActionBarBackground(null);
         this.getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
                 WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);

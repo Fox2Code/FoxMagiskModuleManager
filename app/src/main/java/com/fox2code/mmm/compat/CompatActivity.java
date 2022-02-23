@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -17,6 +18,7 @@ import android.view.View;
 import androidx.annotation.CallSuper;
 import androidx.annotation.Dimension;
 import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 import androidx.annotation.StringRes;
@@ -320,6 +322,13 @@ public class CompatActivity extends AppCompatActivity {
                     this.forceEnglish, this.nightModeOverride);
             super.onApplyThemeResource(theme, resid, first);
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        this.compatConfigHelper.checkResourcesOverrides(this.getTheme(),
+                this.forceEnglish, this.nightModeOverride);
+        super.onConfigurationChanged(newConfig);
     }
 
     public void setOnBackPressedCallback(OnBackPressedCallback onBackPressedCallback) {

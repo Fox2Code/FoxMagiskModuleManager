@@ -3,21 +3,17 @@ package com.fox2code.mmm;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
@@ -36,7 +32,8 @@ import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
 
 public class MainActivity extends CompatActivity implements SwipeRefreshLayout.OnRefreshListener,
-        SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+        SearchView.OnQueryTextListener, SearchView.OnCloseListener,
+        OverScrollManager.OverScrollHelper {
     private static final String TAG = "MainActivity";
     private static final int PRECISION = 10000;
     public final ModuleViewListBuilder moduleViewListBuilder;
@@ -46,6 +43,8 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
     private int swipeRefreshLayoutOrigStartOffset;
     private int swipeRefreshLayoutOrigEndOffset;
     private long swipeRefreshBlocker = 0;
+    private int overScrollInsetTop;
+    private int overScrollInsetBottom;
     private TextView actionBarPadding;
     private BlurView actionBarBlur;
     private RecyclerView moduleList;
@@ -70,9 +69,10 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         this.setTitle(R.string.app_name);
         this.getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION |
-                        WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION |
-                        WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        setActionBarBackground(null);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             WindowManager.LayoutParams layoutParams = this.getWindow().getAttributes();
             layoutParams.layoutInDisplayCutoutMode = // Support cutout in Android 9
@@ -95,6 +95,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         this.moduleList.setAdapter(this.moduleViewAdapter);
         this.moduleList.setLayoutManager(new LinearLayoutManager(this));
         this.moduleList.setItemViewCacheSize(4); // Default is 2
+        OverScrollManager.install(this.moduleList, this);
         this.swipeRefreshLayout.setOnRefreshListener(this);
         this.actionBarBlur.setupWith(this.moduleList).setFrameClearDrawable(
                 this.getWindow().getDecorView().getBackground())
@@ -109,7 +110,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
             }
         });
         this.searchView.setImeOptions(EditorInfo.IME_ACTION_SEARCH |
-                EditorInfo.IME_FLAG_NO_FULLSCREEN | EditorInfo.IME_FLAG_FORCE_ASCII);
+                EditorInfo.IME_FLAG_NO_FULLSCREEN);
         this.searchView.setOnQueryTextListener(this);
         this.searchView.setOnCloseListener(this);
         this.searchView.setOnQueryTextFocusChangeListener((v, h) -> {
@@ -230,10 +231,13 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                 swipeRefreshLayoutOrigStartOffset + combinedBarsHeight,
                 swipeRefreshLayoutOrigEndOffset + combinedBarsHeight);
         this.moduleViewListBuilder.setHeaderPx(actionBarHeight);
-        this.moduleViewListBuilder.setFooterPx((landscape ? 0 :
-                this.getNavigationBarHeight()) + this.searchCard.getHeight());
+        int bottomInset = (landscape ? 0 : this.getNavigationBarHeight());
+        this.moduleViewListBuilder.setFooterPx(
+                bottomInset + this.searchCard.getHeight());
         this.moduleViewListBuilder.updateInsets();
         this.actionBarBlur.invalidate();
+        this.overScrollInsetTop = combinedBarsHeight;
+        this.overScrollInsetBottom = bottomInset;
     }
 
     @Override
@@ -359,5 +363,15 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
             }, "Query update thread").start();
         }
         return false;
+    }
+
+    @Override
+    public int getOverScrollInsetTop() {
+        return this.overScrollInsetTop;
+    }
+
+    @Override
+    public int getOverScrollInsetBottom() {
+        return this.overScrollInsetBottom;
     }
 }

@@ -14,9 +14,13 @@ import java.util.Locale;
 final class CompatConfigHelper {
     // ENGLISH like this is an unnatural local, as it doesn't precise the country
     // All english locales settable by the user precise the country (Ex: en-US)
-    private static final Locale english = Locale.ENGLISH;
+    private static final Locale englishLocale = Locale.ENGLISH;
+    private static final Object englishLocales =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N ?
+            new LocaleList(englishLocale) : null;
 
     private final Context context;
+    private Object userLocales;
     private Locale userLocale;
 
     CompatConfigHelper(Context context) {
@@ -32,22 +36,35 @@ final class CompatConfigHelper {
 
     void checkResourcesOverrides(Resources.Theme theme, boolean forceEnglish,
                                  Boolean nightModeOverride) {
-        final Resources res = theme.getResources();
-        final Configuration conf = res.getConfiguration();
+        Resources res = theme.getResources();
+        if (this.checkResourcesOverrides(res.getConfiguration(),
+                forceEnglish, nightModeOverride)) {
+            res.updateConfiguration(
+                    res.getConfiguration(),
+                    res.getDisplayMetrics());
+        }
+    }
+
+    boolean checkResourcesOverrides(Configuration conf, boolean forceEnglish,
+                                 Boolean nightModeOverride) {
         Locale current = conf.locale;
         boolean didChange = false;
-        if (forceEnglish != current.equals(english)) {
+        boolean wasForceEnglish = englishLocale.equals(current);
+        if (forceEnglish != wasForceEnglish) {
             didChange = true;
             if (forceEnglish) {
                 this.userLocale = conf.locale;
-                conf.locale = english;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    conf.setLocales(LocaleList.getEmptyLocaleList());
+                    this.userLocales = conf.getLocales();
+                }
+                conf.locale = englishLocale;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    conf.setLocales((LocaleList) englishLocales);
                 }
             } else {
                 conf.locale = this.userLocale;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    conf.setLocales(LocaleList.getAdjustedDefault());
+                    conf.setLocales((LocaleList) this.userLocales);
                 }
             }
         }
@@ -62,15 +79,16 @@ final class CompatConfigHelper {
                     Configuration.UI_MODE_NIGHT_YES : Configuration.UI_MODE_NIGHT_NO;
             conf.uiMode = nightMode | (conf.uiMode & ~Configuration.UI_MODE_NIGHT_MASK);
         }
-        if (didChange) {
-            res.updateConfiguration(conf, null);
-            if (!forceEnglish) this.userLocale = null;
+        if (!forceEnglish && !wasForceEnglish) {
+            this.userLocale = null;
+            this.userLocales = null;
         }
+        return didChange;
     }
 
     public Locale getUserLocale() {
         // Only use cached value if force english
         Locale locale = this.context.getResources().getConfiguration().locale;
-        return english.equals(locale) ? this.userLocale : locale;
+        return englishLocale.equals(locale) ? this.userLocale : locale;
     }
 }

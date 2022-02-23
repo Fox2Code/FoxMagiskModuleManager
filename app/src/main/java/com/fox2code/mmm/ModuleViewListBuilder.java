@@ -103,6 +103,7 @@ public class ModuleViewListBuilder {
         this.updating = true;
         final ArrayList<ModuleHolder> moduleHolders;
         final int newNotificationsLen;
+        final boolean first;
         final ModuleHolder[] headerFooter = new ModuleHolder[2];
         try {
             synchronized (this.updateLock) {
@@ -120,6 +121,7 @@ public class ModuleViewListBuilder {
                         moduleHolders.add(new ModuleHolder(notificationType));
                     }
                 }
+                first = moduleViewAdapter.moduleHolders.isEmpty();
                 newNotificationsLen = this.notifications.size() + 1 - special;
                 EnumSet<ModuleHolder.Type> headerTypes = EnumSet.of(ModuleHolder.Type.SEPARATOR,
                         ModuleHolder.Type.NOTIFICATION, ModuleHolder.Type.FOOTER);
@@ -170,9 +172,7 @@ public class ModuleViewListBuilder {
             this.updateInsets = RUNNABLE;
             final EnumSet<NotificationType> oldNotifications =
                     EnumSet.noneOf(NotificationType.class);
-            boolean isTop = // Force isTop if empty
-                    moduleViewAdapter.moduleHolders.isEmpty() ||
-                    !moduleList.canScrollVertically(-1);
+            boolean isTop = first || !moduleList.canScrollVertically(-1);
             boolean isBottom = !isTop && !moduleList.canScrollVertically(1);
             int oldNotificationsLen = 0;
             int oldOfflineModulesLen = 0;
@@ -182,7 +182,8 @@ public class ModuleViewListBuilder {
                     oldNotifications.add(notificationType);
                     if (!notificationType.special)
                         oldNotificationsLen++;
-                } else if (moduleHolder.footerPx != -1)
+                } else if (moduleHolder.footerPx != -1 &&
+                        moduleHolder.filterLevel == 1)
                     oldNotificationsLen++; // Fix header
                 if (moduleHolder.separator == ModuleHolder.Type.INSTALLABLE)
                     break;
