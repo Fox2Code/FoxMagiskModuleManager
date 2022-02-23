@@ -78,11 +78,16 @@ public class AndroidacyActivity extends CompatActivity {
         String title = intent.getStringExtra(Constants.EXTRA_ANDROIDACY_ACTIONBAR_TITLE);
         String config = intent.getStringExtra(Constants.EXTRA_ANDROIDACY_ACTIONBAR_CONFIG);
         this.setContentView(R.layout.webview);
+        setActionBarBackground(null);
+        this.setDisplayHomeAsUpEnabled(true);
+        if (title == null || title.isEmpty()) {
+            this.setTitle(title);
+        } else {
+            this.setTitle("Androidacy");
+        }
         if (allowInstall || title == null || title.isEmpty()) {
             this.hideActionBar();
         } else { // Only used for note section
-            this.setTitle(title);
-            this.setDisplayHomeAsUpEnabled(true);
             if (config != null && !config.isEmpty()) {
                 String configPkg = IntentHelper.getPackageOfConfig(config);
                 try {

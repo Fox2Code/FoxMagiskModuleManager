@@ -165,13 +165,17 @@ public class AndroidacyWebAPI {
 
     /**
      * Show action bar if not visible, the action bar is only visible by default on notes.
+     * Optional title param to set action bar title.
      */
     @JavascriptInterface
-    public void showActionBar() {
+    public void showActionBar(final String title) {
         if (this.consumedAction) return;
         this.consumedAction = true;
         this.activity.runOnUiThread(() -> {
             this.activity.showActionBar();
+            if (title != null && !title.isEmpty()) {
+                this.activity.setTitle(title);
+            }
             this.consumedAction = false;
         });
     }

@@ -7,6 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="orange_700">#EF6C00</color>
     <color name="orange_200">#FFA726</color>
+    <color name="black_transparent">#80000000</color>
+    <color name="white_transparent">#80FFFFFF</color>
+    <color name="transparent">#00000000</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="status_bar_color">@color/black_transparent</color>
 </resources>

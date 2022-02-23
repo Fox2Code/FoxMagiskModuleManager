@@ -57,6 +57,7 @@ public class InstallerActivity extends CompatActivity {
             Log.e(TAG, "Failed to mkdir module cache dir!");
         super.onCreate(savedInstanceState);
         this.setDisplayHomeAsUpEnabled(true);
+        setActionBarBackground(null);
         this.setOnBackPressedCallback(a -> {
             this.canceled = true; return false;
         });

@@ -17,6 +17,8 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/card_corner_radius"
         app:strokeColor="@android:color/transparent"
+        app:cardPreventCornerOverlap="true"
+        app:cardElevation="0dp"
         app:strokeWidth="0dp">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

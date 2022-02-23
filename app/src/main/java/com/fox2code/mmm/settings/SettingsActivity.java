@@ -1,19 +1,23 @@
 package com.fox2code.mmm.settings;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.OverScrollManager;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.compat.CompatThemeWrapper;
@@ -23,6 +27,8 @@ import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.mikepenz.aboutlibraries.LibsBuilder;
+import com.mikepenz.aboutlibraries.LibsConfiguration;
+import com.mikepenz.aboutlibraries.ui.LibsSupportFragment;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 public class SettingsActivity extends CompatActivity {
@@ -35,6 +41,7 @@ public class SettingsActivity extends CompatActivity {
         this.setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.settings_activity);
         setTitle(R.string.app_name);
+        setActionBarBackground(null);
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -50,6 +57,7 @@ public class SettingsActivity extends CompatActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             getPreferenceManager().setSharedPreferencesName("mmm");
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
+            OverScrollManager.install(getListView());
             findPreference("pref_manage_repos").setOnPreferenceClickListener(p -> {
                 devModeStep = 0;
                 openFragment(new RepoFragment(), R.string.manage_repos_pref);
@@ -100,7 +108,8 @@ public class SettingsActivity extends CompatActivity {
             }
 
             final LibsBuilder libsBuilder = new LibsBuilder().withShowLoadingProgress(false)
-                    .withLicenseShown(true).withAboutMinimalDesign(false);
+                    .withLicenseShown(true).withAboutMinimalDesign(false)
+                    .withUiListener(new OverScrollManager.LibsOverScroll());
             Preference update = findPreference("pref_update");
             update.setVisible(AppUpdateManager.getAppUpdateManager().peekHasUpdate());
             update.setOnPreferenceClickListener(p -> {
@@ -162,6 +171,7 @@ public class SettingsActivity extends CompatActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             getPreferenceManager().setSharedPreferencesName("mmm");
             setPreferencesFromResource(R.xml.repo_preferences, rootKey);
+            OverScrollManager.install(getListView());
             setRepoData(RepoManager.MAGISK_ALT_REPO,
                     "Magisk Modules Alt Repo", RepoManager.MAGISK_ALT_REPO_HOMEPAGE,
                     null, null,

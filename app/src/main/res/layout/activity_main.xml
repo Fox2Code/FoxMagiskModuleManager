@@ -2,9 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:fitsSystemWindowsInsets="top"
+    app:fitsSystemWindowsInsets="left|right"
     tools:context=".MainActivity">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -19,8 +20,22 @@
             android:id="@+id/module_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:overScrollMode="never"
             app:edgeToEdge="true" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <eightbitlab.com.blurview.BlurView
+        android:id="@+id/action_bar_blur"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <TextView
+            android:id="@+id/action_bar_padding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </eightbitlab.com.blurview.BlurView>
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progress_bar"
@@ -29,21 +44,21 @@
         android:indeterminate="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/action_bar_blur" />
 
     <LinearLayout
         android:id="@+id/search_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:gravity="center_vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:gravity="right"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:fitsSystemWindowsInsets="bottom">
+        app:fitsSystemWindowsInsets="bottom"
+        tools:ignore="RtlHardcoded">
         <androidx.cardview.widget.CardView
             android:id="@+id/search_card"
             android:layout_gravity="center"
@@ -53,11 +68,13 @@
             android:background="@null"
             app:cardCornerRadius="75dp"
             app:strokeColor="@android:color/transparent"
+            app:cardElevation="0dp"
             app:strokeWidth="0dp">
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/search_bar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:background="@null" />
         </androidx.cardview.widget.CardView>
     </LinearLayout>
 

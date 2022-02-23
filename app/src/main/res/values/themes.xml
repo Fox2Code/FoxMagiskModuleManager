@@ -4,7 +4,7 @@
             tools:targetApi="q">true</item>
         <item name="isLightTheme">true</item>
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimary">@color/orange_200</item>
         <item name="colorPrimaryVariant">@color/white</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
@@ -12,7 +12,8 @@
         <item name="colorSecondaryVariant">@color/orange_200</item>
         <item name="colorOnSecondary">@color/white</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">@color/status_bar_color</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <!-- Customize your theme here. -->
         <item name="android:windowActivityTransitions">true</item>
         <!-- <item name="android:activityOpenEnterAnimation">@*android:anim/slide_in_right</item>
@@ -25,13 +26,12 @@
         <item name="dialogCornerRadius">@dimen/card_corner_radius</item>
     </style>
 
-    <!-- Base application theme. -->
     <style name="Theme.MagiskModuleManager.Dark" parent="Theme.MaterialComponents">
         <item name="android:isLightTheme"
             tools:targetApi="q">false</item>
         <item name="isLightTheme">false</item>
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
+        <item name="colorPrimary">@color/orange_200</item>
         <item name="colorPrimaryVariant">@color/black</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
@@ -39,7 +39,8 @@
         <item name="colorSecondaryVariant">@color/orange_200</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">@color/status_bar_color</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <!-- Customize your theme here. -->
         <item name="android:windowActivityTransitions">true</item>
         <!-- <item name="android:activityOpenEnterAnimation">@*android:anim/slide_in_right</item>
