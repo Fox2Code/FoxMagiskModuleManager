@@ -154,6 +154,8 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                 runOnUiThread(() -> {
                     progressIndicator.setIndeterminate(false);
                     progressIndicator.setMax(PRECISION);
+                    // Fix insets not being accounted for correctly
+                    updateScreenInsets(getResources().getConfiguration());
                 });
                 Log.i(TAG, "Scanning for modules!");
                 final int max = ModuleManager.getINSTANCE().getUpdatableModuleCount();

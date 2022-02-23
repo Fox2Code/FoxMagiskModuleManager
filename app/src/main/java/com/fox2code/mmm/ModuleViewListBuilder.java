@@ -120,7 +120,7 @@ public class ModuleViewListBuilder {
                         moduleHolders.add(new ModuleHolder(notificationType));
                     }
                 }
-                newNotificationsLen = this.notifications.size() - special;
+                newNotificationsLen = this.notifications.size() + 1 - special;
                 EnumSet<ModuleHolder.Type> headerTypes = EnumSet.of(ModuleHolder.Type.SEPARATOR,
                         ModuleHolder.Type.NOTIFICATION, ModuleHolder.Type.FOOTER);
                 Iterator<ModuleHolder> moduleHolderIterator = this.mappedModuleHolders.values().iterator();
@@ -170,7 +170,9 @@ public class ModuleViewListBuilder {
             this.updateInsets = RUNNABLE;
             final EnumSet<NotificationType> oldNotifications =
                     EnumSet.noneOf(NotificationType.class);
-            boolean isTop = !moduleList.canScrollVertically(-1);
+            boolean isTop = // Force isTop if empty
+                    moduleViewAdapter.moduleHolders.isEmpty() ||
+                    !moduleList.canScrollVertically(-1);
             boolean isBottom = !isTop && !moduleList.canScrollVertically(1);
             int oldNotificationsLen = 0;
             int oldOfflineModulesLen = 0;
@@ -199,10 +201,16 @@ public class ModuleViewListBuilder {
             int oldLen = moduleViewAdapter.moduleHolders.size();
             moduleViewAdapter.moduleHolders.clear();
             moduleViewAdapter.moduleHolders.addAll(moduleHolders);
+            synchronized (this.updateLock) {
+                headerFooter[0].footerPx = this.headerPx;
+                headerFooter[1].footerPx = this.footerPx;
+            }
             if (oldNotificationsLen != newNotificationsLen ||
                     !oldNotifications.equals(this.notifications)) {
                 notifySizeChanged(moduleViewAdapter, 0,
                         oldNotificationsLen, newNotificationsLen);
+            } else {
+                notifySizeChanged(moduleViewAdapter, 0, 1, 1);
             }
             if (newLen - newNotificationsLen == 0) {
                 notifySizeChanged(moduleViewAdapter, newNotificationsLen,

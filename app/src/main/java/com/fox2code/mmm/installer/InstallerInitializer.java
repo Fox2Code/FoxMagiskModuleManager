@@ -15,6 +15,8 @@ import java.util.ArrayList;
 
 public class InstallerInitializer extends Shell.Initializer {
     private static final String TAG = "InstallerInitializer";
+    private static final File MAGISK_SYSTEM =
+            new File("/system/bin/magisk");
     private static String MAGISK_PATH;
     private static int MAGISK_VERSION_CODE;
 
@@ -64,6 +66,9 @@ public class InstallerInitializer extends Shell.Initializer {
                 }
                 if (forceCheck) {
                     InstallerInitializer.MAGISK_PATH = MAGISK_PATH;
+                    if (MAGISK_PATH == null) {
+                        InstallerInitializer.MAGISK_VERSION_CODE = 0;
+                    }
                 }
                 if (MAGISK_PATH != null) {
                     MainApplication.setHasGottenRootAccess(true);
@@ -112,9 +117,15 @@ public class InstallerInitializer extends Shell.Initializer {
             Log.w(TAG, "Unable to detect magisk path!");
         } else {
             newJob.add("export ASH_STANDALONE=1");
-            newJob.add("export PATH=\"" + MAGISK_PATH + "/.magisk/busybox;$PATH\"");
+            if (!MAGISK_PATH.equals("/sbin") && !MAGISK_SYSTEM.exists()) {
+                newJob.add("export PATH=" + MAGISK_PATH + ";$PATH;" +
+                        MAGISK_PATH + "/.magisk/busybox");
+            } else {
+                newJob.add("export PATH=$PATH;" +
+                        MAGISK_PATH + "/.magisk/busybox");
+            }
             newJob.add("export MAGISKTMP=\"" + MAGISK_PATH + "/.magisk\"");
-            newJob.add("busybox sh");
+            newJob.add("$(which busybox 2> /dev/null) sh");
         }
         return true;
     }
