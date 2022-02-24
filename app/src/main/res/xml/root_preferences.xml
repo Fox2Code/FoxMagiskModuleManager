@@ -19,6 +19,13 @@
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
+            app:key="pref_enable_blur"
+            app:icon="@drawable/ic_baseline_blur_on_24"
+            app:title="@string/enable_blur_pref"
+            app:singleLineTitle="false" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
             app:key="pref_force_english"
             app:icon="@drawable/ic_baseline_language_24"
             app:title="@string/force_english_pref"

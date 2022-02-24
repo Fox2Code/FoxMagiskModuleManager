@@ -11,11 +11,15 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.AttrRes;
 import androidx.annotation.CallSuper;
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
 import androidx.annotation.Dimension;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
@@ -24,12 +28,15 @@ import androidx.annotation.Px;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.ColorUtils;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.R;
 
+import java.lang.ref.WeakReference;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -51,6 +58,7 @@ public class CompatActivity extends AppCompatActivity {
         }
     };
 
+    final WeakReference<CompatActivity> selfReference;
     private final CompatConfigHelper compatConfigHelper = new CompatConfigHelper(this);
     private CompatActivity.OnActivityResultCallback onActivityResultCallback;
     private CompatActivity.OnBackPressedCallback onBackPressedCallback;
@@ -64,6 +72,10 @@ public class CompatActivity extends AppCompatActivity {
     // CompatConfigHelper
     private boolean forceEnglish;
     private Boolean nightModeOverride;
+
+    public CompatActivity() {
+        this.selfReference = new WeakReference<>(this);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -326,7 +338,7 @@ public class CompatActivity extends AppCompatActivity {
 
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        this.compatConfigHelper.checkResourcesOverrides(this.getTheme(),
+        this.compatConfigHelper.checkResourcesOverrides(newConfig,
                 this.forceEnglish, this.nightModeOverride);
         super.onConfigurationChanged(newConfig);
     }
@@ -409,9 +421,49 @@ public class CompatActivity extends AppCompatActivity {
         this.checkResourcesOverrides(this.forceEnglish, nightModeOverride);
     }
 
+    void propagateResourcesOverride(boolean forceEnglish, Boolean nightModeOverride) {
+        if (this.forceEnglish == forceEnglish &&
+                this.nightModeOverride == nightModeOverride) return;
+        this.forceEnglish = forceEnglish;
+        this.nightModeOverride = nightModeOverride;
+        this.checkResourcesOverrides(forceEnglish, nightModeOverride);
+    }
+
     private void checkResourcesOverrides(boolean forceEnglish,Boolean nightModeOverride) {
         if (this.isRefreshUi || !this.onCreateCalled) return; // Wait before reload
         this.compatConfigHelper.checkResourcesOverrides(forceEnglish, nightModeOverride);
+    }
+
+    public boolean isLightTheme() {
+        Resources.Theme theme = this.getTheme();
+        TypedValue typedValue = new TypedValue();
+        theme.resolveAttribute(R.attr.isLightTheme, typedValue, true);
+        if (typedValue.type == TypedValue.TYPE_INT_BOOLEAN) {
+            return typedValue.data != 0;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            theme.resolveAttribute(android.R.attr.isLightTheme, typedValue, true);
+            if (typedValue.type == TypedValue.TYPE_INT_BOOLEAN) {
+                return typedValue.data != 0;
+            }
+        }
+        theme.resolveAttribute(android.R.attr.background, typedValue, true);
+        if (typedValue.type >= TypedValue.TYPE_FIRST_COLOR_INT &&
+                typedValue.type <= TypedValue.TYPE_LAST_COLOR_INT) {
+            return ColorUtils.calculateLuminance(typedValue.data) > 0.7D;
+        }
+        throw new IllegalStateException("Theme is not a valid theme!");
+    }
+
+    @ColorInt
+    public final int getColorCompat(@ColorRes @AttrRes int color) {
+        TypedValue typedValue = new TypedValue();
+        this.getTheme().resolveAttribute(color, typedValue, true);
+        if (typedValue.type >= TypedValue.TYPE_FIRST_COLOR_INT &&
+                typedValue.type <= TypedValue.TYPE_LAST_COLOR_INT) {
+            return typedValue.data;
+        }
+        return ContextCompat.getColor(this, color);
     }
 
     public Locale getUserLocale() {
@@ -433,6 +485,10 @@ public class CompatActivity extends AppCompatActivity {
             } else return null;
         }
         return (CompatActivity) context;
+    }
+
+    public WeakReference<CompatActivity> asWeakReference() {
+        return this.selfReference;
     }
 
     @FunctionalInterface

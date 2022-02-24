@@ -1,17 +1,15 @@
 package com.fox2code.mmm.settings;
 
+import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.BuildConfig;
@@ -27,8 +25,6 @@ import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.mikepenz.aboutlibraries.LibsBuilder;
-import com.mikepenz.aboutlibraries.LibsConfiguration;
-import com.mikepenz.aboutlibraries.ui.LibsSupportFragment;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 public class SettingsActivity extends CompatActivity {
@@ -79,6 +75,11 @@ public class SettingsActivity extends CompatActivity {
                 }, 1);
                 return true;
             });
+            Preference enableBlur = findPreference("pref_enable_blur");
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                enableBlur.setSummary(R.string.require_android_6);
+                enableBlur.setEnabled(false);
+            }
             Preference forceEnglish = findPreference("pref_force_english");
             forceEnglish.setOnPreferenceChangeListener((preference, newValue) -> {
                 CompatThemeWrapper compatThemeWrapper =

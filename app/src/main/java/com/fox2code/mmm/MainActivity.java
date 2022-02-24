@@ -3,12 +3,15 @@ package com.fox2code.mmm;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,6 +50,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
     private int overScrollInsetBottom;
     private TextView actionBarPadding;
     private BlurView actionBarBlur;
+    private ColorDrawable actionBarBackground;
     private RecyclerView moduleList;
     private CardView searchCard;
     private SearchView searchView;
@@ -81,6 +85,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         }
         this.actionBarPadding = findViewById(R.id.action_bar_padding);
         this.actionBarBlur = findViewById(R.id.action_bar_blur);
+        this.actionBarBackground = new ColorDrawable(Color.TRANSPARENT);
         this.progressIndicator = findViewById(R.id.progress_bar);
         this.swipeRefreshLayout = findViewById(R.id.swipe_refresh);
         this.swipeRefreshLayoutOrigStartOffset =
@@ -97,11 +102,13 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         this.moduleList.setItemViewCacheSize(4); // Default is 2
         OverScrollManager.install(this.moduleList, this);
         this.swipeRefreshLayout.setOnRefreshListener(this);
+        this.actionBarBlur.setBackground(this.actionBarBackground);
         this.actionBarBlur.setupWith(this.moduleList).setFrameClearDrawable(
                 this.getWindow().getDecorView().getBackground())
                 .setBlurAlgorithm(new RenderScriptBlur(this))
                 .setBlurRadius(5F).setBlurAutoUpdate(true)
                 .setHasFixedTransformationMatrix(true);
+        this.updateBlurState();
         this.moduleList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -223,6 +230,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
     private void updateScreenInsets(Configuration configuration) {
         boolean landscape = configuration.orientation ==
                 Configuration.ORIENTATION_LANDSCAPE;
+        int bottomInset = (landscape ? 0 : this.getNavigationBarHeight());
         int statusBarHeight = getStatusBarHeight();
         int actionBarHeight = getActionBarHeight();
         int combinedBarsHeight = statusBarHeight + actionBarHeight;
@@ -231,13 +239,32 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                 swipeRefreshLayoutOrigStartOffset + combinedBarsHeight,
                 swipeRefreshLayoutOrigEndOffset + combinedBarsHeight);
         this.moduleViewListBuilder.setHeaderPx(actionBarHeight);
-        int bottomInset = (landscape ? 0 : this.getNavigationBarHeight());
         this.moduleViewListBuilder.setFooterPx(
                 bottomInset + this.searchCard.getHeight());
         this.moduleViewListBuilder.updateInsets();
         this.actionBarBlur.invalidate();
         this.overScrollInsetTop = combinedBarsHeight;
         this.overScrollInsetBottom = bottomInset;
+    }
+
+    private void updateBlurState() {
+        if (MainApplication.isBlurEnabled()) {
+            this.actionBarBlur.setBlurEnabled(true);
+            int transparent = this.getColorCompat(R.color.transparent);
+            this.actionBarBackground.setColor(transparent);
+        } else {
+            this.actionBarBlur.setBlurEnabled(false);
+            boolean isLightMode = this.isLightTheme();
+            int colorOpaque;
+            try {
+                colorOpaque = this.getColorCompat(
+                        android.R.attr.windowBackground);
+            } catch (Resources.NotFoundException e) {
+                colorOpaque = this.getColorCompat(isLightMode ?
+                        R.color.white : R.color.black);
+            }
+            this.actionBarBackground.setColor(colorOpaque);
+        }
     }
 
     @Override
@@ -251,6 +278,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         this.searchView.setIconified(true);
         this.cardIconifyUpdate();
         this.updateScreenInsets();
+        this.updateBlurState();
         this.moduleViewListBuilder.setQuery(null);
         Log.i(TAG, "Item After");
         this.moduleViewListBuilder.refreshNotificationsUI(this.moduleViewAdapter);

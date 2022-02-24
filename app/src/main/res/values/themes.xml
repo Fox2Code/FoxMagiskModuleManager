@@ -13,7 +13,9 @@
         <item name="colorOnSecondary">@color/white</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/status_bar_color</item>
+        <item name="android:navigationBarColor">@color/transparent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
         <!-- Customize your theme here. -->
         <item name="android:windowActivityTransitions">true</item>
         <!-- <item name="android:activityOpenEnterAnimation">@*android:anim/slide_in_right</item>
@@ -40,7 +42,9 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/status_bar_color</item>
+        <item name="android:navigationBarColor">@color/transparent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
         <!-- Customize your theme here. -->
         <item name="android:windowActivityTransitions">true</item>
         <!-- <item name="android:activityOpenEnterAnimation">@*android:anim/slide_in_right</item>

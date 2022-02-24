@@ -22,6 +22,7 @@
     <string name="support">Support</string>
     <string name="donate">Donate</string>
     <string name="submit_modules">Submit a module</string>
+    <string name="require_android_6">Require Android 6.0+</string>
 
     <!-- Module section translation -->
     <string name="module_last_update">Last update:</string>
@@ -50,6 +51,7 @@
     <string name="master_delete_yes">Delete files</string>
     <string name="master_delete_fail">Failed to delete the module files</string>
     <string name="theme_pref">Theme</string>
+    <string name="theme_mode_pref">Theme mode</string>
     <string name="module_id_prefix">Module id: </string>
     <string name="install_from_storage">Install module from storage</string>
     <string name="invalid_format">The selected module is in an invalid format</string>
@@ -88,6 +90,7 @@
         Wrap text to a new line instead of putting
         all text on the same line when installing a module
     </string>
+    <string name="enable_blur_pref">Enable blur</string>
     <string name="repo_enabled">Repo enabled</string>
     <string name="repo_disabled">Repo disabled</string>
 </resources>

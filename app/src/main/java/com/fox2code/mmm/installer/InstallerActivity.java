@@ -112,6 +112,9 @@ public class InstallerActivity extends CompatActivity {
                 .setBackground(new ColorDrawable(background));
         this.progressIndicator.setVisibility(View.GONE);
         this.progressIndicator.setIndeterminate(true);
+        this.getWindow().setFlags( // Note: Doesn't require WAKELOCK permission
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         if (urlMode) {
             this.progressIndicator.setVisibility(View.VISIBLE);
             this.installerTerminal.addLine("- Downloading " + name);
@@ -516,6 +519,7 @@ public class InstallerActivity extends CompatActivity {
             else toDelete = null;
         } else toDelete = null;
         this.runOnUiThread(() -> {
+            this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, 0);
             this.setOnBackPressedCallback(null);
             this.setDisplayHomeAsUpEnabled(true);
             this.progressIndicator.setVisibility(View.GONE);
