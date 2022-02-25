@@ -22,6 +22,7 @@
     <string name="support">Support</string>
     <string name="donate">Dons</string>
     <string name="submit_modules">Soumettre un module</string>
+    <string name="require_android_6">Requière Android 6.0+</string>
 
     <!-- Module section translation -->
     <string name="module_last_update">Dernière mis-à-jour:</string>
@@ -50,6 +51,7 @@
     <string name="master_delete_yes">Supprimer les fichiers</string>
     <string name="master_delete_fail">Échec de suppression des fichiers du module</string>
     <string name="theme_pref">Thème</string>
+    <string name="theme_mode_pref">Mode du thème</string>
     <string name="module_id_prefix">Id du module: </string>
     <string name="install_from_storage">Installer un module module depuis le stockage</string>
     <string name="invalid_format">Le module sélectionné est dans un format invalide</string>
@@ -88,6 +90,7 @@
         Mise en forme du texte avec une nouvelle ligne au lieu de mettre
         tout le texte sur la même ligne lors de l\’installation d\’un module
     </string>
+    <string name="enable_blur_pref">Activer l\’effet de flou</string>
     <string name="repo_enabled">Dépôt activé</string>
     <string name="repo_disabled">Dépôt désactivé</string>
 </resources>
