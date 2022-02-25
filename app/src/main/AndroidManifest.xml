@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.fox2code.mmm"
     tools:ignore="QueryAllPackagesPermission">
 
     <!-- Wifi is not the only way to get an internet connection -->
