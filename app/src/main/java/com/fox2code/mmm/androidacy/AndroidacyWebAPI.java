@@ -6,6 +6,8 @@ import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 
+import androidx.annotation.Keep;
+
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.installer.InstallerInitializer;
@@ -20,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+@Keep
 public class AndroidacyWebAPI {
     private static final String TAG = "AndroidacyWebAPI";
     private final AndroidacyActivity activity;
@@ -106,7 +109,9 @@ public class AndroidacyWebAPI {
             return;
         }
         if (checksum != null) checksum = checksum.trim();
-        if (!Hashes.checkSumValid(checksum)) {
+        if (checksum == null || checksum.isEmpty()) {
+            Log.w(TAG, "Androidacy WebView didn't provided a checksum!");
+        } else if (!Hashes.checkSumValid(checksum)) {
             this.forceQuitRaw("Androidacy didn't provided a valid checksum");
             return;
         }

@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.SystemClock;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
@@ -18,6 +19,7 @@ import androidx.emoji2.text.EmojiCompat;
 import androidx.emoji2.text.FontRequestEmojiCompatConfig;
 
 import com.fox2code.mmm.compat.CompatActivity;
+import com.fox2code.mmm.compat.CompatApplication;
 import com.fox2code.mmm.compat.CompatThemeWrapper;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.utils.GMSProviderInstaller;
@@ -44,7 +46,7 @@ import io.noties.prism4j.annotations.PrismBundle;
         includeAll = true,
         grammarLocatorClassName = ".Prism4jGrammarLocator"
 )
-public class MainApplication extends Application implements CompatActivity.ApplicationCallbacks {
+public class MainApplication extends CompatApplication {
     private static final String timeFormatString = "dd MMM yyyy"; // Example: 13 july 2001
     private static Locale timeFormatLocale =
             Resources.getSystem().getConfiguration().locale;
@@ -110,6 +112,11 @@ public class MainApplication extends Application implements CompatActivity.Appli
         return getSharedPreferences().getBoolean("pref_dns_over_https", true);
     }
 
+    public static boolean isBlurEnabled() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                getSharedPreferences().getBoolean("pref_enable_blur", false);
+    }
+
     public static boolean isDeveloper() {
         return BuildConfig.DEBUG ||
                 getSharedPreferences().getBoolean("developer", false);
@@ -164,7 +171,6 @@ public class MainApplication extends Application implements CompatActivity.Appli
 
     @StyleRes
     private int managerThemeResId = R.style.Theme_MagiskModuleManager;
-    private Boolean nightModeOverride = null;
     private CompatThemeWrapper markwonThemeContext;
     private Markwon markwon;
 
@@ -217,20 +223,7 @@ public class MainApplication extends Application implements CompatActivity.Appli
     @SuppressLint("NonConstantResourceId")
     public void setManagerThemeResId(@StyleRes int resId) {
         this.managerThemeResId = resId;
-        switch (this.managerThemeResId) {
-            case R.style.Theme_MagiskModuleManager:
-                this.nightModeOverride = null;
-                break;
-            case R.style.Theme_MagiskModuleManager_Light:
-                this.nightModeOverride = Boolean.FALSE;
-                break;
-            case R.style.Theme_MagiskModuleManager_Dark:
-                this.nightModeOverride = Boolean.TRUE;
-                break;
-            default:
-        }
         if (this.markwonThemeContext != null) {
-            this.markwonThemeContext.setNightModeOverride(this.nightModeOverride);
             this.markwonThemeContext.setTheme(resId);
         }
         this.markwon = null;
@@ -317,15 +310,15 @@ public class MainApplication extends Application implements CompatActivity.Appli
 
     @Override
     public void onCreateCompatActivity(CompatActivity compatActivity) {
-        compatActivity.setNightModeOverride(this.nightModeOverride);
-        compatActivity.setForceEnglish(isForceEnglish());
+        this.setForceEnglish(isForceEnglish());
+        super.onCreateCompatActivity(compatActivity);
         compatActivity.setTheme(this.managerThemeResId);
     }
 
     @Override
     public void onRefreshUI(CompatActivity compatActivity) {
-        compatActivity.setNightModeOverride(this.nightModeOverride);
-        compatActivity.setForceEnglish(isForceEnglish());
+        this.setForceEnglish(isForceEnglish());
+        super.onRefreshUI(compatActivity);
         compatActivity.setThemeRecreate(this.managerThemeResId);
     }
 

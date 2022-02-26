@@ -1,4 +1,5 @@
 <resources>
+    <!-- If translating, please remove "theme_values" -->
     <string-array name="theme_values" translatable="false">
         <item>system</item>
         <item>dark</item>

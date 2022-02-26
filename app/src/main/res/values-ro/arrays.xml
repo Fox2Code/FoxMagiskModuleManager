@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- If translating, please remove "theme_values" -->
     <string-array name="theme_values_names">
         <item>Sistem</item>
         <item>Întunecată</item>

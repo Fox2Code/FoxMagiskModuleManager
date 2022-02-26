@@ -105,6 +105,7 @@ public class AndroidacyActivity extends CompatActivity {
         webSettings.setUserAgentString(Http.getAndroidacyUA());
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
+        webSettings.setAllowFileAccess(false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { // Make website follow app theme
             webSettings.setForceDark(MainApplication.getINSTANCE().isLightTheme() ?
                     WebSettings.FORCE_DARK_OFF : WebSettings.FORCE_DARK_ON);
