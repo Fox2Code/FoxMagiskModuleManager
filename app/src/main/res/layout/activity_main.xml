@@ -57,16 +57,21 @@
         android:gravity="right"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:fitsSystemWindowsInsets="bottom"
+        app:layout_fitsSystemWindowsInsets="bottom"
         tools:ignore="RtlHardcoded">
-        <androidx.cardview.widget.CardView
+        <!--
+        setting high app:cardCornerRadius is not supported on some versions
+        so we must use code to get a round appearance.
+        -->
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/search_card"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:shape="ring"
             android:background="@null"
-            app:cardCornerRadius="75dp"
+            app:cardCornerRadius="@dimen/card_corner_radius"
+            app:cardPreventCornerOverlap="true"
             app:strokeColor="@android:color/transparent"
             app:cardElevation="0dp"
             app:strokeWidth="0dp">
@@ -75,7 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null" />
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

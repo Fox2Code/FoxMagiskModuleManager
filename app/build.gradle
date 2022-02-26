@@ -35,7 +35,6 @@ android {
     lint {
         disable 'MissingTranslation'
     }
-    namespace 'com.fox2code.mmm'
 }
 
 aboutLibraries {
