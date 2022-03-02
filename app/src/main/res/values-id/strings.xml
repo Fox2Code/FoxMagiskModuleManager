@@ -1,0 +1,96 @@
+<resources>
+    <string name="app_name">Fox\'s Magisk Module Manager</string>
+    <string name="app_name_short">Fox\'s Mmm</string>
+    <string name="fail_root_magisk">Tidak dapat mengakses root atau Magisk</string>
+    <string name="loading">Memuat…</string>
+    <string name="updatable">Dapat diperbarui</string>
+    <string name="installed">Terpasang</string>
+    <string name="online_repo">Repo Online</string>
+    <string name="showcase_mode">Aplikasi berada dalam mode lockdown</string>
+    <string name="failed_download">Tidak dapat mengunduh file.</string>
+    <string name="slow_modules">Modul membutuhkan waktu yang terlalu lama untuk melakukan boot, pertimbangkanglah untuk mematikan beberapa modul</string>
+    <string name="fail_internet">Tidak dapat terhubung dengan internet</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="app_update_available">Tersedia pembaruan aplikasi</string>
+    <string name="app_update">Perbarui</string>
+    <string name="no_desc_found">Tidak dapat menemukan deskripsi.</string>
+    <string name="download_module">Unduh modul</string>
+    <string name="install_module">Instal modul</string>
+    <string name="update_module">Perbarui modul</string>
+    <string name="changelog">Changelog</string>
+    <string name="website">Situs</string>
+    <string name="support">Dukungan</string>
+    <string name="donate">Donasi</string>
+    <string name="submit_modules">Kirim sebuah modul</string>
+    <string name="require_android_6">Membutuhkan Android 6.0+</string>
+
+    <!-- Module section translation -->
+    <string name="module_last_update">Pembaruan terakhir:</string>
+    <string name="module_repo">Repo:</string>
+    <string name="module_by">oleh</string>
+    <string name="module_downloads">Diunduh:</string>
+    <string name="module_stars">Bintang:</string>
+
+    <!-- Preference Titles -->
+    <!-- Note: Lockdown mode used to be called showcase mode -->
+    <string name="manage_repos_pref">Kelola repo</string>
+    <string name="showcase_mode_pref">Mode lockdown</string>
+    <string name="showcase_mode_desc">Mode lockdown mencegah manager dari melakukan tindakan terhadap modul</string>
+    <string name="pref_category_settings">Peraturan</string>
+    <string name="pref_category_info">Info</string>
+    <string name="show_licenses">Perlihatkan lisensi</string>
+    <string name="licenses">Lisensi</string>
+    <string name="show_incompatible_pref">Tampilkan modul tidak kompatibel</string>
+    <string name="show_incompatible_desc">Tampilkan modul yang tidak kompatibel dengan perangkat anda berdasarkan metadata mereka</string>
+    <string name="magisk_outdated">Versi Magisk usang!</string>
+    <string name="pref_category_repos">Repos</string>
+    <string name="repo_main_desc">Repository yang menampung modul Magisk</string>
+    <string name="repo_main_alt">Sebuah alternatif Magisk-Modules-Repo dengan restriksi lebih ringan.</string>
+    <string name="master_delete">Hapus file modul?</string>
+    <string name="master_delete_no">Simpan file</string>
+    <string name="master_delete_yes">Hapus file</string>
+    <string name="master_delete_fail">Tidak dapat menghapus file modul</string>
+    <string name="theme_pref">Tema</string>
+    <string name="theme_mode_pref">Mode tema</string>
+    <string name="module_id_prefix">Id modul: </string>
+    <string name="install_from_storage">Instal modul dari penyimpanan</string>
+    <string name="invalid_format">Modul yang diseleksi mempunyai format yang tidak valid</string>
+    <string name="local_install_title">Instal lokal</string>
+    <string name="source_code">Kode sumber</string>
+    <string name="magisk_builtin_module">Modul bawaan Magisk</string>
+    <string name="substratum_builtin_module">Modul bawaan Substratum</string>
+    <string name="force_dark_terminal_title">Paksa mode gelap pada terminal</string>
+    <string name="file_picker_failure">Pemilih file anda sekarang gagal memberikan akses kepada file.</string>
+    <string name="remote_install_title">Instal jarak jauh</string>
+    <string name="file_picker_wierd">Pemilih file anda mengembalikan tanggapan yang tidak standar.</string>
+    <string name="use_magisk_install_command_pref">Gunakan perintah instal modul magisk</string>
+    <string name="use_magisk_install_command_desc">
+        Waktu diuji ini menyebabkan masalah kepada alat diagnosis kesalahan instal modul,
+        jadi saya menyembunyikan opsi ini dibelakan mode pengembang, aktifkan pada risiko anda sendiri!
+    </string>
+    <string name="dev_mode_enabled">Mode pengembang aktif</string>
+    <string name="force_english_pref">Paksa Bahasa Inggris</string>
+    <string name="disable_low_quality_module_filter_pref">Nonaktifkan filter modul qualitas rendah</string>
+    <string name="disable_low_quality_module_filter_desc">
+        Beberapa modul tidak menyatakan metadata mereka dengan benar,menyebabkan glitch visual,
+        dan/atau mengindikasikan modul qualitas rendah, nonaktifkan pada risiko anda sendiri!
+    </string>
+    <string name="dns_over_https_pref">DNS melalui HTTPS</string>
+    <string name="dns_over_https_desc">
+        Mungkin dapat memperbaiki masalah koneksi didalam beberapa kasus.
+        (Tidak berlaku untuk WebView)
+    </string>
+    <string name="disable_extensions_pref">Nonaktifkan ekstensi</string>
+    <string name="disable_extensions_desc">
+        Nonaktifkan ekstensi Fox\'s Mmm, ini mencegah modul dari menggunakan
+        ekstensi terminal, berguna jika sebuah modul menyalahgunakan ekstensi Fox\'s Mmm.
+    </string>
+    <string name="wrap_text_pref">Wrap teks</string>
+    <string name="wrap_text_desc">
+        Wrap teks ke sebuah garis baru daripada menaruh
+        semua teks pada garis yang sama pada saat menginstal sebuah modul
+    </string>
+    <string name="enable_blur_pref">Aktifkan blur</string>
+    <string name="repo_enabled">Repo diaktifkan</string>
+    <string name="repo_disabled">Repo dinonaktifkan</string>
+</resources>
