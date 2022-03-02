@@ -10,6 +10,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemProperties;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyCharacterMap;
@@ -88,8 +89,7 @@ public class CompatActivity extends AppCompatActivity {
         if (!this.onCreateCalled) {
             this.getLayoutInflater().setFactory2(new LayoutInflaterFactory(this.getDelegate())
                     .addOnViewCreatedListener(WindowInsetsHelper.Companion.getLISTENER()));
-            this.hasHardwareNavBar = ViewConfiguration.get(this).hasPermanentMenuKey() ||
-                    KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
+            this.hasHardwareNavBar = this.hasHardwareNavBar0();
             this.onCreateCalledOnce = true;
         }
         Application application = this.getApplication();
@@ -104,6 +104,7 @@ public class CompatActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        this.hasHardwareNavBar = this.hasHardwareNavBar0();
         super.onResume();
         this.refreshUI();
     }
@@ -287,9 +288,13 @@ public class CompatActivity extends AppCompatActivity {
 
     public boolean hasHardwareNavBar() {
         // If onCreate has not been called yet, cached value is not valid
-        return this.onCreateCalledOnce ? this.hasHardwareNavBar :
-                ViewConfiguration.get(this).hasPermanentMenuKey() ||
-                        KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
+        return this.onCreateCalledOnce ? this.hasHardwareNavBar : this.hasHardwareNavBar0();
+    }
+
+    private boolean hasHardwareNavBar0() {
+        return (ViewConfiguration.get(this).hasPermanentMenuKey() ||
+                KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK)) &&
+                !"0".equals(SystemProperties.get("qemu.hw.mainkeys"));
     }
 
     public void setActionBarExtraMenuButton(@DrawableRes int drawableResId,
