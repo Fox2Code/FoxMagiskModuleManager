@@ -179,6 +179,8 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                 } else {
                     if (AppUpdateManager.getAppUpdateManager().checkUpdate(true))
                         moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
+                    if (AppUpdateManager.getAppUpdateManager().isLastCheckSuccess())
+                        AppUpdateManager.getAppUpdateManager().checkUpdateCompat();
                     if (max != 0) {
                         int current = 0;
                         for (LocalModuleInfo localModuleInfo :

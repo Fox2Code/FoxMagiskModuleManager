@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fox2code.mmm.ActionButtonType;
+import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
@@ -26,6 +27,7 @@ import com.fox2code.mmm.utils.Files;
 import com.fox2code.mmm.utils.Hashes;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
+import com.fox2code.mmm.utils.PropUtils;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.topjohnwu.superuser.CallbackList;
 import com.topjohnwu.superuser.Shell;
@@ -261,23 +263,39 @@ public class InstallerActivity extends CompatActivity {
                     .to(installerController, installerMonitor);
         } else {
             String arch32 = "true"; // Do nothing by default
+            boolean needs32bit = false;
+            String moduleId = null;
+            try (ZipFile zipFile = new ZipFile(file)) {
+                if (zipFile.getEntry( // Check if module hard require 32bit support
+                        "common/addon/Volume-Key-Selector/tools/arm64/keycheck") == null &&
+                        zipFile.getEntry(
+                                "common/addon/Volume-Key-Selector/install.sh") != null) {
+                    needs32bit = true;
+                }
+                moduleId = PropUtils.readModuleId(zipFile
+                        .getInputStream(zipFile.getEntry("module.prop")));
+            } catch (IOException ignored) {}
+            int compatFlags = AppUpdateManager.getFlagsForModule(moduleId);
+            if ((compatFlags & AppUpdateManager.FLAG_COMPAT_NEED_32BIT) != 0)
+                needs32bit = true;
+            if ((compatFlags & AppUpdateManager.FLAG_COMPAT_NO_EXT) != 0)
+                noExtensions = true;
+            if (moduleId != null && (moduleId.isEmpty() ||
+                    moduleId.contains("/") || moduleId.contains("\0") ||
+                    (moduleId.startsWith(".") && moduleId.endsWith(".")))) {
+                this.setInstallStateFinished(false,
+                        "! This module contain a dangerous moduleId",
+                        null);
+                return;
+            }
             if (Build.SUPPORTED_32_BIT_ABIS.length == 0) {
-                boolean needs32bit = false;
-                try (ZipFile zipFile = new ZipFile(file)) {
-                    if (zipFile.getEntry( // Check if module hard require 32bit support
-                            "common/addon/Volume-Key-Selector/tools/arm64/keycheck") == null &&
-                            zipFile.getEntry(
-                                    "common/addon/Volume-Key-Selector/install.sh") != null) {
-                        needs32bit = true;
-                    }
-                } catch (IOException ignored) {}
                 if (needs32bit) {
                     this.setInstallStateFinished(false,
                             "! This module can't be installed on a 64bit only system",
                             null);
                     return;
                 }
-            } else {
+            } else if (needs32bit || (compatFlags & AppUpdateManager.FLAG_COMPAT_NO_EXT) == 0) {
                 // Restore Magisk legacy stuff for retro compatibility
                 if (Build.SUPPORTED_32_BIT_ABIS[0].contains("arm"))
                     arch32 = "export ARCH32=arm";
@@ -288,7 +306,8 @@ public class InstallerActivity extends CompatActivity {
             File installExecutable;
             if (InstallerInitializer.peekMagiskVersion() >=
                     Constants.MAGISK_VER_CODE_INSTALL_COMMAND &&
-                    (noExtensions || MainApplication.isUsingMagiskCommand())) {
+                    ((compatFlags & AppUpdateManager.FLAG_COMPAT_MAGISK_CMD) != 0 ||
+                            noExtensions || MainApplication.isUsingMagiskCommand())) {
                 installCommand = "magisk --install-module \"" + file.getAbsolutePath() + "\"";
                 installExecutable = new File(InstallerInitializer.peekMagiskPath()
                         .equals("/sbin") ? "/sbin/magisk" : "/system/bin/magisk");
@@ -296,13 +315,14 @@ public class InstallerActivity extends CompatActivity {
                 installExecutable = this.extractInstallScript("module_installer_compat.sh");
                 if (installExecutable == null) {
                     this.setInstallStateFinished(false,
-                            "! Failed to extract module install script", "");
+                            "! Failed to extract module install script", null);
                     return;
                 }
                 installCommand = "sh \"" + installExecutable.getAbsolutePath() + "\"" +
                         " /dev/null 1 \"" + file.getAbsolutePath() + "\"";
             }
             installerMonitor = new InstallerMonitor(installExecutable);
+            if (moduleId != null) installerMonitor.setForCleanUp(moduleId);
             if (noExtensions) {
                 installJob = Shell.su(arch32, // No Extensions
                         "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
@@ -462,6 +482,7 @@ public class InstallerActivity extends CompatActivity {
         private static final String DEFAULT_ERR = "! Install failed";
         private final String installScriptErr;
         public String lastCommand = "";
+        public String forCleanUp;
 
         public InstallerMonitor(File installScript) {
             super(Runnable::run);
@@ -474,6 +495,10 @@ public class InstallerActivity extends CompatActivity {
         public void onAddElement(String s) {
             Log.d(TAG, "Monitor: " + s);
             this.lastCommand = s;
+        }
+
+        public void setForCleanUp(String forCleanUp) {
+            this.forCleanUp = forCleanUp;
         }
 
         private String doCleanUp() {
@@ -490,6 +515,10 @@ public class InstallerActivity extends CompatActivity {
                         Log.e(TAG, "Failed to delete failed update");
                     return "Error: " + installScriptErr.substring(i + 1);
                 }
+            } else if (this.forCleanUp != null) {
+                SuFile moduleUpdate = new SuFile("/data/adb/modules_update/" + this.forCleanUp);
+                if (moduleUpdate.exists() && !moduleUpdate.deleteRecursive())
+                    Log.e(TAG, "Failed to delete failed update");
             }
             return DEFAULT_ERR;
         }

@@ -76,6 +76,7 @@ public class ModuleViewListBuilder {
             RepoManager repoManager = RepoManager.getINSTANCE();
             repoManager.runAfterUpdate(() -> {
                 Log.i(TAG, "A2: " + repoManager.getModules().size());
+                boolean no32bitSupport = Build.SUPPORTED_32_BIT_ABIS.length == 0;
                 for (RepoModule repoModule : repoManager.getModules().values()) {
                     if (!repoModule.repoData.isEnabled()) continue;
                     ModuleInfo moduleInfo = repoModule.moduleInfo;
@@ -84,9 +85,11 @@ public class ModuleViewListBuilder {
                             // Only check Magisk compatibility if root is present
                             (InstallerInitializer.peekMagiskPath() != null &&
                                     repoModule.moduleInfo.minMagisk >
-                                            InstallerInitializer.peekMagiskVersion()
-                            )))
-                        continue; // Skip adding incompatible modules
+                                            InstallerInitializer.peekMagiskVersion())) ||
+                            // If 64bit only system, skip 32bit only modules
+                            (no32bitSupport && (AppUpdateManager.getFlagsForModule(repoModule.id)
+                                    & AppUpdateManager.FLAG_COMPAT_NEED_32BIT) != 0)
+                    ) continue; // Skip adding incompatible modules
                     ModuleHolder moduleHolder = this.mappedModuleHolders.get(repoModule.id);
                     if (moduleHolder == null) {
                         this.mappedModuleHolders.put(repoModule.id,

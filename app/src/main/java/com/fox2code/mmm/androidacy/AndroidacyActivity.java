@@ -81,9 +81,9 @@ public class AndroidacyActivity extends CompatActivity {
         setActionBarBackground(null);
         this.setDisplayHomeAsUpEnabled(true);
         if (title == null || title.isEmpty()) {
-            this.setTitle(title);
-        } else {
             this.setTitle("Androidacy");
+        } else {
+            this.setTitle(title);
         }
         if (allowInstall || title == null || title.isEmpty()) {
             this.hideActionBar();
