@@ -117,6 +117,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                     MainActivity.this.searchView.clearFocus();
             }
         });
+        this.searchCard.setRadius(this.searchCard.getHeight() / 2F);
         this.searchView.setMinimumHeight(CompatDisplay.dpToPixel(16));
         this.searchView.setImeOptions(EditorInfo.IME_ACTION_SEARCH |
                 EditorInfo.IME_FLAG_NO_FULLSCREEN);
@@ -246,6 +247,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                 actionBarHeight + CompatDisplay.dpToPixel(4));
         this.moduleViewListBuilder.setFooterPx(
                 bottomInset + this.searchCard.getHeight());
+        this.searchCard.setRadius(this.searchCard.getHeight() / 2F);
         this.moduleViewListBuilder.updateInsets();
         this.actionBarBlur.invalidate();
         this.overScrollInsetTop = combinedBarsHeight;
