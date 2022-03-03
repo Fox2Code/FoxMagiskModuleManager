@@ -10,11 +10,15 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemProperties;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 
 import androidx.annotation.AttrRes;
 import androidx.annotation.CallSuper;
@@ -65,8 +69,10 @@ public class CompatActivity extends AppCompatActivity {
     private MenuItem.OnMenuItemClickListener menuClickListener;
     private CharSequence menuContentDescription;
     @StyleRes private int setThemeDynamic = 0;
+    private boolean onCreateCalledOnce = false;
     private boolean onCreateCalled = false;
     private boolean isRefreshUi = false;
+    private boolean hasHardwareNavBar;
     private int drawableResId;
     private MenuItem menuItem;
     // CompatConfigHelper
@@ -82,6 +88,8 @@ public class CompatActivity extends AppCompatActivity {
         if (!this.onCreateCalled) {
             this.getLayoutInflater().setFactory2(new LayoutInflaterFactory(this.getDelegate())
                     .addOnViewCreatedListener(WindowInsetsHelper.Companion.getLISTENER()));
+            this.hasHardwareNavBar = this.hasHardwareNavBar0();
+            this.onCreateCalledOnce = true;
         }
         Application application = this.getApplication();
         if (application instanceof ApplicationCallbacks) {
@@ -95,6 +103,7 @@ public class CompatActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        this.hasHardwareNavBar = this.hasHardwareNavBar0();
         super.onResume();
         this.refreshUI();
     }
@@ -114,7 +123,7 @@ public class CompatActivity extends AppCompatActivity {
     @CallSuper
     public void refreshUI() {
         // Avoid recursive calls
-        if (this.isRefreshUi) return;
+        if (this.isRefreshUi || !this.onCreateCalled) return;
         Application application = this.getApplication();
         if (application instanceof ApplicationCallbacks) {
             this.isRefreshUi = true;
@@ -196,6 +205,22 @@ public class CompatActivity extends AppCompatActivity {
         }
     }
 
+    public View getActionBarView() {
+        androidx.appcompat.app.ActionBar compatActionBar;
+        try {
+            compatActionBar = this.getSupportActionBar();
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to call getSupportActionBar", e);
+            compatActionBar = null; // Allow fallback to builtin actionBar.
+        }
+        if (compatActionBar != null) {
+            return compatActionBar.getCustomView();
+        } else {
+            android.app.ActionBar actionBar = this.getActionBar();
+            return actionBar != null ? actionBar.getCustomView() : null;
+        }
+    }
+
     @Dimension @Px
     public int getActionBarHeight() {
         androidx.appcompat.app.ActionBar compatActionBar;
@@ -242,19 +267,33 @@ public class CompatActivity extends AppCompatActivity {
         return height;
     }
 
-    public int getNavigationBarHeight() { // How to improve this?
+    public int getNavigationBarHeight() {
         int height = WindowInsetsCompat.CONSUMED.getInsets(
                 WindowInsetsCompat.Type.navigationBars()).bottom;
         if (height == 0) { // Fallback to system resources
             int id = Resources.getSystem().getIdentifier(
                     "config_showNavigationBar", "bool", "android");
-            if (id > 0 && Resources.getSystem().getBoolean(id)) {
+            Log.d(TAG, "Nav 1: " + id);
+            if ((id > 0 && Resources.getSystem().getBoolean(id))
+                    || !this.hasHardwareNavBar()) {
                 id = Resources.getSystem().getIdentifier(
                         "navigation_bar_height", "dimen", "android");
+                Log.d(TAG, "Nav 2: " + id);
                 if (id > 0) return Resources.getSystem().getDimensionPixelSize(id);
             }
         }
         return height;
+    }
+
+    public boolean hasHardwareNavBar() {
+        // If onCreate has not been called yet, cached value is not valid
+        return this.onCreateCalledOnce ? this.hasHardwareNavBar : this.hasHardwareNavBar0();
+    }
+
+    private boolean hasHardwareNavBar0() {
+        return (ViewConfiguration.get(this).hasPermanentMenuKey() ||
+                KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK)) &&
+                !"0".equals(SystemProperties.get("qemu.hw.mainkeys"));
     }
 
     public void setActionBarExtraMenuButton(@DrawableRes int drawableResId,

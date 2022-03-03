@@ -81,9 +81,9 @@ public class AndroidacyActivity extends CompatActivity {
         setActionBarBackground(null);
         this.setDisplayHomeAsUpEnabled(true);
         if (title == null || title.isEmpty()) {
-            this.setTitle(title);
-        } else {
             this.setTitle("Androidacy");
+        } else {
+            this.setTitle(title);
         }
         if (allowInstall || title == null || title.isEmpty()) {
             this.hideActionBar();
@@ -120,9 +120,9 @@ public class AndroidacyActivity extends CompatActivity {
             public boolean shouldOverrideUrlLoading(
                     @NonNull WebView view, @NonNull WebResourceRequest request) {
                 // Don't open non Androidacy urls inside WebView
-                if (request.isForMainFrame() && !(request.getUrl().getScheme().equals("intent") ||
-                        AndroidacyUtil.isAndroidacyLink(request.getUrl()))) {
-                    IntentHelper.openUrl(view.getContext(), request.getUrl().toString());
+                if (request.isForMainFrame() &&
+                        !AndroidacyUtil.isAndroidacyLink(request.getUrl())) {
+                    IntentHelper.openUri(view.getContext(), request.getUrl().toString());
                     return true;
                 }
                 return false;

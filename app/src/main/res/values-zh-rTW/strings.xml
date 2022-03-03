@@ -22,6 +22,7 @@
     <string name="support">支援</string>
     <string name="donate">捐贈</string>
     <string name="submit_modules">提交一個模組</string>
+    <string name="require_android_6">要求 Android 6.0 以上版本</string>
 
     <!-- Module section translation -->
     <string name="module_last_update">最後更新:</string>
@@ -50,6 +51,7 @@
     <string name="master_delete_yes">刪除安裝檔</string>
     <string name="master_delete_fail">刪除安裝檔失敗</string>
     <string name="theme_pref">主題</string>
+    <string name="theme_mode_pref">主題模式</string>
     <string name="module_id_prefix">模組 ID: </string>
     <string name="install_from_storage">從本機安裝</string>
     <string name="invalid_format">所選模組的格式無效或檔案損毀</string>
@@ -88,6 +90,7 @@
         將文字換行至新行，
         而不是將所有文字放在同一行。
     </string>
+    <string name="enable_blur_pref">啟用模糊</string>
     <string name="repo_enabled">啟用倉庫</string>
     <string name="repo_disabled">禁用倉庫</string>
 </resources>

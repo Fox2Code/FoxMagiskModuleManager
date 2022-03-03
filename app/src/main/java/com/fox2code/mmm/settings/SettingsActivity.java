@@ -112,7 +112,8 @@ public class SettingsActivity extends CompatActivity {
                     .withLicenseShown(true).withAboutMinimalDesign(false)
                     .withUiListener(new OverScrollManager.LibsOverScroll());
             Preference update = findPreference("pref_update");
-            update.setVisible(AppUpdateManager.getAppUpdateManager().peekHasUpdate());
+            update.setVisible(BuildConfig.DEBUG ||
+                    AppUpdateManager.getAppUpdateManager().peekHasUpdate());
             update.setOnPreferenceClickListener(p -> {
                 devModeStep = 0;
                 IntentHelper.openUrl(p.getContext(),

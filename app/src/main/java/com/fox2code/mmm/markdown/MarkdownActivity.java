@@ -18,6 +18,7 @@ import com.fox2code.mmm.R;
 import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
+import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -64,8 +65,11 @@ public class MarkdownActivity extends CompatActivity {
         }
         Log.i(TAG, "Url for markdown " + url);
         setContentView(R.layout.markdown_view);
-        ViewGroup markdownBackground = findViewById(R.id.markdownBackground);
-        TextView textView = findViewById(R.id.markdownView);
+        final ViewGroup markdownBackground = findViewById(R.id.markdownBackground);
+        final TextView textView = findViewById(R.id.markdownView);
+        final TextView footer = findViewById(R.id.markdownFooter);
+        UiThreadHandler.handler.postDelayed(() -> // Fix footer height
+                footer.setMinHeight(this.getNavigationBarHeight()), 1L);
         new Thread(() -> {
             try {
                 Log.d(TAG, "Downloading");

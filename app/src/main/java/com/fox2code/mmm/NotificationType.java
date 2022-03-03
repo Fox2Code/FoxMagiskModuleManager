@@ -31,13 +31,17 @@ public enum NotificationType implements NotificationTypeCst {
             return !MainApplication.isShowcaseMode();
         }
     },
-    NO_ROOT(R.string.fail_root_magisk, R.drawable.ic_baseline_numbers_24) {
+    NO_ROOT(R.string.fail_root_magisk, R.drawable.ic_baseline_numbers_24, v -> {
+        IntentHelper.openUrl(v.getContext(), "https://github.com/topjohnwu/Magisk");
+    }) {
         @Override
         public boolean shouldRemove() {
             return InstallerInitializer.peekMagiskPath() != null;
         }
     },
-    MAGISK_OUTDATED(R.string.magisk_outdated, R.drawable.ic_baseline_update_24) {
+    MAGISK_OUTDATED(R.string.magisk_outdated, R.drawable.ic_baseline_update_24, v -> {
+        IntentHelper.openUrl(v.getContext(), "https://github.com/topjohnwu/Magisk");
+    }) {
         @Override
         public boolean shouldRemove() {
             return InstallerInitializer.peekMagiskPath() == null ||
@@ -128,7 +132,11 @@ public enum NotificationType implements NotificationTypeCst {
     public final boolean special;
 
     NotificationType(@StringRes int textId, int iconId) {
-        this(textId, iconId, R.attr.colorError, R.attr.colorOnPrimary); //R.attr.colorOnError);
+        this(textId, iconId, R.attr.colorError, R.attr.colorOnPrimary);
+    }
+
+    NotificationType(@StringRes int textId, int iconId, View.OnClickListener onClickListener) {
+        this(textId, iconId, R.attr.colorError, R.attr.colorOnPrimary, onClickListener);
     }
 
     NotificationType(@StringRes int textId, int iconId, int backgroundAttr, int foregroundAttr) {

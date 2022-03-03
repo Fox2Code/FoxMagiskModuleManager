@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -22,6 +23,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
 import com.fox2code.mmm.compat.CompatActivity;
+import com.fox2code.mmm.compat.CompatDisplay;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
@@ -32,6 +34,7 @@ import com.fox2code.mmm.utils.IntentHelper;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import eightbitlab.com.blurview.BlurView;
+import eightbitlab.com.blurview.BlurViewFacade;
 import eightbitlab.com.blurview.RenderScriptBlur;
 
 public class MainActivity extends CompatActivity implements SwipeRefreshLayout.OnRefreshListener,
@@ -72,10 +75,8 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         setContentView(R.layout.activity_main);
         this.setTitle(R.string.app_name);
         this.getWindow().setFlags(
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION |
-                        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION |
-                        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         setActionBarBackground(null);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             WindowManager.LayoutParams layoutParams = this.getWindow().getAttributes();
@@ -106,7 +107,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         this.actionBarBlur.setupWith(this.moduleList).setFrameClearDrawable(
                 this.getWindow().getDecorView().getBackground())
                 .setBlurAlgorithm(new RenderScriptBlur(this))
-                .setBlurRadius(5F).setBlurAutoUpdate(true)
+                .setBlurRadius(4F).setBlurAutoUpdate(true)
                 .setHasFixedTransformationMatrix(true);
         this.updateBlurState();
         this.moduleList.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -116,6 +117,8 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                     MainActivity.this.searchView.clearFocus();
             }
         });
+        this.searchCard.setRadius(this.searchCard.getHeight() / 2F);
+        this.searchView.setMinimumHeight(CompatDisplay.dpToPixel(16));
         this.searchView.setImeOptions(EditorInfo.IME_ACTION_SEARCH |
                 EditorInfo.IME_FLAG_NO_FULLSCREEN);
         this.searchView.setOnQueryTextListener(this);
@@ -177,6 +180,8 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                 } else {
                     if (AppUpdateManager.getAppUpdateManager().checkUpdate(true))
                         moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
+                    if (AppUpdateManager.getAppUpdateManager().isLastCheckSuccess())
+                        AppUpdateManager.getAppUpdateManager().checkUpdateCompat();
                     if (max != 0) {
                         int current = 0;
                         for (LocalModuleInfo localModuleInfo :
@@ -238,32 +243,38 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         this.swipeRefreshLayout.setProgressViewOffset(false,
                 swipeRefreshLayoutOrigStartOffset + combinedBarsHeight,
                 swipeRefreshLayoutOrigEndOffset + combinedBarsHeight);
-        this.moduleViewListBuilder.setHeaderPx(actionBarHeight);
+        this.moduleViewListBuilder.setHeaderPx(
+                actionBarHeight + CompatDisplay.dpToPixel(8));
         this.moduleViewListBuilder.setFooterPx(
                 bottomInset + this.searchCard.getHeight());
+        this.searchCard.setRadius(this.searchCard.getHeight() / 2F);
         this.moduleViewListBuilder.updateInsets();
         this.actionBarBlur.invalidate();
         this.overScrollInsetTop = combinedBarsHeight;
         this.overScrollInsetBottom = bottomInset;
+        Log.d(TAG, "( " + bottomInset + ", " +
+                this.searchCard.getHeight() + ")");
     }
 
     private void updateBlurState() {
+        boolean isLightMode = this.isLightTheme();
+        int colorBackground;
+        try {
+            colorBackground = this.getColorCompat(
+                    android.R.attr.windowBackground);
+        } catch (Resources.NotFoundException e) {
+            colorBackground = this.getColorCompat(isLightMode ?
+                    R.color.white : R.color.black);
+        }
         if (MainApplication.isBlurEnabled()) {
             this.actionBarBlur.setBlurEnabled(true);
-            int transparent = this.getColorCompat(R.color.transparent);
-            this.actionBarBackground.setColor(transparent);
+            this.actionBarBackground.setColor(ColorUtils
+                    .setAlphaComponent(colorBackground, 0x02));
+            this.actionBarBackground.setColor(Color.TRANSPARENT);
         } else {
             this.actionBarBlur.setBlurEnabled(false);
-            boolean isLightMode = this.isLightTheme();
-            int colorOpaque;
-            try {
-                colorOpaque = this.getColorCompat(
-                        android.R.attr.windowBackground);
-            } catch (Resources.NotFoundException e) {
-                colorOpaque = this.getColorCompat(isLightMode ?
-                        R.color.white : R.color.black);
-            }
-            this.actionBarBackground.setColor(colorOpaque);
+            this.actionBarBlur.setOverlayColor(Color.TRANSPARENT);
+            this.actionBarBackground.setColor(colorBackground);
         }
     }
 
