@@ -79,9 +79,13 @@ public class MarkdownActivity extends CompatActivity {
                 } catch (IOException e) {
                     // Workaround GitHub README.md case sensitivity issue
                     if (url.startsWith("https://raw.githubusercontent.com/") &&
-                            url.endsWith("/README.md")) { // Try with lowercase version
-                        rawMarkdown = Http.doHttpGet(url.substring(0,
-                                url.length() - 9) + "readme.md", true);
+                            url.endsWith("/README.md")) {
+                        String prefix = url.substring(0, url.length() - 9);
+                        try { // Try with lowercase version
+                            rawMarkdown = Http.doHttpGet(prefix + "readme.md", true);
+                        } catch (IOException ignored) { // Try with .github version
+                            rawMarkdown = Http.doHttpGet(prefix + ".github/README.md", true);
+                        }
                     } else throw e;
                 }
                 String markdown = new String(rawMarkdown, StandardCharsets.UTF_8);
