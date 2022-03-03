@@ -244,7 +244,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                 swipeRefreshLayoutOrigStartOffset + combinedBarsHeight,
                 swipeRefreshLayoutOrigEndOffset + combinedBarsHeight);
         this.moduleViewListBuilder.setHeaderPx(
-                actionBarHeight + CompatDisplay.dpToPixel(4));
+                actionBarHeight + CompatDisplay.dpToPixel(8));
         this.moduleViewListBuilder.setFooterPx(
                 bottomInset + this.searchCard.getHeight());
         this.searchCard.setRadius(this.searchCard.getHeight() / 2F);
