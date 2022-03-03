@@ -51,7 +51,7 @@
     <string name="master_delete_yes">刪除安裝檔</string>
     <string name="master_delete_fail">刪除安裝檔失敗</string>
     <string name="theme_pref">主題</string>
-    <string name="theme_mode_pref">Theme mode</string>
+    <string name="theme_mode_pref">主題模式</string>
     <string name="module_id_prefix">模組 ID: </string>
     <string name="install_from_storage">從本機安裝</string>
     <string name="invalid_format">所選模組的格式無效或檔案損毀</string>
