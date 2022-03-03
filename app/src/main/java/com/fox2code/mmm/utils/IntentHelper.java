@@ -30,8 +30,21 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 
 public class IntentHelper {
+    private static final String TAG = "IntentHelper";
+
+    public static void openUri(Context context, String uri) {
+        if (uri.startsWith("intent://")) {
+            try {
+                startActivity(context, Intent.parseUri(uri, Intent.URI_INTENT_SCHEME), false);
+            } catch (URISyntaxException | ActivityNotFoundException e) {
+                Log.e(TAG, "Failed launch of " + uri, e);
+            }
+        } else openUrl(context, uri);
+    }
+
     public static void openUrl(Context context, String url) {
         openUrl(context, url, false);
     }
@@ -227,7 +240,7 @@ public class IntentHelper {
                 callback.onReceived(destination, null, RESPONSE_ERROR);
                 return;
             }
-            Log.d("IntentHelper", "FilePicker returned " + uri);
+            Log.d(TAG, "FilePicker returned " + uri);
             if ("http".equals(uri.getScheme()) ||
                     "https".equals(uri.getScheme())) {
                 callback.onReceived(destination, uri, RESPONSE_URL);
@@ -259,7 +272,7 @@ public class IntentHelper {
                 Files.copy(inputStream, outputStream);
                 success = true;
             } catch (Exception e) {
-                Log.e("IntentHelper", "failed copy of " + uri, e);
+                Log.e(TAG, "failed copy of " + uri, e);
                 Toast.makeText(compatActivity,
                         R.string.file_picker_failure,
                         Toast.LENGTH_SHORT).show();
@@ -267,7 +280,7 @@ public class IntentHelper {
                 Files.closeSilently(inputStream);
                 Files.closeSilently(outputStream);
                 if (!success && destination.exists() && !destination.delete())
-                    Log.e("IntentHelper", "Failed to delete artefact!");
+                    Log.e(TAG, "Failed to delete artefact!");
             }
             callback.onReceived(destination, uri, success ? RESPONSE_FILE : RESPONSE_ERROR);
         });

@@ -22,6 +22,7 @@
     <string name="support">支持</string>
     <string name="donate">捐赠</string>
     <string name="submit_modules">提交一个模块</string>
+    <string name="require_android_6">需要 Android 6.0+</string>
 
     <!-- Module section translation -->
     <string name="module_last_update">最后更新:</string>
@@ -50,6 +51,7 @@
     <string name="master_delete_yes">删除文件</string>
     <string name="master_delete_fail">无法删除模块文件</string>
     <string name="theme_pref">主题</string>
+    <string name="theme_mode_pref">主题模式</string>
     <string name="module_id_prefix">模块ID: </string>
     <string name="install_from_storage">从存储空间安装模块</string>
     <string name="invalid_format">所选模块的格式无效</string>
@@ -88,6 +90,7 @@
         将文本换行至新行，
         而不是将所有文本放在同一行
     </string>
+    <string name="enable_blur_pref">启用模糊</string>
     <string name="repo_enabled">启用仓库</string>
     <string name="repo_disabled">禁用仓库</string>
 </resources>

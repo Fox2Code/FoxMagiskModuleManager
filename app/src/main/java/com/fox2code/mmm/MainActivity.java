@@ -117,6 +117,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                     MainActivity.this.searchView.clearFocus();
             }
         });
+        this.searchCard.setRadius(this.searchCard.getHeight() / 2F);
         this.searchView.setMinimumHeight(CompatDisplay.dpToPixel(16));
         this.searchView.setImeOptions(EditorInfo.IME_ACTION_SEARCH |
                 EditorInfo.IME_FLAG_NO_FULLSCREEN);
@@ -179,6 +180,8 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                 } else {
                     if (AppUpdateManager.getAppUpdateManager().checkUpdate(true))
                         moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
+                    if (AppUpdateManager.getAppUpdateManager().isLastCheckSuccess())
+                        AppUpdateManager.getAppUpdateManager().checkUpdateCompat();
                     if (max != 0) {
                         int current = 0;
                         for (LocalModuleInfo localModuleInfo :
@@ -241,9 +244,10 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                 swipeRefreshLayoutOrigStartOffset + combinedBarsHeight,
                 swipeRefreshLayoutOrigEndOffset + combinedBarsHeight);
         this.moduleViewListBuilder.setHeaderPx(
-                actionBarHeight + CompatDisplay.dpToPixel(4));
+                actionBarHeight + CompatDisplay.dpToPixel(8));
         this.moduleViewListBuilder.setFooterPx(
                 bottomInset + this.searchCard.getHeight());
+        this.searchCard.setRadius(this.searchCard.getHeight() / 2F);
         this.moduleViewListBuilder.updateInsets();
         this.actionBarBlur.invalidate();
         this.overScrollInsetTop = combinedBarsHeight;

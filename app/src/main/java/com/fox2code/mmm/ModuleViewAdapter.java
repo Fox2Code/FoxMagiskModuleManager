@@ -104,6 +104,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     }
                 }
             });
+            this.buttonAction.setClickable(false);
             this.switchMaterial.setEnabled(false);
             this.switchMaterial.setOnCheckedChangeListener((v, checked) -> {
                 if (this.initState) return; // Skip if non user

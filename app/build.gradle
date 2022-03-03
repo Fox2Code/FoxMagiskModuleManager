@@ -10,8 +10,8 @@ android {
         applicationId "com.fox2code.mmm"
         minSdk 21
         targetSdk 32
-        versionCode 30
-        versionName "0.3.2"
+        versionCode 32
+        versionName "0.4.0-rc1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -64,7 +64,7 @@ dependencies {
     // Utils
     implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.9.3'
     implementation 'com.squareup.okhttp3:okhttp-brotli:4.9.3'
-    implementation 'com.github.topjohnwu.libsu:io:3.2.1'
+    implementation 'com.github.topjohnwu.libsu:io:4.0.0'
 
     // Markdown
     implementation "io.noties.markwon:core:4.6.2"
@@ -73,6 +73,9 @@ dependencies {
     implementation "io.noties.markwon:syntax-highlight:4.6.2"
     annotationProcessor "io.noties:prism4j-bundler:2.0.0"
     implementation "com.caverock:androidsvg:1.4"
+
+    // Utils for compat
+    compileOnly "org.robolectric:android-all:11-robolectric-6757853"
 
     // Test
     testImplementation 'junit:junit:4.+'

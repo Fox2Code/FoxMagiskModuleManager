@@ -1,7 +1,11 @@
 package com.fox2code.mmm.utils;
 
+import static com.fox2code.mmm.AppUpdateManager.FLAG_COMPAT_LOW_QUALITY;
+import static com.fox2code.mmm.AppUpdateManager.getFlagsForModule;
+
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.topjohnwu.superuser.io.SuFileInputStream;
@@ -274,6 +278,22 @@ public class PropUtils {
         }
     }
 
+    public static String readModuleId(InputStream inputStream) {
+        String moduleId = null;
+        try (BufferedReader bufferedReader = new BufferedReader(
+                new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                if (line.startsWith("id=")) {
+                    moduleId = line.substring(3).trim();
+                }
+            }
+        } catch (IOException e) {
+            Log.d("PropUtils", "Failed to get moduleId", e);
+        }
+        return moduleId;
+    }
+
     public static void applyFallbacks(ModuleInfo moduleInfo) {
         if (moduleInfo.support == null || moduleInfo.support.isEmpty()) {
             moduleInfo.support = moduleSupportsFallbacks.get(moduleInfo.id);
@@ -299,7 +319,8 @@ public class PropUtils {
                 || moduleInfo.author == null || !TextUtils.isGraphic(moduleInfo.author)
                 || (description = moduleInfo.description) == null || !TextUtils.isGraphic(description)
                 || description.toLowerCase(Locale.ROOT).equals(moduleInfo.name.toLowerCase(Locale.ROOT))
-                || description.length() < Math.min(Math.max(moduleInfo.name.length() + 4, 16), 24);
+                || description.length() < Math.min(Math.max(moduleInfo.name.length() + 4, 16), 24)
+                || (getFlagsForModule(moduleInfo.id) & FLAG_COMPAT_LOW_QUALITY) != 0;
     }
 
     private static boolean isInvalidValue(String name) {
