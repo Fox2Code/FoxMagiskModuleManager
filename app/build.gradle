@@ -74,8 +74,8 @@ dependencies {
     annotationProcessor "io.noties:prism4j-bundler:2.0.0"
     implementation "com.caverock:androidsvg:1.4"
 
-    // Utils for compat
-    compileOnly "org.robolectric:android-all:11-robolectric-6757853"
+    // Utils for compat (Needs to be outsourced ASAP)
+    // compileOnly "org.robolectric:android-all:11-robolectric-6757853"
 
     // Test
     testImplementation 'junit:junit:4.+'
