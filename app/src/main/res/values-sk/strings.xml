@@ -1,0 +1,95 @@
+<resources>
+    <string name="app_name">Fox\'s Magisk Module Manager</string>
+    <string name="app_name_short">Fox\'s Mmm</string>
+    <string name="fail_root_magisk">Nepodarilo sa získať prístup k Root-u alebo Magisk</string>
+    <string name="loading">Načítavanie…</string>
+    <string name="updatable">Aktualizovateľné</string>
+    <string name="installed">Nainštalované</string>
+    <string name="online_repo">Online Repo</string>
+    <string name="showcase_mode">Aplikácia je v obmedzenom režime</string>
+    <string name="failed_download">Sťahovanie súboru zlyhalo.</string>
+    <string name="slow_modules">Načítanie modulov trvalo príliš dlho, zvážte ich obmedziť</string>
+    <string name="fail_internet">Pripojenie k internetu zlyhalo</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="app_update_available">Dostupné aktualizácie aplikácie</string>
+    <string name="app_update">Aktualizovať</string>
+    <string name="no_desc_found">Popis nenájdený.</string>
+    <string name="download_module">Stiahnuť modul</string>
+    <string name="install_module">Inštalovať modul</string>
+    <string name="update_module">Aktualizovať modul</string>
+    <string name="changelog">Zoznam zmien</string>
+    <string name="website">Website</string>
+    <string name="support">Podpora</string>
+    <string name="donate">Prispejte na vývoj</string>
+    <string name="submit_modules">Odoslat modul</string>
+    <string name="require_android_6">Požaduje sa Android 6.0+</string>
+
+    <!-- Module section translation -->
+    <string name="module_last_update">Posledná aktualizácia:</string>
+    <string name="module_repo">Repo:</string>
+    <string name="module_by">by</string>
+    <string name="module_downloads">Stiahnuté:</string>
+    <string name="module_stars">Hviezdičiek:</string>
+
+    <!-- Preference Titles -->
+    <!-- Note: Lockdown mode used to be called showcase mode -->
+    <string name="manage_repos_pref">Spravovat repozitáre</string>
+    <string name="showcase_mode_pref">Obmedzený režim</string>
+    <string name="showcase_mode_desc">Obmedzený režim bráni správcovi vykonávať akcie s modulmi</string>
+    <string name="pref_category_settings">Nastavenia</string>
+    <string name="pref_category_info">Info</string>
+    <string name="show_licenses">Zobraziť licencie</string>
+    <string name="licenses">Licencie</string>
+    <string name="show_incompatible_pref">Zobraziť nekompatibilné moduly</string>
+    <string name="show_incompatible_desc">Zobraziť moduly, ktoré nie sú podľa ich metadát kompatibilné s vaším zariadením</string>
+    <string name="magisk_outdated">Magisk je zastaralý!</string>
+    <string name="pref_category_repos">Úložisko</string>
+    <string name="repo_main_desc">Úložisko s Magisk modulmi</string>
+    <string name="repo_main_alt">Alternativné úložisko Magisk-Modules-Repo s menšími obmedzeniami.</string>
+    <string name="master_delete">Zmazať súbory modulu?</string>
+    <string name="master_delete_no">Ponechať súbory</string>
+    <string name="master_delete_yes">Zmazat soubory</string>
+    <string name="master_delete_fail">Zmazánie súborov modulu zlyhalo</string>
+    <string name="theme_pref">Téma</string>
+    <string name="theme_mode_pref">Mód témy</string>
+    <string name="module_id_prefix">Id modulu: </string>
+    <string name="install_from_storage">Inštalovať modul z miestneho úložiska</string>
+    <string name="invalid_format">Vybraný modul má nesprávny formát</string>
+    <string name="local_install_title">Miestna inštalácia</string>
+    <string name="source_code">Zdrojový kód</string>
+    <string name="magisk_builtin_module">Vstavaný modul Magisk</string>
+    <string name="substratum_builtin_module">Vstavaný modul Substratum</string>
+    <string name="force_dark_terminal_title">Vynútiť terminál v tmavom režime</string>
+    <string name="file_picker_failure">Nepodarilo se získať prístup k vybranému súboru.</string>
+    <string name="remote_install_title">Vzdialená inštalácia</string>
+    <string name="file_picker_wierd">Vybraný súbor vrátil neštandartnú odpoveď.</string>
+    <string name="use_magisk_install_command_pref">Použiť príkaz inštalácie modulu Magisk</string>
+    <string name="use_magisk_install_command_desc">
+        Počas testu inštalácie modulu sa vyskytla chyba, preto som schoval túto možnosť do módu pre vývojárov,
+		    povoľte to len na vlastné riziko!
+    </string>
+    <string name="dev_mode_enabled">Povolený režim pre vývojárov</string>
+    <string name="force_english_pref">Vynútiť Angličtinu</string>
+    <string name="disable_low_quality_module_filter_pref">Zakázať filter nekvalitných modulov</string>
+    <string name="disable_low_quality_module_filter_desc">
+        Niektoré moduly deklarují svoje metadata nesprávne, čo môže spôsobiť závady zobrazenia, alebo ukazují nízku kvalitu modulu,
+		    zakážte to len na vlastné riziko!
+    </string>
+    <string name="dns_over_https_pref">Dns cez https</string>
+    <string name="dns_over_https_desc">
+        V niektorých prípadoch môže opraviť problémy s pripojením.
+        (Nevzťahuje se na WebView)
+    </string>
+    <string name="disable_extensions_pref">Zakázať rozšírenia</string>
+    <string name="disable_extensions_desc">
+        Zakázať rozšíreniu Fox\'s Mmm použiť modulom terminal extensions, užitočné ak sa používa modul rozšírenia Fox\'s Mmm nesprávne.
+    </string>
+    <string name="wrap_text_pref">Zalomiť text</string>
+    <string name="wrap_text_desc">
+        Zalomí text do nového riadku, namiesto toho aby
+        bol všetok text pri inštalácii modulu na jednej.
+    </string>
+    <string name="enable_blur_pref">Povoliť rozostrenia</string>
+    <string name="repo_enabled">Repozitár povolený</string>
+    <string name="repo_disabled">Repozitár zakázaný</string>
+</resources>
