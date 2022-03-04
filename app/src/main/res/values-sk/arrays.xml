@@ -1,0 +1,14 @@
+<resources>
+    <!-- If translating, please remove "theme_values" 
+    <string-array name="theme_values" translatable="false">
+        <item>system</item>
+        <item>dark</item>
+        <item>light</item>
+    </string-array>-->
+
+    <string-array name="theme_values_names">
+        <item>Podľa systému</item>
+        <item>Tmavá</item>
+        <item>Svetlá</item>
+    </string-array>
+</resources>
