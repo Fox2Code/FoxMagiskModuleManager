@@ -18,21 +18,22 @@
     <string name="install_module">Cài đặt mô-đun</string>
     <string name="update_module">Cập nhật mô-đun</string>
     <string name="changelog">Nhật ký thay đổi</string>
-	<string name="website">Trang web</string>
+    <string name="website">Trang web</string>
     <string name="support">Hỗ trợ</string>
     <string name="donate">Ủng hộ</string>
     <string name="submit_modules">Nộp một mô-đun</string>
+    <string name="require_android_6">Yêu cầu Android 6.0+</string>
 	
     <!-- Module section translation -->
     <string name="module_last_update">Cập nhật lần cuối:</string>
     <string name="module_repo">Kho:</string>
     <string name="module_by">bởi</string>
-	<string name="module_downloads">Lượt tải xuống:</string>
-	<string name="module_stars">Sao:</string>
+    <string name="module_downloads">Lượt tải xuống:</string>
+    <string name="module_stars">Sao:</string>
 
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
-	<string name="manage_repos_pref">Quản lý kho</string>
+    <string name="manage_repos_pref">Quản lý kho</string>
     <string name="showcase_mode_pref">Chế độ khóa</string>
     <string name="showcase_mode_desc">Chế độ khóa ngăn trình quản lý thực hiện hành động trên các mô-đun</string>
     <string name="pref_category_settings">Cài đặt</string>
@@ -50,6 +51,7 @@
     <string name="master_delete_yes">Xóa tệp</string>
     <string name="master_delete_fail">Xóa các tệp mô-đun thất bại</string>
     <string name="theme_pref">Chủ đề</string>
+    <string name="theme_mode_pref">Cài đặt chủ đề</string>
     <string name="module_id_prefix">ID mô-đun: </string>
     <string name="install_from_storage">Cài đặt mô-đun từ bộ nhớ</string>
     <string name="invalid_format">Mô-đun đã chọn có định dạng không hợp lệ</string>
@@ -74,17 +76,21 @@
         và/hoặc cho biết chất lượng mô-đun kém, hãy tự chịu rủi ro khi tắt tùy chọn này!
     </string>
     <string name="dns_over_https_pref">DNS qua HTTPS</string>
-    <string name="dns_over_https_desc">Có thể khắc phục sự cố kết nối trong một số trường hợp.</string>
+    <string name="dns_over_https_desc">
+	    Có thể khắc phục sự cố kết nối trong một số trường hợp.
+	    (Không áp dụng đối với WebView)
+    </string>
     <string name="disable_extensions_pref">Tắt tiện ích mở rộng</string>
     <string name="disable_extensions_desc">
         Tắt tiện ích mở rộng Tr. quản lý MM của Fox, điều này ngăn các mô-đun sử dụng tiện ích mở rộng
-        đầu cuối, hữu ích nếu một mô-đun sử dụng sai tiện ích mở rộng Tr. quản lý MM của Fox.
+        thiết bị đầu cuối, hữu ích nếu một mô-đun sử dụng sai tiện ích mở rộng Tr. quản lý MM của Fox.
     </string>
     <string name="wrap_text_pref">Gói gọn văn bản</string>
     <string name="wrap_text_desc">
         Gói văn bản thành một dòng mới thay vì đặt tất cả
         văn bản trên cùng một dòng khi cài đặt một mô-đun
     </string>
+    <string name="enable_blur_pref">Kích hoạt làm mờ</string>
     <string name="repo_enabled">Kho đã được kích hoạt</string>
     <string name="repo_disabled">Kho đã bị vô hiệu hóa</string>
 </resources>
