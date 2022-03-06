@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Fox\'s Magisk Module Manager</string>
     <string name="app_name_short">Fox\'s Mmm</string>
-    <string name="fail_root_magisk">Fehlgeschlagener Zugriff auf Root oder Magisk</string>
+    <string name="fail_root_magisk">Zugriff auf Root oder Magisk fehlgeschlagen.</string>
     <string name="loading">Laden...</string>
     <string name="updatable">Aktualisierbar</string>
     <string name="installed">Installiert</string>
@@ -52,8 +52,8 @@
     <string name="file_picker_wierd">Ihr Dateimanager hat eine nicht standardmäßige Antwort zurückgegeben.</string>
     <string name="use_magisk_install_command_pref">Magisk-Modul Installationsbefehl verwenden</string>
     <string name="use_magisk_install_command_desc">
-        Während des Tests verursachte es Probleme mit dem Fehlerdiagnosetool für die Modulinstallation.
-        Daher habe ich diese Option hinter dem Entwicklermodus versteckt, aktivieren Sie dies auf eigene Gefahr!
+        Während des Tests verursachte diese Option Probleme mit dem Fehlerdiagnosetool für die Modulinstallation,
+        daher habe ich sie hinter dem Entwicklermodus versteckt. Aktivieren Sie diese auf eigene Gefahr!
     </string>
     <string name="dev_mode_enabled">Entwicklermodus aktiviert</string>
     <string name="force_english_pref">Englische Sprache erzwingen</string>
