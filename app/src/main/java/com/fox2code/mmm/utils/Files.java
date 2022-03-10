@@ -1,5 +1,6 @@
 package com.fox2code.mmm.utils;
 
+import com.topjohnwu.superuser.io.SuFile;
 import com.topjohnwu.superuser.io.SuFileInputStream;
 import com.topjohnwu.superuser.io.SuFileOutputStream;
 
@@ -41,6 +42,10 @@ public class Files {
         try (InputStream inputStream = SuFileInputStream.open(file)) {
             return readAllBytes(inputStream);
         }
+    }
+
+    public static boolean existsSU(File file) {
+        return file.exists() || new SuFile(file.getAbsolutePath()).exists();
     }
 
     public static void copy(InputStream inputStream,OutputStream outputStream) throws IOException {

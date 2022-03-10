@@ -256,7 +256,7 @@ public class InstallerActivity extends CompatActivity {
                 return;
             }
             installerMonitor = new InstallerMonitor(installScript);
-            installJob = Shell.sh("export MMM_EXT_SUPPORT=1",
+            installJob = Shell.cmd("export MMM_EXT_SUPPORT=1",
                     "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
                     "sh \"" + installScript.getAbsolutePath() + "\"" +
                             " /dev/null 1 \"" + file.getAbsolutePath() + "\"")
@@ -324,11 +324,11 @@ public class InstallerActivity extends CompatActivity {
             installerMonitor = new InstallerMonitor(installExecutable);
             if (moduleId != null) installerMonitor.setForCleanUp(moduleId);
             if (noExtensions) {
-                installJob = Shell.su(arch32, // No Extensions
+                installJob = Shell.cmd(arch32, // No Extensions
                         "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
                         installCommand).to(installerController, installerMonitor);
             } else {
-                installJob = Shell.su(arch32, "export MMM_EXT_SUPPORT=1",
+                installJob = Shell.cmd(arch32, "export MMM_EXT_SUPPORT=1",
                         "export MMM_USER_LANGUAGE=" + (MainApplication.isForceEnglish() ?
                                 "en-US" : Resources.getSystem()
                                 .getConfiguration().locale.toLanguageTag()),

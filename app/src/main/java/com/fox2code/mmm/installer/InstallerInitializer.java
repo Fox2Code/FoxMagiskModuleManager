@@ -7,8 +7,10 @@ import androidx.annotation.NonNull;
 
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.utils.Files;
 import com.topjohnwu.superuser.NoShellException;
 import com.topjohnwu.superuser.Shell;
+import com.topjohnwu.superuser.io.SuFile;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -87,17 +89,19 @@ public class InstallerInitializer extends Shell.Initializer {
         int MAGISK_VERSION_CODE;
         if (MAGISK_PATH != null && !forceCheck) return MAGISK_PATH;
         ArrayList<String> output = new ArrayList<>();
-        if(!Shell.su( "magisk -V", "magisk --path").to(output).exec().isSuccess()) {
+        if(!Shell.cmd("magisk -V", "magisk --path").to(output).exec().isSuccess()) {
             return null;
         }
         MAGISK_PATH = output.size() < 2 ? "" : output.get(1);
+        Log.d(TAG, "Magisk runtime path: " + MAGISK_PATH);
         MAGISK_VERSION_CODE = Integer.parseInt(output.get(0));
+        Log.d(TAG, "Magisk version code: " + MAGISK_VERSION_CODE);
         if (MAGISK_VERSION_CODE >= Constants.MAGISK_VER_CODE_FLAT_MODULES &&
                 MAGISK_VERSION_CODE < Constants.MAGISK_VER_CODE_PATH_SUPPORT &&
                 (MAGISK_PATH.isEmpty() || !new File(MAGISK_PATH).exists())) {
             MAGISK_PATH = "/sbin";
         }
-        if (MAGISK_PATH.length() != 0 && new File(MAGISK_PATH).exists()) {
+        if (MAGISK_PATH.length() != 0 && Files.existsSU(new File(MAGISK_PATH))) {
             InstallerInitializer.MAGISK_PATH = MAGISK_PATH;
         } else {
             Log.e(TAG, "Failed to get Magisk path (Got " + MAGISK_PATH + ")");

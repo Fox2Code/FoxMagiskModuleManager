@@ -243,13 +243,13 @@ public final class ModuleManager {
                             line.equals("/data/adb/magisk.db")) continue;
                     line = line.replace("\\", "\\\\")
                             .replace("\"", "\\\"");
-                    Shell.su("rm -rf \"" + line + "\"").exec();
+                    Shell.cmd("rm -rf \"" + line + "\"").exec();
                 }
             }
         } catch (IOException ignored) {}
-        Shell.su("rm -rf /data/adb/modules/" + escapedId + "/").exec();
-        Shell.su("rm -f /data/adb/modules/." + escapedId + "-files").exec();
-        Shell.su("rm -rf /data/adb/modules_update/" + escapedId + "/").exec();
+        Shell.cmd("rm -rf /data/adb/modules/" + escapedId + "/").exec();
+        Shell.cmd("rm -f /data/adb/modules/." + escapedId + "-files").exec();
+        Shell.cmd("rm -rf /data/adb/modules_update/" + escapedId + "/").exec();
         moduleInfo.flags = ModuleInfo.FLAG_METADATA_INVALID;
         return true;
     }
