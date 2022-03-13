@@ -24,6 +24,7 @@ public class PropUtils {
     private static final HashMap<String, String> moduleSupportsFallbacks = new HashMap<>();
     private static final HashMap<String, String> moduleConfigsFallbacks = new HashMap<>();
     private static final HashMap<String, Integer> moduleMinApiFallbacks = new HashMap<>();
+    private static final HashMap<String, String> moduleUpdateJsonFallbacks = new HashMap<>();
     private static final HashSet<String> moduleImportantProp = new HashSet<>(Arrays.asList(
             "id", "name", "version", "versionCode"
     ));
@@ -51,13 +52,30 @@ public class PropUtils {
         moduleConfigsFallbacks.put("substratum", "projekt.substratum");
         // minApi is the minimum android version required to use the module
         moduleMinApiFallbacks.put("riru_ifw_enhance", Build.VERSION_CODES.O);
+        moduleMinApiFallbacks.put("zygisk_ifw_enhance", Build.VERSION_CODES.O);
         moduleMinApiFallbacks.put("riru_edxposed", Build.VERSION_CODES.O);
+        moduleMinApiFallbacks.put("zygisk_edxposed", Build.VERSION_CODES.O);
         moduleMinApiFallbacks.put("riru_lsposed", Build.VERSION_CODES.O_MR1);
+        moduleMinApiFallbacks.put("zygisk_lsposed", Build.VERSION_CODES.O_MR1);
         moduleMinApiFallbacks.put("noneDisplayCutout", Build.VERSION_CODES.P);
         moduleMinApiFallbacks.put("quickstepswitcher", Build.VERSION_CODES.P);
         moduleMinApiFallbacks.put("riru_clipboard_whitelist", Build.VERSION_CODES.Q);
         // minApi for riru core include submodules
         moduleMinApiFallbacks.put("riru-core", RIRU_MIN_API = Build.VERSION_CODES.M);
+        // Fallbacks in case updateJson is missing
+        final String GH_UC = "https://raw.githubusercontent.com/";
+        moduleUpdateJsonFallbacks.put("BluetoothLibraryPatcher",
+                GH_UC + "3arthur6/BluetoothLibraryPatcher/master/update.json");
+        moduleUpdateJsonFallbacks.put("Detach",
+                GH_UC + "xerta555/Detach-Files/blob/master/Updater.json");
+        moduleUpdateJsonFallbacks.put("riru_ifw_enhance", "https://github.com/" +
+                "Kr328/Riru-IFWEnhance/releases/latest/download/riru-ifw-enhance.json");
+        moduleUpdateJsonFallbacks.put("zygisk_ifw_enhance", "https://github.com/" +
+                "Kr328/Riru-IFWEnhance/releases/latest/download/zygisk-ifw-enhance.json");
+        moduleUpdateJsonFallbacks.put("riru_lsposed",
+                "https://lsposed.github.io/LSPosed/release/riru.json");
+        moduleUpdateJsonFallbacks.put("zygisk_lsposed",
+                "https://lsposed.github.io/LSPosed/release/zygisk.json");
     }
 
     public static void readProperties(ModuleInfo moduleInfo, String file,
@@ -196,6 +214,7 @@ public class PropUtils {
                             moduleInfo.minMagisk = 0;
                         }
                         break;
+                    case "minSdkVersion": // Improve compatibility
                     case "minApi":
                         // Special case for Riru EdXposed because
                         // minApi don't mean the same thing for them
@@ -209,6 +228,7 @@ public class PropUtils {
                             moduleInfo.minApi = 0;
                         }
                         break;
+                    case "maxSdkVersion": // Improve compatibility
                     case "maxApi":
                         try {
                             moduleInfo.maxApi = Integer.parseInt(value);
@@ -250,7 +270,7 @@ public class PropUtils {
             moduleInfo.description = "";
         }
         if (!readUpdateJson) {
-            moduleInfo.updateJson = null;
+            moduleInfo.updateJson = moduleUpdateJsonFallbacks.get(moduleInfo.id);
         }
         if (moduleInfo.minApi == 0) {
             Integer minApiFallback = moduleMinApiFallbacks.get(moduleInfo.id);
