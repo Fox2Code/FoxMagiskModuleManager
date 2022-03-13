@@ -92,7 +92,7 @@ public class PropUtils {
                                       String name, boolean local) throws IOException {
         boolean readId = false, readIdSec = false, readName = false,
                 readVersionCode = false, readVersion = false, readDescription = false,
-                readUpdateJson = false, invalid = false;
+                readUpdateJson = false, invalid = false, readMinApi = false, readMaxApi = false;
         try (BufferedReader bufferedReader = new BufferedReader(
                 new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             String line;
@@ -214,26 +214,25 @@ public class PropUtils {
                             moduleInfo.minMagisk = 0;
                         }
                         break;
-                    case "minSdkVersion": // Improve compatibility
                     case "minApi":
                         // Special case for Riru EdXposed because
                         // minApi don't mean the same thing for them
-                        if (moduleInfo.id.equals("riru_edxposed") &&
-                                "10".equals(value)) {
-                            break;
-                        }
+                        if ("10".equals(value)) break;
+                    case "minSdkVersion": // Improve compatibility
                         try {
                             moduleInfo.minApi = Integer.parseInt(value);
+                            readMinApi = true;
                         } catch (Exception e) {
-                            moduleInfo.minApi = 0;
+                            if (!readMinApi) moduleInfo.minApi = 0;
                         }
                         break;
                     case "maxSdkVersion": // Improve compatibility
                     case "maxApi":
                         try {
                             moduleInfo.maxApi = Integer.parseInt(value);
+                            readMaxApi = true;
                         } catch (Exception e) {
-                            moduleInfo.maxApi = 0;
+                            if (!readMaxApi) moduleInfo.maxApi = 0;
                         }
                         break;
                 }
@@ -272,7 +271,7 @@ public class PropUtils {
         if (!readUpdateJson) {
             moduleInfo.updateJson = moduleUpdateJsonFallbacks.get(moduleInfo.id);
         }
-        if (moduleInfo.minApi == 0) {
+        if (moduleInfo.minApi == 0 || !readMinApi) {
             Integer minApiFallback = moduleMinApiFallbacks.get(moduleInfo.id);
             if (minApiFallback != null)
                 moduleInfo.minApi = minApiFallback;
