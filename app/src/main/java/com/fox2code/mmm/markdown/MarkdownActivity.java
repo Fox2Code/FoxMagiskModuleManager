@@ -22,10 +22,40 @@ import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 
 
 public class MarkdownActivity extends CompatActivity {
     private static final String TAG = "MarkdownActivity";
+    private static final HashMap<String, String> redirects = new HashMap<>(4);
+    private static final String[] variants = new String[]{
+            "readme.md", "README.MD", ".github/README.md"
+    };
+
+    private static byte[] getRawMarkdown(String url) throws IOException {
+        String newUrl = redirects.get(url);
+        if (newUrl != null && !newUrl.equals(url)) {
+            return Http.doHttpGet(newUrl, true);
+        }
+        try {
+            return Http.doHttpGet(url, true);
+        } catch (IOException e) {
+            // Workaround GitHub README.md case sensitivity issue
+            if (url.startsWith("https://raw.githubusercontent.com/") &&
+                    url.endsWith("/README.md")) {
+                String prefix = url.substring(0, url.length() - 9);
+                for (String suffix : variants) {
+                    newUrl = prefix + suffix;
+                    try { // Try with lowercase version
+                        byte[] rawMarkdown = Http.doHttpGet(prefix + suffix, true);
+                        redirects.put(url, newUrl); // Avoid retries
+                        return rawMarkdown;
+                    } catch (IOException ignored) {}
+                }
+            }
+            throw e;
+        }
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,21 +103,8 @@ public class MarkdownActivity extends CompatActivity {
         new Thread(() -> {
             try {
                 Log.d(TAG, "Downloading");
-                byte[] rawMarkdown;
-                try {
-                    rawMarkdown = Http.doHttpGet(url, true);
-                } catch (IOException e) {
-                    // Workaround GitHub README.md case sensitivity issue
-                    if (url.startsWith("https://raw.githubusercontent.com/") &&
-                            url.endsWith("/README.md")) {
-                        String prefix = url.substring(0, url.length() - 9);
-                        try { // Try with lowercase version
-                            rawMarkdown = Http.doHttpGet(prefix + "readme.md", true);
-                        } catch (IOException ignored) { // Try with .github version
-                            rawMarkdown = Http.doHttpGet(prefix + ".github/README.md", true);
-                        }
-                    } else throw e;
-                }
+                byte[] rawMarkdown = getRawMarkdown(url);
+                Log.d(TAG, "Encoding");
                 String markdown = new String(rawMarkdown, StandardCharsets.UTF_8);
                 Log.d(TAG, "Done!");
                 runOnUiThread(() -> {
