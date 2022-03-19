@@ -22,11 +22,12 @@
     <string name="support">Помощь</string>
     <string name="donate">Поддержать</string>
     <string name="submit_modules">Разместить свой модуль</string>
+    <string name="require_android_6">Require Android 6.0+</string>
 
     <!-- Module section translation -->
     <string name="module_last_update">Посл. обновление:</string>
     <string name="module_repo">Репозиторий:</string>
-    <string name="module_by">| автор:"</string>
+    <string name="module_by">| автор:</string>
     <string name="module_downloads">Всего скачали:</string>
     <string name="module_stars">В избранном у</string>
 
@@ -50,6 +51,7 @@
     <string name="master_delete_yes">Удалить файлы</string>
     <string name="master_delete_fail">Не удалось удалить файлы модуля</string>
     <string name="theme_pref">Тема</string>
+    <string name="theme_mode_pref">Тема оформления</string>
     <string name="module_id_prefix">ID модуля: </string>
     <string name="install_from_storage">Установить модуль из хранилища</string>
     <string name="invalid_format">Выбранный модуль имеет недопустимый формат</string>
@@ -88,6 +90,7 @@
         Переносить текст на другую строку, чтобы
         не помещать всё на одной во время установки модуля
     </string>
+    <string name="enable_blur_pref">Включить эффект размытия</string>
     <string name="repo_enabled">Репо включен</string>
     <string name="repo_disabled">Репо отключен</string>
 </resources>
