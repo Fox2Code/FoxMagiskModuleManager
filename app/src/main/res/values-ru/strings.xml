@@ -22,7 +22,7 @@
     <string name="support">Помощь</string>
     <string name="donate">Поддержать</string>
     <string name="submit_modules">Разместить свой модуль</string>
-    <string name="require_android_6">Require Android 6.0+</string>
+    <string name="require_android_6">Требуется Android 6.0+</string>
 
     <!-- Module section translation -->
     <string name="module_last_update">Посл. обновление:</string>
