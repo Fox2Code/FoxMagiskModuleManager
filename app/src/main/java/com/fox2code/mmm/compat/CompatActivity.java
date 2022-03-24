@@ -230,11 +230,20 @@ public class CompatActivity extends AppCompatActivity {
             Log.e(TAG, "Failed to call getSupportActionBar", e);
             compatActionBar = null; // Allow fallback to builtin actionBar.
         }
+        View customView = null;
         if (compatActionBar != null) {
-            return compatActionBar.isShowing() ? compatActionBar.getHeight() : 0;
+            return compatActionBar.isShowing() || ((customView =
+                    compatActionBar.getCustomView()) != null &&
+                    customView.getVisibility() == View.VISIBLE) ?
+                    Math.max(customView == null ? 0 : customView.getHeight(),
+                            compatActionBar.getHeight()) : 0;
         } else {
             android.app.ActionBar actionBar = this.getActionBar();
-            return actionBar != null && actionBar.isShowing() ? actionBar.getHeight() : 0;
+            return actionBar != null && (actionBar.isShowing() || ((
+                    customView = actionBar.getCustomView()) != null &&
+                    customView.getVisibility() == View.VISIBLE)) ?
+                    Math.max(customView == null ? 0 : customView.getHeight(),
+                            actionBar.getHeight()) : 0;
         }
     }
 

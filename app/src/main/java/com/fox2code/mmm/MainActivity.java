@@ -207,6 +207,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                     progressIndicator.setVisibility(View.GONE);
                     searchView.setEnabled(true);
                     setActionBarBackground(null);
+                    updateScreenInsets(getResources().getConfiguration());
                 });
                 moduleViewListBuilder.appendRemoteModules();
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
@@ -243,8 +244,8 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         this.swipeRefreshLayout.setProgressViewOffset(false,
                 swipeRefreshLayoutOrigStartOffset + combinedBarsHeight,
                 swipeRefreshLayoutOrigEndOffset + combinedBarsHeight);
-        this.moduleViewListBuilder.setHeaderPx(
-                actionBarHeight + CompatDisplay.dpToPixel(8));
+        this.moduleViewListBuilder.setHeaderPx(Math.max(statusBarHeight,
+                combinedBarsHeight - CompatDisplay.dpToPixel(12)));
         this.moduleViewListBuilder.setFooterPx(
                 bottomInset + this.searchCard.getHeight());
         this.searchCard.setRadius(this.searchCard.getHeight() / 2F);
