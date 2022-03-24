@@ -267,7 +267,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 this.descriptionText.setText(" ");
                 this.switchMaterial.setEnabled(false);
                 this.actionButtonsTypes.clear();
-                for (ImageButton button:this.actionsButtons) {
+                for (ImageButton button : this.actionsButtons) {
                     button.setVisibility(View.GONE);
                     button.setImportantForAccessibility(
                             View.IMPORTANT_FOR_ACCESSIBILITY_NO);
@@ -318,7 +318,11 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 theme.resolveAttribute(foregroundAttr, value, true);
                 @ColorInt int fgColor = value.data;
                 // Fix card background being invisible on light theme
-                if (bgColor == Color.WHITE) bgColor = 0xFFF8F8F8;
+                if (bgColor == Color.WHITE) {
+                    bgColor = 0xFFF8F8F8;
+                } else {
+                    bgColor = 0xFF1E1E1E;
+                };
                 this.titleText.setTextColor(fgColor);
                 this.buttonAction.setColorFilter(fgColor);
                 this.cardView.setCardBackgroundColor(bgColor);
