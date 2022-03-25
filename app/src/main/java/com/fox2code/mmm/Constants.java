@@ -16,6 +16,7 @@ public class Constants {
     public static final String EXTRA_INSTALL_CHECKSUM = "extra_install_checksum";
     public static final String EXTRA_INSTALL_NO_EXTENSIONS = "extra_install_no_extensions";
     public static final String EXTRA_INSTALL_TEST_ROOTLESS = "extra_install_test_rootless";
+    public static final String EXTRA_ANDROIDACY_COMPAT_LEVEL = "extra_androidacy_compat_level";
     public static final String EXTRA_ANDROIDACY_ALLOW_INSTALL = "extra_androidacy_allow_install";
     public static final String EXTRA_ANDROIDACY_ACTIONBAR_TITLE = "extra_androidacy_actionbar_title";
     public static final String EXTRA_ANDROIDACY_ACTIONBAR_CONFIG = "extra_androidacy_actionbar_config";

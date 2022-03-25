@@ -353,7 +353,7 @@ public class PropUtils {
                 || url.length() <= 12 || url.indexOf('\0') != -1;
     }
 
-    private static String makeNameFromId(String moduleId) {
+    public static String makeNameFromId(String moduleId) {
         return moduleId.substring(0, 1).toUpperCase(Locale.ROOT) +
                 moduleId.substring(1).replace('_', ' ');
     }

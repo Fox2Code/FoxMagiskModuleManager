@@ -93,7 +93,7 @@ public enum ActionButtonType {
             }
             Log.d("Test", "URL: " + updateZipUrl);
             builder.setNegativeButton(R.string.download_module, (x, y) ->
-                    IntentHelper.openUrl(button.getContext(), updateZipUrl, true));
+                    IntentHelper.openCustomTab(button.getContext(), updateZipUrl));
             if (hasRoot) {
                 builder.setPositiveButton(moduleHolder.hasUpdate() ?
                         R.string.update_module : R.string.install_module, (x, y) -> {
