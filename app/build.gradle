@@ -10,8 +10,8 @@ android {
         applicationId "com.fox2code.mmm"
         minSdk 21
         targetSdk 32
-        versionCode 33
-        versionName "0.4.0-rc2"
+        versionCode 34
+        versionName "0.4.0-rc3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -64,7 +64,7 @@ dependencies {
     // Utils
     implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.9.3'
     implementation 'com.squareup.okhttp3:okhttp-brotli:4.9.3'
-    implementation 'com.github.topjohnwu.libsu:io:4.0.2'
+    implementation 'com.github.topjohnwu.libsu:io:4.0.3'
 
     // Markdown
     implementation "io.noties.markwon:core:4.6.2"
