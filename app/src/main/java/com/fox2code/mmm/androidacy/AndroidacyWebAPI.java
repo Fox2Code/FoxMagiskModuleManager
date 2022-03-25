@@ -4,19 +4,27 @@ import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.Keep;
+import androidx.appcompat.app.AlertDialog;
 
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.R;
+import com.fox2code.mmm.compat.CompatDisplay;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
+import com.fox2code.mmm.repo.RepoManager;
+import com.fox2code.mmm.repo.RepoModule;
 import com.fox2code.mmm.utils.Files;
 import com.fox2code.mmm.utils.Hashes;
 import com.fox2code.mmm.utils.IntentHelper;
+import com.fox2code.mmm.utils.PropUtils;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,31 +33,115 @@ import java.nio.charset.StandardCharsets;
 @Keep
 public class AndroidacyWebAPI {
     private static final String TAG = "AndroidacyWebAPI";
+    private static final int MAX_COMPAT_MODE = 1;
     private final AndroidacyActivity activity;
     private final boolean allowInstall;
     boolean consumedAction;
+    boolean downloadMode;
+    int effectiveCompatMode;
+    int notifiedCompatMode;
 
     public AndroidacyWebAPI(AndroidacyActivity activity, boolean allowInstall) {
         this.activity = activity;
         this.allowInstall = allowInstall;
     }
 
-    public void forceQuitRaw(String error) {
+    void forceQuitRaw(String error) {
         Toast.makeText(this.activity, error, Toast.LENGTH_LONG).show();
         this.activity.runOnUiThread(this.activity::forceBackPressed);
         this.activity.backOnResume = true; // Set backOnResume just in case
+        this.downloadMode = false;
+    }
+
+    void openNativeModuleDialogRaw(String moduleUrl, String installTitle,
+                                          String checksum, boolean canInstall) {
+        this.downloadMode = false;
+        RepoModule repoModule = RepoManager.getINSTANCE()
+                .getAndroidacyRepoData().moduleHashMap.get(installTitle);
+        String title, description;
+        if (repoModule != null) {
+            title = repoModule.moduleInfo.name;
+            description = repoModule.moduleInfo.description;
+            if (description == null || description.length() == 0) {
+                description = this.activity.getString(R.string.no_desc_found);
+            }
+        } else {
+            title = PropUtils.makeNameFromId(installTitle);
+            String checkSumType = Hashes.checkSumName(checksum);
+            if (checkSumType == null) {
+                description = "Checksum: " + ((
+                        checksum == null || checksum.isEmpty()) ? "null" : checksum);
+            } else {
+                description = checkSumType + ": " + checksum;
+            }
+        }
+        final MaterialAlertDialogBuilder builder =
+                new MaterialAlertDialogBuilder(this.activity);
+        builder.setTitle(title).setMessage(description).setCancelable(true)
+                .setIcon(R.drawable.ic_baseline_extension_24);
+        builder.setNegativeButton(R.string.download_module, (x, y) -> {
+            this.downloadMode = true;
+            this.activity.webView.loadUrl(moduleUrl);
+        });
+        if (canInstall) {
+            boolean hasUpdate = false;
+            String config = null;
+            if (repoModule != null) {
+                config = repoModule.moduleInfo.config;
+                LocalModuleInfo localModuleInfo =
+                        ModuleManager.getINSTANCE().getModules().get(repoModule.id);
+                hasUpdate = localModuleInfo != null &&
+                        repoModule.moduleInfo.versionCode > localModuleInfo.versionCode;
+            }
+            final String fModuleUrl = moduleUrl, fTitle = title,
+                    fConfig = config, fChecksum = checksum;
+            builder.setPositiveButton(hasUpdate ?
+                    R.string.update_module : R.string.install_module, (x, y) -> {
+                IntentHelper.openInstaller(this.activity,
+                        fModuleUrl, fTitle, fConfig, fChecksum);
+            });
+        }
+        builder.setOnCancelListener(dialogInterface -> {
+            if (!this.activity.backOnResume)
+                this.consumedAction = false;
+        });
+        final int dim5dp = CompatDisplay.dpToPixel(5);
+        builder.setBackgroundInsetStart(dim5dp).setBackgroundInsetEnd(dim5dp);
+        this.activity.runOnUiThread(() -> {
+            AlertDialog alertDialog = builder.show();
+            for (int i = -3; i < 0; i++) {
+                Button alertButton = alertDialog.getButton(i);
+                if (alertButton != null && alertButton.getPaddingStart() > dim5dp) {
+                    alertButton.setPadding(dim5dp, dim5dp, dim5dp, dim5dp);
+                }
+            }
+        });
+    }
+
+    void notifyCompatModeRaw(int value) {
+        if (this.consumedAction) return;
+        Log.d(TAG, "Androidacy Compat mode: " + value);
+        this.notifiedCompatMode = value;
+        if (value < 0) {
+            value = 0;
+        } else if (value > MAX_COMPAT_MODE) {
+            value = MAX_COMPAT_MODE;
+        }
+        this.effectiveCompatMode = value;
     }
 
     @JavascriptInterface
     public void forceQuit(String error) {
-        if (this.consumedAction) return;
+        // Allow forceQuit and cancel in downloadMode
+        if (this.consumedAction && !this.downloadMode) return;
         this.consumedAction = true;
         this.forceQuitRaw(error);
     }
 
     @JavascriptInterface
     public void cancel() {
-        if (this.consumedAction) return;
+        // Allow forceQuit and cancel in downloadMode
+        if (this.consumedAction && !this.downloadMode) return;
         this.consumedAction = true;
         this.activity.runOnUiThread(
                 this.activity::forceBackPressed);
@@ -62,12 +154,30 @@ public class AndroidacyWebAPI {
     public void openUrl(String url) {
         if (this.consumedAction) return;
         this.consumedAction = true;
+        this.downloadMode = false;
         Log.d(TAG, "Received openUrl request: " + url);
         if (Uri.parse(url).getScheme().equals("https")) {
             IntentHelper.openUrl(this.activity, url);
         }
     }
 
+    /**
+     * Open an url in a custom tab if possible.
+     */
+    @JavascriptInterface
+    public void openCustomTab(String url) {
+        if (this.consumedAction) return;
+        this.consumedAction = true;
+        this.downloadMode = false;
+        Log.d(TAG, "Received openCustomTab request: " + url);
+        if (Uri.parse(url).getScheme().equals("https")) {
+            IntentHelper.openCustomTab(this.activity, url);
+        }
+    }
+
+    /**
+     * Return if current theme is a light theme.
+     */
     @JavascriptInterface
     public boolean isLightTheme() {
         return MainApplication.getINSTANCE().isLightTheme();
@@ -97,14 +207,15 @@ public class AndroidacyWebAPI {
      */
     @JavascriptInterface
     public void install(String moduleUrl, String installTitle,String checksum) {
-        if (this.consumedAction || !this.canInstall()) {
+        // If compat mode is 0, this means Androidacy didn't implemented a download mode yet
+        if (this.consumedAction || (this.effectiveCompatMode >= 1 && !this.canInstall())) {
             return;
         }
         this.consumedAction = true;
+        this.downloadMode = false;
         Log.d(TAG, "Received install request: " +
                 moduleUrl + " " + installTitle + " " + checksum);
-        Uri uri = Uri.parse(moduleUrl);
-        if (!AndroidacyUtil.isAndroidacyLink(moduleUrl, uri)) {
+        if (!AndroidacyUtil.isAndroidacyLink(moduleUrl)) {
             this.forceQuitRaw("Non Androidacy module link used on Androidacy");
             return;
         }
@@ -115,9 +226,49 @@ public class AndroidacyWebAPI {
             this.forceQuitRaw("Androidacy didn't provided a valid checksum");
             return;
         }
-        this.activity.backOnResume = true;
-        IntentHelper.openInstaller(this.activity,
-                moduleUrl, installTitle, null, checksum);
+        // Let's handle download mode ourself if not implemented
+        if (this.effectiveCompatMode < 1) {
+            if (!this.canInstall()) {
+                this.downloadMode = true;
+                this.activity.runOnUiThread(() ->
+                        this.activity.webView.loadUrl(moduleUrl));
+            } else {
+                this.openNativeModuleDialogRaw(moduleUrl, installTitle, checksum, true);
+            }
+        } else {
+            RepoModule repoModule = RepoManager.getINSTANCE()
+                    .getAndroidacyRepoData().moduleHashMap.get(installTitle);
+            String config = null;
+            if (repoModule != null && repoModule.moduleInfo.name.length() >= 3) {
+                installTitle = repoModule.moduleInfo.name; // Set title to module name
+                config = repoModule.moduleInfo.config;
+            }
+            this.activity.backOnResume = true;
+            IntentHelper.openInstaller(this.activity,
+                    moduleUrl, installTitle, config, checksum);
+        }
+    }
+
+    /**
+     * install a module via url, with the file checked with the md5 checksum value.
+     */
+    @JavascriptInterface
+    public void openNativeModuleDialog(String moduleUrl, String moduleId, String checksum) {
+        if (this.consumedAction) return;
+        this.consumedAction = true;
+        this.downloadMode = false;
+        if (!AndroidacyUtil.isAndroidacyLink(moduleUrl)) {
+            this.forceQuitRaw("Non Androidacy module link used on Androidacy");
+            return;
+        }
+        if (checksum != null) checksum = checksum.trim();
+        if (checksum == null || checksum.isEmpty()) {
+            Log.w(TAG, "Androidacy WebView didn't provided a checksum!");
+        } else if (!Hashes.checkSumValid(checksum)) {
+            this.forceQuitRaw("Androidacy didn't provided a valid checksum");
+            return;
+        }
+        this.openNativeModuleDialogRaw(moduleUrl, moduleId, checksum, this.canInstall());
     }
 
     /**
@@ -273,5 +424,26 @@ public class AndroidacyWebAPI {
     @JavascriptInterface
     public int getNavigationBarHeight() {
         return this.activity.getNavigationBarHeight();
+    }
+
+    /**
+     * Allow Androidacy backend to notify compat mode
+     * return current effective compat mode
+     */
+    @JavascriptInterface
+    public int getEffectiveCompatMode() {
+        return this.effectiveCompatMode;
+    }
+
+    // Androidacy feature level declaration method
+
+    @JavascriptInterface
+    public void notifyCompatUnsupported() {
+        this.notifyCompatModeRaw(0);
+    }
+
+    @JavascriptInterface
+    public void notifyCompatDownloadButton() {
+        this.notifyCompatModeRaw(1);
     }
 }

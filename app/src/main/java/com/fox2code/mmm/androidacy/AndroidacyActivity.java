@@ -77,6 +77,7 @@ public class AndroidacyActivity extends CompatActivity {
                 Constants.EXTRA_ANDROIDACY_ALLOW_INSTALL, false);
         String title = intent.getStringExtra(Constants.EXTRA_ANDROIDACY_ACTIONBAR_TITLE);
         String config = intent.getStringExtra(Constants.EXTRA_ANDROIDACY_ACTIONBAR_CONFIG);
+        int compatLevel = intent.getIntExtra(Constants.EXTRA_ANDROIDACY_COMPAT_LEVEL, 0);
         this.setContentView(R.layout.webview);
         setActionBarBackground(null);
         this.setDisplayHomeAsUpEnabled(true);
@@ -166,8 +167,24 @@ public class AndroidacyActivity extends CompatActivity {
                 return true;
             }
         });
+        this.webView.setDownloadListener((
+                downloadUrl, userAgent, contentDisposition, mimetype, contentLength) -> {
+            if (AndroidacyUtil.isAndroidacyLink(downloadUrl)) {
+                AndroidacyWebAPI androidacyWebAPI = this.androidacyWebAPI;
+                if (androidacyWebAPI != null) {
+                    if (androidacyWebAPI.consumedAction && !androidacyWebAPI.downloadMode) {
+                        return; // Native module popup may cause download after consumed action
+                    }
+                    androidacyWebAPI.consumedAction = true;
+                    androidacyWebAPI.downloadMode = false;
+                } else if (this.backOnResume) return;
+                this.backOnResume = true;
+                IntentHelper.openCustomTab(this, downloadUrl);
+            }
+        });
         this.webView.addJavascriptInterface(androidacyWebAPI =
                 new AndroidacyWebAPI(this, allowInstall), "mmm");
+        if (compatLevel != 0) androidacyWebAPI.notifyCompatModeRaw(compatLevel);
         this.webView.loadUrl(url);
     }
 
