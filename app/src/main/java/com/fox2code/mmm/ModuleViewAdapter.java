@@ -22,6 +22,7 @@ import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
 import com.fox2code.mmm.repo.RepoModule;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
@@ -125,7 +126,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     ModuleHolder moduleHolder = this.moduleHolder;
                     if (index < this.actionButtonsTypes.size() && moduleHolder != null) {
                         this.actionButtonsTypes.get(index)
-                                .doAction((ImageButton) v, moduleHolder);
+                                .doAction((ImageButton) v, (MaterialCardView) cardView, moduleHolder);
                         if (moduleHolder.shouldRemove()) {
                             this.cardView.setVisibility(View.GONE);
                         }
@@ -233,7 +234,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                         imageButton.setImportantForAccessibility(
                                 View.IMPORTANT_FOR_ACCESSIBILITY_AUTO);
                         ActionButtonType button = this.actionButtonsTypes.get(i);
-                        button.update(imageButton, moduleHolder);
+                        button.update(imageButton, (MaterialCardView) cardView, moduleHolder);
                         imageButton.setContentDescription(button.name());
                     } else {
                         imageButton.setVisibility(View.GONE);
@@ -322,7 +323,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     bgColor = 0xFFF8F8F8;
                 } else {
                     bgColor = 0xFF1E1E1E;
-                };
+                }
                 this.titleText.setTextColor(fgColor);
                 this.buttonAction.setColorFilter(fgColor);
                 this.cardView.setCardBackgroundColor(bgColor);
