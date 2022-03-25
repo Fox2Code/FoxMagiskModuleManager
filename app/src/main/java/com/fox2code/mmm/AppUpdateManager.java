@@ -29,7 +29,7 @@ public class AppUpdateManager {
     private static final String RELEASES_API_URL =
             "https://api.github.com/repos/Fox2Code/FoxMagiskModuleManager/releases";
     private static final String COMPAT_API_URL =
-            "https://api.github.com/repos/Fox2Code/FoxMagiskModuleManager/releases";
+            "https://api.github.com/repos/Fox2Code/FoxMagiskModuleManager/issues/4";
 
     public static AppUpdateManager getAppUpdateManager() {
         return INSTANCE;

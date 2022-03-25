@@ -134,7 +134,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         });
         this.searchView.setEnabled(false); // Enabled later
         this.cardIconifyUpdate();
-        this.updateScreenInsets();
+        this.updateScreenInsets(this.getResources().getConfiguration());
         InstallerInitializer.tryGetMagiskPathAsync(new InstallerInitializer.Callback() {
             @Override
             public void onPathReceived(String path) {

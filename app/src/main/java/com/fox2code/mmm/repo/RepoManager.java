@@ -54,6 +54,7 @@ public final class RepoManager {
     private final MainApplication mainApplication;
     private final LinkedHashMap<String, RepoData> repoData;
     private final HashMap<String, RepoModule> modules;
+    private final AndroidacyRepoData androidacyRepoData;
 
     private RepoManager(MainApplication mainApplication) {
         this.mainApplication = mainApplication;
@@ -61,7 +62,8 @@ public final class RepoManager {
         this.modules = new HashMap<>();
         // We do not have repo list config yet.
         this.addRepoData(MAGISK_ALT_REPO);
-        this.addAndroidacyRepoData();
+        this.androidacyRepoData =
+                this.addAndroidacyRepoData();
         // Populate default cache
         for (RepoData repoData:this.repoData.values()) {
             for (RepoModule repoModule:repoData.moduleHashMap.values()) {
@@ -251,13 +253,17 @@ public final class RepoManager {
         return repoData;
     }
 
-    private RepoData addAndroidacyRepoData() {
+    private AndroidacyRepoData addAndroidacyRepoData() {
         File cacheRoot = new File(this.mainApplication.getCacheDir(), "androidacy_repo");
         SharedPreferences sharedPreferences = this.mainApplication
                 .getSharedPreferences("mmm_androidacy_repo", Context.MODE_PRIVATE);
-        RepoData repoData = new AndroidacyRepoData(
+        AndroidacyRepoData repoData = new AndroidacyRepoData(
                 ANDROIDACY_MAGISK_REPO_ENDPOINT, cacheRoot, sharedPreferences);
         this.repoData.put(ANDROIDACY_MAGISK_REPO_ENDPOINT, repoData);
         return repoData;
+    }
+
+    public AndroidacyRepoData getAndroidacyRepoData() {
+        return this.androidacyRepoData;
     }
 }

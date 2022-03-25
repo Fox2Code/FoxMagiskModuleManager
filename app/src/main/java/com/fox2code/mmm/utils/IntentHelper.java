@@ -12,9 +12,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.util.TypedValue;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.app.BundleCompat;
 
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
@@ -34,6 +36,16 @@ import java.net.URISyntaxException;
 
 public class IntentHelper {
     private static final String TAG = "IntentHelper";
+    private static final String EXTRA_TAB_SESSION =
+            "android.support.customtabs.extra.SESSION";
+    private static final String EXTRA_TAB_COLOR_SCHEME =
+            "androidx.browser.customtabs.extra.COLOR_SCHEME";
+    private static final int EXTRA_TAB_COLOR_SCHEME_DARK = 2;
+    private static final int EXTRA_TAB_COLOR_SCHEME_LIGHT = 1;
+    private static final String EXTRA_TAB_TOOLBAR_COLOR =
+            "android.support.customtabs.extra.TOOLBAR_COLOR";
+    private static final String EXTRA_TAB_EXIT_ANIMATION_BUNDLE =
+            "android.support.customtabs.extra.EXIT_ANIMATION_BUNDLE";
 
     public static void openUri(Context context, String uri) {
         if (uri.startsWith("intent://")) {
@@ -58,8 +70,22 @@ public class IntentHelper {
             }
             startActivity(context, myIntent, false);
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(context, "No application can handle this request."
-                    + " Please install a web-browser",  Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "No application can handle this request.\n"
+                    + " Please install a web-browser", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
+    public static void openCustomTab(Context context, String url) {
+        try {
+            Intent viewIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            viewIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Intent tabIntent = new Intent(viewIntent);
+            tabIntent.addCategory(Intent.CATEGORY_BROWSABLE);
+            startActivityEx(context, tabIntent, viewIntent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(context, "No application can handle this request.\n"
+                    + " Please install a web-browser", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
@@ -174,6 +200,72 @@ public class IntentHelper {
 
     public static void startActivity(Context context, Intent intent,boolean sameApp)
             throws ActivityNotFoundException {
+        if (sameApp) {
+            startActivityEx(context, intent, null);
+        } else {
+            startActivityEx(context, null, intent);
+        }
+    }
+
+    public static void startActivityEx(Context context, Intent intent1,Intent intent2)
+            throws ActivityNotFoundException {
+        if (intent1 == null && intent2 == null)
+            throw new NullPointerException("No intent defined for activity!");
+        changeFlags(intent1, true);
+        changeFlags(intent2, false);
+        Activity activity = getActivity(context);
+        Bundle param = ActivityOptionsCompat.makeCustomAnimation(context,
+                android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+        if (activity == null) {
+            if (intent1 != null) {
+                try {
+                    context.startActivity(intent1, param);
+                    return;
+                } catch (ActivityNotFoundException e) {
+                    if (intent2 == null) throw e;
+                }
+            }
+            context.startActivity(intent2, param);
+        } else {
+            if (intent1 != null) {
+                // Support Custom Tabs as sameApp intent
+                if (intent1.hasCategory(Intent.CATEGORY_BROWSABLE)) {
+                    if (!intent1.hasExtra(EXTRA_TAB_SESSION)) {
+                        Bundle bundle = new Bundle();
+                        BundleCompat.putBinder(bundle, EXTRA_TAB_SESSION, null);
+                        intent1.putExtras(bundle);
+                    }
+                    intent1.putExtra(IntentHelper.EXTRA_TAB_EXIT_ANIMATION_BUNDLE, param);
+                    if (activity instanceof CompatActivity) {
+                        TypedValue typedValue = new TypedValue();
+                        activity.getTheme().resolveAttribute(
+                                android.R.attr.background, typedValue, true);
+                        if (typedValue.type >= TypedValue.TYPE_FIRST_COLOR_INT &&
+                                typedValue.type <= TypedValue.TYPE_LAST_COLOR_INT) {
+                            intent1.putExtra(IntentHelper.EXTRA_TAB_TOOLBAR_COLOR, typedValue.data);
+                            intent1.putExtra(IntentHelper.EXTRA_TAB_COLOR_SCHEME,
+                                    ((CompatActivity) activity).isLightTheme() ?
+                                    IntentHelper.EXTRA_TAB_COLOR_SCHEME_LIGHT :
+                                    IntentHelper.EXTRA_TAB_COLOR_SCHEME_DARK);
+                        }
+                    }
+                }
+                try {
+                    intent1.putExtra(Constants.EXTRA_FADE_OUT, true);
+                    activity.overridePendingTransition(
+                            android.R.anim.fade_in, android.R.anim.fade_out);
+                    activity.startActivity(intent1, param);
+                    return;
+                } catch (ActivityNotFoundException e) {
+                    if (intent2 == null) throw e;
+                }
+            }
+            activity.startActivity(intent2, param);
+        }
+    }
+
+    private static void changeFlags(Intent intent,boolean sameApp) {
+        if (intent == null) return;
         int flags = intent.getFlags() &
                 ~(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
         if (!sameApp) {
@@ -185,19 +277,6 @@ public class IntentHelper {
             }
         }
         intent.setFlags(flags);
-        Activity activity = getActivity(context);
-        Bundle param = ActivityOptionsCompat.makeCustomAnimation(context,
-                android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
-        if (activity == null) {
-            context.startActivity(intent, param);
-        } else {
-            if (sameApp) {
-                intent.putExtra(Constants.EXTRA_FADE_OUT, true);
-                activity.overridePendingTransition(
-                        android.R.anim.fade_in, android.R.anim.fade_out);
-            }
-            activity.startActivity(intent, param);
-        }
     }
 
     public static Activity getActivity(Context context) {
