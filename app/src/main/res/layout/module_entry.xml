@@ -9,7 +9,7 @@
     android:layout_marginTop="2dp"
     android:layout_marginBottom="2dp"
     android:gravity="center_vertical">
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_view"
         android:layout_gravity="center"
         android:layout_width="match_parent"
@@ -188,5 +188,5 @@
                     tools:ignore="RtlHardcoded" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </LinearLayout>
