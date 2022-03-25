@@ -126,7 +126,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     ModuleHolder moduleHolder = this.moduleHolder;
                     if (index < this.actionButtonsTypes.size() && moduleHolder != null) {
                         this.actionButtonsTypes.get(index)
-                                .doAction((ImageButton) v, (MaterialCardView) cardView, moduleHolder);
+                                .doAction((ImageButton) v, moduleHolder);
                         if (moduleHolder.shouldRemove()) {
                             this.cardView.setVisibility(View.GONE);
                         }
@@ -234,7 +234,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                         imageButton.setImportantForAccessibility(
                                 View.IMPORTANT_FOR_ACCESSIBILITY_AUTO);
                         ActionButtonType button = this.actionButtonsTypes.get(i);
-                        button.update(imageButton, (MaterialCardView) cardView, moduleHolder);
+                        button.update(imageButton, moduleHolder);
                         imageButton.setContentDescription(button.name());
                     } else {
                         imageButton.setVisibility(View.GONE);
