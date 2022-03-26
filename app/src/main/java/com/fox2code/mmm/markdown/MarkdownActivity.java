@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
+import com.fox2code.mmm.XHooks;
 import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
@@ -83,7 +84,7 @@ public class MarkdownActivity extends CompatActivity {
         if (config != null && !config.isEmpty()) {
             String configPkg = IntentHelper.getPackageOfConfig(config);
             try {
-                this.getPackageManager().getPackageInfo(configPkg, 0);
+                XHooks.checkConfigTargetExists(this, configPkg, config);
                 this.setActionBarExtraMenuButton(R.drawable.ic_baseline_app_settings_alt_24, menu -> {
                     IntentHelper.openConfig(this, config);
                     return true;

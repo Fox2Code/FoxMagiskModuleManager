@@ -154,14 +154,15 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
 
     public void getButtons(Context context, List<ActionButtonType> buttonTypeList, boolean showcaseMode) {
         if (!this.isModuleHolder()) return;
-        if (this.moduleInfo != null && !showcaseMode) {
+        LocalModuleInfo localModuleInfo = this.moduleInfo;
+        if (localModuleInfo != null && !showcaseMode) {
             buttonTypeList.add(ActionButtonType.UNINSTALL);
         }
         if (this.repoModule != null && this.repoModule.notesUrl != null) {
             buttonTypeList.add(ActionButtonType.INFO);
         }
-        if ((this.repoModule != null || (this.moduleInfo != null &&
-                this.moduleInfo.updateZipUrl != null))) {
+        if ((this.repoModule != null || (localModuleInfo != null &&
+                localModuleInfo.updateZipUrl != null))) {
             buttonTypeList.add(ActionButtonType.UPDATE_INSTALL);
         }
         String config = this.getMainModuleConfig();
@@ -171,7 +172,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
             } else {
                 String pkg = IntentHelper.getPackageOfConfig(config);
                 try {
-                    context.getPackageManager().getPackageInfo(pkg, 0);
+                    XHooks.checkConfigTargetExists(context, pkg, config);
                     buttonTypeList.add(ActionButtonType.CONFIG);
                 } catch (PackageManager.NameNotFoundException e) {
                     Log.w(TAG, "Config package \"" + pkg +
@@ -180,6 +181,10 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
             }
         }
         ModuleInfo moduleInfo = this.getMainModuleInfo();
+        if (moduleInfo == null) { // Avoid concurrency NPE
+            if (localModuleInfo == null) return;
+            moduleInfo = localModuleInfo;
+        }
         if (moduleInfo.support != null) {
             buttonTypeList.add(ActionButtonType.SUPPORT);
         }

@@ -45,8 +45,10 @@ public class PropUtils {
         moduleSupportsFallbacks.put("substratum", "https://github.com/substratum/substratum/issues");
         // Config are application installed by modules that allow them to be configured
         moduleConfigsFallbacks.put("quickstepswitcher", "xyz.paphonb.quickstepswitcher");
+        moduleConfigsFallbacks.put("hex_installer_module", "project.vivid.hex.bodhi");
         moduleConfigsFallbacks.put("riru_edxposed", "org.meowcat.edxposed.manager");
         moduleConfigsFallbacks.put("riru_lsposed", "org.lsposed.manager");
+        moduleConfigsFallbacks.put("zygisk_lsposed", "org.lsposed.manager");
         moduleConfigsFallbacks.put("xposed_dalvik", "de.robv.android.xposed.installer");
         moduleConfigsFallbacks.put("xposed", "de.robv.android.xposed.installer");
         moduleConfigsFallbacks.put("substratum", "projekt.substratum");
