@@ -253,4 +253,9 @@ public final class ModuleManager {
         moduleInfo.flags = ModuleInfo.FLAG_METADATA_INVALID;
         return true;
     }
+
+    public static boolean isModuleActive(String moduleId) {
+        ModuleInfo moduleInfo = ModuleManager.getINSTANCE().getModules().get(moduleId);
+        return moduleInfo != null && (moduleInfo.flags & ModuleInfo.FLAGS_MODULE_ACTIVE) != 0;
+    }
 }

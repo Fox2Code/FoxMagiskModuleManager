@@ -26,6 +26,7 @@ import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
+import com.fox2code.mmm.XHooks;
 import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
@@ -92,7 +93,7 @@ public class AndroidacyActivity extends CompatActivity {
             if (config != null && !config.isEmpty()) {
                 String configPkg = IntentHelper.getPackageOfConfig(config);
                 try {
-                    this.getPackageManager().getPackageInfo(configPkg, 0);
+                    XHooks.checkConfigTargetExists(this, configPkg, config);
                     this.setActionBarExtraMenuButton(R.drawable.ic_baseline_app_settings_alt_24,
                             menu -> {
                                 IntentHelper.openConfig(this, config);
@@ -182,6 +183,7 @@ public class AndroidacyActivity extends CompatActivity {
                 IntentHelper.openCustomTab(this, downloadUrl);
             }
         });
+        XHooks.onWebViewInitialize(this.webView, allowInstall);
         this.webView.addJavascriptInterface(androidacyWebAPI =
                 new AndroidacyWebAPI(this, allowInstall), "mmm");
         if (compatLevel != 0) androidacyWebAPI.notifyCompatModeRaw(compatLevel);

@@ -187,16 +187,18 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     this.creditText.setText((localModuleInfo == null ||
                             Objects.equals(moduleInfo.version, localModuleInfo.version) ?
                             moduleInfo.version : localModuleInfo.version + " (" +
-                            this.getString(R.string.module_last_update) +
+                            this.getString(R.string.module_last_update) + " " +
                             moduleInfo.version + ")") + " " +
                             this.getString(R.string.module_by) + " " + moduleInfo.author);
                 } else {
                     this.creditText.setText(localModuleInfo.version + (
-                            (localModuleInfo.updateVersion != null &&
+                            (localModuleInfo.updateVersion != null && (Objects.equals(
+                                    localModuleInfo.version, localModuleInfo.updateVersion) ||
                                     Objects.equals(localModuleInfo.version,
-                                            localModuleInfo.updateVersion)) ?
+                                            localModuleInfo.updateVersion + " (" +
+                                                    localModuleInfo.updateVersionCode + ")"))) ?
                                     "" : " (" + this.getString(R.string.module_last_update) +
-                                    localModuleInfo.updateVersion + ")") + " " +
+                                    " " + localModuleInfo.updateVersion + ")") + " " +
                             this.getString(R.string.module_by) + " " + localModuleInfo.author);
                 }
                 if (moduleInfo.description == null || moduleInfo.description.isEmpty()) {

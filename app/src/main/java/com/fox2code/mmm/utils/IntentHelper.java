@@ -22,10 +22,15 @@ import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
+import com.fox2code.mmm.XHooks;
 import com.fox2code.mmm.androidacy.AndroidacyActivity;
 import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.installer.InstallerActivity;
 import com.fox2code.mmm.markdown.MarkdownActivity;
+import com.topjohnwu.superuser.CallbackList;
+import com.topjohnwu.superuser.Shell;
+import com.topjohnwu.superuser.ShellUtils;
+import com.topjohnwu.superuser.internal.Utils;
 import com.topjohnwu.superuser.io.SuFileInputStream;
 
 import java.io.File;
@@ -33,6 +38,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class IntentHelper {
     private static final String TAG = "IntentHelper";
@@ -128,9 +135,23 @@ public class IntentHelper {
     public static void openConfig(Context context, String config) {
         String pkg = getPackageOfConfig(config);
         try {
-            Intent intent = context.getPackageManager()
-                    .getLaunchIntentForPackage(pkg);
+            Intent intent = XHooks.getConfigIntent(context, pkg, config);
             if (intent == null) {
+                if ("org.lsposed.manager".equals(config) && (
+                        XHooks.isModuleActive("riru_lsposed") ||
+                        XHooks.isModuleActive("zygisk_lsposed"))) {
+                    Shell.getShell().newJob().add(
+                            "am start -a android.intent.action.MAIN " +
+                                    "-c org.lsposed.manager.LAUNCH_MANAGER " +
+                                    "com.android.shell/.BugreportWarningActivity")
+                            .to(new CallbackList<String>() {
+                                @Override
+                                public void onAddElement(String str) {
+                                    Log.d(TAG, "LSPosed: " + str);
+                                }
+                            }).submit();
+                    return;
+                }
                 intent = new Intent("android.intent.action.APPLICATION_PREFERENCES");
                 intent.setPackage(pkg);
             }
