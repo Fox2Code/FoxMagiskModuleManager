@@ -61,7 +61,8 @@ Go to the [developer documentation](DEVELOPERS.md) for more info.
 ## Screenshots
 
 Main activity:  
-[<img src="screenshot.jpg" width="250"/>](screenshot.jpg)
+[<img src="screenshot-dark.jpg" width="250"/>](screenshot-dark.jpg)
+[<img src="screenshot-light.jpg" width="250"/>](screenshot-light.jpg)
 
 ## For developers
 

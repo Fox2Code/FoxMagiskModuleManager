@@ -60,10 +60,10 @@ Note²: For `minMagisk`, `XX.Y` is parsed as `XXY00`, so you can just put the Ma
 - `support` support link to direct users when they need support for you modules
 - `donate` donate link to direct users to where they can financially support your project
 - `config` package name of the application that configure your module
-  (Note: The icon won't appear in the module list if the module and target app is not installed)
+  (Note: The icon won't appear in the module list if the module or target app is not installed)
 
 Note: Fox's Mmm use fallback 
-[here](app/src/main/java/com/fox2code/mmm/utils/PropUtils.java#L21)
+[here](app/src/main/java/com/fox2code/mmm/utils/PropUtils.java#L36)
 for some modules  
 Theses values are only used if not defined in the `module.prop` files  
 So the original module maker can still override them
@@ -87,8 +87,8 @@ Commands:
 - `clearTerminal`: Clear the terminal of any text, making it empty
 - `scrollUp`: Scroll up at the top of the terminal
 - `scrollDown`: Scroll down at the bottom of the terminal
-- `showLoading <max>`: Show an indeterminate progress bar
-  (Note: Status bar is indeterminate if 0 is provided)
+- `showLoading <max>`: Show a progress bar with `<max>` as max value
+  (Note: Status bar is indeterminate if nothing or 0 is provided)
 - `setLoading <progress>`: Set loading progress if the bar is not indeterminate.
 - `hideLoading`: Hide the indeterminate progress bar if previously shown
 - `setSupportLink <url>`: Set support link to show when the install finish  
