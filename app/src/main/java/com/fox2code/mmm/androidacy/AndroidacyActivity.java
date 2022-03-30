@@ -137,7 +137,7 @@ public class AndroidacyActivity extends CompatActivity {
 
             private void onReceivedError(String url,int errorCode) {
                 if ((url.startsWith("https://api.androidacy.com/magisk/") ||
-                        url.equals(pageUrl)) && (errorCode == 419 || errorCode == 429)) {
+                        url.equals(pageUrl)) && (errorCode == 419 || errorCode == 429 || errorCode == 503)) {
                     Toast.makeText(AndroidacyActivity.this,
                             "Too many requests!", Toast.LENGTH_LONG).show();
                     AndroidacyActivity.this.runOnUiThread(AndroidacyActivity.this::onBackPressed);

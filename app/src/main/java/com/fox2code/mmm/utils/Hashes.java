@@ -65,6 +65,8 @@ public class Hashes {
      */
     public static boolean checkSumMatch(byte[] data, String checksum) {
         String hash;
+        // Remove all non-alphanumeric characters
+        checksum = checksum.replaceAll("[^a-zA-Z0-9]", "");
         switch (checksum.length()) {
             case 0:
                 return true; // No checksum
