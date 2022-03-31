@@ -28,6 +28,25 @@ android {
             debuggable true
         }
     }
+
+    flavorDimensions "type"
+    productFlavors {
+        "default" {
+            dimension "type"
+            buildConfigField "boolean", "ENABLE_AUTO_UPDATER", "true"
+        }
+
+        fdroid {
+            dimension "type"
+            applicationIdSuffix ".fdroid"
+
+            // Need to disable auto-updater for F-Droid flavor because their inclusion policy
+            // forbids downloading blobs from third-party websites (and F-Droid APK isn't signed
+            // with our keys, so the APK wouldn't install anyways).
+            buildConfigField "boolean", "ENABLE_AUTO_UPDATER", "false"
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

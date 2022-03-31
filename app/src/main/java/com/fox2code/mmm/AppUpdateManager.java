@@ -63,6 +63,8 @@ public class AppUpdateManager {
 
     // Return true if should show a notification
     public boolean checkUpdate(boolean force) {
+        if (!BuildConfig.ENABLE_AUTO_UPDATER)
+            return false;
         if (!force && this.peekShouldUpdate())
             return true;
         long lastChecked = this.lastChecked;
