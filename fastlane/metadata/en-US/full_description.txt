@@ -1,0 +1,4 @@
+This app is not officially supported by Magisk or its developers.
+
+The modules shown in this app are not affiliated with this app. Please contact
+repo owners instead.
