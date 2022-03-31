@@ -24,6 +24,7 @@ public class AppUpdateManager {
     public static int FLAG_COMPAT_NO_EXT = 0x02;
     public static int FLAG_COMPAT_MAGISK_CMD = 0x04;
     public static int FLAG_COMPAT_NEED_32BIT = 0x08;
+    public static int FLAG_COMPAT_MALWARE = 0x10;
     private static final String TAG = "AppUpdateManager";
     private static final AppUpdateManager INSTANCE = new AppUpdateManager();
     private static final String RELEASES_API_URL =
@@ -196,6 +197,9 @@ public class AppUpdateManager {
                         break;
                     case "need32bit":
                         value |= FLAG_COMPAT_NEED_32BIT;
+                        break;
+                    case "malware":
+                        value |= FLAG_COMPAT_MALWARE;
                         break;
                 }
             }
