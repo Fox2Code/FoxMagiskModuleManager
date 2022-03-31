@@ -178,9 +178,11 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                 if (!NotificationType.NO_INTERNET.shouldRemove()) {
                     moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
                 } else {
-                    if (AppUpdateManager.getAppUpdateManager().checkUpdate(true))
+                    // Compatibility data still needs to be updated
+                    AppUpdateManager appUpdateManager = AppUpdateManager.getAppUpdateManager();
+                    if (BuildConfig.ENABLE_AUTO_UPDATER && appUpdateManager.checkUpdate(true))
                         moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
-                    if (AppUpdateManager.getAppUpdateManager().isLastCheckSuccess())
+                    if (!BuildConfig.ENABLE_AUTO_UPDATER || appUpdateManager.isLastCheckSuccess())
                         AppUpdateManager.getAppUpdateManager().checkUpdateCompat();
                     if (max != 0) {
                         int current = 0;

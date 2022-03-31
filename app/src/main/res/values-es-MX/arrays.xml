@@ -1,7 +1,0 @@
-<resources>
-    <string-array name="theme_values_names">
-        <item>Sistema</item>
-        <item>Oscuro</item>
-        <item>Claro</item>
-    </string-array>
-</resources>

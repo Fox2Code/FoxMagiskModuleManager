@@ -219,7 +219,7 @@ public class AndroidacyWebAPI {
             this.forceQuitRaw("Non Androidacy module link used on Androidacy");
             return;
         }
-        if (checksum != null) checksum = checksum.trim();
+        checksum = Hashes.checkSumFormat(checksum);
         if (checksum == null || checksum.isEmpty()) {
             Log.w(TAG, "Androidacy WebView didn't provided a checksum!");
         } else if (!Hashes.checkSumValid(checksum)) {
@@ -261,7 +261,7 @@ public class AndroidacyWebAPI {
             this.forceQuitRaw("Non Androidacy module link used on Androidacy");
             return;
         }
-        if (checksum != null) checksum = checksum.trim();
+        checksum = Hashes.checkSumFormat(checksum);
         if (checksum == null || checksum.isEmpty()) {
             Log.w(TAG, "Androidacy WebView didn't provided a checksum!");
         } else if (!Hashes.checkSumValid(checksum)) {

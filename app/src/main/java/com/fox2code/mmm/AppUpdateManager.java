@@ -142,18 +142,26 @@ public class AppUpdateManager {
                     .getBytes(StandardCharsets.UTF_8);
             this.parseCompatibilityFlags(new ByteArrayInputStream(rawData));
             Files.write(compatFile, rawData);
+            if (!BuildConfig.ENABLE_AUTO_UPDATER)
+                this.lastCheckSuccess = true;
         } catch (Exception e) {
+            if (!BuildConfig.ENABLE_AUTO_UPDATER)
+                this.lastCheckSuccess = false;
             Log.e("AppUpdateManager", "Failed to update compat list", e);
         }
     }
 
     public boolean peekShouldUpdate() {
+        if (!BuildConfig.ENABLE_AUTO_UPDATER)
+            return false;
         return !(BuildConfig.VERSION_NAME.equals(this.latestRelease) ||
                 (this.preReleaseNewer &&
                         BuildConfig.VERSION_NAME.equals(this.latestPreRelease)));
     }
 
     public boolean peekHasUpdate() {
+        if (!BuildConfig.ENABLE_AUTO_UPDATER)
+            return false;
         return !BuildConfig.VERSION_NAME.equals(this.preReleaseNewer ?
                 this.latestPreRelease : this.latestRelease);
     }
