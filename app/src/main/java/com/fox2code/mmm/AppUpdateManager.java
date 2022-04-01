@@ -24,6 +24,7 @@ public class AppUpdateManager {
     public static int FLAG_COMPAT_NO_EXT = 0x02;
     public static int FLAG_COMPAT_MAGISK_CMD = 0x04;
     public static int FLAG_COMPAT_NEED_32BIT = 0x08;
+    public static int FLAG_COMPAT_MALWARE = 0x10;
     private static final String TAG = "AppUpdateManager";
     private static final AppUpdateManager INSTANCE = new AppUpdateManager();
     private static final String RELEASES_API_URL =
@@ -63,6 +64,8 @@ public class AppUpdateManager {
 
     // Return true if should show a notification
     public boolean checkUpdate(boolean force) {
+        if (!BuildConfig.ENABLE_AUTO_UPDATER)
+            return false;
         if (!force && this.peekShouldUpdate())
             return true;
         long lastChecked = this.lastChecked;
@@ -140,18 +143,26 @@ public class AppUpdateManager {
                     .getBytes(StandardCharsets.UTF_8);
             this.parseCompatibilityFlags(new ByteArrayInputStream(rawData));
             Files.write(compatFile, rawData);
+            if (!BuildConfig.ENABLE_AUTO_UPDATER)
+                this.lastCheckSuccess = true;
         } catch (Exception e) {
+            if (!BuildConfig.ENABLE_AUTO_UPDATER)
+                this.lastCheckSuccess = false;
             Log.e("AppUpdateManager", "Failed to update compat list", e);
         }
     }
 
     public boolean peekShouldUpdate() {
+        if (!BuildConfig.ENABLE_AUTO_UPDATER)
+            return false;
         return !(BuildConfig.VERSION_NAME.equals(this.latestRelease) ||
                 (this.preReleaseNewer &&
                         BuildConfig.VERSION_NAME.equals(this.latestPreRelease)));
     }
 
     public boolean peekHasUpdate() {
+        if (!BuildConfig.ENABLE_AUTO_UPDATER)
+            return false;
         return !BuildConfig.VERSION_NAME.equals(this.preReleaseNewer ?
                 this.latestPreRelease : this.latestRelease);
     }
@@ -186,6 +197,9 @@ public class AppUpdateManager {
                         break;
                     case "need32bit":
                         value |= FLAG_COMPAT_NEED_32BIT;
+                        break;
+                    case "malware":
+                        value |= FLAG_COMPAT_MALWARE;
                         break;
                 }
             }

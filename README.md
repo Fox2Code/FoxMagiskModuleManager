@@ -3,9 +3,9 @@
 The official Magisk is dropping support to download online modules...  
 So I made my own app to do that! :3
 
-**This app is not officially supported by Magisk or it's developers**
+**This app is not officially supported by Magisk or its developers**
 
-**The Modules shown in this app are not affiliated with this app**  
+**The modules shown in this app are not affiliated with this app**  
 (Please contact repo owners instead)
 
 ## Requirements
@@ -25,7 +25,7 @@ Note: This app may require the use of a VPN in countries with a state wide firew
 ## For users
 
 To install the app go to [releases](https://github.com/Fox2Code/FoxMagiskModuleManager/releases), 
-and download and install the latest `.apk` on to your device.
+and download and install the latest `.apk` on your device.
 
 The app currently use these three repo as it's module sources, with it's benefits and drawback:  
 (Note: Each module repo can be disabled in the settings of the app)  
@@ -79,6 +79,7 @@ It allow module developers to have a more customizable install experience
 For more information please check the [developer documentation](DEVELOPERS.md)
 
 ## For translators
+
 See [`app/src/main/res/values/strings.xml`](https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/app/src/main/res/values/strings.xml)
 and [`app/src/main/res/values/arrays.xml`](https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/app/src/main/res/values/arrays.xml)
 

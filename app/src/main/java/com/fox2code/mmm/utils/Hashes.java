@@ -5,10 +5,12 @@ import android.util.Log;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 public class Hashes {
     private static final String TAG = "Hashes";
     private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
+    private static final Pattern nonAlphaNum = Pattern.compile("[^a-zA-Z0-9]");
     public static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++) {
@@ -65,6 +67,7 @@ public class Hashes {
      */
     public static boolean checkSumMatch(byte[] data, String checksum) {
         String hash;
+        if (checksum == null) return false;
         switch (checksum.length()) {
             case 0:
                 return true; // No checksum
@@ -121,5 +124,11 @@ public class Hashes {
             case 128:
                 return "SHA-512";
         }
+    }
+
+    public static String checkSumFormat(String checksum) {
+        if (checksum == null) return null;
+        // Remove all non-alphanumeric characters
+        return nonAlphaNum.matcher(checksum.trim()).replaceAll("");
     }
 }

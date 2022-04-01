@@ -1,0 +1,1 @@
+A module manager for Magisk because the official app dropped support for it.

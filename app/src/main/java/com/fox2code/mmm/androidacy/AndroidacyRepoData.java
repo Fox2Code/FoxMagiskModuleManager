@@ -31,7 +31,7 @@ public class AndroidacyRepoData extends RepoData {
         if (this.metaDataCache.exists()) {
             this.androidacyBlockade = this.metaDataCache.lastModified() + 5_000L;
             if (this.androidacyBlockade - 10_000L > System.currentTimeMillis()) {
-                this.androidacyBlockade = 0; // Don't allow time travel
+                this.androidacyBlockade = 0; // Don't allow time travel. Well why not???
             }
         }
     }
@@ -78,7 +78,9 @@ public class AndroidacyRepoData extends RepoData {
                                 " path=/; secure; domain=.androidacy.com");
             } catch (Exception e) {
                 if ("Received error code: 419".equals(e.getMessage()) ||
-                        "Received error code: 429".equals(e.getMessage())) {
+                        "Received error code: 429".equals(e.getMessage()) ||
+                        "Received error code: 503".equals(e.getMessage())
+                        ) {
                     Log.e(TAG, "We are being rate limited!", e);
                     this.androidacyBlockade = time + 3_600_000L;
                 }
