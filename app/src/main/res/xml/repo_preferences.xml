@@ -4,7 +4,6 @@
         app:key="pref_magisk_alt_repo"
         app:title="@string/loading">
         <SwitchPreferenceCompat
-            app:defaultValue="true"
             app:key="pref_magisk_alt_repo_enabled"
             app:icon="@drawable/ic_baseline_extension_24"
             app:switchTextOn="@string/repo_enabled"
@@ -25,7 +24,6 @@
         app:key="pref_androidacy_repo"
         app:title="@string/loading">
         <SwitchPreferenceCompat
-            app:defaultValue="true"
             app:key="pref_androidacy_repo_enabled"
             app:icon="@drawable/ic_baseline_extension_24"
             app:switchTextOn="@string/repo_enabled"
@@ -50,6 +48,12 @@
             app:key="pref_androidacy_repo_submit"
             app:icon="@drawable/ic_baseline_upload_file_24"
             app:title="@string/submit_modules"
-            app:singleLineTitle="false"	/>
+            app:singleLineTitle="false" />
+        <Preference
+            app:key="pref_androidacy_ads_disclaimer"
+            app:icon="@drawable/ic_baseline_info_24"
+            app:enabled="false"
+            app:summary="@string/androidacy_repo_info"
+            app:singleLineTitle="false" />
     </PreferenceCategory>
 </PreferenceScreen>

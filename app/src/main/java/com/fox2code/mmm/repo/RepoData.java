@@ -2,6 +2,7 @@ package com.fox2code.mmm.repo;
 
 import android.content.SharedPreferences;
 
+import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.manager.ModuleInfo;
@@ -42,7 +43,7 @@ public class RepoData {
         this.moduleHashMap = new HashMap<>();
         this.name = this.url; // Set url as default name
         this.enabled = MainApplication.getSharedPreferences()
-                .getBoolean("pref_" + this.id + "_enabled", true);
+                .getBoolean("pref_" + this.id + "_enabled", this.isEnabledByDefault(this.id));
         if (!this.cacheRoot.isDirectory()) {
             this.cacheRoot.mkdirs();
         } else {
@@ -134,6 +135,10 @@ public class RepoData {
         return newModules;
     }
 
+    protected boolean isEnabledByDefault(String id) {
+        return !BuildConfig.DISABLED_REPOS.contains(id);
+    }
+
     public void storeMetadata(RepoModule repoModule,byte[] data) throws IOException {
         Files.write(new File(this.cacheRoot, repoModule.id + ".prop"), data);
     }
@@ -176,6 +181,6 @@ public class RepoData {
 
     public void updateEnabledState() {
         this.enabled = MainApplication.getSharedPreferences()
-                .getBoolean("pref_" + this.id + "_enabled", true);
+                .getBoolean("pref_" + this.id + "_enabled", this.isEnabledByDefault(this.id));
     }
 }
