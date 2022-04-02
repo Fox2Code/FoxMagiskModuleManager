@@ -4,7 +4,6 @@
         app:key="pref_magisk_alt_repo"
         app:title="@string/loading">
         <SwitchPreferenceCompat
-            app:defaultValue="true"
             app:key="pref_magisk_alt_repo_enabled"
             app:icon="@drawable/ic_baseline_extension_24"
             app:switchTextOn="@string/repo_enabled"
@@ -25,7 +24,6 @@
         app:key="pref_androidacy_repo"
         app:title="@string/loading">
         <SwitchPreferenceCompat
-            app:defaultValue="true"
             app:key="pref_androidacy_repo_enabled"
             app:icon="@drawable/ic_baseline_extension_24"
             app:switchTextOn="@string/repo_enabled"
