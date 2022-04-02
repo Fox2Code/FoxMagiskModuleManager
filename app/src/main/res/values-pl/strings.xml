@@ -1,0 +1,96 @@
+<resources>
+    <string name="app_name">Fox - Menedżer modułów Magisk</string>
+    <string name="app_name_short">Moduły Magisk</string>
+    <string name="fail_root_magisk">Nie udało się uzyskać dostępu do Root lub Magisk</string>
+    <string name="loading">Wczytywanie…</string>
+    <string name="updatable">Aktualizowalne</string>
+    <string name="installed">Zainstalowane</string>
+    <string name="online_repo">Repozytorium online</string>
+    <string name="showcase_mode">Aplikacja jest w trybie blokady</string>
+    <string name="failed_download">Nie udało się pobrać pliku.</string>
+    <string name="slow_modules">Uruchomienie modułów trwało zbyt długo, rozważ wyłączenie niektórych modułów</string>
+    <string name="fail_internet">Nie udało się nawiązać połączenia z Internetem</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="app_update_available">Dostępna nowa wersja aplikacji</string>
+    <string name="app_update">Aktualizuj</string>
+    <string name="no_desc_found">Nie znaleziono opisu.</string>
+    <string name="download_module">Pobierz moduł</string>
+    <string name="install_module">Zainstaluj moduł</string>
+    <string name="update_module">Aktualizuj moduł</string>
+    <string name="changelog">Dziennik zmian</string>
+    <string name="website">Strona WWW</string>
+    <string name="support">Wsparcie</string>
+    <string name="donate">Wspomóż nas</string>
+    <string name="submit_modules">Prześlij moduł</string>
+    <string name="require_android_6">Wymaga Androida 6.0+</string>
+
+    <!-- Module section translation -->
+    <string name="module_last_update">Ostatnia aktualizacja:</string>
+    <string name="module_repo">Repozytorium:</string>
+    <string name="module_by">autorstwa</string>
+    <string name="module_downloads">Pliki do pobrania:</string>
+    <string name="module_stars">Gwiazdki:</string>
+
+    <!-- Preference Titles -->
+    <!-- Note: Lockdown mode used to be called showcase mode -->
+    <string name="manage_repos_pref">Zarządzaj repozytoriami</string>
+    <string name="showcase_mode_pref">Tryb blokady</string>
+    <string name="showcase_mode_desc">Tryb blokady uniemożliwia menedżerowi wykonywanie działań na modułach</string>
+    <string name="pref_category_settings">Ustawienia</string>
+    <string name="pref_category_info">Informacje</string>
+    <string name="show_licenses">Pokaż licencje</string>
+    <string name="licenses">Licencje</string>
+    <string name="show_incompatible_pref">Pokaż niekompatybilne moduły</string>
+    <string name="show_incompatible_desc">Pokaż moduły, które są niekompatybilne z urządzeniem na podstawie ich metadanych</string>
+    <string name="magisk_outdated">Magisk jest nieaktualny!</string>
+    <string name="pref_category_repos">Repozytoria</string>
+    <string name="repo_main_desc">Repozytorium, w którym znajdują się moduły Magisk</string>
+    <string name="repo_main_alt">Alternatywa dla Magisk-Modules-Repo z mniejszymi ograniczeniami.</string>
+    <string name="master_delete">Usunąć pliki modułu?</string>
+    <string name="master_delete_no">Zatrzymaj pliki</string>
+    <string name="master_delete_yes">Usuń pliki</string>
+    <string name="master_delete_fail">Nie udało się usunąć plików modułu</string>
+    <string name="theme_pref">Motyw</string>
+    <string name="theme_mode_pref">Tryb motywu</string>
+    <string name="module_id_prefix">ID modułu: </string>
+    <string name="install_from_storage">Zainstaluj moduł z pamięci</string>
+    <string name="invalid_format">Wybrany moduł jest w nieprawidłowym formacie</string>
+    <string name="local_install_title">Instalacja lokalna</string>
+    <string name="source_code">Kod źródłowy</string>
+    <string name="magisk_builtin_module">Wbudowany moduł Magisk</string>
+    <string name="substratum_builtin_module">Moduł wbudowany Substratum</string>
+    <string name="force_dark_terminal_title">Wymuś terminal w trybie ciemnym</string>
+    <string name="file_picker_failure">Bieżący selektor plików nie umożliwił dostępu do pliku.</string>
+    <string name="remote_install_title">Zdalna instalacja</string>
+    <string name="file_picker_wierd">Bieżący selektor plików zwrócił niestandardową odpowiedź.</string>
+    <string name="use_magisk_install_command_pref">Użyj polecenia instalacji modułu magisk</string>
+    <string name="use_magisk_install_command_desc">
+        Podczas testów powodowało to problemy z narzędziem do diagnozowania błędów instalacji modułów,
+        dlatego ukryłem tę opcję za trybem deweloperskim, włącz ją na własne ryzyko!
+    </string>
+    <string name="dev_mode_enabled">Tryb programisty włączony</string>
+    <string name="force_english_pref">Wymuś język angielski</string>
+    <string name="disable_low_quality_module_filter_pref">Wyłącz filtr modułu niskiej jakości</string>
+    <string name="disable_low_quality_module_filter_desc">
+        Niektóre moduły nie deklarują poprawnie swoich metadanych, powodując zakłócenia wizualne,
+        i/lub wskazują na niską jakość modułu, wyłączaj na własne ryzyko!
+    </string>
+    <string name="dns_over_https_pref">DNS over HTTPS</string>
+    <string name="dns_over_https_desc">
+        W niektórych przypadkach może naprawić problemy z połączeniami.
+        (Nie dotyczy WebView)
+    </string>
+    <string name="disable_extensions_pref">Wyłącz rozszerzenia</string>
+    <string name="disable_extensions_desc">
+        Wyłącz rozszerzenia Fox\'a. Uniemożliwi to modułom używanie
+        rozszerzeń terminala. Przydatne, gdy moduł nadużywa rozszerzeń Fox\'a.
+    </string>
+    <string name="wrap_text_pref">Zawijanie tekstu</string>
+    <string name="wrap_text_desc">
+        Zawijaj tekst do nowego wiersza zamiast umieszczać
+        cały tekst w tym samym wierszu podczas instalowania modułu
+    </string>
+    <string name="enable_blur_pref">Włącz rozmycie</string>
+    <string name="repo_enabled">Repozytorium włączone</string>
+    <string name="repo_disabled">Repozytorium wyłączone</string>
+</resources>
