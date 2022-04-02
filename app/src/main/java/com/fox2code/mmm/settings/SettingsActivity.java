@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.TwoStatePreference;
 
 import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.BuildConfig;
@@ -203,6 +204,7 @@ public class SettingsActivity extends CompatActivity {
                     preference.setTitle(R.string.repo_disabled);
                     preference.setEnabled(false);
                 } else {
+                    ((TwoStatePreference)preference).setChecked(repoData.isEnabled());
                     preference.setTitle(repoData.isEnabled() ?
                             R.string.repo_enabled : R.string.repo_disabled);
                     preference.setOnPreferenceChangeListener((p, newValue) -> {

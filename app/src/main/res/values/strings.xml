@@ -93,4 +93,5 @@
     <string name="enable_blur_pref">Enable blur</string>
     <string name="repo_enabled">Repo enabled</string>
     <string name="repo_disabled">Repo disabled</string>
+    <string name="androidacy_repo_info">Androidacy repo uses ads and trackers.</string>
 </resources>

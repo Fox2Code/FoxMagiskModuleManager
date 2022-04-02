@@ -34,6 +34,11 @@ android {
         "default" {
             dimension "type"
             buildConfigField "boolean", "ENABLE_AUTO_UPDATER", "true"
+            buildConfigField(
+                "java.util.List<String>",
+                "DISABLED_REPOS",
+                "java.util.Arrays.asList()",
+            )
         }
 
         fdroid {
@@ -44,6 +49,14 @@ android {
             // forbids downloading blobs from third-party websites (and F-Droid APK isn't signed
             // with our keys, so the APK wouldn't install anyways).
             buildConfigField "boolean", "ENABLE_AUTO_UPDATER", "false"
+
+            // Repo with ads or tracking feature are disabled by default for the
+            // F-Droid flavor.
+            buildConfigField(
+                "java.util.List<String>",
+                "DISABLED_REPOS",
+                "java.util.Arrays.asList(\"androidacy_repo\")",
+            )
         }
     }
 
