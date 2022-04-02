@@ -93,4 +93,5 @@
     <string name="enable_blur_pref">Activer l\’effet de flou</string>
     <string name="repo_enabled">Dépôt activé</string>
     <string name="repo_disabled">Dépôt désactivé</string>
+    <string name="androidacy_repo_info">Le dépôt Androidacy utilise des publicités et des pisteurs.</string>
 </resources>
