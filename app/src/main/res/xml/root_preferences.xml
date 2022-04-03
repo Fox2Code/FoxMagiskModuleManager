@@ -110,5 +110,10 @@
             app:icon="@drawable/ic_baseline_info_24"
             app:title="@string/show_licenses"
             app:singleLineTitle="false"	/>
+        <Preference
+            app:key="pref_pkg_info"
+            app:enabled="false"
+            app:summary="@string/loading"
+            app:singleLineTitle="false"	/>
     </PreferenceCategory>
 </PreferenceScreen>

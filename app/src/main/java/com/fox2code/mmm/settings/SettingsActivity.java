@@ -113,8 +113,8 @@ public class SettingsActivity extends CompatActivity {
                     .withLicenseShown(true).withAboutMinimalDesign(false)
                     .withUiListener(new OverScrollManager.LibsOverScroll());
             Preference update = findPreference("pref_update");
-            update.setVisible(BuildConfig.DEBUG ||
-                    AppUpdateManager.getAppUpdateManager().peekHasUpdate());
+            update.setVisible(BuildConfig.ENABLE_AUTO_UPDATER && (BuildConfig.DEBUG ||
+                    AppUpdateManager.getAppUpdateManager().peekHasUpdate()));
             update.setOnPreferenceClickListener(p -> {
                 devModeStep = 0;
                 IntentHelper.openUrl(p.getContext(),
@@ -144,6 +144,10 @@ public class SettingsActivity extends CompatActivity {
                 openFragment(libsBuilder.supportFragment(), R.string.licenses);
                 return true;
             });
+            findPreference("pref_pkg_info").setSummary(
+                    BuildConfig.APPLICATION_ID + " v" +
+                            BuildConfig.VERSION_NAME + " (" +
+                            BuildConfig.VERSION_CODE + ")");
         }
 
         private void openFragment(Fragment fragment, @StringRes int title) {
