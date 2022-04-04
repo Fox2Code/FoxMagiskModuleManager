@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Fox - Menedżer modułów Magisk</string>
-    <string name="app_name_short">Moduły Magisk</string>
+    <string name="app_name_short">FoxMmm</string>
     <string name="fail_root_magisk">Nie udało się uzyskać dostępu do Root lub Magisk</string>
     <string name="loading">Wczytywanie…</string>
     <string name="updatable">Aktualizowalne</string>
@@ -14,13 +14,13 @@
     <string name="app_update_available">Dostępna nowa wersja aplikacji</string>
     <string name="app_update">Aktualizuj</string>
     <string name="no_desc_found">Nie znaleziono opisu.</string>
-    <string name="download_module">Pobierz moduł</string>
-    <string name="install_module">Zainstaluj moduł</string>
-    <string name="update_module">Aktualizuj moduł</string>
+    <string name="download_module">Pobierz</string>
+    <string name="install_module">Zainstaluj</string>
+    <string name="update_module">Aktualizuj</string>
     <string name="changelog">Dziennik zmian</string>
-    <string name="website">Strona WWW</string>
+    <string name="website">Strona domowa</string>
     <string name="support">Wsparcie</string>
-    <string name="donate">Wspomóż nas</string>
+    <string name="donate">Przekaż darowiznę</string>
     <string name="submit_modules">Prześlij moduł</string>
     <string name="require_android_6">Wymaga Androida 6.0+</string>
 
@@ -93,4 +93,5 @@
     <string name="enable_blur_pref">Włącz rozmycie</string>
     <string name="repo_enabled">Repozytorium włączone</string>
     <string name="repo_disabled">Repozytorium wyłączone</string>
+    <string name="androidacy_repo_info">Repo Androidacy korzysta z reklam i trackerów.</string>
 </resources>
