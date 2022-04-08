@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Fox\'un Magisk Modül Yöneticisi</string>
     <string name="app_name_short">Fox\'un Mmy</string>
-    <string name="fail_root_magisk">Kök ya da Magisk'e erişim saşlanamadı.</string>
+    <string name="fail_root_magisk">Kök ya da Magisk'e erişim sağlanamadı.</string>
     <string name="loading">Yükleniyor...</string>
     <string name="updatable">Güncellenebilir</string>
     <string name="installed">Yüklendi</string>
