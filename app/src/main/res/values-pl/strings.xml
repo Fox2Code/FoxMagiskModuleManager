@@ -28,7 +28,7 @@
     <string name="module_last_update">Ostatnia aktualizacja:</string>
     <string name="module_repo">Repozytorium:</string>
     <string name="module_by">autorstwa</string>
-    <string name="module_downloads">Pliki do pobrania:</string>
+    <string name="module_downloads">Pobrano:</string>
     <string name="module_stars">Gwiazdki:</string>
 
     <!-- Preference Titles -->
