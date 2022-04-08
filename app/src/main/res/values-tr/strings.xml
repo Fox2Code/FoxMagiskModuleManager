@@ -1,0 +1,95 @@
+<resources>
+    <string name="app_name">Fox\'un Magisk Modül Yöneticisi</string>
+    <string name="app_name_short">Fox\'un Mmy</string>
+    <string name="fail_root_magisk">Kök ya da Magisk'e eriºim sa»lanamad¹.</string>
+    <string name="loading">Yükleniyor...</string>
+    <string name="updatable">Güncellenebilir</string>
+    <string name="installed">Yüklendi</string>
+    <string name="online_repo">Çevrimiçi Repo</string>
+    <string name="showcase_mode">Uygulama kilit modunda</string>
+    <string name="failed_download">Dosya indirilemedi.</string>
+    <string name="slow_modules">Modüllerin aç¹l¹º¹ çok uzun sürdü, baz modülleri devre d¹º¹ b¹rakmay¹ düºünün</string>
+    <string name="fail_internet">©nternete ba»lan¹lamad¹</string>
+    <string name="title_activity_settings">AyarlarEtkinli»i</string>
+    <string name="app_update_available">Uygulama güncellemesi mevcut</string>
+    <string name="app_update">Güncelle</string>
+    <string name="no_desc_found">Aç¹klama bulunamad¹.</string>
+    <string name="download_module">Modül indir</string>
+    <string name="install_module">Modül yükle</string>
+    <string name="update_module">Modülü güncelle</string>
+    <string name="changelog">De»iºiklik günlü»ü</string>
+    <string name="website">Web sitesi</string>
+    <string name="support">Destek</string>
+    <string name="donate">Ba»¹º yap</string>
+    <string name="submit_modules">Bir modül gönder</string>
+    <string name="require_android_6">Android 6.0+ gerekli</string>
+
+    <!-- Module section translation -->
+    <string name="module_last_update">Son güncelleme:</string>
+    <string name="module_repo">Repo:</string>
+    <string name="module_by">taraf¹ndan</string>
+    <string name="module_downloads">©ndirmeler:</string>
+    <string name="module_stars">Y¹ld¹zlar:</string>
+
+    <!-- Preference Titles -->
+    <!-- Note: Lockdown mode used to be called showcase mode -->
+    <string name="manage_repos_pref">Repolar¹ yönet</string>
+    <string name="showcase_mode_pref">Kilit modu</string>
+    <string name="showcase_mode_desc">Kilit modu yöneticinin modüller üzerinde iºlem yapmay¹ önler</string>
+    <string name="pref_category_settings">Ayarlar</string>
+    <string name="pref_category_info">Bilgi</string>
+    <string name="show_licenses">Lisanslar¹ göster</string>
+    <string name="licenses">Lisanslar</string>
+    <string name="show_incompatible_pref">Desteklenmeyen modülleri göster</string>
+    <string name="show_incompatible_desc">Metaveri'ye ba»l¹ olarak cihaz¹n¹zla uyumlu olmayan modülleri gösterir</string>
+    <string name="magisk_outdated">Magisk güncel de»il!</string>
+    <string name="pref_category_repos">Repolar</string>
+    <string name="repo_main_desc">Magisk Modülleri bar¹nd¹ran repository</string>
+    <string name="repo_main_alt">Daha az k¹s¹tlamalara sahip bir Magisk-Modules-Repo'ya alternatifi.</string>
+    <string name="master_delete">Modül dosyalar¹n¹ sil?</string>
+    <string name="master_delete_no">Dosyalar¹ sakla</string>
+    <string name="master_delete_yes">Dosyalar¹ sil</string>
+    <string name="master_delete_fail">Modül dosyalar¹ silinemedi</string>
+    <string name="theme_pref">Tema</string>
+    <string name="theme_mode_pref">Tema modu</string>
+    <string name="module_id_prefix">Modül id: </string>
+    <string name="install_from_storage">Depolamadan modül yükle</string>
+    <string name="invalid_format">Seçilmiº modül geçersiz biçimde</string>
+    <string name="local_install_title">Yerel yükleme</string>
+    <string name="source_code">Kaynak kodu</string>
+    <string name="magisk_builtin_module">Magisk yerleºik modülü</string>
+    <string name="substratum_builtin_module">Substratum yerleºik modülü</string>
+    <string name="force_dark_terminal_title">Terminal koyu modunu zorla</string>
+    <string name="file_picker_failure">ªimdiki dosya seçicisi dosyaya eriºemedi</string>
+    <string name="remote_install_title">Uzaktan yükleme</string>
+    <string name="file_picker_wierd">Dosya seçicisi standart olmayan bir yan¹t¹ geri getirdi</string>
+    <string name="use_magisk_install_command_pref">Magisk modül yükleme komutu kullan</string>
+    <string name="use_magisk_install_command_desc">
+        Test s¹ras¹nda modül yükleme hata teºhis arac¹nda sorunlar meydana geldi,
+        bu yüzden o seçene»i geliºtirici modunun arkas¹na gizledim, bunu etkinleºtirmenizde sorumluluk size aittir!
+    </string>
+    <string name="dev_mode_enabled">Geliºtirici modu etkin</string>
+    <string name="force_english_pref">©ngilizce dilini zorla</string>
+    <string name="disable_low_quality_module_filter_pref">Düºük kalite modül filtresini devre d¹º¹ b¹rak</string>
+    <string name="disable_low_quality_module_filter_desc">
+        Baz¹ modüller metaveri'lerini düzgün bir ºekilde bildirmiyor, görsel hatalara neden oluyor,
+        ve/veya modül kalitesini zay¹f gösteriyor, devre d¹º¹ b¹rakmada sorumluluk size aittir!
+    </string>
+    <string name="dns_over_https_pref">Https üzerinden dns</string>
+    <string name="dns_over_https_desc">
+        Baz¹ durumlarda ba»lant¹ sorunlar¹n¹ düzeltebilir.
+        (WebView için geçerli de»ildir)
+    </string>
+    <string name="disable_extensions_pref">Eklentileri devre d¹º¹ b¹rak</string>
+    <string name="disable_extensions_desc">
+        Fox\'un Mmy eklentilerini devre d¹º¹ b¹rak¹r; bu, modüllerin terminal eklentilerini kullanmas¹n¹ önler; E»er modül Fox\'un Mmy eklentilerini kötüye kullan¹rsa yararl¹d¹r.
+    </string>
+    <string name="wrap_text_pref">Metni kayd¹r</string>
+    <string name="wrap_text_desc">
+        Tüm metni ayn¹ sat¹ra koymak yerine metni yeni bir sat¹ra kayd¹r¹r.
+    </string>
+    <string name="enable_blur_pref">Bulan¹kl¹»¹ etkinleºtir</string>
+    <string name="repo_enabled">Repo etkin</string>
+    <string name="repo_disabled">Repo devre d¹º¹</string>
+    <string name="androidacy_repo_info">Androidacy repo, reklam ve takipçiler kullan¹r.</string>
+</resources>
