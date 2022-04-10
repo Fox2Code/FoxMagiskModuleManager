@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Fox\'un Magisk Modül Yöneticisi</string>
     <string name="app_name_short">Fox\'un Mmy</string>
-    <string name="fail_root_magisk">Kök ya da Magisk'e erişim sağlanamadı.</string>
+    <string name="fail_root_magisk">Kök ya da Magisk\'e erişim sağlanamadı.</string>
     <string name="loading">Yükleniyor...</string>
     <string name="updatable">Güncellenebilir</string>
     <string name="installed">Yüklendi</string>
@@ -41,11 +41,11 @@
     <string name="show_licenses">Lisansları göster</string>
     <string name="licenses">Lisanslar</string>
     <string name="show_incompatible_pref">Desteklenmeyen modülleri göster</string>
-    <string name="show_incompatible_desc">Metaveri'ye bağlı olarak cihazınızla uyumlu olmayan modülleri gösterir</string>
+    <string name="show_incompatible_desc">Metaveri\'ye bağlı olarak cihazınızla uyumlu olmayan modülleri gösterir</string>
     <string name="magisk_outdated">Magisk güncel değil!</string>
     <string name="pref_category_repos">Repolar</string>
     <string name="repo_main_desc">Magisk Modülleri barındıran repository</string>
-    <string name="repo_main_alt">Daha az kısıtlamalara sahip bir Magisk-Modules-Repo'ya alternatifi.</string>
+    <string name="repo_main_alt">Daha az kısıtlamalara sahip bir Magisk-Modules-Repo\'ya alternatifi.</string>
     <string name="master_delete">Modül dosyalarını sil?</string>
     <string name="master_delete_no">Dosyaları sakla</string>
     <string name="master_delete_yes">Dosyaları sil</string>
@@ -72,7 +72,7 @@
     <string name="force_english_pref">İngilizce dilini zorla</string>
     <string name="disable_low_quality_module_filter_pref">Düşük kalite modül filtresini devre dışı bırak</string>
     <string name="disable_low_quality_module_filter_desc">
-        Bazı modüller metaveri'lerini düzgün bir şekilde bildirmiyor, görsel hatalara neden oluyor,
+        Bazı modüller metaveri\'lerini düzgün bir şekilde bildirmiyor, görsel hatalara neden oluyor,
         ve/veya modül kalitesini zayıf gösteriyor, devre dışı bırakmada sorumluluk size aittir!
     </string>
     <string name="dns_over_https_pref">Https üzerinden dns</string>

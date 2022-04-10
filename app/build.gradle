@@ -66,6 +66,7 @@ android {
     }
     lint {
         disable 'MissingTranslation'
+        disable 'TypographyEllipsis'
     }
 }
 
