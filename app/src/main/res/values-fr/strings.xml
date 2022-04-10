@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Gestionnaire de modules Magisk de Fox</string>
-    <string name="app_name_short">Gestionnaire de Fox</string>
+    <string name="app_name">Gestionnaire Fox de modules Magisk</string>
+    <string name="app_name_short">Gestionnaire Fox</string>
     <string name="fail_root_magisk">Échec de l\’accès à la racine ou à Magisk</string>
     <string name="loading">Chargement…</string>
     <string name="updatable">Actualisable</string>
