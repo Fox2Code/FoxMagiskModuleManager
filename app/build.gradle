@@ -10,8 +10,8 @@ android {
         applicationId "com.fox2code.mmm"
         minSdk 21
         targetSdk 32
-        versionCode 36
-        versionName "0.4.1"
+        versionCode 37
+        versionName "0.4.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -66,6 +66,7 @@ android {
     }
     lint {
         disable 'MissingTranslation'
+        disable 'TypographyEllipsis'
     }
 }
 

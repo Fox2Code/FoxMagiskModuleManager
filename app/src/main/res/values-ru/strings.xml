@@ -93,4 +93,5 @@
     <string name="enable_blur_pref">Включить эффект размытия</string>
     <string name="repo_enabled">Репо включен</string>
     <string name="repo_disabled">Репо отключен</string>
+    <string name="androidacy_repo_info">Репо Androidacy использует рекламу и трекеры.</string>
 </resources>

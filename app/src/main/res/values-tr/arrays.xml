@@ -1,0 +1,7 @@
+<resources>
+    <string-array name="theme_values_names">
+        <item>Sistem</item>
+        <item>Koyu</item>
+        <item>Açık</item>
+    </string-array>
+</resources>
