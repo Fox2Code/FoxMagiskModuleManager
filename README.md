@@ -25,7 +25,11 @@ Note: This app may require the use of a VPN in countries with a state wide firew
 ## For users
 
 To install the app go to [releases](https://github.com/Fox2Code/FoxMagiskModuleManager/releases), 
-and download and install the latest `.apk` on your device.
+and download and install the latest `.apk` on your device, or get the app on F-Droid.
+
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="70">](https://f-droid.org/packages/com.fox2code.mmm.fdroid/)
 
 The app currently use these three repo as it's module sources, with it's benefits and drawback:  
 (Note: Each module repo can be disabled in the settings of the app)  
