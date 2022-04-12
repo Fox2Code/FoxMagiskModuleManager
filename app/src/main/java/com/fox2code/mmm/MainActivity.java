@@ -3,7 +3,6 @@ package com.fox2code.mmm;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,7 +33,6 @@ import com.fox2code.mmm.utils.IntentHelper;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import eightbitlab.com.blurview.BlurView;
-import eightbitlab.com.blurview.BlurViewFacade;
 import eightbitlab.com.blurview.RenderScriptBlur;
 
 public class MainActivity extends CompatActivity implements SwipeRefreshLayout.OnRefreshListener,
@@ -161,6 +159,8 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                 updateScreenInsets(); // Fix an edge case
                 if (MainApplication.isShowcaseMode())
                     moduleViewListBuilder.addNotification(NotificationType.SHOWCASE_MODE);
+                if (!Http.hasWebView()) // Check Http for WebView availability
+                    moduleViewListBuilder.addNotification(NotificationType.NO_WEB_VIEW);
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
                 runOnUiThread(() -> {
                     progressIndicator.setIndeterminate(false);

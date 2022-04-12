@@ -18,11 +18,24 @@ import org.json.JSONObject;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import okhttp3.Cookie;
+import okhttp3.HttpUrl;
+
+@SuppressWarnings("KotlinInternalInJava")
 public class AndroidacyRepoData extends RepoData {
     private static final String TAG = "AndroidacyRepoData";
+    private static final HttpUrl OK_HTTP_URL;
+    static {
+        HttpUrl.Builder OK_HTTP_URL_BUILDER =
+                new HttpUrl.Builder().scheme("https");
+        // Using HttpUrl.Builder.host(String) crash the app
+        OK_HTTP_URL_BUILDER.setHost$okhttp(".androidacy.com");
+        OK_HTTP_URL = OK_HTTP_URL_BUILDER.build();
+    }
     private long androidacyBlockade = 0;
 
     public AndroidacyRepoData(String url, File cacheRoot,
@@ -36,13 +49,29 @@ public class AndroidacyRepoData extends RepoData {
         }
     }
 
+    private static String getCookies() {
+        if (Http.hasWebView()) {
+            return CookieManager.getInstance().getCookie("https://.androidacy.com/");
+        } else {
+            Iterator<Cookie> cookies = Http.getCookieJar()
+                    .loadForRequest(OK_HTTP_URL).iterator();
+            if (!cookies.hasNext()) return "";
+            StringBuilder stringBuilder = new StringBuilder();
+            while (true) {
+                stringBuilder.append(cookies.next().toString());
+                if (!cookies.hasNext()) return stringBuilder.toString();
+                stringBuilder.append(",");
+            }
+        }
+    }
+
     @Override
     protected boolean prepare() {
         // Implementation details discussed on telegram
         long time = System.currentTimeMillis();
         if (this.androidacyBlockade > time) return false;
         this.androidacyBlockade = time + 5_000L;
-        String cookies = CookieManager.getInstance().getCookie("https://.androidacy.com/");
+        String cookies = AndroidacyRepoData.getCookies();
         int start = cookies == null ? -1 : cookies.indexOf("USER=");
         String token = null;
         if (start != -1) {
@@ -61,9 +90,14 @@ public class AndroidacyRepoData extends RepoData {
                     return false;
                 }
                 Log.w(TAG, "Invalid token, resetting...");
-                CookieManager.getInstance().setCookie("https://.androidacy.com/",
-                        "USER=; expires=Thu, 01 Jan 1970 00:00:00 GMT;" +
-                                " path=/; secure; domain=.androidacy.com");
+                if (Http.hasWebView()) {
+                    CookieManager.getInstance().setCookie("https://.androidacy.com/",
+                            "USER=; expires=Thu, 01 Jan 1970 00:00:00 GMT;" +
+                                    " path=/; secure; domain=.androidacy.com");
+                } else {
+                    Http.getCookieJar().saveFromResponse(
+                            OK_HTTP_URL, Collections.emptyList());
+                }
                 token = null;
             }
         }
@@ -73,9 +107,16 @@ public class AndroidacyRepoData extends RepoData {
                 token = new String(Http.doHttpPost(
                         "https://api.androidacy.com/auth/register",
                         "",true), StandardCharsets.UTF_8);
-                CookieManager.getInstance().setCookie("https://.androidacy.com/",
-                        "USER="+ token + "; expires=Fri, 31 Dec 9999 23:59:59 GMT;" +
-                                " path=/; secure; domain=.androidacy.com");
+                if (Http.hasWebView()) {
+                    CookieManager.getInstance().setCookie("https://.androidacy.com/",
+                            "USER=" + token + "; expires=Fri, 31 Dec 9999 23:59:59 GMT;" +
+                                    " path=/; secure; domain=.androidacy.com");
+                } else {
+                    Http.getCookieJar().saveFromResponse(OK_HTTP_URL,
+                            Collections.singletonList(Cookie.parse(OK_HTTP_URL,
+                                    "USER=" + token + "; expires=Fri, 31 Dec 9999 23:59:59 GMT;" +
+                                            " path=/; secure; domain=.androidacy.com")));
+                }
             } catch (Exception e) {
                 if ("Received error code: 419".equals(e.getMessage()) ||
                         "Received error code: 429".equals(e.getMessage()) ||

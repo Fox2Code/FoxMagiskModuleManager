@@ -11,6 +11,7 @@ import androidx.annotation.StringRes;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.repo.RepoModule;
+import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.fox2code.mmm.utils.PropUtils;
 
@@ -167,7 +168,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
         }
         String config = this.getMainModuleConfig();
         if (config != null) {
-            if (config.startsWith("https://www.androidacy.com/")) {
+            if (config.startsWith("https://www.androidacy.com/") && Http.hasWebView()) {
                 buttonTypeList.add(ActionButtonType.CONFIG);
             } else {
                 String pkg = IntentHelper.getPackageOfConfig(config);

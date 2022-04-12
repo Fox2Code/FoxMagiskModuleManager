@@ -12,6 +12,7 @@ import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.utils.Files;
+import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 
 import java.io.File;
@@ -54,6 +55,12 @@ public enum NotificationType implements NotificationTypeCst {
         public boolean shouldRemove() {
             return AppUpdateManager.getAppUpdateManager().isLastCheckSuccess() ||
                     RepoManager.getINSTANCE().hasConnectivity();
+        }
+    },
+    NO_WEB_VIEW(R.string.no_web_view, R.drawable.ic_baseline_android_24) {
+        @Override
+        public boolean shouldRemove() {
+            return Http.hasWebView();
         }
     },
     UPDATE_AVAILABLE(R.string.app_update_available, R.drawable.ic_baseline_system_update_24,

@@ -10,7 +10,6 @@ import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.utils.Files;
 import com.topjohnwu.superuser.NoShellException;
 import com.topjohnwu.superuser.Shell;
-import com.topjohnwu.superuser.io.SuFile;
 
 import java.io.File;
 import java.util.ArrayList;

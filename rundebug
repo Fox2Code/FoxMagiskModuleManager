@@ -1,0 +1,7 @@
+#!/bin/sh
+# File created to run debug when IDE is failing.
+./gradlew app:assembleDefaultDebug
+adb install -r -t -d ./app/build/outputs/apk/default/debug/app-default-debug.apk
+if [ "$?" == "0" ]; then
+  adb shell am start com.fox2code.mmm.debug/com.fox2code.mmm.MainActivity
+fi
