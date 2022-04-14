@@ -56,7 +56,9 @@ public class Http {
     private static final OkHttpClient httpClientWithCache;
     private static final OkHttpClient httpClientWithCacheDoH;
     private static final FallBackDNS fallbackDNS;
+    private static final CookieJar cookieJar;
     private static final String androidacyUA;
+    private static final boolean hasWebView;
     private static boolean doh;
 
     static {
@@ -102,7 +104,7 @@ public class Http {
                 return Dns.SYSTEM.lookup(s);
             };
             httpclientBuilder.dns(dns);
-            httpclientBuilder.cookieJar(new CDNCookieJar(false));
+            httpclientBuilder.cookieJar(new CDNCookieJar());
             dns = new DnsOverHttps.Builder().client(httpclientBuilder.build()).url(
                     Objects.requireNonNull(HttpUrl.parse("https://cloudflare-dns.com/dns-query")))
                     .bootstrapDnsHosts(cloudflareBootstrap).resolvePrivateAddresses(true).build();
@@ -139,7 +141,16 @@ public class Http {
                 "camo.githubusercontent.com", "user-images.githubusercontent.com",
                 "cdn.jsdelivr.net", "img.shields.io", "magisk-modules-repo.github.io",
                 "www.androidacy.com", "api.androidacy.com");
-        httpclientBuilder.cookieJar(new CDNCookieJar(true));
+        CookieManager cookieManager;
+        try {
+            cookieManager = CookieManager.getInstance();
+            cookieManager.flush(); // Make sure the instance work
+        } catch (Throwable t) {
+            cookieManager = null;
+            Log.e(TAG, "No WebView support!", t);
+        }
+        hasWebView = cookieManager != null;
+        httpclientBuilder.cookieJar(cookieJar = new CDNCookieJar(cookieManager));
         httpclientBuilder.dns(Dns.SYSTEM);
         httpClient = httpclientBuilder.build();
         httpclientBuilder.dns(fallbackDNS);
@@ -268,9 +279,20 @@ public class Http {
     private static class CDNCookieJar implements CookieJar {
         private final HashMap<String, Cookie> cookieMap = new HashMap<>();
         private final boolean androidacySupport;
+        private final CookieManager cookieManager;
+        private List<Cookie> androidacyCookies;
 
-        private CDNCookieJar(boolean androidacySupport) {
-            this.androidacySupport = androidacySupport;
+        private CDNCookieJar() {
+            this.androidacySupport = false;
+            this.cookieManager = null;
+        }
+
+        private CDNCookieJar(CookieManager cookieManager) {
+            this.androidacySupport = true;
+            this.cookieManager = cookieManager;
+            if (cookieManager == null) {
+                this.androidacyCookies = Collections.emptyList();
+            }
         }
 
         @NonNull
@@ -278,7 +300,8 @@ public class Http {
         public List<Cookie> loadForRequest(@NonNull HttpUrl httpUrl) {
             if (!httpUrl.isHttps()) return Collections.emptyList();
             if (this.androidacySupport && httpUrl.host().endsWith(".androidacy.com")) {
-                String cookies = CookieManager.getInstance().getCookie(httpUrl.uri().toString());
+                if (this.cookieManager == null) return this.androidacyCookies;
+                String cookies = this.cookieManager.getCookie(httpUrl.uri().toString());
                 if (cookies == null || cookies.isEmpty()) return Collections.emptyList();
                 String[] splitCookies = cookies.split(";");
                 ArrayList<Cookie> cookieList = new ArrayList<>(splitCookies.length);
@@ -296,8 +319,13 @@ public class Http {
         public void saveFromResponse(@NonNull HttpUrl httpUrl, @NonNull List<Cookie> cookies) {
             if (!httpUrl.isHttps()) return;
             if (this.androidacySupport && httpUrl.host().endsWith(".androidacy.com")) {
+                if (this.cookieManager == null) {
+                    if (httpUrl.host().equals(".androidacy.com") || !cookies.isEmpty())
+                        this.androidacyCookies = cookies;
+                    return;
+                }
                 for (Cookie cookie : cookies) {
-                    CookieManager.getInstance().setCookie(
+                    this.cookieManager.setCookie(
                             httpUrl.uri().toString(), cookie.toString());
                 }
                 return;
@@ -454,6 +482,10 @@ public class Http {
         }
     }
 
+    public static boolean hasWebView() {
+        return hasWebView;
+    }
+
     /**
      * Change URL to appropriate url and force Magisk link to use latest version.
      */
@@ -494,5 +526,9 @@ public class Http {
                     tokens[0] + "/" + tokens[1] + "@" + tokens[2] + "/" + tokens[3];
         }
         return string;
+    }
+
+    public static CookieJar getCookieJar() {
+        return cookieJar;
     }
 }

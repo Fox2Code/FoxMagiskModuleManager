@@ -2,7 +2,6 @@ package com.fox2code.mmm.compat;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Build;
 import android.util.TypedValue;
 
@@ -12,7 +11,6 @@ import androidx.annotation.ColorRes;
 import androidx.annotation.StyleRes;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ComplexColorCompat;
 import androidx.core.graphics.ColorUtils;
 
 import com.fox2code.mmm.R;

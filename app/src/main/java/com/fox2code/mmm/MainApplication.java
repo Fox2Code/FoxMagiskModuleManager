@@ -1,7 +1,6 @@
 package com.fox2code.mmm;
 
 import android.annotation.SuppressLint;
-import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;

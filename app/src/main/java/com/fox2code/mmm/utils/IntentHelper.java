@@ -29,8 +29,6 @@ import com.fox2code.mmm.installer.InstallerActivity;
 import com.fox2code.mmm.markdown.MarkdownActivity;
 import com.topjohnwu.superuser.CallbackList;
 import com.topjohnwu.superuser.Shell;
-import com.topjohnwu.superuser.ShellUtils;
-import com.topjohnwu.superuser.internal.Utils;
 import com.topjohnwu.superuser.io.SuFileInputStream;
 
 import java.io.File;
@@ -38,8 +36,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class IntentHelper {
     private static final String TAG = "IntentHelper";
@@ -103,6 +99,11 @@ public class IntentHelper {
 
     public static void openUrlAndroidacy(Context context, String url, boolean allowInstall,
                                          String title,String config) {
+        if (!Http.hasWebView()) {
+            Log.w(TAG, "Using custom tab for: " + url);
+            openCustomTab(context, url);
+            return;
+        }
         Uri uri = Uri.parse(url);
         try {
             Intent myIntent = new Intent(

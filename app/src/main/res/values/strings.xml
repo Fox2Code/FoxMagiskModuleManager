@@ -10,6 +10,7 @@
     <string name="failed_download">Failed to download file.</string>
     <string name="slow_modules">Modules took too long to boot, consider disabling some modules</string>
     <string name="fail_internet">Failed to connect to the internet</string>
+    <string name="no_web_view">Failed to get system WebView</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="app_update_available">Application update available</string>
     <string name="app_update">Update</string>
