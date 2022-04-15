@@ -11,6 +11,7 @@
     <string name="failed_download">Descărcarea fișierului a eșuat.</string>
     <string name="slow_modules">A durat prea mult pentru pornirea modulelor, ia în considerare dezactivarea unor module</string>
     <string name="fail_internet">Conectarea la internet a eșuat</string>
+    <string name="no_web_view">Nu s-a putut obține WebView de sistem</string>
     <string name="title_activity_settings">Setări activitate</string>
     <string name="app_update_available">Actualizare aplicație disponibilă</string>
     <string name="app_update">Actualizați</string>
@@ -87,4 +88,5 @@
     <string name="enable_blur_pref">Activează estomparea</string>
     <string name="repo_enabled">Depozit activat</string>
     <string name="repo_disabled">Depozit dezactivat</string>
+    <string name="androidacy_repo_info">Depozitul Androidacy utilizează reclame și instrumente de urmărire.</string>
 </resources>
