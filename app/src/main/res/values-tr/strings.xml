@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Fox\'un Magisk Modül Yöneticisi</string>
     <string name="app_name_short">Fox\'un Mmy</string>
-    <string name="fail_root_magisk">Kök ya da Magisk\'e erişim sağlanamadı.</string>
+    <string name="fail_root_magisk">Kök veya Magisk\'e erişim sağlanamadı.</string>
     <string name="loading">Yükleniyor...</string>
     <string name="updatable">Güncellenebilir</string>
     <string name="installed">Yüklendi</string>
@@ -10,12 +10,13 @@
     <string name="failed_download">Dosya indirilemedi.</string>
     <string name="slow_modules">Modüllerin açılışı çok uzun sürdü, bazı modülleri devre dışı bırakmayı düşünün</string>
     <string name="fail_internet">İnternete bağlanılamadı</string>
+    <string name="no_web_view">Sistem WebView alınamadı</string>
     <string name="title_activity_settings">AyarlarEtkinliği</string>
     <string name="app_update_available">Uygulama güncellemesi mevcut</string>
     <string name="app_update">Güncelle</string>
     <string name="no_desc_found">Açıklama bulunamadı.</string>
-    <string name="download_module">Modül indir</string>
-    <string name="install_module">Modül yükle</string>
+    <string name="download_module">Modülü indir</string>
+    <string name="install_module">Modülü yükle</string>
     <string name="update_module">Modülü güncelle</string>
     <string name="changelog">Değişiklik günlüğü</string>
     <string name="website">Web sitesi</string>
