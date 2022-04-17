@@ -64,7 +64,7 @@
     <string name="file_picker_failure">Your current file picker failed to grant access to the file.</string>
     <string name="remote_install_title">Remote install</string>
     <string name="file_picker_wierd">Your file picker returned a non-standard response.</string>
-    <string name="use_magisk_install_command_pref">Use magisk module install command</string>
+    <string name="use_magisk_install_command_pref">Use the \"magisk --install-module\" command</string>
     <string name="use_magisk_install_command_desc">
         During testing it caused problems to the module install error diagnosis tool,
         so this option behind is hidden behind developer mode. Turn this on at your own risk!
