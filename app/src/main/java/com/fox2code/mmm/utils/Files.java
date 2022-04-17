@@ -1,5 +1,9 @@
 package com.fox2code.mmm.utils;
 
+import android.os.Build;
+
+import androidx.annotation.NonNull;
+
 import com.topjohnwu.superuser.io.SuFile;
 import com.topjohnwu.superuser.io.SuFileInputStream;
 import com.topjohnwu.superuser.io.SuFileOutputStream;
@@ -18,6 +22,8 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class Files {
+    private static final boolean is64bit = Build.SUPPORTED_64_BIT_ABIS.length > 0;
+
     public static void write(File file, byte[] bytes) throws IOException {
         try (OutputStream outputStream = new FileOutputStream(file)) {
             outputStream.write(bytes);
@@ -63,8 +69,24 @@ public class Files {
         } catch (IOException ignored) {}
     }
 
+    public static ByteArrayOutputStream makeBuffer(long capacity) {
+        // Cap buffer to 1 Gib (or 512 Mib for 32bit) to avoid memory errors
+        return Files.makeBuffer((int) Math.min(capacity, is64bit ? 0x40000000 : 0x20000000));
+    }
+
+    public static ByteArrayOutputStream makeBuffer(int capacity) {
+        return new ByteArrayOutputStream(Math.max(0x20, capacity)) {
+            @NonNull
+            @Override
+            public byte[] toByteArray() {
+                return this.buf.length == this.count ?
+                        this.buf : super.toByteArray();
+            }
+        };
+    }
+
     public static byte[] readAllBytes(InputStream inputStream) throws IOException {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        ByteArrayOutputStream buffer = Files.makeBuffer(inputStream.available());
         copy(inputStream, buffer);
         return buffer.toByteArray();
     }
