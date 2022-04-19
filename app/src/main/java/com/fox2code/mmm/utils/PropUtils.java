@@ -68,6 +68,8 @@ public class PropUtils {
         final String GH_UC = "https://raw.githubusercontent.com/";
         moduleUpdateJsonFallbacks.put("BluetoothLibraryPatcher",
                 GH_UC + "3arthur6/BluetoothLibraryPatcher/master/update.json");
+        moduleUpdateJsonFallbacks.put("busybox-ndk",
+                GH_UC + "Magisk-Modules-Repo/busybox-ndk/master/update.json");
         moduleUpdateJsonFallbacks.put("Detach",
                 GH_UC + "xerta555/Detach-Files/blob/master/Updater.json");
         moduleUpdateJsonFallbacks.put("riru_ifw_enhance", "https://github.com/" +

@@ -1,9 +1,11 @@
 package com.fox2code.mmm;
 
 import android.content.Context;
+import android.text.Spanned;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.DrawableRes;
@@ -76,12 +78,13 @@ public enum ActionButtonType {
             builder.setTitle(moduleInfo.name).setCancelable(true)
                     .setIcon(R.drawable.ic_baseline_extension_24);
             CharSequence desc = moduleInfo.description;
+            Markwon markwon = null;
             if (moduleInfo instanceof LocalModuleInfo) {
                 LocalModuleInfo localModuleInfo = (LocalModuleInfo) moduleInfo;
                 if (!localModuleInfo.updateChangeLog.isEmpty()) {
-                    Markwon markwon = MainApplication.getINSTANCE().getMarkwon();
+                    markwon = MainApplication.getINSTANCE().getMarkwon();
                     // Re-render each time in cse of config changes
-                    desc = markwon.render(markwon.parse(localModuleInfo.updateChangeLog));
+                    desc = markwon.toMarkdown(localModuleInfo.updateChangeLog);
                 }
             }
 
@@ -109,6 +112,11 @@ public enum ActionButtonType {
                 if (alertButton != null && alertButton.getPaddingStart() > dim5dp) {
                     alertButton.setPadding(dim5dp, dim5dp, dim5dp, dim5dp);
                 }
+            }
+            if (markwon != null) {
+                TextView messageView = alertDialog.getWindow()
+                        .findViewById(android.R.id.message);
+                markwon.setParsedMarkdown(messageView, (Spanned) desc);
             }
         }
     },
