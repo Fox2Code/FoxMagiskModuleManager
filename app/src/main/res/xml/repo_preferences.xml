@@ -56,4 +56,19 @@
             app:summary="@string/androidacy_repo_info"
             app:singleLineTitle="false" />
     </PreferenceCategory>
+    <PreferenceCategory
+        app:key="pref_dg_magisk_repo"
+        app:title="@string/loading">
+        <SwitchPreferenceCompat
+            app:key="pref_dg_magisk_repo_enabled"
+            app:icon="@drawable/ic_baseline_extension_24"
+            app:switchTextOn="@string/repo_enabled"
+            app:switchTextOff="@string/repo_enabled"
+            app:singleLineTitle="false"	/>
+        <Preference
+            app:key="pref_dg_magisk_repo_website"
+            app:icon="@drawable/ic_baseline_language_24"
+            app:title="@string/website"
+            app:singleLineTitle="false"	/>
+    </PreferenceCategory>
 </PreferenceScreen>
