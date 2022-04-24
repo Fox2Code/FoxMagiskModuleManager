@@ -265,31 +265,30 @@ public class CompatActivity extends AppCompatActivity {
     }
 
     @Dimension @Px
-    public int getStatusBarHeight() { // How to improve this?
+    public int getStatusBarHeight() {
         int height = WindowInsetsCompat.CONSUMED.getInsets(
                 WindowInsetsCompat.Type.statusBars()).top;
-        if (height == 0) { // Fallback to system resources
-            int id = Resources.getSystem().getIdentifier(
-                    "status_bar_height", "dimen", "android");
-            if (id > 0) return Resources.getSystem().getDimensionPixelSize(id);
-        }
-        return height;
+        // Check system resources
+        int id = Resources.getSystem().getIdentifier(
+                "status_bar_height", "dimen", "android");
+        return id <= 0 ? height : Math.max(height,
+                Resources.getSystem().getDimensionPixelSize(id));
     }
 
     public int getNavigationBarHeight() {
         int height = WindowInsetsCompat.CONSUMED.getInsets(
                 WindowInsetsCompat.Type.navigationBars()).bottom;
-        if (height == 0) { // Fallback to system resources
-            int id = Resources.getSystem().getIdentifier(
-                    "config_showNavigationBar", "bool", "android");
-            Log.d(TAG, "Nav 1: " + id);
-            if ((id > 0 && Resources.getSystem().getBoolean(id))
-                    || !this.hasHardwareNavBar()) {
-                id = Resources.getSystem().getIdentifier(
-                        "navigation_bar_height", "dimen", "android");
-                Log.d(TAG, "Nav 2: " + id);
-                if (id > 0) return Resources.getSystem().getDimensionPixelSize(id);
-            }
+        // Check system resources
+        int id = Resources.getSystem().getIdentifier(
+                "config_showNavigationBar", "bool", "android");
+        Log.d(TAG, "Nav 1: " + id);
+        if ((id > 0 && Resources.getSystem().getBoolean(id))
+                || !this.hasHardwareNavBar()) {
+            id = Resources.getSystem().getIdentifier(
+                    "navigation_bar_height", "dimen", "android");
+            Log.d(TAG, "Nav 2: " + id);
+            return id <= 0 ? height : Math.max(height,
+                    Resources.getSystem().getDimensionPixelSize(id));
         }
         return height;
     }

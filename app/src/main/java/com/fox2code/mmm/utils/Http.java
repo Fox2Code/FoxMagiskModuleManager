@@ -225,8 +225,7 @@ public class Http {
         byte[] buff = new byte[1024 * 4];
         long downloaded = 0;
         long target = responseBody.contentLength();
-        ByteArrayOutputStream byteArrayOutputStream =
-                new ByteArrayOutputStream();
+        ByteArrayOutputStream byteArrayOutputStream = Files.makeBuffer(target);
         int divider = 1; // Make everything go in an int
         while ((target / divider) > (Integer.MAX_VALUE / 2)) {
             divider *= 2;

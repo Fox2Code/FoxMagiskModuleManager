@@ -2,6 +2,7 @@ package com.fox2code.mmm.manager;
 
 import android.util.Log;
 
+import com.fox2code.mmm.markdown.MarkdownUrlLinker;
 import com.fox2code.mmm.utils.FastException;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.PropUtils;
@@ -48,6 +49,7 @@ public class LocalModuleInfo extends ModuleInfo {
                         this.updateVersion.trim(), this.updateVersionCode);
                 if (this.updateChangeLog.length() > 1000)
                     this.updateChangeLog = this.updateChangeLog.substring(0, 1000);
+                this.updateChangeLog = MarkdownUrlLinker.urlLinkify(this.updateChangeLog);
             } catch (Exception e) {
                 this.updateVersion = null;
                 this.updateVersionCode = Long.MIN_VALUE;

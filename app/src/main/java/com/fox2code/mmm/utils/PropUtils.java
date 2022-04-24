@@ -70,6 +70,11 @@ public class PropUtils {
                 GH_UC + "3arthur6/BluetoothLibraryPatcher/master/update.json");
         moduleUpdateJsonFallbacks.put("Detach",
                 GH_UC + "xerta555/Detach-Files/blob/master/Updater.json");
+        for (String module : new String[]{"busybox-ndk", "adb-ndk", "twrp-keep",
+                "adreno-dev", "nano-ndk", "zipsigner", "nexusmedia", "mtd-ndk"}) {
+            moduleUpdateJsonFallbacks.put(module,
+                    GH_UC + "Magisk-Modules-Repo/" + module + "/master/update.json");
+        }
         moduleUpdateJsonFallbacks.put("riru_ifw_enhance", "https://github.com/" +
                 "Kr328/Riru-IFWEnhance/releases/latest/download/riru-ifw-enhance.json");
         moduleUpdateJsonFallbacks.put("zygisk_ifw_enhance", "https://github.com/" +
