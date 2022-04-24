@@ -33,7 +33,7 @@ public final class RepoManager {
             "https://www.androidacy.com/modules-repo";
 
     public static final String DG_MAGISK_REPO =
-            "https://raw.githubusercontent.com/Googlers-Magisk-Repo/json/master/modules.json";
+            "https://repo.dergoogler.com/modules.json";
     public static final String DG_MAGISK_REPO_HOMEPAGE =
             "https://github.com/orgs/Googlers-Magisk-Repo/repositories?type=source";
 
