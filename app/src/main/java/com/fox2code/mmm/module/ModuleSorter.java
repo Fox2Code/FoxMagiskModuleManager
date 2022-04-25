@@ -1,6 +1,8 @@
-package com.fox2code.mmm;
+package com.fox2code.mmm.module;
 
 import androidx.annotation.DrawableRes;
+
+import com.fox2code.mmm.R;
 
 import java.util.Comparator;
 

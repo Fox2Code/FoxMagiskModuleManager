@@ -1,4 +1,4 @@
-package com.fox2code.mmm;
+package com.fox2code.mmm.module;
 
 import android.annotation.SuppressLint;
 import android.content.res.Resources;
@@ -18,11 +18,14 @@ import androidx.annotation.StringRes;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.fox2code.mmm.ActionButtonType;
+import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.NotificationType;
+import com.fox2code.mmm.R;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
 import com.fox2code.mmm.repo.RepoModule;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
