@@ -29,6 +29,7 @@ import com.fox2code.mmm.utils.Hashes;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.fox2code.mmm.utils.PropUtils;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.topjohnwu.superuser.CallbackList;
 import com.topjohnwu.superuser.Shell;
@@ -47,6 +48,7 @@ import java.util.zip.ZipInputStream;
 public class InstallerActivity extends CompatActivity {
     private static final String TAG = "InstallerActivity";
     public LinearProgressIndicator progressIndicator;
+    public ExtendedFloatingActionButton rebootFloatingButton;
     public InstallerTerminal installerTerminal;
     private File moduleCache;
     private File toDelete;
@@ -109,6 +111,7 @@ public class InstallerActivity extends CompatActivity {
         View horizontalScroller = findViewById(R.id.install_horizontal_scroller);
         RecyclerView installTerminal;
         this.progressIndicator = findViewById(R.id.progress_bar);
+        this.rebootFloatingButton = findViewById(R.id.install_terminal_reboot_fab);
         this.installerTerminal = new InstallerTerminal(
                 installTerminal = findViewById(R.id.install_terminal), foreground);
         (horizontalScroller != null ? horizontalScroller : installTerminal)
@@ -553,6 +556,11 @@ public class InstallerActivity extends CompatActivity {
             this.setOnBackPressedCallback(null);
             this.setDisplayHomeAsUpEnabled(true);
             this.progressIndicator.setVisibility(View.GONE);
+
+            // This should be improved ?
+            rebootFloatingButton.setOnClickListener(_view -> Shell.cmd("/system/bin/svc power reboot || /system/bin/reboot").submit());
+            this.rebootFloatingButton.setVisibility(View.VISIBLE);
+
             if (message != null && !message.isEmpty())
                 this.installerTerminal.addLine(message);
             if (!optionalLink.isEmpty()) {

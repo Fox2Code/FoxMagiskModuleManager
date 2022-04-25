@@ -24,6 +24,7 @@
     <string name="donate">Donate</string>
     <string name="submit_modules">Submit a module</string>
     <string name="require_android_6">Require Android 6.0+</string>
+    <string name="install_terminal_reboot_now">Reboot</string>
 
     <!-- Module section translation -->
     <string name="module_last_update">Last update:</string>
