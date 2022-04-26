@@ -25,6 +25,8 @@
     <string name="submit_modules">Submit a module</string>
     <string name="require_android_6">Require Android 6.0+</string>
     <string name="install_terminal_reboot_now">Reboot</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <!-- Module section translation -->
     <string name="module_last_update">Last update:</string>
@@ -38,6 +40,8 @@
     <string name="manage_repos_pref">Manage repos</string>
     <string name="showcase_mode_pref">Lockdown mode</string>
     <string name="showcase_mode_desc">Lockdown mode prevent manager to do action on modules</string>
+    <string name="prevent_reboot_pref">Prevent reboot</string>
+    <string name="prevent_reboot_desc">Prevents unexpected reboots</string>
     <string name="pref_category_settings">Settings</string>
     <string name="pref_category_info">Info</string>
     <string name="show_licenses">Show licenses</string>

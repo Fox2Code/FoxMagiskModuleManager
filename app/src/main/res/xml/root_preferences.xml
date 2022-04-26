@@ -49,6 +49,14 @@
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
+            app:key="pref_prevent_reboot"
+            app:icon="@drawable/ic_reboot_24"
+            app:title="@string/prevent_reboot_pref"
+            app:summary="@string/prevent_reboot_desc"
+            app:singleLineTitle="false"	/>
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
             app:key="pref_wrap_text"
             app:icon="@drawable/ic_baseline_keyboard_return_24"
             app:title="@string/wrap_text_pref"

@@ -29,6 +29,7 @@ import com.fox2code.mmm.utils.Hashes;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.fox2code.mmm.utils.PropUtils;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.topjohnwu.superuser.CallbackList;
@@ -64,7 +65,8 @@ public class InstallerActivity extends CompatActivity {
         this.setDisplayHomeAsUpEnabled(true);
         setActionBarBackground(null);
         this.setOnBackPressedCallback(a -> {
-            this.canceled = true; return false;
+            this.canceled = true;
+            return false;
         });
         final Intent intent = this.getIntent();
         final String target;
@@ -97,7 +99,7 @@ public class InstallerActivity extends CompatActivity {
         setTitle(name);
         this.textWrap = MainApplication.isTextWrapEnabled();
         setContentView(this.textWrap ?
-                R.layout.installer_wrap :R.layout.installer);
+                R.layout.installer_wrap : R.layout.installer);
         int background;
         int foreground;
         if (MainApplication.getINSTANCE().isLightTheme() &&
@@ -133,7 +135,7 @@ public class InstallerActivity extends CompatActivity {
                 String errMessage = "Failed to download module zip";
                 try {
                     Log.i(TAG, "Downloading: " + target);
-                    byte[] rawModule = Http.doHttpGet(target,(progress, max, done) -> {
+                    byte[] rawModule = Http.doHttpGet(target, (progress, max, done) -> {
                         if (max <= 0 && this.progressIndicator.isIndeterminate())
                             return;
                         this.runOnUiThread(() -> {
@@ -240,7 +242,7 @@ public class InstallerActivity extends CompatActivity {
     }
 
 
-    private void doInstall(File file,boolean noExtensions,boolean rootless) {
+    private void doInstall(File file, boolean noExtensions, boolean rootless) {
         if (this.canceled) return;
         UiThreadHandler.runAndWait(() -> {
             this.setOnBackPressedCallback(DISABLE_BACK_BUTTON);
@@ -278,7 +280,8 @@ public class InstallerActivity extends CompatActivity {
                 }
                 moduleId = PropUtils.readModuleId(zipFile
                         .getInputStream(zipFile.getEntry("module.prop")));
-            } catch (IOException ignored) {}
+            } catch (IOException ignored) {
+            }
             int compatFlags = AppUpdateManager.getFlagsForModule(moduleId);
             if ((compatFlags & AppUpdateManager.FLAG_COMPAT_NEED_32BIT) != 0)
                 needs32bit = true;
@@ -344,7 +347,8 @@ public class InstallerActivity extends CompatActivity {
         }
         boolean success = installJob.exec().isSuccess();
         // Wait one UI cycle before disabling controller or processing results
-        UiThreadHandler.runAndWait(() -> {}); // to avoid race conditions
+        UiThreadHandler.runAndWait(() -> {
+        }); // to avoid race conditions
         installerController.disable();
         String message = "- Install successful";
         if (!success) {
@@ -368,7 +372,7 @@ public class InstallerActivity extends CompatActivity {
         private String supportLink = "";
 
         private InstallerController(LinearProgressIndicator progressIndicator,
-                                    InstallerTerminal terminal,File moduleFile,
+                                    InstallerTerminal terminal, File moduleFile,
                                     boolean noExtension) {
             this.progressIndicator = progressIndicator;
             this.terminal = terminal;
@@ -451,7 +455,8 @@ public class InstallerActivity extends CompatActivity {
                     try {
                         this.progressIndicator.setProgressCompat(
                                 Short.parseShort(arg), true);
-                    } catch (Exception ignored) {}
+                    } catch (Exception ignored) {
+                    }
                     break;
                 case "hideLoading":
                     this.progressIndicator.setVisibility(View.GONE);
@@ -544,7 +549,7 @@ public class InstallerActivity extends CompatActivity {
     }
 
     @SuppressWarnings("SameParameterValue")
-    private void setInstallStateFinished(boolean success, String message,String optionalLink) {
+    private void setInstallStateFinished(boolean success, String message, String optionalLink) {
         if (success && toDelete != null && !toDelete.delete()) {
             SuFile suFile = new SuFile(toDelete.getAbsolutePath());
             if (suFile.exists() && !suFile.delete())
@@ -558,7 +563,26 @@ public class InstallerActivity extends CompatActivity {
             this.progressIndicator.setVisibility(View.GONE);
 
             // This should be improved ?
-            rebootFloatingButton.setOnClickListener(_view -> Shell.cmd("/system/bin/svc power reboot || /system/bin/reboot").submit());
+            String reboot_cmd = "/system/bin/svc power reboot || /system/bin/reboot";
+            rebootFloatingButton.setOnClickListener(_view -> {
+                if (MainApplication.shouldPreventReboot()) {
+                    MaterialAlertDialogBuilder builder =
+                            new MaterialAlertDialogBuilder(this);
+
+                    builder
+                            .setTitle(R.string.install_terminal_reboot_now)
+                            .setCancelable(false)
+                            .setIcon(R.drawable.ic_reboot_24)
+                            .setPositiveButton(R.string.yes, (x, y) -> {
+                                Shell.cmd(reboot_cmd).submit();
+                            })
+                            .setNegativeButton(R.string.no, (x, y) -> {
+                                x.dismiss();
+                            }).show();
+                } else {
+                    Shell.cmd(reboot_cmd).submit();
+                }
+            });
             this.rebootFloatingButton.setVisibility(View.VISIBLE);
 
             if (message != null && !message.isEmpty())
@@ -566,9 +590,9 @@ public class InstallerActivity extends CompatActivity {
             if (!optionalLink.isEmpty()) {
                 this.setActionBarExtraMenuButton(ActionButtonType.supportIconForUrl(optionalLink),
                         menu -> {
-                    IntentHelper.openUrl(this, optionalLink);
-                    return true;
-                });
+                            IntentHelper.openUrl(this, optionalLink);
+                            return true;
+                        });
             } else if (success) {
                 final Intent intent = this.getIntent();
                 final String config = MainApplication.checkSecret(intent) ?
