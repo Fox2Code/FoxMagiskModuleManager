@@ -13,18 +13,18 @@
         app:title="@string/pref_category_general">
         <SwitchPreferenceCompat
             app:defaultValue="false"
-            app:key="pref_show_incompatible"
-            app:icon="@drawable/ic_baseline_hide_source_24"
-            app:title="@string/show_incompatible_pref"
-            app:summary="@string/show_incompatible_desc"
-            app:singleLineTitle="false"	/>
-
-        <SwitchPreferenceCompat
-            app:defaultValue="false"
             app:key="pref_use_magisk_install_command"
             app:icon="@drawable/ic_baseline_numbers_24"
             app:title="@string/use_magisk_install_command_pref"
             app:summary="@string/use_magisk_install_command_desc"
+            app:singleLineTitle="false"	/>
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="pref_disable_low_quality_module_filter"
+            app:icon="@drawable/ic_baseline_warning_24"
+            app:title="@string/disable_low_quality_module_filter_pref"
+            app:summary="@string/disable_low_quality_module_filter_desc"
             app:singleLineTitle="false"	/>
 
         <SwitchPreferenceCompat
@@ -77,6 +77,13 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/pref_category_security">
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="pref_show_incompatible"
+            app:icon="@drawable/ic_baseline_hide_source_24"
+            app:title="@string/show_incompatible_pref"
+            app:summary="@string/show_incompatible_desc"
+            app:singleLineTitle="false"	/>
         <!-- Note: Lockdown mode used to be called showcase mode -->
         <SwitchPreferenceCompat
             app:defaultValue="false"
@@ -92,14 +99,6 @@
             app:icon="@drawable/ic_reboot_24"
             app:title="@string/prevent_reboot_pref"
             app:summary="@string/prevent_reboot_desc"
-            app:singleLineTitle="false"	/>
-
-        <SwitchPreferenceCompat
-            app:defaultValue="false"
-            app:key="pref_disable_low_quality_module_filter"
-            app:icon="@drawable/ic_baseline_warning_24"
-            app:title="@string/disable_low_quality_module_filter_pref"
-            app:summary="@string/disable_low_quality_module_filter_desc"
             app:singleLineTitle="false"	/>
     </PreferenceCategory>
 
