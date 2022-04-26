@@ -100,4 +100,7 @@
     <string name="repo_enabled">Repo enabled</string>
     <string name="repo_disabled">Repo disabled</string>
     <string name="androidacy_repo_info">Androidacy repo uses ads and trackers.</string>
+    <string name="pref_category_security">Security</string>
+    <string name="pref_category_appearance">Appearance</string>
+    <string name="pref_category_general">General</string>
 </resources>
