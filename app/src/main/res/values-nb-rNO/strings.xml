@@ -1,0 +1,98 @@
+<resources>
+    <string name="app_name">Fox sin Magisk-modulbehandler</string>
+    <string name="app_name_short">Mmm fra Fox</string>
+    <string name="fail_root_magisk">Fikk ikke enten rot- eller Magisk-tilgang</string>
+    <string name="loading">Laster inn…</string>
+    <string name="updatable">Uppgraderbare</string>
+    <string name="installed">Installert</string>
+    <string name="online_repo">Nettbasert pakkebrønn</string>
+    <string name="showcase_mode">Programmet er i nedlåst modus</string>
+    <string name="failed_download">Kunne ikke laste ned filen</string>
+    <string name="slow_modules">Det tok for lang tid å starte opp moduler. Overvei å skru av noen av dem.</string>
+    <string name="fail_internet">Kunne ikke koble til Internett</string>
+    <string name="no_web_view">Kunne ikke åpne systemets WebView</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="app_update_available">En ny versjon av programmet er tilgjengelig</string>
+    <string name="app_update">Oppgrader</string>
+    <string name="no_desc_found">Fant ingen beskrivelse.</string>
+    <string name="download_module">Last ned modul</string>
+    <string name="install_module">Installer modul</string>
+    <string name="update_module">Oppgrader modul</string>
+    <string name="changelog">Endringslogg</string>
+    <string name="website">Nettside</string>
+    <string name="support">Brukerstøtte</string>
+    <string name="donate">Doner</string>
+    <string name="submit_modules">Send inn en modul</string>
+    <string name="require_android_6">Krever Android 6.0+</string>
+
+    <!-- Module section translation -->
+    <string name="module_last_update">Siste versjon:</string>
+    <string name="module_repo">Pakkebrønn:</string>
+    <string name="module_by">av</string>
+    <string name="module_downloads">Nedlastninger:</string>
+    <string name="module_stars">Stjerner:</string>
+
+    <!-- Preference Titles -->
+    <!-- Note: Lockdown mode used to be called showcase mode -->
+    <string name="manage_repos_pref">Håndter pakkebrønner</string>
+    <string name="showcase_mode_pref">Nedlåst modus</string>
+    <string name="showcase_mode_desc">Nedlåst modus forhendrer behandleren fra å utføre handlinger på moduler</string>
+    <string name="pref_category_settings">Innstillinger</string>
+    <string name="pref_category_info">Info</string>
+    <string name="show_licenses">Vis lisenser</string>
+    <string name="licenses">Lisenser</string>
+    <string name="show_incompatible_pref">Vis inkompatible moduler</string>
+    <string name="show_incompatible_desc">Vis moduler som antagelig ikke virker basert på deres metadata</string>
+    <string name="magisk_outdated">Magisk er utdatert!</string>
+    <string name="pref_category_repos">Pakkebrønner</string>
+    <string name="repo_main_desc">Pakkebrønnen som vertstjener Magisk-moduler</string>
+    <string name="repo_main_alt">Et alternativ til Magisk-Modules-Repo med færre begrensninger.</string>
+    <string name="master_delete">Slett modulfilene?</string>
+    <string name="master_delete_no">Behold</string>
+    <string name="master_delete_yes">Slett</string>
+    <string name="master_delete_fail">Kunne ikke slette modulfilene</string>
+    <string name="theme_pref">Drakt</string>
+    <string name="theme_mode_pref">Draktmodus</string>
+    <string name="module_id_prefix">Modul-ID: </string>
+    <string name="install_from_storage">Installer modul fra lagring</string>
+    <string name="invalid_format">Valgt modul har et ugyldig format</string>
+    <string name="local_install_title">Lokal installasjon</string>
+    <string name="source_code">Kildekode</string>
+    <string name="magisk_builtin_module">Innebygd Magisk-modul</string>
+    <string name="substratum_builtin_module">Innebygd Substratum-modul</string>
+    <string name="force_dark_terminal_title">Påtving mørk terminal</string>
+    <string name="file_picker_failure">Din nåværende filvelger kunne ikke innvilge tilgang til filen.</string>
+    <string name="remote_install_title">Fjerninstallering</string>
+    <string name="file_picker_wierd">Filvelgeren din returnerte et uventet svar.</string>
+    <string name="use_magisk_install_command_pref">Bruk «magisk --install-module»-kommandoen</string>
+    <string name="use_magisk_install_command_desc">
+        Under testing forårsaket diagnoseverktøyet for modulinstallasjoner problemer,
+        så dette alternativet er skjult bak utviklingsmoduset. Bruk det på egen risiko!
+    </string>
+    <string name="dev_mode_enabled">Utviklermodus på</string>
+    <string name="force_english_pref">Påtving engelsk språk</string>
+    <string name="disable_low_quality_module_filter_pref">Skru av utfiltrering av lavkvalitetsmoduler</string>
+    <string name="disable_low_quality_module_filter_desc">
+        Noen moduler kunngjør ikke metadataen sin riktig, noe som forårsaker synlige grafikkproblemer,
+        og/eller indikerer dårlig modulkvalitet. Skru av dette på egen risiko!
+    </string>
+    <string name="dns_over_https_pref">DNS over HTTPS</string>
+    <string name="dns_over_https_desc">
+        Kan fikse problemer i noen tilfeller.
+        (Har ikke innvirkning på WebView.)
+    </string>
+    <string name="disable_extensions_pref">Ingen Mmm</string>
+    <string name="disable_extensions_desc">
+        Skru av Fox sin Mmm-utvidelser, noe som forhindrer moduler fra å bruke
+        terminalutvidelser. Nyttig hvis en modul misbruker Fox sin Mmm-utvidelser.
+    </string>
+    <string name="wrap_text_pref">Linjebryt tekst</string>
+    <string name="wrap_text_desc">
+        Linjebryt tekst til ny linje, istedenfor å putte all tekst
+        på samme linje når du installerer en modul.
+    </string>
+    <string name="enable_blur_pref">Tilsløring</string>
+    <string name="repo_enabled">Pakkebrønn på</string>
+    <string name="repo_disabled">Pakkebrønn av</string>
+    <string name="androidacy_repo_info">Androidacy-pakkebrønnen har reklame og sporere.</string>
+</resources>
