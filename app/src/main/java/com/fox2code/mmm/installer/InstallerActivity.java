@@ -164,13 +164,17 @@ public class InstallerActivity extends CompatActivity {
                     Files.fixJavaZipHax(rawModule);
                     boolean noPatch = false;
                     boolean isModule = false;
+                    boolean isAnyKernel = false;
                     errMessage = "File is not a valid zip file";
                     try (ZipInputStream zipInputStream = new ZipInputStream(
                             new ByteArrayInputStream(rawModule))) {
                         ZipEntry zipEntry;
                         while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                             String entryName = zipEntry.getName();
-                            if (entryName.equals("module.prop")) {
+                            if (entryName.equals("anykernel.sh")) {
+                                isAnyKernel = true;
+                                break;
+                            } else if (entryName.equals("module.prop")) {
                                 noPatch = true;
                                 isModule = true;
                                 break;
@@ -180,7 +184,8 @@ public class InstallerActivity extends CompatActivity {
                         }
                     }
                     if (!isModule) {
-                        this.setInstallStateFinished(false,
+                        this.setInstallStateFinished(false, isAnyKernel ?
+                                "! AnyKernel modules can only be installed on recovery" :
                                 "! File is not a valid magisk module", "");
                         return;
                     }

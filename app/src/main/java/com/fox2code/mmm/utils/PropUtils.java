@@ -249,9 +249,7 @@ public class PropUtils {
             if (readIdSec && local) {
                 // Using the name for module id is not really appropriate, so beautify it a bit
                 moduleInfo.name = makeNameFromId(moduleInfo.id);
-            } else if (local) { // Allow local module to not declare ids
-                invalid = true;
-            } else {
+            } else if (!local) { // Allow local modules to not declare ids
                 throw new IOException("Didn't read module id at least once!");
             }
         }
