@@ -33,7 +33,7 @@ public enum NotificationType implements NotificationTypeCst {
         }
     },
     NO_ROOT(R.string.fail_root_magisk, R.drawable.ic_baseline_numbers_24, v -> {
-        IntentHelper.openUrl(v.getContext(), "https://github.com/topjohnwu/Magisk");
+        IntentHelper.openUrl(v.getContext(), "https://github.com/topjohnwu/Magisk/blob/master/docs/install.md");
     }) {
         @Override
         public boolean shouldRemove() {
