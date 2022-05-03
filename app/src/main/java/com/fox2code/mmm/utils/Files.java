@@ -1,6 +1,7 @@
 package com.fox2code.mmm.utils;
 
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -45,6 +46,11 @@ public class Files {
     }
 
     public static byte[] readSU(File file) throws IOException {
+        if (file.isFile() && file.canRead()) {
+            try { // Read as app if su not required
+                return read(file);
+            } catch (IOException ignored) {}
+        }
         try (InputStream inputStream = SuFileInputStream.open(file)) {
             return readAllBytes(inputStream);
         }

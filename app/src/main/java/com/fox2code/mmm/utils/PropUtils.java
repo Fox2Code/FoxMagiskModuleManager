@@ -303,6 +303,7 @@ public class PropUtils {
     }
 
     public static String readModuleId(InputStream inputStream) {
+        if (inputStream == null) return null;
         String moduleId = null;
         try (BufferedReader bufferedReader = new BufferedReader(
                 new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {

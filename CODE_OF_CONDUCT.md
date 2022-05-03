@@ -1,5 +1,9 @@
 # Contributor Covenant Code of Conduct
 
+Note: The code of conduct are the rules that applies to everyone interacting 
+with the repo, regardless of acceptance, moderators of the repo are not forced 
+to apply it strictly, so be nice!
+
 ## Our Pledge
 
 We as members, contributors, and leaders pledge to make participation in our
@@ -24,6 +28,8 @@ community include:
   and learning from the experience
 * Focusing on what is best not just for us as individuals, but for the
   overall community
+* Respecting mistakes as something happening to everyone that is useful as
+  learning material
 
 Examples of unacceptable behavior include:
 
@@ -31,8 +37,8 @@ Examples of unacceptable behavior include:
   advances of any kind
 * Trolling, insulting or derogatory comments, and personal or political attacks
 * Public or private harassment
-* Publishing others' private information, such as a physical or email
-  address, without their explicit permission
+* Publishing others' private information, such as a physical or email address, 
+  with or without their explicit permission unless widely publicly available
 * Other conduct which could reasonably be considered inappropriate in a
   professional setting
 
@@ -73,16 +79,16 @@ the consequences for any action they deem in violation of this Code of Conduct:
 ### 1. Correction
 
 **Community Impact**: Use of inappropriate language or other behavior deemed
-unprofessional or unwelcome in the community.
+harmful or unwelcome in the community.
 
 **Consequence**: A private, written warning from community leaders, providing
 clarity around the nature of the violation and an explanation of why the
-behavior was inappropriate. A public apology may be requested.
+behavior was inappropriate.
 
 ### 2. Warning
 
 **Community Impact**: A violation through a single incident or series
-of actions.
+of actions, or a behaviour that induce hatred in the community.
 
 **Consequence**: A warning with consequences for continued behavior. No
 interaction with the people involved, including unsolicited interaction with

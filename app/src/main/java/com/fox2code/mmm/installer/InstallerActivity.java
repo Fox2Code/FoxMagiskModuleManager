@@ -37,11 +37,14 @@ import com.topjohnwu.superuser.Shell;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 import com.topjohnwu.superuser.io.SuFile;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -123,127 +126,106 @@ public class InstallerActivity extends CompatActivity {
         this.getWindow().setFlags( // Note: Doesn't require WAKELOCK permission
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        if (urlMode) {
-            this.progressIndicator.setVisibility(View.VISIBLE);
-            this.installerTerminal.addLine("- Downloading " + name);
-            new Thread(() -> {
-                File moduleCache = this.toDelete =
-                        new File(this.moduleCache, "module.zip");
-                if (moduleCache.exists() && !moduleCache.delete() &&
-                        !new SuFile(moduleCache.getAbsolutePath()).delete())
-                    Log.e(TAG, "Failed to delete module cache");
-                String errMessage = "Failed to download module zip";
-                try {
-                    Log.i(TAG, "Downloading: " + target);
-                    byte[] rawModule = Http.doHttpGet(target, (progress, max, done) -> {
-                        if (max <= 0 && this.progressIndicator.isIndeterminate())
-                            return;
-                        this.runOnUiThread(() -> {
-                            this.progressIndicator.setIndeterminate(false);
-                            this.progressIndicator.setMax(max);
-                            this.progressIndicator.setProgressCompat(progress, true);
-                        });
-                    });
+        this.progressIndicator.setVisibility(View.VISIBLE);
+        if (urlMode) this.installerTerminal.addLine("- Downloading " + name);
+        new Thread(() -> {
+            File moduleCache = this.toDelete = urlMode ?
+                    new File(this.moduleCache, "module.zip") : new File(target);
+            if (urlMode && moduleCache.exists() && !moduleCache.delete() &&
+                    !new SuFile(moduleCache.getAbsolutePath()).delete())
+                Log.e(TAG, "Failed to delete module cache");
+            String errMessage = "Failed to download module zip";
+            try {
+                Log.i(TAG, (urlMode ? "Downloading: " : "Loading: ") + target);
+                byte[] rawModule = urlMode ? Http.doHttpGet(target, (progress, max, done) -> {
+                    if (max <= 0 && this.progressIndicator.isIndeterminate())
+                        return;
                     this.runOnUiThread(() -> {
-                        this.progressIndicator.setVisibility(View.GONE);
-                        this.progressIndicator.setIndeterminate(true);
+                        this.progressIndicator.setIndeterminate(false);
+                        this.progressIndicator.setMax(max);
+                        this.progressIndicator.setProgressCompat(progress, true);
                     });
-                    if (this.canceled) return;
-                    if (checksum != null && !checksum.isEmpty()) {
-                        Log.d(TAG, "Checking for checksum: " + checksum);
-                        this.runOnUiThread(() -> {
-                            this.installerTerminal.addLine("- Checking file integrity");
-                        });
-                        if (!Hashes.checkSumMatch(rawModule, checksum)) {
-                            this.setInstallStateFinished(false,
-                                    "! File integrity check failed", "");
-                            return;
-                        }
-                    }
-                    if (this.canceled) return;
-                    Files.fixJavaZipHax(rawModule);
-                    boolean noPatch = false;
-                    boolean isModule = false;
-                    boolean isAnyKernel = false;
-                    errMessage = "File is not a valid zip file";
-                    try (ZipInputStream zipInputStream = new ZipInputStream(
-                            new ByteArrayInputStream(rawModule))) {
-                        ZipEntry zipEntry;
-                        while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-                            String entryName = zipEntry.getName();
-                            if (entryName.equals("anykernel.sh")) {
-                                isAnyKernel = true;
-                                break;
-                            } else if (entryName.equals("module.prop")) {
-                                noPatch = true;
-                                isModule = true;
-                                break;
-                            } else if (entryName.endsWith("/module.prop")) {
-                                isModule = true;
-                            }
-                        }
-                    }
-                    if (!isModule) {
-                        this.setInstallStateFinished(false, isAnyKernel ?
-                                "! AnyKernel modules can only be installed on recovery" :
-                                "! File is not a valid magisk module", "");
+                }) : Files.readSU(moduleCache);
+                this.runOnUiThread(() -> {
+                    this.progressIndicator.setVisibility(View.GONE);
+                    this.progressIndicator.setIndeterminate(true);
+                });
+                if (this.canceled) return;
+                if (checksum != null && !checksum.isEmpty()) {
+                    Log.d(TAG, "Checking for checksum: " + checksum);
+                    this.runOnUiThread(() -> {
+                        this.installerTerminal.addLine("- Checking file integrity");
+                    });
+                    if (!Hashes.checkSumMatch(rawModule, checksum)) {
+                        this.setInstallStateFinished(false,
+                                "! File integrity check failed", "");
                         return;
                     }
-                    if (noPatch) {
+                }
+                if (this.canceled) return;
+                Files.fixJavaZipHax(rawModule);
+                boolean noPatch = false;
+                boolean isModule = false;
+                boolean isAnyKernel = false;
+                errMessage = "File is not a valid zip file";
+                try (ZipInputStream zipInputStream = new ZipInputStream(
+                        new ByteArrayInputStream(rawModule))) {
+                    ZipEntry zipEntry;
+                    while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+                        String entryName = zipEntry.getName();
+                        if (entryName.equals("anykernel.sh")) {
+                            noPatch = true;
+                            isAnyKernel = true;
+                            break;
+                        } else if (entryName.equals("module.prop")) {
+                            noPatch = true;
+                            isModule = true;
+                            break;
+                        } else if (entryName.endsWith("/anykernel.sh")) {
+                            isAnyKernel = true;
+                        } else if (entryName.endsWith("/module.prop")) {
+                            isModule = true;
+                        }
+                    }
+                }
+                if (!isModule && !isAnyKernel) {
+                    this.setInstallStateFinished(false,
+                            "! File is not a valid magisk module", "");
+                    return;
+                }
+                if (noPatch) {
+                    if (urlMode) {
                         errMessage = "Failed to save module zip";
                         try (OutputStream outputStream = new FileOutputStream(moduleCache)) {
                             outputStream.write(rawModule);
                             outputStream.flush();
                         }
-                    } else {
-                        errMessage = "Failed to patch module zip";
-                        this.runOnUiThread(() -> {
-                            this.installerTerminal.addLine("- Patching " + name);
-                        });
-                        Log.i(TAG, "Patching: " + moduleCache.getName());
-                        try (OutputStream outputStream = new FileOutputStream(moduleCache)) {
-                            Files.patchModuleSimple(rawModule, outputStream);
-                            outputStream.flush();
-                        }
                     }
-                    if (this.canceled) return;
-                    //noinspection UnusedAssignment (Important to avoid OutOfMemoryError)
-                    rawModule = null; // Because reference is kept when calling doInstall
+                } else {
+                    errMessage = "Failed to patch module zip";
                     this.runOnUiThread(() -> {
-                        this.installerTerminal.addLine("- Installing " + name);
+                        this.installerTerminal.addLine("- Patching " + name);
                     });
-                    errMessage = "Failed to install module zip";
-                    this.doInstall(moduleCache, noExtensions, rootless);
-                } catch (IOException e) {
-                    Log.e(TAG, errMessage, e);
-                    this.setInstallStateFinished(false,
-                            "! " + errMessage, "");
-                }
-            }, "Module download Thread").start();
-        } else {
-            final File moduleFile = new File(target);
-            if (checksum != null && !checksum.isEmpty()) {
-                Log.d(TAG, "Checking for checksum: " + checksum);
-                this.installerTerminal.addLine("- Checking file integrity");
-                try {
-                    if (!Hashes.checkSumMatch(Files.readSU(moduleFile), checksum)) {
-                        this.setInstallStateFinished(false,
-                                "! File integrity check failed", "");
-                        return;
+                    Log.i(TAG, "Patching: " + moduleCache.getName());
+                    try (OutputStream outputStream = new FileOutputStream(moduleCache)) {
+                        Files.patchModuleSimple(rawModule, outputStream);
+                        outputStream.flush();
                     }
-                } catch (IOException e) {
-                    Log.e(TAG, "Failed to read file for checksum check", e);
-                    this.setInstallStateFinished(false,
-                            "! File integrity check failed", "");
-                    return;
                 }
+                //noinspection UnusedAssignment (Important to avoid OutOfMemoryError)
+                rawModule = null; // Because reference is kept when calling doInstall
                 if (this.canceled) return;
+                this.runOnUiThread(() -> {
+                    this.installerTerminal.addLine("- Installing " + name);
+                });
+                errMessage = "Failed to install module zip";
+                this.doInstall(moduleCache, noExtensions, rootless);
+            } catch (IOException e) {
+                Log.e(TAG, errMessage, e);
+                this.setInstallStateFinished(false,
+                        "! " + errMessage, "");
             }
-            this.installerTerminal.addLine("- Installing " + name);
-            new Thread(() -> this.doInstall(
-                    this.toDelete = moduleFile, noExtensions, rootless),
-                    "Install Thread").start();
-        }
+        }, "Module install Thread").start();
     }
 
 
@@ -276,17 +258,67 @@ public class InstallerActivity extends CompatActivity {
             String arch32 = "true"; // Do nothing by default
             boolean needs32bit = false;
             String moduleId = null;
+            boolean anyKernel = false;
+            boolean magiskModule = false;
+            boolean anyKernelSystemLess = false;
+            File anyKernelInstallScript = new File(this.moduleCache, "update-binary");
             try (ZipFile zipFile = new ZipFile(file)) {
+                ZipEntry anyKernelSh = zipFile.getEntry("anykernel.sh");
+                if (anyKernelSh != null) { // Check if module is AnyKernel module
+                    BufferedReader bufferedReader = new BufferedReader(
+                            new InputStreamReader(zipFile.getInputStream(anyKernelSh)));
+                    String line;
+                    // Check if AnyKernel module support system-less
+                    while ((line = bufferedReader.readLine()) != null) {
+                        String trimmedLine = line.trim();
+                        if (trimmedLine.equals("do.modules=1"))
+                            anyKernel = true;
+                        if (trimmedLine.equals("do.systemless=1"))
+                            anyKernelSystemLess = true;
+                    }
+                    bufferedReader.close();
+                    if (anyKernelSystemLess && anyKernel) {
+                        anyKernelSystemLess = false;
+                        ZipEntry updateBinary = zipFile.getEntry(
+                                "META-INF/com/google/android/update-binary");
+                        if (updateBinary != null) {
+                            bufferedReader = new BufferedReader(
+                                    new InputStreamReader(zipFile.getInputStream(updateBinary)));
+                            PrintStream printStream = new PrintStream(
+                                    new FileOutputStream(anyKernelInstallScript));
+                            while ((line = bufferedReader.readLine()) != null) {
+                                String trimmedLine = line.trim();
+                                if (trimmedLine.equals("mount_all;") ||
+                                        trimmedLine.equals("umount_all;"))
+                                    continue; // Do not mount anything
+                                line = line.replace("/sbin/sh", "/system/bin/sh");
+                                int prePatch = line.length();
+                                line = line.replace("/data/adb/modules/ak3-helper",
+                                        "/data/adb/modules-update/ak3-helper");
+                                if (prePatch != line.length()) anyKernelSystemLess = true;
+                                printStream.println(line);
+                            }
+                            printStream.close();
+                            bufferedReader.close();
+                            if (!anyKernelSystemLess) anyKernelInstallScript.delete();
+                        }
+                    }
+                    anyKernel = true;
+                }
                 if (zipFile.getEntry( // Check if module hard require 32bit support
                         "common/addon/Volume-Key-Selector/tools/arm64/keycheck") == null &&
                         zipFile.getEntry(
                                 "common/addon/Volume-Key-Selector/install.sh") != null) {
                     needs32bit = true;
                 }
+                ZipEntry moduleProp = zipFile.getEntry("module.prop");
+                magiskModule = moduleProp != null;
                 moduleId = PropUtils.readModuleId(zipFile
                         .getInputStream(zipFile.getEntry("module.prop")));
             } catch (IOException ignored) {
             }
+                        .getInputStream(moduleProp));
+            } catch (IOException ignored) {}
             int compatFlags = AppUpdateManager.getFlagsForModule(moduleId);
             if ((compatFlags & AppUpdateManager.FLAG_COMPAT_NEED_32BIT) != 0)
                 needs32bit = true;
@@ -298,6 +330,12 @@ public class InstallerActivity extends CompatActivity {
                 this.setInstallStateFinished(false,
                         "! This module contain a dangerous moduleId",
                         null);
+                return;
+            }
+            if (magiskModule && moduleId == null && !anyKernel) {
+                // Modules without module Ids are module installed by 3rd party software
+                this.setInstallStateFinished(false,
+                        "! Magisk modules require a moduleId", null);
                 return;
             }
             if (Build.SUPPORTED_32_BIT_ABIS.length == 0) {
@@ -316,14 +354,23 @@ public class InstallerActivity extends CompatActivity {
             }
             String installCommand;
             File installExecutable;
-            if (InstallerInitializer.peekMagiskVersion() >=
+            if (anyKernel && moduleId == null) { // AnyKernel modules don't have a moduleId
+                if (!anyKernelSystemLess) {
+                    this.setInstallStateFinished(false,
+                            "! This AnyKernel module only support recovery install", null);
+                    return;
+                }
+                installExecutable = anyKernelInstallScript;
+                installCommand = "sh \"" + installExecutable.getAbsolutePath() + "\"" +
+                        " /dev/null 0 \"" + file.getAbsolutePath() + "\"";
+            } else if (InstallerInitializer.peekMagiskVersion() >=
                     Constants.MAGISK_VER_CODE_INSTALL_COMMAND &&
                     ((compatFlags & AppUpdateManager.FLAG_COMPAT_MAGISK_CMD) != 0 ||
                             noExtensions || MainApplication.isUsingMagiskCommand())) {
                 installCommand = "magisk --install-module \"" + file.getAbsolutePath() + "\"";
                 installExecutable = new File(InstallerInitializer.peekMagiskPath()
                         .equals("/sbin") ? "/sbin/magisk" : "/system/bin/magisk");
-            } else {
+            } else if (moduleId != null) {
                 installExecutable = this.extractInstallScript("module_installer_compat.sh");
                 if (installExecutable == null) {
                     this.setInstallStateFinished(false,
@@ -331,7 +378,11 @@ public class InstallerActivity extends CompatActivity {
                     return;
                 }
                 installCommand = "sh \"" + installExecutable.getAbsolutePath() + "\"" +
-                        " /dev/null 1 \"" + file.getAbsolutePath() + "\"";
+                        " /dev/null 0 \"" + file.getAbsolutePath() + "\"";
+            } else {
+                this.setInstallStateFinished(false,
+                        "! Zip file is not a valid Magisk or a AnyKernel module!", null);
+                return;
             }
             installerMonitor = new InstallerMonitor(installExecutable);
             if (moduleId != null) installerMonitor.setForCleanUp(moduleId);
