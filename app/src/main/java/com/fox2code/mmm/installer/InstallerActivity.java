@@ -347,7 +347,7 @@ public class InstallerActivity extends CompatActivity {
             }
             String installCommand;
             File installExecutable;
-            if (anyKernel) {
+            if (anyKernel && moduleId == null) { // AnyKernel modules don't have a moduleId
                 if (!anyKernelSystemLess) {
                     this.setInstallStateFinished(false,
                             "! This AnyKernel module only support recovery install", null);
