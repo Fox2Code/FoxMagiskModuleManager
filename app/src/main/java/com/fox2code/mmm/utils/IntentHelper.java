@@ -371,6 +371,7 @@ public class IntentHelper {
                 }
                 outputStream = new FileOutputStream(destination);
                 Files.copy(inputStream, outputStream);
+                Log.d(TAG, "File saved at " + destination);
                 success = true;
             } catch (Exception e) {
                 Log.e(TAG, "failed copy of " + uri, e);

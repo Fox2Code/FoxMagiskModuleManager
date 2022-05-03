@@ -122,18 +122,17 @@ public class InstallerActivity extends CompatActivity {
         this.getWindow().setFlags( // Note: Doesn't require WAKELOCK permission
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        final File moduleFile = urlMode ? null : new File(target);
         this.progressIndicator.setVisibility(View.VISIBLE);
-        this.installerTerminal.addLine("- Downloading " + name);
+        if (urlMode) this.installerTerminal.addLine("- Downloading " + name);
         new Thread(() -> {
             File moduleCache = this.toDelete = urlMode ?
-                    new File(this.moduleCache, "module.zip") : moduleFile;
-            if (moduleCache.exists() && !moduleCache.delete() &&
+                    new File(this.moduleCache, "module.zip") : new File(target);
+            if (urlMode && moduleCache.exists() && !moduleCache.delete() &&
                     !new SuFile(moduleCache.getAbsolutePath()).delete())
                 Log.e(TAG, "Failed to delete module cache");
             String errMessage = "Failed to download module zip";
             try {
-                Log.i(TAG, "Downloading: " + target);
+                Log.i(TAG, (urlMode ? "Downloading: " : "Loading: ") + target);
                 byte[] rawModule = urlMode ? Http.doHttpGet(target, (progress, max, done) -> {
                     if (max <= 0 && this.progressIndicator.isIndeterminate())
                         return;
@@ -142,7 +141,7 @@ public class InstallerActivity extends CompatActivity {
                         this.progressIndicator.setMax(max);
                         this.progressIndicator.setProgressCompat(progress, true);
                     });
-                }) : Files.readSU(moduleFile);
+                }) : Files.readSU(moduleCache);
                 this.runOnUiThread(() -> {
                     this.progressIndicator.setVisibility(View.GONE);
                     this.progressIndicator.setIndeterminate(true);

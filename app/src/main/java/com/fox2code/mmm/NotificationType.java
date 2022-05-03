@@ -83,14 +83,16 @@ public enum NotificationType implements NotificationTypeCst {
                 try {
                     boolean needPatch;
                     try (ZipFile zipFile = new ZipFile(d)) {
-                        needPatch = zipFile.getEntry("module.prop") == null;
+                        needPatch = zipFile.getEntry("module.prop") == null &&
+                                zipFile.getEntry("anykernel.sh") == null;
                     }
                     if (needPatch) {
                         Files.patchModuleSimple(Files.read(d),
                                 new FileOutputStream(d));
                     }
                     try (ZipFile zipFile = new ZipFile(d)) {
-                        needPatch = zipFile.getEntry("module.prop") == null;
+                        needPatch = zipFile.getEntry("module.prop") == null &&
+                                zipFile.getEntry("anykernel.sh") == null;
                     }
                     if (needPatch) {
                         if (d.exists() && !d.delete())
