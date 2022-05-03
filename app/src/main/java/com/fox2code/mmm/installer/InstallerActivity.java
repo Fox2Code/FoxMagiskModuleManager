@@ -317,8 +317,6 @@ public class InstallerActivity extends CompatActivity {
                         .getInputStream(zipFile.getEntry("module.prop")));
             } catch (IOException ignored) {
             }
-                        .getInputStream(moduleProp));
-            } catch (IOException ignored) {}
             int compatFlags = AppUpdateManager.getFlagsForModule(moduleId);
             if ((compatFlags & AppUpdateManager.FLAG_COMPAT_NEED_32BIT) != 0)
                 needs32bit = true;
@@ -639,7 +637,6 @@ public class InstallerActivity extends CompatActivity {
                     Shell.cmd(reboot_cmd).submit();
                 }
             });
-            this.rebootFloatingButton.setVisibility(View.VISIBLE);
 
             if (message != null && !message.isEmpty())
                 this.installerTerminal.addLine(message);
@@ -661,6 +658,7 @@ public class InstallerActivity extends CompatActivity {
                             IntentHelper.openConfig(this, config);
                             return true;
                         });
+                        this.rebootFloatingButton.setVisibility(View.VISIBLE);
                     } catch (PackageManager.NameNotFoundException e) {
                         Log.w(TAG, "Config package \"" +
                                 configPkg + "\" missing for installer view");

@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.compat.CompatDisplay;
@@ -32,7 +33,9 @@ import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.settings.SettingsActivity;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.topjohnwu.superuser.Shell;
 
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
@@ -135,6 +138,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         this.searchView.setEnabled(false); // Enabled later
         this.cardIconifyUpdate();
         this.updateScreenInsets(this.getResources().getConfiguration());
+
         InstallerInitializer.tryGetMagiskPathAsync(new InstallerInitializer.Callback() {
             @Override
             public void onPathReceived(String path) {
