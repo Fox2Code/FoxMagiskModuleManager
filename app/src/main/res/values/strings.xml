@@ -1,32 +1,32 @@
 <resources>
     <string name="app_name">Fox\'s Magisk Module Manager</string>
     <string name="app_name_short">Fox\'s Mmm</string>
-    <string name="fail_root_magisk">Failed to get access to Root or Magisk</string>
+    <string name="fail_root_magisk">Could not access either Root or Magisk</string>
     <string name="loading">Loading…</string>
-    <string name="updatable">Updatable</string>
+    <string name="updatable">Upgradable</string>
     <string name="installed">Installed</string>
     <string name="online_repo">Online Repo</string>
-    <string name="showcase_mode">The application is in lockdown mode</string>
-    <string name="failed_download">Failed to download file.</string>
+    <string name="showcase_mode">The app is in lockdown mode</string>
+    <string name="failed_download">Could not download the file</string>
     <string name="slow_modules">Modules took too long to boot, consider disabling some modules</string>
-    <string name="fail_internet">Failed to connect to the internet</string>
-    <string name="no_web_view">Failed to get system WebView</string>
+    <string name="fail_internet">Could not connect to the Internet</string>
+    <string name="no_web_view">Could not open system WebView</string>
     <string name="title_activity_settings">SettingsActivity</string>
-    <string name="app_update_available">Application update available</string>
-    <string name="app_update">Update</string>
+    <string name="app_update_available">A new version of the app is available</string>
+    <string name="app_update">Upgrade</string>
     <string name="no_desc_found">No description found.</string>
     <string name="download_module">Download module</string>
     <string name="install_module">Install module</string>
-    <string name="update_module">Update module</string>
+    <string name="update_module">Upgrade module</string>
     <string name="changelog">Changelog</string>
     <string name="website">Website</string>
     <string name="support">Support</string>
     <string name="donate">Donate</string>
     <string name="submit_modules">Submit a module</string>
-    <string name="require_android_6">Require Android 6.0+</string>
+    <string name="require_android_6">Requires Android 6.0+</string>
 
     <!-- Module section translation -->
-    <string name="module_last_update">Last update:</string>
+    <string name="module_last_update">Last version:</string>
     <string name="module_repo">Repo:</string>
     <string name="module_by">by</string>
     <string name="module_downloads">Downloads:</string>
@@ -36,63 +36,63 @@
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">Manage repos</string>
     <string name="showcase_mode_pref">Lockdown mode</string>
-    <string name="showcase_mode_desc">Lockdown mode prevent manager to do action on modules</string>
+    <string name="showcase_mode_desc">Lockdown mode prevents the manager from carrying out actions on modules</string>
     <string name="pref_category_settings">Settings</string>
     <string name="pref_category_info">Info</string>
     <string name="show_licenses">Show licenses</string>
     <string name="licenses">Licences</string>
     <string name="show_incompatible_pref">Show incompatible modules</string>
-    <string name="show_incompatible_desc">Show modules that are incompatible with your device based on their metadata</string>
-    <string name="magisk_outdated">Magisk is outdated!</string>
+    <string name="show_incompatible_desc">Show modules unlikely to work on your device based on their metadata</string>
+    <string name="magisk_outdated">There is a new version of Magisk to install!</string>
     <string name="pref_category_repos">Repos</string>
-    <string name="repo_main_desc">The repository hosting Magisk Modules</string>
-    <string name="repo_main_alt">An alternative to Magisk-Modules-Repo with fewer restrictions.</string>
+    <string name="repo_main_desc">The repository hosting Magisk modules</string>
+    <string name="repo_main_alt">An alternative to the Magisk-Modules-Repo with fewer restrictions.</string>
     <string name="master_delete">Delete the module files?</string>
-    <string name="master_delete_no">Keep files</string>
-    <string name="master_delete_yes">Delete files</string>
-    <string name="master_delete_fail">Failed to delete the module files</string>
+    <string name="master_delete_no">Keep</string>
+    <string name="master_delete_yes">Delete</string>
+    <string name="master_delete_fail">Could not delete the module files</string>
     <string name="theme_pref">Theme</string>
     <string name="theme_mode_pref">Theme mode</string>
-    <string name="module_id_prefix">Module id: </string>
+    <string name="module_id_prefix">Module ID: </string>
     <string name="install_from_storage">Install module from storage</string>
-    <string name="invalid_format">The selected module is in an invalid format</string>
+    <string name="invalid_format">The selected module has an invalid format</string>
     <string name="local_install_title">Local install</string>
     <string name="source_code">Source code</string>
-    <string name="magisk_builtin_module">Magisk builtin module</string>
-    <string name="substratum_builtin_module">Substratum builtin module</string>
-    <string name="force_dark_terminal_title">Force dark mode terminal</string>
-    <string name="file_picker_failure">Your current file picker failed to give access to the file.</string>
+    <string name="magisk_builtin_module">Magisk built-in module</string>
+    <string name="substratum_builtin_module">Substratum built-in module</string>
+    <string name="force_dark_terminal_title">Dark terminal</string>
+    <string name="file_picker_failure">Your current file picker could not access the file.</string>
     <string name="remote_install_title">Remote install</string>
-    <string name="file_picker_wierd">Your file picker returned a non standard response.</string>
-    <string name="use_magisk_install_command_pref">Use magisk module install command</string>
+    <string name="file_picker_wierd">Your file picker returned a non-standard response.</string>
+    <string name="use_magisk_install_command_pref">Use the \"magisk --install-module\" command</string>
     <string name="use_magisk_install_command_desc">
-        During test it caused problems to the module install error diagnosis tool,
-        so I hid this option behind developer mode, enable this at your own risk!
+        During testing it caused problems to the module install error diagnosis tool,
+        so this option behind is hidden behind developer mode.\nTurn this on at your own risk!
     </string>
-    <string name="dev_mode_enabled">Developer mode enabled</string>
-    <string name="force_english_pref">Force English language</string>
-    <string name="disable_low_quality_module_filter_pref">Disable low quality module filter</string>
+    <string name="dev_mode_enabled">Developer mode on</string>
+    <string name="force_english_pref">English app language</string>
+    <string name="disable_low_quality_module_filter_pref">Show low-quality modules</string>
     <string name="disable_low_quality_module_filter_desc">
-        Some modules do not declare their metadata properly,causing visual glitches,
-        and/or indicating poor module quality, disable at your own risk!
+        Some modules do not declare their metadata properly, causing visual glitches,
+        and/or indicating poor module quality.\nTurn this off at your own risk!
     </string>
-    <string name="dns_over_https_pref">Dns over https</string>
+    <string name="dns_over_https_pref">DNS over HTTPS</string>
     <string name="dns_over_https_desc">
         May fix connections issues in some cases.
-        (Does not apply to WebView)
+        (Does not apply to WebView.)
     </string>
-    <string name="disable_extensions_pref">Disable extensions</string>
+    <string name="disable_extensions_pref">No Mmm</string>
     <string name="disable_extensions_desc">
-        Disable Fox\'s Mmm extensions, this prevent modules from using
-        terminal extensions, useful if a module misuse Fox\'s Mmm extensions.
+        Turn off Fox\'s Mmm extensions, preventing modules from using
+        terminal extensions.\nUseful if a module misuses Fox\'s Mmm extensions.
     </string>
-    <string name="wrap_text_pref">Wrap text</string>
+    <string name="wrap_text_pref">Text wrapping</string>
     <string name="wrap_text_desc">
-        Wrap text to a new line instead of putting
-        all text on the same line when installing a module
+        Show text on multiple lines instead of putting
+        all text on the same line when installing a module.
     </string>
-    <string name="enable_blur_pref">Enable blur</string>
-    <string name="repo_enabled">Repo enabled</string>
-    <string name="repo_disabled">Repo disabled</string>
-    <string name="androidacy_repo_info">Androidacy repo uses ads and trackers.</string>
+    <string name="enable_blur_pref">Blur</string>
+    <string name="repo_enabled">Repo on</string>
+    <string name="repo_disabled">Repo off</string>
+    <string name="androidacy_repo_info">The Androidacy repo has ads and trackers.</string>
 </resources>
