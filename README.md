@@ -120,7 +120,7 @@ In addition of these initial condition the repo must follow these rules:
   (Anonymous means no personal data, usernames, email, or IP addresses)
   (Mixed means users data must be split and not that separate data is not linkable together)
 - Temporary storage of IPs address without user consent is allowed for rate limiting, GeoIP,
-  security reason, and must not be used for any other purpose without user consent.
+  security reason, and must not be used for any other purpose without user explicit consent.
   (GeoIP is the process of getting the country of an IP address)
 - Repos may not collect and/or distribute any personal data without informing users that they do so and offering a way to opt out
 - Modules owners must be aware that their modules are being hosted on the repository  
@@ -137,6 +137,6 @@ Last update of theses rules are: 4 May 2022
 Please note that these rules does not apply retroactively.
 If your post an issue about rules violation they must violate both the version of
 the rules at the moment of the incident and the latest version of the rules.  
-(This paragraph doesn't apply for legal requests or illegal behaviour.)
+(This paragraph doesn't apply for license violation, legal requests, or illegal behaviour.)
 
 In addition, we advise you to contact the repo host beforehand to attempt to resolve any issues. This helps avoid unnecessary conflict, and most of the time will get your issue solved quickly! 

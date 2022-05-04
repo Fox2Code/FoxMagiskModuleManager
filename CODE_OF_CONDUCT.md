@@ -4,6 +4,9 @@ Note: The code of conduct are the rules that applies to everyone interacting
 with the repo, regardless of acceptance, moderators of the repo are not forced 
 to apply it strictly, so be nice!
 
+Note²: While this code of conduct only applies on this repositories, harassing
+moderators of this repo elsewhere can still result in a punishment in this repo.
+
 ## Our Pledge
 
 We as members, contributors, and leaders pledge to make participation in our
@@ -66,15 +69,13 @@ representative at an online or offline event.
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported to the community leaders responsible for enforcement in [the telegram group](https://t.me/Fox2Code_Chat).
-All complaints will be reviewed and investigated promptly and fairly.
-
-All community leaders are obligated to respect the privacy and security of the
-reporter of any incident.
+All complaints will be reviewed and investigated promptly and as fairly as possible.
 
 ## Enforcement Guidelines
 
-Community leaders will follow these Community Impact Guidelines in determining
-the consequences for any action they deem in violation of this Code of Conduct:
+Community leaders may follow these Community Impact Guidelines in determining
+the consequences for any action they deem in violation of this Code of Conduct,
+and may choose to give a lesser impact consequences at their own discretion:
 
 ### 1. Correction
 
@@ -131,3 +132,9 @@ enforcement ladder](https://github.com/mozilla/diversity).
 For answers to common questions about this code of conduct, see the FAQ at
 https://www.contributor-covenant.org/faq. Translations are available at
 https://www.contributor-covenant.org/translations.
+
+## Ban appeals
+
+If you got banned from this repo, you can always appeal on Telegram!
+
+[![Telegram Group](https://img.shields.io/endpoint?color=neon&style=flat&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2FFox2Code_Chat)](https://telegram.dog/Fox2Code_Chat)
