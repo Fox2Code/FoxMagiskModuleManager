@@ -1,5 +1,11 @@
 # Fox's Magisk Module Manager
 
+## Join us on Telegram! 
+
+[![Telegram Group](https://img.shields.io/endpoint?color=neon&style=flat&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2FFox2Code_Chat)](https://telegram.dog/Fox2Code_Chat)
+
+## What is this? 
+
 The official Magisk is dropping support to download online modules...  
 So I made my own app to do that! :3
 
@@ -27,22 +33,33 @@ Note: This app may require the use of a VPN in countries with a state wide firew
 To install the app go to [releases](https://github.com/Fox2Code/FoxMagiskModuleManager/releases), 
 and download and install the latest `.apk` on your device.
 
+## Repositories Available
+
+
 The app currently use these three repo as it's module sources, with it's benefits and drawback:  
 (Note: Each module repo can be disabled in the settings of the app)  
 (Note²: I do not own or monitor any of the repo, **download at your own risk**)
 
-[https://github.com/Magisk-Modules-Alt-Repo](https://github.com/Magisk-Modules-Alt-Repo)  
+#### [https://github.com/Magisk-Modules-Alt-Repo](https://github.com/Magisk-Modules-Alt-Repo)  
 - Accepting new modules [here](https://github.com/Magisk-Modules-Alt-Repo/submission)
 - Less restrictive than the original repo
 - Officially supported by Fox's mmm
 
-[https://www.androidacy.com/modules-repo/](https://www.androidacy.com/modules-repo/)
+Support:
+
+[![GitHub issues](https://img.shields.io/github/issues/Magisk-Modules-Alt-Repo/submission)](https://github.com/Magisk-Modules-Alt-Repo/submission/issues)
+
+#### [https://www.androidacy.com/modules-repo/](https://www.androidacy.com/modules-repo/)
 - Accepting new modules [here](https://www.androidacy.com/module-repository-applications/)
 - Modules downloadable easily outside the app
 - Officially supported by Fox's mmm
-- Contains ads
+- Contains ads to help cover server costs
 
-[https://github.com/Magisk-Modules-Repo](https://github.com/Magisk-Modules-Repo)  
+Support:
+
+[![Telegram Group](https://img.shields.io/endpoint?color=neon&style=flat&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fandroidacy_discussions)](https://telegram.dog/androidacy_discussions)
+
+#### [https://github.com/Magisk-Modules-Repo](https://github.com/Magisk-Modules-Repo)  
 - No longer accept new modules or receive update to existing modules
 - May be shut down at any moment
 - Official app dropped support for it
@@ -105,7 +122,7 @@ In addition of these initial condition the repo must follow these rules:
 - Temporary storage of IPs address without user consent is allowed for rate limiting, GeoIP,
   security reason, and must not be used for any other purpose without user consent.
   (GeoIP is the process of getting the country of an IP address)
-- Repos may not collect and/or distribute any personal data without user explicit consent
+- Repos may not collect and/or distribute any personal data without informing users that they do so and offering a way to opt out
 - Modules owners must be aware that their modules are being hosted on the repository  
   (This rule doesn't apply for modules from `Magisk-Modules-Repo` last updated before 2022)
 - Modules owners must be aware of any change made of the distributed version of their modules.
@@ -115,9 +132,11 @@ If all of these conditions are met you can open an issue for review.
 
 If an existing repo is not respecting theses rules please open an issue.  
 If a repo is repeatedly violating these rule will be removed from the app.  
-Last update of theses rules are: 6 February 2022
+Last update of theses rules are: 4 May 2022
 
 Please note that these rules does not apply retroactively.
 If your post an issue about rules violation they must violate both the version of
 the rules at the moment of the incident and the latest version of the rules.  
-(This paragraph doesn't apply for legal requests or illegal behaviour)
+(This paragraph doesn't apply for legal requests or illegal behaviour.)
+
+In addition, we advise you to contact the repo host beforehand to attempt to resolve any issues. This helps avoid unnecessary conflict, and most of the time will get your issue solved quickly! 
