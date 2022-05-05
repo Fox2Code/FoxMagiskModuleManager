@@ -190,12 +190,6 @@ public class SettingsActivity extends CompatActivity {
                     "https://t.me/androidacy_discussions",
                     "https://patreon.com/androidacy",
                     "https://www.androidacy.com/module-repository-applications/");
-            setRepoData(RepoManager.DG_MAGISK_REPO,
-                    "Googlers Magisk Repo",
-                    RepoManager.DG_MAGISK_REPO_HOMEPAGE,
-                    null,
-                    null,
-                    null);
         }
 
         private void setRepoData(String url,
