@@ -72,7 +72,7 @@
     <string name="file_picker_failure">Şimdiki dosya seçicisi dosyaya erişemedi.</string>
     <string name="remote_install_title">Uzaktan yükleme</string>
     <string name="file_picker_wierd">Dosya seçicisi standart olmayan bir yanıtı geri getirdi</string>
-    <string name="use_magisk_install_command_pref" tools:ignore="TypographyDashes">\"magisk --install-module\" komutunu kullan</string>
+    <string name="use_magisk_install_command_pref">\"magisk --install-module\" komutunu kullan</string>
     <string name="use_magisk_install_command_desc">
         Test sırasında modül yükleme hata teşhis aracında sorunlar meydana geldi,
         bu yüzden o seçeneği geliştirici modunun arkasına gizledim, bunu etkinleştirmenizde sorumluluk size aittir!
