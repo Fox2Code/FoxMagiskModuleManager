@@ -18,6 +18,7 @@ import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
+import com.fox2code.mmm.module.ModuleHolder;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 

@@ -91,6 +91,10 @@ public class MainApplication extends CompatApplication {
         return getSharedPreferences().getBoolean("pref_showcase_mode", false);
     }
 
+    public static boolean shouldPreventReboot() {
+        return getSharedPreferences().getBoolean("pref_prevent_reboot", false);
+    }
+
     public static boolean isShowIncompatibleModules() {
         return getSharedPreferences().getBoolean("pref_show_incompatible", false);
     }

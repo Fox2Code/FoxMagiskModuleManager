@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Fox\'s Magisk Module Manager</string>
     <string name="app_name_short">Fox\'s Mmm</string>
     <string name="fail_root_magisk">Could not access either Root or Magisk</string>
@@ -24,6 +24,9 @@
     <string name="donate">Donate</string>
     <string name="submit_modules">Submit a module</string>
     <string name="require_android_6">Requires Android 6.0+</string>
+    <string name="install_terminal_reboot_now">Reboot</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <!-- Module section translation -->
     <string name="module_last_update">Last version:</string>
@@ -37,6 +40,8 @@
     <string name="manage_repos_pref">Manage repos</string>
     <string name="showcase_mode_pref">Lockdown mode</string>
     <string name="showcase_mode_desc">Lockdown mode prevents the manager from carrying out actions on modules</string>
+    <string name="prevent_reboot_pref">Prevent reboot</string>
+    <string name="prevent_reboot_desc">Prevents unexpected reboots</string>
     <string name="pref_category_settings">Settings</string>
     <string name="pref_category_info">Info</string>
     <string name="show_licenses">Show licenses</string>
@@ -45,6 +50,9 @@
     <string name="show_incompatible_desc">Show modules unlikely to work on your device based on their metadata</string>
     <string name="magisk_outdated">There is a new version of Magisk to install!</string>
     <string name="pref_category_repos">Repos</string>
+    <string name="pref_category_security">Security</string>
+    <string name="pref_category_appearance">Appearance</string>
+    <string name="pref_category_general">General</string>
     <string name="repo_main_desc">The repository hosting Magisk modules</string>
     <string name="repo_main_alt">An alternative to the Magisk-Modules-Repo with fewer restrictions.</string>
     <string name="master_delete">Delete the module files?</string>
@@ -64,7 +72,7 @@
     <string name="file_picker_failure">Your current file picker could not access the file.</string>
     <string name="remote_install_title">Remote install</string>
     <string name="file_picker_wierd">Your file picker returned a non-standard response.</string>
-    <string name="use_magisk_install_command_pref">Use the \"magisk --install-module\" command</string>
+    <string name="use_magisk_install_command_pref" tools:ignore="TypographyDashes">Use the \"magisk --install-module\" command</string>
     <string name="use_magisk_install_command_desc">
         During testing it caused problems to the module install error diagnosis tool,
         so this option behind is hidden behind developer mode.\nTurn this on at your own risk!

@@ -1,4 +1,4 @@
-package com.fox2code.mmm;
+package com.fox2code.mmm.module;
 
 import android.annotation.SuppressLint;
 import android.content.res.Resources;
@@ -18,6 +18,10 @@ import androidx.annotation.StringRes;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.fox2code.mmm.ActionButtonType;
+import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.NotificationType;
+import com.fox2code.mmm.R;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
@@ -269,7 +273,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 this.descriptionText.setText(" ");
                 this.switchMaterial.setEnabled(false);
                 this.actionButtonsTypes.clear();
-                for (ImageButton button:this.actionsButtons) {
+                for (ImageButton button : this.actionsButtons) {
                     button.setVisibility(View.GONE);
                     button.setImportantForAccessibility(
                             View.IMPORTANT_FOR_ACCESSIBILITY_NO);
@@ -320,7 +324,11 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 theme.resolveAttribute(foregroundAttr, value, true);
                 @ColorInt int fgColor = value.data;
                 // Fix card background being invisible on light theme
-                if (bgColor == Color.WHITE) bgColor = 0xFFF8F8F8;
+                if (bgColor == Color.WHITE) {
+                    bgColor = 0xFFF8F8F8;
+                } else {
+                    bgColor = 0xFF1E1E1E;
+                }
                 this.titleText.setTextColor(fgColor);
                 this.buttonAction.setColorFilter(fgColor);
                 this.cardView.setCardBackgroundColor(bgColor);

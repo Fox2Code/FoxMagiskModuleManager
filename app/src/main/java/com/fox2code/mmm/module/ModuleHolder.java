@@ -1,4 +1,4 @@
-package com.fox2code.mmm;
+package com.fox2code.mmm.module;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -8,6 +8,11 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 
+import com.fox2code.mmm.ActionButtonType;
+import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.NotificationType;
+import com.fox2code.mmm.R;
+import com.fox2code.mmm.XHooks;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.repo.RepoModule;

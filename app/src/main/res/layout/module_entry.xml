@@ -8,8 +8,7 @@
     android:layout_marginRight="8dp"
     android:layout_marginTop="2dp"
     android:layout_marginBottom="2dp"
-    android:gravity="center_vertical"
-    android:background="@null">
+    android:gravity="center_vertical">
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_view"
         android:layout_gravity="center"
@@ -23,8 +22,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:background="@null">
+            android:layout_margin="8dp">
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/button_action"

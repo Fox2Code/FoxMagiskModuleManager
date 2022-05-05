@@ -1,4 +1,4 @@
-package com.fox2code.mmm;
+package com.fox2code.mmm.module;
 
 import android.app.Activity;
 import android.os.Build;
@@ -7,10 +7,16 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.fox2code.mmm.AppUpdateManager;
+import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.NotificationType;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
+import com.fox2code.mmm.module.ModuleHolder;
+import com.fox2code.mmm.module.ModuleSorter;
+import com.fox2code.mmm.module.ModuleViewAdapter;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.repo.RepoModule;
 

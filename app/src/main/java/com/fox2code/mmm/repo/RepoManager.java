@@ -22,15 +22,16 @@ public final class RepoManager {
     private static final String TAG = "RepoManager";
     public static final String MAGISK_ALT_REPO =
             "https://raw.githubusercontent.com/Magisk-Modules-Alt-Repo/json/main/modules.json";
-    public static final String MAGISK_ALT_REPO_JSDELIVR =
-            "https://cdn.jsdelivr.net/gh/Magisk-Modules-Alt-Repo/json@main/modules.json";
-    public static final String ANDROIDACY_MAGISK_REPO_ENDPOINT =
-            "https://api.androidacy.com/magisk/repo";
-
     public static final String MAGISK_ALT_REPO_HOMEPAGE =
             "https://github.com/Magisk-Modules-Alt-Repo";
+    public static final String MAGISK_ALT_REPO_JSDELIVR =
+            "https://cdn.jsdelivr.net/gh/Magisk-Modules-Alt-Repo/json@main/modules.json";
+
+    public static final String ANDROIDACY_MAGISK_REPO_ENDPOINT =
+            "https://api.androidacy.com/magisk/repo";
     public static final String ANDROIDACY_MAGISK_REPO_HOMEPAGE =
             "https://www.androidacy.com/modules-repo";
+
 
     private static final Object lock = new Object();
     private static volatile RepoManager INSTANCE;

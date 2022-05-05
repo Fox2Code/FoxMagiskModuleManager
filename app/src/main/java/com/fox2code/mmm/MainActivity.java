@@ -20,17 +20,22 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.compat.CompatDisplay;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
+import com.fox2code.mmm.module.ModuleViewAdapter;
+import com.fox2code.mmm.module.ModuleViewListBuilder;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.settings.SettingsActivity;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.topjohnwu.superuser.Shell;
 
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
@@ -133,6 +138,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         this.searchView.setEnabled(false); // Enabled later
         this.cardIconifyUpdate();
         this.updateScreenInsets(this.getResources().getConfiguration());
+
         InstallerInitializer.tryGetMagiskPathAsync(new InstallerInitializer.Callback() {
             @Override
             public void onPathReceived(String path) {
@@ -378,9 +384,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         this.searchView.clearFocus();
         if (this.initMode) return false;
         if (this.moduleViewListBuilder.setQueryChange(query)) {
-            new Thread(() -> {
-                this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
-            }, "Query update thread").start();
+            new Thread(() -> this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter), "Query update thread").start();
         }
         return true;
     }
@@ -389,9 +393,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
     public boolean onQueryTextChange(String query) {
         if (this.initMode) return false;
         if (this.moduleViewListBuilder.setQueryChange(query)) {
-            new Thread(() -> {
-                this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
-            }, "Query update thread").start();
+            new Thread(() -> this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter), "Query update thread").start();
         }
         return false;
     }
@@ -400,9 +402,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
     public boolean onClose() {
         if (this.initMode) return false;
         if (this.moduleViewListBuilder.setQueryChange(null)) {
-            new Thread(() -> {
-                this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
-            }, "Query update thread").start();
+            new Thread(() -> this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter), "Query update thread").start();
         }
         return false;
     }
