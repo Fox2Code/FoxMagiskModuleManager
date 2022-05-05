@@ -1,12 +1,6 @@
 # Contributor Covenant Code of Conduct
 
-Note: The code of conduct are the rules that applies to everyone interacting 
-with the repo, regardless of acceptance, moderators of the repo are not forced 
-to apply it strictly, so be nice!
-
-Note²: While this code of conduct only applies on this repositories, harassing
-moderators of this repo elsewhere can still result in a punishment in this repo.
-
+**By interacting with, participating in, or otherwise using our communities or repositories, you are hereby agreeing to be bound by the terms set forth in this Code of Conduct. If you disagree with this Code, you must immediately stop interacting with this Repository and/or Community.**
 ## Our Pledge
 
 We as members, contributors, and leaders pledge to make participation in our
