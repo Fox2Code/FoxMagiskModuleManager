@@ -1,4 +1,4 @@
-package com.fox2code.mmm;
+package com.fox2code.mmm.module;
 
 import android.content.Context;
 import android.text.Spanned;
@@ -11,6 +11,8 @@ import android.widget.Toast;
 import androidx.annotation.DrawableRes;
 import androidx.appcompat.app.AlertDialog;
 
+import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.R;
 import com.fox2code.mmm.androidacy.AndroidacyUtil;
 import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.compat.CompatDisplay;

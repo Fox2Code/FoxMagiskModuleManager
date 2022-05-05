@@ -8,7 +8,6 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 
-import com.fox2code.mmm.ActionButtonType;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.NotificationType;
 import com.fox2code.mmm.R;

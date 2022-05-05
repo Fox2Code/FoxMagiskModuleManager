@@ -1,7 +1,6 @@
 package com.fox2code.mmm.utils;
 
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 

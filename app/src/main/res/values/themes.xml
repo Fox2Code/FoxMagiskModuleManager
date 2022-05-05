@@ -1,8 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Theme.MagiskModuleManager.Light" parent="Theme.MaterialComponents.Light">
         <item name="android:isLightTheme"
-            tools:targetApi="q">false</item>
-        <item name="isLightTheme">false</item>
+            tools:targetApi="q">true</item>
+        <item name="isLightTheme">true</item>
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/orange_200</item>
         <item name="colorPrimaryVariant">@color/white</item>
@@ -26,6 +26,8 @@
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
         <item name="android:dialogCornerRadius" tools:targetApi="p">@dimen/card_corner_radius</item>
         <item name="dialogCornerRadius">@dimen/card_corner_radius</item>
+        <item name="colorBackgroundFloating">#FFFFFFFF</item>
+        <item name="backgroundColor">#FFFFFFFF</item>
     </style>
 
     <style name="Theme.MagiskModuleManager.Transparent.Light" parent="Theme.MagiskModuleManager.Light">
@@ -69,6 +71,8 @@
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
         <item name="android:dialogCornerRadius" tools:targetApi="p">@dimen/card_corner_radius</item>
         <item name="dialogCornerRadius">@dimen/card_corner_radius</item>
+        <item name="colorBackgroundFloating">#FF1E1E1E</item>
+        <item name="backgroundColor">#FF111111</item>
     </style>
 
     <!-- Base application theme. -->

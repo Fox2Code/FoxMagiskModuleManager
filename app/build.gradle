@@ -97,7 +97,7 @@ dependencies {
     // Utils
     implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.9.3'
     implementation 'com.squareup.okhttp3:okhttp-brotli:4.9.3'
-    implementation 'com.github.topjohnwu.libsu:io:5.0.0'
+    implementation 'com.github.topjohnwu.libsu:io:5.0.1'
 
     // Markdown
     implementation "io.noties.markwon:core:4.6.2"

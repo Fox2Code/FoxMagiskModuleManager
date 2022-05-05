@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.fox2code.mmm.ActionButtonType;
+import com.fox2code.mmm.module.ActionButtonType;
 import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
@@ -647,6 +647,7 @@ public class InstallerActivity extends CompatActivity {
                             return true;
                         });
             } else if (success) {
+                this.rebootFloatingButton.setVisibility(View.VISIBLE);
                 final Intent intent = this.getIntent();
                 final String config = MainApplication.checkSecret(intent) ?
                         intent.getStringExtra(Constants.EXTRA_INSTALL_CONFIG) : null;
@@ -658,7 +659,6 @@ public class InstallerActivity extends CompatActivity {
                             IntentHelper.openConfig(this, config);
                             return true;
                         });
-                        this.rebootFloatingButton.setVisibility(View.VISIBLE);
                     } catch (PackageManager.NameNotFoundException e) {
                         Log.w(TAG, "Config package \"" +
                                 configPkg + "\" missing for installer view");
