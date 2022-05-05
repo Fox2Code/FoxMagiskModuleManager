@@ -102,5 +102,11 @@
     <string name="enable_blur_pref">Blur</string>
     <string name="repo_enabled">Repo on</string>
     <string name="repo_disabled">Repo off</string>
+    <string name="add_repo">Add Repo</string>
+    <string name="remove_repo">Remove Repo</string>
+    <string name="custom_url">Custom url</string>
     <string name="androidacy_repo_info">The Androidacy repo has ads and trackers.</string>
+    <string name="backup_module_list">Backup modules</string>
+    <string name="restore_module_list">Restore modules</string>
+    <string name="require_internet">This operation require an internet connection</string>
 </resources>

@@ -7,16 +7,13 @@
             app:icon="@drawable/ic_baseline_extension_24"
             app:title="@string/manage_repos_pref"
             app:singleLineTitle="false"	/>
-    </PreferenceCategory>
 
-    <PreferenceCategory
-        app:title="@string/pref_category_general">
         <SwitchPreferenceCompat
             app:defaultValue="false"
-            app:key="pref_use_magisk_install_command"
-            app:icon="@drawable/ic_baseline_numbers_24"
-            app:title="@string/use_magisk_install_command_pref"
-            app:summary="@string/use_magisk_install_command_desc"
+            app:key="pref_show_incompatible"
+            app:icon="@drawable/ic_baseline_hide_source_24"
+            app:title="@string/show_incompatible_pref"
+            app:summary="@string/show_incompatible_desc"
             app:singleLineTitle="false"	/>
 
         <SwitchPreferenceCompat
@@ -28,11 +25,11 @@
             app:singleLineTitle="false"	/>
 
         <SwitchPreferenceCompat
-            app:defaultValue="true"
-            app:key="pref_dns_over_https"
-            app:icon="@drawable/ic_baseline_security_24"
-            app:title="@string/dns_over_https_pref"
-            app:summary="@string/dns_over_https_desc"
+            app:defaultValue="false"
+            app:key="pref_use_magisk_install_command"
+            app:icon="@drawable/ic_baseline_numbers_24"
+            app:title="@string/use_magisk_install_command_pref"
+            app:summary="@string/use_magisk_install_command_desc"
             app:singleLineTitle="false"	/>
     </PreferenceCategory>
 
@@ -78,11 +75,11 @@
 
     <PreferenceCategory app:title="@string/pref_category_security">
         <SwitchPreferenceCompat
-            app:defaultValue="false"
-            app:key="pref_show_incompatible"
-            app:icon="@drawable/ic_baseline_hide_source_24"
-            app:title="@string/show_incompatible_pref"
-            app:summary="@string/show_incompatible_desc"
+            app:defaultValue="true"
+            app:key="pref_dns_over_https"
+            app:icon="@drawable/ic_baseline_security_24"
+            app:title="@string/dns_over_https_pref"
+            app:summary="@string/dns_over_https_desc"
             app:singleLineTitle="false"	/>
         <!-- Note: Lockdown mode used to be called showcase mode -->
         <SwitchPreferenceCompat
