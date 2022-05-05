@@ -10,12 +10,13 @@
     <string name="failed_download">Dosya indirilemedi.</string>
     <string name="slow_modules">Modüllerin açılışı çok uzun sürdü, bazı modülleri devre dışı bırakmayı düşünün</string>
     <string name="fail_internet">İnternete bağlanılamadı</string>
+    <string name="no_web_view">Sistem WebView açılamadı</string>
     <string name="title_activity_settings">AyarlarEtkinliği</string>
     <string name="app_update_available">Uygulama güncellemesi mevcut</string>
     <string name="app_update">Güncelle</string>
     <string name="no_desc_found">Açıklama bulunamadı.</string>
-    <string name="download_module">Modül indir</string>
-    <string name="install_module">Modül yükle</string>
+    <string name="download_module">Modülü indir</string>
+    <string name="install_module">Modülü yükle</string>
     <string name="update_module">Modülü güncelle</string>
     <string name="changelog">Değişiklik günlüğü</string>
     <string name="website">Web sitesi</string>
@@ -88,8 +89,14 @@
     <string name="wrap_text_desc">
         Tüm metni aynı satıra koymak yerine metni yeni bir satıra kaydırır.
     </string>
-    <string name="enable_blur_pref">Bulanıklığı etkinleştir</string>
-    <string name="repo_enabled">Repo etkin</string>
-    <string name="repo_disabled">Repo devre dışı</string>
-    <string name="androidacy_repo_info">Androidacy repo, reklam ve takipçiler kullanır.</string>
+    <string name="enable_blur_pref">Bulanıklık</string>
+    <string name="repo_enabled">Repo açık</string>
+    <string name="repo_disabled">Repo kapalı</string>
+    <string name="add_repo">Repo ekle</string>
+    <string name="remove_repo">Repo\'yu kaldır</string>
+    <string name="custom_url">Özel url</string>
+    <string name="androidacy_repo_info">Androidacy repo\'da reklamlar ve takipçiler vardır.</string>
+    <string name="backup_module_list">Modülleri yedekle</string>
+    <string name="restore_module_list">Modülleri geri yükle</string>
+    <string name="require_internet">Bu işlem bir internet bağlantısı gerektirir</string>
 </resources>
