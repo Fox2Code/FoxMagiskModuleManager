@@ -35,6 +35,10 @@ public class InstallerInitializer extends Shell.Initializer {
     public static String peekMagiskPath() {
         return InstallerInitializer.MAGISK_PATH;
     }
+    public static String peekMirrorPath() {
+        return InstallerInitializer.MAGISK_PATH == null ? null :
+                InstallerInitializer.MAGISK_PATH + "/.magisk/mirror";
+    }
 
     public static int peekMagiskVersion() {
         return InstallerInitializer.MAGISK_VERSION_CODE;
@@ -128,8 +132,9 @@ public class InstallerInitializer extends Shell.Initializer {
                         MAGISK_PATH + "/.magisk/busybox");
             }
             newJob.add("export MAGISKTMP=\"" + MAGISK_PATH + "/.magisk\"");
+            newJob.add("export BOOTMODE=true");
             newJob.add("$(which busybox 2> /dev/null) sh");
         }
-        return true;
+        return newJob.exec().isSuccess();
     }
 }

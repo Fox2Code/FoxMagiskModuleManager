@@ -58,9 +58,11 @@ public class InstallerActivity extends CompatActivity {
     private File toDelete;
     private boolean textWrap;
     private boolean canceled;
+    private boolean warnReboot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        this.warnReboot = false;
         this.moduleCache = new File(this.getCacheDir(), "installer");
         if (!this.moduleCache.exists() && !this.moduleCache.mkdirs())
             Log.e(TAG, "Failed to mkdir module cache dir!");
@@ -260,48 +262,26 @@ public class InstallerActivity extends CompatActivity {
             String moduleId = null;
             boolean anyKernel = false;
             boolean magiskModule = false;
-            boolean anyKernelSystemLess = false;
             File anyKernelInstallScript = new File(this.moduleCache, "update-binary");
             try (ZipFile zipFile = new ZipFile(file)) {
-                ZipEntry anyKernelSh = zipFile.getEntry("anykernel.sh");
-                if (anyKernelSh != null) { // Check if module is AnyKernel module
-                    BufferedReader bufferedReader = new BufferedReader(
-                            new InputStreamReader(zipFile.getInputStream(anyKernelSh)));
-                    String line;
-                    // Check if AnyKernel module support system-less
-                    while ((line = bufferedReader.readLine()) != null) {
-                        String trimmedLine = line.trim();
-                        if (trimmedLine.equals("do.modules=1"))
-                            anyKernel = true;
-                        if (trimmedLine.equals("do.systemless=1"))
-                            anyKernelSystemLess = true;
-                    }
-                    bufferedReader.close();
-                    if (anyKernelSystemLess && anyKernel) {
-                        anyKernelSystemLess = false;
-                        ZipEntry updateBinary = zipFile.getEntry(
-                                "META-INF/com/google/android/update-binary");
-                        if (updateBinary != null) {
-                            bufferedReader = new BufferedReader(
-                                    new InputStreamReader(zipFile.getInputStream(updateBinary)));
-                            PrintStream printStream = new PrintStream(
-                                    new FileOutputStream(anyKernelInstallScript));
-                            while ((line = bufferedReader.readLine()) != null) {
-                                String trimmedLine = line.trim();
-                                if (trimmedLine.equals("mount_all;") ||
-                                        trimmedLine.equals("umount_all;"))
-                                    continue; // Do not mount anything
-                                line = line.replace("/sbin/sh", "/system/bin/sh");
-                                int prePatch = line.length();
-                                line = line.replace("/data/adb/modules/ak3-helper",
-                                        "/data/adb/modules-update/ak3-helper");
-                                if (prePatch != line.length()) anyKernelSystemLess = true;
-                                printStream.println(line);
-                            }
-                            printStream.close();
-                            bufferedReader.close();
-                            if (!anyKernelSystemLess) anyKernelInstallScript.delete();
+                // Check if module is AnyKernel module
+                if (zipFile.getEntry("anykernel.sh") != null) {
+                    ZipEntry updateBinary = zipFile.getEntry(
+                            "META-INF/com/google/android/update-binary");
+                    if (updateBinary != null) {
+                        BufferedReader bufferedReader = new BufferedReader(
+                                new InputStreamReader(zipFile.getInputStream(updateBinary)));
+                        PrintStream printStream = new PrintStream(
+                                new FileOutputStream(anyKernelInstallScript));
+                        String line;
+                        while ((line = bufferedReader.readLine()) != null) {
+                            line = line.replace("/sbin/sh", "/system/bin/sh");
+                            line = line.replace("/data/adb/modules/ak3-helper",
+                                    "/data/adb/modules-update/ak3-helper");
+                            printStream.println(line);
                         }
+                        printStream.close();
+                        bufferedReader.close();
                     }
                     anyKernel = true;
                 }
@@ -353,14 +333,12 @@ public class InstallerActivity extends CompatActivity {
             String installCommand;
             File installExecutable;
             if (anyKernel && moduleId == null) { // AnyKernel modules don't have a moduleId
-                if (!anyKernelSystemLess) {
-                    this.setInstallStateFinished(false,
-                            "! This AnyKernel module only support recovery install", null);
-                    return;
-                }
+                this.warnReboot = true; // We should probably re-flash magisk...
                 installExecutable = anyKernelInstallScript;
-                installCommand = "sh \"" + installExecutable.getAbsolutePath() + "\"" +
-                        " /dev/null 0 \"" + file.getAbsolutePath() + "\"";
+                // "unshare -m" is needed to force mount namespace isolation.
+                // This allow AnyKernel to mess-up with mounts point without crashing the system!
+                installCommand = "unshare -m sh \"" + installExecutable.getAbsolutePath() + "\"" +
+                        " /dev/null 1 \"" + file.getAbsolutePath() + "\"";
             } else if (InstallerInitializer.peekMagiskVersion() >=
                     Constants.MAGISK_VER_CODE_INSTALL_COMMAND &&
                     ((compatFlags & AppUpdateManager.FLAG_COMPAT_MAGISK_CMD) != 0 ||
@@ -376,7 +354,7 @@ public class InstallerActivity extends CompatActivity {
                     return;
                 }
                 installCommand = "sh \"" + installExecutable.getAbsolutePath() + "\"" +
-                        " /dev/null 0 \"" + file.getAbsolutePath() + "\"";
+                        " /dev/null 1 \"" + file.getAbsolutePath() + "\"";
             } else {
                 this.setInstallStateFinished(false,
                         "! Zip file is not a valid Magisk or a AnyKernel module!", null);
@@ -384,15 +362,23 @@ public class InstallerActivity extends CompatActivity {
             }
             installerMonitor = new InstallerMonitor(installExecutable);
             if (moduleId != null) installerMonitor.setForCleanUp(moduleId);
-            if (noExtensions) {
+            if (anyKernel) {
+                final String adbTmp = "data/adb/tmp";
+                final String anyKernelHome = // Mirror mounts do not contain nosuid
+                        InstallerInitializer.peekMirrorPath() +
+                                "/" + adbTmp + "/anykernel";
+                installJob = Shell.cmd(arch32, "export MMM_EXT_SUPPORT=1",
+                        "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
+                        "mkdir " + adbTmp, "export AKHOME=" + anyKernelHome,
+                        installCommand).to(installerController, installerMonitor);
+            } else if (noExtensions) {
                 installJob = Shell.cmd(arch32, // No Extensions
                         "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
                         installCommand).to(installerController, installerMonitor);
             } else {
                 installJob = Shell.cmd(arch32, "export MMM_EXT_SUPPORT=1",
-                        "export MMM_USER_LANGUAGE=" + (MainApplication.isForceEnglish() ?
-                                "en-US" : Resources.getSystem()
-                                .getConfiguration().locale.toLanguageTag()),
+                        "export MMM_USER_LANGUAGE=" + (MainApplication.isForceEnglish() ? "en-US" :
+                                Resources.getSystem().getConfiguration().locale.toLanguageTag()),
                         "export MMM_APP_VERSION=" + BuildConfig.VERSION_NAME,
                         "export MMM_TEXT_WRAP=" + (this.textWrap ? "1" : "0"),
                         "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
@@ -618,8 +604,8 @@ public class InstallerActivity extends CompatActivity {
 
             // This should be improved ?
             String reboot_cmd = "/system/bin/svc power reboot || /system/bin/reboot";
-            rebootFloatingButton.setOnClickListener(_view -> {
-                if (MainApplication.shouldPreventReboot()) {
+            this.rebootFloatingButton.setOnClickListener(_view -> {
+                if (this.warnReboot || MainApplication.shouldPreventReboot()) {
                     MaterialAlertDialogBuilder builder =
                             new MaterialAlertDialogBuilder(this);
 
@@ -637,6 +623,7 @@ public class InstallerActivity extends CompatActivity {
                     Shell.cmd(reboot_cmd).submit();
                 }
             });
+            this.rebootFloatingButton.setVisibility(View.VISIBLE);
 
             if (message != null && !message.isEmpty())
                 this.installerTerminal.addLine(message);
@@ -647,7 +634,6 @@ public class InstallerActivity extends CompatActivity {
                             return true;
                         });
             } else if (success) {
-                this.rebootFloatingButton.setVisibility(View.VISIBLE);
                 final Intent intent = this.getIntent();
                 final String config = MainApplication.checkSecret(intent) ?
                         intent.getStringExtra(Constants.EXTRA_INSTALL_CONFIG) : null;
