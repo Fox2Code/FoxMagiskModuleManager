@@ -192,6 +192,9 @@ public class PropUtils {
                         moduleInfo.updateJson = value;
                         readUpdateJson = true;
                         break;
+                    case "changeBoot":
+                        moduleInfo.changeBoot = Boolean.parseBoolean(value);
+                        break;
                     case "support":
                         // Do not accept invalid or too broad support links
                         if (isInvalidURL(value) ||
@@ -206,6 +209,9 @@ public class PropUtils {
                         break;
                     case "config":
                         moduleInfo.config = value;
+                        break;
+                    case "needRamdisk":
+                        moduleInfo.needRamdisk = Boolean.parseBoolean(value);
                         break;
                     case "minMagisk":
                         try {

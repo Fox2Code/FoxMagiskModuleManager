@@ -27,10 +27,12 @@ public class ModuleInfo {
     public String description;
     public String updateJson;
     // Community meta
+    public boolean changeBoot;
     public String support;
     public String donate;
     public String config;
     // Community restrictions
+    public boolean needRamdisk;
     public int minMagisk;
     public int minApi;
     public int maxApi;
@@ -50,9 +52,11 @@ public class ModuleInfo {
         this.author = moduleInfo.author;
         this.description = moduleInfo.description;
         this.updateJson = moduleInfo.updateJson;
+        this.changeBoot = moduleInfo.changeBoot;
         this.support = moduleInfo.support;
         this.donate = moduleInfo.donate;
         this.config = moduleInfo.config;
+        this.needRamdisk = moduleInfo.needRamdisk;
         this.minMagisk = moduleInfo.minMagisk;
         this.minApi = moduleInfo.minApi;
         this.maxApi = moduleInfo.maxApi;

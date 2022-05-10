@@ -46,9 +46,11 @@ This the manager support these new optional properties
 minApi=<int>
 maxApi=<int>
 minMagisk=<int>
+needRamdisk=<boolean>
 support=<url>
 donate=<url>
 config=<package>
+changeBoot=<boolean>
 ```
 Note: All urls must start with `https://`, or else will be ignored
 Note²: For `minMagisk`, `XX.Y` is parsed as `XXY00`, so you can just put the Magisk version name.
@@ -57,10 +59,12 @@ Note²: For `minMagisk`, `XX.Y` is parsed as `XXY00`, so you can just put the Ma
   (See: [Codenames, Tags, and Build Numbers](https://source.android.com/setup/start/build-numbers))
 - `minMagisk` tell the manager which is the minimum Magisk version required for the module
   (Often for magisk `xx.y` the version code is `xxyzz`, `zz` being non `00` on canary builds)
+- `needRamdisk` tell the manager the module need boot ramdisk to be installed
 - `support` support link to direct users when they need support for you modules
 - `donate` donate link to direct users to where they can financially support your project
 - `config` package name of the application that configure your module
   (Note: The icon won't appear in the module list if the module or target app is not installed)
+- `changeBoot` tell the manager the module may change the boot image
 
 Note: Fox's Mmm use fallback 
 [here](app/src/main/java/com/fox2code/mmm/utils/PropUtils.java#L36)

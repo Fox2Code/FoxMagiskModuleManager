@@ -94,7 +94,10 @@ public class ModuleViewListBuilder {
                                             InstallerInitializer.peekMagiskVersion())) ||
                             // If 64bit only system, skip 32bit only modules
                             (no32bitSupport && (AppUpdateManager.getFlagsForModule(repoModule.id)
-                                    & AppUpdateManager.FLAG_COMPAT_NEED_32BIT) != 0)
+                                    & AppUpdateManager.FLAG_COMPAT_NEED_32BIT) != 0) ||
+                            // If module need ramdisk but boot doesn't have one
+                            (repoModule.moduleInfo.needRamdisk &&
+                                    !InstallerInitializer.peekHasRamdisk())
                     ) continue; // Skip adding incompatible modules
                     ModuleHolder moduleHolder = this.mappedModuleHolders.get(repoModule.id);
                     if (moduleHolder == null) {

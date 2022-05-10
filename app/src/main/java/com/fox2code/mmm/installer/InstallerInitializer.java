@@ -20,6 +20,7 @@ public class InstallerInitializer extends Shell.Initializer {
             new File("/system/bin/magisk");
     private static String MAGISK_PATH;
     private static int MAGISK_VERSION_CODE;
+    private static boolean HAS_RAMDISK;
 
     public static final int ERROR_OK = 0;
     public static final int ERROR_NO_PATH = 1;
@@ -42,6 +43,10 @@ public class InstallerInitializer extends Shell.Initializer {
 
     public static int peekMagiskVersion() {
         return InstallerInitializer.MAGISK_VERSION_CODE;
+    }
+
+    public static boolean peekHasRamdisk() {
+        return InstallerInitializer.HAS_RAMDISK;
     }
 
     public static void tryGetMagiskPathAsync(Callback callback) {
@@ -90,14 +95,22 @@ public class InstallerInitializer extends Shell.Initializer {
     private static String tryGetMagiskPath(boolean forceCheck) {
         String MAGISK_PATH = InstallerInitializer.MAGISK_PATH;
         int MAGISK_VERSION_CODE;
+        boolean HAS_RAMDISK = InstallerInitializer.HAS_RAMDISK;
         if (MAGISK_PATH != null && !forceCheck) return MAGISK_PATH;
         ArrayList<String> output = new ArrayList<>();
-        if(!Shell.cmd("magisk -V", "magisk --path").to(output).exec().isSuccess()) {
+        if(!Shell.cmd("if grep ' / ' /proc/mounts | grep -q '/dev/root' &> /dev/null; " +
+                        "then echo true; else echo false; fi", "magisk -V", "magisk --path")
+                .to(output).exec().isSuccess()) {
+            if (output.size() != 0) {
+                HAS_RAMDISK = "false".equals(output.get(0)) ||
+                        "true".equalsIgnoreCase(System.getProperty("ro.build.ab_update"));
+            }
+            InstallerInitializer.HAS_RAMDISK = HAS_RAMDISK;
             return null;
         }
-        MAGISK_PATH = output.size() < 2 ? "" : output.get(1);
+        MAGISK_PATH = output.size() < 3 ? "" : output.get(2);
         Log.d(TAG, "Magisk runtime path: " + MAGISK_PATH);
-        MAGISK_VERSION_CODE = Integer.parseInt(output.get(0));
+        MAGISK_VERSION_CODE = Integer.parseInt(output.get(1));
         Log.d(TAG, "Magisk version code: " + MAGISK_VERSION_CODE);
         if (MAGISK_VERSION_CODE >= Constants.MAGISK_VER_CODE_FLAT_MODULES &&
                 MAGISK_VERSION_CODE < Constants.MAGISK_VER_CODE_PATH_SUPPORT &&

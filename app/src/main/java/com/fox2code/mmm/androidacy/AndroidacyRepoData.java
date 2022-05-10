@@ -206,6 +206,7 @@ public class AndroidacyRepoData extends RepoData {
             } catch (Exception e) {
                 moduleInfo.minMagisk = 0;
             }
+            moduleInfo.needRamdisk = jsonObject.optBoolean("needRamdisk", false);
             moduleInfo.support = filterURL(jsonObject.optString("support"));
             moduleInfo.donate = filterURL(jsonObject.optString("donate"));
             String config = jsonObject.optString("config", "");
