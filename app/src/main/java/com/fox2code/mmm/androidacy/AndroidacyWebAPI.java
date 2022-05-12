@@ -1,14 +1,17 @@
 package com.fox2code.mmm.androidacy;
 
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
+import android.util.TypedValue;
 import android.webkit.JavascriptInterface;
 import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.Keep;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.graphics.ColorUtils;
 
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
@@ -433,6 +436,54 @@ public class AndroidacyWebAPI {
     @JavascriptInterface
     public int getEffectiveCompatMode() {
         return this.effectiveCompatMode;
+    }
+
+    /**
+     * Return current theme accent color
+     */
+    @JavascriptInterface
+    public int getAccentColor() {
+        Resources.Theme theme = this.activity.getTheme();
+        TypedValue typedValue = new TypedValue();
+        theme.resolveAttribute(R.attr.colorPrimary, typedValue, true);
+        if (typedValue.type >= TypedValue.TYPE_FIRST_COLOR_INT &&
+                typedValue.type <= TypedValue.TYPE_LAST_COLOR_INT) {
+            return typedValue.data;
+        }
+        theme.resolveAttribute(android.R.attr.colorAccent, typedValue, true);
+        return typedValue.data;
+    }
+
+    /**
+     * Return current theme foreground color
+     */
+    @JavascriptInterface
+    public int getForegroundColor() {
+        Resources.Theme theme = this.activity.getTheme();
+        TypedValue typedValue = new TypedValue();
+        theme.resolveAttribute(R.attr.colorOnPrimary, typedValue, true);
+        if (typedValue.type >= TypedValue.TYPE_FIRST_COLOR_INT &&
+                typedValue.type <= TypedValue.TYPE_LAST_COLOR_INT) {
+            return typedValue.data;
+        }
+        theme.resolveAttribute(android.R.attr.foreground, typedValue, true);
+        return typedValue.data;
+    }
+
+    /**
+     * Return current theme background color
+     */
+    @JavascriptInterface
+    public int getBackgroundColor() {
+        Resources.Theme theme = this.activity.getTheme();
+        TypedValue typedValue = new TypedValue();
+        theme.resolveAttribute(R.attr.backgroundColor, typedValue, true);
+        if (typedValue.type >= TypedValue.TYPE_FIRST_COLOR_INT &&
+                typedValue.type <= TypedValue.TYPE_LAST_COLOR_INT) {
+            return typedValue.data;
+        }
+        theme.resolveAttribute(android.R.attr.background, typedValue, true);
+        return typedValue.data;
     }
 
     // Androidacy feature level declaration method
