@@ -21,6 +21,7 @@ import com.fox2code.mmm.utils.PropUtils;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public final class ModuleHolder implements Comparable<ModuleHolder> {
@@ -93,6 +94,10 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
         if (moduleInfo == null || moduleInfo.name == null)
             throw new Error("Error for " + this.getType().name() + " id " + this.moduleId);
         return moduleInfo.name;
+    }
+
+    public String getMainModuleNameLowercase() {
+        return this.getMainModuleName().toLowerCase(Locale.ROOT);
     }
 
     public String getMainModuleConfig() {
@@ -250,7 +255,8 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
             public int compare(ModuleHolder o1, ModuleHolder o2) {
                 int cmp = Integer.compare(o1.filterLevel, o2.filterLevel);
                 if (cmp != 0) return cmp;
-                return o1.getMainModuleName().compareTo(o2.getMainModuleName());
+                return o1.getMainModuleNameLowercase()
+                        .compareTo(o2.getMainModuleNameLowercase());
             }
         },
         SPECIAL_NOTIFICATIONS(R.string.loading, true, false),

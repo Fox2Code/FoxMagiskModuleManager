@@ -21,8 +21,8 @@ public enum ModuleSorter implements Comparator<ModuleHolder> {
             if (type1 == type2 && type1 == ModuleHolder.Type.INSTALLABLE) {
                 int compare = Integer.compare(holder1.filterLevel, holder2.filterLevel);
                 if (compare != 0) return compare;
-                compare = holder1.getMainModuleName()
-                        .compareTo(holder2.getMainModuleName());
+                compare = holder1.getMainModuleNameLowercase()
+                        .compareTo(holder2.getMainModuleNameLowercase());
                 if (compare != 0) return compare;
             }
             return super.compare(holder1, holder2);
