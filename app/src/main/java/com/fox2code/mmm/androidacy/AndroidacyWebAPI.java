@@ -1,6 +1,7 @@
 package com.fox2code.mmm.androidacy;
 
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
@@ -459,15 +460,7 @@ public class AndroidacyWebAPI {
      */
     @JavascriptInterface
     public int getForegroundColor() {
-        Resources.Theme theme = this.activity.getTheme();
-        TypedValue typedValue = new TypedValue();
-        theme.resolveAttribute(R.attr.colorOnPrimary, typedValue, true);
-        if (typedValue.type >= TypedValue.TYPE_FIRST_COLOR_INT &&
-                typedValue.type <= TypedValue.TYPE_LAST_COLOR_INT) {
-            return typedValue.data;
-        }
-        theme.resolveAttribute(android.R.attr.foreground, typedValue, true);
-        return typedValue.data;
+        return this.activity.isLightTheme() ? Color.BLACK : Color.WHITE;
     }
 
     /**
