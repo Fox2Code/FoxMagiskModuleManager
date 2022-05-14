@@ -70,7 +70,7 @@ public class AndroidacyRepoData extends RepoData {
         // Implementation details discussed on telegram
         long time = System.currentTimeMillis();
         if (this.androidacyBlockade > time) return false;
-        this.androidacyBlockade = time + 5_000L;
+        this.androidacyBlockade = time + 30_000L;
         String cookies = AndroidacyRepoData.getCookies();
         int start = cookies == null ? -1 : cookies.indexOf("USER=");
         String token = null;
@@ -150,8 +150,9 @@ public class AndroidacyRepoData extends RepoData {
         for (int i = 0; i < len; i++) {
             jsonObject = jsonArray.getJSONObject(i);
             String moduleId = jsonObject.getString("codename");
-            // Deny remote modules ids shorter than 3 chars
-            if (moduleId.length() < 3) continue;
+            // Deny remote modules ids shorter than 3 chars or containing null char or space
+            if (moduleId.length() < 3 || moduleId.indexOf('\0') != -1 ||
+                    moduleId.indexOf(' ') != -1 || "ak3-helper".equals(moduleId)) continue;
             long lastUpdate = jsonObject.getLong("updated_at") * 1000;
             lastLastUpdate = Math.max(lastLastUpdate, lastUpdate);
             RepoModule repoModule = this.moduleHashMap.get(moduleId);
