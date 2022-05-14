@@ -19,22 +19,25 @@
         app:cardPreventCornerOverlap="true"
         app:cardElevation="0dp"
         app:strokeWidth="0dp">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp">
+            android:layout_margin="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/description_text"
+            app:layout_constraintTop_toBottomOf="@+id/description_text">
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/button_action"
-                android:textSize="16sp"
-                android:src="@drawable/ic_baseline_delete_forever_24"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                android:importantForAccessibility="no"
                 android:layout_marginLeft="8dp"
+                android:background="@android:color/transparent"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_baseline_delete_forever_24"
+                android:textSize="16sp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="RtlHardcoded" />
 
             <!-- Module components -->
@@ -44,60 +47,59 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintRight_toRightOf="parent" />
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/title_text"
-                android:textSize="16sp"
-                android:maxLines="1"
-                android:text="@string/loading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
+                android:maxLines="1"
+                android:text="@string/loading"
+                android:textSize="16sp"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent" />
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/credit_text"
-                android:textSize="12sp"
-                android:text="@string/loading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/title_text"
+                android:text="@string/loading"
+                android:textSize="12sp"
                 app:layout_constraintTop_toBottomOf="@id/title_text" />
 
             <TextView
                 android:id="@+id/description_text"
-                android:textSize="16sp"
-                android:text="@string/loading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:layout_below="@+id/credit_text"
+                android:layout_marginTop="4dp"
+                android:text="@string/loading"
+                android:textSize="16sp"
                 app:layout_constraintTop_toBottomOf="@id/credit_text" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
                 android:background="@null"
-                app:layout_constraintTop_toBottomOf="@+id/description_text"
-                app:layout_constraintLeft_toLeftOf="parent">
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/description_text">
+
                 <TextView
                     android:id="@+id/updated_text"
-                    android:textSize="12sp"
-                    android:text="@string/loading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="bottom"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:text="@string/loading"
+                    android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent" />
-
-                <!-- Module actions -->
-
-                <androidx.appcompat.widget.AppCompatImageButton
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+                <!--<androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/button_action1"
                     android:textSize="16sp"
                     android:visibility="gone"
@@ -186,7 +188,92 @@
                     android:importantForAccessibility="no"
                     android:layout_marginLeft="8dp"
                     android:layout_marginBottom="1dp"
-                    tools:ignore="RtlHardcoded" />
+                    tools:ignore="RtlHardcoded" />-->
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:id="@+id/div"
+                android:layout_width="match_parent"
+                android:layout_margin="8dp"
+                android:layout_height="2dp"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp"
+                android:background="@null"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/div">
+
+                <!-- Module actions -->
+                <HorizontalScrollView
+                    android:id="@+id/horizontalScrollView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:padding="4dp"
+                        app:singleLine="true">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/button_action1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:visibility="gone"
+                            app:chipIcon="@drawable/ic_baseline_error_24" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/button_action2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:visibility="gone"
+                            app:chipIcon="@drawable/ic_baseline_error_24" />
+
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/button_action3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:visibility="gone"
+                            app:chipIcon="@drawable/ic_baseline_error_24" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/button_action4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:visibility="gone"
+                            app:chipIcon="@drawable/ic_baseline_error_24" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/button_action5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:visibility="gone"
+                            app:chipIcon="@drawable/ic_baseline_error_24" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/button_action6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:visibility="gone"
+                            app:chipIcon="@drawable/ic_baseline_error_24" />
+                    </com.google.android.material.chip.ChipGroup>
+                </HorizontalScrollView>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

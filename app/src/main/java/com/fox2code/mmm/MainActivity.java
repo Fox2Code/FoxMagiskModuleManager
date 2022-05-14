@@ -32,6 +32,8 @@ import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.settings.SettingsActivity;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import eightbitlab.com.blurview.BlurView;
@@ -68,10 +70,10 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
     protected void onCreate(Bundle savedInstanceState) {
         this.initMode = true;
         super.onCreate(savedInstanceState);
-        this.setActionBarExtraMenuButton(R.drawable.ic_baseline_settings_24, v -> {
+         this.setActionBarExtraMenuButton(R.drawable.ic_baseline_settings_24, v -> {
             IntentHelper.startActivity(this, SettingsActivity.class);
-            return true;
-        }, R.string.pref_category_settings);
+         return true;
+         }, R.string.pref_category_settings);
         setContentView(R.layout.activity_main);
         this.setTitle(R.string.app_name);
         this.getWindow().setFlags(
@@ -103,13 +105,13 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         this.moduleList.setItemViewCacheSize(4); // Default is 2
         OverScrollManager.install(this.moduleList, this);
         this.swipeRefreshLayout.setOnRefreshListener(this);
-        this.actionBarBlur.setBackground(this.actionBarBackground);
+        this.actionBarBlur.setBackground(this.actionBarBackground);;
         this.actionBarBlur.setupWith(this.moduleList).setFrameClearDrawable(
                 this.getWindow().getDecorView().getBackground())
-                .setBlurAlgorithm(new RenderScriptBlur(this))
-                .setBlurRadius(4F).setBlurAutoUpdate(true)
-                .setHasFixedTransformationMatrix(true);
-        this.updateBlurState();
+               .setBlurAlgorithm(new RenderScriptBlur(this))
+              .setBlurRadius(4F).setBlurAutoUpdate(true)
+               .setHasFixedTransformationMatrix(true);
+         this.updateBlurState();
         this.moduleList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -255,7 +257,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                 bottomInset + this.searchCard.getHeight());
         this.searchCard.setRadius(this.searchCard.getHeight() / 2F);
         this.moduleViewListBuilder.updateInsets();
-        this.actionBarBlur.invalidate();
+        //this.actionBarBlur.invalidate();
         this.overScrollInsetTop = combinedBarsHeight;
         this.overScrollInsetBottom = bottomInset;
         Log.d(TAG, "( " + bottomInset + ", " +

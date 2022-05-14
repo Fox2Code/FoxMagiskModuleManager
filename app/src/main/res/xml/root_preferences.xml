@@ -73,6 +73,13 @@
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
+            app:key="pref_disable_monet"
+            app:icon="@drawable/ic_baseline_design_services_24"
+            app:title="@string/disable_monet"
+            app:singleLineTitle="false" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
             app:key="pref_wrap_text"
             app:icon="@drawable/ic_baseline_keyboard_return_24"
             app:title="@string/wrap_text_pref"

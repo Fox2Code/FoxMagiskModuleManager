@@ -81,6 +81,12 @@ public class SettingsActivity extends CompatActivity {
                 enableBlur.setSummary(R.string.require_android_6);
                 enableBlur.setEnabled(false);
             }
+
+            Preference disableMonet = findPreference("pref_disable_monet");
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                disableMonet.setSummary(R.string.require_android_12);
+                disableMonet.setEnabled(false);
+            }
             Preference forceEnglish = findPreference("pref_force_english");
             forceEnglish.setOnPreferenceChangeListener((preference, newValue) -> {
                 CompatThemeWrapper compatThemeWrapper =

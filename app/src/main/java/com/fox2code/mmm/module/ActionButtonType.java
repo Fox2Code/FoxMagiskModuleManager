@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.DrawableRes;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
@@ -22,14 +23,21 @@ import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
 import com.fox2code.mmm.module.ModuleHolder;
 import com.fox2code.mmm.utils.IntentHelper;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import io.noties.markwon.Markwon;
 
 public enum ActionButtonType {
-    INFO(R.drawable.ic_baseline_info_24) {
+    INFO() {
         @Override
-        public void doAction(ImageButton button, ModuleHolder moduleHolder) {
+        public void update(Chip button, ModuleHolder moduleHolder) {
+            button.setChipIcon(button.getContext().getResources().getDrawable(R.drawable.ic_baseline_info_24));
+            button.setText("Description");
+        }
+
+        @Override
+        public void doAction(Chip button, ModuleHolder moduleHolder) {
             String notesUrl = moduleHolder.repoModule.notesUrl;
             if (notesUrl.startsWith("https://api.androidacy.com/magisk/readme/?module=") ||
                     notesUrl.startsWith("https://www.androidacy.com/")) {
@@ -46,31 +54,36 @@ public enum ActionButtonType {
         }
 
         @Override
-        public boolean doActionLong(ImageButton button, ModuleHolder moduleHolder) {
+        public boolean doActionLong(Chip button, ModuleHolder moduleHolder) {
             Context context = button.getContext();
             Toast.makeText(context, context.getString(R.string.module_id_prefix) +
-                            moduleHolder.moduleId, Toast.LENGTH_SHORT).show();
+                    moduleHolder.moduleId, Toast.LENGTH_SHORT).show();
             return true;
         }
     },
     UPDATE_INSTALL() {
         @Override
-        public void update(ImageButton button, ModuleHolder moduleHolder) {
+        public void update(Chip button, ModuleHolder moduleHolder) {
             int icon = moduleHolder.hasUpdate() ?
                     R.drawable.ic_baseline_update_24 :
                     R.drawable.ic_baseline_system_update_24;
-            button.setImageResource(icon);
+            button.setChipIcon(button.getContext().getResources().getDrawable(icon));
+            if (moduleHolder.hasUpdate()) {
+                button.setText("Update");
+            } else {
+                button.setText("Install");
+            }
         }
 
         @Override
-        public void doAction(ImageButton button, ModuleHolder moduleHolder) {
+        public void doAction(Chip button, ModuleHolder moduleHolder) {
             ModuleInfo moduleInfo = moduleHolder.getMainModuleInfo();
             if (moduleInfo == null) return;
             String updateZipUrl = moduleHolder.getUpdateZipUrl();
             if (updateZipUrl == null) return;
             // Androidacy manage the selection between download and install
             if (updateZipUrl.startsWith("https://www.androidacy.com/") ||
-                updateZipUrl.startsWith("https://api.androidacy.com/magisk/info/?module=")) {
+                    updateZipUrl.startsWith("https://api.androidacy.com/magisk/info/?module=")) {
                 IntentHelper.openUrlAndroidacy(
                         button.getContext(), updateZipUrl, true,
                         moduleInfo.name, moduleInfo.config);
@@ -127,18 +140,19 @@ public enum ActionButtonType {
     },
     UNINSTALL() {
         @Override
-        public void update(ImageButton button, ModuleHolder moduleHolder) {
+        public void update(Chip button, ModuleHolder moduleHolder) {
             int icon = moduleHolder.hasFlag(ModuleInfo.FLAG_MODULE_UNINSTALLING) ?
                     R.drawable.ic_baseline_delete_outline_24 : (
                     !moduleHolder.hasFlag(ModuleInfo.FLAG_MODULE_UPDATING) ||
-                    moduleHolder.hasFlag(ModuleInfo.FLAGS_MODULE_ACTIVE)) ?
-                            R.drawable.ic_baseline_delete_24 :
-                            R.drawable.ic_baseline_delete_forever_24;
-            button.setImageResource(icon);
+                            moduleHolder.hasFlag(ModuleInfo.FLAGS_MODULE_ACTIVE)) ?
+                    R.drawable.ic_baseline_delete_24 :
+                    R.drawable.ic_baseline_delete_forever_24;
+            button.setChipIcon(button.getContext().getResources().getDrawable(icon));
+            button.setText("Uninstall");
         }
 
         @Override
-        public void doAction(ImageButton button, ModuleHolder moduleHolder) {
+        public void doAction(Chip button, ModuleHolder moduleHolder) {
             if (!moduleHolder.hasFlag(ModuleInfo.FLAGS_MODULE_ACTIVE |
                     ModuleInfo.FLAG_MODULE_UNINSTALLING) &&
                     moduleHolder.hasFlag(ModuleInfo.FLAG_MODULE_UPDATING)) {
@@ -153,7 +167,7 @@ public enum ActionButtonType {
         }
 
         @Override
-        public boolean doActionLong(ImageButton button, ModuleHolder moduleHolder) {
+        public boolean doActionLong(Chip button, ModuleHolder moduleHolder) {
             // We can't trust active flag on first boot
             if (moduleHolder.moduleInfo.hasFlag(ModuleInfo.FLAGS_MODULE_ACTIVE)) return false;
             new AlertDialog.Builder(button.getContext()).setTitle(R.string.master_delete)
@@ -165,13 +179,20 @@ public enum ActionButtonType {
                             moduleHolder.moduleInfo = null;
                             CompatActivity.getCompatActivity(button).refreshUI();
                         }
-                    }).setNegativeButton(R.string.master_delete_no, (v, i) -> {}).create().show();
+                    }).setNegativeButton(R.string.master_delete_no, (v, i) -> {
+                    }).create().show();
             return true;
         }
     },
-    CONFIG(R.drawable.ic_baseline_app_settings_alt_24) {
+    CONFIG() {
         @Override
-        public void doAction(ImageButton button, ModuleHolder moduleHolder) {
+        public void update(Chip button, ModuleHolder moduleHolder) {
+            button.setChipIcon(button.getContext().getResources().getDrawable(R.drawable.ic_baseline_app_settings_alt_24));
+            button.setText("Config");
+        }
+
+        @Override
+        public void doAction(Chip button, ModuleHolder moduleHolder) {
             String config = moduleHolder.getMainModuleConfig();
             if (config == null) return;
             if (AndroidacyUtil.isAndroidacyLink(config)) {
@@ -183,19 +204,20 @@ public enum ActionButtonType {
     },
     SUPPORT() {
         @Override
-        public void update(ImageButton button, ModuleHolder moduleHolder) {
+        public void update(Chip button, ModuleHolder moduleHolder) {
             ModuleInfo moduleInfo = moduleHolder.getMainModuleInfo();
-            button.setImageResource(supportIconForUrl(moduleInfo.support));
+            button.setChipIcon(button.getContext().getResources().getDrawable(supportIconForUrl(moduleInfo.support)));
+            button.setText("Support");
         }
 
         @Override
-        public void doAction(ImageButton button, ModuleHolder moduleHolder) {
+        public void doAction(Chip button, ModuleHolder moduleHolder) {
             IntentHelper.openUrl(button.getContext(), moduleHolder.getMainModuleInfo().support);
         }
     },
     DONATE() {
         @Override
-        public void update(ImageButton button, ModuleHolder moduleHolder) {
+        public void update(Chip button, ModuleHolder moduleHolder) {
             ModuleInfo moduleInfo = moduleHolder.getMainModuleInfo();
             int icon = R.drawable.ic_baseline_monetization_on_24;
             if (moduleInfo.donate.startsWith("https://www.paypal.me/")) {
@@ -203,11 +225,12 @@ public enum ActionButtonType {
             } else if (moduleInfo.donate.startsWith("https://www.patreon.com/")) {
                 icon = R.drawable.ic_patreon;
             }
-            button.setImageResource(icon);
+            button.setChipIcon(button.getContext().getResources().getDrawable(icon));
+            button.setText("Donate");
         }
 
         @Override
-        public void doAction(ImageButton button, ModuleHolder moduleHolder) {
+        public void doAction(Chip button, ModuleHolder moduleHolder) {
             IntentHelper.openUrl(button.getContext(), moduleHolder.getMainModuleInfo().donate);
         }
     };
@@ -239,13 +262,13 @@ public enum ActionButtonType {
         this.iconId = iconId;
     }
 
-    public void update(ImageButton button, ModuleHolder moduleHolder) {
-        button.setImageResource(this.iconId);
+    public void update(Chip button, ModuleHolder moduleHolder) {
+        button.setChipIcon(button.getContext().getResources().getDrawable(this.iconId));
     }
 
-    public abstract void doAction(ImageButton button, ModuleHolder moduleHolder);
+    public abstract void doAction(Chip button, ModuleHolder moduleHolder);
 
-    public boolean doActionLong(ImageButton button, ModuleHolder moduleHolder) {
+    public boolean doActionLong(Chip button, ModuleHolder moduleHolder) {
         return false;
     }
 }
