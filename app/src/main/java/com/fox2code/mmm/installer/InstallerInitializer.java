@@ -36,6 +36,7 @@ public class InstallerInitializer extends Shell.Initializer {
     public static String peekMagiskPath() {
         return InstallerInitializer.MAGISK_PATH;
     }
+
     public static String peekMirrorPath() {
         return InstallerInitializer.MAGISK_PATH == null ? null :
                 InstallerInitializer.MAGISK_PATH + "/.magisk/mirror";
@@ -131,23 +132,6 @@ public class InstallerInitializer extends Shell.Initializer {
     public boolean onInit(@NonNull Context context, @NonNull Shell shell) {
         if (!shell.isRoot())
             return true;
-        Shell.Job newJob = shell.newJob();
-        String MAGISK_PATH = InstallerInitializer.MAGISK_PATH;
-        if (MAGISK_PATH == null) {
-            Log.w(TAG, "Unable to detect magisk path!");
-        } else {
-            newJob.add("export ASH_STANDALONE=1");
-            if (!MAGISK_PATH.equals("/sbin") && !MAGISK_SYSTEM.exists()) {
-                newJob.add("export PATH=" + MAGISK_PATH + ";$PATH;" +
-                        MAGISK_PATH + "/.magisk/busybox");
-            } else {
-                newJob.add("export PATH=$PATH;" +
-                        MAGISK_PATH + "/.magisk/busybox");
-            }
-            newJob.add("export MAGISKTMP=\"" + MAGISK_PATH + "/.magisk\"");
-            newJob.add("export BOOTMODE=true");
-            newJob.add("$(which busybox 2> /dev/null) sh");
-        }
-        return newJob.exec().isSuccess();
+        return shell.newJob().add("export ASH_STANDALONE=1").exec().isSuccess();
     }
 }

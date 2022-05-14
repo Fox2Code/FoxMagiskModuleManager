@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -19,7 +20,7 @@ public class RepoUpdater {
     public final RepoData repoData;
     public byte[] indexRaw;
     private List<RepoModule> toUpdate;
-    private Set<RepoModule> toApply;
+    private Collection<RepoModule> toApply;
 
     public RepoUpdater(RepoData repoData) {
         this.repoData = repoData;
@@ -36,7 +37,7 @@ public class RepoUpdater {
             if (!this.repoData.prepare()) {
                 this.indexRaw = null;
                 this.toUpdate = Collections.emptyList();
-                this.toApply = Collections.emptySet();
+                this.toApply = this.repoData.moduleHashMap.values();
                 return 0;
             }
             this.indexRaw = Http.doHttpGet(this.repoData.url, false);
@@ -60,7 +61,7 @@ public class RepoUpdater {
         return this.toUpdate;
     }
 
-    public Set<RepoModule> toApply() {
+    public Collection<RepoModule> toApply() {
         return this.toApply;
     }
 

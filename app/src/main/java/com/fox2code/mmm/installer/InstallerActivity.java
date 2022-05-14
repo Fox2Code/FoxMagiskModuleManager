@@ -44,7 +44,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -168,31 +167,31 @@ public class InstallerActivity extends CompatActivity {
                 Files.fixJavaZipHax(rawModule);
                 boolean noPatch = false;
                 boolean isModule = false;
-                boolean isAnyKernel = false;
+                boolean isAnyKernel3 = false;
                 errMessage = "File is not a valid zip file";
                 try (ZipInputStream zipInputStream = new ZipInputStream(
                         new ByteArrayInputStream(rawModule))) {
                     ZipEntry zipEntry;
                     while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                         String entryName = zipEntry.getName();
-                        if (entryName.equals("anykernel.sh")) {
+                        if (entryName.equals("tools/ak3-core.sh")) {
                             noPatch = true;
-                            isAnyKernel = true;
+                            isAnyKernel3 = true;
                             break;
                         } else if (entryName.equals("module.prop")) {
                             noPatch = true;
                             isModule = true;
                             break;
-                        } else if (entryName.endsWith("/anykernel.sh")) {
-                            isAnyKernel = true;
+                        } else if (entryName.endsWith("/tools/ak3-core.sh")) {
+                            isAnyKernel3 = true;
                         } else if (entryName.endsWith("/module.prop")) {
                             isModule = true;
                         }
                     }
                 }
-                if (!isModule && !isAnyKernel) {
+                if (!isModule && !isAnyKernel3) {
                     this.setInstallStateFinished(false,
-                            "! File is not a valid magisk module", "");
+                            "! File is not a valid Magisk or AnyKernel3 module", "");
                     return;
                 }
                 if (noPatch) {
@@ -254,36 +253,37 @@ public class InstallerActivity extends CompatActivity {
             installJob = Shell.cmd("export MMM_EXT_SUPPORT=1",
                     "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
                     "sh \"" + installScript.getAbsolutePath() + "\"" +
-                            " /dev/null 1 \"" + file.getAbsolutePath() + "\"")
+                            " 3 0 \"" + file.getAbsolutePath() + "\"")
                     .to(installerController, installerMonitor);
         } else {
             String arch32 = "true"; // Do nothing by default
             boolean needs32bit = false;
             String moduleId = null;
-            boolean anyKernel = false;
+            boolean anyKernel3 = false;
             boolean magiskModule = false;
-            File anyKernelInstallScript = new File(this.moduleCache, "update-binary");
+            String MAGISK_PATH = InstallerInitializer.peekMagiskPath();
+            if (MAGISK_PATH == null) {
+                this.setInstallStateFinished(false, "! Unable to resolve magisk path", "");
+                return;
+            }
+            String ASH = MAGISK_PATH + "/.magisk/busybox/busybox ash";
             try (ZipFile zipFile = new ZipFile(file)) {
                 // Check if module is AnyKernel module
-                if (zipFile.getEntry("anykernel.sh") != null) {
+                if (zipFile.getEntry("tools/ak3-core.sh") != null) {
                     ZipEntry updateBinary = zipFile.getEntry(
                             "META-INF/com/google/android/update-binary");
                     if (updateBinary != null) {
                         BufferedReader bufferedReader = new BufferedReader(
                                 new InputStreamReader(zipFile.getInputStream(updateBinary)));
-                        PrintStream printStream = new PrintStream(
-                                new FileOutputStream(anyKernelInstallScript));
                         String line;
                         while ((line = bufferedReader.readLine()) != null) {
-                            line = line.replace("/sbin/sh", "/system/bin/sh");
-                            line = line.replace("/data/adb/modules/ak3-helper",
-                                    "/data/adb/modules-update/ak3-helper");
-                            printStream.println(line);
+                            if (line.contains("AnyKernel3")) {
+                                anyKernel3 = true;
+                                break;
+                            }
                         }
-                        printStream.close();
                         bufferedReader.close();
                     }
-                    anyKernel = true;
                 }
                 if (zipFile.getEntry( // Check if module hard require 32bit support
                         "common/addon/Volume-Key-Selector/tools/arm64/keycheck") == null &&
@@ -310,13 +310,15 @@ public class InstallerActivity extends CompatActivity {
                         null);
                 return;
             }
-            if (magiskModule && moduleId == null && !anyKernel) {
+            if (magiskModule && moduleId == null && !anyKernel3) {
                 // Modules without module Ids are module installed by 3rd party software
                 this.setInstallStateFinished(false,
                         "! Magisk modules require a moduleId", null);
                 return;
             }
-            if (Build.SUPPORTED_32_BIT_ABIS.length == 0) {
+            if (anyKernel3) {
+                installerController.useRecoveryExt();
+            } else if (Build.SUPPORTED_32_BIT_ABIS.length == 0) {
                 if (needs32bit) {
                     this.setInstallStateFinished(false,
                             "! This module can't be installed on a 64bit only system",
@@ -332,47 +334,45 @@ public class InstallerActivity extends CompatActivity {
             }
             String installCommand;
             File installExecutable;
-            if (anyKernel && moduleId == null) { // AnyKernel modules don't have a moduleId
+            if (anyKernel3 && moduleId == null) { // AnyKernel modules don't have a moduleId
                 this.warnReboot = true; // We should probably re-flash magisk...
-                installExecutable = anyKernelInstallScript;
+                installExecutable = this.extractInstallScript("module_installer_anykernel3.sh");
+                if (installExecutable == null) {
+                    this.setInstallStateFinished(false,
+                            "! Failed to extract AnyKernel3 module install script", null);
+                    return;
+                }
                 // "unshare -m" is needed to force mount namespace isolation.
                 // This allow AnyKernel to mess-up with mounts point without crashing the system!
-                installCommand = "unshare -m sh \"" + installExecutable.getAbsolutePath() + "\"" +
-                        " /dev/null 1 \"" + file.getAbsolutePath() + "\"";
+                installCommand = "unshare -m " + ASH + " \"" +
+                        installExecutable.getAbsolutePath() + "\"" +
+                        " 3 1 \"" + file.getAbsolutePath() + "\"";
             } else if (InstallerInitializer.peekMagiskVersion() >=
                     Constants.MAGISK_VER_CODE_INSTALL_COMMAND &&
                     ((compatFlags & AppUpdateManager.FLAG_COMPAT_MAGISK_CMD) != 0 ||
                             noExtensions || MainApplication.isUsingMagiskCommand())) {
                 installCommand = "magisk --install-module \"" + file.getAbsolutePath() + "\"";
-                installExecutable = new File(InstallerInitializer.peekMagiskPath()
-                        .equals("/sbin") ? "/sbin/magisk" : "/system/bin/magisk");
+                installExecutable = new File(MAGISK_PATH.equals("/sbin") ?
+                        "/sbin/magisk" : "/system/bin/magisk");
             } else if (moduleId != null) {
                 installExecutable = this.extractInstallScript("module_installer_compat.sh");
                 if (installExecutable == null) {
                     this.setInstallStateFinished(false,
-                            "! Failed to extract module install script", null);
+                            "! Failed to extract Magisk module install script", null);
                     return;
                 }
-                installCommand = "sh \"" + installExecutable.getAbsolutePath() + "\"" +
-                        " /dev/null 1 \"" + file.getAbsolutePath() + "\"";
+                installCommand = ASH + " \"" +
+                        installExecutable.getAbsolutePath() + "\"" +
+                        " 3 1 \"" + file.getAbsolutePath() + "\"";
             } else {
                 this.setInstallStateFinished(false,
-                        "! Zip file is not a valid Magisk or a AnyKernel module!", null);
+                        "! Zip file is not a valid Magisk or AnyKernel3 module!", null);
                 return;
             }
             installerMonitor = new InstallerMonitor(installExecutable);
             if (moduleId != null) installerMonitor.setForCleanUp(moduleId);
-            if (anyKernel) {
-                final String adbTmp = "data/adb/tmp";
-                final String anyKernelHome = // Mirror mounts do not contain nosuid
-                        InstallerInitializer.peekMirrorPath() +
-                                "/" + adbTmp + "/anykernel";
-                installJob = Shell.cmd(arch32, "export MMM_EXT_SUPPORT=1",
-                        "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
-                        "mkdir " + adbTmp, "export AKHOME=" + anyKernelHome,
-                        installCommand).to(installerController, installerMonitor);
-            } else if (noExtensions) {
-                installJob = Shell.cmd(arch32, // No Extensions
+            if (noExtensions) {
+                installJob = Shell.cmd(arch32, "export BOOTMODE=true", // No Extensions
                         "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
                         installCommand).to(installerController, installerMonitor);
             } else {
@@ -381,7 +381,9 @@ public class InstallerActivity extends CompatActivity {
                                 Resources.getSystem().getConfiguration().locale.toLanguageTag()),
                         "export MMM_APP_VERSION=" + BuildConfig.VERSION_NAME,
                         "export MMM_TEXT_WRAP=" + (this.textWrap ? "1" : "0"),
-                        "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
+                        "export BOOTMODE=true", anyKernel3 ? "export AK3TMPFS=" +
+                                InstallerInitializer.peekMagiskPath() + "/ak3tmpfs" :
+                                "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
                         installCommand).to(installerController, installerMonitor);
             }
         }
@@ -408,7 +410,8 @@ public class InstallerActivity extends CompatActivity {
         private final InstallerTerminal terminal;
         private final File moduleFile;
         private final boolean noExtension;
-        private boolean enabled, useExt;
+        private boolean enabled, useExt,
+                useRecovery, isRecoveryBar;
         private String supportLink = "";
 
         private InstallerController(LinearProgressIndicator progressIndicator,
@@ -431,7 +434,25 @@ public class InstallerActivity extends CompatActivity {
                 return;
             }
             if (this.useExt && s.startsWith("#!")) {
-                this.processCommand(s);
+                this.processCommand(s.substring(2));
+            } else if (this.useRecovery && s.startsWith("progress ")) {
+                String[] tokens = s.split(" ");
+                try {
+                    float progress = Float.parseFloat(tokens[1]);
+                    float max = Float.parseFloat(tokens[2]);
+                    int progressInt;
+                    if (max <= 0F) {
+                        return;
+                    } else if (progress >= max) {
+                        progressInt = 256;
+                    } else {
+                        if (progress <= 0F) progress = 0F;
+                        progressInt = (int) ((256D * progress) / max);
+                    }
+                    this.processCommand("showLoading 256");
+                    this.processCommand("setLoading " + progressInt);
+                    this.isRecoveryBar = true;
+                } catch (Exception ignored) {}
             } else {
                 this.terminal.addLine(s.replace(
                         this.moduleFile.getAbsolutePath(),
@@ -445,12 +466,15 @@ public class InstallerActivity extends CompatActivity {
             int i = rawCommand.indexOf(' ');
             if (i != -1) {
                 arg = rawCommand.substring(i + 1).trim();
-                command = rawCommand.substring(2, i);
+                command = rawCommand.substring(0, i);
             } else {
                 arg = "";
-                command = rawCommand.substring(2);
+                command = rawCommand;
             }
             switch (command) {
+                case "useRecovery":
+                    this.useRecovery = true;
+                    break;
                 case "addLine":
                     this.terminal.addLine(arg);
                     break;
@@ -467,6 +491,7 @@ public class InstallerActivity extends CompatActivity {
                     this.terminal.scrollDown();
                     break;
                 case "showLoading":
+                    this.isRecoveryBar = false;
                     if (!arg.isEmpty()) {
                         try {
                             short s = Short.parseShort(arg);
@@ -481,7 +506,7 @@ public class InstallerActivity extends CompatActivity {
                             }
                             this.progressIndicator.setIndeterminate(true);
                         }
-                    } else if (!rawCommand.trim().equals("#!showLoading")) {
+                    } else {
                         this.progressIndicator.setProgressCompat(0, true);
                         this.progressIndicator.setMax(100);
                         if (this.progressIndicator.getVisibility() == View.VISIBLE) {
@@ -492,6 +517,7 @@ public class InstallerActivity extends CompatActivity {
                     this.progressIndicator.setVisibility(View.VISIBLE);
                     break;
                 case "setLoading":
+                    this.isRecoveryBar = false;
                     try {
                         this.progressIndicator.setProgressCompat(
                                 Short.parseShort(arg), true);
@@ -499,6 +525,7 @@ public class InstallerActivity extends CompatActivity {
                     }
                     break;
                 case "hideLoading":
+                    this.isRecoveryBar = false;
                     this.progressIndicator.setVisibility(View.GONE);
                     break;
                 case "setSupportLink":
@@ -510,8 +537,16 @@ public class InstallerActivity extends CompatActivity {
             }
         }
 
+        public void useRecoveryExt() {
+            this.useRecovery = true;
+        }
+
         public void disable() {
             this.enabled = false;
+            if (this.isRecoveryBar) {
+                UiThreadHandler.runAndWait(() ->
+                        this.processCommand("setLoading 256"));
+            }
         }
 
         public String getSupportLink() {

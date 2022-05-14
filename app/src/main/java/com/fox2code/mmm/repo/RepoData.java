@@ -86,8 +86,9 @@ public class RepoData {
             for (int i = 0; i < len; i++) {
                 JSONObject module = array.getJSONObject(i);
                 String moduleId = module.getString("id");
-                // Deny remote modules ids shorter than 3 chars
-                if (moduleId.length() < 3) continue;
+                // Deny remote modules ids shorter than 3 chars or containing null char or space
+                if (moduleId.length() < 3 || moduleId.indexOf('\0') != -1 ||
+                        moduleId.indexOf(' ') != -1 || "ak3-helper".equals(moduleId)) continue;
                 long moduleLastUpdate = module.getLong("last_update");
                 String moduleNotesUrl = module.getString("notes_url");
                 String modulePropsUrl = module.getString("prop_url");

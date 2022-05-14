@@ -187,6 +187,9 @@ public class PropUtils {
                         moduleInfo.description = value;
                         readDescription = true;
                         break;
+                    case "updateJsonAk3":
+                        // Only allow AnyKernel3 helper to use "updateJsonAk3"
+                        if (!"ak3-helper".equals(moduleInfo.id)) break;
                     case "updateJson":
                         if (isInvalidURL(value)) break;
                         moduleInfo.updateJson = value;
