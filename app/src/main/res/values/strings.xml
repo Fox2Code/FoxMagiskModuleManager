@@ -27,6 +27,7 @@
     <string name="install_terminal_reboot_now">Reboot</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string translatable="false" name="ok">Ok</string>
 
     <!-- Module section translation -->
     <string name="module_last_update">Last version:</string>

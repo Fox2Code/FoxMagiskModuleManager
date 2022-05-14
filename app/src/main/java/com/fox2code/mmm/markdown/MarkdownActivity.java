@@ -2,6 +2,7 @@ package com.fox2code.mmm.markdown;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.core.graphics.ColorUtils;
 
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
@@ -21,11 +23,15 @@ import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.topjohnwu.superuser.Shell;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+
+import eightbitlab.com.blurview.BlurView;
 
 
 public class MarkdownActivity extends CompatActivity {
@@ -119,9 +125,35 @@ public class MarkdownActivity extends CompatActivity {
         } else {
             if (change_boot) {
                 chip_can_change_boot.setVisibility(View.VISIBLE);
+                chip_can_change_boot.setOnClickListener(_view -> {
+                    MaterialAlertDialogBuilder builder =
+                            new MaterialAlertDialogBuilder(this);
+
+                    builder
+                            .setTitle(R.string.module_can_change_boot)
+                            .setMessage("This module may change the boot image")
+                            .setCancelable(true)
+                            .setPositiveButton(R.string.ok, (x, y) -> {
+                                x.dismiss();
+                            }).show();
+
+                });
             }
             if (needs_ramdisk) {
                 chip_needs_ramdisk.setVisibility(View.VISIBLE);
+                chip_needs_ramdisk.setOnClickListener(_view -> {
+                    MaterialAlertDialogBuilder builder =
+                            new MaterialAlertDialogBuilder(this);
+
+                    builder
+                            .setTitle(R.string.module_needs_ramdisk)
+                            .setMessage("This module need boot ramdisk to be installed")
+                            .setCancelable(true)
+                            .setPositiveButton(R.string.ok, (x, y) -> {
+                                x.dismiss();
+                            }).show();
+
+                });
             }
         }
 
