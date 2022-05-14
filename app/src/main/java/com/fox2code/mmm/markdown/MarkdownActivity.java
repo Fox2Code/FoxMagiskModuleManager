@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import com.fox2code.mmm.XHooks;
 import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
+import com.google.android.material.chip.Chip;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import java.io.IOException;
@@ -51,7 +53,8 @@ public class MarkdownActivity extends CompatActivity {
                         byte[] rawMarkdown = Http.doHttpGet(prefix + suffix, true);
                         redirects.put(url, newUrl); // Avoid retries
                         return rawMarkdown;
-                    } catch (IOException ignored) {}
+                    } catch (IOException ignored) {
+                    }
                 }
             }
             throw e;
@@ -74,6 +77,10 @@ public class MarkdownActivity extends CompatActivity {
                 .getString(Constants.EXTRA_MARKDOWN_TITLE);
         String config = intent.getExtras()
                 .getString(Constants.EXTRA_MARKDOWN_CONFIG);
+        boolean change_boot = intent.getExtras()
+                .getBoolean(Constants.EXTRA_MARKDOWN_CHANGE_BOOT);
+        boolean needs_ramdisk = intent.getExtras()
+                .getBoolean(Constants.EXTRA_MARKDOWN_NEEDS_RAMDISK);
         if (title != null && !title.isEmpty()) {
             this.setTitle(title);
         }
@@ -98,9 +105,26 @@ public class MarkdownActivity extends CompatActivity {
         setContentView(R.layout.markdown_view);
         final ViewGroup markdownBackground = findViewById(R.id.markdownBackground);
         final TextView textView = findViewById(R.id.markdownView);
+        final Chip chip_can_change_boot = findViewById(R.id.chip_change_boot);
+        final Chip chip_needs_ramdisk = findViewById(R.id.chip_needs_ramdisk);
+        final HorizontalScrollView chip_holder = findViewById(R.id.chip_holder);
+        final Chip min_magisk = findViewById(R.id.chip_min_magisk);
         final TextView footer = findViewById(R.id.markdownFooter);
         UiThreadHandler.handler.postDelayed(() -> // Fix footer height
                 footer.setMinHeight(this.getNavigationBarHeight()), 1L);
+
+        // Really bad created
+        if (MainApplication.isChipsDisabled()) {
+            chip_holder.setVisibility(View.GONE);
+        } else {
+            if (change_boot) {
+                chip_can_change_boot.setVisibility(View.VISIBLE);
+            }
+            if (needs_ramdisk) {
+                chip_needs_ramdisk.setVisibility(View.VISIBLE);
+            }
+        }
+
         new Thread(() -> {
             try {
                 Log.d(TAG, "Downloading");

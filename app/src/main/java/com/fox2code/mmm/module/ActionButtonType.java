@@ -39,7 +39,9 @@ public enum ActionButtonType {
             } else {
                 IntentHelper.openMarkdown(button.getContext(), notesUrl,
                         moduleHolder.repoModule.moduleInfo.name,
-                        moduleHolder.getMainModuleConfig());
+                        moduleHolder.getMainModuleConfig(),
+                        moduleHolder.repoModule.moduleInfo.changeBoot,
+                        moduleHolder.repoModule.moduleInfo.needRamdisk);
             }
         }
 

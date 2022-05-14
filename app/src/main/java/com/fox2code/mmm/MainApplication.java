@@ -120,6 +120,11 @@ public class MainApplication extends CompatApplication {
                 getSharedPreferences().getBoolean("pref_enable_blur", false);
     }
 
+    public static boolean isChipsDisabled() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                getSharedPreferences().getBoolean("pref_disable_chips", false);
+    }
+
     public static boolean isDeveloper() {
         return BuildConfig.DEBUG ||
                 getSharedPreferences().getBoolean("developer", false);

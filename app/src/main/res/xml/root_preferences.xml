@@ -66,6 +66,13 @@
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
+            app:key="pref_disable_chips"
+            app:icon="@drawable/ic_baseline_chip_24"
+            app:title="@string/disable_chips_in_description"
+            app:singleLineTitle="false" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
             app:key="pref_wrap_text"
             app:icon="@drawable/ic_baseline_keyboard_return_24"
             app:title="@string/wrap_text_pref"

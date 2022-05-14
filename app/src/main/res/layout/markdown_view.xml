@@ -1,23 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/markdownBackground"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="vertical"
     app:fitsSystemWindowsInsets="top|left|right">
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        tools:ignore="UselessParent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <TextView
                 android:id="@+id/markdownView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/markdown_border_content"
                 android:text="@string/loading" />
+
             <TextView
                 android:id="@+id/markdownFooter"
                 android:layout_width="match_parent"
@@ -25,4 +34,40 @@
                 android:text="" />
         </LinearLayout>
     </ScrollView>
+
+    <HorizontalScrollView
+        android:id="@+id/chip_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.chip.ChipGroup
+            android:layout_width="wrap_content"
+            android:padding="8dp"
+            android:layout_height="wrap_content"
+            app:singleLine="true">
+
+            <com.google.android.material.chip.Chip
+                android:visibility="gone"
+                android:id="@+id/chip_change_boot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/module_can_change_boot"/>
+
+            <com.google.android.material.chip.Chip
+                android:visibility="gone"
+                android:id="@+id/chip_needs_ramdisk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/module_needs_ramdisk"/>
+
+            <!-- Leaving string hard codded -->
+            <com.google.android.material.chip.Chip
+                android:visibility="gone"
+                android:id="@+id/chip_min_magisk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Minimum Magisk 24.3+"/>
+
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
 </LinearLayout>
