@@ -65,7 +65,6 @@ AK3TMPFS=$($AK3TMPFS/busybox readlink -f $AK3TMPFS);
 if $AK3TMPFS/busybox grep -q AnyKernel3 $AK3TMPFS/update-binary; then
   # work around more restrictive upstream SELinux policies for Magisk <19306
   magiskpolicy --live "allow kernel app_data_file file write" || true;
-  TMP=$AK3TMPFS/tmp;
 else
   echo "Module is not an AnyKernel3 module!"
   exit 1
@@ -77,6 +76,6 @@ RC=$?;
 
 # Original script delete all generated files,
 # But we just need to unmount as we store everything inside tmpfs
-umount $TMP;
+umount $AK3TMPFS;
 
 return $RC;
