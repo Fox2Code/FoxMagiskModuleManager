@@ -47,7 +47,7 @@
     <string name="prevent_reboot_pref">Prevent reboot</string>
     <string name="prevent_reboot_desc">Prevents unexpected reboots</string>
     <string name="pref_category_settings">Settings</string>
-    <string name="disable_monet">Disable Monet</string>
+    <string name="enable_monet">Enable Monet</string>
     <string name="pref_category_info">Info</string>
     <string name="show_licenses">Show licenses</string>
     <string name="licenses">Licences</string>

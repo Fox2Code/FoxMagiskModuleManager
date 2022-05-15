@@ -116,6 +116,10 @@ public class MainApplication extends CompatApplication {
         return getSharedPreferences().getBoolean("pref_dns_over_https", true);
     }
 
+    public static boolean isMonetEnabled() {
+        return getSharedPreferences().getBoolean("pref_enable_monet", false);
+    }
+
     public static boolean isBlurEnabled() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 getSharedPreferences().getBoolean("pref_enable_blur", false);
@@ -282,7 +286,9 @@ public class MainApplication extends CompatApplication {
     public void onCreate() {
         super.onCreate();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            DynamicColors.applyToActivitiesIfAvailable(this);
+            if (MainApplication.isMonetEnabled()) {
+                DynamicColors.applyToActivitiesIfAvailable(this);
+            }
         }
         SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
         // We are only one process so it's ok to do this

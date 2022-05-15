@@ -73,9 +73,9 @@
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
-            app:key="pref_disable_monet"
+            app:key="pref_enable_monet"
             app:icon="@drawable/ic_baseline_design_services_24"
-            app:title="@string/disable_monet"
+            app:title="@string/enable_monet"
             app:singleLineTitle="false" />
 
         <SwitchPreferenceCompat

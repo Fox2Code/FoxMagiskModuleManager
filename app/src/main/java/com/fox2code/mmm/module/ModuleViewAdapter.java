@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
@@ -71,6 +72,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
         private final TextView titleText;
         private final TextView creditText;
         private final TextView descriptionText;
+        private final LinearLayout moduleOptionsHolder;
         private final TextView updateText;
         private final Chip[] actionsButtons;
         private final ArrayList<ActionButtonType> actionButtonsTypes;
@@ -87,6 +89,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
             this.titleText = itemView.findViewById(R.id.title_text);
             this.creditText = itemView.findViewById(R.id.credit_text);
             this.descriptionText = itemView.findViewById(R.id.description_text);
+            this.moduleOptionsHolder = itemView.findViewById(R.id.module_options_holder);
             this.updateText = itemView.findViewById(R.id.updated_text);
             this.actionsButtons = new Chip[6];
             this.actionsButtons[0] = itemView.findViewById(R.id.button_action1);
@@ -182,6 +185,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     this.switchMaterial.setVisibility(View.GONE);
                 }
                 this.creditText.setVisibility(View.VISIBLE);
+                this.moduleOptionsHolder.setVisibility(View.VISIBLE);
                 this.descriptionText.setVisibility(View.VISIBLE);
 
                 ModuleInfo moduleInfo = moduleHolder.getMainModuleInfo();

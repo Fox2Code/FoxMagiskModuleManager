@@ -1,5 +1,6 @@
 package com.fox2code.mmm.settings;
 
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -82,11 +83,12 @@ public class SettingsActivity extends CompatActivity {
                 enableBlur.setEnabled(false);
             }
 
-            Preference disableMonet = findPreference("pref_disable_monet");
+            Preference disableMonet = findPreference("pref_enable_monet");
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
                 disableMonet.setSummary(R.string.require_android_12);
                 disableMonet.setEnabled(false);
             }
+
             Preference forceEnglish = findPreference("pref_force_english");
             forceEnglish.setOnPreferenceChangeListener((preference, newValue) -> {
                 CompatThemeWrapper compatThemeWrapper =
@@ -104,8 +106,18 @@ public class SettingsActivity extends CompatActivity {
                 Http.setDoh((Boolean) v);
                 return true;
             });
-            if ("dark".equals(themePreference.getValue())) {
-                findPreference("pref_force_dark_terminal").setEnabled(false);
+
+            int nightModeFlags =
+                    getContext().getResources().getConfiguration().uiMode &
+                            Configuration.UI_MODE_NIGHT_MASK;
+            switch (nightModeFlags) {
+                case Configuration.UI_MODE_NIGHT_YES:
+                    findPreference("pref_force_dark_terminal").setEnabled(false);
+                    break;
+                case Configuration.UI_MODE_NIGHT_NO:
+                case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                    findPreference("pref_force_dark_terminal").setEnabled(true);
+                    break;
             }
             if (!MainApplication.isDeveloper()) {
                 findPreference("pref_disable_low_quality_module_filter").setVisible(false);

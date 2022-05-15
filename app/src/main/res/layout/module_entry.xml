@@ -8,208 +8,109 @@
     android:layout_marginRight="8dp"
     android:layout_marginTop="2dp"
     android:layout_marginBottom="2dp"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_view"
-        android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="@dimen/card_corner_radius"
-        app:strokeColor="@android:color/transparent"
-        app:cardPreventCornerOverlap="true"
-        app:cardElevation="0dp"
-        app:strokeWidth="0dp">
+        style="?attr/materialCardViewFilledStyle">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/description_text"
-            app:layout_constraintTop_toBottomOf="@+id/description_text">
+            android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/button_action"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:background="@android:color/transparent"
-                android:importantForAccessibility="no"
-                android:src="@drawable/ic_baseline_delete_forever_24"
-                android:textSize="16sp"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="RtlHardcoded" />
+            <!-- Media -->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="194dp"
+                android:visibility="gone"
+                android:scaleType="centerCrop"
+                />
 
-            <!-- Module components -->
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switch_action"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/title_text"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text="@string/loading"
-                android:textSize="16sp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:orientation="vertical"
+                android:padding="8dp">
 
-            <TextView
-                android:id="@+id/credit_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/title_text"
-                android:text="@string/loading"
-                android:textSize="12sp"
-                app:layout_constraintTop_toBottomOf="@id/title_text" />
+                <!-- Module components -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
-            <TextView
-                android:id="@+id/description_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/credit_text"
-                android:layout_marginTop="4dp"
-                android:text="@string/loading"
-                android:textSize="16sp"
-                app:layout_constraintTop_toBottomOf="@id/credit_text" />
+                    <TextView
+                        android:id="@+id/title_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:maxLines="1"
+                        android:text="@string/loading"
+                        android:textSize="16sp"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="0dp"
-                android:background="@null"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/description_text">
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/button_action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:background="@android:color/transparent"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_baseline_delete_forever_24"
+                        android:textSize="16sp"
+                        tools:ignore="RtlHardcoded" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/credit_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/loading"
+                    android:textSize="12sp"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?android:attr/textColorSecondary"
+                    />
+                <TextView
+                    android:id="@+id/description_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/loading"
+                    android:textSize="16sp"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?android:attr/textColorSecondary"
+                    />
 
                 <TextView
                     android:id="@+id/updated_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="bottom"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="8dp"
                     android:text="@string/loading"
-                    android:textSize="12sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-                <!--<androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/button_action1"
-                    android:textSize="16sp"
-                    android:visibility="gone"
-                    android:src="@drawable/ic_baseline_error_24"
-                    android:layout_width="@dimen/module_action_icon_size"
-                    android:layout_height="@dimen/module_action_icon_size"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    android:importantForAccessibility="no"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="3dp"
-                    android:layout_marginBottom="1dp"
-                    tools:ignore="RtlHardcoded" />
+                    android:textSize="12sp" />
 
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/button_action2"
-                    android:textSize="16sp"
-                    android:visibility="gone"
-                    android:src="@drawable/ic_baseline_error_24"
-                    android:layout_width="@dimen/module_action_icon_size"
-                    android:layout_height="@dimen/module_action_icon_size"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toLeftOf="@id/button_action1"
-                    android:importantForAccessibility="no"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginBottom="1dp"
-                    tools:ignore="RtlHardcoded" />
+            </LinearLayout>
 
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/button_action3"
-                    android:textSize="16sp"
-                    android:visibility="gone"
-                    android:src="@drawable/ic_baseline_error_24"
-                    android:layout_width="@dimen/module_action_icon_size"
-                    android:layout_height="@dimen/module_action_icon_size"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toLeftOf="@id/button_action2"
-                    android:importantForAccessibility="no"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginBottom="1dp"
-                    tools:ignore="RtlHardcoded" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/button_action4"
-                    android:textSize="16sp"
-                    android:visibility="gone"
-                    android:src="@drawable/ic_baseline_error_24"
-                    android:layout_width="@dimen/module_action_icon_size"
-                    android:layout_height="@dimen/module_action_icon_size"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toLeftOf="@id/button_action3"
-                    android:importantForAccessibility="no"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginBottom="1dp"
-                    tools:ignore="RtlHardcoded" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/button_action5"
-                    android:textSize="16sp"
-                    android:visibility="gone"
-                    android:src="@drawable/ic_baseline_error_24"
-                    android:layout_width="@dimen/module_action_icon_size"
-                    android:layout_height="@dimen/module_action_icon_size"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toLeftOf="@id/button_action4"
-                    android:importantForAccessibility="no"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginBottom="1dp"
-                    tools:ignore="RtlHardcoded" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/button_action6"
-                    android:textSize="16sp"
-                    android:visibility="gone"
-                    android:src="@drawable/ic_baseline_error_24"
-                    android:layout_width="@dimen/module_action_icon_size"
-                    android:layout_height="@dimen/module_action_icon_size"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toLeftOf="@id/button_action5"
-                    android:importantForAccessibility="no"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginBottom="1dp"
-                    tools:ignore="RtlHardcoded" />-->
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <View
-                android:id="@+id/div"
-                android:layout_width="match_parent"
-                android:layout_margin="8dp"
-                android:layout_height="2dp"
+            <!-- Buttons -->
+            <LinearLayout
+                android:id="@+id/module_options_holder"
                 android:visibility="gone"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout"/>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="0dp"
-                android:background="@null"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/div">
-
-                <!-- Module actions -->
+                android:layout_margin="8dp"
+                android:orientation="horizontal">
                 <HorizontalScrollView
                     android:id="@+id/horizontalScrollView"
                     android:layout_width="match_parent"
@@ -228,7 +129,7 @@
                             android:id="@+id/button_action1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text=""
+                            android:text="@string/loading"
                             android:visibility="gone"
                             app:chipIcon="@drawable/ic_baseline_error_24" />
 
@@ -236,7 +137,7 @@
                             android:id="@+id/button_action2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text=""
+                            android:text="@string/loading"
                             android:visibility="gone"
                             app:chipIcon="@drawable/ic_baseline_error_24" />
 
@@ -245,7 +146,7 @@
                             android:id="@+id/button_action3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text=""
+                            android:text="@string/loading"
                             android:visibility="gone"
                             app:chipIcon="@drawable/ic_baseline_error_24" />
 
@@ -253,7 +154,7 @@
                             android:id="@+id/button_action4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text=""
+                            android:text="@string/loading"
                             android:visibility="gone"
                             app:chipIcon="@drawable/ic_baseline_error_24" />
 
@@ -261,7 +162,7 @@
                             android:id="@+id/button_action5"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text=""
+                            android:text="@string/loading"
                             android:visibility="gone"
                             app:chipIcon="@drawable/ic_baseline_error_24" />
 
@@ -269,12 +170,14 @@
                             android:id="@+id/button_action6"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text=""
+                            android:text="@string/loading"
                             android:visibility="gone"
                             app:chipIcon="@drawable/ic_baseline_error_24" />
                     </com.google.android.material.chip.ChipGroup>
                 </HorizontalScrollView>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>
