@@ -105,7 +105,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         this.moduleList.setItemViewCacheSize(4); // Default is 2
         OverScrollManager.install(this.moduleList, this);
         this.swipeRefreshLayout.setOnRefreshListener(this);
-        this.actionBarBlur.setBackground(this.actionBarBackground);;
+        this.actionBarBlur.setBackground(this.actionBarBackground);
         this.actionBarBlur.setupWith(this.moduleList).setFrameClearDrawable(
                 this.getWindow().getDecorView().getBackground())
                .setBlurAlgorithm(new RenderScriptBlur(this))

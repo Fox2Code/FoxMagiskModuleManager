@@ -4,13 +4,11 @@ import android.content.Context;
 import android.text.Spanned;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.DrawableRes;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
@@ -21,7 +19,6 @@ import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
-import com.fox2code.mmm.module.ModuleHolder;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
