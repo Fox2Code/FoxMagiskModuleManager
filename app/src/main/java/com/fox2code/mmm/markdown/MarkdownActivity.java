@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.core.graphics.ColorUtils;
 
 import com.fox2code.mmm.Constants;
@@ -23,6 +24,7 @@ import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.topjohnwu.superuser.Shell;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
@@ -87,6 +89,12 @@ public class MarkdownActivity extends CompatActivity {
                 .getBoolean(Constants.EXTRA_MARKDOWN_CHANGE_BOOT);
         boolean needs_ramdisk = intent.getExtras()
                 .getBoolean(Constants.EXTRA_MARKDOWN_NEEDS_RAMDISK);
+        int min_magisk = intent.getExtras()
+                .getInt(Constants.EXTRA_MARKDOWN_MIN_MAGISK);
+        int min_api = intent.getExtras()
+                .getInt(Constants.EXTRA_MARKDOWN_MIN_API);
+        int max_api = intent.getExtras()
+                .getInt(Constants.EXTRA_MARKDOWN_MAX_API);
         if (title != null && !title.isEmpty()) {
             this.setTitle(title);
         }
@@ -111,10 +119,7 @@ public class MarkdownActivity extends CompatActivity {
         setContentView(R.layout.markdown_view);
         final ViewGroup markdownBackground = findViewById(R.id.markdownBackground);
         final TextView textView = findViewById(R.id.markdownView);
-        final Chip chip_can_change_boot = findViewById(R.id.chip_change_boot);
-        final Chip chip_needs_ramdisk = findViewById(R.id.chip_needs_ramdisk);
         final HorizontalScrollView chip_holder = findViewById(R.id.chip_holder);
-        final Chip min_magisk = findViewById(R.id.chip_min_magisk);
         final TextView footer = findViewById(R.id.markdownFooter);
         UiThreadHandler.handler.postDelayed(() -> // Fix footer height
                 footer.setMinHeight(this.getNavigationBarHeight()), 1L);
@@ -123,38 +128,19 @@ public class MarkdownActivity extends CompatActivity {
         if (MainApplication.isChipsDisabled()) {
             chip_holder.setVisibility(View.GONE);
         } else {
-            if (change_boot) {
-                chip_can_change_boot.setVisibility(View.VISIBLE);
-                chip_can_change_boot.setOnClickListener(_view -> {
-                    MaterialAlertDialogBuilder builder =
-                            new MaterialAlertDialogBuilder(this);
-
-                    builder
-                            .setTitle(R.string.module_can_change_boot)
-                            .setMessage("This module may change the boot image")
-                            .setCancelable(true)
-                            .setPositiveButton(R.string.ok, (x, y) -> {
-                                x.dismiss();
-                            }).show();
-
-                });
-            }
-            if (needs_ramdisk) {
-                chip_needs_ramdisk.setVisibility(View.VISIBLE);
-                chip_needs_ramdisk.setOnClickListener(_view -> {
-                    MaterialAlertDialogBuilder builder =
-                            new MaterialAlertDialogBuilder(this);
-
-                    builder
-                            .setTitle(R.string.module_needs_ramdisk)
-                            .setMessage("This module need boot ramdisk to be installed")
-                            .setCancelable(true)
-                            .setPositiveButton(R.string.ok, (x, y) -> {
-                                x.dismiss();
-                            }).show();
-
-                });
-            }
+            // set "message" to null to disable dialog
+            this.setChips(change_boot,
+                    getString(R.string.module_can_change_boot),
+                    "This module may change the boot image");
+            this.setChips(needs_ramdisk,
+                    getString(R.string.module_needs_ramdisk),
+                    "This module need boot ramdisk to be installed");
+            this.setChips(min_magisk, "Min. Magisk \"" + min_magisk + "\"",
+                    null);
+            this.setChips(min_api, "Min. Android " + min_api,
+                    null);
+            this.setChips(max_api, "Max. Android " + max_api,
+                    null);
         }
 
         new Thread(() -> {
@@ -183,6 +169,56 @@ public class MarkdownActivity extends CompatActivity {
                 });
             }
         }, "Markdown load thread").start();
+    }
+
+    private void setChips(boolean bool, String title, String message) {
+        final ChipGroup chip_group_holder = findViewById(R.id.chip_group_holder);
+        if (bool) {
+            Chip chip = new Chip(this);
+            chip.setText(title);
+            chip.setVisibility(View.VISIBLE);
+            if (message != null) {
+                chip.setOnClickListener(_view -> {
+                    MaterialAlertDialogBuilder builder =
+                            new MaterialAlertDialogBuilder(this);
+
+                    builder
+                            .setTitle(title)
+                            .setMessage(message)
+                            .setCancelable(true)
+                            .setPositiveButton(R.string.ok, (x, y) -> {
+                                x.dismiss();
+                            }).show();
+
+                });
+            }
+            chip_group_holder.addView(chip);
+        }
+    }
+
+    private void setChips(int i, String title, String message) {
+        final ChipGroup chip_group_holder = findViewById(R.id.chip_group_holder);
+        if (i != 0) {
+            Chip chip = new Chip(this);
+            chip.setText(title);
+            chip.setVisibility(View.VISIBLE);
+            if (message != null) {
+                chip.setOnClickListener(_view -> {
+                    MaterialAlertDialogBuilder builder =
+                            new MaterialAlertDialogBuilder(this);
+
+                    builder
+                            .setTitle(title)
+                            .setMessage(message)
+                            .setCancelable(true)
+                            .setPositiveButton(R.string.ok, (x, y) -> {
+                                x.dismiss();
+                            }).show();
+
+                });
+            }
+            chip_group_holder.addView(chip);
+        }
     }
 
     @Override

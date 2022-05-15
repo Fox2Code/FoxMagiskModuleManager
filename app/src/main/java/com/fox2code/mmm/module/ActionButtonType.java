@@ -49,7 +49,11 @@ public enum ActionButtonType {
                         moduleHolder.repoModule.moduleInfo.name,
                         moduleHolder.getMainModuleConfig(),
                         moduleHolder.repoModule.moduleInfo.changeBoot,
-                        moduleHolder.repoModule.moduleInfo.needRamdisk);
+                        moduleHolder.repoModule.moduleInfo.needRamdisk,
+                        moduleHolder.repoModule.moduleInfo.minMagisk,
+                        moduleHolder.repoModule.moduleInfo.minApi,
+                        moduleHolder.repoModule.moduleInfo.maxApi
+                );
             }
         }
 

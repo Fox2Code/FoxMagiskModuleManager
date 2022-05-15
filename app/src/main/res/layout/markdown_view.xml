@@ -41,32 +41,14 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_holder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="end"
             android:padding="8dp"
             app:singleLine="true">
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_change_boot"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/module_can_change_boot"
-                android:visibility="gone" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_needs_ramdisk"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/module_needs_ramdisk"
-                android:visibility="gone" />
-
-            <!-- Leaving string hard codded -->
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_min_magisk"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Minimum Magisk 24.3+"
-                android:visibility="gone" />
+           <!-- Dynamically added -->
 
         </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>
