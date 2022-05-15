@@ -22,13 +22,18 @@
     <string name="website">Website</string>
     <string name="support">Support</string>
     <string name="donate">Donate</string>
+    <string name="update">Update</string>
+    <string name="install">Install</string>
+    <string name="description">Description</string>
+    <string name="uninstall">Uninstall</string>
+    <string name="config">Config</string>
     <string name="submit_modules">Submit a module</string>
     <string name="require_android_6">Requires Android 6.0+</string>
     <string name="require_android_12">Requires Android 12+</string>
     <string name="install_terminal_reboot_now">Reboot</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-    <string translatable="false" name="ok">Ok</string>
+    <string name="yes" translatable="false">@android:string/yes</string>
+    <string name="no" translatable="false">@android:string/no</string>
+    <string name="ok" translatable="false">@android:string/ok</string>
 
     <!-- Module section translation -->
     <string name="module_last_update">Last version:</string>
@@ -100,10 +105,7 @@
         terminal extensions.\nUseful if a module misuses Fox\'s Mmm extensions.
     </string>
     <string name="wrap_text_pref">Text wrapping</string>
-    <string name="wrap_text_desc">
-        Show text on multiple lines instead of putting
-        all text on the same line when installing a module.
-    </string>
+    <string name="wrap_text_desc">"         Show text on multiple lines instead of putting         all text on the same line when installing a module.     "</string>
     <string name="enable_blur_pref">Blur</string>
     <string name="disable_chips_in_description">Disable chips in description</string>
     <string name="repo_enabled">Repo on</string>

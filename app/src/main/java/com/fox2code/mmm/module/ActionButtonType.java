@@ -1,5 +1,6 @@
 package com.fox2code.mmm.module;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.Spanned;
 import android.util.Log;
@@ -25,12 +26,13 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import io.noties.markwon.Markwon;
 
+@SuppressLint("UseCompatLoadingForDrawables")
 public enum ActionButtonType {
     INFO() {
         @Override
         public void update(Chip button, ModuleHolder moduleHolder) {
             button.setChipIcon(button.getContext().getResources().getDrawable(R.drawable.ic_baseline_info_24));
-            button.setText("Description");
+            button.setText(R.string.description);
         }
 
         @Override
@@ -70,9 +72,9 @@ public enum ActionButtonType {
                     R.drawable.ic_baseline_system_update_24;
             button.setChipIcon(button.getContext().getResources().getDrawable(icon));
             if (moduleHolder.hasUpdate()) {
-                button.setText("Update");
+                button.setText(R.string.update);
             } else {
-                button.setText("Install");
+                button.setText(R.string.install);
             }
         }
 
@@ -149,7 +151,7 @@ public enum ActionButtonType {
                     R.drawable.ic_baseline_delete_24 :
                     R.drawable.ic_baseline_delete_forever_24;
             button.setChipIcon(button.getContext().getResources().getDrawable(icon));
-            button.setText("Uninstall");
+            button.setText(R.string.uninstall);
         }
 
         @Override
@@ -189,7 +191,7 @@ public enum ActionButtonType {
         @Override
         public void update(Chip button, ModuleHolder moduleHolder) {
             button.setChipIcon(button.getContext().getResources().getDrawable(R.drawable.ic_baseline_app_settings_alt_24));
-            button.setText("Config");
+            button.setText(R.string.config);
         }
 
         @Override
@@ -208,7 +210,7 @@ public enum ActionButtonType {
         public void update(Chip button, ModuleHolder moduleHolder) {
             ModuleInfo moduleInfo = moduleHolder.getMainModuleInfo();
             button.setChipIcon(button.getContext().getResources().getDrawable(supportIconForUrl(moduleInfo.support)));
-            button.setText("Support");
+            button.setText(R.string.support);
         }
 
         @Override
@@ -227,7 +229,7 @@ public enum ActionButtonType {
                 icon = R.drawable.ic_patreon;
             }
             button.setChipIcon(button.getContext().getResources().getDrawable(icon));
-            button.setText("Donate");
+            button.setText(R.string.donate);
         }
 
         @Override
