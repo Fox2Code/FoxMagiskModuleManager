@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -36,6 +37,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.R;
@@ -68,6 +70,7 @@ public class CompatActivity extends AppCompatActivity {
     private CompatActivity.OnBackPressedCallback onBackPressedCallback;
     private MenuItem.OnMenuItemClickListener menuClickListener;
     private CharSequence menuContentDescription;
+    private SharedPreferences mSharedPreferences;
     @StyleRes
     private int setThemeDynamic = 0;
     private boolean onCreateCalledOnce = false;
@@ -544,6 +547,14 @@ public class CompatActivity extends AppCompatActivity {
             } else return null;
         }
         return (CompatActivity) context;
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        mSharedPreferences= PreferenceManager.getDefaultSharedPreferences(newBase);
+        Locale locale = new Locale(mSharedPreferences.getString("user_preferred_language", "en"));
+        Context context = CompatWrapper.setLocale(newBase, locale);
+        super.attachBaseContext(context);
     }
 
     public WeakReference<CompatActivity> asWeakReference() {

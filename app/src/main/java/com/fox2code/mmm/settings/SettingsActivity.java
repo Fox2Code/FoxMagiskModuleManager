@@ -13,6 +13,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.TwoStatePreference;
 
+import com.ahmedjazzar.rosetta.LanguageSwitcher;
 import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
@@ -28,6 +29,9 @@ import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
+
+import java.util.HashSet;
+import java.util.Locale;
 
 public class SettingsActivity extends CompatActivity {
     private static int devModeStep = 0;
@@ -89,21 +93,25 @@ public class SettingsActivity extends CompatActivity {
                 disableMonet.setEnabled(false);
             }
 
-            Preference forceEnglish = findPreference("pref_force_english");
-            forceEnglish.setOnPreferenceChangeListener((preference, newValue) -> {
-                CompatThemeWrapper compatThemeWrapper =
-                        MainApplication.getINSTANCE().getMarkwonThemeContext();
-                if (compatThemeWrapper != null) {
-                    compatThemeWrapper.setForceEnglish(
-                            Boolean.parseBoolean(String.valueOf(newValue)));
-                }
-                return true;
-            });
-            if (!MainApplication.isDeveloper()) {
-                forceEnglish.setVisible(false);
-            }
             findPreference("pref_dns_over_https").setOnPreferenceChangeListener((p, v) -> {
                 Http.setDoh((Boolean) v);
+                return true;
+            });
+
+            // This is the locale that you wanna your app to launch with.
+            Locale firstLaunchLocale = new Locale("en");
+
+            HashSet<Locale> supportedLocales = new HashSet<>();
+            supportedLocales.add(Locale.US);
+            supportedLocales.add(Locale.CHINA);
+            supportedLocales.add(Locale.GERMAN);
+            supportedLocales.add(firstLaunchLocale);
+
+            Preference languageSelector = findPreference("pref_language_selector");
+            languageSelector.setOnPreferenceClickListener(preference -> {
+                LanguageSwitcher ls = new LanguageSwitcher(getActivity(), firstLaunchLocale);
+                ls.showChangeLanguageDialog(getActivity());
+                ls.setSupportedLocales(supportedLocales);
                 return true;
             });
 

@@ -32,7 +32,8 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:networkSecurityConfig="@xml/network_security_config"
         android:usesCleartextTraffic="false"
-        tools:targetApi="s">
+        tools:targetApi="s"
+        tools:replace="android:supportsRtl">
         <receiver android:name="com.fox2code.mmm.manager.ModuleBootReceive"
             android:exported="true">
             <intent-filter>
