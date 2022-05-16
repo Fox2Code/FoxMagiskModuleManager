@@ -13,7 +13,6 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.TwoStatePreference;
 
-import com.ahmedjazzar.rosetta.LanguageSwitcher;
 import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
@@ -21,12 +20,13 @@ import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.OverScrollManager;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.compat.CompatActivity;
-import com.fox2code.mmm.compat.CompatThemeWrapper;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.repo.RepoData;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
+
+import com.ahmedjazzar.rosetta.LanguageSwitcher;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
@@ -249,7 +249,7 @@ public class SettingsActivity extends CompatActivity {
                     preference.setTitle(R.string.repo_disabled);
                     preference.setEnabled(false);
                 } else {
-                    ((TwoStatePreference)preference).setChecked(repoData.isEnabled());
+                    ((TwoStatePreference) preference).setChecked(repoData.isEnabled());
                     preference.setTitle(repoData.isEnabled() ?
                             R.string.repo_enabled : R.string.repo_disabled);
                     preference.setOnPreferenceChangeListener((p, newValue) -> {
