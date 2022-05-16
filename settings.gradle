@@ -10,3 +10,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "MagiskModuleManager"
 include ':app'
+include ':rosetta'

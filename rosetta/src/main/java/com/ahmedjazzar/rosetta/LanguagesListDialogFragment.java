@@ -11,12 +11,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Objects;
-
-import com.fox2code.mmm.R;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 /**
  * This fragment is responsible for displaying the supported locales and performing any necessary
