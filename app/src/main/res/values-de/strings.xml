@@ -36,7 +36,6 @@
     <string name="master_delete_no">Dateien behalten</string>
     <string name="master_delete_yes">Dateien löschen</string>
     <string name="master_delete_fail">Fehler beim Löschen der Moduldateien</string>
-    <string name="module_id_prefix">" "</string>
     <string name="install_from_storage">Module aus dem Speicher installieren</string>
     <string name="invalid_format">Das ausgewählte Modul hat ein ungültiges Format</string>
     <string name="local_install_title">Lokale Installation</string>

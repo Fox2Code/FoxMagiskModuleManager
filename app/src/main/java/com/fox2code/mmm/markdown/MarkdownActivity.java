@@ -1,7 +1,9 @@
 package com.fox2code.mmm.markdown;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -276,9 +278,7 @@ public class MarkdownActivity extends CompatActivity {
                         .setTitle(title)
                         .setMessage(message)
                         .setCancelable(true)
-                        .setPositiveButton(R.string.ok, (x, y) -> {
-                            x.dismiss();
-                        }).show();
+                        .setPositiveButton(R.string.ok, (x, y) -> x.dismiss()).show();
 
             });
         }

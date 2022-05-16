@@ -27,6 +27,7 @@ import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
 import com.fox2code.mmm.repo.RepoModule;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
@@ -67,6 +68,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final CardView cardView;
+        private final Chip invalidPropsChip;
         private final ImageButton buttonAction;
         private final SwitchMaterial switchMaterial;
         private final TextView titleText;
@@ -84,6 +86,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
             super(itemView);
             this.initState = true;
             this.cardView = itemView.findViewById(R.id.card_view);
+            this.invalidPropsChip = itemView.findViewById(R.id.invalid_module_props);
             this.buttonAction = itemView.findViewById(R.id.button_action);
             this.switchMaterial = itemView.findViewById(R.id.switch_action);
             this.titleText = itemView.findViewById(R.id.title_text);
@@ -115,7 +118,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
             this.buttonAction.setClickable(false);
             this.switchMaterial.setEnabled(false);
             this.switchMaterial.setOnCheckedChangeListener((v, checked) -> {
-               if (this.initState) return; // Skip if non user
+                if (this.initState) return; // Skip if non user
                 ModuleHolder moduleHolder = this.moduleHolder;
                 if (moduleHolder != null && moduleHolder.moduleInfo != null) {
                     ModuleInfo moduleInfo = moduleHolder.moduleInfo;
@@ -319,8 +322,21 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     backgroundAttr = moduleHolder.notificationType.backgroundAttr;
                 } else if (type == ModuleHolder.Type.INSTALLED &&
                         moduleHolder.hasFlag(ModuleInfo.FLAG_METADATA_INVALID)) {
-                    foregroundAttr = R.attr.colorOnError;
-                    backgroundAttr = R.attr.colorError;
+                    invalidPropsChip.setOnClickListener(_view -> {
+                        MaterialAlertDialogBuilder builder =
+                                new MaterialAlertDialogBuilder(_view.getContext());
+
+                        builder
+                                .setTitle(R.string.low_quality_module)
+                                .setMessage("Actual description for Low-quality module")
+                                .setCancelable(true)
+                                .setPositiveButton(R.string.ok, (x, y) -> x.dismiss()).show();
+
+                    });
+                    this.invalidPropsChip.setVisibility(View.VISIBLE);
+                    // Backup restore
+                    // foregroundAttr = R.attr.colorOnError;
+                    // backgroundAttr = R.attr.colorError;
                 }
                 Resources.Theme theme = this.cardView.getContext().getTheme();
                 TypedValue value = new TypedValue();

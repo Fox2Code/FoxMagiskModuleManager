@@ -28,7 +28,7 @@
                 android:layout_height="194dp"
                 android:visibility="gone"
                 android:scaleType="centerCrop"
-                />
+                tools:ignore="ContentDescription" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -42,6 +42,19 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/invalid_module_props"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="@string/low_quality_module"
+                        android:textSize="12sp"
+                        android:layout_marginEnd="4dp"
+                        android:visibility="gone"
+                        app:chipStartPadding="4dp"
+                        app:chipEndPadding="2dp"
+                        app:chipIconSize="15dp"
+                        app:chipIcon="@drawable/ic_baseline_error_24" />
 
                     <TextView
                         android:id="@+id/title_text"
@@ -116,7 +129,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="UselessParent">
 
                     <com.google.android.material.chip.ChipGroup
                         android:layout_width="wrap_content"
