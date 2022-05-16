@@ -99,19 +99,34 @@ public class SettingsActivity extends CompatActivity {
             });
 
             // This is the locale that you wanna your app to launch with.
-            Locale firstLaunchLocale = new Locale("en");
+            String firstLaunchLocale = "en";
 
-            HashSet<Locale> supportedLocales = new HashSet<>();
-            supportedLocales.add(Locale.US);
-            supportedLocales.add(Locale.CHINA);
-            supportedLocales.add(Locale.GERMAN);
+            // Warning! Locales that are't exist will crash the app
+            HashSet<String> supportedLocales = new HashSet<>();
+            supportedLocales.add("cs");
+            supportedLocales.add("de");
+            supportedLocales.add("es-rMX");
+            supportedLocales.add("et");
+            supportedLocales.add("fr");
+            supportedLocales.add("id");
+            supportedLocales.add("ja");
+            supportedLocales.add("nb-rNO");
+            supportedLocales.add("pl");
+            supportedLocales.add("pt-rBR");
+            supportedLocales.add("ro");
+            supportedLocales.add("ru");
+            supportedLocales.add("sk");
+            supportedLocales.add("tr");
+            supportedLocales.add("vi");
+            supportedLocales.add("zh-rCH");
+            supportedLocales.add("zh-rTW");
             supportedLocales.add(firstLaunchLocale);
 
             Preference languageSelector = findPreference("pref_language_selector");
             languageSelector.setOnPreferenceClickListener(preference -> {
-                LanguageSwitcher ls = new LanguageSwitcher(getActivity(), firstLaunchLocale);
+                LanguageSwitcher ls = new LanguageSwitcher(getActivity(), new Locale(firstLaunchLocale));
                 ls.showChangeLanguageDialog(getActivity());
-                ls.setSupportedLocales(supportedLocales);
+                ls.setSupportedStringLocales(supportedLocales);
                 return true;
             });
 

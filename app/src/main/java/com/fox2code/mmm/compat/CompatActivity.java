@@ -70,7 +70,6 @@ public class CompatActivity extends AppCompatActivity {
     private CompatActivity.OnBackPressedCallback onBackPressedCallback;
     private MenuItem.OnMenuItemClickListener menuClickListener;
     private CharSequence menuContentDescription;
-    private SharedPreferences mSharedPreferences;
     @StyleRes
     private int setThemeDynamic = 0;
     private boolean onCreateCalledOnce = false;
@@ -551,8 +550,8 @@ public class CompatActivity extends AppCompatActivity {
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        mSharedPreferences= PreferenceManager.getDefaultSharedPreferences(newBase);
-        Locale locale = new Locale(mSharedPreferences.getString("user_preferred_language", "en"));
+        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(newBase);
+        Locale locale = new Locale(mSharedPreferences.getString("user_preferred_country", "en"));
         Context context = CompatWrapper.setLocale(newBase, locale);
         super.attachBaseContext(context);
     }
