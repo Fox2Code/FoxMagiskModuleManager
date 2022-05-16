@@ -62,7 +62,9 @@
             android:name=".installer.InstallerActivity"
             android:parentActivityName=".MainActivity"
             android:exported="false"
-            android:launchMode="singleTop">
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="${applicationId}.intent.action.INSTALL_MODULE_INTERNAL" />
             </intent-filter>
