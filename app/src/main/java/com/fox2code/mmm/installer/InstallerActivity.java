@@ -191,7 +191,7 @@ public class InstallerActivity extends CompatActivity {
                 }
                 if (!isModule && !isAnyKernel3) {
                     this.setInstallStateFinished(false,
-                            "! File is not a valid Magisk or AnyKernel3 module", "");
+                            "! File is not a valid Magisk module or AnyKernel3 zip", "");
                     return;
                 }
                 if (noPatch) {
@@ -339,7 +339,7 @@ public class InstallerActivity extends CompatActivity {
                 installExecutable = this.extractInstallScript("module_installer_anykernel3.sh");
                 if (installExecutable == null) {
                     this.setInstallStateFinished(false,
-                            "! Failed to extract AnyKernel3 module install script", null);
+                            "! Failed to extract AnyKernel3 install script", null);
                     return;
                 }
                 // "unshare -m" is needed to force mount namespace isolation.
@@ -366,7 +366,7 @@ public class InstallerActivity extends CompatActivity {
                         " 3 1 \"" + file.getAbsolutePath() + "\"";
             } else {
                 this.setInstallStateFinished(false,
-                        "! Zip file is not a valid Magisk or AnyKernel3 module!", null);
+                        "! Zip file is not a valid Magisk module or AnyKernel3 zip!", null);
                 return;
             }
             installerMonitor = new InstallerMonitor(installExecutable);
