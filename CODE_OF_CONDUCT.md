@@ -35,4 +35,6 @@ While the police will not show up at your house for violating our rules, we rese
 
 You are welcome to contact any maintainer privately if you need help or wish to report another member of the community for violation of these rules, and your complaint will be handled fairly and privately.
 
+By interacting with our community or participating in the same, you acknowledge you understand and accept this Code of Conduct.
+
 <sub><b>Last modified:</b> May 16, 2022</sub>
