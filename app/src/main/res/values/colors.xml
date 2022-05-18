@@ -14,4 +14,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="status_bar_color">@color/black_transparent</color>
     <color name="module_holder_div">@color/black_transparent</color>
+    <!-- Icon -->
+    <color name="launcher_icon_background">#FF9B08</color>
+    <color name="launcher_icon">@android:color/white</color>
 </resources>

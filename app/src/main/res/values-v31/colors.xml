@@ -72,6 +72,7 @@
     <color name="system_accent3_800">@android:color/system_accent3_800</color>
     <color name="system_accent3_900">@android:color/system_accent3_900</color>
     <color name="system_accent3_1000">@android:color/system_accent3_1000</color>
+    <!-- Icon -->
     <color name="launcher_icon_background">@android:color/system_accent1_100</color>
     <color name="launcher_icon">@android:color/system_neutral2_700</color>
 </resources>
