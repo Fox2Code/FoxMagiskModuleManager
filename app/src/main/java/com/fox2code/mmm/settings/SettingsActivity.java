@@ -1,5 +1,6 @@
 package com.fox2code.mmm.settings;
 
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -19,14 +20,18 @@ import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.OverScrollManager;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.compat.CompatActivity;
-import com.fox2code.mmm.compat.CompatThemeWrapper;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.repo.RepoData;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
+
+import com.ahmedjazzar.rosetta.LanguageSwitcher;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
+
+import java.util.HashSet;
+import java.util.Locale;
 
 public class SettingsActivity extends CompatActivity {
     private static int devModeStep = 0;
@@ -81,25 +86,61 @@ public class SettingsActivity extends CompatActivity {
                 enableBlur.setSummary(R.string.require_android_6);
                 enableBlur.setEnabled(false);
             }
-            Preference forceEnglish = findPreference("pref_force_english");
-            forceEnglish.setOnPreferenceChangeListener((preference, newValue) -> {
-                CompatThemeWrapper compatThemeWrapper =
-                        MainApplication.getINSTANCE().getMarkwonThemeContext();
-                if (compatThemeWrapper != null) {
-                    compatThemeWrapper.setForceEnglish(
-                            Boolean.parseBoolean(String.valueOf(newValue)));
-                }
-                return true;
-            });
-            if (!MainApplication.isDeveloper()) {
-                forceEnglish.setVisible(false);
+
+            Preference disableMonet = findPreference("pref_enable_monet");
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                disableMonet.setSummary(R.string.require_android_12);
+                disableMonet.setEnabled(false);
             }
+
             findPreference("pref_dns_over_https").setOnPreferenceChangeListener((p, v) -> {
                 Http.setDoh((Boolean) v);
                 return true;
             });
-            if ("dark".equals(themePreference.getValue())) {
-                findPreference("pref_force_dark_terminal").setEnabled(false);
+
+            // This is the locale that you wanna your app to launch with.
+            String firstLaunchLocale = "en";
+
+            // Warning! Locales that are't exist will crash the app
+            HashSet<String> supportedLocales = new HashSet<>();
+            supportedLocales.add("cs");
+            supportedLocales.add("de");
+            supportedLocales.add("es-rMX");
+            supportedLocales.add("et");
+            supportedLocales.add("fr");
+            supportedLocales.add("id");
+            supportedLocales.add("ja");
+            supportedLocales.add("nb-rNO");
+            supportedLocales.add("pl");
+            supportedLocales.add("pt-rBR");
+            supportedLocales.add("ro");
+            supportedLocales.add("ru");
+            supportedLocales.add("sk");
+            supportedLocales.add("tr");
+            supportedLocales.add("vi");
+            supportedLocales.add("zh-rCH");
+            supportedLocales.add("zh-rTW");
+            supportedLocales.add(firstLaunchLocale);
+
+            Preference languageSelector = findPreference("pref_language_selector");
+            languageSelector.setOnPreferenceClickListener(preference -> {
+                LanguageSwitcher ls = new LanguageSwitcher(getActivity(), new Locale(firstLaunchLocale));
+                ls.showChangeLanguageDialog(getActivity());
+                ls.setSupportedStringLocales(supportedLocales);
+                return true;
+            });
+
+            int nightModeFlags =
+                    getContext().getResources().getConfiguration().uiMode &
+                            Configuration.UI_MODE_NIGHT_MASK;
+            switch (nightModeFlags) {
+                case Configuration.UI_MODE_NIGHT_YES:
+                    findPreference("pref_force_dark_terminal").setEnabled(false);
+                    break;
+                case Configuration.UI_MODE_NIGHT_NO:
+                case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                    findPreference("pref_force_dark_terminal").setEnabled(true);
+                    break;
             }
             if (!MainApplication.isDeveloper()) {
                 findPreference("pref_disable_low_quality_module_filter").setVisible(false);
@@ -208,7 +249,7 @@ public class SettingsActivity extends CompatActivity {
                     preference.setTitle(R.string.repo_disabled);
                     preference.setEnabled(false);
                 } else {
-                    ((TwoStatePreference)preference).setChecked(repoData.isEnabled());
+                    ((TwoStatePreference) preference).setChecked(repoData.isEnabled());
                     preference.setTitle(repoData.isEnabled() ?
                             R.string.repo_enabled : R.string.repo_disabled);
                     preference.setOnPreferenceChangeListener((p, newValue) -> {

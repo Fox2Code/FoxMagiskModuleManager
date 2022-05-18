@@ -28,6 +28,13 @@
         <item name="dialogCornerRadius">@dimen/card_corner_radius</item>
         <item name="colorBackgroundFloating">#FFFFFFFF</item>
         <item name="backgroundColor">#FFFFFFFF</item>
+        <item name="chipStyle">@style/Widget.Material.Chip.Choice.Light</item>
+    </style>
+
+    <style name="Widget.Material.Chip.Choice.Light" parent="Widget.MaterialComponents.Chip.Action">
+        <item name="chipBackgroundColor">#DADADA</item>
+        <item name="chipStrokeWidth">0dp</item>
+        <item name="chipIconTint">@color/black</item>
     </style>
 
     <style name="Theme.MagiskModuleManager.Transparent.Light" parent="Theme.MagiskModuleManager.Light">
@@ -73,6 +80,13 @@
         <item name="dialogCornerRadius">@dimen/card_corner_radius</item>
         <item name="colorBackgroundFloating">#FF1E1E1E</item>
         <item name="backgroundColor">#FF111111</item>
+        <item name="chipStyle">@style/Widget.Material.Chip.Choice.Dark</item>
+    </style>
+
+    <style name="Widget.Material.Chip.Choice.Dark" parent="Widget.MaterialComponents.Chip.Action">
+        <item name="chipBackgroundColor">#1C1C1C</item>
+        <item name="chipStrokeWidth">0dp</item>
+        <item name="chipIconTint">@color/white</item>
     </style>
 
     <!-- Base application theme. -->

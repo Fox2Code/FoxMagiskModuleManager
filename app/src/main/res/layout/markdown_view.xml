@@ -1,23 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/markdownBackground"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:fitsSystemWindowsInsets="top|left|right">
+    app:fitsSystemWindowsInsets="left|right"
+    tools:context=".markdown.MarkdownActivity">
+
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:id="@+id/scrollView2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <LinearLayout
+            android:id="@+id/md_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <TextView
                 android:id="@+id/markdownView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/markdown_border_content"
                 android:text="@string/loading" />
+
             <TextView
                 android:id="@+id/markdownFooter"
                 android:layout_width="match_parent"
@@ -25,4 +38,44 @@
                 android:text="" />
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+
+    <eightbitlab.com.blurview.BlurView
+        android:id="@+id/markdown_action_bar_blur"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <TextView
+            android:id="@+id/markdown_action_bar_padding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </eightbitlab.com.blurview.BlurView>
+
+    <eightbitlab.com.blurview.BlurView
+        android:id="@+id/chip_holder"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/scrollView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_group_holder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:padding="8dp"
+                app:singleLine="true">
+
+                <!-- Dynamically added -->
+
+            </com.google.android.material.chip.ChipGroup>
+        </HorizontalScrollView>
+    </eightbitlab.com.blurview.BlurView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

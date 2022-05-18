@@ -71,7 +71,10 @@ android {
 }
 
 aboutLibraries {
-    additionalLicenses = ["LGPL_3_0_only"]
+    additionalLicenses = [
+            "LGPL_3_0_only",
+            "rosetta"
+    ]
 }
 
 configurations {
@@ -88,7 +91,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.webkit:webkit:1.4.0'
-    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'com.google.android.material:material:1.6.0'
     implementation "com.mikepenz:aboutlibraries:${latestAboutLibsRelease}"
     implementation "dev.rikka.rikkax.layoutinflater:layoutinflater:1.2.0"
     implementation "dev.rikka.rikkax.insets:insets:1.2.0"
@@ -98,6 +101,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.9.3'
     implementation 'com.squareup.okhttp3:okhttp-brotli:4.9.3'
     implementation 'com.github.topjohnwu.libsu:io:5.0.1'
+    implementation project(":rosetta")
 
     // Markdown
     implementation "io.noties.markwon:core:4.6.2"

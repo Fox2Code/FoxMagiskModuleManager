@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -36,6 +37,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.R;
@@ -55,12 +57,12 @@ public class CompatActivity extends AppCompatActivity {
     private static final String TAG = "CompatActivity";
     public static final CompatActivity.OnBackPressedCallback DISABLE_BACK_BUTTON =
             new CompatActivity.OnBackPressedCallback() {
-        @Override
-        public boolean onBackPressed(CompatActivity compatActivity) {
-            compatActivity.setOnBackPressedCallback(this);
-            return true;
-        }
-    };
+                @Override
+                public boolean onBackPressed(CompatActivity compatActivity) {
+                    compatActivity.setOnBackPressedCallback(this);
+                    return true;
+                }
+            };
 
     final WeakReference<CompatActivity> selfReference;
     private final CompatConfigHelper compatConfigHelper = new CompatConfigHelper(this);
@@ -68,7 +70,8 @@ public class CompatActivity extends AppCompatActivity {
     private CompatActivity.OnBackPressedCallback onBackPressedCallback;
     private MenuItem.OnMenuItemClickListener menuClickListener;
     private CharSequence menuContentDescription;
-    @StyleRes private int setThemeDynamic = 0;
+    @StyleRes
+    private int setThemeDynamic = 0;
     private boolean onCreateCalledOnce = false;
     private boolean onCreateCalled = false;
     private boolean isRefreshUi = false;
@@ -221,7 +224,8 @@ public class CompatActivity extends AppCompatActivity {
         }
     }
 
-    @Dimension @Px
+    @Dimension
+    @Px
     public int getActionBarHeight() {
         androidx.appcompat.app.ActionBar compatActionBar;
         try {
@@ -247,6 +251,15 @@ public class CompatActivity extends AppCompatActivity {
         }
     }
 
+    public int getActionBarHeight(Activity activity) {
+        TypedValue tv = new TypedValue();
+        int actionBarHeight = 0;
+        if (activity.getTheme().resolveAttribute(R.attr.actionBarSize, tv, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+        }
+        return actionBarHeight;
+    }
+
     public void setActionBarBackground(Drawable drawable) {
         androidx.appcompat.app.ActionBar compatActionBar;
         try {
@@ -264,7 +277,8 @@ public class CompatActivity extends AppCompatActivity {
         }
     }
 
-    @Dimension @Px
+    @Dimension
+    @Px
     public int getStatusBarHeight() {
         int height = WindowInsetsCompat.CONSUMED.getInsets(
                 WindowInsetsCompat.Type.statusBars()).top;
@@ -476,7 +490,7 @@ public class CompatActivity extends AppCompatActivity {
         this.checkResourcesOverrides(forceEnglish, nightModeOverride);
     }
 
-    private void checkResourcesOverrides(boolean forceEnglish,Boolean nightModeOverride) {
+    private void checkResourcesOverrides(boolean forceEnglish, Boolean nightModeOverride) {
         if (this.isRefreshUi || !this.onCreateCalled) return; // Wait before reload
         this.compatConfigHelper.checkResourcesOverrides(forceEnglish, nightModeOverride);
     }
@@ -532,6 +546,14 @@ public class CompatActivity extends AppCompatActivity {
             } else return null;
         }
         return (CompatActivity) context;
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(newBase);
+        Locale locale = new Locale(mSharedPreferences.getString("user_preferred_country", "en"));
+        Context context = CompatWrapper.setLocale(newBase, locale);
+        super.attachBaseContext(context);
     }
 
     public WeakReference<CompatActivity> asWeakReference() {

@@ -23,6 +23,7 @@ import com.fox2code.mmm.compat.CompatThemeWrapper;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.utils.GMSProviderInstaller;
 import com.fox2code.mmm.utils.Http;
+import com.google.android.material.color.DynamicColors;
 import com.topjohnwu.superuser.Shell;
 
 import java.text.SimpleDateFormat;
@@ -115,9 +116,18 @@ public class MainApplication extends CompatApplication {
         return getSharedPreferences().getBoolean("pref_dns_over_https", true);
     }
 
+    public static boolean isMonetEnabled() {
+        return getSharedPreferences().getBoolean("pref_enable_monet", false);
+    }
+
     public static boolean isBlurEnabled() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 getSharedPreferences().getBoolean("pref_enable_blur", false);
+    }
+
+    public static boolean isChipsDisabled() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                getSharedPreferences().getBoolean("pref_disable_chips", false);
     }
 
     public static boolean isDeveloper() {
@@ -275,6 +285,11 @@ public class MainApplication extends CompatApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (MainApplication.isMonetEnabled()) {
+                DynamicColors.applyToActivitiesIfAvailable(this);
+            }
+        }
         SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
         // We are only one process so it's ok to do this
         SharedPreferences bootPrefs = MainApplication.bootSharedPreferences =

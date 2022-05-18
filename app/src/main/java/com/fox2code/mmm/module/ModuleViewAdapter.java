@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
@@ -25,11 +26,14 @@ import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
 import com.fox2code.mmm.repo.RepoModule;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import java.util.ArrayList;
 import java.util.Objects;
+
 
 public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdapter.ViewHolder> {
     private static final boolean DEBUG = false;
@@ -64,13 +68,15 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final CardView cardView;
+        private final Chip invalidPropsChip;
         private final ImageButton buttonAction;
         private final SwitchMaterial switchMaterial;
         private final TextView titleText;
         private final TextView creditText;
         private final TextView descriptionText;
+        private final LinearLayout moduleOptionsHolder;
         private final TextView updateText;
-        private final ImageButton[] actionsButtons;
+        private final Chip[] actionsButtons;
         private final ArrayList<ActionButtonType> actionButtonsTypes;
         private boolean initState;
         public ModuleHolder moduleHolder;
@@ -80,13 +86,15 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
             super(itemView);
             this.initState = true;
             this.cardView = itemView.findViewById(R.id.card_view);
+            this.invalidPropsChip = itemView.findViewById(R.id.invalid_module_props);
             this.buttonAction = itemView.findViewById(R.id.button_action);
             this.switchMaterial = itemView.findViewById(R.id.switch_action);
             this.titleText = itemView.findViewById(R.id.title_text);
             this.creditText = itemView.findViewById(R.id.credit_text);
             this.descriptionText = itemView.findViewById(R.id.description_text);
+            this.moduleOptionsHolder = itemView.findViewById(R.id.module_options_holder);
             this.updateText = itemView.findViewById(R.id.updated_text);
-            this.actionsButtons = new ImageButton[6];
+            this.actionsButtons = new Chip[6];
             this.actionsButtons[0] = itemView.findViewById(R.id.button_action1);
             this.actionsButtons[1] = itemView.findViewById(R.id.button_action2);
             this.actionsButtons[2] = itemView.findViewById(R.id.button_action3);
@@ -128,7 +136,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     ModuleHolder moduleHolder = this.moduleHolder;
                     if (index < this.actionButtonsTypes.size() && moduleHolder != null) {
                         this.actionButtonsTypes.get(index)
-                                .doAction((ImageButton) v, moduleHolder);
+                                .doAction((Chip) v, moduleHolder);
                         if (moduleHolder.shouldRemove()) {
                             this.cardView.setVisibility(View.GONE);
                         }
@@ -140,7 +148,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     boolean didSomething = false;
                     if (index < this.actionButtonsTypes.size() && moduleHolder != null) {
                         didSomething = this.actionButtonsTypes.get(index)
-                                .doActionLong((ImageButton) v, moduleHolder);
+                                .doActionLong((Chip) v, moduleHolder);
                         if (moduleHolder.shouldRemove()) {
                             this.cardView.setVisibility(View.GONE);
                         }
@@ -180,6 +188,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     this.switchMaterial.setVisibility(View.GONE);
                 }
                 this.creditText.setVisibility(View.VISIBLE);
+                this.moduleOptionsHolder.setVisibility(View.VISIBLE);
                 this.descriptionText.setVisibility(View.VISIBLE);
 
                 ModuleInfo moduleInfo = moduleHolder.getMainModuleInfo();
@@ -232,7 +241,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 this.switchMaterial.setEnabled(!showCaseMode &&
                         !moduleHolder.hasFlag(ModuleInfo.FLAG_MODULE_UPDATING));
                 for (int i = 0; i < this.actionsButtons.length; i++) {
-                    ImageButton imageButton = this.actionsButtons[i];
+                    Chip imageButton = this.actionsButtons[i];
                     if (i < this.actionButtonsTypes.size()) {
                         imageButton.setVisibility(View.VISIBLE);
                         imageButton.setImportantForAccessibility(
@@ -272,7 +281,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 this.descriptionText.setText(" ");
                 this.switchMaterial.setEnabled(false);
                 this.actionButtonsTypes.clear();
-                for (ImageButton button : this.actionsButtons) {
+                for (Chip button : this.actionsButtons) {
                     button.setVisibility(View.GONE);
                     button.setImportantForAccessibility(
                             View.IMPORTANT_FOR_ACCESSIBILITY_NO);
@@ -313,8 +322,21 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     backgroundAttr = moduleHolder.notificationType.backgroundAttr;
                 } else if (type == ModuleHolder.Type.INSTALLED &&
                         moduleHolder.hasFlag(ModuleInfo.FLAG_METADATA_INVALID)) {
-                    foregroundAttr = R.attr.colorOnError;
-                    backgroundAttr = R.attr.colorError;
+                    invalidPropsChip.setOnClickListener(_view -> {
+                        MaterialAlertDialogBuilder builder =
+                                new MaterialAlertDialogBuilder(_view.getContext());
+
+                        builder
+                                .setTitle(R.string.low_quality_module)
+                                .setMessage("Actual description for Low-quality module")
+                                .setCancelable(true)
+                                .setPositiveButton(R.string.ok, (x, y) -> x.dismiss()).show();
+
+                    });
+                    this.invalidPropsChip.setVisibility(View.VISIBLE);
+                    // Backup restore
+                    // foregroundAttr = R.attr.colorOnError;
+                    // backgroundAttr = R.attr.colorError;
                 }
                 Resources.Theme theme = this.cardView.getContext().getTheme();
                 TypedValue value = new TypedValue();

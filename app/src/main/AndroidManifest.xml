@@ -32,7 +32,8 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:networkSecurityConfig="@xml/network_security_config"
         android:usesCleartextTraffic="false"
-        tools:targetApi="s">
+        tools:targetApi="s"
+        tools:replace="android:supportsRtl">
         <receiver android:name="com.fox2code.mmm.manager.ModuleBootReceive"
             android:exported="true">
             <intent-filter>
@@ -62,7 +63,9 @@
             android:name=".installer.InstallerActivity"
             android:parentActivityName=".MainActivity"
             android:exported="false"
-            android:launchMode="singleTop">
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="${applicationId}.intent.action.INSTALL_MODULE_INTERNAL" />
             </intent-filter>

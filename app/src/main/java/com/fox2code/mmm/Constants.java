@@ -23,6 +23,11 @@ public class Constants {
     public static final String EXTRA_MARKDOWN_URL = "extra_markdown_url";
     public static final String EXTRA_MARKDOWN_TITLE = "extra_markdown_title";
     public static final String EXTRA_MARKDOWN_CONFIG = "extra_markdown_config";
+    public static final String EXTRA_MARKDOWN_CHANGE_BOOT = "extra_markdown_change_boot";
+    public static final String EXTRA_MARKDOWN_NEEDS_RAMDISK = "extra_markdown_needs_ramdisk";
+    public static final String EXTRA_MARKDOWN_MIN_MAGISK = "extra_markdown_min_magisk";
+    public static final String EXTRA_MARKDOWN_MIN_API= "extra_markdown_min_api";
+    public static final String EXTRA_MARKDOWN_MAX_API = "extra_markdown_max_api";
     public static final String EXTRA_FADE_OUT = "extra_fade_out";
     public static final String EXTRA_FROM_MANAGER = "extra_from_manager";
 }

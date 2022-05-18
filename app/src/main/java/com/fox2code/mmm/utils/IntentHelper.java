@@ -165,12 +165,17 @@ public class IntentHelper {
         }
     }
 
-    public static void openMarkdown(Context context, String url, String title, String config) {
+    public static void openMarkdown(Context context, String url, String title, String config, Boolean changeBoot, Boolean needsRamdisk,int minMagisk, int minApi, int maxApi) {
         try {
             Intent intent = new Intent(context, MarkdownActivity.class);
             MainApplication.addSecret(intent);
             intent.putExtra(Constants.EXTRA_MARKDOWN_URL, url);
             intent.putExtra(Constants.EXTRA_MARKDOWN_TITLE, title);
+            intent.putExtra(Constants.EXTRA_MARKDOWN_CHANGE_BOOT, changeBoot);
+            intent.putExtra(Constants.EXTRA_MARKDOWN_NEEDS_RAMDISK, needsRamdisk);
+            intent.putExtra(Constants.EXTRA_MARKDOWN_MIN_MAGISK, minMagisk);
+            intent.putExtra(Constants.EXTRA_MARKDOWN_MIN_API, minApi);
+            intent.putExtra(Constants.EXTRA_MARKDOWN_MAX_API, maxApi);
             if (config != null && !config.isEmpty())
                 intent.putExtra(Constants.EXTRA_MARKDOWN_CONFIG, config);
             startActivity(context, intent, true);

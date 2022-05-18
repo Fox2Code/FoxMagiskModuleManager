@@ -43,6 +43,11 @@
             app:entryValues="@array/theme_values"
             app:singleLineTitle="false"	/>
 
+        <Preference
+            app:key="pref_language_selector"
+            app:icon="@drawable/ic_baseline_language_24"
+            app:title="@string/language"	/>
+
         <SwitchPreferenceCompat
             app:defaultValue="false"
             app:key="pref_enable_blur"
@@ -52,17 +57,24 @@
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
-            app:key="pref_force_english"
-            app:icon="@drawable/ic_baseline_language_24"
-            app:title="@string/force_english_pref"
-            app:singleLineTitle="false" />
-
-        <SwitchPreferenceCompat
-            app:defaultValue="false"
             app:key="pref_force_dark_terminal"
             app:icon="@drawable/ic_baseline_list_24"
             app:title="@string/force_dark_terminal_title"
             app:singleLineTitle="false"	/>
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="pref_disable_chips"
+            app:icon="@drawable/ic_baseline_chip_24"
+            app:title="@string/disable_chips_in_description"
+            app:singleLineTitle="false" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="pref_enable_monet"
+            app:icon="@drawable/ic_baseline_design_services_24"
+            app:title="@string/enable_monet"
+            app:singleLineTitle="false" />
 
         <SwitchPreferenceCompat
             app:defaultValue="false"

@@ -22,11 +22,20 @@
     <string name="website">Website</string>
     <string name="support">Support</string>
     <string name="donate">Donate</string>
+    <string name="update">Update</string>
+    <string name="install">Install</string>
+    <string name="description">Description</string>
+    <string name="uninstall">Uninstall</string>
+    <string name="config">Config</string>
     <string name="submit_modules">Submit a module</string>
     <string name="require_android_6">Requires Android 6.0+</string>
+    <string name="require_android_12">Requires Android 12+</string>
     <string name="install_terminal_reboot_now">Reboot</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
+    <string name="language">Language</string>
+    <string name="yes" translatable="false">@android:string/yes</string>
+    <string name="no" translatable="false">@android:string/no</string>
+    <string name="ok" translatable="false">@android:string/ok</string>
+    <string name="cancel" translatable="false">@android:string/cancel</string>
 
     <!-- Module section translation -->
     <string name="module_last_update">Last version:</string>
@@ -34,6 +43,8 @@
     <string name="module_by">by</string>
     <string name="module_downloads">Downloads:</string>
     <string name="module_stars">Stars:</string>
+    <string name="module_needs_ramdisk">Needs ramdisk</string>
+    <string name="module_can_change_boot">Can change boot</string>
 
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
@@ -43,6 +54,7 @@
     <string name="prevent_reboot_pref">Prevent reboot</string>
     <string name="prevent_reboot_desc">Prevents unexpected reboots</string>
     <string name="pref_category_settings">Settings</string>
+    <string name="enable_monet">Enable Monet</string>
     <string name="pref_category_info">Info</string>
     <string name="show_licenses">Show licenses</string>
     <string name="licenses">Licences</string>
@@ -64,6 +76,7 @@
     <string name="module_id_prefix">Module ID: </string>
     <string name="install_from_storage">Install module from storage</string>
     <string name="invalid_format">The selected module has an invalid format</string>
+    <string name="low_quality_module">Low-quality module</string>
     <string name="local_install_title">Local install</string>
     <string name="source_code">Source code</string>
     <string name="magisk_builtin_module">Magisk built-in module</string>
@@ -100,6 +113,7 @@
         all text on the same line when installing a module.
     </string>
     <string name="enable_blur_pref">Blur</string>
+    <string name="disable_chips_in_description">Disable chips in description</string>
     <string name="repo_enabled">Repo on</string>
     <string name="repo_disabled">Repo off</string>
     <string name="add_repo">Add Repo</string>
