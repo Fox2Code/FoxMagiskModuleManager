@@ -1,25 +1,6 @@
 apply plugin: 'com.android.library'
 
 ext {
-    // Legal uses
-    groupIdBase = "com.ahmedjazzar.rosetta"
-
-    POM_INCEPTION_YEAR = "2016"
-    POM_PACKAGING = "aar"
-
-    POM_URL = "https://github.com/iamjazzar/rosetta"
-    POM_SCM_URL = "https://github.com/iamjazzar/rosetta"
-    POM_SCM_CONNECTION = "scm:git@github.com:iamjazzar/rosetta.git"
-    POM_SCM_DEV_CONNECTION = "scm:git@github.com:iamjazzar/rosetta.git"
-
-    POM_LICENCE_NAME = "MIT License"
-    POM_LICENCE_URL = "https://github.com/iamjazzar/rosetta/blob/master/LICENSE"
-    POM_LICENCE_DIST = "repo"
-
-    POM_DEVELOPER_ID = "ahmedaljazzar"
-    POM_DEVELOPER_NAME = "Ahmed Jazzar"
-    POM_DEVELOPER_URL = "https://github.com/iamjazzar"
-
     bintrayRepo = 'maven'
     bintrayName = 'Rosetta'
 

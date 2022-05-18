@@ -9,7 +9,7 @@ import android.util.Log;
 
 class Logger {
 
-    private String mTag;
+    private final String mTag;
 
     Logger(String tag) {
         this.mTag = tag;

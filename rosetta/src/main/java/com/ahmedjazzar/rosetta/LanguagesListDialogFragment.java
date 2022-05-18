@@ -1,4 +1,3 @@
-
 package com.ahmedjazzar.rosetta;
 
 import android.app.Dialog;
