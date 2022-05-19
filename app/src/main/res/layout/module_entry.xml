@@ -117,80 +117,69 @@
             </LinearLayout>
 
             <!-- Buttons -->
-            <LinearLayout
-                android:id="@+id/module_options_holder"
+            <HorizontalScrollView
                 android:visibility="gone"
+                android:id="@+id/module_options_holder"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:orientation="horizontal">
-                <HorizontalScrollView
-                    android:id="@+id/horizontalScrollView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="UselessParent">
+                android:layout_height="wrap_content">
 
-                    <com.google.android.material.chip.ChipGroup
+                <com.google.android.material.chip.ChipGroup
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:padding="4dp"
+                    app:singleLine="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/button_action1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:padding="4dp"
-                        app:singleLine="true">
+                        android:text="@string/loading"
+                        android:visibility="gone"
+                        app:chipIcon="@drawable/ic_baseline_error_24" />
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/button_action1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/loading"
-                            android:visibility="gone"
-                            app:chipIcon="@drawable/ic_baseline_error_24" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/button_action2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/loading"
-                            android:visibility="gone"
-                            app:chipIcon="@drawable/ic_baseline_error_24" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/button_action2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/loading"
+                        android:visibility="gone"
+                        app:chipIcon="@drawable/ic_baseline_error_24" />
 
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/button_action3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/loading"
-                            android:visibility="gone"
-                            app:chipIcon="@drawable/ic_baseline_error_24" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/button_action3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/loading"
+                        android:visibility="gone"
+                        app:chipIcon="@drawable/ic_baseline_error_24" />
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/button_action4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/loading"
-                            android:visibility="gone"
-                            app:chipIcon="@drawable/ic_baseline_error_24" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/button_action4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/loading"
+                        android:visibility="gone"
+                        app:chipIcon="@drawable/ic_baseline_error_24" />
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/button_action5"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/loading"
-                            android:visibility="gone"
-                            app:chipIcon="@drawable/ic_baseline_error_24" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/button_action5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/loading"
+                        android:visibility="gone"
+                        app:chipIcon="@drawable/ic_baseline_error_24" />
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/button_action6"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/loading"
-                            android:visibility="gone"
-                            app:chipIcon="@drawable/ic_baseline_error_24" />
-                    </com.google.android.material.chip.ChipGroup>
-                </HorizontalScrollView>
-            </LinearLayout>
-
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/button_action6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/loading"
+                        android:visibility="gone"
+                        app:chipIcon="@drawable/ic_baseline_error_24" />
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>

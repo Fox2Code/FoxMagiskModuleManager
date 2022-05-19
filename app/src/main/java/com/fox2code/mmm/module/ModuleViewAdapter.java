@@ -9,8 +9,8 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
@@ -74,7 +74,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
         private final TextView titleText;
         private final TextView creditText;
         private final TextView descriptionText;
-        private final LinearLayout moduleOptionsHolder;
+        private final HorizontalScrollView moduleOptionsHolder;
         private final TextView updateText;
         private final Chip[] actionsButtons;
         private final ArrayList<ActionButtonType> actionButtonsTypes;
@@ -274,6 +274,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 }
                 this.switchMaterial.setVisibility(View.GONE);
                 this.creditText.setVisibility(View.GONE);
+                this.moduleOptionsHolder.setVisibility(View.GONE);
                 this.descriptionText.setVisibility(View.GONE);
                 this.updateText.setVisibility(View.GONE);
                 this.titleText.setText(" ");
