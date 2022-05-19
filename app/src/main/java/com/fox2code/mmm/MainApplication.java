@@ -23,6 +23,7 @@ import com.fox2code.mmm.compat.CompatThemeWrapper;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.utils.GMSProviderInstaller;
 import com.fox2code.mmm.utils.Http;
+import com.fox2code.rosettax.LanguageSwitcher;
 import com.google.android.material.color.DynamicColors;
 import com.topjohnwu.superuser.Shell;
 
@@ -307,6 +308,8 @@ public class MainApplication extends CompatApplication {
         } else {
             MainApplication.firstBoot = bootPrefs.getBoolean("first_boot", false);
         }
+        // Force initialize language early.
+        new LanguageSwitcher(this);
         this.updateTheme();
         // Update SSL Ciphers if update is possible
         GMSProviderInstaller.installIfNeeded(this);

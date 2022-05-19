@@ -31,7 +31,7 @@ public enum ActionButtonType {
     INFO() {
         @Override
         public void update(Chip button, ModuleHolder moduleHolder) {
-            button.setChipIcon(button.getContext().getResources().getDrawable(R.drawable.ic_baseline_info_24));
+            button.setChipIcon(button.getContext().getDrawable(R.drawable.ic_baseline_info_24));
             button.setText(R.string.description);
         }
 
@@ -70,7 +70,7 @@ public enum ActionButtonType {
             int icon = moduleHolder.hasUpdate() ?
                     R.drawable.ic_baseline_update_24 :
                     R.drawable.ic_baseline_system_update_24;
-            button.setChipIcon(button.getContext().getResources().getDrawable(icon));
+            button.setChipIcon(button.getContext().getDrawable(icon));
             if (moduleHolder.hasUpdate()) {
                 button.setText(R.string.update);
             } else {
@@ -150,7 +150,7 @@ public enum ActionButtonType {
                             moduleHolder.hasFlag(ModuleInfo.FLAGS_MODULE_ACTIVE)) ?
                     R.drawable.ic_baseline_delete_24 :
                     R.drawable.ic_baseline_delete_forever_24;
-            button.setChipIcon(button.getContext().getResources().getDrawable(icon));
+            button.setChipIcon(button.getContext().getDrawable(icon));
             button.setText(R.string.uninstall);
         }
 
@@ -190,7 +190,7 @@ public enum ActionButtonType {
     CONFIG() {
         @Override
         public void update(Chip button, ModuleHolder moduleHolder) {
-            button.setChipIcon(button.getContext().getResources().getDrawable(R.drawable.ic_baseline_app_settings_alt_24));
+            button.setChipIcon(button.getContext().getDrawable(R.drawable.ic_baseline_app_settings_alt_24));
             button.setText(R.string.config);
         }
 
@@ -209,7 +209,7 @@ public enum ActionButtonType {
         @Override
         public void update(Chip button, ModuleHolder moduleHolder) {
             ModuleInfo moduleInfo = moduleHolder.getMainModuleInfo();
-            button.setChipIcon(button.getContext().getResources().getDrawable(supportIconForUrl(moduleInfo.support)));
+            button.setChipIcon(button.getContext().getDrawable(supportIconForUrl(moduleInfo.support)));
             button.setText(R.string.support);
         }
 
@@ -228,7 +228,7 @@ public enum ActionButtonType {
             } else if (moduleInfo.donate.startsWith("https://www.patreon.com/")) {
                 icon = R.drawable.ic_patreon;
             }
-            button.setChipIcon(button.getContext().getResources().getDrawable(icon));
+            button.setChipIcon(button.getContext().getDrawable(icon));
             button.setText(R.string.donate);
         }
 
@@ -266,7 +266,7 @@ public enum ActionButtonType {
     }
 
     public void update(Chip button, ModuleHolder moduleHolder) {
-        button.setChipIcon(button.getContext().getResources().getDrawable(this.iconId));
+        button.setChipIcon(button.getContext().getDrawable(this.iconId));
     }
 
     public abstract void doAction(Chip button, ModuleHolder moduleHolder);

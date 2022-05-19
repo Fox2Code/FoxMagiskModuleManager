@@ -71,10 +71,7 @@ android {
 }
 
 aboutLibraries {
-    additionalLicenses = [
-            "LGPL_3_0_only",
-            "rosetta"
-    ]
+    additionalLicenses = ["LGPL_3_0_only"]
 }
 
 configurations {
@@ -101,7 +98,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.9.3'
     implementation 'com.squareup.okhttp3:okhttp-brotli:4.9.3'
     implementation 'com.github.topjohnwu.libsu:io:5.0.1'
-    implementation project(":rosetta")
+    implementation 'com.github.Fox2Code:RosettaX:46ec630055'
 
     // Markdown
     implementation "io.noties.markwon:core:4.6.2"

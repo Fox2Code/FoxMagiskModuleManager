@@ -26,7 +26,7 @@ import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 
-import com.ahmedjazzar.rosetta.LanguageSwitcher;
+import com.fox2code.rosettax.LanguageSwitcher;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
@@ -98,9 +98,6 @@ public class SettingsActivity extends CompatActivity {
                 return true;
             });
 
-            // This is the locale that you wanna your app to launch with.
-            String firstLaunchLocale = "en";
-
             // Warning! Locales that are't exist will crash the app
             HashSet<String> supportedLocales = new HashSet<>();
             supportedLocales.add("cs");
@@ -120,13 +117,13 @@ public class SettingsActivity extends CompatActivity {
             supportedLocales.add("vi");
             supportedLocales.add("zh-rCH");
             supportedLocales.add("zh-rTW");
-            supportedLocales.add(firstLaunchLocale);
+            supportedLocales.add("en");
 
             Preference languageSelector = findPreference("pref_language_selector");
             languageSelector.setOnPreferenceClickListener(preference -> {
-                LanguageSwitcher ls = new LanguageSwitcher(getActivity(), new Locale(firstLaunchLocale));
-                ls.showChangeLanguageDialog(getActivity());
+                LanguageSwitcher ls = new LanguageSwitcher(getActivity());
                 ls.setSupportedStringLocales(supportedLocales);
+                ls.showChangeLanguageDialog(getActivity());
                 return true;
             });
 
