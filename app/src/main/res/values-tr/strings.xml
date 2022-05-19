@@ -22,11 +22,20 @@
     <string name="website">Web sitesi</string>
     <string name="support">Destek</string>
     <string name="donate">Bağış yap</string>
+    <string name="update">Güncelle</string>
+    <string name="install">Yükle</string>
+    <string name="description">Açıklama</string>
+    <string name="uninstall">Kaldır</string>
+    <string name="config">Yapılandırma</string>
     <string name="submit_modules">Bir modül gönder</string>
-    <string name="require_android_6">Android 6.0+ gerekli</string>
+    <string name="require_android_6">Android 6.0+ gerekir</string>
+    <string name="require_android_12">Android 12+ gerekir</string>
+    <string name="language">Dil</string>
     <string name="install_terminal_reboot_now">Yeniden başlat</string>
     <string name="yes">Evet</string>
     <string name="no">Hayır</string>
+    <string name="ok">Tamam</string>
+    <string name="cancel">İptal</string>
 
     <!-- Module section translation -->
     <string name="module_last_update">Son güncelleme:</string>
@@ -34,6 +43,8 @@
     <string name="module_by">tarafından</string>
     <string name="module_downloads">İndirmeler:</string>
     <string name="module_stars">Yıldızlar:</string>
+    <string name="module_needs_ramdisk">Ramdisk gerekli</string>
+    <string name="module_can_change_boot">Boot\'u değiştirebilir</string>
 
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
@@ -43,6 +54,7 @@
     <string name="prevent_reboot_pref">Yeniden başlatmayı engelle</string>
     <string name="prevent_reboot_desc">Beklenmeyen yeniden başlatmaları önler</string>
     <string name="pref_category_settings">Ayarlar</string>
+    <string name="enable_monet">Monet\'i etkinleştir</string>
     <string name="pref_category_info">Bilgi</string>
     <string name="show_licenses">Lisansları göster</string>
     <string name="licenses">Lisanslar</string>
@@ -64,11 +76,12 @@
     <string name="module_id_prefix">Modül id: </string>
     <string name="install_from_storage">Depolamadan modül yükle</string>
     <string name="invalid_format">Seçilmiş modül geçersiz biçimde</string>
+    <string name="low_quality_module">Düşük kaliteli modül</string>
     <string name="local_install_title">Yerel yükleme</string>
     <string name="source_code">Kaynak kodu</string>
     <string name="magisk_builtin_module">Magisk yerleşik modülü</string>
     <string name="substratum_builtin_module">Substratum yerleşik modülü</string>
-    <string name="force_dark_terminal_title">Terminal koyu modunu zorla</string>
+    <string name="force_dark_terminal_title">Koyu terminal</string>
     <string name="file_picker_failure">Şimdiki dosya seçicisi dosyaya erişemedi.</string>
     <string name="remote_install_title">Uzaktan yükleme</string>
     <string name="file_picker_wierd">Dosya seçicisi standart olmayan bir yanıtı geri getirdi</string>
@@ -95,9 +108,10 @@
     </string>
     <string name="wrap_text_pref">Metni kaydır</string>
     <string name="wrap_text_desc">
-        Tüm metni aynı satıra koymak yerine metni yeni bir satıra kaydırır.
+        Bir modül yüklerken tüm metni aynı satıra koymak yerine metni yeni bir satıra kaydırır.
     </string>
     <string name="enable_blur_pref">Bulanıklık</string>
+    <string name="disable_chips_in_description">Açıklamadaki çipleri devre dışı bırak</string>
     <string name="repo_enabled">Repo açık</string>
     <string name="repo_disabled">Repo kapalı</string>
     <string name="add_repo">Repo ekle</string>
