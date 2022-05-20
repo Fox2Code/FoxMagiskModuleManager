@@ -38,8 +38,7 @@ public enum ActionButtonType {
         @Override
         public void doAction(Chip button, ModuleHolder moduleHolder) {
             String notesUrl = moduleHolder.repoModule.notesUrl;
-            if (notesUrl.startsWith("https://api.androidacy.com/magisk/readme/?module=") ||
-                    notesUrl.startsWith("https://www.androidacy.com/")) {
+            if (AndroidacyUtil.isAndroidacyLink(notesUrl)) {
                 IntentHelper.openUrlAndroidacy(button.getContext(), notesUrl, false,
                         moduleHolder.repoModule.moduleInfo.name,
                         moduleHolder.getMainModuleConfig());
@@ -85,8 +84,7 @@ public enum ActionButtonType {
             String updateZipUrl = moduleHolder.getUpdateZipUrl();
             if (updateZipUrl == null) return;
             // Androidacy manage the selection between download and install
-            if (updateZipUrl.startsWith("https://www.androidacy.com/") ||
-                    updateZipUrl.startsWith("https://api.androidacy.com/magisk/info/?module=")) {
+            if (AndroidacyUtil.isAndroidacyLink(updateZipUrl)) {
                 IntentHelper.openUrlAndroidacy(
                         button.getContext(), updateZipUrl, true,
                         moduleInfo.name, moduleInfo.config);
@@ -248,6 +246,8 @@ public enum ActionButtonType {
             icon = R.drawable.ic_baseline_discord_24;
         } else if (url.startsWith("https://github.com/")) {
             icon = R.drawable.ic_github;
+        } else if (url.startsWith("https://gitlab.com/")) {
+            icon = R.drawable.ic_gitlab;
         } else if (url.startsWith("https://forum.xda-developers.com/")) {
             icon = R.drawable.ic_xda;
         }
