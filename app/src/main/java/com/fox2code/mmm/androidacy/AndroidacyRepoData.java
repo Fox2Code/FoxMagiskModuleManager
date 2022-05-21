@@ -36,14 +36,15 @@ public class AndroidacyRepoData extends RepoData {
         OK_HTTP_URL_BUILDER.setHost$okhttp(".androidacy.com");
         OK_HTTP_URL = OK_HTTP_URL_BUILDER.build();
     }
+    // Avoid spamming requests to Androidacy
     private long androidacyBlockade = 0;
 
     public AndroidacyRepoData(String url, File cacheRoot,
                                  SharedPreferences cachedPreferences) {
         super(url, cacheRoot, cachedPreferences);
         if (this.metaDataCache.exists()) {
-            this.androidacyBlockade = this.metaDataCache.lastModified() + 5_000L;
-            if (this.androidacyBlockade - 10_000L > System.currentTimeMillis()) {
+            this.androidacyBlockade = this.metaDataCache.lastModified() + 30_000L;
+            if (this.androidacyBlockade - 60_000L > System.currentTimeMillis()) {
                 this.androidacyBlockade = 0; // Don't allow time travel. Well why not???
             }
         }

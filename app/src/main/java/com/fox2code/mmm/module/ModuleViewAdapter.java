@@ -81,6 +81,8 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
         private boolean initState;
         public ModuleHolder moduleHolder;
         public Drawable background;
+        private boolean canExpand;
+        private boolean expanded;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -112,6 +114,11 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     } else if (moduleHolder.notificationType != null) {
                         onClickListener = moduleHolder.notificationType.onClickListener;
                         if (onClickListener != null) onClickListener.onClick(v);
+                    } else if (this.canExpand) {
+                        this.cardView.setClickable(false);
+                        if (this.expanded) return;
+                        this.expanded = true;
+                        // TODO Animated expand code
                     }
                 }
             });
@@ -171,13 +178,17 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 this.cardView.setVisibility(View.GONE);
                 this.moduleHolder = null;
                 this.initState = false;
+                this.expanded = false;
                 return true;
+            } else if (moduleHolder != this.moduleHolder) {
+                this.expanded = false;
             }
             ModuleHolder.Type type = moduleHolder.getType();
             ModuleHolder.Type vType = moduleHolder.getCompareType(type);
             this.cardView.setVisibility(View.VISIBLE);
             boolean showCaseMode = MainApplication.isShowcaseMode();
             if (moduleHolder.isModuleHolder()) {
+                this.canExpand = false;
                 this.buttonAction.setVisibility(View.GONE);
                 LocalModuleInfo localModuleInfo = moduleHolder.moduleInfo;
                 if (localModuleInfo != null) {
@@ -235,6 +246,8 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     this.updateText.setText(R.string.substratum_builtin_module);
                 } else {
                     this.updateText.setVisibility(View.GONE);
+                    this.canExpand = false;
+                    this.expanded = true;
                 }
                 this.actionButtonsTypes.clear();
                 moduleHolder.getButtons(itemView.getContext(), this.actionButtonsTypes, showCaseMode);
@@ -256,6 +269,10 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                         imageButton.setContentDescription(null);
                     }
                 }
+                if (this.actionButtonsTypes.isEmpty()) {
+                    this.canExpand = false;
+                    this.expanded = false;
+                }
                 this.cardView.setClickable(false);
                 if (moduleHolder.isModuleHolder() &&
                         moduleHolder.hasFlag(ModuleInfo.FLAG_MODULE_ACTIVE)) {
@@ -264,6 +281,8 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     this.titleText.setTypeface(Typeface.DEFAULT);
                 }
             } else {
+                this.canExpand = false;
+                this.expanded = false;
                 if (type == ModuleHolder.Type.SEPARATOR && moduleHolder.filterLevel != 0) {
                     this.buttonAction.setVisibility(View.VISIBLE);
                     this.buttonAction.setImageResource(moduleHolder.filterLevel);
@@ -312,6 +331,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
             // Coloration system
             Drawable drawable = this.cardView.getBackground();
             if (drawable != null) this.background = drawable;
+            this.invalidPropsChip.setVisibility(View.GONE);
             if (type.hasBackground) {
                 if (drawable == null) {
                     this.cardView.setBackground(this.background);
@@ -323,18 +343,14 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     backgroundAttr = moduleHolder.notificationType.backgroundAttr;
                 } else if (type == ModuleHolder.Type.INSTALLED &&
                         moduleHolder.hasFlag(ModuleInfo.FLAG_METADATA_INVALID)) {
-                    invalidPropsChip.setOnClickListener(_view -> {
+                    this.invalidPropsChip.setOnClickListener(_view -> {
                         MaterialAlertDialogBuilder builder =
                                 new MaterialAlertDialogBuilder(_view.getContext());
-
-                        builder
-                                .setTitle(R.string.low_quality_module)
+                        builder.setTitle(R.string.low_quality_module)
                                 .setMessage("Actual description for Low-quality module")
                                 .setCancelable(true)
                                 .setPositiveButton(R.string.ok, (x, y) -> x.dismiss()).show();
-
                     });
-                    this.invalidPropsChip.setVisibility(View.VISIBLE);
                     // Backup restore
                     // foregroundAttr = R.attr.colorOnError;
                     // backgroundAttr = R.attr.colorError;
@@ -364,6 +380,11 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 this.titleText.setMinHeight(moduleHolder.footerPx);
             } else {
                 this.titleText.setMinHeight(0);
+            }
+            if (this.expanded) {
+                // TODO Static expand code
+            } else {
+                // TODO Static retract code
             }
             this.moduleHolder = moduleHolder;
             this.initState = false;

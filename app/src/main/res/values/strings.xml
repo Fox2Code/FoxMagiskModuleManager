@@ -38,7 +38,7 @@
     <string name="cancel" translatable="false">@android:string/cancel</string>
 
     <!-- Module section translation -->
-    <string name="module_last_update">Last version:</string>
+    <string name="module_last_update">Last update:</string>
     <string name="module_repo">Repo:</string>
     <string name="module_by">by</string>
     <string name="module_downloads">Downloads:</string>

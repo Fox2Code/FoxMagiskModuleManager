@@ -78,7 +78,7 @@
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
         <item name="android:dialogCornerRadius" tools:targetApi="p">@dimen/card_corner_radius</item>
         <item name="dialogCornerRadius">@dimen/card_corner_radius</item>
-        <item name="colorBackgroundFloating">#FF1E1E1E</item>
+        <item name="colorBackgroundFloating">#FF202020</item>
         <item name="backgroundColor">#FF111111</item>
         <item name="chipStyle">@style/Widget.Material.Chip.Choice.Dark</item>
     </style>

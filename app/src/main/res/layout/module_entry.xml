@@ -9,7 +9,8 @@
     android:layout_marginTop="2dp"
     android:layout_marginBottom="2dp"
     android:gravity="center_vertical"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="RtlHardcoded,RtlSymmetry">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_view"
@@ -22,19 +23,11 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Media -->
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="194dp"
-                android:visibility="gone"
-                android:scaleType="centerCrop"
-                tools:ignore="ContentDescription" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="8dp">
+                android:padding="6dp">
 
                 <!-- Module components -->
                 <LinearLayout
@@ -58,6 +51,7 @@
 
                     <TextView
                         android:id="@+id/title_text"
+                        android:paddingStart="2dp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -87,6 +81,7 @@
 
                 <TextView
                     android:id="@+id/credit_text"
+                    android:paddingStart="2dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/loading"
@@ -96,6 +91,7 @@
                     />
                 <TextView
                     android:id="@+id/description_text"
+                    android:paddingStart="2dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -107,6 +103,7 @@
 
                 <TextView
                     android:id="@+id/updated_text"
+                    android:paddingStart="2dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -127,7 +124,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:padding="4dp"
+                    android:paddingRight="4dp"
+                    android:paddingLeft="4dp"
                     app:singleLine="true">
 
                     <com.google.android.material.chip.Chip
