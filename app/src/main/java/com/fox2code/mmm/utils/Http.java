@@ -76,7 +76,6 @@ public class Http {
             }
             throw error;
         }
-        CookieManager.getInstance().setAcceptCookie(true);
         OkHttpClient.Builder httpclientBuilder = new OkHttpClient.Builder();
         // Default is 10, extend it a bit for slow mobile connections.
         httpclientBuilder.connectTimeout(15, TimeUnit.SECONDS);
@@ -144,6 +143,7 @@ public class Http {
         CookieManager cookieManager;
         try {
             cookieManager = CookieManager.getInstance();
+            cookieManager.setAcceptCookie(true);
             cookieManager.flush(); // Make sure the instance work
         } catch (Throwable t) {
             cookieManager = null;
