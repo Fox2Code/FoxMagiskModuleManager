@@ -1,0 +1,11 @@
+id=fox_mmm_rainbow
+name=Fox's Mmm Rainbow Module
+version=v1.0
+versionCode=1
+author=Fox2Code
+description=Fox's Magisk Module Manager rainbow module
+minApi=21
+minMagisk=19000
+support=https://github.com/Fox2Code/FoxMagiskModuleManager
+donate=https://paypal.me/fox2code
+config=com.fox2code.mmm
