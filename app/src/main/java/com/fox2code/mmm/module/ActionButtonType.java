@@ -98,13 +98,11 @@ public enum ActionButtonType {
                     .setIcon(R.drawable.ic_baseline_extension_24);
             CharSequence desc = moduleInfo.description;
             Markwon markwon = null;
-            if (moduleInfo instanceof LocalModuleInfo) {
-                LocalModuleInfo localModuleInfo = (LocalModuleInfo) moduleInfo;
-                if (!localModuleInfo.updateChangeLog.isEmpty()) {
-                    markwon = MainApplication.getINSTANCE().getMarkwon();
-                    // Re-render each time in cse of config changes
-                    desc = markwon.toMarkdown(localModuleInfo.updateChangeLog);
-                }
+            LocalModuleInfo localModuleInfo = moduleHolder.moduleInfo;
+            if (localModuleInfo != null && !localModuleInfo.updateChangeLog.isEmpty()) {
+                markwon = MainApplication.getINSTANCE().getMarkwon();
+                // Re-render each time in cse of config changes
+                desc = markwon.toMarkdown(localModuleInfo.updateChangeLog);
             }
 
             if (desc == null || desc.length() == 0) {
