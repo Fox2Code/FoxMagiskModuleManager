@@ -190,6 +190,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
             if (moduleHolder.isModuleHolder()) {
                 this.canExpand = false;
                 this.buttonAction.setVisibility(View.GONE);
+                this.buttonAction.setBackground(null);
                 LocalModuleInfo localModuleInfo = moduleHolder.moduleInfo;
                 if (localModuleInfo != null) {
                     this.switchMaterial.setVisibility(View.VISIBLE);
@@ -286,10 +287,12 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 if (type == ModuleHolder.Type.SEPARATOR && moduleHolder.filterLevel != 0) {
                     this.buttonAction.setVisibility(View.VISIBLE);
                     this.buttonAction.setImageResource(moduleHolder.filterLevel);
+                    this.buttonAction.setBackgroundResource(R.drawable.bg_baseline_circle_24);
                 } else {
                     this.buttonAction.setVisibility(
                             type == ModuleHolder.Type.NOTIFICATION ?
                                     View.VISIBLE : View.GONE);
+                    this.buttonAction.setBackground(null);
                 }
                 this.switchMaterial.setVisibility(View.GONE);
                 this.creditText.setVisibility(View.GONE);
