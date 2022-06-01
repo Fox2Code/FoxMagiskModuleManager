@@ -15,7 +15,8 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.fox2code.mmm.module.ActionButtonType;
+import com.fox2code.androidansi.AnsiConstants;
+import com.fox2code.androidansi.AnsiParser;
 import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
@@ -23,6 +24,7 @@ import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.XHooks;
 import com.fox2code.mmm.compat.CompatActivity;
+import com.fox2code.mmm.module.ActionButtonType;
 import com.fox2code.mmm.utils.FastException;
 import com.fox2code.mmm.utils.Files;
 import com.fox2code.mmm.utils.Hashes;
@@ -119,7 +121,8 @@ public class InstallerActivity extends CompatActivity {
         this.progressIndicator = findViewById(R.id.progress_bar);
         this.rebootFloatingButton = findViewById(R.id.install_terminal_reboot_fab);
         this.installerTerminal = new InstallerTerminal(
-                installTerminal = findViewById(R.id.install_terminal), foreground);
+                installTerminal = findViewById(R.id.install_terminal),
+                this.isLightTheme(), foreground);
         (horizontalScroller != null ? horizontalScroller : installTerminal)
                 .setBackground(new ColorDrawable(background));
         this.progressIndicator.setVisibility(View.GONE);
@@ -249,8 +252,26 @@ public class InstallerActivity extends CompatActivity {
                         "! Failed to extract test install script", "");
                 return;
             }
+            this.installerTerminal.enableAnsi();
+            // Extract customize.sh manually in rootless mode because unzip might not exists
+            try (ZipFile zipFile = new ZipFile(file)) {
+                ZipEntry zipEntry = zipFile.getEntry("customize.sh");
+                if (zipEntry != null) {
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(
+                            new File(file.getParentFile(), "customize.sh"))) {
+                        Files.copy(zipFile.getInputStream(zipEntry), fileOutputStream);
+                    }
+                }
+            } catch (Exception e) {
+                Log.d(TAG, "Failed ot extract install script via java code", e);
+            }
             installerMonitor = new InstallerMonitor(installScript);
             installJob = Shell.cmd("export MMM_EXT_SUPPORT=1",
+                    "export MMM_USER_LANGUAGE=" + (MainApplication.isForceEnglish() ? "en-US" :
+                            Resources.getSystem().getConfiguration().locale.toLanguageTag()),
+                    "export MMM_APP_VERSION=" + BuildConfig.VERSION_NAME,
+                    "export MMM_TEXT_WRAP=" + (this.textWrap ? "1" : "0"),
+                    AnsiConstants.ANSI_CMD_SUPPORT,
                     "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
                     "sh \"" + installScript.getAbsolutePath() + "\"" +
                             " 3 0 \"" + file.getAbsolutePath() + "\"")
@@ -372,15 +393,25 @@ public class InstallerActivity extends CompatActivity {
             installerMonitor = new InstallerMonitor(installExecutable);
             if (moduleId != null) installerMonitor.setForCleanUp(moduleId);
             if (noExtensions) {
+                if ((compatFlags & AppUpdateManager.FLAG_COMPAT_FORCE_ANSI) != 0)
+                    this.installerTerminal.enableAnsi();
+                else this.installerTerminal.disableAnsi();
                 installJob = Shell.cmd(arch32, "export BOOTMODE=true", // No Extensions
+                        this.installerTerminal.isAnsiEnabled() ?
+                                AnsiConstants.ANSI_CMD_SUPPORT : "true",
                         "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
                         installCommand).to(installerController, installerMonitor);
             } else {
+                if ((compatFlags & AppUpdateManager.FLAG_COMPAT_NO_ANSI) != 0)
+                    this.installerTerminal.enableAnsi();
+                else this.installerTerminal.disableAnsi();
                 installJob = Shell.cmd(arch32, "export MMM_EXT_SUPPORT=1",
                         "export MMM_USER_LANGUAGE=" + (MainApplication.isForceEnglish() ? "en-US" :
                                 Resources.getSystem().getConfiguration().locale.toLanguageTag()),
                         "export MMM_APP_VERSION=" + BuildConfig.VERSION_NAME,
                         "export MMM_TEXT_WRAP=" + (this.textWrap ? "1" : "0"),
+                        this.installerTerminal.isAnsiEnabled() ?
+                                AnsiConstants.ANSI_CMD_SUPPORT : "true",
                         "export BOOTMODE=true", anyKernel3 ? "export AK3TMPFS=" +
                                 InstallerInitializer.peekMagiskPath() + "/ak3tmpfs" :
                                 "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
@@ -389,8 +420,7 @@ public class InstallerActivity extends CompatActivity {
         }
         boolean success = installJob.exec().isSuccess();
         // Wait one UI cycle before disabling controller or processing results
-        UiThreadHandler.runAndWait(() -> {
-        }); // to avoid race conditions
+        UiThreadHandler.runAndWait(() -> {}); // to avoid race conditions
         installerController.disable();
         String message = "- Install successful";
         if (!success) {
@@ -433,6 +463,7 @@ public class InstallerActivity extends CompatActivity {
                 this.useExt = true;
                 return;
             }
+            s = AnsiParser.patchEscapeSequence(s);
             if (this.useExt && s.startsWith("#!")) {
                 this.processCommand(s.substring(2));
             } else if (this.useRecovery && s.startsWith("progress ")) {
@@ -464,7 +495,7 @@ public class InstallerActivity extends CompatActivity {
             final String arg;
             final String command;
             int i = rawCommand.indexOf(' ');
-            if (i != -1) {
+            if (i != -1 && rawCommand.length() != i + 1) {
                 arg = rawCommand.substring(i + 1).trim();
                 command = rawCommand.substring(0, i);
             } else {
@@ -533,6 +564,9 @@ public class InstallerActivity extends CompatActivity {
                     if (arg.isEmpty() || (arg.startsWith("https://") &&
                             arg.indexOf('/', 8) > 8))
                         this.supportLink = arg;
+                    break;
+                case "disableANSI":
+                    this.terminal.disableAnsi();
                     break;
             }
         }
@@ -625,6 +659,7 @@ public class InstallerActivity extends CompatActivity {
 
     @SuppressWarnings("SameParameterValue")
     private void setInstallStateFinished(boolean success, String message, String optionalLink) {
+        this.installerTerminal.disableAnsi();
         if (success && toDelete != null && !toDelete.delete()) {
             SuFile suFile = new SuFile(toDelete.getAbsolutePath());
             if (suFile.exists() && !suFile.delete())

@@ -31,7 +31,6 @@ import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import java.util.HashSet;
-import java.util.Locale;
 
 public class SettingsActivity extends CompatActivity {
     private static int devModeStep = 0;

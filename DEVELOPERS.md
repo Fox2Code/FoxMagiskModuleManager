@@ -9,6 +9,7 @@ Note: official repo do not accept new modules anymore, submit
 Index:
 - [Special notes](DEVELOPERS.md#special-notes)
 - [Properties](DEVELOPERS.md#properties)
+- [ANSI Styling](DEVELOPERS.md#ansi-styling)
 - [Installer commands](DEVELOPERS.md#installer-commands)
 
 ## Special notes
@@ -72,11 +73,19 @@ for some modules
 Theses values are only used if not defined in the `module.prop` files  
 So the original module maker can still override them
 
+## ANSI Styling
+
+FoxMMM declare `ANSI_SUPPORT` to `true` if ANSI is supported.
+
+It use [AndroidANSI](https://github.com/Fox2Code/AndroidANSI) library,
+please check it's [README.md](https://github.com/Fox2Code/AndroidANSI/blob/master/README.md)
+for the list of supported codes.
+
 ## Installer commands
 
-The Fox's Mmm also allow better control over it's installer interface
+FoxMmm also allow better control over it's installer interface
 
-Fox's Mmm define the variable `MMM_EXT_SUPPORT` to expose it's extensions support
+FoxMmm define the variable `MMM_EXT_SUPPORT` to expose it's extensions support
 
 All the commands start with it `#!`, by default the manager process command as log output
 unless `#!useExt` is sent to indicate that the app is ready to use commands
@@ -97,6 +106,7 @@ Commands:
 - `hideLoading`: Hide the indeterminate progress bar if previously shown
 - `setSupportLink <url>`: Set support link to show when the install finish  
   (Note: Modules installed from repo will not show the config button if a link is set)
+- `disableANSI`: Disable ANSI support if enabled
 
 Variables:
 - `MMM_EXT_SUPPORT` declared if extensions are supported
@@ -131,10 +141,9 @@ mmm_exec hideLoading
 mmm_exec setSupportLink https://github.com/Fox2Code/FoxMagiskModuleManager
 ```
 
-You may look at the [example module](example_module) code or 
-download the [module zip](example_module.zip) and try it yourself
+[You may look at the examples modules and their codes.](examples)
 
-Have fun with the API making the user install experience a unique experience
+Have fun with the API making your user install experience a unique experience
 
 Also there is the source of the app icon
 [here](https://romannurik.github.io/AndroidAssetStudio/icons-launcher.html#foreground.type=clipart&foreground.clipart=extension&foreground.space.trim=0&foreground.space.pad=0.25&foreColor=rgb(255%2C%20255%2C%20255)&backColor=rgb(255%2C%20152%2C%200)&crop=0&backgroundShape=circle&effects=elevate&name=ic_launcher)
