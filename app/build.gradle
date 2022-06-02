@@ -98,7 +98,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.9.3'
     implementation 'com.squareup.okhttp3:okhttp-brotli:4.9.3'
     implementation 'com.github.topjohnwu.libsu:io:5.0.1'
-    implementation 'com.github.Fox2Code:RosettaX:1.0.1'
+    implementation 'com.github.Fox2Code:RosettaX:1.0.2'
     implementation 'com.github.Fox2Code:AndroidANSI:1.0.1'
 
     // Markdown
