@@ -8,6 +8,7 @@ import android.webkit.WebView;
 import androidx.annotation.Keep;
 
 import com.fox2code.mmm.manager.ModuleManager;
+import com.fox2code.mmm.repo.RepoManager;
 
 /**
  * Class made to expose some manager functions to xposed modules.
@@ -37,5 +38,15 @@ public class XHooks {
     @Keep
     public static void onWebViewInitialize(WebView webView,boolean allowInstall) {
         if (webView == null) throw new NullPointerException("WebView is null!");
+    }
+
+    @Keep
+    public static XRepo addXRepo(String url, String fallbackName) {
+        return RepoManager.getINSTANCE().addOrGet(url);
+    }
+
+    @Keep
+    public static XRepo getXRepo(String url) {
+        return RepoManager.getINSTANCE().get(url);
     }
 }

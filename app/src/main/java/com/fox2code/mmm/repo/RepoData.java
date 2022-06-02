@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
+import com.fox2code.mmm.XRepo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.utils.Files;
 import com.fox2code.mmm.utils.PropUtils;
@@ -21,7 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-public class RepoData {
+public class RepoData extends XRepo {
     private static final String TAG = "RepoData";
     private final Object populateLock = new Object();
     public final String url;
@@ -43,7 +44,7 @@ public class RepoData {
         this.moduleHashMap = new HashMap<>();
         this.name = this.url; // Set url as default name
         this.enabled = MainApplication.getSharedPreferences()
-                .getBoolean("pref_" + this.id + "_enabled", this.isEnabledByDefault(this.id));
+                .getBoolean("pref_" + this.id + "_enabled", this.isEnabledByDefault());
         if (!this.cacheRoot.isDirectory()) {
             this.cacheRoot.mkdirs();
         } else {
@@ -136,8 +137,9 @@ public class RepoData {
         return newModules;
     }
 
-    protected boolean isEnabledByDefault(String id) {
-        return !BuildConfig.DISABLED_REPOS.contains(id);
+    @Override
+    public boolean isEnabledByDefault() {
+        return !BuildConfig.DISABLED_REPOS.contains(this.id);
     }
 
     public void storeMetadata(RepoModule repoModule,byte[] data) throws IOException {
@@ -170,10 +172,12 @@ public class RepoData {
                 fallback : this.name;
     }
 
+    @Override
     public boolean isEnabled() {
         return this.enabled;
     }
 
+    @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
         MainApplication.getSharedPreferences().edit()
@@ -182,6 +186,6 @@ public class RepoData {
 
     public void updateEnabledState() {
         this.enabled = MainApplication.getSharedPreferences()
-                .getBoolean("pref_" + this.id + "_enabled", this.isEnabledByDefault(this.id));
+                .getBoolean("pref_" + this.id + "_enabled", this.isEnabledByDefault());
     }
 }
