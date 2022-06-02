@@ -32,6 +32,8 @@ public final class RepoManager {
     public static final String ANDROIDACY_MAGISK_REPO_HOMEPAGE =
             "https://www.androidacy.com/modules-repo";
 
+    public static final String DG_MAGISK_REPO =
+            "https://repo.dergoogler.com/modules.json";
 
     private static final Object lock = new Object();
     private static volatile RepoManager INSTANCE;
@@ -238,6 +240,8 @@ public final class RepoManager {
                 return "magisk_alt_repo";
             case ANDROIDACY_MAGISK_REPO_ENDPOINT:
                 return "androidacy_repo";
+            case DG_MAGISK_REPO:
+                return "dg_magisk_repo";
             default:
                 return "repo_" + Hashes.hashSha1(
                         url.getBytes(StandardCharsets.UTF_8));
