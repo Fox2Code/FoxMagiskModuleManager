@@ -94,7 +94,7 @@ public class MainApplication extends CompatApplication {
     }
 
     public static boolean shouldPreventReboot() {
-        return getSharedPreferences().getBoolean("pref_prevent_reboot", false);
+        return getSharedPreferences().getBoolean("pref_prevent_reboot", true);
     }
 
     public static boolean isShowIncompatibleModules() {

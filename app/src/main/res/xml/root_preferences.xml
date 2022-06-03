@@ -103,7 +103,7 @@
             app:singleLineTitle="false"	/>
 
         <SwitchPreferenceCompat
-            app:defaultValue="false"
+            app:defaultValue="true"
             app:key="pref_prevent_reboot"
             app:icon="@drawable/ic_reboot_24"
             app:title="@string/prevent_reboot_pref"
