@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.Keep;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.graphics.ColorUtils;
 
@@ -58,7 +59,7 @@ public class AndroidacyWebAPI {
     }
 
     void openNativeModuleDialogRaw(String moduleUrl, String installTitle,
-                                          String checksum, boolean canInstall) {
+                                   String checksum, boolean canInstall) {
         this.downloadMode = false;
         RepoModule repoModule = RepoManager.getINSTANCE()
                 .getAndroidacyRepoData().moduleHashMap.get(installTitle);
@@ -210,7 +211,7 @@ public class AndroidacyWebAPI {
      * install a module via url, with the file checked with the md5 checksum value.
      */
     @JavascriptInterface
-    public void install(String moduleUrl, String installTitle,String checksum) {
+    public void install(String moduleUrl, String installTitle, String checksum) {
         // If compat mode is 0, this means Androidacy didn't implemented a download mode yet
         if (this.consumedAction || (this.effectiveCompatMode >= 1 && !this.canInstall())) {
             return;
@@ -477,6 +478,26 @@ public class AndroidacyWebAPI {
         }
         theme.resolveAttribute(android.R.attr.background, typedValue, true);
         return typedValue.data;
+    }
+
+    /**
+     * Return current hex string of monet theme
+     */
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @JavascriptInterface
+    public String getMonetColor(String id) {
+        int nameResourceID = this.activity.getResources().getIdentifier("@android:color/" + id,
+                "color", this.activity.getApplicationInfo().packageName);
+        if (nameResourceID == 0) {
+            throw new IllegalArgumentException(
+                    "No resource string found with name " + id);
+        } else {
+            int color = this.activity.getColor(nameResourceID);
+            int red = Color.red(color);
+            int blue = Color.blue(color);
+            int green = Color.green(color);
+            return String.format("#%02x%02x%02x", red, green, blue);
+        }
     }
 
     // Androidacy feature level declaration method
