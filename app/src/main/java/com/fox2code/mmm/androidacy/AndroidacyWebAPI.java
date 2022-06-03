@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.Keep;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 
 import com.fox2code.mmm.BuildConfig;
@@ -483,7 +484,6 @@ public class AndroidacyWebAPI {
     /**
      * Return current hex string of monet theme
      */
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @JavascriptInterface
     public String getMonetColor(String id) {
         int nameResourceID = this.activity.getResources().getIdentifier("@android:color/" + id,
@@ -492,7 +492,7 @@ public class AndroidacyWebAPI {
             throw new IllegalArgumentException(
                     "No resource string found with name " + id);
         } else {
-            int color = this.activity.getColor(nameResourceID);
+            int color = ContextCompat.getColor(this.activity, nameResourceID);
             int red = Color.red(color);
             int blue = Color.blue(color);
             int green = Color.green(color);
