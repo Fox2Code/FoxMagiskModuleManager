@@ -266,7 +266,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 if (this.actionButtonsTypes.isEmpty()) {
                     this.moduleOptionsHolder.setVisibility(View.GONE);
                     this.moduleLayoutHelper.setVisibility(View.GONE);
-                } else if (this.actionButtonsTypes.size() > 3 || !hasUpdateText) {
+                } else if (this.actionButtonsTypes.size() > 2 || !hasUpdateText) {
                     this.moduleLayoutHelper.setMinHeight(Math.max(CompatDisplay.dpToPixel(36F),
                             this.moduleOptionsHolder.getHeight() - CompatDisplay.dpToPixel(14F)));
                 } else {
