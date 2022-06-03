@@ -113,6 +113,16 @@
                     android:text="@string/loading"
                     android:textSize="12sp" />
 
+                <TextView
+                    app:layout_constraintTop_toBottomOf="@id/main_card_text"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/module_layout_helper"
+                    android:orientation="vertical">
+
+                </TextView>
+
                 <!-- Buttons -->
                 <HorizontalScrollView
                     android:id="@+id/module_options_holder"

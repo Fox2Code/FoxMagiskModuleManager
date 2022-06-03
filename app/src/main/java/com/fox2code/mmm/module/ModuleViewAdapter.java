@@ -193,7 +193,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 }
                 this.creditText.setVisibility(View.VISIBLE);
                 this.moduleOptionsHolder.setVisibility(View.VISIBLE);
-                this.moduleLayoutHelper.setVisibility(View.VISIBLE);
+                this.moduleLayoutHelper.setVisibility(View.GONE);
                 this.descriptionText.setVisibility(View.VISIBLE);
 
                 ModuleInfo moduleInfo = moduleHolder.getMainModuleInfo();
