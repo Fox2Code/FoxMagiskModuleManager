@@ -18,12 +18,14 @@
         android:layout_height="wrap_content"
         style="?attr/materialCardViewFilledStyle">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <LinearLayout
+                app:layout_constraintTop_toTopOf="parent"
+                android:id="@+id/main_card_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -113,14 +115,26 @@
 
             </LinearLayout>
 
+            <TextView
+                app:layout_constraintTop_toBottomOf="@id/main_card_text"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/module_layout_helper"
+                android:orientation="vertical">
+
+            </TextView>
             <!-- Buttons -->
             <HorizontalScrollView
+                app:layout_constraintBottom_toBottomOf="@id/module_layout_helper"
                 android:visibility="gone"
                 android:id="@+id/module_options_holder"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:scrollbars="none">
 
                 <com.google.android.material.chip.ChipGroup
+                    android:animateLayoutChanges="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
@@ -178,7 +192,7 @@
                         app:chipIcon="@drawable/ic_baseline_error_24" />
                 </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>

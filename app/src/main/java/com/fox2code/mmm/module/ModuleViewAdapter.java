@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.NotificationType;
 import com.fox2code.mmm.R;
+import com.fox2code.mmm.compat.CompatDisplay;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
@@ -75,14 +76,13 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
         private final TextView creditText;
         private final TextView descriptionText;
         private final HorizontalScrollView moduleOptionsHolder;
+        private final TextView moduleLayoutHelper;
         private final TextView updateText;
         private final Chip[] actionsButtons;
         private final ArrayList<ActionButtonType> actionButtonsTypes;
         private boolean initState;
         public ModuleHolder moduleHolder;
         public Drawable background;
-        private boolean canExpand;
-        private boolean expanded;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -95,6 +95,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
             this.creditText = itemView.findViewById(R.id.credit_text);
             this.descriptionText = itemView.findViewById(R.id.description_text);
             this.moduleOptionsHolder = itemView.findViewById(R.id.module_options_holder);
+            this.moduleLayoutHelper = itemView.findViewById(R.id.module_layout_helper);
             this.updateText = itemView.findViewById(R.id.updated_text);
             this.actionsButtons = new Chip[6];
             this.actionsButtons[0] = itemView.findViewById(R.id.button_action1);
@@ -114,11 +115,6 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     } else if (moduleHolder.notificationType != null) {
                         onClickListener = moduleHolder.notificationType.onClickListener;
                         if (onClickListener != null) onClickListener.onClick(v);
-                    } else if (this.canExpand) {
-                        this.cardView.setClickable(false);
-                        if (this.expanded) return;
-                        this.expanded = true;
-                        // TODO Animated expand code
                     }
                 }
             });
@@ -178,17 +174,13 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 this.cardView.setVisibility(View.GONE);
                 this.moduleHolder = null;
                 this.initState = false;
-                this.expanded = false;
                 return true;
-            } else if (moduleHolder != this.moduleHolder) {
-                this.expanded = false;
             }
             ModuleHolder.Type type = moduleHolder.getType();
             ModuleHolder.Type vType = moduleHolder.getCompareType(type);
             this.cardView.setVisibility(View.VISIBLE);
             boolean showCaseMode = MainApplication.isShowcaseMode();
             if (moduleHolder.isModuleHolder()) {
-                this.canExpand = false;
                 this.buttonAction.setVisibility(View.GONE);
                 this.buttonAction.setBackground(null);
                 LocalModuleInfo localModuleInfo = moduleHolder.moduleInfo;
@@ -201,6 +193,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 }
                 this.creditText.setVisibility(View.VISIBLE);
                 this.moduleOptionsHolder.setVisibility(View.VISIBLE);
+                this.moduleLayoutHelper.setVisibility(View.VISIBLE);
                 this.descriptionText.setVisibility(View.VISIBLE);
 
                 ModuleInfo moduleInfo = moduleHolder.getMainModuleInfo();
@@ -230,6 +223,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     this.descriptionText.setText(moduleInfo.description);
                 }
                 String updateText = moduleHolder.getUpdateTimeText();
+                boolean hasUpdateText = true;
                 if (!updateText.isEmpty()) {
                     RepoModule repoModule = moduleHolder.repoModule;
                     this.updateText.setVisibility(View.VISIBLE);
@@ -247,8 +241,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     this.updateText.setText(R.string.substratum_builtin_module);
                 } else {
                     this.updateText.setVisibility(View.GONE);
-                    this.canExpand = false;
-                    this.expanded = true;
+                    hasUpdateText = false;
                 }
                 this.actionButtonsTypes.clear();
                 moduleHolder.getButtons(itemView.getContext(), this.actionButtonsTypes, showCaseMode);
@@ -271,8 +264,13 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     }
                 }
                 if (this.actionButtonsTypes.isEmpty()) {
-                    this.canExpand = false;
-                    this.expanded = false;
+                    this.moduleOptionsHolder.setVisibility(View.GONE);
+                    this.moduleLayoutHelper.setVisibility(View.GONE);
+                } else if (this.actionButtonsTypes.size() > 3 || !hasUpdateText) {
+                    this.moduleLayoutHelper.setMinHeight(
+                            this.moduleOptionsHolder.getHeight() - CompatDisplay.dpToPixel(14F));
+                } else {
+                    this.moduleLayoutHelper.setMinHeight(CompatDisplay.dpToPixel(4F));
                 }
                 this.cardView.setClickable(false);
                 if (moduleHolder.isModuleHolder() &&
@@ -282,8 +280,6 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     this.titleText.setTypeface(Typeface.DEFAULT);
                 }
             } else {
-                this.canExpand = false;
-                this.expanded = false;
                 if (type == ModuleHolder.Type.SEPARATOR && moduleHolder.filterLevel != 0) {
                     this.buttonAction.setVisibility(View.VISIBLE);
                     this.buttonAction.setImageResource(moduleHolder.filterLevel);
@@ -297,6 +293,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 this.switchMaterial.setVisibility(View.GONE);
                 this.creditText.setVisibility(View.GONE);
                 this.moduleOptionsHolder.setVisibility(View.GONE);
+                this.moduleLayoutHelper.setVisibility(View.GONE);
                 this.descriptionText.setVisibility(View.GONE);
                 this.updateText.setVisibility(View.GONE);
                 this.titleText.setText(" ");
@@ -383,11 +380,6 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 this.titleText.setMinHeight(moduleHolder.footerPx);
             } else {
                 this.titleText.setMinHeight(0);
-            }
-            if (this.expanded) {
-                // TODO Static expand code
-            } else {
-                // TODO Static retract code
             }
             this.moduleHolder = moduleHolder;
             this.initState = false;
