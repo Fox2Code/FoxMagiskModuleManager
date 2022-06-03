@@ -40,7 +40,7 @@ public class RepoUpdater {
                 this.toApply = this.repoData.moduleHashMap.values();
                 return 0;
             }
-            this.indexRaw = Http.doHttpGet(this.repoData.url, false);
+            this.indexRaw = Http.doHttpGet(this.repoData.getUrl(), false);
             this.toUpdate = this.repoData.populate(new JSONObject(
                     new String(this.indexRaw, StandardCharsets.UTF_8)));
             // Since we reuse instances this should work

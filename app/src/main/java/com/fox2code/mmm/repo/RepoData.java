@@ -188,4 +188,8 @@ public class RepoData extends XRepo {
         this.enabled = MainApplication.getSharedPreferences()
                 .getBoolean("pref_" + this.id + "_enabled", this.isEnabledByDefault());
     }
+
+    public String getUrl() {
+        return this.url;
+    }
 }

@@ -38,6 +38,7 @@ public class AndroidacyRepoData extends RepoData {
     }
     // Avoid spamming requests to Androidacy
     private long androidacyBlockade = 0;
+    private String token = null;
 
     public AndroidacyRepoData(String url, File cacheRoot,
                                  SharedPreferences cachedPreferences) {
@@ -82,7 +83,7 @@ public class AndroidacyRepoData extends RepoData {
         }
         if (token != null) {
             try {
-                Http.doHttpGet("https://api.androidacy.com/auth/me",true);
+                Http.doHttpGet("https://api.androidacy.com/auth/me?token=" + token, true);
             } catch (Exception e) {
                 if ("Received error code: 419".equals(e.getMessage()) ||
                         "Received error code: 429".equals(e.getMessage())) {
@@ -99,7 +100,7 @@ public class AndroidacyRepoData extends RepoData {
                     Http.getCookieJar().saveFromResponse(
                             OK_HTTP_URL, Collections.emptyList());
                 }
-                token = null;
+                this.token = token = null;
             }
         }
         if (token == null) {
@@ -130,6 +131,7 @@ public class AndroidacyRepoData extends RepoData {
                 return false;
             }
         }
+        this.token = token;
         return true;
     }
 
@@ -249,5 +251,11 @@ public class AndroidacyRepoData extends RepoData {
         repoModule.moduleInfo.flags |=
                 ModuleInfo.FLAG_METADATA_INVALID;
         return false;
+    }
+
+    @Override
+    public String getUrl() {
+        return this.token == null ? this.url :
+                this.url + "?token=" + this.token;
     }
 }
