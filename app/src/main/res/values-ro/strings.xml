@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Fox - Manager module Magisk</string>
     <string name="app_name_short">Fox\'s Mmm</string>
     <string name="fail_root_magisk">Obținerea accesului la rădăcină sau Magisk a eșuat</string>
@@ -23,20 +23,33 @@
     <string name="website">Site web</string>
     <string name="support">Suport</string>
     <string name="donate">Donează</string>
+    <string name="update">Actualizare</string>
+    <string name="install">Instalare</string>
+    <string name="description">Descriere</string>
+    <string name="uninstall">Dezinstalare</string>
+    <string name="config">Configurare</string>
     <string name="submit_modules">Trimite un modul</string>
     <string name="require_android_6">Necesită Android 6.0+</string>
+    <string name="require_android_12">Necesită Android 12+</string>
+    <string name="install_terminal_reboot_now">Repornire</string>
+    <string name="language">Limbă</string>
     <!-- Module section translation -->
     <string name="module_last_update">Ultima actualizare:</string>
     <string name="module_repo">Depozit:</string>
     <string name="module_by">de la</string>
     <string name="module_downloads">Descărcări:</string>
     <string name="module_stars">Stele:</string>
+    <string name="module_needs_ramdisk">Necesită ramdisk</string>
+    <string name="module_can_change_boot">Poate schimba pornirea</string>
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">Gestionează depozitele</string>
     <string name="showcase_mode_pref">Mod blocare</string>
     <string name="showcase_mode_desc">Modul de blocare împiedică managerul să facă acțiuni asupra modulelor</string>
+    <string name="prevent_reboot_pref">Împiedică repornirea</string>
+    <string name="prevent_reboot_desc">Prevenire repornire neașteptată</string>
     <string name="pref_category_settings">Setări</string>
+    <string name="enable_monet">Activează Monet</string>
     <string name="pref_category_info">Informații</string>
     <string name="show_licenses">Afişează licenţa</string>
     <string name="licenses">Licențe</string>
@@ -44,6 +57,9 @@
     <string name="show_incompatible_desc">Arată module incompatibile cu dispozitivul tău pe baza metadatelor lor</string>
     <string name="magisk_outdated">Magisk este învechit!</string>
     <string name="pref_category_repos">Depozite</string>
+    <string name="pref_category_security">Securitate</string>
+    <string name="pref_category_appearance">Aspect</string>
+    <string name="pref_category_general">General</string>
     <string name="repo_main_desc">Depozitul care găzduiește modulele Magisk</string>
     <string name="repo_main_alt">O alternativă la Magisk-Modules-Repo cu mai puține restricții.</string>
     <string name="master_delete">Ștergi fișierele modulului?</string>
@@ -55,6 +71,7 @@
     <string name="module_id_prefix">ID modul:</string>
     <string name="install_from_storage">Instalare modul de pe stocare</string>
     <string name="invalid_format">Modulul selectat este într-un format greșit</string>
+    <string name="low_quality_module">Modul de calitate scăzută</string>
     <string name="local_install_title">Instalare locală</string>
     <string name="source_code">Cod sursă</string>
     <string name="magisk_builtin_module">Modul încorporat Magisk</string>
@@ -63,7 +80,7 @@
     <string name="file_picker_failure">Selectorul de fișiere curent nu a reușit să permită accesul la fișier.</string>
     <string name="remote_install_title">Instalare la distanță</string>
     <string name="file_picker_wierd">Selectorul tău de fișiere a returnat un răspuns non-standard.</string>
-    <string name="use_magisk_install_command_pref">Folosește comanda de instalare modul Magisk</string>
+    <string name="use_magisk_install_command_pref" tools:ignore="TypographyDashes">Folosește comanda de instalare modul Magisk</string>
     <string name="use_magisk_install_command_desc">        În timpul testului, a cauzat probleme la instalarea instrumentului de diagnosticare a erorilor,
         așa că am ascuns această opțiune în spatele modului dezvoltator, activați acest lucru pe propriul risc!
     </string>
@@ -86,7 +103,14 @@
         tot textul pe aceeași linie atunci când se instalează un modul
     </string>
     <string name="enable_blur_pref">Activează estomparea</string>
+    <string name="disable_chips_in_description">Dezactivează cipurile în descriere</string>
     <string name="repo_enabled">Depozit activat</string>
     <string name="repo_disabled">Depozit dezactivat</string>
+    <string name="add_repo">Adăugare depozit</string>
+    <string name="remove_repo">Eliminare depozit</string>
+    <string name="custom_url">URL personalizat</string>
     <string name="androidacy_repo_info">Depozitul Androidacy utilizează reclame și instrumente de urmărire.</string>
+    <string name="backup_module_list">Rezervare module</string>
+    <string name="restore_module_list">Restabilire module</string>
+    <string name="require_internet">Această operațiune necesită o conexiune la Internet</string>
 </resources>
