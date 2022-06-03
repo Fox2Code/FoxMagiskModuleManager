@@ -55,12 +55,11 @@ public class MarkdownActivity extends CompatActivity {
     private static final String[] variants = new String[]{
             "readme.md", "README.MD", ".github/README.md"
     };
-    private BlurView chipHolder;
     private TextView actionBarPadding;
+    private ColorDrawable actionBarBackground;
     private BlurView actionBarBlur;
-    private ColorDrawable anyBarBackground;
-    private ScrollView scrollView;
-    private LinearLayout md_layout;
+    private TextView header;
+    private TextView footer;
 
     private static byte[] getRawMarkdown(String url) throws IOException {
         String newUrl = redirects.get(url);
@@ -138,40 +137,23 @@ public class MarkdownActivity extends CompatActivity {
         setContentView(R.layout.markdown_view);
         final ViewGroup markdownBackground = findViewById(R.id.markdownBackground);
         final TextView textView = findViewById(R.id.markdownView);
-        this.chipHolder = findViewById(R.id.chip_holder);
-        this.anyBarBackground = new ColorDrawable(Color.TRANSPARENT);
         this.actionBarPadding = findViewById(R.id.markdown_action_bar_padding);
+        this.actionBarBackground = new ColorDrawable(Color.TRANSPARENT);
         this.actionBarBlur = findViewById(R.id.markdown_action_bar_blur);
-        this.scrollView = findViewById(R.id.scrollView2);
-        this.md_layout = findViewById(R.id.md_layout);
-        final TextView footer = findViewById(R.id.markdownFooter);
-        UiThreadHandler.handler.postDelayed(() -> // Fix footer height
-                footer.setMinHeight(this.getNavigationBarHeight()), 1L);
-        this.actionBarBlur.setBackground(this.anyBarBackground);
-        this.setupBlurView(this.chipHolder, markdownBackground, this.anyBarBackground);
-        this.setupBlurView(this.actionBarBlur, markdownBackground, this.anyBarBackground);
-        this.updateScreenInsets();
-        this.updateUI();
+        this.header = findViewById(R.id.markdownHeader);
+        this.footer = findViewById(R.id.markdownFooter);
+        this.actionBarBlur.setBackground(this.actionBarBackground);
+        this.setupBlurView(this.actionBarBlur, markdownBackground);
+        UiThreadHandler.handler.post(() -> // Fix header/footer height
+                this.updateScreenInsets(this.getResources().getConfiguration()));
 
         // Really bad created (MSG by Der_Googler)
-        if (MainApplication.isChipsDisabled()) {
-            this.chipHolder.setVisibility(View.GONE);
-        } else {
-            this.chipHolder.setPadding(0,0,0,this.getNavigationBarHeight());
-            // set "message" to null to disable dialog
-            this.setChip(change_boot,
-                    getString(R.string.module_can_change_boot),
-                    "This module may change the boot image");
-            this.setChip(needs_ramdisk,
-                    getString(R.string.module_needs_ramdisk),
-                    "This module need boot ramdisk to be installed");
-            this.setChip(min_magisk, "Min. Magisk \"" + min_magisk + "\"",
-                    null);
-            this.setChip(min_api, "Min. Android " + min_api,
-                    null);
-            this.setChip(max_api, "Max. Android " + max_api,
-                    null);
-        }
+        // set "message" to null to disable dialog
+        if (change_boot) this.addChip(MarkdownChip.CHANGE_BOOT);
+        if (needs_ramdisk) this.addChip(MarkdownChip.NEED_RAMDISK);
+        if (min_magisk != 0) this.addChip(MarkdownChip.MIN_MAGISK, String.valueOf(min_magisk));
+        if (min_api != 0) this.addChip(MarkdownChip.MIN_SDK, parseAndroidVersion(min_api));
+        if (max_api != 0) this.addChip(MarkdownChip.MAX_SDK, parseAndroidVersion(max_api));
 
         new Thread(() -> {
             try {
@@ -201,14 +183,36 @@ public class MarkdownActivity extends CompatActivity {
         }, "Markdown load thread").start();
     }
 
-   private void setupBlurView(BlurView view, ViewGroup setupWith, ColorDrawable background) {
-       view.setBackground(background);
+   private void setupBlurView(BlurView view, ViewGroup setupWith) {
        view.setupWith(setupWith).setFrameClearDrawable(
                        this.getWindow().getDecorView().getBackground())
                .setBlurAlgorithm(new RenderScriptBlur(this))
                .setBlurRadius(4F).setBlurAutoUpdate(true)
                .setHasFixedTransformationMatrix(true);
+       this.updateBlurState();
    }
+
+    private void updateBlurState() {
+        boolean isLightMode = this.isLightTheme();
+        int colorBackground;
+        try {
+            colorBackground = this.getColorCompat(
+                    android.R.attr.windowBackground);
+        } catch (Resources.NotFoundException e) {
+            colorBackground = this.getColorCompat(isLightMode ?
+                    R.color.white : R.color.black);
+        }
+        if (MainApplication.isBlurEnabled()) {
+            this.actionBarBlur.setBlurEnabled(true);
+            this.actionBarBackground.setColor(ColorUtils
+                    .setAlphaComponent(colorBackground, 0x02));
+            this.actionBarBackground.setColor(Color.TRANSPARENT);
+        } else {
+            this.actionBarBlur.setBlurEnabled(false);
+            this.actionBarBlur.setOverlayColor(Color.TRANSPARENT);
+            this.actionBarBackground.setColor(colorBackground);
+        }
+    }
 
     private void updateScreenInsets() {
         this.runOnUiThread(() -> this.updateScreenInsets(
@@ -223,46 +227,33 @@ public class MarkdownActivity extends CompatActivity {
         int actionBarHeight = getActionBarHeight();
         int combinedBarsHeight = statusBarHeight + actionBarHeight;
         this.actionBarPadding.setMinHeight(combinedBarsHeight);
+        this.header.setMinHeight(combinedBarsHeight);
+        this.footer.setMinHeight(bottomInset);
         //this.actionBarBlur.invalidate();
     }
 
-    private void updateUI() {
-        boolean isLightMode = this.isLightTheme();
-        int colorBackground;
-        try {
-            colorBackground = this.getColorCompat(
-                    android.R.attr.windowBackground);
-        } catch (Resources.NotFoundException e) {
-            colorBackground = this.getColorCompat(isLightMode ?
-                    R.color.white : R.color.black);
-        }
-        this.md_layout.setPadding(0,this.getActionBarHeight(this) + this.getStatusBarHeight(),0,this.getNavigationBarHeight() + 56);
-        if (MainApplication.isBlurEnabled()) {
-            this.actionBarBlur.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, this.getActionBarHeight(this) + this.getStatusBarHeight()));
-            this.chipHolder.setBlurEnabled(true);
-            this.anyBarBackground.setColor(ColorUtils
-                    .setAlphaComponent(colorBackground, 0x02));
-            this.anyBarBackground.setColor(Color.TRANSPARENT);
-            this.actionBarBlur.setBlurEnabled(true);
+    @Override
+    public void refreshUI() {
+        super.refreshUI();
+        this.updateScreenInsets();
+        this.updateBlurState();
+    }
+
+
+    private void addChip(MarkdownChip markdownChip) {
+        this.makeChip(this.getString(markdownChip.title),
+                markdownChip.desc == 0 ? null : this.getString(markdownChip.desc));
+    }
+
+    private void addChip(MarkdownChip markdownChip, String extra) {
+        String title = this.getString(markdownChip.title);
+        if (title.contains("%s")) {
+            title = title.replace("%s", extra);
         } else {
-            this.chipHolder.setBlurEnabled(false);
-            this.chipHolder.setOverlayColor(Color.TRANSPARENT);
-            this.anyBarBackground.setColor(colorBackground);
-            this.actionBarBlur.setBlurEnabled(false);
-            this.actionBarBlur.setOverlayColor(Color.TRANSPARENT);
+            title = title + " " + extra;
         }
-    }
-
-    private void setChip(boolean bool, String title, String message) {
-        if (bool) {
-            this.makeChip(title, message);
-        }
-    }
-
-    private void setChip(int i, String title, String message) {
-        if (i != 0) {
-            this.makeChip(title, message);
-        }
+        this.makeChip(title, markdownChip.desc == 0 ?
+                null : this.getString(markdownChip.desc));
     }
 
     private void makeChip(String title, String message) {
@@ -288,22 +279,32 @@ public class MarkdownActivity extends CompatActivity {
 
     private String parseAndroidVersion(int version) {
         switch (version) {
+            case Build.VERSION_CODES.JELLY_BEAN:
+                return "4.1 JellyBean";
+            case Build.VERSION_CODES.JELLY_BEAN_MR1:
+                return "4.2 JellyBean";
+            case Build.VERSION_CODES.JELLY_BEAN_MR2:
+                return "4.3 JellyBean";
+            case Build.VERSION_CODES.KITKAT:
+                return "4.4 KitKat";
+            case Build.VERSION_CODES.KITKAT_WATCH:
+                return "4.4 KitKat Watch";
             case Build.VERSION_CODES.LOLLIPOP:
-                return "5.0";
+                return "5.0 Lollipop";
             case Build.VERSION_CODES.LOLLIPOP_MR1:
-                return "5.1";
+                return "5.1 Lollipop";
             case Build.VERSION_CODES.M:
-                return "6.0";
+                return "6.0 Marshmallow";
             case Build.VERSION_CODES.N:
-                return "7.0";
+                return "7.0 Nougat";
             case Build.VERSION_CODES.N_MR1:
-                return "7.1";
+                return "7.1 Nougat";
             case Build.VERSION_CODES.O:
-                return "8.0";
+                return "8.0 Oreo";
             case Build.VERSION_CODES.O_MR1:
-                return "8.1";
+                return "8.1 Oreo";
             case Build.VERSION_CODES.P:
-                return "9.0 (P)";
+                return "9.0 Pie";
             case Build.VERSION_CODES.Q:
                 return "10 (Q)";
             case Build.VERSION_CODES.R:
@@ -313,7 +314,7 @@ public class MarkdownActivity extends CompatActivity {
             case Build.VERSION_CODES.S_V2:
                 return "12L";
             default:
-                return "false";
+                return "Sdk: " + version;
         }
     }
 

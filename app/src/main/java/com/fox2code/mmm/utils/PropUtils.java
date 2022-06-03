@@ -53,6 +53,7 @@ public class PropUtils {
         moduleConfigsFallbacks.put("xposed", "de.robv.android.xposed.installer");
         moduleConfigsFallbacks.put("substratum", "projekt.substratum");
         // minApi is the minimum android version required to use the module
+        moduleMinApiFallbacks.put("HideNavBar", Build.VERSION_CODES.Q);
         moduleMinApiFallbacks.put("riru_ifw_enhance", Build.VERSION_CODES.O);
         moduleMinApiFallbacks.put("zygisk_ifw_enhance", Build.VERSION_CODES.O);
         moduleMinApiFallbacks.put("riru_edxposed", Build.VERSION_CODES.O);

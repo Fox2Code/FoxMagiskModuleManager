@@ -44,7 +44,12 @@
     <string name="module_downloads">Downloads:</string>
     <string name="module_stars">Stars:</string>
     <string name="module_needs_ramdisk">Needs ramdisk</string>
+    <string name="module_needs_ramdisk_desc">This module need boot ramdisk to be installed</string>
     <string name="module_can_change_boot">Can change boot</string>
+    <string name="module_can_change_boot_desc">This module may change the boot image</string>
+    <string name="module_min_magisk_chip">This module may change the boot image</string>
+    <string name="module_min_sdk_chip">This module may change the boot image</string>
+    <string name="module_max_sdk_chip">This module may change the boot image</string>
 
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->

@@ -7,7 +7,7 @@
             app:key="pref_magisk_alt_repo_enabled"
             app:icon="@drawable/ic_baseline_extension_24"
             app:switchTextOn="@string/repo_enabled"
-            app:switchTextOff="@string/repo_enabled"
+            app:switchTextOff="@string/repo_disabled"
             app:singleLineTitle="false"	/>
         <Preference
             app:key="pref_magisk_alt_repo_website"
@@ -27,7 +27,7 @@
             app:key="pref_androidacy_repo_enabled"
             app:icon="@drawable/ic_baseline_extension_24"
             app:switchTextOn="@string/repo_enabled"
-            app:switchTextOff="@string/repo_enabled"
+            app:switchTextOff="@string/repo_disabled"
             app:singleLineTitle="false"	/>
         <Preference
             app:key="pref_androidacy_repo_website"

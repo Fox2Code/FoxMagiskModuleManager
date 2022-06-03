@@ -8,7 +8,7 @@
     app:fitsSystemWindowsInsets="left|right"
     tools:context=".markdown.MarkdownActivity">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -25,44 +25,17 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/markdownHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="" />
+
+            <TextView
                 android:id="@+id/markdownView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/markdown_border_content"
                 android:text="@string/loading" />
-
-            <TextView
-                android:id="@+id/markdownFooter"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="" />
-        </LinearLayout>
-    </ScrollView>
-
-    <eightbitlab.com.blurview.BlurView
-        android:id="@+id/markdown_action_bar_blur"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-        <TextView
-            android:id="@+id/markdown_action_bar_padding"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </eightbitlab.com.blurview.BlurView>
-
-    <eightbitlab.com.blurview.BlurView
-        android:id="@+id/chip_holder"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/scrollView2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chip_group_holder"
@@ -75,7 +48,26 @@
                 <!-- Dynamically added -->
 
             </com.google.android.material.chip.ChipGroup>
-        </HorizontalScrollView>
+
+            <TextView
+                android:id="@+id/markdownFooter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <eightbitlab.com.blurview.BlurView
+        android:id="@+id/markdown_action_bar_blur"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <TextView
+            android:id="@+id/markdown_action_bar_padding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </eightbitlab.com.blurview.BlurView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
