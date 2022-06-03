@@ -93,6 +93,7 @@ dependencies {
     implementation "dev.rikka.rikkax.layoutinflater:layoutinflater:1.2.0"
     implementation "dev.rikka.rikkax.insets:insets:1.2.0"
     implementation 'com.github.Dimezis:BlurView:version-1.6.6'
+    implementation 'com.github.KieronQuinn:MonetCompat:0.4.1'
 
     // Utils
     implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.9.3'

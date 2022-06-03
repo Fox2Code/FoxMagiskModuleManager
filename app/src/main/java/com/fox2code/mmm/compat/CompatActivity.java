@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemProperties;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyCharacterMap;
@@ -20,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.widget.ScrollView;
 
 import androidx.annotation.AttrRes;
 import androidx.annotation.CallSuper;
@@ -36,10 +38,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.R;
+import com.kieronquinn.monetcompat.app.MonetCompatActivity;
+import com.kieronquinn.monetcompat.extensions.views.ViewExtensions_RecyclerViewKt;
+import com.kieronquinn.monetcompat.extensions.views.ViewExtensions_ScrollViewKt;
 
 import java.lang.ref.WeakReference;
 import java.util.Locale;
@@ -89,7 +96,16 @@ public class CompatActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         if (!this.onCreateCalled) {
             this.getLayoutInflater().setFactory2(new LayoutInflaterFactory(this.getDelegate())
-                    .addOnViewCreatedListener(WindowInsetsHelper.Companion.getLISTENER()));
+                    .addOnViewCreatedListeners(WindowInsetsHelper.Companion.getLISTENER(),
+                            (view, parent, name, context, attrs) -> {
+                        if (view instanceof RecyclerView) {
+                            ViewExtensions_RecyclerViewKt.enableStretchOverscroll(
+                                    (RecyclerView) view, null);
+                        } else if (view instanceof NestedScrollView) {
+                            ViewExtensions_ScrollViewKt.enableStretchOverscroll(
+                                    (NestedScrollView) view, null);
+                        }
+                    }));
             this.hasHardwareNavBar = this.hasHardwareNavBar0();
             this.onCreateCalledOnce = true;
         }

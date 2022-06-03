@@ -28,6 +28,7 @@ import androidx.core.graphics.ColorUtils;
 
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.OverScrollManager;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.XHooks;
 import com.fox2code.mmm.compat.CompatActivity;

@@ -77,7 +77,6 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             getPreferenceManager().setSharedPreferencesName("mmm");
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
-            OverScrollManager.install(getListView());
             findPreference("pref_manage_repos").setOnPreferenceClickListener(p -> {
                 devModeStep = 0;
                 openFragment(new RepoFragment(), R.string.manage_repos_pref);
@@ -166,8 +165,7 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
             }
 
             final LibsBuilder libsBuilder = new LibsBuilder().withShowLoadingProgress(false)
-                    .withLicenseShown(true).withAboutMinimalDesign(false)
-                    .withUiListener(new OverScrollManager.LibsOverScroll());
+                    .withLicenseShown(true).withAboutMinimalDesign(false);
             Preference update = findPreference("pref_update");
             update.setVisible(BuildConfig.ENABLE_AUTO_UPDATER && (BuildConfig.DEBUG ||
                     AppUpdateManager.getAppUpdateManager().peekHasUpdate()));
@@ -234,7 +232,6 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             getPreferenceManager().setSharedPreferencesName("mmm");
             setPreferencesFromResource(R.xml.repo_preferences, rootKey);
-            OverScrollManager.install(getListView());
             setRepoData(RepoManager.MAGISK_ALT_REPO,
                     "Magisk Modules Alt Repo", RepoManager.MAGISK_ALT_REPO_HOMEPAGE,
                     null, null,
