@@ -44,7 +44,12 @@
     <string name="module_downloads">İndirmeler:</string>
     <string name="module_stars">Yıldızlar:</string>
     <string name="module_needs_ramdisk">Ramdisk gerekli</string>
+    <string name="module_needs_ramdisk_desc">Bu modülün yüklenebilmesi için boot ramdisk gereklidir</string>
     <string name="module_can_change_boot">Boot\'u değiştirebilir</string>
+    <string name="module_can_change_boot_desc">Bu modül boot imajını değiştirebilir</string>
+    <string name="module_min_magisk_chip">Min. Magisk "%s"</string>
+    <string name="module_min_sdk_chip">Min. Android</string>
+    <string name="module_max_sdk_chip">Max. Android</string>
 
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
