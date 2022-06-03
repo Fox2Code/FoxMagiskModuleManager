@@ -1,5 +1,10 @@
 package com.fox2code.mmm.settings;
 
+import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +21,7 @@ import androidx.preference.TwoStatePreference;
 import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
+import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.OverScrollManager;
 import com.fox2code.mmm.R;
@@ -26,13 +32,14 @@ import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 
+import com.fox2code.rosettax.LanguageActivity;
 import com.fox2code.rosettax.LanguageSwitcher;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import java.util.HashSet;
 
-public class SettingsActivity extends CompatActivity {
+public class SettingsActivity extends CompatActivity implements LanguageActivity {
     private static int devModeStep = 0;
 
     @Override
@@ -49,6 +56,18 @@ public class SettingsActivity extends CompatActivity {
                     .replace(R.id.settings, new SettingsFragment())
                     .commit();
         }
+    }
+
+    @Override
+    public void refreshRosettaX() {
+        Intent mStartActivity = new Intent(this, MainActivity.class);
+        mStartActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        int mPendingIntentId = 123456;
+        @SuppressLint("InlinedApi") PendingIntent mPendingIntent = PendingIntent.getActivity(this, mPendingIntentId,
+                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        AlarmManager mgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+        System.exit(0); // Exit app process
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat

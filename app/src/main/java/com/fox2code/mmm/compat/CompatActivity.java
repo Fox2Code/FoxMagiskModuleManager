@@ -1,11 +1,11 @@
 package com.fox2code.mmm.compat;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -37,7 +37,6 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
-import androidx.preference.PreferenceManager;
 
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.R;
@@ -277,8 +276,8 @@ public class CompatActivity extends AppCompatActivity {
         }
     }
 
-    @Dimension
-    @Px
+    @Dimension @Px
+    @SuppressLint("InternalInsetResource")
     public int getStatusBarHeight() {
         int height = WindowInsetsCompat.CONSUMED.getInsets(
                 WindowInsetsCompat.Type.statusBars()).top;
@@ -289,6 +288,8 @@ public class CompatActivity extends AppCompatActivity {
                 Resources.getSystem().getDimensionPixelSize(id));
     }
 
+    @Dimension @Px
+    @SuppressLint("InternalInsetResource")
     public int getNavigationBarHeight() {
         int height = WindowInsetsCompat.CONSUMED.getInsets(
                 WindowInsetsCompat.Type.navigationBars()).bottom;
@@ -546,14 +547,6 @@ public class CompatActivity extends AppCompatActivity {
             } else return null;
         }
         return (CompatActivity) context;
-    }
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(newBase);
-        Locale locale = new Locale(mSharedPreferences.getString("user_preferred_country", "en"));
-        Context context = CompatWrapper.setLocale(newBase, locale);
-        super.attachBaseContext(context);
     }
 
     public WeakReference<CompatActivity> asWeakReference() {
