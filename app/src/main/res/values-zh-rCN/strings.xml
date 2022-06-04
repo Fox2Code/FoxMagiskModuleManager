@@ -10,6 +10,7 @@
     <string name="failed_download">下载文件失败</string>
     <string name="slow_modules">模块启动时间过长，考虑禁用一些模块</string>
     <string name="fail_internet">无法连接到互联网</string>
+    <string name="no_web_view">无法打开系统网页浏览</string>
     <string name="title_activity_settings">设置活动</string>
     <string name="app_update_available">应用程序有更新可用</string>
     <string name="app_update">更新</string>
@@ -21,22 +22,44 @@
     <string name="website">网站</string>
     <string name="support">支持</string>
     <string name="donate">捐赠</string>
+    <string name="update">更新</string>
+    <string name="install">安装</string>
+    <string name="description">描述</string>
+    <string name="uninstall">卸载</string>
+    <string name="config">Config</string>
     <string name="submit_modules">提交一个模块</string>
     <string name="require_android_6">需要 Android 6.0+</string>
-
+    <string name="require_android_12">需要 Android 12+</string>
+    <string name="install_terminal_reboot_now">重启</string>
+    <string name="language">语言</string>
+    <string name="yes" translatable="false">@android:string/是</string>
+    <string name="no" translatable="false">@android:string/否</string>
+    <string name="ok" translatable="false">@android:string/好的</string>
+    <string name="cancel" translatable="false">@android:string/取消</string>
+    
     <!-- Module section translation -->
     <string name="module_last_update">最后更新:</string>
     <string name="module_repo">仓库:</string>
     <string name="module_by">来自</string>
     <string name="module_downloads">下载:</string>
     <string name="module_stars">收藏:</string>
+    <string name="module_needs_ramdisk">需要Ramdisk</string>
+    <string name="module_needs_ramdisk_desc">该模块需要安装启动Ramdisk</string>
+    <string name="module_can_change_boot">可以更改引导</string>
+    <string name="module_can_change_boot_desc">该模块可能会更改启动图像</string>
+    <string name="module_min_magisk_chip">Min. Magisk "%s"</string>
+    <string name="module_min_sdk_chip">Min. Android</string>
+    <string name="module_max_sdk_chip">Max. Android</string>
 
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">管理仓库</string>
     <string name="showcase_mode_pref">锁定模式</string>
     <string name="showcase_mode_desc">锁定模式阻止管理器对模块执行操作</string>
+    <string name="prevent_reboot_pref">防止重启</string>
+    <string name="prevent_reboot_desc">防止意外重启</string>
     <string name="pref_category_settings">设置</string>
+    <string name="enable_monet">启用 Monet</string>
     <string name="pref_category_info">信息</string>
     <string name="show_licenses">显示许可证</string>
     <string name="licenses">执照</string>
@@ -44,6 +67,9 @@
     <string name="show_incompatible_desc">根据元数据显示与您的设备不兼容的模块</string>
     <string name="magisk_outdated">Magisk 已过时!</string>
     <string name="pref_category_repos">仓库</string>
+    <string name="pref_category_security">安全</string>
+    <string name="pref_category_appearance">外观</string>
+    <string name="pref_category_general">一般</string>
     <string name="repo_main_desc">托管 Magisk 模块的存储库</string>
     <string name="repo_main_alt">Magisk-Modules-Repo 的替代方案，限制更少</string>
     <string name="master_delete">删除这个模块?</string>
@@ -55,6 +81,7 @@
     <string name="module_id_prefix">模块ID: </string>
     <string name="install_from_storage">从存储空间安装模块</string>
     <string name="invalid_format">所选模块的格式无效</string>
+    <string name="low_quality_module">低质量模块</string>
     <string name="local_install_title">本地安装</string>
     <string name="source_code">源代码</string>
     <string name="magisk_builtin_module">Magisk 置模块</string>
@@ -91,6 +118,14 @@
         而不是将所有文本放在同一行
     </string>
     <string name="enable_blur_pref">启用模糊</string>
+    <string name="disable_chips_in_description">在描述中禁用芯片</string>
     <string name="repo_enabled">启用仓库</string>
     <string name="repo_disabled">禁用仓库</string>
+    <string name="add_repo">添加库</string>
+    <string name="remove_repo">移除库</string>
+    <string name="custom_url">自定义网址</string>
+    <string name="androidacy_repo_info">Androidacy repo具有广告和跟踪器.</string>
+    <string name="backup_module_list">备份模块</string>
+    <string name="restore_module_list">还原模块</string>
+    <string name="require_internet">此操作需要互联网连接</string>
 </resources>
