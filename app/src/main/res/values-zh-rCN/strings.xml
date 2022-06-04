@@ -32,10 +32,10 @@
     <string name="require_android_12">需要 Android 12+</string>
     <string name="install_terminal_reboot_now">重启</string>
     <string name="language">语言</string>
-    <string name="yes" translatable="false">@android:string/是</string>
-    <string name="no" translatable="false">@android:string/否</string>
-    <string name="ok" translatable="false">@android:string/好的</string>
-    <string name="cancel" translatable="false">@android:string/取消</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="ok">好的</string>
+    <string name="cancel">取消</string>
     
     <!-- Module section translation -->
     <string name="module_last_update">最后更新:</string>
