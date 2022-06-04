@@ -78,7 +78,7 @@
     <string name="manage_repos_pref">Repos verwalten</string>
     <string name="prevent_reboot_pref">Neustart verhindern</string>
     <string name="prevent_reboot_desc">Verhindert unerwartete Neustarts</string>
-    <string name="enable_monet">Aktivire Monet</string>
+    <string name="enable_monet">Aktiviere Monet</string>
     <string name="pref_category_security">Sicherheit</string>
     <string name="pref_category_appearance">Ausehen</string>
     <string name="pref_category_general">Allgemein</string>
