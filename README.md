@@ -127,6 +127,8 @@ In addition of these initial condition the repo must follow these rules:
   (This rule doesn't apply for modules from `Magisk-Modules-Repo` last updated before 2022)
 - Modules owners must be aware of any change made of the distributed version of their modules.
 
+Please note Androidacy has their Module Repository Policies outlined [on their website](https://www.androidacy.com/module-requirements/?utm_source=foxmmm-readme&utm_medium=web). Please refer to that document for the latest changes regarding their Repository.
+
 If all of these conditions are met you can open an issue for review.  
 (And don't forget to include a link to the `modules.json`)
 
