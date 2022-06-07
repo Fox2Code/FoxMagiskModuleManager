@@ -355,9 +355,9 @@ public class InstallerActivity extends CompatActivity {
             }
             String installCommand;
             File installExecutable;
-            if (anyKernel3 && moduleId == null) { // AnyKernel modules don't have a moduleId
+            if (anyKernel3 && moduleId == null) { // AnyKernel zip don't have a moduleId
                 this.warnReboot = true; // We should probably re-flash magisk...
-                installExecutable = this.extractInstallScript("module_installer_anykernel3.sh");
+                installExecutable = this.extractInstallScript("anykernel3_installer.sh");
                 if (installExecutable == null) {
                     this.setInstallStateFinished(false,
                             "! Failed to extract AnyKernel3 install script", null);
