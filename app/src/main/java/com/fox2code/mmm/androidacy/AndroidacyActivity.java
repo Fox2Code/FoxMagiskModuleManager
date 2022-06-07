@@ -31,6 +31,8 @@ import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 
+import java.util.HashMap;
+
 /**
  * Per Androidacy repo implementation agreement, no request of this WebView shall be modified.
  */
@@ -190,7 +192,10 @@ public class AndroidacyActivity extends CompatActivity {
         this.webView.addJavascriptInterface(androidacyWebAPI =
                 new AndroidacyWebAPI(this, allowInstall), "mmm");
         if (compatLevel != 0) androidacyWebAPI.notifyCompatModeRaw(compatLevel);
-        this.webView.loadUrl(url);
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Accept-Language", this.getResources()
+                .getConfiguration().locale.toLanguageTag());
+        this.webView.loadUrl(url, headers);
     }
 
     @Override

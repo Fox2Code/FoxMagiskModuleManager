@@ -130,7 +130,7 @@ public class Http {
             }
             if (chain.request().header("Accept-Language") == null) {
                 request.header("Accept-Language", // Send system language to the server
-                        Resources.getSystem().getConfiguration().locale.toLanguageTag());
+                        mainApplication.getResources().getConfiguration().locale.toLanguageTag());
             }
             return chain.proceed(request.build());
         });
