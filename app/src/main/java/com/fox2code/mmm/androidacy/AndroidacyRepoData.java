@@ -74,7 +74,7 @@ public class AndroidacyRepoData extends RepoData {
         if (this.androidacyBlockade > time) return false;
         this.androidacyBlockade = time + 30_000L;
         String cookies = AndroidacyRepoData.getCookies();
-        int start = cookies == null ? -1 : cookies.indexOf("USER=");
+        int start = cookies == null ? -1 : cookies.indexOf("USER=") + 5;
         String token = null;
         if (start != -1) {
             int end = cookies.indexOf(";", start);
@@ -184,6 +184,8 @@ public class AndroidacyRepoData extends RepoData {
                 repoModule.notesUrl = // Fallback url in case the API doesn't have notesUrl
                         "https://api.androidacy.com/magisk/readme/?module=" + moduleId;
             }
+            repoModule.zipUrl = this.injectToken(repoModule.zipUrl);
+            repoModule.notesUrl = this.injectToken(repoModule.notesUrl);
             repoModule.qualityText = R.string.module_downloads;
             repoModule.qualityValue = jsonObject.optInt("downloads", 0);
             String checksum = jsonObject.optString("checksum", "");
@@ -211,6 +213,7 @@ public class AndroidacyRepoData extends RepoData {
                 moduleInfo.minMagisk = 0;
             }
             moduleInfo.needRamdisk = jsonObject.optBoolean("needRamdisk", false);
+            moduleInfo.changeBoot = jsonObject.optBoolean("changeBoot", false);
             moduleInfo.support = filterURL(jsonObject.optString("support"));
             moduleInfo.donate = filterURL(jsonObject.optString("donate"));
             String config = jsonObject.optString("config", "");
@@ -257,5 +260,20 @@ public class AndroidacyRepoData extends RepoData {
     public String getUrl() {
         return this.token == null ? this.url :
                 this.url + "?token=" + this.token;
+    }
+
+    private String injectToken(String url) {
+        // Do not inject token for non Androidacy urls
+        if (!AndroidacyUtil.isAndroidacyLink(url))
+            return url;
+        String token = "token=" + this.token;
+        if (!url.contains(token)) {
+            if (url.lastIndexOf('/') < url.lastIndexOf('?')) {
+                return url + '&' + token;
+            } else {
+                return url + '?' + token;
+            }
+        }
+        return url;
     }
 }

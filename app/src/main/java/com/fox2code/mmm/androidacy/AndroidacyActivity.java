@@ -36,7 +36,6 @@ import com.fox2code.mmm.utils.IntentHelper;
  */
 public class AndroidacyActivity extends CompatActivity {
     private static final String TAG = "AndroidacyActivity";
-    private static final String REFERRER = "utm_source=FoxMMM&utm_medium=app";
 
     static {
         if (BuildConfig.DEBUG) {
@@ -71,12 +70,11 @@ public class AndroidacyActivity extends CompatActivity {
             this.forceBackPressed();
             return;
         }
-        if (!url.endsWith(REFERRER) && (url.startsWith("https://www.androidacy.com/") ||
-                url.startsWith("https://api.androidacy.com/magisk/"))) {
+        if (!url.endsWith(AndroidacyUtil.REFERRER)) {
             if (url.lastIndexOf('/') < url.lastIndexOf('?')) {
-                url = url + '&' + REFERRER;
+                url = url + '&' + AndroidacyUtil.REFERRER;
             } else {
-                url = url + '?' + REFERRER;
+                url = url + '?' + AndroidacyUtil.REFERRER;
             }
         }
         boolean allowInstall = intent.getBooleanExtra(

@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class AndroidacyUtil {
+    public static final String REFERRER = "utm_source=FoxMMM&utm_medium=app";
+
     public static boolean isAndroidacyLink(@Nullable Uri uri) {
         return uri != null && isAndroidacyLink(uri.toString(), uri);
     }
