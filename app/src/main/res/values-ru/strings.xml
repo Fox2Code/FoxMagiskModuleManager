@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Менеджер модулей Magisk Fox’а</string>
     <string name="app_name_short">МмM Fox’а</string>
     <string name="fail_root_magisk">Не удалось получить доступ к Root-правам или Magisk</string>
@@ -7,22 +7,31 @@
     <string name="installed">Установленные</string>
     <string name="online_repo">Онлайн-репозитории</string>
     <string name="showcase_mode">Активна защита от изменений</string>
-    <string name="failed_download">Не удалось скачать файл.</string>
+    <string name="failed_download">Не удалось скачать файл</string>
     <string name="slow_modules">Модули слишком долго запускались, рассмотрите вариант отключения некоторых из них</string>
     <string name="fail_internet">Не удается подключиться к Интернету</string>
+	<string name="no_web_view">Не удается открыть системный WebView</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="app_update_available">Вышла новая версия приложения</string>
     <string name="app_update">Обновить</string>
     <string name="no_desc_found">Описание не прилагается.</string>
-    <string name="download_module">Скачать</string>
-    <string name="install_module">Установить</string>
-    <string name="update_module">Обновить</string>
+    <string name="download_module">Скачать модуль</string>
+    <string name="install_module">Установить модуль</string>
+    <string name="update_module">Обновить модуль</string>
     <string name="changelog">Изменения</string>
     <string name="website">Сайт</string>
     <string name="support">Помощь</string>
     <string name="donate">Поддержать</string>
+    <string name="update">Обновить</string>
+    <string name="install">Установить</string>
+    <string name="description">Описание</string>
+    <string name="uninstall">Удалить</string>
+    <string name="config">Настроить</string>
     <string name="submit_modules">Разместить свой модуль</string>
     <string name="require_android_6">Требуется Android 6.0+</string>
+    <string name="require_android_12">Требуется Android 12+</string>
+    <string name="install_terminal_reboot_now">Перезагрузить</string>
+    <string name="language">Язык</string>
 
     <!-- Module section translation -->
     <string name="module_last_update">Посл. обновление:</string>
@@ -30,31 +39,45 @@
     <string name="module_by">| автор:</string>
     <string name="module_downloads">Всего скачали:</string>
     <string name="module_stars">В избранном у</string>
+    <string name="module_needs_ramdisk">Нужен ramdisk</string>
+    <string name="module_needs_ramdisk_desc">Для работы модулю требуется наличие раздела ramdisk</string>
+    <string name="module_can_change_boot">Влияет на boot</string>
+    <string name="module_can_change_boot_desc">Этот модуль может изменить boot-образ</string>
+    <string name="module_min_magisk_chip">Мин. Magisk "%s"</string>
+    <string name="module_min_sdk_chip">Мин. Android</string>
+    <string name="module_max_sdk_chip">Макс. Android</string>
 
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">Выбранные репозитории</string>
     <string name="showcase_mode_pref">Защита от изменений</string>
     <string name="showcase_mode_desc">Режим блокировки, не позволяющий менеджеру выполнять действия с модулями</string>
+    <string name="prevent_reboot_pref">Без перезагрузки</string>
+    <string name="prevent_reboot_desc">Предотвращает неожиданные перезагрузки системы по завершении установки модулей</string>
     <string name="pref_category_settings">Настройки</string>
+    <string name="enable_monet">Цвета из Monet</string>
     <string name="pref_category_info">Информация</string>
     <string name="show_licenses">Показать лицензии</string>
     <string name="licenses">Лицензии</string>
     <string name="show_incompatible_pref">Несовместимые модули</string>
     <string name="show_incompatible_desc">Показывать непригодные для вашего устройства (исходя из метаданных) модули</string>
-    <string name="magisk_outdated">Magisk устарел!</string>
+    <string name="magisk_outdated">Установите новую версию Magisk!</string>
     <string name="pref_category_repos">Репозитории</string>
-    <string name="repo_main_desc">Официальный репозиторий с модулями для Magisk</string>
+    <string name="pref_category_security">Безопасность</string>
+    <string name="pref_category_appearance">Внешний вид</string>
+    <string name="pref_category_general">Общие</string>
+    <string name="repo_main_desc">Репозиторий с модулями для Magisk</string>
     <string name="repo_main_alt">Аналог Magisk-Modules-Repo с менее строгими ограничениями.</string>
     <string name="master_delete">Удалить загрузочные файлы?</string>
-    <string name="master_delete_no">Оставить файлы</string>
-    <string name="master_delete_yes">Удалить файлы</string>
+    <string name="master_delete_no">Оставить</string>
+    <string name="master_delete_yes">Удалить</string>
     <string name="master_delete_fail">Не удалось удалить файлы модуля</string>
     <string name="theme_pref">Тема</string>
     <string name="theme_mode_pref">Тема оформления</string>
     <string name="module_id_prefix">ID модуля: </string>
     <string name="install_from_storage">Установить модуль из хранилища</string>
     <string name="invalid_format">Выбранный модуль имеет недопустимый формат</string>
+    <string name="low_quality_module">Модуль собран на коленке</string>
     <string name="local_install_title">Локальная установка</string>
     <string name="source_code">Исходный код</string>
     <string name="magisk_builtin_module">Встроенный модуль Magisk</string>
@@ -63,17 +86,17 @@
     <string name="file_picker_failure">Установленное по умолчанию средство выбора файлов не смогло предоставить доступ к файлу.</string>
     <string name="remote_install_title">Удаленная установка</string>
     <string name="file_picker_wierd">Средство выбора файлов вернуло нестандартный ответ.</string>
-    <string name="use_magisk_install_command_pref">Использовать команду установки модуля</string>
+    <string name="use_magisk_install_command_pref" tools:ignore="TypographyDashes">Использовать команду \"magisk --install-module\"</string>
     <string name="use_magisk_install_command_desc">
         Во время теста это вызвало проблемы с инструментом диагностики ошибок установки модуля,
-        поэтому я спрятал эту опцию за режимом разработчика, включайте ее на свой страх и риск!
+        поэтому я спрятал эту опцию за режимом разработчика.\nВключайте ее на свой страх и риск!
     </string>
     <string name="dev_mode_enabled">Режим разработчика включен</string>
     <string name="force_english_pref">Интерфейс всегда на английском языке</string>
-    <string name="disable_low_quality_module_filter_pref">Отключить фильтрацию спорных модулей</string>
+    <string name="disable_low_quality_module_filter_pref">Не отсеивать спорные модули</string>
     <string name="disable_low_quality_module_filter_desc">
         У некоторых модулей некорректно указаны метаданные, что вызывает визуальные глюки,
-        и/или указывает на плохую реализацию всего модуля, отключайте опцию на свой страх и риск!
+        и/или указывает на плохую реализацию всего модуля.\nОтключайте фильтрацию на свой страх и риск!
     </string>
     <string name="dns_over_https_pref">DNS поверх HTTPS</string>
     <string name="dns_over_https_desc">
@@ -91,7 +114,14 @@
         не помещать всё на одной во время установки модуля
     </string>
     <string name="enable_blur_pref">Включить эффект размытия</string>
+    <string name="disable_chips_in_description">Отключить форматирование в описании</string>
     <string name="repo_enabled">Репо включен</string>
     <string name="repo_disabled">Репо отключен</string>
-    <string name="androidacy_repo_info">Репо Androidacy использует рекламу и трекеры.</string>
+    <string name="add_repo">Добавить репо</string>
+    <string name="remove_repo">Убрать репо</string>
+    <string name="custom_url">Свой URL</string>
+    <string name="androidacy_repo_info">Репо Androidacy содержит рекламу и трекеры.</string>
+    <string name="backup_module_list">Резервное копирование модулей</string>
+    <string name="restore_module_list">Восстановить модули</string>
+    <string name="require_internet">Для этого действия потребуется подключение к Интернету</string>
 </resources>
