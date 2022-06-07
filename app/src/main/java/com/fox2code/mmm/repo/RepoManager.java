@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.XHooks;
 import com.fox2code.mmm.androidacy.AndroidacyRepoData;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.utils.Files;
@@ -45,6 +46,7 @@ public final class RepoManager {
                     MainApplication mainApplication = MainApplication.getINSTANCE();
                     if (mainApplication != null) {
                         INSTANCE = new RepoManager(mainApplication);
+                        XHooks.onRepoManagerInitialized();
                     } else {
                         throw new RuntimeException("Getting RepoManager too soon!");
                     }
@@ -58,8 +60,10 @@ public final class RepoManager {
     private final LinkedHashMap<String, RepoData> repoData;
     private final HashMap<String, RepoModule> modules;
     private final AndroidacyRepoData androidacyRepoData;
+    private boolean initialized;
 
     private RepoManager(MainApplication mainApplication) {
+        this.initialized = false;
         this.mainApplication = mainApplication;
         this.repoData = new LinkedHashMap<>();
         this.modules = new HashMap<>();
@@ -69,19 +73,24 @@ public final class RepoManager {
                 this.addAndroidacyRepoData();
         // Populate default cache
         for (RepoData repoData:this.repoData.values()) {
-            for (RepoModule repoModule:repoData.moduleHashMap.values()) {
-                if (!repoModule.moduleInfo.hasFlag(ModuleInfo.FLAG_METADATA_INVALID)) {
-                    RepoModule registeredRepoModule = this.modules.get(repoModule.id);
-                    if (registeredRepoModule == null) {
-                        this.modules.put(repoModule.id, repoModule);
-                    } else if (repoModule.moduleInfo.versionCode >
-                            registeredRepoModule.moduleInfo.versionCode) {
-                        this.modules.put(repoModule.id, repoModule);
-                    }
-                } else {
-                    Log.e(TAG, "Detected module with invalid metadata: " +
-                            repoModule.repoName + "/" + repoModule.id);
+            this.populateDefaultCache(repoData);
+        }
+        this.initialized = true;
+    }
+
+    private void populateDefaultCache(RepoData repoData) {
+        for (RepoModule repoModule:repoData.moduleHashMap.values()) {
+            if (!repoModule.moduleInfo.hasFlag(ModuleInfo.FLAG_METADATA_INVALID)) {
+                RepoModule registeredRepoModule = this.modules.get(repoModule.id);
+                if (registeredRepoModule == null) {
+                    this.modules.put(repoModule.id, repoModule);
+                } else if (repoModule.moduleInfo.versionCode >
+                        registeredRepoModule.moduleInfo.versionCode) {
+                    this.modules.put(repoModule.id, repoModule);
                 }
+            } else {
+                Log.e(TAG, "Detected module with invalid metadata: " +
+                        repoModule.repoName + "/" + repoModule.id);
             }
         }
     }
@@ -121,18 +130,18 @@ public final class RepoManager {
         return this.repoUpdating;
     }
 
-    public final void afterUpdate() {
+    public void afterUpdate() {
         if (this.repoUpdating) synchronized (this.repoUpdateLock) {}
     }
 
-    public final void runAfterUpdate(Runnable runnable) {
+    public void runAfterUpdate(Runnable runnable) {
         synchronized (this.repoUpdateLock) {
             runnable.run();
         }
     }
 
     // MultiThread friendly method
-    public final void update(UpdateListener updateListener) {
+    public void update(UpdateListener updateListener) {
         if (!this.repoUpdating) {
             // Do scan
             synchronized (this.repoUpdateLock) {
@@ -255,6 +264,9 @@ public final class RepoManager {
                 .getSharedPreferences("mmm_" + id, Context.MODE_PRIVATE);
         RepoData repoData = new RepoData(url, cacheRoot, sharedPreferences);
         this.repoData.put(url, repoData);
+        if (this.initialized) {
+            this.populateDefaultCache(repoData);
+        }
         return repoData;
     }
 

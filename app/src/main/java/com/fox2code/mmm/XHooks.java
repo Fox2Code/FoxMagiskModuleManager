@@ -17,6 +17,9 @@ import com.fox2code.mmm.repo.RepoManager;
 @Keep
 public class XHooks {
     @Keep
+    public static void onRepoManagerInitialized() {}
+
+    @Keep
     public static boolean isModuleActive(String moduleId) {
         return ModuleManager.isModuleActive(moduleId);
     }

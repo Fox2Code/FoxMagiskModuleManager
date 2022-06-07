@@ -68,7 +68,7 @@ public class MainApplication extends CompatApplication {
     }
 
     public MainApplication() {
-        if (INSTANCE != null)
+        if (INSTANCE != null && INSTANCE != this)
             throw new IllegalStateException("Duplicate application instance!");
         INSTANCE = this;
     }
@@ -280,6 +280,7 @@ public class MainApplication extends CompatApplication {
 
     @Override
     public void onCreate() {
+        if (INSTANCE == null) INSTANCE = this;
         super.onCreate();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (MainApplication.isMonetEnabled()) {
