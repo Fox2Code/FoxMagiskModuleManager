@@ -1,15 +1,16 @@
 <resources>
     <string name="app_name">Fox\'s Magisk 模組管理器</string>
     <string name="app_name_short">Fox\'s Mmm</string>
-    <string name="fail_root_magisk">無法取得 ROOT 許可權或您並沒有裝 Magisk</string>
+    <string name="fail_root_magisk">無法取得 ROOT 權限或您並沒有裝 Magisk</string>
     <string name="loading">讀取中請稍後…</string>
-    <string name="updatable">更新</string>
-    <string name="installed">安裝</string>
+    <string name="updatable">可更新</string>
+    <string name="installed">已安裝</string>
     <string name="online_repo">線上倉庫</string>
     <string name="showcase_mode">目前處於鎖定模式</string>
     <string name="failed_download">安裝檔下載失敗</string>
     <string name="slow_modules">因模組導致啟動時間過長，考慮禁用部分模組</string>
     <string name="fail_internet">無法連線到網路</string>
+     <string name="no_web_view">無法開啟系統內的 WebView</string>
     <string name="title_activity_settings">設定活動</string>
     <string name="app_update_available">可用的應用程序更新</string>
     <string name="app_update">更新</string>
@@ -17,12 +18,24 @@
     <string name="download_module">下載模組</string>
     <string name="install_module">安裝模組</string>
     <string name="update_module">更新模組</string>
-    <string name="changelog">變更日誌</string>
+    <string name="changelog">更新日誌</string>
     <string name="website">網站</string>
     <string name="support">支援</string>
     <string name="donate">捐贈</string>
+    <string name="update">更新</string>
+    <string name="install">安裝</string>
+    <string name="description">說明</string>
+    <string name="uninstall">解除安裝</string>
+    <string name="config">配置</string>
     <string name="submit_modules">提交一個模組</string>
-    <string name="require_android_6">要求 Android 6.0 以上版本</string>
+    <string name="require_android_6">需要 Android 6.0 或更新的版本</string>
+    <string name="require_android_12">需要 Android 12 或更新的版本</string>
+    <string name="install_terminal_reboot_now">重新啟動</string>
+    <string name="language">語言</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="ok">OK</string>
+    <string name="cancel">取消</string>
 
     <!-- Module section translation -->
     <string name="module_last_update">最後更新:</string>
@@ -30,13 +43,23 @@
     <string name="module_by">來自</string>
     <string name="module_downloads">下載:</string>
     <string name="module_stars">收藏:</string>
+    <string name="module_needs_ramdisk">需要Ramdisk</string>
+    <string name="module_needs_ramdisk_desc">此模組需要安裝並啟動 Ramdisk</string>
+    <string name="module_can_change_boot">可以修改 boot</string>
+    <string name="module_can_change_boot_desc">此模組可能會修改 boot.img</string>
+    <string name="module_min_magisk_chip">Min. Magisk "%s"</string>
+    <string name="module_min_sdk_chip">Min. Android</string>
+    <string name="module_max_sdk_chip">Max. Android</string>
 
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">管理倉庫</string>
     <string name="showcase_mode_pref">鎖定模式</string>
     <string name="showcase_mode_desc">鎖定模式阻止管理器對模組進行操作</string>
+    <string name="prevent_reboot_pref">防止重啟</string>
+    <string name="prevent_reboot_desc">防止意外重啟</string>
     <string name="pref_category_settings">設定</string>
+    <string name="enable_monet">啟用 Monet</string>
     <string name="pref_category_info">訊息</string>
     <string name="show_licenses">顯示開放原始碼許可</string>
     <string name="licenses">開放原始碼許可</string>
@@ -44,23 +67,27 @@
     <string name="show_incompatible_desc">顯示與您的裝置不相容的模組</string>
     <string name="magisk_outdated">您的 Magisk 需要更新!</string>
     <string name="pref_category_repos">倉庫</string>
+    <string name="pref_category_security">安全</string>
+    <string name="pref_category_appearance">外觀</string>
+    <string name="pref_category_general">一般</string>
     <string name="repo_main_desc">官方 Magisk 模組儲存庫</string>
     <string name="repo_main_alt">替代官方 Magisk 模組儲存庫，限制更少</string>
-    <string name="master_delete">刪除以下載的模組安裝檔?</string>
-    <string name="master_delete_no">保留安裝檔</string>
-    <string name="master_delete_yes">刪除安裝檔</string>
-    <string name="master_delete_fail">刪除安裝檔失敗</string>
+    <string name="master_delete">刪除已下載的模組安裝檔?</string>
+    <string name="master_delete_no">保留模組 zip</string>
+    <string name="master_delete_yes">刪除模組 zip</string>
+    <string name="master_delete_fail">刪除模組 zip 失敗</string>
     <string name="theme_pref">主題</string>
     <string name="theme_mode_pref">主題模式</string>
     <string name="module_id_prefix">模組 ID: </string>
     <string name="install_from_storage">從本機安裝</string>
     <string name="invalid_format">所選模組的格式無效或檔案損毀</string>
+    <string name="low_quality_module">粗糙的模組</string>
     <string name="local_install_title">本機安裝</string>
     <string name="source_code">原始碼</string>
     <string name="magisk_builtin_module">Magisk 內建模組</string>
     <string name="substratum_builtin_module">Substratum 內建模組</string>
-    <string name="force_dark_terminal_title">終端強制深色模式</string>
-    <string name="file_picker_failure">您當前的檔案管理員無法使用</string>
+    <string name="force_dark_terminal_title">終端強制使用深色模式</string>
+    <string name="file_picker_failure">您目前的檔案管理員無法使用</string>
     <string name="remote_install_title">遠端安裝</string>
     <string name="file_picker_wierd">您的檔案管理器返回了非標準響應</string>
     <string name="use_magisk_install_command_pref">使用 Magisk 安裝命令</string>
@@ -70,10 +97,10 @@
     </string>
     <string name="dev_mode_enabled">開發者模式已啟用</string>
     <string name="force_english_pref">強制使用英語</string>
-    <string name="disable_low_quality_module_filter_pref">禁用低質量模組過濾器</string>
+    <string name="disable_low_quality_module_filter_pref">停止過濾「粗糙的模組」</string>
     <string name="disable_low_quality_module_filter_desc">
         一些模組沒有正確宣告他們的詮釋資訊，導致顯示上的問題。
-        這代表可能這個模組可能會產生一點問題。
+        這代表可能這個模組可能會產生未知的問題。
     </string>
     <string name="dns_over_https_pref">加密的 HTTPS 協定進行 DNS 解析請求</string>
     <string name="dns_over_https_desc">
@@ -91,6 +118,14 @@
         而不是將所有文字放在同一行。
     </string>
     <string name="enable_blur_pref">啟用模糊</string>
+    <string name="disable_chips_in_description">在描述中禁用晶片</string>
     <string name="repo_enabled">啟用倉庫</string>
     <string name="repo_disabled">禁用倉庫</string>
+    <string name="add_repo">新增倉庫</string>
+    <string name="remove_repo">移除倉庫</string>
+    <string name="custom_url">自定義網址</string>
+    <string name="androidacy_repo_info">Androidacy repo 內建廣告和跟蹤器.</string>
+    <string name="backup_module_list">備份模組</string>
+    <string name="restore_module_list">還原模組</string>
+    <string name="require_internet">需要網路連線</string>
 </resources>
