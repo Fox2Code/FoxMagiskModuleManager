@@ -75,4 +75,7 @@
     <!-- Icon -->
     <color name="launcher_icon_background">@android:color/system_accent1_100</color>
     <color name="launcher_icon">@android:color/system_neutral2_700</color>
+
+    <!-- Others -->
+    <color name="chipExpanderBackgroundColor">@color/system_accent2_700</color>
 </resources>
