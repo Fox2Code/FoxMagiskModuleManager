@@ -360,7 +360,7 @@ public class InstallerActivity extends CompatActivity {
                 installExecutable = this.extractInstallScript("anykernel3_installer.sh");
                 if (installExecutable == null) {
                     this.setInstallStateFinished(false,
-                            "! Failed to extract AnyKernel3 install script", null);
+                            "! Failed to extract AnyKernel3 install script", "");
                     return;
                 }
                 // "unshare -m" is needed to force mount namespace isolation.
@@ -379,7 +379,7 @@ public class InstallerActivity extends CompatActivity {
                 installExecutable = this.extractInstallScript("module_installer_compat.sh");
                 if (installExecutable == null) {
                     this.setInstallStateFinished(false,
-                            "! Failed to extract Magisk module install script", null);
+                            "! Failed to extract Magisk module install script", "");
                     return;
                 }
                 installCommand = ASH + " \"" +
@@ -387,7 +387,7 @@ public class InstallerActivity extends CompatActivity {
                         " 3 1 \"" + file.getAbsolutePath() + "\"";
             } else {
                 this.setInstallStateFinished(false,
-                        "! Zip file is not a valid Magisk module or AnyKernel3 zip!", null);
+                        "! Zip file is not a valid Magisk module or AnyKernel3 zip!", "");
                 return;
             }
             installerMonitor = new InstallerMonitor(installExecutable);
@@ -697,7 +697,7 @@ public class InstallerActivity extends CompatActivity {
 
             if (message != null && !message.isEmpty())
                 this.installerTerminal.addLine(message);
-            if (!optionalLink.isEmpty()) {
+            if (optionalLink != null && !optionalLink.isEmpty()) {
                 this.setActionBarExtraMenuButton(ActionButtonType.supportIconForUrl(optionalLink),
                         menu -> {
                             IntentHelper.openUrl(this, optionalLink);
