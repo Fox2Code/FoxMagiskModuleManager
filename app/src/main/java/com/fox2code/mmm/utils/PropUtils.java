@@ -106,6 +106,10 @@ public class PropUtils {
             String line;
             int lineNum = 0;
             while ((line = bufferedReader.readLine()) != null) {
+                if (lineNum == 0 && line.startsWith("\u0000")) {
+                    while (line.startsWith("\u0000"))
+                        line = line.substring(1);
+                }
                 lineNum++;
                 int index = line.indexOf('=');
                 if (index == -1 || line.startsWith("#"))
@@ -319,6 +323,8 @@ public class PropUtils {
                 new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
+                while (line.startsWith("\u0000"))
+                    line = line.substring(1);
                 if (line.startsWith("id=")) {
                     moduleId = line.substring(3).trim();
                 }
