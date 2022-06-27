@@ -40,9 +40,9 @@
     <string name="module_downloads">Scaricamenti:</string>
     <string name="module_stars">Preferiti:</string>
     <string name="module_needs_ramdisk">Necessita ramdisk</string>
-    <string name="module_needs_ramdisk_desc">Questo modulo ha bisogno dell'avvio ramdisk per essere installato</string>
+    <string name="module_needs_ramdisk_desc">Questo modulo ha bisogno dell\'avvio ramdisk per essere installato</string>
     <string name="module_can_change_boot">Può cambiare avvio</string>
-    <string name="module_can_change_boot_desc">Questo modulo può cambiare l'immagine di avvio</string>
+    <string name="module_can_change_boot_desc">Questo modulo può cambiare l\'immagine di avvio</string>
     <string name="module_min_magisk_chip">Min. Magisk "%s"</string>
     <string name="module_min_sdk_chip">Min. Android</string>
     <string name="module_max_sdk_chip">Max. Android</string>
