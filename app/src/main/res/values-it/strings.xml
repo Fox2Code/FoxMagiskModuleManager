@@ -1,64 +1,127 @@
 <resources>
-    <string name="app_name">Fox\'s Magisk Module Manager</string>
-    <string name="app_name_short">Fox\'s Mmm</string>
+    <string name="app_name">Fox Magisk Module Manager</string>
+    <string name="app_name_short">Fox Mmm</string>
     <string name="fail_root_magisk">Impossibile ottenere l\'accesso al Root o a Magisk</string>
     <string name="loading">Caricamento</string>
     <string name="updatable">Aggiornamento disponibile</string>
     <string name="installed">Installato</string>
     <string name="online_repo">Repository Online</string>
-    <string name="showcase_mode">L\'applicazione e\' in modalita\' protetta </string>
+    <string name="showcase_mode">L\'applicazione è in modalità protetta </string>
     <string name="failed_download">Scaricamento del file non riuscito.</string>
-    <string name="slow_modules">L\'avvio dei moduli e\' lento, prova a disabilitarne alcuni</string>
+    <string name="slow_modules">L\'avvio dei moduli è lento, prova a disabilitarne alcuni</string>
     <string name="fail_internet">Impossibile connettersi a internet</string>
-    <string name="title_activity_settings">Impostazione attivita\'</string>
+    <string name="no_web_view">Impossibile aprire la WebView di sistema</string>
+    <string name="title_activity_settings">Impostazione attività</string>
     <string name="app_update_available">Aggiornamento disponibile</string>
     <string name="app_update">Aggiornamento</string>
+    <string name="no_desc_found">Nessuna descrizione trovata.</string>
+    <string name="download_module">Scarica modulo</string>
+    <string name="install_module">Installa modulo</string>
+    <string name="update_module">Aggiorna modulo</string>
+    <string name="changelog">Registri dei cambiamenti</string>
+    <string name="website">Sito web</string>
+    <string name="support">Supporto</string>
+    <string name="donate">Dona</string>
+    <string name="update">Aggiorna</string>
+    <string name="install">Installa</string>
+    <string name="description">Descrizione</string>
+    <string name="uninstall">Disinstalla</string>
+    <string name="config">Configurazione</string>
+    <string name="submit_modules">Invia un modulo</string>
+    <string name="require_android_6">Richiede Android 6.0+</string>
+    <string name="require_android_12">Richiede Android 12+</string>
+    <string name="install_terminal_reboot_now">Riavvia</string>
+    <string name="language">Lingua</string>
 
     <!-- Module section translation -->
     <string name="module_last_update">Ultimo aggiornamento:</string>
     <string name="module_repo">Repo:</string>
     <string name="module_by">da</string>
+    <string name="module_downloads">Scaricamenti:</string>
+    <string name="module_stars">Preferiti:</string>
+    <string name="module_needs_ramdisk">Necessita ramdisk</string>
+    <string name="module_needs_ramdisk_desc">Questo modulo ha bisogno dell'avvio ramdisk per essere installato</string>
+    <string name="module_can_change_boot">Può cambiare avvio</string>
+    <string name="module_can_change_boot_desc">Questo modulo può cambiare l'immagine di avvio</string>
+    <string name="module_min_magisk_chip">Min. Magisk "%s"</string>
+    <string name="module_min_sdk_chip">Min. Android</string>
+    <string name="module_max_sdk_chip">Max. Android</string>
 
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
-    <string name="showcase_mode_pref">Modalita\' protetta</string>
-    <string name="showcase_mode_desc">La modalita\' protetta impedisce la modifica dei moduli da parte del gestore</string>
+    <string name="manage_repos_pref">Gestisci repository</string>
+    <string name="showcase_mode_pref">Modalità protetta</string>
+    <string name="showcase_mode_desc">La modalità protetta impedisce la modifica dei moduli da parte del gestore</string>
+    <string name="prevent_reboot_pref">Impedisci riavvio</string>
+    <string name="prevent_reboot_desc">Impedisce riavvii inaspettati</string>
     <string name="pref_category_settings">Impostazioni</string>
-    <string name="pref_category_info">Info</string>
-    <string name="show_licenses">Mostra le autorizzazioni</string>
-    <string name="licenses">Autorizzazioni</string>
+    <string name="enable_monet">Abilita Monet</string>
+    <string name="pref_category_info">Informazioni</string>
+    <string name="show_licenses">Mostra le licenze</string>
+    <string name="licenses">Licenze</string>
     <string name="show_incompatible_pref">Mostra moduli incompatibili</string>
-    <string name="show_incompatible_desc">Mostra i moduli che in base ai metadati sono incompatibili con il tuo dispositivo </string>
-    <string name="magisk_outdated">Magisk non e\' aggiornato!</string>
-    <string name="pref_category_repos">Repos</string>
+    <string name="show_incompatible_desc">Mostra i moduli che in base ai metadati sono incompatibili con il tuo dispositivo</string>
+    <string name="magisk_outdated">Magisk non è aggiornato!</string>
+    <string name="pref_category_repos">Repository</string>
+    <string name="pref_category_security">Sicurezza</string>
+    <string name="pref_category_appearance">Aspetto</string>
+    <string name="pref_category_general">Generale</string>
     <string name="repo_main_desc">La repository che fornisce i moduli Magisk</string>
-    <string name="repo_main_alt">Un\' alternativa alla Repository di default con meno restrizioni.</string>
+    <string name="repo_main_alt">Un\'alternativa alla Repository di default con meno restrizioni.</string>
     <string name="master_delete">Rimuovere i dati del modulo?</string>
     <string name="master_delete_no">Mantieni i dati</string>
     <string name="master_delete_yes">Rimuovi i dati</string>
     <string name="master_delete_fail">Impossibile rimuovere i dati del modulo</string>
     <string name="theme_pref">Tema</string>
+    <string name="theme_mode_pref">Modalità tema</string>
     <string name="module_id_prefix">Id del modulo: </string>
     <string name="install_from_storage">Installa un modulo dalla memoria di archiviazione</string>
     <string name="invalid_format">Il modulo selezionato ha un formato non valido</string>
+    <string name="low_quality_module">Modulo qualità-bassa</string>
     <string name="local_install_title">Installazione locale</string>
     <string name="source_code">Codice sorgente</string>
     <string name="magisk_builtin_module">Modulo di Magisk integrato</string>
-    <string name="substratum_builtin_module">modulo del sottostrato integrato</string>
-    <string name="force_dark_terminal_title">Forza il terminale in modalita\' scura</string>
+    <string name="substratum_builtin_module">Modulo di Substratum integrato</string>
+    <string name="force_dark_terminal_title">Forza il terminale in modalità scura</string>
     <string name="file_picker_failure">Il tuo gestore file non ha potuto accedere ai dati sul dispositivo.</string>
     <string name="remote_install_title">Installazione remota</string>
     <string name="file_picker_wierd">Il tuo gestore file ha fornito una risposta non valida.</string>
     <string name="use_magisk_install_command_pref">Usa il comando di installazione del modulo magisk</string>
     <string name="use_magisk_install_command_desc">
-        Questo ha causato dei problemi durante i test per l\' installazione dei moduli,
-        per questo l\'opzione e\' disponibile solo in modalita\' sviluppatore, abilita a tuo rischio e pericolo!
+        Questo ha causato dei problemi durante i test per l\'installazione dei moduli,
+        per questo l\'opzione è disponibile solo in modalità sviluppatore, abilita a tuo rischio e pericolo!
     </string>
-    <string name="dev_mode_enabled">Modalita\' sviluppatore attivata</string>
+    <string name="dev_mode_enabled">Modalità sviluppatore attivata</string>
     <string name="force_english_pref">Forza la lingua inglese</string>
-    <string name="disable_low_quality_module_filter_pref">Disabilita il filtro qualita\' per i moduli</string>
+    <string name="disable_low_quality_module_filter_pref">Disabilita il filtro qualità per i moduli</string>
     <string name="disable_low_quality_module_filter_desc">
         Alcuni moduli non forniscono correttamente i loro metadati,causando errori grafici,
-        e/o indicando bassa qualita\', disabilita a tuo rischio e pericolo!
+        e/o indicando bassa qualità.\nDisabilita a tuo rischio e pericolo!
     </string>
+    <string name="dns_over_https_pref">DNS over HTTPS</string>
+    <string name="dns_over_https_desc">
+        Potrebbe risolvere porblemi di connessione in alcuni casi.
+        (Non si applica alla WebView.)
+    </string>
+    <string name="disable_extensions_pref">No Mmm</string>
+    <string name="disable_extensions_desc">
+        Disattiva le estensioni di Fox Mmm, impedendo ai moduli di usare
+        le estensioni per il terminale.\nUtile se un modulo abusa le estensioni di Fox Mmm.
+    </string>
+    <string name="wrap_text_pref">Avvolgimento del testo</string>
+    <string name="wrap_text_desc">
+        Mostra il testo su righee multiple invece che mettere
+        tutto il testo sulla stessa riga quando si installa un modulo.
+    </string>
+    <string name="enable_blur_pref">Sfocatura</string>
+    <string name="disable_chips_in_description">Disabilita i chip nella descrizione</string>
+    <string name="repo_enabled">Repository attiva</string>
+    <string name="repo_disabled">Repository non attiva</string>
+    <string name="add_repo">Aggiungi Repository</string>
+    <string name="remove_repo">Rimuovi Repository</string>
+    <string name="custom_url">Url personalizzato</string>
+    <string name="androidacy_repo_info">La repository di Androidacy contiene pubblicità e trackers.</string>
+    <string name="backup_module_list">Salva moduli</string>
+    <string name="restore_module_list">Ripristina moduli</string>
+    <string name="require_internet">Questa operazione richiede una connessione ad internet</string>
 </resources>
