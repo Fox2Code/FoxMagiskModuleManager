@@ -1,5 +1,17 @@
 # Fox's Magisk Module Manager
 
+## Fox Module contest
+
+If you publish a modules using ANSI color styling or FoxMMM extensions
+(see [DEVELOPERS.md](DEVELOPERS.md)) you can enter the contest to win 20€ via PayPal.
+
+The winning module will be displayed on this spot for at least 2 weeks.
+
+Note: The module install script must **not** be obfuscated and 
+be published on a repo supported by FoxMMM to be able to participate.
+
+The winner will be selected at the end of this month (July).
+
 ## Join us on Telegram! 
 
 [![Telegram Group](https://img.shields.io/endpoint?color=neon&style=flat&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2FFox2Code_Chat)](https://telegram.dog/Fox2Code_Chat)
