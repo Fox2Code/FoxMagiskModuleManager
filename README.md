@@ -59,17 +59,8 @@ Support:
 
 [![Telegram Group](https://img.shields.io/endpoint?color=neon&style=flat&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fandroidacy_discussions)](https://telegram.dog/androidacy_discussions)
 
-#### [https://github.com/Magisk-Modules-Repo](https://github.com/Magisk-Modules-Repo)  
-- No longer accept new modules or receive update to existing modules
-- May be shut down at any moment
-- Official app dropped support for it
-- No longer supported by Fox's mmm
-
-As the main repo may shutting down due to the main app no longer supporting it, stopped 
-accepting new modules, and also no longer receive updates since the 21 December 2021.
-
 If a module is in multiple repos, the manager will just pick the most up to date version 
-of the module, allowing developers to switch repo at their own pace if they want to.
+of the module, if a module is in multiple repos it will just use first registered repo.
 
 Note: If you or a friend uploaded a module and it doesn't appear in your module 
 list you can disable the low quality filter in the app settings.  

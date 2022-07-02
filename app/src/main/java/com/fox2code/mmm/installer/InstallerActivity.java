@@ -403,8 +403,8 @@ public class InstallerActivity extends CompatActivity {
                         installCommand).to(installerController, installerMonitor);
             } else {
                 if ((compatFlags & AppUpdateManager.FLAG_COMPAT_NO_ANSI) != 0)
-                    this.installerTerminal.enableAnsi();
-                else this.installerTerminal.disableAnsi();
+                    this.installerTerminal.disableAnsi();
+                else this.installerTerminal.enableAnsi();
                 installJob = Shell.cmd(arch32, "export MMM_EXT_SUPPORT=1",
                         "export MMM_USER_LANGUAGE=" + (MainApplication.isForceEnglish() ? "en-US" :
                                 Resources.getSystem().getConfiguration().locale.toLanguageTag()),
