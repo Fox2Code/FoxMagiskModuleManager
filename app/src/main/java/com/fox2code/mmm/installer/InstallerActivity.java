@@ -267,8 +267,8 @@ public class InstallerActivity extends CompatActivity {
             }
             installerMonitor = new InstallerMonitor(installScript);
             installJob = Shell.cmd("export MMM_EXT_SUPPORT=1",
-                    "export MMM_USER_LANGUAGE=" + (MainApplication.isForceEnglish() ? "en-US" :
-                            Resources.getSystem().getConfiguration().locale.toLanguageTag()),
+                    "export MMM_USER_LANGUAGE=" + this.getResources()
+                            .getConfiguration().locale.toLanguageTag(),
                     "export MMM_APP_VERSION=" + BuildConfig.VERSION_NAME,
                     "export MMM_TEXT_WRAP=" + (this.textWrap ? "1" : "0"),
                     AnsiConstants.ANSI_CMD_SUPPORT,
@@ -406,8 +406,8 @@ public class InstallerActivity extends CompatActivity {
                     this.installerTerminal.disableAnsi();
                 else this.installerTerminal.enableAnsi();
                 installJob = Shell.cmd(arch32, "export MMM_EXT_SUPPORT=1",
-                        "export MMM_USER_LANGUAGE=" + (MainApplication.isForceEnglish() ? "en-US" :
-                                Resources.getSystem().getConfiguration().locale.toLanguageTag()),
+                        "export MMM_USER_LANGUAGE=" + this.getResources()
+                                .getConfiguration().locale.toLanguageTag(),
                         "export MMM_APP_VERSION=" + BuildConfig.VERSION_NAME,
                         "export MMM_TEXT_WRAP=" + (this.textWrap ? "1" : "0"),
                         this.installerTerminal.isAnsiEnabled() ?

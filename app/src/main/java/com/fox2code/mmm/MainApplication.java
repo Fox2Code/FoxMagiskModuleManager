@@ -1,6 +1,7 @@
 package com.fox2code.mmm;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -78,6 +79,13 @@ public class MainApplication extends CompatApplication {
     }
 
     public static void addSecret(Intent intent) {
+        ComponentName componentName = intent.getComponent();
+        String packageName = componentName != null ?
+                componentName.getPackageName() : intent.getPackage();
+        if (!BuildConfig.APPLICATION_ID.equalsIgnoreCase(packageName)) {
+            // Code safeguard, we should never reach here.
+            throw new IllegalArgumentException("Can't add secret to outbound Intent");
+        }
         intent.putExtra("secret", secret);
     }
 
@@ -99,10 +107,6 @@ public class MainApplication extends CompatApplication {
 
     public static boolean isShowIncompatibleModules() {
         return getSharedPreferences().getBoolean("pref_show_incompatible", false);
-    }
-
-    public static boolean isForceEnglish() {
-        return getSharedPreferences().getBoolean("pref_force_english", false);
     }
 
     public static boolean isForceDarkTerminal() {
@@ -190,7 +194,6 @@ public class MainApplication extends CompatApplication {
         if (contextThemeWrapper == null) {
             contextThemeWrapper = this.markwonThemeContext =
                     new CompatThemeWrapper(this, this.managerThemeResId);
-            contextThemeWrapper.setForceEnglish(isForceEnglish());
         }
         Markwon markwon = Markwon.builder(contextThemeWrapper).usePlugin(HtmlPlugin.create())
                 .usePlugin(SyntaxHighlightPlugin.create(
@@ -327,14 +330,12 @@ public class MainApplication extends CompatApplication {
 
     @Override
     public void onCreateCompatActivity(CompatActivity compatActivity) {
-        this.setForceEnglish(isForceEnglish());
         super.onCreateCompatActivity(compatActivity);
         compatActivity.setTheme(this.managerThemeResId);
     }
 
     @Override
     public void onRefreshUI(CompatActivity compatActivity) {
-        this.setForceEnglish(isForceEnglish());
         super.onRefreshUI(compatActivity);
         compatActivity.setThemeRecreate(this.managerThemeResId);
     }

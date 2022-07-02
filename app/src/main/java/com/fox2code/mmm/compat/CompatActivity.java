@@ -12,16 +12,16 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemProperties;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.widget.ScrollView;
 
 import androidx.annotation.AttrRes;
 import androidx.annotation.CallSuper;
@@ -29,6 +29,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.annotation.Dimension;
 import androidx.annotation.DrawableRes;
+import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
@@ -37,6 +38,7 @@ import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
+import androidx.core.graphics.Insets;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
@@ -44,12 +46,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.R;
-import com.kieronquinn.monetcompat.app.MonetCompatActivity;
 import com.kieronquinn.monetcompat.extensions.views.ViewExtensions_RecyclerViewKt;
 import com.kieronquinn.monetcompat.extensions.views.ViewExtensions_ScrollViewKt;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
-import java.util.Locale;
 import java.util.Objects;
 
 import rikka.insets.WindowInsetsHelper;
@@ -71,13 +73,13 @@ public class CompatActivity extends AppCompatActivity {
             };
 
     final WeakReference<CompatActivity> selfReference;
-    private final CompatConfigHelper compatConfigHelper = new CompatConfigHelper(this);
     private CompatActivity.OnActivityResultCallback onActivityResultCallback;
     private CompatActivity.OnBackPressedCallback onBackPressedCallback;
     private MenuItem.OnMenuItemClickListener menuClickListener;
     private CharSequence menuContentDescription;
-    @StyleRes
-    private int setThemeDynamic = 0;
+    private int displayCutoutHeight = 0;
+    @Rotation private int cachedRotation = 0;
+    @StyleRes private int setThemeDynamic = 0;
     private boolean onCreateCalledOnce = false;
     private boolean onCreateCalled = false;
     private boolean isRefreshUi = false;
@@ -107,6 +109,8 @@ public class CompatActivity extends AppCompatActivity {
                         }
                     }));
             this.hasHardwareNavBar = this.hasHardwareNavBar0();
+            this.displayCutoutHeight = CompatNotch.getNotchHeight(this);
+            this.cachedRotation = this.getRotation();
             this.onCreateCalledOnce = true;
         }
         Application application = this.getApplication();
@@ -115,15 +119,26 @@ public class CompatActivity extends AppCompatActivity {
         }
         super.onCreate(savedInstanceState);
         this.onCreateCalled = true;
-        this.checkResourcesOverrides(
-                this.forceEnglish, this.nightModeOverride);
     }
+
 
     @Override
     protected void onResume() {
         this.hasHardwareNavBar = this.hasHardwareNavBar0();
+        this.displayCutoutHeight = CompatNotch.getNotchHeight(this);
+        this.cachedRotation = this.getRotation();
         super.onResume();
         this.refreshUI();
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (this.cachedRotation != this.getRotation() &&
+                this.onCreateCalledOnce) {
+            this.cachedRotation = this.getRotation();
+            this.displayCutoutHeight = CompatNotch.getNotchHeight(this);
+        }
     }
 
     @Override
@@ -151,8 +166,6 @@ public class CompatActivity extends AppCompatActivity {
             } finally {
                 this.isRefreshUi = false;
             }
-            this.checkResourcesOverrides(
-                    this.forceEnglish, this.nightModeOverride);
         }
     }
 
@@ -239,8 +252,7 @@ public class CompatActivity extends AppCompatActivity {
         }
     }
 
-    @Dimension
-    @Px
+    @Dimension @Px
     public int getActionBarHeight() {
         androidx.appcompat.app.ActionBar compatActionBar;
         try {
@@ -266,15 +278,6 @@ public class CompatActivity extends AppCompatActivity {
         }
     }
 
-    public int getActionBarHeight(Activity activity) {
-        TypedValue tv = new TypedValue();
-        int actionBarHeight = 0;
-        if (activity.getTheme().resolveAttribute(R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        }
-        return actionBarHeight;
-    }
-
     public void setActionBarBackground(Drawable drawable) {
         androidx.appcompat.app.ActionBar compatActionBar;
         try {
@@ -295,8 +298,17 @@ public class CompatActivity extends AppCompatActivity {
     @Dimension @Px
     @SuppressLint("InternalInsetResource")
     public int getStatusBarHeight() {
-        int height = WindowInsetsCompat.CONSUMED.getInsets(
-                WindowInsetsCompat.Type.statusBars()).top;
+        // Check display cutout height
+        int height = this.getRotation() == 0 ?
+                this.displayCutoutHeight : 0;
+        // Check consumed insets
+        if (WindowInsetsCompat.CONSUMED.isConsumed()) {
+            Insets insets = WindowInsetsCompat.CONSUMED.getInsets(
+                    WindowInsetsCompat.Type.statusBars());
+            if (insets.top == 0) {
+                height = Math.max(height, insets.bottom);
+            }
+        }
         // Check system resources
         int id = Resources.getSystem().getIdentifier(
                 "status_bar_height", "dimen", "android");
@@ -307,8 +319,16 @@ public class CompatActivity extends AppCompatActivity {
     @Dimension @Px
     @SuppressLint("InternalInsetResource")
     public int getNavigationBarHeight() {
-        int height = WindowInsetsCompat.CONSUMED.getInsets(
-                WindowInsetsCompat.Type.navigationBars()).bottom;
+        int height = 0;
+        // Check consumed insets
+        if (WindowInsetsCompat.CONSUMED.isConsumed()) {
+            Insets insets = WindowInsetsCompat.CONSUMED.getInsets(
+                    WindowInsetsCompat.Type.statusBars());
+            if (insets.top != 0) {
+                height = Math.max(height,
+                        insets.bottom - insets.top);
+            }
+        }
         // Check system resources
         int id = Resources.getSystem().getIdentifier(
                 "config_showNavigationBar", "bool", "android");
@@ -408,17 +428,8 @@ public class CompatActivity extends AppCompatActivity {
             super.overridePendingTransition(
                     android.R.anim.fade_in, android.R.anim.fade_out);
         } else {
-            this.compatConfigHelper.checkResourcesOverrides(theme,
-                    this.forceEnglish, this.nightModeOverride);
             super.onApplyThemeResource(theme, resid, first);
         }
-    }
-
-    @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        this.compatConfigHelper.checkResourcesOverrides(newConfig,
-                this.forceEnglish, this.nightModeOverride);
-        super.onConfigurationChanged(newConfig);
     }
 
     public void setOnBackPressedCallback(OnBackPressedCallback onBackPressedCallback) {
@@ -487,31 +498,6 @@ public class CompatActivity extends AppCompatActivity {
         }
     }
 
-    public void setForceEnglish(boolean forceEnglish) {
-        if (this.forceEnglish == forceEnglish) return;
-        this.forceEnglish = forceEnglish;
-        this.checkResourcesOverrides(forceEnglish, this.nightModeOverride);
-    }
-
-    public void setNightModeOverride(Boolean nightModeOverride) {
-        if (this.nightModeOverride == nightModeOverride) return;
-        this.nightModeOverride = nightModeOverride;
-        this.checkResourcesOverrides(this.forceEnglish, nightModeOverride);
-    }
-
-    void propagateResourcesOverride(boolean forceEnglish, Boolean nightModeOverride) {
-        if (this.forceEnglish == forceEnglish &&
-                this.nightModeOverride == nightModeOverride) return;
-        this.forceEnglish = forceEnglish;
-        this.nightModeOverride = nightModeOverride;
-        this.checkResourcesOverrides(forceEnglish, nightModeOverride);
-    }
-
-    private void checkResourcesOverrides(boolean forceEnglish, Boolean nightModeOverride) {
-        if (this.isRefreshUi || !this.onCreateCalled) return; // Wait before reload
-        this.compatConfigHelper.checkResourcesOverrides(forceEnglish, nightModeOverride);
-    }
-
     public boolean isLightTheme() {
         Resources.Theme theme = this.getTheme();
         TypedValue typedValue = new TypedValue();
@@ -544,8 +530,34 @@ public class CompatActivity extends AppCompatActivity {
         return ContextCompat.getColor(this, color);
     }
 
-    public Locale getUserLocale() {
-        return this.compatConfigHelper.getUserLocale();
+    /**
+     * Note: This value can change at runtime on some devices,
+     * and return true if DisplayCutout is simulated.
+     * */
+    public boolean hasNotch() {
+        if (!this.onCreateCalledOnce) {
+            Log.w(TAG, "hasNotch() called before onCreate()");
+            return CompatNotch.getNotchHeight(this) != 0;
+        }
+        return this.displayCutoutHeight != 0;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Nullable @Override
+    public Display getDisplay() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            return super.getDisplay();
+        }
+        return this.getWindowManager().getDefaultDisplay();
+    }
+
+    @Rotation
+    public int getRotation() {
+        Display display = this.getDisplay();
+        return display != null ? display.getRotation() :
+                this.getResources().getConfiguration().orientation ==
+                        Configuration.ORIENTATION_LANDSCAPE ?
+                        Surface.ROTATION_90 : Surface.ROTATION_0;
     }
 
     public static CompatActivity getCompatActivity(View view) {
@@ -584,4 +596,13 @@ public class CompatActivity extends AppCompatActivity {
 
         void onRefreshUI(CompatActivity compatActivity);
     }
+
+    @IntDef(open = true, value = {
+            Surface.ROTATION_0,
+            Surface.ROTATION_90,
+            Surface.ROTATION_180,
+            Surface.ROTATION_270
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    private @interface Rotation {}
 }
