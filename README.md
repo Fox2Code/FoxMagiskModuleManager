@@ -3,9 +3,9 @@
 ## Fox Module contest
 
 If you publish a modules using ANSI color styling or FoxMMM extensions
-(see [DEVELOPERS.md](DEVELOPERS.md)) you can enter the contest to win 20€ via PayPal.
+(see [`DEVELOPERS.md`](DEVELOPERS.md)) you can enter the contest to win 20€ via PayPal.
 
-The winning module will be displayed on this spot for at least 2 weeks.
+The winning module will also be displayed on this spot for at least 2 weeks.
 
 Note: The module install script must **not** be obfuscated and 
 be published on a repo supported by FoxMMM to be able to participate.
