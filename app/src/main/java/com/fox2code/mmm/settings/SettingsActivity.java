@@ -23,7 +23,6 @@ import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
-import com.fox2code.mmm.OverScrollManager;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.installer.InstallerInitializer;
@@ -31,7 +30,6 @@ import com.fox2code.mmm.repo.RepoData;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
-
 import com.fox2code.rosettax.LanguageActivity;
 import com.fox2code.rosettax.LanguageSwitcher;
 import com.mikepenz.aboutlibraries.LibsBuilder;
@@ -59,11 +57,12 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
     }
 
     @Override
+    @SuppressLint("InlinedApi")
     public void refreshRosettaX() {
         Intent mStartActivity = new Intent(this, MainActivity.class);
         mStartActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         int mPendingIntentId = 123456;
-        @SuppressLint("InlinedApi") PendingIntent mPendingIntent = PendingIntent.getActivity(this, mPendingIntentId,
+        PendingIntent mPendingIntent = PendingIntent.getActivity(this, mPendingIntentId,
                 mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         AlarmManager mgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);

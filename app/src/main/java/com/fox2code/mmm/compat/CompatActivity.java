@@ -11,6 +11,8 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemProperties;
 import android.util.Log;
 import android.util.TypedValue;
@@ -33,12 +35,14 @@ import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
+import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
@@ -61,6 +65,7 @@ import rikka.layoutinflater.view.LayoutInflaterFactory;
  * I will probably outsource this to a separate library later
  */
 public class CompatActivity extends AppCompatActivity {
+    private static final Handler handler = new Handler(Looper.getMainLooper());
     public static final int INTENT_ACTIVITY_REQUEST_CODE = 0x01000000;
     private static final String TAG = "CompatActivity";
     public static final CompatActivity.OnBackPressedCallback DISABLE_BACK_BUTTON =
@@ -80,18 +85,35 @@ public class CompatActivity extends AppCompatActivity {
     private int displayCutoutHeight = 0;
     @Rotation private int cachedRotation = 0;
     @StyleRes private int setThemeDynamic = 0;
+    private boolean awaitOnWindowUpdate = false;
     private boolean onCreateCalledOnce = false;
     private boolean onCreateCalled = false;
     private boolean isRefreshUi = false;
     private boolean hasHardwareNavBar;
     private int drawableResId;
     private MenuItem menuItem;
-    // CompatConfigHelper
-    private boolean forceEnglish;
-    private Boolean nightModeOverride;
 
     public CompatActivity() {
         this.selfReference = new WeakReference<>(this);
+    }
+
+    void postWindowUpdated() {
+        if (this.awaitOnWindowUpdate) return;
+        this.awaitOnWindowUpdate = true;
+        handler.post(() -> {
+            this.awaitOnWindowUpdate = false;
+            if (this.isFinishing()) return;
+            this.cachedRotation = this.getRotation();
+            this.displayCutoutHeight = CompatNotch.getNotchHeight(this);
+            this.onWindowUpdated();
+        });
+    }
+
+    /**
+     * Function to detect when Window state is updated
+     * */
+    protected void onWindowUpdated() {
+        // No-op
     }
 
     @Override
@@ -125,8 +147,6 @@ public class CompatActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         this.hasHardwareNavBar = this.hasHardwareNavBar0();
-        this.displayCutoutHeight = CompatNotch.getNotchHeight(this);
-        this.cachedRotation = this.getRotation();
         super.onResume();
         this.refreshUI();
     }
@@ -135,10 +155,17 @@ public class CompatActivity extends AppCompatActivity {
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (this.cachedRotation != this.getRotation() &&
-                this.onCreateCalledOnce) {
+                this.onCreateCalledOnce && !this.awaitOnWindowUpdate) {
             this.cachedRotation = this.getRotation();
             this.displayCutoutHeight = CompatNotch.getNotchHeight(this);
+            this.onWindowUpdated();
         }
+    }
+
+    @Override @CallSuper @RequiresApi(Build.VERSION_CODES.N)
+    public void onMultiWindowModeChanged(boolean isInMultiWindowMode, Configuration newConfig) {
+        super.onMultiWindowModeChanged(isInMultiWindowMode, newConfig);
+        this.postWindowUpdated();
     }
 
     @Override
@@ -157,15 +184,18 @@ public class CompatActivity extends AppCompatActivity {
     public void refreshUI() {
         // Avoid recursive calls
         if (this.isRefreshUi || !this.onCreateCalled) return;
-        Application application = this.getApplication();
-        if (application instanceof ApplicationCallbacks) {
-            this.isRefreshUi = true;
-            try {
+        this.isRefreshUi = true;
+        try {
+            this.cachedRotation = this.getRotation();
+            this.displayCutoutHeight = CompatNotch.getNotchHeight(this);
+            Application application = this.getApplication();
+            if (application instanceof ApplicationCallbacks) {
                 ((ApplicationCallbacks) application)
                         .onRefreshUI(this);
-            } finally {
-                this.isRefreshUi = false;
             }
+            this.postWindowUpdated();
+        } finally {
+            this.isRefreshUi = false;
         }
     }
 
@@ -295,6 +325,20 @@ public class CompatActivity extends AppCompatActivity {
         }
     }
 
+    public boolean isActivityWindowed() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
+                (super.isInMultiWindowMode() || super.isInPictureInPictureMode());
+    }
+
+    @Nullable
+    public WindowInsetsCompat getWindowInsets() {
+        View view = findViewById(android.R.id.content);
+        return view != null ? ViewCompat.getRootWindowInsets(view) : null;
+    }
+
+    /**
+     * @return Activity status bar height, may be 0 if not affecting the activity.
+     */
     @Dimension @Px
     @SuppressLint("InternalInsetResource")
     public int getStatusBarHeight() {
@@ -302,32 +346,41 @@ public class CompatActivity extends AppCompatActivity {
         int height = this.getRotation() == 0 ?
                 this.displayCutoutHeight : 0;
         // Check consumed insets
-        if (WindowInsetsCompat.CONSUMED.isConsumed()) {
-            Insets insets = WindowInsetsCompat.CONSUMED.getInsets(
+        boolean windowed = this.isActivityWindowed();
+        WindowInsetsCompat windowInsetsCompat = this.getWindowInsets();
+        if (windowInsetsCompat != null || windowed) {
+            if (windowInsetsCompat == null) // Fallback for windowed mode
+                windowInsetsCompat = WindowInsetsCompat.CONSUMED;
+            Insets insets = windowInsetsCompat.getInsets(
                     WindowInsetsCompat.Type.statusBars());
-            if (insets.top == 0) {
-                height = Math.max(height, insets.bottom);
-            }
+            if (windowed) return Math.max(insets.top, 0);
+            height = Math.max(height, insets.top);
         }
         // Check system resources
         int id = Resources.getSystem().getIdentifier(
-                "status_bar_height", "dimen", "android");
+                "status_bar_height_default", "dimen", "android");
+        if (id <= 0) {
+            id = Resources.getSystem().getIdentifier(
+                    "status_bar_height", "dimen", "android");
+        }
         return id <= 0 ? height : Math.max(height,
                 Resources.getSystem().getDimensionPixelSize(id));
     }
 
+    /**
+     * @return Activity status bar height, may be 0 if not affecting the activity.
+     */
     @Dimension @Px
     @SuppressLint("InternalInsetResource")
     public int getNavigationBarHeight() {
         int height = 0;
         // Check consumed insets
-        if (WindowInsetsCompat.CONSUMED.isConsumed()) {
-            Insets insets = WindowInsetsCompat.CONSUMED.getInsets(
-                    WindowInsetsCompat.Type.statusBars());
-            if (insets.top != 0) {
-                height = Math.max(height,
-                        insets.bottom - insets.top);
-            }
+        WindowInsetsCompat windowInsetsCompat = this.getWindowInsets();
+        if (windowInsetsCompat != null) {
+            // Note: isActivityWindowed does not affect layout
+            Insets insets = windowInsetsCompat.getInsets(
+                    WindowInsetsCompat.Type.navigationBars());
+            height = Math.max(height, insets.bottom);
         }
         // Check system resources
         int id = Resources.getSystem().getIdentifier(

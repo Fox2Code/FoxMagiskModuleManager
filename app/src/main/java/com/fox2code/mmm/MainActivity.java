@@ -1,13 +1,5 @@
 package com.fox2code.mmm;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SearchView;
-import androidx.cardview.widget.CardView;
-import androidx.core.graphics.ColorUtils;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -21,6 +13,14 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SearchView;
+import androidx.cardview.widget.CardView;
+import androidx.core.graphics.ColorUtils;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.compat.CompatDisplay;
 import com.fox2code.mmm.installer.InstallerInitializer;
@@ -32,8 +32,6 @@ import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.settings.SettingsActivity;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import eightbitlab.com.blurview.BlurView;
@@ -105,12 +103,11 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         this.moduleList.setItemViewCacheSize(4); // Default is 2
         this.swipeRefreshLayout.setOnRefreshListener(this);
         this.actionBarBlur.setBackground(this.actionBarBackground);
-        this.actionBarBlur.setupWith(this.moduleList).setFrameClearDrawable(
-                this.getWindow().getDecorView().getBackground())
-               .setBlurAlgorithm(new RenderScriptBlur(this))
-              .setBlurRadius(4F).setBlurAutoUpdate(true)
-               .setHasFixedTransformationMatrix(true);
-         this.updateBlurState();
+        this.actionBarBlur.setupWith(findViewById(R.id.blur_frame))
+                .setFrameClearDrawable(this.getWindow().getDecorView().getBackground())
+                .setBlurAlgorithm(new RenderScriptBlur(this)).setBlurRadius(4F)
+                .setBlurAutoUpdate(true).setHasFixedTransformationMatrix(true);
+        this.updateBlurState();
         this.moduleList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -338,9 +335,8 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
     }
 
     @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        this.updateScreenInsets(newConfig);
-        super.onConfigurationChanged(newConfig);
+    protected void onWindowUpdated() {
+        this.updateScreenInsets();
     }
 
     @Override

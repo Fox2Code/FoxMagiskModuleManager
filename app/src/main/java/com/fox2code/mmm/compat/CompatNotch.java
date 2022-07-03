@@ -2,6 +2,7 @@ package com.fox2code.mmm.compat;
 
 import android.annotation.SuppressLint;
 import android.content.res.Resources;
+import android.graphics.Insets;
 import android.os.Build;
 import android.os.SystemProperties;
 import android.util.Log;
@@ -38,7 +39,15 @@ final class CompatNotch {
     private static int getNotchHeightModern(CompatActivity compatActivity) {
         Display display = compatActivity.getDisplay();
         DisplayCutout displayCutout = display == null ? null : display.getCutout();
-        if (displayCutout != null) return Math.max(displayCutout.getSafeInsetTop(), 1);
+        if (displayCutout != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                Insets insets = displayCutout.getWaterfallInsets();
+                return Math.max(displayCutout.getSafeInsetTop(),
+                        insets == null || insets.top == 0 ? 1 : insets.top);
+            } else {
+                return Math.max(displayCutout.getSafeInsetTop(), 1);
+            }
+        }
         DisplayCutoutCompat displayCutoutCompat = WindowInsetsCompat.CONSUMED.getDisplayCutout();
         return displayCutoutCompat == null ? 0 : Math.max(displayCutoutCompat.getSafeInsetTop(), 1);
     }

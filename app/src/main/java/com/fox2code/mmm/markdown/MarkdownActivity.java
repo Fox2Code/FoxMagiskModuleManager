@@ -239,6 +239,10 @@ public class MarkdownActivity extends CompatActivity {
         this.updateBlurState();
     }
 
+    @Override
+    protected void onWindowUpdated() {
+        this.updateScreenInsets();
+    }
 
     private void addChip(MarkdownChip markdownChip) {
         this.makeChip(this.getString(markdownChip.title),
