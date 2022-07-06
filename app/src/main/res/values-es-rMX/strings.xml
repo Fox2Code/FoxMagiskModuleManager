@@ -10,6 +10,7 @@
     <string name="failed_download">No fue posible descargar el archivo.</string>
     <string name="slow_modules">Los módulos tardaron mucho en iniciar, considere eliminar algunos.</string>
     <string name="fail_internet">No fue posible conectarse a Internet.</string>
+    <string name="no_web_view">No se pudo abrir el WebView del sistema.</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="app_update_available">Actualización disponible</string>
     <string name="app_update">Actualizar</string>
@@ -21,8 +22,20 @@
     <string name="website">Sitio web</string>
     <string name="support">Soporte</string>
     <string name="donate">Donar</string>
+    <string name="update">Actualizar</string>
+    <string name="install">Instalar</string>
+    <string name="description">Descripción</string>
+    <string name="uninstall">Desinstalar</string>
+    <string name="config">Configuración</string>
     <string name="submit_modules">Enviar un módulo</string>
     <string name="require_android_6">Requiere Android 6.0 o superior</string>
+    <string name="require_android_12">Requiere Android 12 o superior</string>
+    <string name="install_terminal_reboot_now">Reiniciar</string>
+    <string name="language">Idioma</string>
+    <string name="yes" translatable="false">@android:string/sí</string>
+    <string name="no" translatable="false">@android:string/no</string>
+    <string name="ok" translatable="false">@android:string/ok</string>
+    <string name="cancel" translatable="false">@android:string/cancelar</string>
 
     <!-- Module section translation -->
     <string name="module_last_update">Actualizado el:</string>
@@ -30,13 +43,23 @@
     <string name="module_by">por</string>
     <string name="module_downloads">Descargas:</string>
     <string name="module_stars">Estrellas:</string>
+    <string name="module_needs_ramdisk">Requiere ramdisk</string>
+    <string name="module_needs_ramdisk_desc">Este módulo requiere un ramdisk de arranque para ser instalado</string>
+    <string name="module_can_change_boot">Puede cambiar el arranque</string>
+    <string name="module_can_change_boot_desc">Este módulo puede cambiar la imagen de arranque</string>
+    <string name="module_min_magisk_chip">Min. Magisk "%s"</string>
+    <string name="module_min_sdk_chip">Min. Android</string>
+    <string name="module_max_sdk_chip">Máx. Android</string>
 
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">Administrar repositorios</string>
     <string name="showcase_mode_pref">Modo Lockdown</string>
     <string name="showcase_mode_desc">Modo Lockdown previene que la aplicación haga cambios en los módulos</string>
+    <string name="prevent_reboot_pref">Evitar reinicio</string>
+    <string name="prevent_reboot_desc">Evita los reincios inesperados</string>
     <string name="pref_category_settings">Ajustes</string>
+    <string name="enable_monet">Habilitar Monet</string>
     <string name="pref_category_info">Info</string>
     <string name="show_licenses">Mostrar licencias</string>
     <string name="licenses">Licencias</string>
@@ -44,6 +67,9 @@
     <string name="show_incompatible_desc">Muestra los módulos que son incompatibles con su dispositivo basandose en sus metadatos</string>
     <string name="magisk_outdated">Magisk está desactualizado!</string>
     <string name="pref_category_repos">Repositorios</string>
+    <string name="pref_category_security">Seguridad</string>
+    <string name="pref_category_appearance">Apariencia</string>
+    <string name="pref_category_general">General</string>
     <string name="repo_main_desc">Repositorio que aloja los módulos de Magisk</string>
     <string name="repo_main_alt">Una alternativa del repositorio de módulos de Magisk pero con menos restricciones.</string>
     <string name="master_delete">Desea borrar los archivos del módulo?</string>
@@ -55,6 +81,7 @@
     <string name="module_id_prefix">Id del módulo: </string>
     <string name="install_from_storage">Instalar módulo desde el almacenamiento</string>
     <string name="invalid_format">El módulo seleccionado tiene un formato inválido</string>
+    <string name="low_quality_module">Módulo de baja calidad</string>
     <string name="local_install_title">Instalación local</string>
     <string name="source_code">Código fuente</string>
     <string name="magisk_builtin_module">Módulo incorporado de Magisk</string>
@@ -91,6 +118,14 @@
         todo el texto en la misma linea durante la instalación de un módulo
     </string>
     <string name="enable_blur_pref">Activar desenfoque</string>
+    <string name="disable_chips_in_description">Deshabilitar chips en la descripción</string>
     <string name="repo_enabled">Repositorio activado</string>
     <string name="repo_disabled">Repositorio desactivado</string>
+    <string name="add_repo">Añadir Repositorio</string>
+    <string name="remove_repo">Eliminar Repositorio</string>
+    <string name="custom_url">URL Personalizado</string>
+    <string name="androidacy_repo_info">El repositorio Androidacy tiene anuncios y trackers.</string>
+    <string name="backup_module_list">Hacer copia de seguridad de los módulos</string>
+    <string name="restore_module_list">Restaurar módulos</string>
+    <string name="require_internet">Esta operación requiere una conexión a Internet.</string>
 </resources>
