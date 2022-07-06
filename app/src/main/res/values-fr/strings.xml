@@ -10,7 +10,7 @@
     <string name="failed_download">Échec du téléchargement du fichier.</string>
     <string name="slow_modules">Les modules mettent trop de temps à démarrer, envisagez de désactiver certains modules</string>
     <string name="fail_internet">Échec de la connexion à internet</string>
-    <string name="no_web_view">Impossible d'ouvrir le WebView du système</string>
+    <string name="no_web_view">Impossible d\’ouvrir le WebView du système</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="app_update_available">Mis-à-jour de l\’application disponible</string>
     <string name="app_update">Mis-à-jour</string>
@@ -46,7 +46,7 @@
     <string name="module_needs_ramdisk">Ramdisk nécessaire</string>
     <string name="module_needs_ramdisk_desc">Ce module a besoin de démarrer le ramdisk pour être installé</string>
     <string name="module_can_change_boot">Peut changer le démarrage</string>
-    <string name="module_can_change_boot_desc">Ce module peut changer l'image de démarrage</string>
+    <string name="module_can_change_boot_desc">Ce module peut changer l\’image de démarrage</string>
     <string name="module_min_magisk_chip">Magisk min. "%s"</string>
     <string name="module_min_sdk_chip">Android Min.</string>
     <string name="module_max_sdk_chip">Android Max.</string>
