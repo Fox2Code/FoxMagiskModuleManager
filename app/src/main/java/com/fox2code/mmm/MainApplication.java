@@ -150,17 +150,6 @@ public class MainApplication extends CompatApplication {
         return firstBoot;
     }
 
-    public static void notifyBootListenerCompleted() {
-        if (MainApplication.bootSharedPreferences != null) {
-            MainApplication.bootSharedPreferences.edit()
-                    .putBoolean("first_boot", false).apply();
-        } else if (MainApplication.INSTANCE != null) {
-            MainApplication.getSharedPreferences().edit()
-                    .putBoolean("first_boot", false).apply();
-        }
-        firstBoot = false;
-    }
-
     public static boolean hasGottenRootAccess() {
         return getSharedPreferences().getBoolean("has_root_access", false);
     }

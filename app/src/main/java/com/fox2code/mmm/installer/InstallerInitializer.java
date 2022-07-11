@@ -42,6 +42,11 @@ public class InstallerInitializer extends Shell.Initializer {
                 InstallerInitializer.MAGISK_PATH + "/.magisk/mirror";
     }
 
+    public static String peekModulesPath() {
+        return InstallerInitializer.MAGISK_PATH == null ? null :
+                InstallerInitializer.MAGISK_PATH + "/.magisk/modules";
+    }
+
     public static int peekMagiskVersion() {
         return InstallerInitializer.MAGISK_VERSION_CODE;
     }

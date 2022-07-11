@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.utils.PropUtils;
 import com.topjohnwu.superuser.Shell;
 import com.topjohnwu.superuser.io.SuFile;
@@ -43,7 +44,7 @@ public final class ModuleManager {
     }
 
     // MultiThread friendly method
-    public final void scan() {
+    public void scan() {
         if (!this.scanning) {
             // Do scan
             synchronized (scanLock) {
@@ -61,11 +62,11 @@ public final class ModuleManager {
     }
 
     // Pause execution until the scan is completed if one is currently running
-    public final void afterScan() {
+    public void afterScan() {
         if (this.scanning) synchronized (this.scanLock) {}
     }
 
-    public final void runAfterScan(Runnable runnable) {
+    public void runAfterScan(Runnable runnable) {
         synchronized (this.scanLock) {
             runnable.run();
         }
@@ -86,7 +87,13 @@ public final class ModuleManager {
             v.support = null;
             v.config = null;
         }
+        String modulesPath = InstallerInitializer.peekModulesPath();
         String[] modules = new SuFile("/data/adb/modules").list();
+        boolean needFallback = modulesPath == null ||
+                !new SuFile(modulesPath).exists();
+        if (needFallback) {
+            Log.e(TAG, "Failed to detect modules folder, using fallback instead.");
+        }
         if (modules != null) {
             for (String module : modules) {
                 if (!new SuFile("/data/adb/modules/" + module).isDirectory())
@@ -99,27 +106,21 @@ public final class ModuleManager {
                     moduleInfo.flags |= ModuleInfo.FLAG_MODULE_UPDATING_ONLY;
                 }
                 moduleInfo.flags &= ~FLAGS_RESET_UPDATE;
-                boolean disabled = new SuFile(
-                        "/data/adb/modules/" + module + "/disable").exists();
-                if (disabled) {
+                if (new SuFile("/data/adb/modules/" + module + "/disable").exists()) {
                     moduleInfo.flags |= ModuleInfo.FLAG_MODULE_DISABLED;
-                    if (firstBoot && firstScan) {
-                        editor.putBoolean("module_" + moduleInfo.id + "_active", true);
-                        moduleInfo.flags |= ModuleInfo.FLAG_MODULE_MAYBE_ACTIVE;
-                    }
-                } else {
-                    if (firstScan) {
-                        moduleInfo.flags |= ModuleInfo.FLAG_MODULE_ACTIVE;
-                        editor.putBoolean("module_" + moduleInfo.id + "_active", true);
-                    } else if (!moduleInfo.hasFlag(ModuleInfo.FLAG_MODULE_MAYBE_ACTIVE) &&
-                            bootPrefs.getBoolean("module_" + moduleInfo.id + "_active", false)) {
-                        moduleInfo.flags |= ModuleInfo.FLAG_MODULE_ACTIVE;
-                    }
+                } else if (needFallback && firstScan) {
+                    moduleInfo.flags |= ModuleInfo.FLAG_MODULE_ACTIVE;
+                    editor.putBoolean("module_" + moduleInfo.id + "_active", true);
                 }
-                boolean uninstalling = new SuFile(
-                        "/data/adb/modules/" + module + "/remove").exists();
-                if (uninstalling) {
+                if (new SuFile("/data/adb/modules/" + module + "/remove").exists()) {
                     moduleInfo.flags |= ModuleInfo.FLAG_MODULE_UNINSTALLING;
+                }
+                if ((!needFallback && new SuFile(modulesPath + module).exists()) || (!firstBoot
+                        && bootPrefs.getBoolean("module_" + moduleInfo.id + "_active", false))) {
+                    moduleInfo.flags |= ModuleInfo.FLAG_MODULE_ACTIVE;
+                    if (firstScan) {
+                        editor.putBoolean("module_" + moduleInfo.id + "_active", true);
+                    }
                 }
                 try {
                     PropUtils.readProperties(moduleInfo,
