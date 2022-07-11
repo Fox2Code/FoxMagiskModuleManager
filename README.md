@@ -10,7 +10,8 @@ The winning module will also be displayed on this spot for at least 2 weeks.
 Note: The module install script must **not** be obfuscated and 
 be published on a repo supported by FoxMMM to be able to participate.
 
-The winner will be selected at the end of this month (July).
+The winner will be selected at the end of this month (July).  
+(Don't forget to join telegram to be sure I don't miss your module when selecting the winner)
 
 ## Join us on Telegram! 
 
