@@ -17,6 +17,12 @@ The winner will be selected at the end of this month (July).
 
 [![Telegram Group](https://img.shields.io/endpoint?color=neon&style=flat&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2FFox2Code_Chat)](https://telegram.dog/Fox2Code_Chat)
 
+## Screenshots
+
+Main activity:  
+[<img src="screenshot-dark.jpg" width="250"/>](screenshot-dark.jpg)
+[<img src="screenshot-light.jpg" width="250"/>](screenshot-light.jpg)
+
 ## What is this? 
 
 The official Magisk is dropping support to download online modules...  
@@ -78,12 +84,6 @@ of the module, if a module is in multiple repos it will just use first registere
 Note: If you or a friend uploaded a module and it doesn't appear in your module 
 list you can disable the low quality filter in the app settings.  
 Go to the [developer documentation](DEVELOPERS.md) for more info.
-
-## Screenshots
-
-Main activity:  
-[<img src="screenshot-dark.jpg" width="250"/>](screenshot-dark.jpg)
-[<img src="screenshot-light.jpg" width="250"/>](screenshot-light.jpg)
 
 ## For developers
 
