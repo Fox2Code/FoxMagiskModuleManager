@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <bool name="monet_enabled_by_default">false</bool>
+    <bool name="monet_enabled_by_default">true</bool>
 </resources>

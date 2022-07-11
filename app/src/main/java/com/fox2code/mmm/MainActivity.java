@@ -222,7 +222,8 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
 
     private void cardIconifyUpdate() {
         boolean iconified = this.searchView.isIconified();
-        int backgroundAttr = iconified ?
+        int backgroundAttr = iconified ? MainApplication.isMonetEnabled() ?
+                R.attr.colorSecondaryContainer : // Monet is special...
                 R.attr.colorSecondary : R.attr.colorPrimarySurface;
         Resources.Theme theme = this.searchCard.getContext().getTheme();
         TypedValue value = new TypedValue();

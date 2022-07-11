@@ -63,7 +63,7 @@
             app:singleLineTitle="false"	/>
 
         <SwitchPreferenceCompat
-            app:defaultValue="false"
+            app:defaultValue="@bool/monet_enabled_by_default"
             app:key="pref_enable_monet"
             app:icon="@drawable/ic_baseline_design_services_24"
             app:title="@string/enable_monet"

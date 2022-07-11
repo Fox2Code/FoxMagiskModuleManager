@@ -26,6 +26,7 @@ import com.fox2code.mmm.utils.GMSProviderInstaller;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.rosettax.LanguageSwitcher;
 import com.google.android.material.color.DynamicColors;
+import com.google.android.material.color.DynamicColorsOptions;
 import com.topjohnwu.superuser.Shell;
 
 import java.text.SimpleDateFormat;
@@ -122,7 +123,8 @@ public class MainApplication extends CompatApplication {
     }
 
     public static boolean isMonetEnabled() {
-        return getSharedPreferences().getBoolean("pref_enable_monet", false);
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+                getSharedPreferences().getBoolean("pref_enable_monet", true);
     }
 
     public static boolean isBlurEnabled() {
@@ -274,10 +276,10 @@ public class MainApplication extends CompatApplication {
     public void onCreate() {
         if (INSTANCE == null) INSTANCE = this;
         super.onCreate();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (MainApplication.isMonetEnabled()) {
-                DynamicColors.applyToActivitiesIfAvailable(this);
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && isMonetEnabled()) {
+            DynamicColors.applyToActivitiesIfAvailable(this,
+                    new DynamicColorsOptions.Builder().setPrecondition(
+                            (activity, theme) -> isMonetEnabled()).build());
         }
         SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
         // We are only one process so it's ok to do this
