@@ -235,17 +235,24 @@ public class MainApplication extends CompatApplication {
     public void updateTheme() {
         @StyleRes int themeResId;
         String theme;
+        boolean monet = isMonetEnabled();
         switch (theme = getSharedPreferences().getString("pref_theme", "system")) {
             default:
                 Log.w("MainApplication", "Unknown theme id: " + theme);
             case "system":
-                themeResId = R.style.Theme_MagiskModuleManager;
+                themeResId = monet ?
+                        R.style.Theme_MagiskModuleManager_Monet :
+                        R.style.Theme_MagiskModuleManager;
                 break;
             case "dark":
-                themeResId = R.style.Theme_MagiskModuleManager_Dark;
+                themeResId = monet ?
+                        R.style.Theme_MagiskModuleManager_Monet_Dark :
+                        R.style.Theme_MagiskModuleManager_Dark;
                 break;
             case "light":
-                themeResId = R.style.Theme_MagiskModuleManager_Light;
+                themeResId = monet ?
+                        R.style.Theme_MagiskModuleManager_Monet_Light :
+                        R.style.Theme_MagiskModuleManager_Light;
                 break;
         }
         this.setManagerThemeResId(themeResId);
@@ -276,11 +283,11 @@ public class MainApplication extends CompatApplication {
     public void onCreate() {
         if (INSTANCE == null) INSTANCE = this;
         super.onCreate();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && isMonetEnabled()) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             DynamicColors.applyToActivitiesIfAvailable(this,
                     new DynamicColorsOptions.Builder().setPrecondition(
                             (activity, theme) -> isMonetEnabled()).build());
-        }
+        }*/
         SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
         // We are only one process so it's ok to do this
         SharedPreferences bootPrefs = MainApplication.bootSharedPreferences =

@@ -108,6 +108,14 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
                 disableMonet.setSummary(R.string.require_android_12);
                 disableMonet.setEnabled(false);
             }
+            disableMonet.setOnPreferenceClickListener(preference -> {
+                UiThreadHandler.handler.postDelayed(() -> {
+                    MainApplication.getINSTANCE().updateTheme();
+                    ((CompatActivity) this.requireActivity()).setThemeRecreate(
+                            MainApplication.getINSTANCE().getManagerThemeResId());
+                }, 1);
+                return true;
+            });
 
             findPreference("pref_dns_over_https").setOnPreferenceChangeListener((p, v) -> {
                 Http.setDoh((Boolean) v);
