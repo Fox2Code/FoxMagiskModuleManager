@@ -4,14 +4,14 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.fox2code.mmm"
         minSdk 21
-        targetSdk 32
-        versionCode 47
-        versionName "0.5.4"
+        targetSdk 33
+        versionCode 48
+        versionName "0.5.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
