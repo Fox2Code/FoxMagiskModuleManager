@@ -115,7 +115,7 @@ public final class ModuleManager {
                 if (new SuFile("/data/adb/modules/" + module + "/remove").exists()) {
                     moduleInfo.flags |= ModuleInfo.FLAG_MODULE_UNINSTALLING;
                 }
-                if ((!needFallback && new SuFile(modulesPath + module).exists()) || (!firstBoot
+                if ((!needFallback && new SuFile(modulesPath, module).exists()) || (!firstBoot
                         && bootPrefs.getBoolean("module_" + moduleInfo.id + "_active", false))) {
                     moduleInfo.flags |= ModuleInfo.FLAG_MODULE_ACTIVE;
                     if (firstScan) {
