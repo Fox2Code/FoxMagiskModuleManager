@@ -19,10 +19,10 @@ import androidx.annotation.StringRes;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.fox2code.foxcompat.FoxDisplay;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.NotificationType;
 import com.fox2code.mmm.R;
-import com.fox2code.mmm.compat.CompatDisplay;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
@@ -267,10 +267,10 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     this.moduleOptionsHolder.setVisibility(View.GONE);
                     this.moduleLayoutHelper.setVisibility(View.GONE);
                 } else if (this.actionButtonsTypes.size() > 2 || !hasUpdateText) {
-                    this.moduleLayoutHelper.setMinHeight(Math.max(CompatDisplay.dpToPixel(36F),
-                            this.moduleOptionsHolder.getHeight() - CompatDisplay.dpToPixel(14F)));
+                    this.moduleLayoutHelper.setMinHeight(Math.max(FoxDisplay.dpToPixel(36F),
+                            this.moduleOptionsHolder.getHeight() - FoxDisplay.dpToPixel(14F)));
                 } else {
-                    this.moduleLayoutHelper.setMinHeight(CompatDisplay.dpToPixel(4F));
+                    this.moduleLayoutHelper.setMinHeight(FoxDisplay.dpToPixel(4F));
                 }
                 this.cardView.setClickable(false);
                 if (moduleHolder.isModuleHolder() &&

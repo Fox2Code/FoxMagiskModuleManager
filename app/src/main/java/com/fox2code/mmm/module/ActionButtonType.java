@@ -11,11 +11,11 @@ import android.widget.Toast;
 import androidx.annotation.DrawableRes;
 import androidx.appcompat.app.AlertDialog;
 
+import com.fox2code.foxcompat.FoxActivity;
+import com.fox2code.foxcompat.FoxDisplay;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.androidacy.AndroidacyUtil;
-import com.fox2code.mmm.compat.CompatActivity;
-import com.fox2code.mmm.compat.CompatDisplay;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
@@ -121,7 +121,7 @@ public enum ActionButtonType {
                             moduleInfo.name, moduleInfo.config, updateZipChecksum);
                 });
             }
-            int dim5dp = CompatDisplay.dpToPixel(5);
+            int dim5dp = FoxDisplay.dpToPixel(5);
             builder.setBackgroundInsetStart(dim5dp).setBackgroundInsetEnd(dim5dp);
             AlertDialog alertDialog = builder.show();
             for (int i = -3; i < 0; i++) {
@@ -176,7 +176,7 @@ public enum ActionButtonType {
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             moduleHolder.moduleInfo = null;
-                            CompatActivity.getCompatActivity(button).refreshUI();
+                            FoxActivity.getFoxActivity(button).refreshUI();
                         }
                     }).setNegativeButton(R.string.master_delete_no, (v, i) -> {
                     }).create().show();

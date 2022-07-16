@@ -1,9 +1,7 @@
 package com.fox2code.mmm.markdown;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -12,33 +10,24 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.widget.HorizontalScrollView;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import androidx.core.graphics.ColorUtils;
 
+import com.fox2code.foxcompat.FoxActivity;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
-import com.fox2code.mmm.OverScrollManager;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.XHooks;
-import com.fox2code.mmm.compat.CompatActivity;
-import com.fox2code.mmm.compat.CompatDisplay;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.topjohnwu.superuser.Shell;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import java.io.IOException;
@@ -48,8 +37,7 @@ import java.util.HashMap;
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
 
-
-public class MarkdownActivity extends CompatActivity {
+public class MarkdownActivity extends FoxActivity {
     private static final String TAG = "MarkdownActivity";
     private static final HashMap<String, String> redirects = new HashMap<>(4);
     private static final String[] variants = new String[]{

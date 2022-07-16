@@ -18,15 +18,13 @@ import androidx.emoji2.text.DefaultEmojiCompatConfig;
 import androidx.emoji2.text.EmojiCompat;
 import androidx.emoji2.text.FontRequestEmojiCompatConfig;
 
-import com.fox2code.mmm.compat.CompatActivity;
-import com.fox2code.mmm.compat.CompatApplication;
-import com.fox2code.mmm.compat.CompatThemeWrapper;
+import com.fox2code.foxcompat.FoxActivity;
+import com.fox2code.foxcompat.FoxApplication;
+import com.fox2code.foxcompat.FoxThemeWrapper;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.utils.GMSProviderInstaller;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.rosettax.LanguageSwitcher;
-import com.google.android.material.color.DynamicColors;
-import com.google.android.material.color.DynamicColorsOptions;
 import com.topjohnwu.superuser.Shell;
 
 import java.text.SimpleDateFormat;
@@ -49,7 +47,7 @@ import io.noties.prism4j.annotations.PrismBundle;
         includeAll = true,
         grammarLocatorClassName = ".Prism4jGrammarLocator"
 )
-public class MainApplication extends CompatApplication {
+public class MainApplication extends FoxApplication {
     private static final String timeFormatString = "dd MMM yyyy"; // Example: 13 july 2001
     private static Locale timeFormatLocale =
             Resources.getSystem().getConfiguration().locale;
@@ -175,16 +173,16 @@ public class MainApplication extends CompatApplication {
 
     @StyleRes
     private int managerThemeResId = R.style.Theme_MagiskModuleManager;
-    private CompatThemeWrapper markwonThemeContext;
+    private FoxThemeWrapper markwonThemeContext;
     private Markwon markwon;
 
     public Markwon getMarkwon() {
         if (this.markwon != null)
             return this.markwon;
-        CompatThemeWrapper contextThemeWrapper = this.markwonThemeContext;
+        FoxThemeWrapper contextThemeWrapper = this.markwonThemeContext;
         if (contextThemeWrapper == null) {
             contextThemeWrapper = this.markwonThemeContext =
-                    new CompatThemeWrapper(this, this.managerThemeResId);
+                    new FoxThemeWrapper(this, this.managerThemeResId);
         }
         Markwon markwon = Markwon.builder(contextThemeWrapper).usePlugin(HtmlPlugin.create())
                 .usePlugin(SyntaxHighlightPlugin.create(
@@ -194,8 +192,8 @@ public class MainApplication extends CompatApplication {
         return this.markwon = markwon;
     }
 
-    public CompatThemeWrapper getMarkwonThemeContext() {
-        return markwonThemeContext;
+    public FoxThemeWrapper getMarkwonThemeContext() {
+        return this.markwonThemeContext;
     }
 
     private class Prism4jSwitchTheme implements Prism4jTheme {
@@ -278,7 +276,7 @@ public class MainApplication extends CompatApplication {
             case R.style.Theme_MagiskModuleManager_Dark:
                 return false;
             default:
-                throw new IllegalStateException("Non manager theme!");
+                return super.isLightTheme();
         }
     }
 
@@ -330,13 +328,13 @@ public class MainApplication extends CompatApplication {
     }
 
     @Override
-    public void onCreateCompatActivity(CompatActivity compatActivity) {
-        super.onCreateCompatActivity(compatActivity);
+    public void onCreateFoxActivity(FoxActivity compatActivity) {
+        super.onCreateFoxActivity(compatActivity);
         compatActivity.setTheme(this.managerThemeResId);
     }
 
     @Override
-    public void onRefreshUI(CompatActivity compatActivity) {
+    public void onRefreshUI(FoxActivity compatActivity) {
         super.onRefreshUI(compatActivity);
         compatActivity.setThemeRecreate(this.managerThemeResId);
     }

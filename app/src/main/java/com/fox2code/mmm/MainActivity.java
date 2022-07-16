@@ -21,8 +21,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.fox2code.mmm.compat.CompatActivity;
-import com.fox2code.mmm.compat.CompatDisplay;
+import com.fox2code.foxcompat.FoxActivity;
+import com.fox2code.foxcompat.FoxDisplay;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
@@ -37,7 +37,7 @@ import com.google.android.material.progressindicator.LinearProgressIndicator;
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
 
-public class MainActivity extends CompatActivity implements SwipeRefreshLayout.OnRefreshListener,
+public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRefreshListener,
         SearchView.OnQueryTextListener, SearchView.OnCloseListener,
         OverScrollManager.OverScrollHelper {
     private static final String TAG = "MainActivity";
@@ -116,7 +116,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
             }
         });
         this.searchCard.setRadius(this.searchCard.getHeight() / 2F);
-        this.searchView.setMinimumHeight(CompatDisplay.dpToPixel(16));
+        this.searchView.setMinimumHeight(FoxDisplay.dpToPixel(16));
         this.searchView.setImeOptions(EditorInfo.IME_ACTION_SEARCH |
                 EditorInfo.IME_FLAG_NO_FULLSCREEN);
         this.searchView.setOnQueryTextListener(this);
@@ -249,8 +249,8 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                 swipeRefreshLayoutOrigStartOffset + combinedBarsHeight,
                 swipeRefreshLayoutOrigEndOffset + combinedBarsHeight);
         this.moduleViewListBuilder.setHeaderPx(Math.max(statusBarHeight,
-                combinedBarsHeight - CompatDisplay.dpToPixel(4)));
-        this.moduleViewListBuilder.setFooterPx(CompatDisplay.dpToPixel(4) +
+                combinedBarsHeight - FoxDisplay.dpToPixel(4)));
+        this.moduleViewListBuilder.setFooterPx(FoxDisplay.dpToPixel(4) +
                 bottomInset + this.searchCard.getHeight());
         this.searchCard.setRadius(this.searchCard.getHeight() / 2F);
         this.moduleViewListBuilder.updateInsets();

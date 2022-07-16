@@ -18,13 +18,13 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.TwoStatePreference;
 
+import com.fox2code.foxcompat.FoxActivity;
 import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
-import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.repo.RepoData;
 import com.fox2code.mmm.repo.RepoManager;
@@ -37,7 +37,7 @@ import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import java.util.HashSet;
 
-public class SettingsActivity extends CompatActivity implements LanguageActivity {
+public class SettingsActivity extends FoxActivity implements LanguageActivity {
     private static int devModeStep = 0;
 
     @Override
@@ -70,7 +70,7 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat
-            implements CompatActivity.OnBackPressedCallback {
+            implements FoxActivity.OnBackPressedCallback {
         @Override
         @SuppressWarnings("ConstantConditions")
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -92,7 +92,7 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
                 devModeStep = 0;
                 UiThreadHandler.handler.postDelayed(() -> {
                     MainApplication.getINSTANCE().updateTheme();
-                    CompatActivity.getCompatActivity(this).setThemeRecreate(
+                    FoxActivity.getFoxActivity(this).setThemeRecreate(
                             MainApplication.getINSTANCE().getManagerThemeResId());
                 }, 1);
                 return true;
@@ -111,7 +111,7 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
             disableMonet.setOnPreferenceClickListener(preference -> {
                 UiThreadHandler.handler.postDelayed(() -> {
                     MainApplication.getINSTANCE().updateTheme();
-                    ((CompatActivity) this.requireActivity()).setThemeRecreate(
+                    ((FoxActivity) this.requireActivity()).setThemeRecreate(
                             MainApplication.getINSTANCE().getManagerThemeResId());
                 }, 1);
                 return true;
@@ -212,7 +212,7 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
         }
 
         private void openFragment(Fragment fragment, @StringRes int title) {
-            CompatActivity compatActivity = getCompatActivity(this);
+            FoxActivity compatActivity = getFoxActivity(this);
             compatActivity.setOnBackPressedCallback(this);
             compatActivity.setTitle(title);
             compatActivity.getSupportFragmentManager()
@@ -223,7 +223,7 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
         }
 
         @Override
-        public boolean onBackPressed(CompatActivity compatActivity) {
+        public boolean onBackPressed(FoxActivity compatActivity) {
             compatActivity.setTitle(R.string.app_name);
             compatActivity.getSupportFragmentManager()
                     .beginTransaction().replace(R.id.settings, this)
@@ -283,9 +283,9 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
                 preference.setOnPreferenceClickListener(p -> {
                     if (homepage.startsWith("https://www.androidacy.com/")) {
                         IntentHelper.openUrlAndroidacy(
-                                getCompatActivity(this), homepage, true);
+                                getFoxActivity(this), homepage, true);
                     } else {
-                        IntentHelper.openUrl(getCompatActivity(this), homepage);
+                        IntentHelper.openUrl(getFoxActivity(this), homepage);
                     }
                     return true;
                 });
@@ -293,14 +293,14 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
             preference = findPreference(preferenceName + "_support");
             if (preference != null && supportUrl != null) {
                 preference.setOnPreferenceClickListener(p -> {
-                    IntentHelper.openUrl(getCompatActivity(this), supportUrl);
+                    IntentHelper.openUrl(getFoxActivity(this), supportUrl);
                     return true;
                 });
             }
             preference = findPreference(preferenceName + "_donate");
             if (preference != null && donateUrl != null) {
                 preference.setOnPreferenceClickListener(p -> {
-                    IntentHelper.openUrl(getCompatActivity(this), donateUrl);
+                    IntentHelper.openUrl(getFoxActivity(this), donateUrl);
                     return true;
                 });
             }
@@ -309,9 +309,9 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
                 preference.setOnPreferenceClickListener(p -> {
                     if (submissionUrl.startsWith("https://www.androidacy.com/")) {
                         IntentHelper.openUrlAndroidacy(
-                                getCompatActivity(this), submissionUrl, true);
+                                getFoxActivity(this), submissionUrl, true);
                     } else {
-                        IntentHelper.openUrl(getCompatActivity(this), submissionUrl);
+                        IntentHelper.openUrl(getFoxActivity(this), submissionUrl);
                     }
                     return true;
                 });

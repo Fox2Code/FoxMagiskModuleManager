@@ -16,10 +16,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 
+import com.fox2code.foxcompat.FoxDisplay;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
-import com.fox2code.mmm.compat.CompatDisplay;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
@@ -111,7 +111,7 @@ public class AndroidacyWebAPI {
             if (!this.activity.backOnResume)
                 this.consumedAction = false;
         });
-        final int dim5dp = CompatDisplay.dpToPixel(5);
+        final int dim5dp = FoxDisplay.dpToPixel(5);
         builder.setBackgroundInsetStart(dim5dp).setBackgroundInsetEnd(dim5dp);
         this.activity.runOnUiThread(() -> {
             AlertDialog alertDialog = builder.show();

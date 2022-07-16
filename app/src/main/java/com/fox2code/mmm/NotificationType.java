@@ -8,7 +8,7 @@ import androidx.annotation.AttrRes;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.StringRes;
 
-import com.fox2code.mmm.compat.CompatActivity;
+import com.fox2code.foxcompat.FoxActivity;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.utils.Files;
@@ -75,7 +75,7 @@ public enum NotificationType implements NotificationTypeCst {
     },
     INSTALL_FROM_STORAGE(R.string.install_from_storage, R.drawable.ic_baseline_storage_24,
             R.attr.colorBackgroundFloating, R.attr.colorOnBackground, v -> {
-        CompatActivity compatActivity = CompatActivity.getCompatActivity(v);
+        FoxActivity compatActivity = FoxActivity.getFoxActivity(v);
         final File module = new File(compatActivity.getCacheDir(),
                 "installer" + File.separator + "module.zip");
         IntentHelper.openFileTo(compatActivity, module, (d, u, s) -> {

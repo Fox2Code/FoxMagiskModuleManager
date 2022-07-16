@@ -22,12 +22,12 @@ import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewClientCompat;
 import androidx.webkit.WebViewFeature;
 
+import com.fox2code.foxcompat.FoxActivity;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.XHooks;
-import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 
@@ -36,7 +36,7 @@ import java.util.HashMap;
 /**
  * Per Androidacy repo implementation agreement, no request of this WebView shall be modified.
  */
-public class AndroidacyActivity extends CompatActivity {
+public class AndroidacyActivity extends FoxActivity {
     private static final String TAG = "AndroidacyActivity";
 
     static {
@@ -166,7 +166,7 @@ public class AndroidacyActivity extends CompatActivity {
             @Override
             public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback,
                                              FileChooserParams fileChooserParams) {
-                CompatActivity.getCompatActivity(webView).startActivityForResult(
+                FoxActivity.getFoxActivity(webView).startActivityForResult(
                         fileChooserParams.createIntent(), (code, data) ->
                                 filePathCallback.onReceiveValue(
                                         FileChooserParams.parseResult(code, data)));
