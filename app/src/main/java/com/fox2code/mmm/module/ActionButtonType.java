@@ -218,13 +218,8 @@ public enum ActionButtonType {
         @Override
         public void update(Chip button, ModuleHolder moduleHolder) {
             ModuleInfo moduleInfo = moduleHolder.getMainModuleInfo();
-            int icon = R.drawable.ic_baseline_monetization_on_24;
-            if (moduleInfo.donate.startsWith("https://www.paypal.me/")) {
-                icon = R.drawable.ic_baseline_paypal_24;
-            } else if (moduleInfo.donate.startsWith("https://www.patreon.com/")) {
-                icon = R.drawable.ic_patreon;
-            }
-            button.setChipIcon(button.getContext().getDrawable(icon));
+            button.setChipIcon(button.getContext().getDrawable(
+                    donateIconForUrl(moduleInfo.donate)));
             button.setText(R.string.donate);
         }
 
@@ -248,6 +243,18 @@ public enum ActionButtonType {
             icon = R.drawable.ic_gitlab;
         } else if (url.startsWith("https://forum.xda-developers.com/")) {
             icon = R.drawable.ic_xda;
+        }
+        return icon;
+    }
+
+    @DrawableRes
+    public static int donateIconForUrl(String url) {
+        int icon = R.drawable.ic_baseline_monetization_on_24;
+        if (url.startsWith("https://www.paypal.me/") ||
+                url.startsWith("https://www.paypal.com/paypalme/")) {
+            icon = R.drawable.ic_baseline_paypal_24;
+        } else if (url.startsWith("https://www.patreon.com/")) {
+            icon = R.drawable.ic_patreon;
         }
         return icon;
     }

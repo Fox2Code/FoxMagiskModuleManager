@@ -1,6 +1,9 @@
 package com.fox2code.mmm.repo;
 
 import android.content.SharedPreferences;
+import android.net.Uri;
+
+import androidx.annotation.NonNull;
 
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
@@ -32,7 +35,9 @@ public class RepoData extends XRepo {
     public final File metaDataCache;
     public final HashMap<String, RepoModule> moduleHashMap;
     public long lastUpdate;
-    public String name;
+    protected String defaultName, defaultWebsite,
+            defaultSupport, defaultDonate, defaultSubmitModule;
+    public String name, website, support, donate, submitModule;
     private boolean enabled; // Cache for speed
 
     protected RepoData(String url, File cacheRoot, SharedPreferences cachedPreferences) {
@@ -45,6 +50,8 @@ public class RepoData extends XRepo {
         this.name = this.url; // Set url as default name
         this.enabled = MainApplication.getSharedPreferences()
                 .getBoolean("pref_" + this.id + "_enabled", this.isEnabledByDefault());
+        this.defaultName = url;
+        this.defaultWebsite = "https://" + Uri.parse(url).getHost() + "/";
         if (!this.cacheRoot.isDirectory()) {
             this.cacheRoot.mkdirs();
         } else {
@@ -114,7 +121,7 @@ public class RepoData extends XRepo {
                 repoModule.propUrl = modulePropsUrl;
                 repoModule.zipUrl = moduleZipUrl;
                 repoModule.checksum = moduleChecksum;
-                if (!moduleStars.isEmpty()) {
+                if (!moduleStars.isEmpty() && !this.isLimited()) {
                     try {
                         repoModule.qualityValue = Integer.parseInt(moduleStars);
                         repoModule.qualityText = R.string.module_stars;
@@ -133,13 +140,17 @@ public class RepoData extends XRepo {
             // Update final metadata
             this.name = name;
             this.lastUpdate = lastUpdate;
+            this.website = jsonObject.optString("website");
+            this.support = jsonObject.optString("support");
+            this.donate = jsonObject.optString("donate");
+            this.submitModule = jsonObject.optString("submitModule");
         }
         return newModules;
     }
 
     @Override
     public boolean isEnabledByDefault() {
-        return !BuildConfig.DISABLED_REPOS.contains(this.id);
+        return BuildConfig.ENABLED_REPOS.contains(this.id);
     }
 
     public void storeMetadata(RepoModule repoModule,byte[] data) throws IOException {
@@ -166,12 +177,6 @@ public class RepoData extends XRepo {
         return false;
     }
 
-    public String getNameOrFallback(String fallback) {
-        return this.name == null ||
-                this.name.equals(this.url) ?
-                fallback : this.name;
-    }
-
     @Override
     public boolean isEnabled() {
         return this.enabled;
@@ -181,15 +186,65 @@ public class RepoData extends XRepo {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
         MainApplication.getSharedPreferences().edit()
-                .putBoolean("pref_" + this.id + "_enabled", enabled).apply();
+                .putBoolean("pref_" + this.getPreferenceId() + "_enabled", enabled).apply();
     }
 
     public void updateEnabledState() {
         this.enabled = MainApplication.getSharedPreferences()
-                .getBoolean("pref_" + this.id + "_enabled", this.isEnabledByDefault());
+                .getBoolean("pref_" + this.getPreferenceId() + "_enabled", this.isEnabledByDefault());
     }
 
     public String getUrl() {
         return this.url;
+    }
+
+    public boolean isLimited() {
+        return false;
+    }
+
+    public String getPreferenceId() {
+        return this.id;
+    }
+
+    // Repo data info getters
+    @NonNull
+    public String getName() {
+        if (this.name != null &&
+                !this.name.isEmpty())
+            return this.name;
+        if (this.defaultName != null)
+            return this.defaultName;
+        return this.url;
+    }
+
+    @NonNull
+    public String getWebsite() {
+        if (this.website != null &&
+                !this.website.isEmpty())
+            return this.website;
+        if (this.defaultWebsite != null)
+            return this.defaultWebsite;
+        return this.url;
+    }
+
+    public String getSupport() {
+        if (this.support != null &&
+                !this.support.isEmpty())
+            return this.support;
+        return this.defaultSupport;
+    }
+
+    public String getDonate() {
+        if (this.donate != null &&
+                !this.donate.isEmpty())
+            return this.donate;
+        return this.defaultDonate;
+    }
+
+    public String getSubmitModule() {
+        if (this.submitModule != null &&
+                !this.submitModule.isEmpty())
+            return this.submitModule;
+        return this.defaultSubmitModule;
     }
 }

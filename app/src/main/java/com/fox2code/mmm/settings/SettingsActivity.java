@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.StringRes;
@@ -26,6 +27,7 @@ import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.installer.InstallerInitializer;
+import com.fox2code.mmm.module.ActionButtonType;
 import com.fox2code.mmm.repo.RepoData;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.utils.Http;
@@ -239,29 +241,17 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             getPreferenceManager().setSharedPreferencesName("mmm");
             setPreferencesFromResource(R.xml.repo_preferences, rootKey);
-            setRepoData(RepoManager.MAGISK_ALT_REPO,
-                    "Magisk Modules Alt Repo", RepoManager.MAGISK_ALT_REPO_HOMEPAGE,
-                    null, null,
-                    "https://github.com/Magisk-Modules-Alt-Repo/submission/issues");
+            setRepoData(RepoManager.MAGISK_ALT_REPO);
             // Androidacy backend not yet implemented!
-            setRepoData(RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT,
-                    "Androidacy Modules Repo",
-                    RepoManager.ANDROIDACY_MAGISK_REPO_HOMEPAGE,
-                    "https://t.me/androidacy_discussions",
-                    "https://patreon.com/androidacy",
-                    "https://www.androidacy.com/module-repository-applications/");
+            setRepoData(RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT);
         }
 
-        private void setRepoData(String url,
-                                 String fallbackTitle, String homepage,
-                                 String supportUrl, String donateUrl,
-                                 String submissionUrl) {
+        private void setRepoData(String url) {
             String preferenceName = "pref_" + RepoManager.internalIdOfUrl(url);
             Preference preference = findPreference(preferenceName);
             if (preference == null) return;
             final RepoData repoData = RepoManager.getINSTANCE().get(url);
-            preference.setTitle(repoData == null ? fallbackTitle :
-                    repoData.getNameOrFallback(fallbackTitle));
+            preference.setTitle(repoData == null ? url : repoData.getName());
             preference = findPreference(preferenceName + "_enabled");
             if (preference != null) {
                 if (repoData == null) {
@@ -279,42 +269,68 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 }
             }
             preference = findPreference(preferenceName + "_website");
-            if (preference != null && homepage != null) {
-                preference.setOnPreferenceClickListener(p -> {
-                    if (homepage.startsWith("https://www.androidacy.com/")) {
-                        IntentHelper.openUrlAndroidacy(
-                                getFoxActivity(this), homepage, true);
-                    } else {
-                        IntentHelper.openUrl(getFoxActivity(this), homepage);
-                    }
-                    return true;
-                });
+            String homepage = repoData == null ? null : repoData.getWebsite();
+            if (preference != null) {
+                if (homepage != null && !homepage.isEmpty()) {
+                    preference.setVisible(true);
+                    preference.setOnPreferenceClickListener(p -> {
+                        if (homepage.startsWith("https://www.androidacy.com/")) {
+                            IntentHelper.openUrlAndroidacy(
+                                    getFoxActivity(this), homepage, true);
+                        } else {
+                            IntentHelper.openUrl(getFoxActivity(this), homepage);
+                        }
+                        return true;
+                    });
+                } else {
+                    preference.setVisible(false);
+                }
             }
             preference = findPreference(preferenceName + "_support");
-            if (preference != null && supportUrl != null) {
-                preference.setOnPreferenceClickListener(p -> {
-                    IntentHelper.openUrl(getFoxActivity(this), supportUrl);
-                    return true;
-                });
+            String supportUrl = repoData == null ? null : repoData.getSupport();
+            if (preference != null) {
+                if (supportUrl != null && !supportUrl.isEmpty()) {
+                    preference.setVisible(true);
+                    preference.setIcon(ActionButtonType.supportIconForUrl(supportUrl));
+                    preference.setOnPreferenceClickListener(p -> {
+                        IntentHelper.openUrl(getFoxActivity(this), supportUrl);
+                        return true;
+                    });
+                } else {
+                    preference.setVisible(false);
+                }
             }
             preference = findPreference(preferenceName + "_donate");
-            if (preference != null && donateUrl != null) {
-                preference.setOnPreferenceClickListener(p -> {
-                    IntentHelper.openUrl(getFoxActivity(this), donateUrl);
-                    return true;
-                });
+            String donateUrl = repoData == null ? null : repoData.getDonate();
+            if (preference != null) {
+                if (donateUrl != null) {
+                    preference.setVisible(true);
+                    preference.setIcon(ActionButtonType.donateIconForUrl(donateUrl));
+                    preference.setOnPreferenceClickListener(p -> {
+                        IntentHelper.openUrl(getFoxActivity(this), donateUrl);
+                        return true;
+                    });
+                } else {
+                    preference.setVisible(false);
+                }
             }
             preference = findPreference(preferenceName + "_submit");
-            if (preference != null && submissionUrl != null) {
-                preference.setOnPreferenceClickListener(p -> {
-                    if (submissionUrl.startsWith("https://www.androidacy.com/")) {
-                        IntentHelper.openUrlAndroidacy(
-                                getFoxActivity(this), submissionUrl, true);
-                    } else {
-                        IntentHelper.openUrl(getFoxActivity(this), submissionUrl);
-                    }
-                    return true;
-                });
+            String submissionUrl = repoData == null ? null : repoData.getSubmitModule();
+            if (preference != null) {
+                if (submissionUrl != null && !submissionUrl.isEmpty()) {
+                    preference.setVisible(true);
+                    preference.setOnPreferenceClickListener(p -> {
+                        if (submissionUrl.startsWith("https://www.androidacy.com/")) {
+                            IntentHelper.openUrlAndroidacy(
+                                    getFoxActivity(this), submissionUrl, true);
+                        } else {
+                            IntentHelper.openUrl(getFoxActivity(this), submissionUrl);
+                        }
+                        return true;
+                    });
+                } else {
+                    preference.setVisible(false);
+                }
             }
         }
     }

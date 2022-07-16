@@ -36,8 +36,8 @@ android {
             buildConfigField "boolean", "ENABLE_AUTO_UPDATER", "true"
             buildConfigField(
                 "java.util.List<String>",
-                "DISABLED_REPOS",
-                "java.util.Arrays.asList()",
+                "ENABLED_REPOS",
+                "java.util.Arrays.asList(\"magisk_alt_repo\", \"androidacy_repo\")",
             )
         }
 
@@ -54,8 +54,8 @@ android {
             // F-Droid flavor.
             buildConfigField(
                 "java.util.List<String>",
-                "DISABLED_REPOS",
-                "java.util.Arrays.asList(\"androidacy_repo\")",
+                "ENABLED_REPOS",
+                "java.util.Arrays.asList(\"magisk_alt_repo\")",
             )
         }
     }

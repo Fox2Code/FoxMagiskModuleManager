@@ -7,6 +7,7 @@ import android.webkit.CookieManager;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.repo.RepoData;
+import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.repo.RepoModule;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.PropUtils;
@@ -49,6 +50,11 @@ public class AndroidacyRepoData extends RepoData {
                 this.androidacyBlockade = 0; // Don't allow time travel. Well why not???
             }
         }
+        this.defaultName = "Androidacy Modules Repo";
+        this.defaultWebsite = RepoManager.ANDROIDACY_MAGISK_REPO_HOMEPAGE;
+        this.defaultSupport = "https://t.me/androidacy_discussions";
+        this.defaultDonate = "https://patreon.com/androidacy";
+        this.defaultSubmitModule = "https://www.androidacy.com/module-repository-applications/";
     }
 
     private static String getCookies() {
@@ -231,6 +237,10 @@ public class AndroidacyRepoData extends RepoData {
         }
         this.lastUpdate = lastLastUpdate;
         this.name = name;
+        this.website = jsonObject.optString("website");
+        this.support = jsonObject.optString("support");
+        this.donate = jsonObject.optString("donate");
+        this.submitModule = jsonObject.optString("submitModule");
         return newModules;
     }
 

@@ -15,6 +15,16 @@
             app:title="@string/website"
             app:singleLineTitle="false"	/>
         <Preference
+            app:key="pref_magisk_alt_repo_support"
+            app:icon="@drawable/ic_baseline_support_24"
+            app:title="@string/support"
+            app:singleLineTitle="false"	/>
+        <Preference
+            app:key="pref_magisk_alt_repo_donate"
+            app:icon="@drawable/ic_baseline_monetization_on_24"
+            app:title="@string/donate"
+            app:singleLineTitle="false"	/>
+        <Preference
             app:key="pref_magisk_alt_repo_submit"
             app:icon="@drawable/ic_baseline_upload_file_24"
             app:title="@string/submit_modules"

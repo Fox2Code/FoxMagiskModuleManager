@@ -68,7 +68,14 @@ public final class RepoManager {
         this.repoData = new LinkedHashMap<>();
         this.modules = new HashMap<>();
         // We do not have repo list config yet.
-        this.addRepoData(MAGISK_ALT_REPO);
+        RepoData altRepo = this.addRepoData(MAGISK_ALT_REPO);
+        altRepo.defaultName = "Magisk Modules Alt Repo";
+        altRepo.defaultWebsite = RepoManager.MAGISK_ALT_REPO_HOMEPAGE;
+        altRepo.defaultSubmitModule =
+                "https://github.com/Magisk-Modules-Alt-Repo/submission/issues";
+        /*RepoData dgRepo = this.addRepoData(DG_MAGISK_REPO);
+        dgRepo.defaultName = "DerGoogler Magisk Repo";
+        dgRepo.defaultWebsite = "https://repo.dergoogler.com/";*/
         this.androidacyRepoData =
                 this.addAndroidacyRepoData();
         // Populate default cache
@@ -258,11 +265,15 @@ public final class RepoManager {
     }
 
     private RepoData addRepoData(String url) {
+        if (MAGISK_ALT_REPO_JSDELIVR.equals(url))
+            url = MAGISK_ALT_REPO;
         String id = internalIdOfUrl(url);
         File cacheRoot = new File(this.mainApplication.getCacheDir(), id);
         SharedPreferences sharedPreferences = this.mainApplication
                 .getSharedPreferences("mmm_" + id, Context.MODE_PRIVATE);
-        RepoData repoData = new RepoData(url, cacheRoot, sharedPreferences);
+        RepoData repoData = id.startsWith("repo_") ?
+                new LimitedRepoData(url, cacheRoot, sharedPreferences) :
+                new RepoData(url, cacheRoot, sharedPreferences);
         this.repoData.put(url, repoData);
         if (this.initialized) {
             this.populateDefaultCache(repoData);

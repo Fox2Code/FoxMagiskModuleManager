@@ -8,11 +8,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.webkit.ConsoleMessage;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -46,6 +49,7 @@ public class AndroidacyActivity extends FoxActivity {
     }
 
     WebView webView;
+    TextView webViewNote;
     AndroidacyWebAPI androidacyWebAPI;
     boolean backOnResume;
 
@@ -108,6 +112,7 @@ public class AndroidacyActivity extends FoxActivity {
             }
         }
         this.webView = this.findViewById(R.id.webView);
+        this.webViewNote = this.findViewById(R.id.webViewNote);
         WebSettings webSettings = this.webView.getSettings();
         webSettings.setUserAgentString(Http.getAndroidacyUA());
         webSettings.setDomStorageEnabled(true);
@@ -140,12 +145,20 @@ public class AndroidacyActivity extends FoxActivity {
                 this.pageUrl = url;
             }
 
-            private void onReceivedError(String url,int errorCode) {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                webViewNote.setVisibility(View.GONE);
+            }
+
+            private void onReceivedError(String url, int errorCode) {
                 if ((url.startsWith("https://api.androidacy.com/magisk/") ||
                         url.equals(pageUrl)) && (errorCode == 419 || errorCode == 429 || errorCode == 503)) {
                     Toast.makeText(AndroidacyActivity.this,
                             "Too many requests!", Toast.LENGTH_LONG).show();
                     AndroidacyActivity.this.runOnUiThread(AndroidacyActivity.this::onBackPressed);
+                } else if (url.equals(this.pageUrl)) {
+                    postOnUiThread(() ->
+                            webViewNote.setVisibility(View.VISIBLE));
                 }
             }
 
@@ -171,6 +184,28 @@ public class AndroidacyActivity extends FoxActivity {
                                 filePathCallback.onReceiveValue(
                                         FileChooserParams.parseResult(code, data)));
                 return true;
+            }
+
+            @Override
+            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+                switch (consoleMessage.messageLevel()) {
+                    case TIP:
+                        Log.v(TAG, consoleMessage.message());
+                        break;
+                    case LOG:
+                        Log.i(TAG, consoleMessage.message());
+                        break;
+                    case WARNING:
+                        Log.w(TAG, consoleMessage.message());
+                        break;
+                    case ERROR:
+                        Log.e(TAG, consoleMessage.message());
+                        break;
+                    case DEBUG:
+                        Log.d(TAG, consoleMessage.message());
+                        break;
+                }
+                return super.onConsoleMessage(consoleMessage);
             }
         });
         this.webView.setDownloadListener((
