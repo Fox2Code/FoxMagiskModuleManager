@@ -21,6 +21,13 @@ import java.util.List;
 
 public final class RepoManager {
     private static final String TAG = "RepoManager";
+
+    private static final String MAGISK_REPO_MANAGER =
+            "https://magisk-modules-repo.github.io/submission/modules.json";
+    public static final String MAGISK_REPO =
+            "https://raw.githubusercontent.com/Magisk-Modules-Repo/submission/modules/modules.json";
+    public static final String MAGISK_REPO_HOMEPAGE = "https://github.com/Magisk-Modules-Repo";
+
     public static final String MAGISK_ALT_REPO =
             "https://raw.githubusercontent.com/Magisk-Modules-Alt-Repo/json/main/modules.json";
     public static final String MAGISK_ALT_REPO_HOMEPAGE =
@@ -35,6 +42,8 @@ public final class RepoManager {
 
     public static final String DG_MAGISK_REPO =
             "https://repo.dergoogler.com/modules.json";
+    public static final String DG_MAGISK_REPO_GITHUB =
+            "https://googlers-magisk-repo.github.io/modules.json";
 
     private static final Object lock = new Object();
     private static volatile RepoManager INSTANCE;
@@ -60,6 +69,7 @@ public final class RepoManager {
     private final LinkedHashMap<String, RepoData> repoData;
     private final HashMap<String, RepoModule> modules;
     private final AndroidacyRepoData androidacyRepoData;
+    private final CustomRepoManager customRepoManager;
     private boolean initialized;
 
     private RepoManager(MainApplication mainApplication) {
@@ -68,16 +78,16 @@ public final class RepoManager {
         this.repoData = new LinkedHashMap<>();
         this.modules = new HashMap<>();
         // We do not have repo list config yet.
-        RepoData altRepo = this.addRepoData(MAGISK_ALT_REPO);
-        altRepo.defaultName = "Magisk Modules Alt Repo";
+        RepoData altRepo = this.addRepoData(
+                MAGISK_ALT_REPO, "Magisk Modules Alt Repo");
         altRepo.defaultWebsite = RepoManager.MAGISK_ALT_REPO_HOMEPAGE;
         altRepo.defaultSubmitModule =
                 "https://github.com/Magisk-Modules-Alt-Repo/submission/issues";
-        /*RepoData dgRepo = this.addRepoData(DG_MAGISK_REPO);
-        dgRepo.defaultName = "DerGoogler Magisk Repo";
-        dgRepo.defaultWebsite = "https://repo.dergoogler.com/";*/
-        this.androidacyRepoData =
-                this.addAndroidacyRepoData();
+        RepoData dgRepo = this.addRepoData(
+                DG_MAGISK_REPO_GITHUB, "Googlers Magisk Repo");
+        dgRepo.defaultWebsite = "https://dergoogler.com/repo";
+        this.androidacyRepoData = this.addAndroidacyRepoData();
+        this.customRepoManager = new CustomRepoManager(mainApplication, this);
         // Populate default cache
         for (RepoData repoData:this.repoData.values()) {
             this.populateDefaultCache(repoData);
@@ -111,6 +121,10 @@ public final class RepoManager {
     }
 
     public RepoData addOrGet(String url) {
+        return this.addOrGet(url, null);
+    }
+
+    public RepoData addOrGet(String url, String fallBackName) {
         RepoData repoData;
         synchronized (this.repoUpdateLock) {
             repoData = this.repoData.get(url);
@@ -118,7 +132,7 @@ public final class RepoManager {
                 if (ANDROIDACY_MAGISK_REPO_ENDPOINT.equals(url)) {
                     return this.addAndroidacyRepoData();
                 } else {
-                    return this.addRepoData(url);
+                    return this.addRepoData(url, fallBackName);
                 }
             }
         }
@@ -149,6 +163,8 @@ public final class RepoManager {
 
     // MultiThread friendly method
     public void update(UpdateListener updateListener) {
+        if (updateListener == null)
+            updateListener = value -> {};
         if (!this.repoUpdating) {
             // Do scan
             synchronized (this.repoUpdateLock) {
@@ -236,8 +252,13 @@ public final class RepoManager {
     }
 
     public void updateEnabledStates() {
-        for (RepoData repoData:this.repoData.values())
-                repoData.updateEnabledState();
+        for (RepoData repoData:this.repoData.values()) {
+            boolean wasEnabled = repoData.isEnabled();
+            repoData.updateEnabledState();
+            if (!wasEnabled && repoData.isEnabled()) {
+                this.customRepoManager.dirty = true;
+            }
+        }
     }
 
     public HashMap<String, RepoModule> getModules() {
@@ -257,6 +278,7 @@ public final class RepoManager {
             case ANDROIDACY_MAGISK_REPO_ENDPOINT:
                 return "androidacy_repo";
             case DG_MAGISK_REPO:
+            case DG_MAGISK_REPO_GITHUB:
                 return "dg_magisk_repo";
             default:
                 return "repo_" + Hashes.hashSha1(
@@ -264,16 +286,44 @@ public final class RepoManager {
         }
     }
 
-    private RepoData addRepoData(String url) {
+    static boolean isBuiltInRepo(String repo) {
+        switch (repo) {
+            case RepoManager.MAGISK_ALT_REPO:
+            case RepoManager.MAGISK_ALT_REPO_JSDELIVR:
+            case RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT:
+            case RepoManager.DG_MAGISK_REPO:
+            case RepoManager.DG_MAGISK_REPO_GITHUB:
+                return true;
+        }
+        return false;
+    }
+
+    private RepoData addRepoData(String url, String fallBackName) {
         if (MAGISK_ALT_REPO_JSDELIVR.equals(url))
             url = MAGISK_ALT_REPO;
+        if (DG_MAGISK_REPO.equals(url))
+            url = DG_MAGISK_REPO_GITHUB;
         String id = internalIdOfUrl(url);
         File cacheRoot = new File(this.mainApplication.getCacheDir(), id);
         SharedPreferences sharedPreferences = this.mainApplication
                 .getSharedPreferences("mmm_" + id, Context.MODE_PRIVATE);
         RepoData repoData = id.startsWith("repo_") ?
-                new LimitedRepoData(url, cacheRoot, sharedPreferences) :
+                new CustomRepoData(url, cacheRoot, sharedPreferences) :
                 new RepoData(url, cacheRoot, sharedPreferences);
+        if (fallBackName != null && !fallBackName.isEmpty()) {
+            if (repoData instanceof CustomRepoData) {
+                ((CustomRepoData) repoData).loadedExternal = true;
+                this.customRepoManager.dirty = true;
+                repoData.updateEnabledState();
+            }
+            repoData.defaultName = fallBackName;
+        }
+        switch (url) {
+            case MAGISK_REPO:
+            case MAGISK_REPO_MANAGER: {
+                repoData.defaultWebsite = MAGISK_REPO_HOMEPAGE;
+            }
+        }
         this.repoData.put(url, repoData);
         if (this.initialized) {
             this.populateDefaultCache(repoData);
@@ -293,5 +343,9 @@ public final class RepoManager {
 
     public AndroidacyRepoData getAndroidacyRepoData() {
         return this.androidacyRepoData;
+    }
+
+    public CustomRepoManager getCustomRepoManager() {
+        return customRepoManager;
     }
 }

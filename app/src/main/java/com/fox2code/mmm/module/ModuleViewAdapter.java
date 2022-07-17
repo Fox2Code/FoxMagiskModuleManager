@@ -17,6 +17,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.cardview.widget.CardView;
+import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fox2code.foxcompat.FoxDisplay;
@@ -364,6 +365,9 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 // Fix card background being invisible on light theme
                 if (bgColor == Color.WHITE) {
                     bgColor = 0xFFF8F8F8;
+                }
+                if (theme.getResources().getBoolean(R.bool.force_transparency)) {
+                    bgColor = ColorUtils.setAlphaComponent(bgColor, 0x80);
                 }
                 this.titleText.setTextColor(fgColor);
                 this.buttonAction.setColorFilter(fgColor);

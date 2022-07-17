@@ -8,6 +8,7 @@ import android.webkit.WebView;
 import androidx.annotation.Keep;
 
 import com.fox2code.mmm.manager.ModuleManager;
+import com.fox2code.mmm.repo.RepoData;
 import com.fox2code.mmm.repo.RepoManager;
 
 /**
@@ -45,7 +46,7 @@ public class XHooks {
 
     @Keep
     public static XRepo addXRepo(String url, String fallbackName) {
-        return RepoManager.getINSTANCE().addOrGet(url);
+        return RepoManager.getINSTANCE().addOrGet(url, fallbackName);
     }
 
     @Keep

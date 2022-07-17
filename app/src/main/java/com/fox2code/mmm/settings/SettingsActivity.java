@@ -4,14 +4,24 @@ import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.ListPreference;
@@ -28,18 +38,28 @@ import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.module.ActionButtonType;
+import com.fox2code.mmm.repo.CustomRepoData;
+import com.fox2code.mmm.repo.CustomRepoManager;
 import com.fox2code.mmm.repo.RepoData;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.fox2code.rosettax.LanguageActivity;
 import com.fox2code.rosettax.LanguageSwitcher;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.internal.TextWatcherAdapter;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.HashSet;
+import java.util.Objects;
 
 public class SettingsActivity extends FoxActivity implements LanguageActivity {
+    private static final String TAG = "SettingsActivity";
     private static int devModeStep = 0;
 
     @Override
@@ -236,42 +256,135 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
     }
 
     public static class RepoFragment extends PreferenceFragmentCompat {
+        private static final int CUSTOM_REPO_ENTRIES = 3;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             getPreferenceManager().setSharedPreferencesName("mmm");
             setPreferencesFromResource(R.xml.repo_preferences, rootKey);
             setRepoData(RepoManager.MAGISK_ALT_REPO);
-            // Androidacy backend not yet implemented!
             setRepoData(RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT);
+            setRepoData(RepoManager.DG_MAGISK_REPO_GITHUB);
+            updateCustomRepoList(true);
         }
 
-        private void setRepoData(String url) {
-            String preferenceName = "pref_" + RepoManager.internalIdOfUrl(url);
-            Preference preference = findPreference(preferenceName);
-            if (preference == null) return;
-            final RepoData repoData = RepoManager.getINSTANCE().get(url);
-            preference.setTitle(repoData == null ? url : repoData.getName());
-            preference = findPreference(preferenceName + "_enabled");
-            if (preference != null) {
-                if (repoData == null) {
-                    preference.setTitle(R.string.repo_disabled);
-                    preference.setEnabled(false);
-                } else {
-                    ((TwoStatePreference) preference).setChecked(repoData.isEnabled());
-                    preference.setTitle(repoData.isEnabled() ?
-                            R.string.repo_enabled : R.string.repo_disabled);
-                    preference.setOnPreferenceChangeListener((p, newValue) -> {
-                        p.setTitle(((Boolean) newValue) ?
-                                R.string.repo_enabled : R.string.repo_disabled);
+        @SuppressLint("RestrictedApi")
+        public void updateCustomRepoList(boolean initial) {
+            final SharedPreferences sharedPreferences = Objects.requireNonNull(
+                    this.getPreferenceManager().getSharedPreferences());
+            final CustomRepoManager customRepoManager =
+                    RepoManager.getINSTANCE().getCustomRepoManager();
+            for (int i = 0; i < CUSTOM_REPO_ENTRIES; i++) {
+                CustomRepoData repoData = customRepoManager.getRepo(i);
+                setRepoData(repoData, "pref_custom_repo_" + i);
+                if (initial) {
+                    Preference preference =
+                        findPreference("pref_custom_repo_" + i + "_delete");
+                    if (preference == null) continue;
+                    final int index = i;
+                    preference.setOnPreferenceClickListener(preference1 -> {
+                        sharedPreferences.edit().putBoolean(
+                                "pref_custom_repo_" + index + "_enabled", false).apply();
+                        customRepoManager.removeRepo(index);
+                        updateCustomRepoList(false);
                         return true;
                     });
                 }
             }
-            preference = findPreference(preferenceName + "_website");
-            String homepage = repoData == null ? null : repoData.getWebsite();
+            Preference preference = findPreference("pref_custom_add_repo");
+            if (preference == null) return;
+            preference.setVisible(customRepoManager.canAddRepo());
+            if (initial) { // Custom repo add button part.
+                preference = findPreference("pref_custom_add_repo_button");
+                if (preference == null) return;
+                preference.setOnPreferenceClickListener(preference1 -> {
+                    final Context context = this.requireContext();
+                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+                    final MaterialAutoCompleteTextView input =
+                            new MaterialAutoCompleteTextView(context);
+                    input.setHint(R.string.custom_url);
+                    builder.setTitle(R.string.add_repo);
+                    builder.setView(input);
+                    builder.setPositiveButton("OK", (dialog, which) -> {
+                        String text = String.valueOf(input.getText());
+                        if (customRepoManager.canAddRepo(text)) {
+                            final CustomRepoData customRepoData =
+                                    customRepoManager.addRepo(text);
+                            customRepoData.setEnabled(true);
+                            new Thread("Add Custom Repo Thread") {
+                                @Override
+                                public void run() {
+                                    try {
+                                        customRepoData.quickPrePopulate();
+                                    } catch (IOException|JSONException e) {
+                                        Log.e(TAG, "Failed to preload repo values", e);
+                                    }
+                                    UiThreadHandler.handler.post(() -> {
+                                        updateCustomRepoList(false);
+                                    });
+                                }
+                            }.start();
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+                    AlertDialog alertDialog = builder.show();
+                    final Button positiveButton =
+                            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                    input.setValidator(new AutoCompleteTextView.Validator() {
+                        @Override
+                        public boolean isValid(CharSequence charSequence) {
+                            return customRepoManager.canAddRepo(charSequence.toString());
+                        }
+
+                        @Override
+                        public CharSequence fixText(CharSequence charSequence) {
+                            return charSequence;
+                        }
+                    });
+                    input.addTextChangedListener(new TextWatcherAdapter() {
+                        @Override
+                        public void onTextChanged(
+                                @NonNull CharSequence charSequence, int i, int i1, int i2) {
+                            positiveButton.setEnabled(customRepoManager
+                                    .canAddRepo(charSequence.toString()));
+                        }
+                    });
+                    positiveButton.setEnabled(false);
+                    return true;
+                });
+            }
+        }
+
+        private void setRepoData(String url) {
+            final RepoData repoData = RepoManager.getINSTANCE().get(url);
+            setRepoData(repoData, "pref_" + (repoData == null ?
+                    RepoManager.internalIdOfUrl(url) : repoData.getPreferenceId()));
+        }
+
+        private void setRepoData(final RepoData repoData, String preferenceName) {
+            if (repoData == null) {
+                hideRepoData(preferenceName);
+                return;
+            }
+            Preference preference = findPreference(preferenceName);
+            if (preference == null) return;
+            preference.setVisible(true);
+            preference.setTitle(repoData.getName());
+            preference = findPreference(preferenceName + "_enabled");
             if (preference != null) {
-                if (homepage != null && !homepage.isEmpty()) {
+                ((TwoStatePreference) preference).setChecked(repoData.isEnabled());
+                preference.setTitle(repoData.isEnabled() ?
+                        R.string.repo_enabled : R.string.repo_disabled);
+                preference.setOnPreferenceChangeListener((p, newValue) -> {
+                    p.setTitle(((Boolean) newValue) ?
+                            R.string.repo_enabled : R.string.repo_disabled);
+                    return true;
+                });
+            }
+            preference = findPreference(preferenceName + "_website");
+            String homepage = repoData.getWebsite();
+            if (preference != null) {
+                if (!homepage.isEmpty()) {
                     preference.setVisible(true);
                     preference.setOnPreferenceClickListener(p -> {
                         if (homepage.startsWith("https://www.androidacy.com/")) {
@@ -287,7 +400,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 }
             }
             preference = findPreference(preferenceName + "_support");
-            String supportUrl = repoData == null ? null : repoData.getSupport();
+            String supportUrl = repoData.getSupport();
             if (preference != null) {
                 if (supportUrl != null && !supportUrl.isEmpty()) {
                     preference.setVisible(true);
@@ -301,7 +414,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 }
             }
             preference = findPreference(preferenceName + "_donate");
-            String donateUrl = repoData == null ? null : repoData.getDonate();
+            String donateUrl = repoData.getDonate();
             if (preference != null) {
                 if (donateUrl != null) {
                     preference.setVisible(true);
@@ -315,7 +428,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 }
             }
             preference = findPreference(preferenceName + "_submit");
-            String submissionUrl = repoData == null ? null : repoData.getSubmitModule();
+            String submissionUrl = repoData.getSubmitModule();
             if (preference != null) {
                 if (submissionUrl != null && !submissionUrl.isEmpty()) {
                     preference.setVisible(true);
@@ -332,6 +445,12 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     preference.setVisible(false);
                 }
             }
+        }
+
+        private void hideRepoData(String preferenceName) {
+            Preference preference = findPreference(preferenceName);
+            if (preference == null) return;
+            preference.setVisible(false);
         }
     }
 }

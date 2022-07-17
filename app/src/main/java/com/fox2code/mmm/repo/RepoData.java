@@ -48,7 +48,7 @@ public class RepoData extends XRepo {
         this.metaDataCache = new File(cacheRoot, "modules.json");
         this.moduleHashMap = new HashMap<>();
         this.name = this.url; // Set url as default name
-        this.enabled = MainApplication.getSharedPreferences()
+        this.enabled = !this.isLimited() && MainApplication.getSharedPreferences()
                 .getBoolean("pref_" + this.id + "_enabled", this.isEnabledByDefault());
         this.defaultName = url;
         this.defaultWebsite = "https://" + Uri.parse(url).getHost() + "/";
@@ -103,6 +103,7 @@ public class RepoData extends XRepo {
                 String moduleZipUrl = module.getString("zip_url");
                 String moduleChecksum = module.optString("checksum");
                 String moduleStars = module.optString("stars");
+                String moduleDownloads = module.optString("downloads");
                 RepoModule repoModule = this.moduleHashMap.get(moduleId);
                 if (repoModule == null) {
                     repoModule = new RepoModule(this, moduleId);
@@ -121,10 +122,15 @@ public class RepoData extends XRepo {
                 repoModule.propUrl = modulePropsUrl;
                 repoModule.zipUrl = moduleZipUrl;
                 repoModule.checksum = moduleChecksum;
-                if (!moduleStars.isEmpty() && !this.isLimited()) {
+                if (!moduleStars.isEmpty()) {
                     try {
                         repoModule.qualityValue = Integer.parseInt(moduleStars);
                         repoModule.qualityText = R.string.module_stars;
+                    } catch (NumberFormatException ignored) {}
+                } else if (!moduleDownloads.isEmpty()) {
+                    try {
+                        repoModule.qualityValue = Integer.parseInt(moduleDownloads);
+                        repoModule.qualityText = R.string.module_downloads;
                     } catch (NumberFormatException ignored) {}
                 }
             }

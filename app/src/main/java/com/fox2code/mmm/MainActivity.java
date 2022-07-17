@@ -171,6 +171,9 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 });
                 Log.i(TAG, "Scanning for modules!");
                 final int max = ModuleManager.getINSTANCE().getUpdatableModuleCount();
+                if (RepoManager.getINSTANCE().getCustomRepoManager().needUpdate()) {
+                    Log.w(TAG, "Need update on create?");
+                }
                 RepoManager.getINSTANCE().update(value -> runOnUiThread(max == 0 ? () ->
                         progressIndicator.setProgressCompat(
                                 (int) (value * PRECISION), true) :() ->
@@ -326,6 +329,19 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 else if (AppUpdateManager.getAppUpdateManager().checkUpdate(false))
                     moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
                 RepoManager.getINSTANCE().updateEnabledStates();
+                if (RepoManager.getINSTANCE().getCustomRepoManager().needUpdate()) {
+                    runOnUiThread(() -> {
+                        progressIndicator.setIndeterminate(false);
+                        progressIndicator.setMax(PRECISION);
+                    });
+                    RepoManager.getINSTANCE().update(value -> runOnUiThread(() ->
+                            progressIndicator.setProgressCompat(
+                                    (int) (value * PRECISION), true)));
+                    runOnUiThread(() -> {
+                        progressIndicator.setProgressCompat(PRECISION, true);
+                        progressIndicator.setVisibility(View.GONE);
+                    });
+                }
                 moduleViewListBuilder.appendRemoteModules();
                 Log.i(TAG, "Common Before applyTo");
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
