@@ -4,24 +4,19 @@ import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.AppCompatEditText;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.ListPreference;
@@ -30,6 +25,8 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.TwoStatePreference;
 
 import com.fox2code.foxcompat.FoxActivity;
+import com.fox2code.foxcompat.FoxDisplay;
+import com.fox2code.foxcompat.FoxViewCompat;
 import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
@@ -256,7 +253,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
     }
 
     public static class RepoFragment extends PreferenceFragmentCompat {
-        private static final int CUSTOM_REPO_ENTRIES = 3;
+        private static final int CUSTOM_REPO_ENTRIES = 5;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -293,7 +290,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             }
             Preference preference = findPreference("pref_custom_add_repo");
             if (preference == null) return;
-            preference.setVisible(customRepoManager.canAddRepo());
+            preference.setVisible(customRepoManager.canAddRepo() &&
+                    customRepoManager.getRepoCount() < CUSTOM_REPO_ENTRIES);
             if (initial) { // Custom repo add button part.
                 preference = findPreference("pref_custom_add_repo_button");
                 if (preference == null) return;
@@ -303,6 +301,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     final MaterialAutoCompleteTextView input =
                             new MaterialAutoCompleteTextView(context);
                     input.setHint(R.string.custom_url);
+                    builder.setIcon(R.drawable.ic_baseline_add_box_24);
                     builder.setTitle(R.string.add_repo);
                     builder.setView(input);
                     builder.setPositiveButton("OK", (dialog, which) -> {
@@ -346,10 +345,14 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         public void onTextChanged(
                                 @NonNull CharSequence charSequence, int i, int i1, int i2) {
                             positiveButton.setEnabled(customRepoManager
-                                    .canAddRepo(charSequence.toString()));
+                                    .canAddRepo(charSequence.toString()) &&
+                                    customRepoManager.getRepoCount() < CUSTOM_REPO_ENTRIES);
                         }
                     });
                     positiveButton.setEnabled(false);
+                    int dp10 = FoxDisplay.dpToPixel(10),
+                            dp20 = FoxDisplay.dpToPixel(20);
+                    FoxViewCompat.setMargin(input, dp20, dp10, dp20, dp10);
                     return true;
                 });
             }

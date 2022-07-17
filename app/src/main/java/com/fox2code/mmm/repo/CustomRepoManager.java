@@ -7,7 +7,7 @@ import com.fox2code.mmm.MainApplication;
 
 public class CustomRepoManager {
     private static final boolean AUTO_RECOMPILE = true;
-    public static final int MAX_CUSTOM_REPOS = 3;
+    public static final int MAX_CUSTOM_REPOS = 5;
     private final MainApplication mainApplication;
     private final RepoManager repoManager;
     private final String[] customRepos;
@@ -110,6 +110,10 @@ public class CustomRepoManager {
             return false;
         return repo.startsWith("https://") &&
                 repo.indexOf('/', 9) != -1;
+    }
+
+    public int getRepoCount() {
+        return this.customReposCount;
     }
 
     public boolean needUpdate() {

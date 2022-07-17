@@ -202,6 +202,76 @@
             app:singleLineTitle="false" />
     </PreferenceCategory>
     <PreferenceCategory
+        app:key="pref_custom_repo_3"
+        app:title="@string/loading">
+        <SwitchPreferenceCompat
+            app:key="pref_custom_repo_3_enabled"
+            app:icon="@drawable/ic_baseline_extension_24"
+            app:switchTextOn="@string/repo_enabled"
+            app:switchTextOff="@string/repo_disabled"
+            app:singleLineTitle="false"	/>
+        <Preference
+            app:key="pref_custom_repo_3_website"
+            app:icon="@drawable/ic_baseline_language_24"
+            app:title="@string/website"
+            app:singleLineTitle="false"	/>
+        <Preference
+            app:key="pref_custom_repo_3_support"
+            app:icon="@drawable/ic_baseline_support_24"
+            app:title="@string/support"
+            app:singleLineTitle="false"	/>
+        <Preference
+            app:key="pref_custom_repo_3_donate"
+            app:icon="@drawable/ic_baseline_monetization_on_24"
+            app:title="@string/donate"
+            app:singleLineTitle="false"	/>
+        <Preference
+            app:key="pref_custom_repo_3_submit"
+            app:icon="@drawable/ic_baseline_upload_file_24"
+            app:title="@string/submit_modules"
+            app:singleLineTitle="false" />
+        <Preference
+            app:key="pref_custom_repo_3_delete"
+            app:icon="@drawable/ic_baseline_delete_forever_24"
+            app:title="@string/remove_repo"
+            app:singleLineTitle="false" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:key="pref_custom_repo_4"
+        app:title="@string/loading">
+        <SwitchPreferenceCompat
+            app:key="pref_custom_repo_4_enabled"
+            app:icon="@drawable/ic_baseline_extension_24"
+            app:switchTextOn="@string/repo_enabled"
+            app:switchTextOff="@string/repo_disabled"
+            app:singleLineTitle="false"	/>
+        <Preference
+            app:key="pref_custom_repo_4_website"
+            app:icon="@drawable/ic_baseline_language_24"
+            app:title="@string/website"
+            app:singleLineTitle="false"	/>
+        <Preference
+            app:key="pref_custom_repo_4_support"
+            app:icon="@drawable/ic_baseline_support_24"
+            app:title="@string/support"
+            app:singleLineTitle="false"	/>
+        <Preference
+            app:key="pref_custom_repo_4_donate"
+            app:icon="@drawable/ic_baseline_monetization_on_24"
+            app:title="@string/donate"
+            app:singleLineTitle="false"	/>
+        <Preference
+            app:key="pref_custom_repo_4_submit"
+            app:icon="@drawable/ic_baseline_upload_file_24"
+            app:title="@string/submit_modules"
+            app:singleLineTitle="false" />
+        <Preference
+            app:key="pref_custom_repo_4_delete"
+            app:icon="@drawable/ic_baseline_delete_forever_24"
+            app:title="@string/remove_repo"
+            app:singleLineTitle="false" />
+    </PreferenceCategory>
+    <PreferenceCategory
         app:key="pref_custom_add_repo"
         app:title="@string/add_repo">
         <Preference
