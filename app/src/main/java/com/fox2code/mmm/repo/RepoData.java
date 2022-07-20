@@ -212,11 +212,14 @@ public class RepoData extends XRepo {
         return this.id;
     }
 
+    private static boolean isNonNull(String str) {
+        return str != null && !str.isEmpty() && !"null".equals(str);
+    }
+
     // Repo data info getters
     @NonNull
     public String getName() {
-        if (this.name != null &&
-                !this.name.isEmpty())
+        if (isNonNull(this.name))
             return this.name;
         if (this.defaultName != null)
             return this.defaultName;
@@ -225,8 +228,7 @@ public class RepoData extends XRepo {
 
     @NonNull
     public String getWebsite() {
-        if (this.website != null &&
-                !this.website.isEmpty())
+        if (isNonNull(this.website))
             return this.website;
         if (this.defaultWebsite != null)
             return this.defaultWebsite;
@@ -234,22 +236,19 @@ public class RepoData extends XRepo {
     }
 
     public String getSupport() {
-        if (this.support != null &&
-                !this.support.isEmpty())
+        if (isNonNull(this.support))
             return this.support;
         return this.defaultSupport;
     }
 
     public String getDonate() {
-        if (this.donate != null &&
-                !this.donate.isEmpty())
+        if (isNonNull(this.donate))
             return this.donate;
         return this.defaultDonate;
     }
 
     public String getSubmitModule() {
-        if (this.submitModule != null &&
-                !this.submitModule.isEmpty())
+        if (isNonNull(this.submitModule))
             return this.submitModule;
         return this.defaultSubmitModule;
     }

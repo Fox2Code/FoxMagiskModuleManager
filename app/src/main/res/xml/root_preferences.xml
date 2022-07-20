@@ -31,6 +31,19 @@
             app:title="@string/use_magisk_install_command_pref"
             app:summary="@string/use_magisk_install_command_desc"
             app:singleLineTitle="false"	/>
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="pref_background_update_check"
+            app:icon="@drawable/ic_baseline_notifications_24"
+            app:title="@string/notification_update_pref"
+            app:summary="@string/notification_update_desc"
+            app:singleLineTitle="false"	/>
+
+        <Preference
+            app:key="pref_background_update_check_debug"
+            app:title="@string/notification_update_debug_pref"
+            app:singleLineTitle="false"	/>
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/pref_category_appearance">
@@ -110,6 +123,11 @@
             app:key="pref_update"
             app:icon="@drawable/ic_baseline_system_update_24"
             app:title="@string/app_update"
+            app:singleLineTitle="false"	/>
+        <Preference
+            app:key="pref_report_bug"
+            app:icon="@drawable/ic_baseline_bug_report_24"
+            app:title="@string/report_bugs"
             app:singleLineTitle="false"	/>
         <Preference
             app:key="pref_source_code"

@@ -253,7 +253,8 @@ public enum ActionButtonType {
         if (url.startsWith("https://www.paypal.me/") ||
                 url.startsWith("https://www.paypal.com/paypalme/")) {
             icon = R.drawable.ic_baseline_paypal_24;
-        } else if (url.startsWith("https://www.patreon.com/")) {
+        } else if (url.startsWith("https://patreon.com/") ||
+                url.startsWith("https://www.patreon.com/")) {
             icon = R.drawable.ic_patreon;
         }
         return icon;

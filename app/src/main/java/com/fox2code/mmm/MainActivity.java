@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,6 +24,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.fox2code.foxcompat.FoxActivity;
 import com.fox2code.foxcompat.FoxDisplay;
+import com.fox2code.mmm.background.BackgroundUpdateChecker;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
@@ -65,8 +67,15 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     }
 
     @Override
+    protected void onResume() {
+        BackgroundUpdateChecker.onMainActivityResume(this);
+        super.onResume();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.initMode = true;
+        BackgroundUpdateChecker.onMainActivityCreate(this);
         super.onCreate(savedInstanceState);
          this.setActionBarExtraMenuButton(R.drawable.ic_baseline_settings_24, v -> {
             IntentHelper.startActivity(this, SettingsActivity.class);
@@ -395,7 +404,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         this.searchView.clearFocus();
         if (this.initMode) return false;
         if (this.moduleViewListBuilder.setQueryChange(query)) {
-            new Thread(() -> this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter), "Query update thread").start();
+            new Thread(() -> this.moduleViewListBuilder.applyTo(
+                    moduleList, moduleViewAdapter), "Query update thread").start();
         }
         return true;
     }
@@ -404,7 +414,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     public boolean onQueryTextChange(String query) {
         if (this.initMode) return false;
         if (this.moduleViewListBuilder.setQueryChange(query)) {
-            new Thread(() -> this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter), "Query update thread").start();
+            new Thread(() -> this.moduleViewListBuilder.applyTo(
+                    moduleList, moduleViewAdapter), "Query update thread").start();
         }
         return false;
     }
@@ -413,7 +424,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     public boolean onClose() {
         if (this.initMode) return false;
         if (this.moduleViewListBuilder.setQueryChange(null)) {
-            new Thread(() -> this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter), "Query update thread").start();
+            new Thread(() -> this.moduleViewListBuilder.applyTo(
+                    moduleList, moduleViewAdapter), "Query update thread").start();
         }
         return false;
     }

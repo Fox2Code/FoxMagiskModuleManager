@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +32,7 @@ import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
+import com.fox2code.mmm.background.BackgroundUpdateChecker;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.module.ActionButtonType;
 import com.fox2code.mmm.repo.CustomRepoData;
@@ -54,8 +54,10 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Random;
 
 public class SettingsActivity extends FoxActivity implements LanguageActivity {
+    private static final int LANGUAGE_SUPPORT_LEVEL = 1;
     private static final String TAG = "SettingsActivity";
     private static int devModeStep = 0;
 
@@ -86,6 +88,12 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         AlarmManager mgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
         System.exit(0); // Exit app process
+    }
+
+    @Override
+    protected void onPause() {
+        BackgroundUpdateChecker.onMainActivityResume(this);
+        super.onPause();
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat
@@ -145,10 +153,12 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             HashSet<String> supportedLocales = new HashSet<>();
             supportedLocales.add("cs");
             supportedLocales.add("de");
+            supportedLocales.add("el");
             supportedLocales.add("es-rMX");
             supportedLocales.add("et");
             supportedLocales.add("fr");
             supportedLocales.add("id");
+            supportedLocales.add("it");
             supportedLocales.add("ja");
             supportedLocales.add("nb-rNO");
             supportedLocales.add("pl");
@@ -170,18 +180,20 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 return true;
             });
 
-            int nightModeFlags =
-                    getContext().getResources().getConfiguration().uiMode &
-                            Configuration.UI_MODE_NIGHT_MASK;
-            switch (nightModeFlags) {
-                case Configuration.UI_MODE_NIGHT_YES:
-                    findPreference("pref_force_dark_terminal").setEnabled(false);
-                    break;
-                case Configuration.UI_MODE_NIGHT_NO:
-                case Configuration.UI_MODE_NIGHT_UNDEFINED:
-                    findPreference("pref_force_dark_terminal").setEnabled(true);
-                    break;
+            int level = this.currentLanguageLevel();
+            if (level != LANGUAGE_SUPPORT_LEVEL) {
+                Log.e(TAG, "Detected language level " + level +
+                        ", latest is " + LANGUAGE_SUPPORT_LEVEL);
+                languageSelector.setSummary(R.string.language_support_outdated);
+            } else {
+                if (!"Translated by Fox2Code".equals( // I don't "translate" english
+                        this.getString(R.string.language_translated_by))) {
+                    languageSelector.setSummary(R.string.language_translated_by);
+                } else {
+                    languageSelector.setSummary(null);
+                }
             }
+
             if (!MainApplication.isDeveloper()) {
                 findPreference("pref_disable_low_quality_module_filter").setVisible(false);
             }
@@ -189,6 +201,23 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     || !MainApplication.isDeveloper()) {
                 findPreference("pref_use_magisk_install_command").setVisible(false);
             }
+            Preference debugNotification = findPreference("pref_background_update_check_debug");
+            debugNotification.setEnabled(MainApplication.isBackgroundUpdateCheckEnabled());
+            debugNotification.setVisible(MainApplication.isDeveloper());
+            debugNotification.setOnPreferenceClickListener(preference -> {
+                BackgroundUpdateChecker.postNotification(
+                        this.requireContext(), new Random().nextInt(4) + 2);
+                return true;
+            });
+            findPreference("pref_background_update_check").setOnPreferenceChangeListener((preference, newValue) -> {
+                boolean enabled = Boolean.parseBoolean(String.valueOf(newValue));
+                debugNotification.setEnabled(enabled);
+                if (!enabled) {
+                    BackgroundUpdateChecker.onMainActivityResume(
+                            this.requireContext());
+                }
+                return true;
+            });
 
             final LibsBuilder libsBuilder = new LibsBuilder().withShowLoadingProgress(false)
                     .withLicenseShown(true).withAboutMinimalDesign(false);
@@ -201,13 +230,30 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         "https://github.com/Fox2Code/FoxMagiskModuleManager/releases");
                 return true;
             });
-            findPreference("pref_source_code").setOnPreferenceClickListener(p -> {
-                if (devModeStep == 2 && (BuildConfig.DEBUG || !MainApplication.isDeveloper())) {
+            if (BuildConfig.DEBUG || BuildConfig.ENABLE_AUTO_UPDATER) {
+                findPreference("pref_report_bug").setOnPreferenceClickListener(p -> {
                     devModeStep = 0;
-                    MainApplication.getSharedPreferences().edit()
-                            .putBoolean("developer", true).apply();
-                    Toast.makeText(getContext(), // Tell the user something changed
-                            R.string.dev_mode_enabled, Toast.LENGTH_SHORT).show();
+                    IntentHelper.openUrl(p.getContext(),
+                            "https://github.com/Fox2Code/FoxMagiskModuleManager/issues");
+                    return true;
+                });
+            } else {
+                findPreference("pref_report_bug").setVisible(false);
+            }
+            findPreference("pref_source_code").setOnPreferenceClickListener(p -> {
+                if (devModeStep == 2) {
+                    devModeStep = 0;
+                    if (MainApplication.isDeveloper() && !BuildConfig.DEBUG) {
+                        MainApplication.getSharedPreferences().edit()
+                                .putBoolean("developer", false).apply();
+                        Toast.makeText(getContext(), // Tell the user something changed
+                                R.string.dev_mode_disabled, Toast.LENGTH_SHORT).show();
+                    } else {
+                        MainApplication.getSharedPreferences().edit()
+                                .putBoolean("developer", true).apply();
+                        Toast.makeText(getContext(), // Tell the user something changed
+                                R.string.dev_mode_enabled, Toast.LENGTH_SHORT).show();
+                    }
                     return true;
                 }
                 IntentHelper.openUrl(p.getContext(),
@@ -221,6 +267,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             });
             findPreference("pref_show_licenses").setOnPreferenceClickListener(p -> {
                 devModeStep = devModeStep == 1 ? 2 : 0;
+                BackgroundUpdateChecker.onMainActivityResume(this.requireContext());
                 openFragment(libsBuilder.supportFragment(), R.string.licenses);
                 return true;
             });
@@ -249,6 +296,21 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .commit();
             return true;
+        }
+
+        private int currentLanguageLevel() {
+            int declaredLanguageLevel =
+                    this.getResources().getInteger(R.integer.language_support_level);
+            if (declaredLanguageLevel != LANGUAGE_SUPPORT_LEVEL)
+                return declaredLanguageLevel;
+            if (!this.getResources().getConfiguration().locale.getLanguage().equals("en") &&
+                    this.getResources().getString(R.string.notification_update_pref)
+                            .equals("Background modules update check") &&
+                    this.getResources().getString(R.string.notification_update_desc)
+                            .equals("May increase battery usage")) {
+                return 0;
+            }
+            return LANGUAGE_SUPPORT_LEVEL;
         }
     }
 
