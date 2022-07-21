@@ -134,7 +134,7 @@
 
     <!-- Background Notification translation -->
     <string name="notification_update_title">%i modül güncellemesi bulundu</string>
-    <string name="notification_update_title_easter_egg">%i module güncellemesi koklandı</string>
+    <string name="notification_update_title_easter_egg">%i modül güncellemesi koklandı</string>
     <string name="notification_update_subtitle">Uygulamayı açmak için tıkla</string>
     <string name="notification_update_pref">Modül güncellemesi arkaplan kontrolü</string>
     <string name="notification_update_desc">Pil kullanımını arttırabilir</string>
