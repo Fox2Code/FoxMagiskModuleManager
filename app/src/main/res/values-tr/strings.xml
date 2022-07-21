@@ -146,5 +146,5 @@
     <integer name="language_support_level">1</integer>
     <string name="language_support_outdated">Şimdiki dil için bazı çeviriler güncel değil, lütfen GitHub\'daki uygulama çevirilerine katkıda bulunmayı düşünün</string>
     <!-- Replace with your own username when translating -->
-    <string name="language_translated_by">Alprnn357 tarafindan çevrildi</string>
+    <string name="language_translated_by">Alprnn357 tarafından çevrildi</string>
 </resources>
