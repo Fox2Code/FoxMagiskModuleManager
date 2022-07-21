@@ -27,6 +27,10 @@
     <string name="description">Açıklama</string>
     <string name="uninstall">Kaldır</string>
     <string name="config">Yapılandırma</string>
+    <string name="favourite">Favori</string>
+    <string name="report_bugs">Hataları bildir</string>
+    <string name="sniffed_modules">Koklanmış modüller</string>
+    <string name="sniffing_modules">Koklama modülleri</string>
     <string name="submit_modules">Bir modül gönder</string>
     <string name="require_android_6">Android 6.0+ gerekir</string>
     <string name="require_android_12">Android 12+ gerekir</string>
@@ -95,7 +99,8 @@
         Test sırasında modül yükleme hata teşhis aracında sorunlar meydana geldi,
         bu yüzden o seçeneği geliştirici modunun arkasına gizledim, bunu etkinleştirmenizde sorumluluk size aittir!
     </string>
-    <string name="dev_mode_enabled">Geliştirici modu etkin</string>
+    <string name="dev_mode_enabled">Geliştirici modu açık</string>
+    <string name="dev_mode_disabled">Geliştirici modu kapalı</string>
     <string name="force_english_pref">İngilizce dilini zorla</string>
     <string name="disable_low_quality_module_filter_pref">Düşük kalite modül filtresini devre dışı bırak</string>
     <string name="disable_low_quality_module_filter_desc">
@@ -126,4 +131,20 @@
     <string name="backup_module_list">Modülleri yedekle</string>
     <string name="restore_module_list">Modülleri geri yükle</string>
     <string name="require_internet">Bu işlem bir internet bağlantısı gerektirir</string>
+
+    <!-- Background Notification translation -->
+    <string name="notification_update_title">%i modül güncellemesi bulundu</string>
+    <string name="notification_update_title_easter_egg">%i module güncellemesi koklandı</string>
+    <string name="notification_update_subtitle">Uygulamayı açmak için tıkla</string>
+    <string name="notification_update_pref">Modül güncellemesi arkaplan kontrolü</string>
+    <string name="notification_update_desc">Pil kullanımını arttırabilir</string>
+    <string name="notification_update_debug_pref">Bildirim Testi</string>
+
+    <!-- Set to true in translation file if your language is right to left -->
+    <bool name="lang_support_rtl">false</bool>
+    <!-- Always copy language_support_level when translating -->
+    <integer name="language_support_level">1</integer>
+    <string name="language_support_outdated">Şimdiki dil için bazı çeviriler güncel değil, lütfen GitHub\'daki uygulama çevirilerine katkıda bulunmayı düşünün</string>
+    <!-- Replace with your own username when translating -->
+    <string name="language_translated_by">Alprnn357 tarafindan çevrildi</string>
 </resources>
