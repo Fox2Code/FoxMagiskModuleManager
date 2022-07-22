@@ -1,11 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Theme.MagiskModuleManager.Light" parent="Theme.Material3.DynamicColors.Light">
+    <style name="Theme.MagiskModuleManager.Monet.Light" parent="Theme.Material3.DynamicColors.Light">
         <item name="android:statusBarColor">@color/status_bar_color</item>
         <item name="colorBackgroundFloating">@color/system_accent2_200</item>
         <item name="android:windowBackground">@color/system_accent2_100</item>
         <item name="chipStyle">@style/Widget.Material3.Chip.Choice.Light</item>
-
     </style>
 
     <style name="Widget.Material3.Chip.Choice.Light" parent="Widget.Material3.Chip.Assist">
@@ -13,14 +12,14 @@
         <item name="chipStrokeWidth">0dp</item>
         <item name="chipIconTint">?attr/colorControlNormal</item>
     </style>
+
     <style name="Theme.MagiskModuleManager.Transparent.Light" parent="Theme.MagiskModuleManager.Light" />
 
-    <style name="Theme.MagiskModuleManager.Dark" parent="Theme.Material3.DynamicColors.Dark">
+    <style name="Theme.MagiskModuleManager.Monet.Dark" parent="Theme.Material3.DynamicColors.Dark">
         <item name="android:statusBarColor">@color/status_bar_color</item>
         <item name="colorBackgroundFloating">@color/system_accent2_800</item>
         <item name="android:windowBackground">@color/system_accent2_900</item>
         <item name="chipStyle">@style/Widget.Material3.Chip.Choice.Dark</item>
-
     </style>
 
     <style name="Widget.Material3.Chip.Choice.Dark" parent="Widget.Material3.Chip.Assist">
@@ -31,7 +30,6 @@
 
 
     <!-- Base application theme. -->
-    <style name="Theme.MagiskModuleManager.Transparent.Dark" parent="Theme.MagiskModuleManager.Dark" />
 
-    <style name="Theme.MagiskModuleManager" parent="Theme.MagiskModuleManager.Light" />
+    <style name="Theme.MagiskModuleManager.Monet" parent="Theme.MagiskModuleManager.Monet.Light" />
 </resources>

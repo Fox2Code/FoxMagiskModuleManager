@@ -2,7 +2,6 @@ package com.fox2code.mmm.installer;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -17,13 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fox2code.androidansi.AnsiConstants;
 import com.fox2code.androidansi.AnsiParser;
+import com.fox2code.foxcompat.FoxActivity;
 import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.XHooks;
-import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.module.ActionButtonType;
 import com.fox2code.mmm.utils.FastException;
 import com.fox2code.mmm.utils.Files;
@@ -50,7 +49,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-public class InstallerActivity extends CompatActivity {
+public class InstallerActivity extends FoxActivity {
     private static final String TAG = "InstallerActivity";
     public LinearProgressIndicator progressIndicator;
     public ExtendedFloatingActionButton rebootFloatingButton;
@@ -267,8 +266,8 @@ public class InstallerActivity extends CompatActivity {
             }
             installerMonitor = new InstallerMonitor(installScript);
             installJob = Shell.cmd("export MMM_EXT_SUPPORT=1",
-                    "export MMM_USER_LANGUAGE=" + (MainApplication.isForceEnglish() ? "en-US" :
-                            Resources.getSystem().getConfiguration().locale.toLanguageTag()),
+                    "export MMM_USER_LANGUAGE=" + this.getResources()
+                            .getConfiguration().locale.toLanguageTag(),
                     "export MMM_APP_VERSION=" + BuildConfig.VERSION_NAME,
                     "export MMM_TEXT_WRAP=" + (this.textWrap ? "1" : "0"),
                     AnsiConstants.ANSI_CMD_SUPPORT,
@@ -360,7 +359,7 @@ public class InstallerActivity extends CompatActivity {
                 installExecutable = this.extractInstallScript("anykernel3_installer.sh");
                 if (installExecutable == null) {
                     this.setInstallStateFinished(false,
-                            "! Failed to extract AnyKernel3 install script", null);
+                            "! Failed to extract AnyKernel3 install script", "");
                     return;
                 }
                 // "unshare -m" is needed to force mount namespace isolation.
@@ -379,7 +378,7 @@ public class InstallerActivity extends CompatActivity {
                 installExecutable = this.extractInstallScript("module_installer_compat.sh");
                 if (installExecutable == null) {
                     this.setInstallStateFinished(false,
-                            "! Failed to extract Magisk module install script", null);
+                            "! Failed to extract Magisk module install script", "");
                     return;
                 }
                 installCommand = ASH + " \"" +
@@ -387,7 +386,7 @@ public class InstallerActivity extends CompatActivity {
                         " 3 1 \"" + file.getAbsolutePath() + "\"";
             } else {
                 this.setInstallStateFinished(false,
-                        "! Zip file is not a valid Magisk module or AnyKernel3 zip!", null);
+                        "! Zip file is not a valid Magisk module or AnyKernel3 zip!", "");
                 return;
             }
             installerMonitor = new InstallerMonitor(installExecutable);
@@ -403,11 +402,11 @@ public class InstallerActivity extends CompatActivity {
                         installCommand).to(installerController, installerMonitor);
             } else {
                 if ((compatFlags & AppUpdateManager.FLAG_COMPAT_NO_ANSI) != 0)
-                    this.installerTerminal.enableAnsi();
-                else this.installerTerminal.disableAnsi();
+                    this.installerTerminal.disableAnsi();
+                else this.installerTerminal.enableAnsi();
                 installJob = Shell.cmd(arch32, "export MMM_EXT_SUPPORT=1",
-                        "export MMM_USER_LANGUAGE=" + (MainApplication.isForceEnglish() ? "en-US" :
-                                Resources.getSystem().getConfiguration().locale.toLanguageTag()),
+                        "export MMM_USER_LANGUAGE=" + this.getResources()
+                                .getConfiguration().locale.toLanguageTag(),
                         "export MMM_APP_VERSION=" + BuildConfig.VERSION_NAME,
                         "export MMM_TEXT_WRAP=" + (this.textWrap ? "1" : "0"),
                         this.installerTerminal.isAnsiEnabled() ?
@@ -697,7 +696,7 @@ public class InstallerActivity extends CompatActivity {
 
             if (message != null && !message.isEmpty())
                 this.installerTerminal.addLine(message);
-            if (!optionalLink.isEmpty()) {
+            if (optionalLink != null && !optionalLink.isEmpty()) {
                 this.setActionBarExtraMenuButton(ActionButtonType.supportIconForUrl(optionalLink),
                         menu -> {
                             IntentHelper.openUrl(this, optionalLink);

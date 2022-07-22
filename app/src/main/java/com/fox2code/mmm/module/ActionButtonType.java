@@ -11,11 +11,11 @@ import android.widget.Toast;
 import androidx.annotation.DrawableRes;
 import androidx.appcompat.app.AlertDialog;
 
+import com.fox2code.foxcompat.FoxActivity;
+import com.fox2code.foxcompat.FoxDisplay;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.androidacy.AndroidacyUtil;
-import com.fox2code.mmm.compat.CompatActivity;
-import com.fox2code.mmm.compat.CompatDisplay;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
@@ -121,7 +121,7 @@ public enum ActionButtonType {
                             moduleInfo.name, moduleInfo.config, updateZipChecksum);
                 });
             }
-            int dim5dp = CompatDisplay.dpToPixel(5);
+            int dim5dp = FoxDisplay.dpToPixel(5);
             builder.setBackgroundInsetStart(dim5dp).setBackgroundInsetEnd(dim5dp);
             AlertDialog alertDialog = builder.show();
             for (int i = -3; i < 0; i++) {
@@ -176,7 +176,7 @@ public enum ActionButtonType {
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             moduleHolder.moduleInfo = null;
-                            CompatActivity.getCompatActivity(button).refreshUI();
+                            FoxActivity.getFoxActivity(button).refreshUI();
                         }
                     }).setNegativeButton(R.string.master_delete_no, (v, i) -> {
                     }).create().show();
@@ -218,13 +218,8 @@ public enum ActionButtonType {
         @Override
         public void update(Chip button, ModuleHolder moduleHolder) {
             ModuleInfo moduleInfo = moduleHolder.getMainModuleInfo();
-            int icon = R.drawable.ic_baseline_monetization_on_24;
-            if (moduleInfo.donate.startsWith("https://www.paypal.me/")) {
-                icon = R.drawable.ic_baseline_paypal_24;
-            } else if (moduleInfo.donate.startsWith("https://www.patreon.com/")) {
-                icon = R.drawable.ic_patreon;
-            }
-            button.setChipIcon(button.getContext().getDrawable(icon));
+            button.setChipIcon(button.getContext().getDrawable(
+                    donateIconForUrl(moduleInfo.donate)));
             button.setText(R.string.donate);
         }
 
@@ -248,6 +243,19 @@ public enum ActionButtonType {
             icon = R.drawable.ic_gitlab;
         } else if (url.startsWith("https://forum.xda-developers.com/")) {
             icon = R.drawable.ic_xda;
+        }
+        return icon;
+    }
+
+    @DrawableRes
+    public static int donateIconForUrl(String url) {
+        int icon = R.drawable.ic_baseline_monetization_on_24;
+        if (url.startsWith("https://www.paypal.me/") ||
+                url.startsWith("https://www.paypal.com/paypalme/")) {
+            icon = R.drawable.ic_baseline_paypal_24;
+        } else if (url.startsWith("https://patreon.com/") ||
+                url.startsWith("https://www.patreon.com/")) {
+            icon = R.drawable.ic_patreon;
         }
         return icon;
     }

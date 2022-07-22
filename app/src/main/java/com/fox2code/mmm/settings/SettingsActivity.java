@@ -5,12 +5,17 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.ListPreference;
@@ -18,28 +23,42 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.TwoStatePreference;
 
+import com.fox2code.foxcompat.FoxActivity;
+import com.fox2code.foxcompat.FoxDisplay;
+import com.fox2code.foxcompat.FoxViewCompat;
 import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
-import com.fox2code.mmm.OverScrollManager;
 import com.fox2code.mmm.R;
-import com.fox2code.mmm.compat.CompatActivity;
+import com.fox2code.mmm.background.BackgroundUpdateChecker;
 import com.fox2code.mmm.installer.InstallerInitializer;
+import com.fox2code.mmm.module.ActionButtonType;
+import com.fox2code.mmm.repo.CustomRepoData;
+import com.fox2code.mmm.repo.CustomRepoManager;
 import com.fox2code.mmm.repo.RepoData;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
-
 import com.fox2code.rosettax.LanguageActivity;
 import com.fox2code.rosettax.LanguageSwitcher;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.internal.TextWatcherAdapter;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
-import java.util.HashSet;
+import org.json.JSONException;
 
-public class SettingsActivity extends CompatActivity implements LanguageActivity {
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Random;
+
+public class SettingsActivity extends FoxActivity implements LanguageActivity {
+    private static final int LANGUAGE_SUPPORT_LEVEL = 1;
+    private static final String TAG = "SettingsActivity";
     private static int devModeStep = 0;
 
     @Override
@@ -59,19 +78,26 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
     }
 
     @Override
+    @SuppressLint("InlinedApi")
     public void refreshRosettaX() {
         Intent mStartActivity = new Intent(this, MainActivity.class);
         mStartActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         int mPendingIntentId = 123456;
-        @SuppressLint("InlinedApi") PendingIntent mPendingIntent = PendingIntent.getActivity(this, mPendingIntentId,
+        PendingIntent mPendingIntent = PendingIntent.getActivity(this, mPendingIntentId,
                 mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         AlarmManager mgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
         System.exit(0); // Exit app process
     }
 
+    @Override
+    protected void onPause() {
+        BackgroundUpdateChecker.onMainActivityResume(this);
+        super.onPause();
+    }
+
     public static class SettingsFragment extends PreferenceFragmentCompat
-            implements CompatActivity.OnBackPressedCallback {
+            implements FoxActivity.OnBackPressedCallback {
         @Override
         @SuppressWarnings("ConstantConditions")
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -93,7 +119,7 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
                 devModeStep = 0;
                 UiThreadHandler.handler.postDelayed(() -> {
                     MainApplication.getINSTANCE().updateTheme();
-                    CompatActivity.getCompatActivity(this).setThemeRecreate(
+                    FoxActivity.getFoxActivity(this).setThemeRecreate(
                             MainApplication.getINSTANCE().getManagerThemeResId());
                 }, 1);
                 return true;
@@ -109,6 +135,14 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
                 disableMonet.setSummary(R.string.require_android_12);
                 disableMonet.setEnabled(false);
             }
+            disableMonet.setOnPreferenceClickListener(preference -> {
+                UiThreadHandler.handler.postDelayed(() -> {
+                    MainApplication.getINSTANCE().updateTheme();
+                    ((FoxActivity) this.requireActivity()).setThemeRecreate(
+                            MainApplication.getINSTANCE().getManagerThemeResId());
+                }, 1);
+                return true;
+            });
 
             findPreference("pref_dns_over_https").setOnPreferenceChangeListener((p, v) -> {
                 Http.setDoh((Boolean) v);
@@ -119,10 +153,12 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
             HashSet<String> supportedLocales = new HashSet<>();
             supportedLocales.add("cs");
             supportedLocales.add("de");
+            supportedLocales.add("el");
             supportedLocales.add("es-rMX");
             supportedLocales.add("et");
             supportedLocales.add("fr");
             supportedLocales.add("id");
+            supportedLocales.add("it");
             supportedLocales.add("ja");
             supportedLocales.add("nb-rNO");
             supportedLocales.add("pl");
@@ -144,18 +180,20 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
                 return true;
             });
 
-            int nightModeFlags =
-                    getContext().getResources().getConfiguration().uiMode &
-                            Configuration.UI_MODE_NIGHT_MASK;
-            switch (nightModeFlags) {
-                case Configuration.UI_MODE_NIGHT_YES:
-                    findPreference("pref_force_dark_terminal").setEnabled(false);
-                    break;
-                case Configuration.UI_MODE_NIGHT_NO:
-                case Configuration.UI_MODE_NIGHT_UNDEFINED:
-                    findPreference("pref_force_dark_terminal").setEnabled(true);
-                    break;
+            int level = this.currentLanguageLevel();
+            if (level != LANGUAGE_SUPPORT_LEVEL) {
+                Log.e(TAG, "Detected language level " + level +
+                        ", latest is " + LANGUAGE_SUPPORT_LEVEL);
+                languageSelector.setSummary(R.string.language_support_outdated);
+            } else {
+                if (!"Translated by Fox2Code".equals( // I don't "translate" english
+                        this.getString(R.string.language_translated_by))) {
+                    languageSelector.setSummary(R.string.language_translated_by);
+                } else {
+                    languageSelector.setSummary(null);
+                }
             }
+
             if (!MainApplication.isDeveloper()) {
                 findPreference("pref_disable_low_quality_module_filter").setVisible(false);
             }
@@ -163,6 +201,23 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
                     || !MainApplication.isDeveloper()) {
                 findPreference("pref_use_magisk_install_command").setVisible(false);
             }
+            Preference debugNotification = findPreference("pref_background_update_check_debug");
+            debugNotification.setEnabled(MainApplication.isBackgroundUpdateCheckEnabled());
+            debugNotification.setVisible(MainApplication.isDeveloper());
+            debugNotification.setOnPreferenceClickListener(preference -> {
+                BackgroundUpdateChecker.postNotification(
+                        this.requireContext(), new Random().nextInt(4) + 2);
+                return true;
+            });
+            findPreference("pref_background_update_check").setOnPreferenceChangeListener((preference, newValue) -> {
+                boolean enabled = Boolean.parseBoolean(String.valueOf(newValue));
+                debugNotification.setEnabled(enabled);
+                if (!enabled) {
+                    BackgroundUpdateChecker.onMainActivityResume(
+                            this.requireContext());
+                }
+                return true;
+            });
 
             final LibsBuilder libsBuilder = new LibsBuilder().withShowLoadingProgress(false)
                     .withLicenseShown(true).withAboutMinimalDesign(false);
@@ -175,13 +230,30 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
                         "https://github.com/Fox2Code/FoxMagiskModuleManager/releases");
                 return true;
             });
-            findPreference("pref_source_code").setOnPreferenceClickListener(p -> {
-                if (devModeStep == 2 && (BuildConfig.DEBUG || !MainApplication.isDeveloper())) {
+            if (BuildConfig.DEBUG || BuildConfig.ENABLE_AUTO_UPDATER) {
+                findPreference("pref_report_bug").setOnPreferenceClickListener(p -> {
                     devModeStep = 0;
-                    MainApplication.getSharedPreferences().edit()
-                            .putBoolean("developer", true).apply();
-                    Toast.makeText(getContext(), // Tell the user something changed
-                            R.string.dev_mode_enabled, Toast.LENGTH_SHORT).show();
+                    IntentHelper.openUrl(p.getContext(),
+                            "https://github.com/Fox2Code/FoxMagiskModuleManager/issues");
+                    return true;
+                });
+            } else {
+                findPreference("pref_report_bug").setVisible(false);
+            }
+            findPreference("pref_source_code").setOnPreferenceClickListener(p -> {
+                if (devModeStep == 2) {
+                    devModeStep = 0;
+                    if (MainApplication.isDeveloper() && !BuildConfig.DEBUG) {
+                        MainApplication.getSharedPreferences().edit()
+                                .putBoolean("developer", false).apply();
+                        Toast.makeText(getContext(), // Tell the user something changed
+                                R.string.dev_mode_disabled, Toast.LENGTH_SHORT).show();
+                    } else {
+                        MainApplication.getSharedPreferences().edit()
+                                .putBoolean("developer", true).apply();
+                        Toast.makeText(getContext(), // Tell the user something changed
+                                R.string.dev_mode_enabled, Toast.LENGTH_SHORT).show();
+                    }
                     return true;
                 }
                 IntentHelper.openUrl(p.getContext(),
@@ -195,6 +267,7 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
             });
             findPreference("pref_show_licenses").setOnPreferenceClickListener(p -> {
                 devModeStep = devModeStep == 1 ? 2 : 0;
+                BackgroundUpdateChecker.onMainActivityResume(this.requireContext());
                 openFragment(libsBuilder.supportFragment(), R.string.licenses);
                 return true;
             });
@@ -205,7 +278,7 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
         }
 
         private void openFragment(Fragment fragment, @StringRes int title) {
-            CompatActivity compatActivity = getCompatActivity(this);
+            FoxActivity compatActivity = getFoxActivity(this);
             compatActivity.setOnBackPressedCallback(this);
             compatActivity.setTitle(title);
             compatActivity.getSupportFragmentManager()
@@ -216,7 +289,7 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
         }
 
         @Override
-        public boolean onBackPressed(CompatActivity compatActivity) {
+        public boolean onBackPressed(FoxActivity compatActivity) {
             compatActivity.setTitle(R.string.app_name);
             compatActivity.getSupportFragmentManager()
                     .beginTransaction().replace(R.id.settings, this)
@@ -224,91 +297,225 @@ public class SettingsActivity extends CompatActivity implements LanguageActivity
                     .commit();
             return true;
         }
+
+        private int currentLanguageLevel() {
+            int declaredLanguageLevel =
+                    this.getResources().getInteger(R.integer.language_support_level);
+            if (declaredLanguageLevel != LANGUAGE_SUPPORT_LEVEL)
+                return declaredLanguageLevel;
+            if (!this.getResources().getConfiguration().locale.getLanguage().equals("en") &&
+                    this.getResources().getString(R.string.notification_update_pref)
+                            .equals("Background modules update check") &&
+                    this.getResources().getString(R.string.notification_update_desc)
+                            .equals("May increase battery usage")) {
+                return 0;
+            }
+            return LANGUAGE_SUPPORT_LEVEL;
+        }
     }
 
     public static class RepoFragment extends PreferenceFragmentCompat {
+        private static final int CUSTOM_REPO_ENTRIES = 5;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             getPreferenceManager().setSharedPreferencesName("mmm");
             setPreferencesFromResource(R.xml.repo_preferences, rootKey);
-            setRepoData(RepoManager.MAGISK_ALT_REPO,
-                    "Magisk Modules Alt Repo", RepoManager.MAGISK_ALT_REPO_HOMEPAGE,
-                    null, null,
-                    "https://github.com/Magisk-Modules-Alt-Repo/submission/issues");
-            // Androidacy backend not yet implemented!
-            setRepoData(RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT,
-                    "Androidacy Modules Repo",
-                    RepoManager.ANDROIDACY_MAGISK_REPO_HOMEPAGE,
-                    "https://t.me/androidacy_discussions",
-                    "https://patreon.com/androidacy",
-                    "https://www.androidacy.com/module-repository-applications/");
+            setRepoData(RepoManager.MAGISK_ALT_REPO);
+            setRepoData(RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT);
+            setRepoData(RepoManager.DG_MAGISK_REPO_GITHUB);
+            updateCustomRepoList(true);
         }
 
-        private void setRepoData(String url,
-                                 String fallbackTitle, String homepage,
-                                 String supportUrl, String donateUrl,
-                                 String submissionUrl) {
-            String preferenceName = "pref_" + RepoManager.internalIdOfUrl(url);
-            Preference preference = findPreference(preferenceName);
-            if (preference == null) return;
-            final RepoData repoData = RepoManager.getINSTANCE().get(url);
-            preference.setTitle(repoData == null ? fallbackTitle :
-                    repoData.getNameOrFallback(fallbackTitle));
-            preference = findPreference(preferenceName + "_enabled");
-            if (preference != null) {
-                if (repoData == null) {
-                    preference.setTitle(R.string.repo_disabled);
-                    preference.setEnabled(false);
-                } else {
-                    ((TwoStatePreference) preference).setChecked(repoData.isEnabled());
-                    preference.setTitle(repoData.isEnabled() ?
-                            R.string.repo_enabled : R.string.repo_disabled);
-                    preference.setOnPreferenceChangeListener((p, newValue) -> {
-                        p.setTitle(((Boolean) newValue) ?
-                                R.string.repo_enabled : R.string.repo_disabled);
+        @SuppressLint("RestrictedApi")
+        public void updateCustomRepoList(boolean initial) {
+            final SharedPreferences sharedPreferences = Objects.requireNonNull(
+                    this.getPreferenceManager().getSharedPreferences());
+            final CustomRepoManager customRepoManager =
+                    RepoManager.getINSTANCE().getCustomRepoManager();
+            for (int i = 0; i < CUSTOM_REPO_ENTRIES; i++) {
+                CustomRepoData repoData = customRepoManager.getRepo(i);
+                setRepoData(repoData, "pref_custom_repo_" + i);
+                if (initial) {
+                    Preference preference =
+                        findPreference("pref_custom_repo_" + i + "_delete");
+                    if (preference == null) continue;
+                    final int index = i;
+                    preference.setOnPreferenceClickListener(preference1 -> {
+                        sharedPreferences.edit().putBoolean(
+                                "pref_custom_repo_" + index + "_enabled", false).apply();
+                        customRepoManager.removeRepo(index);
+                        updateCustomRepoList(false);
                         return true;
                     });
                 }
             }
-            preference = findPreference(preferenceName + "_website");
-            if (preference != null && homepage != null) {
-                preference.setOnPreferenceClickListener(p -> {
-                    if (homepage.startsWith("https://www.androidacy.com/")) {
-                        IntentHelper.openUrlAndroidacy(
-                                getCompatActivity(this), homepage, true);
-                    } else {
-                        IntentHelper.openUrl(getCompatActivity(this), homepage);
-                    }
+            Preference preference = findPreference("pref_custom_add_repo");
+            if (preference == null) return;
+            preference.setVisible(customRepoManager.canAddRepo() &&
+                    customRepoManager.getRepoCount() < CUSTOM_REPO_ENTRIES);
+            if (initial) { // Custom repo add button part.
+                preference = findPreference("pref_custom_add_repo_button");
+                if (preference == null) return;
+                preference.setOnPreferenceClickListener(preference1 -> {
+                    final Context context = this.requireContext();
+                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+                    final MaterialAutoCompleteTextView input =
+                            new MaterialAutoCompleteTextView(context);
+                    input.setHint(R.string.custom_url);
+                    builder.setIcon(R.drawable.ic_baseline_add_box_24);
+                    builder.setTitle(R.string.add_repo);
+                    builder.setView(input);
+                    builder.setPositiveButton("OK", (dialog, which) -> {
+                        String text = String.valueOf(input.getText());
+                        if (customRepoManager.canAddRepo(text)) {
+                            final CustomRepoData customRepoData =
+                                    customRepoManager.addRepo(text);
+                            customRepoData.setEnabled(true);
+                            new Thread("Add Custom Repo Thread") {
+                                @Override
+                                public void run() {
+                                    try {
+                                        customRepoData.quickPrePopulate();
+                                    } catch (IOException|JSONException e) {
+                                        Log.e(TAG, "Failed to preload repo values", e);
+                                    }
+                                    UiThreadHandler.handler.post(() -> {
+                                        updateCustomRepoList(false);
+                                    });
+                                }
+                            }.start();
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+                    AlertDialog alertDialog = builder.show();
+                    final Button positiveButton =
+                            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                    input.setValidator(new AutoCompleteTextView.Validator() {
+                        @Override
+                        public boolean isValid(CharSequence charSequence) {
+                            return customRepoManager.canAddRepo(charSequence.toString());
+                        }
+
+                        @Override
+                        public CharSequence fixText(CharSequence charSequence) {
+                            return charSequence;
+                        }
+                    });
+                    input.addTextChangedListener(new TextWatcherAdapter() {
+                        @Override
+                        public void onTextChanged(
+                                @NonNull CharSequence charSequence, int i, int i1, int i2) {
+                            positiveButton.setEnabled(customRepoManager
+                                    .canAddRepo(charSequence.toString()) &&
+                                    customRepoManager.getRepoCount() < CUSTOM_REPO_ENTRIES);
+                        }
+                    });
+                    positiveButton.setEnabled(false);
+                    int dp10 = FoxDisplay.dpToPixel(10),
+                            dp20 = FoxDisplay.dpToPixel(20);
+                    FoxViewCompat.setMargin(input, dp20, dp10, dp20, dp10);
                     return true;
                 });
+            }
+        }
+
+        private void setRepoData(String url) {
+            final RepoData repoData = RepoManager.getINSTANCE().get(url);
+            setRepoData(repoData, "pref_" + (repoData == null ?
+                    RepoManager.internalIdOfUrl(url) : repoData.getPreferenceId()));
+        }
+
+        private void setRepoData(final RepoData repoData, String preferenceName) {
+            if (repoData == null) {
+                hideRepoData(preferenceName);
+                return;
+            }
+            Preference preference = findPreference(preferenceName);
+            if (preference == null) return;
+            preference.setVisible(true);
+            preference.setTitle(repoData.getName());
+            preference = findPreference(preferenceName + "_enabled");
+            if (preference != null) {
+                ((TwoStatePreference) preference).setChecked(repoData.isEnabled());
+                preference.setTitle(repoData.isEnabled() ?
+                        R.string.repo_enabled : R.string.repo_disabled);
+                preference.setOnPreferenceChangeListener((p, newValue) -> {
+                    p.setTitle(((Boolean) newValue) ?
+                            R.string.repo_enabled : R.string.repo_disabled);
+                    return true;
+                });
+            }
+            preference = findPreference(preferenceName + "_website");
+            String homepage = repoData.getWebsite();
+            if (preference != null) {
+                if (!homepage.isEmpty()) {
+                    preference.setVisible(true);
+                    preference.setOnPreferenceClickListener(p -> {
+                        if (homepage.startsWith("https://www.androidacy.com/")) {
+                            IntentHelper.openUrlAndroidacy(
+                                    getFoxActivity(this), homepage, true);
+                        } else {
+                            IntentHelper.openUrl(getFoxActivity(this), homepage);
+                        }
+                        return true;
+                    });
+                } else {
+                    preference.setVisible(false);
+                }
             }
             preference = findPreference(preferenceName + "_support");
-            if (preference != null && supportUrl != null) {
-                preference.setOnPreferenceClickListener(p -> {
-                    IntentHelper.openUrl(getCompatActivity(this), supportUrl);
-                    return true;
-                });
+            String supportUrl = repoData.getSupport();
+            if (preference != null) {
+                if (supportUrl != null && !supportUrl.isEmpty()) {
+                    preference.setVisible(true);
+                    preference.setIcon(ActionButtonType.supportIconForUrl(supportUrl));
+                    preference.setOnPreferenceClickListener(p -> {
+                        IntentHelper.openUrl(getFoxActivity(this), supportUrl);
+                        return true;
+                    });
+                } else {
+                    preference.setVisible(false);
+                }
             }
             preference = findPreference(preferenceName + "_donate");
-            if (preference != null && donateUrl != null) {
-                preference.setOnPreferenceClickListener(p -> {
-                    IntentHelper.openUrl(getCompatActivity(this), donateUrl);
-                    return true;
-                });
+            String donateUrl = repoData.getDonate();
+            if (preference != null) {
+                if (donateUrl != null) {
+                    preference.setVisible(true);
+                    preference.setIcon(ActionButtonType.donateIconForUrl(donateUrl));
+                    preference.setOnPreferenceClickListener(p -> {
+                        IntentHelper.openUrl(getFoxActivity(this), donateUrl);
+                        return true;
+                    });
+                } else {
+                    preference.setVisible(false);
+                }
             }
             preference = findPreference(preferenceName + "_submit");
-            if (preference != null && submissionUrl != null) {
-                preference.setOnPreferenceClickListener(p -> {
-                    if (submissionUrl.startsWith("https://www.androidacy.com/")) {
-                        IntentHelper.openUrlAndroidacy(
-                                getCompatActivity(this), submissionUrl, true);
-                    } else {
-                        IntentHelper.openUrl(getCompatActivity(this), submissionUrl);
-                    }
-                    return true;
-                });
+            String submissionUrl = repoData.getSubmitModule();
+            if (preference != null) {
+                if (submissionUrl != null && !submissionUrl.isEmpty()) {
+                    preference.setVisible(true);
+                    preference.setOnPreferenceClickListener(p -> {
+                        if (submissionUrl.startsWith("https://www.androidacy.com/")) {
+                            IntentHelper.openUrlAndroidacy(
+                                    getFoxActivity(this), submissionUrl, true);
+                        } else {
+                            IntentHelper.openUrl(getFoxActivity(this), submissionUrl);
+                        }
+                        return true;
+                    });
+                } else {
+                    preference.setVisible(false);
+                }
             }
+        }
+
+        private void hideRepoData(String preferenceName) {
+            Preference preference = findPreference(preferenceName);
+            if (preference == null) return;
+            preference.setVisible(false);
         }
     }
 }

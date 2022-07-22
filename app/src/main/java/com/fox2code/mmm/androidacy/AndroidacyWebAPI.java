@@ -6,20 +6,19 @@ import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.Keep;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.ColorUtils;
 
+import com.fox2code.foxcompat.FoxDisplay;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
-import com.fox2code.mmm.compat.CompatDisplay;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
@@ -42,6 +41,7 @@ public class AndroidacyWebAPI {
     private static final int MAX_COMPAT_MODE = 1;
     private final AndroidacyActivity activity;
     private final boolean allowInstall;
+    private boolean allowHideNote = true;
     boolean consumedAction;
     boolean downloadMode;
     int effectiveCompatMode;
@@ -111,7 +111,7 @@ public class AndroidacyWebAPI {
             if (!this.activity.backOnResume)
                 this.consumedAction = false;
         });
-        final int dim5dp = CompatDisplay.dpToPixel(5);
+        final int dim5dp = FoxDisplay.dpToPixel(5);
         builder.setBackgroundInsetStart(dim5dp).setBackgroundInsetEnd(dim5dp);
         this.activity.runOnUiThread(() -> {
             AlertDialog alertDialog = builder.show();
@@ -322,6 +322,11 @@ public class AndroidacyWebAPI {
         this.activity.runOnUiThread(() -> {
             this.activity.hideActionBar();
             this.consumedAction = false;
+            if (this.allowHideNote) {
+                this.allowHideNote = false;
+                this.activity.webViewNote
+                        .setVisibility(View.GONE);
+            }
         });
     }
 

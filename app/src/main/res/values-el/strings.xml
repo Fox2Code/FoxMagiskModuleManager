@@ -1,0 +1,133 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Fox\'s Magisk Module Manager</string>
+    <string name="app_name_short">Fox\'s Mmm</string>
+    <string name="fail_root_magisk">Δεν ήταν δυνατή η πρόσβαση σε δικαιώματα root ή στο magisk</string>
+    <string name="loading">Φόρτωση…</string>
+    <string name="updatable">Αναβαθμίσιμο</string>
+    <string name="installed">Εγκατεστημένο</string>
+    <string name="online_repo">Ηλεκτρονικό αποθετήριο</string>
+    <string name="showcase_mode">Η εφαρμογή βρίσκεται σε κατάσταση lockdown</string>
+    <string name="failed_download">Δεν ήταν δυνατή η λήψη του αρχείου</string>
+    <string name="slow_modules">Τα Modules χρειάστηκαν πολύ χρόνο για εκκίνηση τους, σκεφτείτε να απενεργοποιήσετε ορισμένα απο αυτά</string>
+    <string name="fail_internet">Δεν ήταν δυνατή η σύνδεση στο Διαδίκτυο</string>
+    <string name="no_web_view">Δεν ήταν δυνατό το άνοιγμα του πλοηγητή συστήματως</string>
+    <string name="title_activity_settings">Δραστηριότητα ρυθμίσεων</string>
+    <string name="app_update_available">Μια νεότερη έκδοση της εφαρμογής είναι διαθέσιμη</string>
+    <string name="app_update">Αναβάθμιση</string>
+    <string name="no_desc_found">Δεν βρέθηκε περιγραφή.</string>
+    <string name="download_module">Λήξη του Module</string>
+    <string name="install_module">Εγκατάσταση του Module</string>
+    <string name="update_module">Αναβάθμιση του Module</string>
+    <string name="changelog">Ημερολόγιο αλλαγών</string>
+    <string name="website">Ιστοσελίδα</string>
+    <string name="support">Υποστήριξη</string>
+    <string name="donate">Δωρίστε</string>
+    <string name="update">Ενημέρωση</string>
+    <string name="install">Εγκατάσταση</string>
+    <string name="description">Περιγραφή</string>
+    <string name="uninstall">Απεγκατάσταση</string>
+    <string name="config">Παραμέτροποίηση</string>
+    <string name="submit_modules">Υποβάλετε ένα module</string>
+    <string name="require_android_6">Απαιτεί το Android 6.0+</string>
+    <string name="require_android_12">Απαιτεί το Android 12+</string>
+    <string name="install_terminal_reboot_now">Επανεκκίνηση</string>
+    <string name="language">Γλώσσα</string>
+    <string name="yes" translatable="false">@android:string/yes</string>
+    <string name="no" translatable="false">@android:string/no</string>
+    <string name="ok" translatable="false">@android:string/ok</string>
+    <string name="cancel" translatable="false">@android:string/cancel</string>
+
+    <!-- Module section translation -->
+    <string name="module_last_update">Τελευταία ενημέρωση:</string>
+    <string name="module_repo">Αποθετήριο:</string>
+    <string name="module_by">απο</string>
+    <string name="module_downloads">Λήψεις:</string>
+    <string name="module_stars">Αστέρια:</string>
+    <string name="module_needs_ramdisk">Χρειάζεται Ramdisk</string>
+    <string name="module_needs_ramdisk_desc">Αυτό το module χρειάζεται το Ramdisk εκκίνησης για να εγκατασταθεί</string>
+    <string name="module_can_change_boot">Μπορεί να αλλάξει την εκκίνηση</string>
+    <string name="module_can_change_boot_desc">Αυτή η ενότητα μπορεί να αλλάξει την εικόνα εκκίνησης(boot image)</string>
+    <string name="module_min_magisk_chip">Ελάχ. έκδοση Magisk "%s"</string>
+    <string name="module_min_sdk_chip">Ελάχ. έκδοση Android</string>
+    <string name="module_max_sdk_chip">Μέγ. έκδοση Android</string>
+
+    <!-- Preference Titles -->
+    <!-- Note: Lockdown mode used to be called showcase mode -->
+    <string name="manage_repos_pref">Διαχείριση αποθετηρίων</string>
+    <string name="showcase_mode_pref">Λειτουργία lockdown</string>
+    <string name="showcase_mode_desc">Η λειτουργία lockdown εμποδίζει τον διαχειριστή να πραγματοποιήσει ενέργειες στα modules</string>
+    <string name="prevent_reboot_pref">Αποτροπή επανεκκίνησης</string>
+    <string name="prevent_reboot_desc">Αποτρέπει απροσδόκητες επανεκκινήσεις</string>
+    <string name="pref_category_settings">ω</string>
+    <string name="enable_monet">Ενεργοποίηση Monet</string>
+    <string name="pref_category_info">Πληροφορίες</string>
+    <string name="show_licenses">Εμφάνιση αδειών</string>
+    <string name="licenses">Άδειες</string>
+    <string name="show_incompatible_pref">Εμφάνιση ασυμβίβαστων module</string>
+    <string name="show_incompatible_desc">Εμφάνιση module που είναι απίθανο να εγκατασταθούν στη συσκευή σας με βάση τα μεταδεδομένα τους</string>
+    <string name="magisk_outdated">Υπάρχει μια νέα έκδοση του Magisk για εγκατάσταση!</string>
+    <string name="pref_category_repos">Αποθετήρια</string>
+    <string name="pref_category_security">Ασφάλεια</string>
+    <string name="pref_category_appearance">Εμφάνιση</string>
+    <string name="pref_category_general">Γενικά</string>
+    <string name="repo_main_desc">Το αποθετήριο που φιλοξενεί modules για το magisk</string>
+    <string name="repo_main_alt">Μια εναλλακτική λύση για το magisk-modules-repo με λιγότερους περιορισμούς.</string>
+    <string name="master_delete">Διαγραφή των αρχείων module;</string>
+    <string name="master_delete_no">Διατήρηση</string>
+    <string name="master_delete_yes">Διαγραφή</string>
+    <string name="master_delete_fail">Δεν ήταν δυνατή η διαγραφή των αρχείων module</string>
+    <string name="theme_pref">Θέμα</string>
+    <string name="theme_mode_pref">Λειτουργία θέματος</string>
+    <string name="module_id_prefix">Αναγνωριστικό module: </string>
+    <string name="install_from_storage">Εγκατάσταση module από αποθηκευτικό χώρο</string>
+    <string name="invalid_format">Το επιλεγμένο module έχει μη έγκυρη μορφή</string>
+    <string name="low_quality_module">Module χαμηλής ποιότητας</string>
+    <string name="local_install_title">Τοπική εγκατάσταση</string>
+    <string name="source_code">Πηγαίος κώδικας</string>
+    <string name="magisk_builtin_module">Ενσωματωμένο Magisk module</string>
+    <string name="substratum_builtin_module">Ενσωματωμένο module υποστρώματος</string>
+    <string name="force_dark_terminal_title">Σκούρο τερματικό</string>
+    <string name="file_picker_failure">Ο τρέχων επιλογέας αρχείων δεν έχει πρόσβαση στο αρχείο.</string>
+    <string name="remote_install_title">Απομακρυσμένη εγκατάσταση</string>
+    <string name="file_picker_wierd">Ο επιλογέας αρχείων σας επέστρεψε μια μη τυποποιημένη απάντηση.</string>
+    <string name="use_magisk_install_command_pref" tools:ignore="TypographyDashes">Χρήση της εντολής \"magisk --install-module\"</string>
+    <string name="use_magisk_install_command_desc">
+        Κατά τη διάρκεια των δοκιμών προκάλεσε προβλήματα στο εργαλείο διάγνωσης σφάλματος εγκατάστασης ενότητας,
+        Για αυτό τον λόγο αυτή η επιλογή είναι κρυμμένη πίσω από τη λειτουργία για προγραμματιστές.\nEνεργοποιήστε την ρύθμιση με δική σας ευθύνη!
+    </string>
+    <string name="dev_mode_enabled">Λειτουργία για προγραμματιστές ενεργοποιημένη</string>
+    <string name="force_english_pref">Αγγλική γλώσσα εφαρμογής</string>
+    <string name="disable_low_quality_module_filter_pref">Εμφάνιση module χαμηλής ποιότητας</string>
+    <string name="disable_low_quality_module_filter_desc">
+        Ορισμένες ενότητες δεν δηλώνουν σωστά τα μεταδεδομένα τους, προκαλώντας οπτικές δυσλειτουργίες,
+        και/ή υποδεικνύοντας την κακή ποιότητα τού module.\nΑπενεργοποιήστε την ρύθμιση με δική σας ευθύνη!
+    </string>
+    <string name="dns_over_https_pref">DNS μέσω HTTPS</string>
+    <string name="dns_over_https_desc">
+        Μπορεί να διορθώσει τα θέματα συνδέσεων σε ορισμένες περιπτώσεις.
+        (Δεν ισχύει για το webview.)
+    </string>
+    <string name="disable_extensions_pref">nΑπενεργοποίηση Mmm</string>
+    <string name="disable_extensions_desc">
+        Απενεργοποιήστε τις επεκτάσεις MMM του Fox, εμποδίζοντας τη χρήση των 
+        επεκτάσεων τερματικού απο τα module.\nΧρήσιμο εάν ένα module καταχράται τις επεκτάσεις MMM του Fox.
+    </string>
+    <string name="wrap_text_pref">Αναδίπλωση κειμένου</string>
+    <string name="wrap_text_desc">
+        Εμφάνιση κειμένου σε πολλαπλές γραμμές αντί να τοποθετείται
+        όλο το κείμενο στην ίδια γραμμή κατά την εγκατάσταση ενος module.
+    </string>
+    <string name="enable_blur_pref">Θολούρα</string>
+    <string name="disable_chips_in_description">Απενεργοποιήστε τα τσιπ στην περιγραφή</string>
+    <string name="repo_enabled">Ενεργοποιημένο αποθετήριο</string>
+    <string name="repo_disabled">Απενεργοποιημένο αποθετήριο</string>
+    <string name="add_repo">Προσθήκη αποθετηρίου</string>
+    <string name="remove_repo">Αφαίρεση αποθετηρίου</string>
+    <string name="custom_url">Προσαρμοσμένη διεύθυνση url</string>
+    <string name="androidacy_repo_info">Το αποθετήριο Androidacy έχει διαφημίσεις και ιχνηλάτες.</string>
+    <string name="backup_module_list">Εφεδρικά modules</string>
+    <string name="restore_module_list">Επαναφορά module</string>
+    <string name="require_internet">Αυτή η λειτουργία απαιτεί σύνδεση στο Διαδίκτυο</string>
+    <!-- Set to true in translation file if your language is right to left -->
+    <bool name="lang_support_rtl">false</bool>
+</resources>

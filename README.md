@@ -1,8 +1,27 @@
 # Fox's Magisk Module Manager
 
+## Fox Module contest
+
+If you publish a modules using ANSI color styling or FoxMMM extensions
+(see [`DEVELOPERS.md`](DEVELOPERS.md)) you can enter the contest to win 20€ via PayPal.
+
+The winning module will also be displayed on this spot for at least 2 weeks.
+
+Note: The module install script must **not** be obfuscated and 
+be published on a repo supported by FoxMMM to be able to participate.
+
+The winner will be selected at the end of this month (July).  
+(Don't forget to join telegram to be sure I don't miss your module when selecting the winner)
+
 ## Join us on Telegram! 
 
 [![Telegram Group](https://img.shields.io/endpoint?color=neon&style=flat&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2FFox2Code_Chat)](https://telegram.dog/Fox2Code_Chat)
+
+## Screenshots
+
+Main activity:  
+[<img src="screenshot-dark.jpg" width="250"/>](screenshot-dark.jpg)
+[<img src="screenshot-light.jpg" width="250"/>](screenshot-light.jpg)
 
 ## What is this? 
 
@@ -59,27 +78,12 @@ Support:
 
 [![Telegram Group](https://img.shields.io/endpoint?color=neon&style=flat&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fandroidacy_discussions)](https://telegram.dog/androidacy_discussions)
 
-#### [https://github.com/Magisk-Modules-Repo](https://github.com/Magisk-Modules-Repo)  
-- No longer accept new modules or receive update to existing modules
-- May be shut down at any moment
-- Official app dropped support for it
-- No longer supported by Fox's mmm
-
-As the main repo may shutting down due to the main app no longer supporting it, stopped 
-accepting new modules, and also no longer receive updates since the 21 December 2021.
-
 If a module is in multiple repos, the manager will just pick the most up to date version 
-of the module, allowing developers to switch repo at their own pace if they want to.
+of the module, if a module is in multiple repos it will just use first registered repo.
 
 Note: If you or a friend uploaded a module and it doesn't appear in your module 
 list you can disable the low quality filter in the app settings.  
 Go to the [developer documentation](DEVELOPERS.md) for more info.
-
-## Screenshots
-
-Main activity:  
-[<img src="screenshot-dark.jpg" width="250"/>](screenshot-dark.jpg)
-[<img src="screenshot-light.jpg" width="250"/>](screenshot-light.jpg)
 
 ## For developers
 
@@ -100,8 +104,7 @@ For more information please check the [developer documentation](DEVELOPERS.md)
 See [`app/src/main/res/values/strings.xml`](https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/app/src/main/res/values/strings.xml)
 and [`app/src/main/res/values/arrays.xml`](https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/app/src/main/res/values/arrays.xml)
 
-If your language is right to left you should make a copy of [`app/src/main/res/values/bools.xml`](https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/app/src/main/res/values/bools.xml)
-and set `lang_support_rtl` to `true`.
+If your language is right to left don't forget to set `lang_support_rtl` to `true`.
 
 Translators are not expected to have any previous coding experience.
 

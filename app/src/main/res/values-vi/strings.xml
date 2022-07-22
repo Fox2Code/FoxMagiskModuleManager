@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Trình quản lý Mô-đun Magisk của Fox</string>
     <string name="app_name_short">Quản lý MM</string>
     <string name="fail_root_magisk">Thất bại khi lấy quyền truy cập Root hoặc Magisk</string>
@@ -10,6 +10,7 @@
     <string name="failed_download">Tải xuống tệp tin thất bại.</string>
     <string name="slow_modules">Các mô-đun mất quá nhiều thời gian để khởi động, hãy xem xét việc tắt một số mô-đun</string>
     <string name="fail_internet">Kết nối với internet thất bại</string>
+    <string name="no_web_view">Không thể mở WebView của Hệ thống</string>
     <string name="title_activity_settings">Cài đặt Hoạt động</string>
     <string name="app_update_available">Bản cập nhật ứng dụng có sẵn</string>
     <string name="app_update">Cập nhật</string>
@@ -21,8 +22,16 @@
     <string name="website">Trang web</string>
     <string name="support">Hỗ trợ</string>
     <string name="donate">Ủng hộ</string>
+    <string name="update">Cập nhật</string>
+    <string name="install">Cài đặt</string>
+    <string name="description">Mô tả</string>
+    <string name="uninstall">Gỡ cài đặt</string>
+    <string name="config">Cấu hình</string>
     <string name="submit_modules">Nộp một mô-đun</string>
     <string name="require_android_6">Yêu cầu Android 6.0+</string>
+    <string name="require_android_12">Yêu cầu Android 12+</string>
+    <string name="install_terminal_reboot_now">Khởi động lại</string>
+    <string name="language">Ngôn ngữ</string>
 	
     <!-- Module section translation -->
     <string name="module_last_update">Cập nhật lần cuối:</string>
@@ -30,20 +39,33 @@
     <string name="module_by">bởi</string>
     <string name="module_downloads">Lượt tải xuống:</string>
     <string name="module_stars">Sao:</string>
+    <string name="module_needs_ramdisk">Cần ramdisk</string>
+    <string name="module_needs_ramdisk_desc">Cần có boot ramdisk để cài đặt mô-đun này</string>
+    <string name="module_can_change_boot">Có thể thay đổi khởi động</string>
+    <string name="module_can_change_boot_desc">Mô-đun này có thể sẽ thay đổi boot image</string>
+    <string name="module_min_magisk_chip">Tối thiểu Magisk "%s"</string>
+    <string name="module_min_sdk_chip">Tối thiểu Android</string>
+    <string name="module_max_sdk_chip">Tối đa Android</string>
 
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">Quản lý kho</string>
     <string name="showcase_mode_pref">Chế độ khóa</string>
     <string name="showcase_mode_desc">Chế độ khóa ngăn trình quản lý thực hiện hành động trên các mô-đun</string>
+    <string name="prevent_reboot_pref">Ngăn khởi động lại</string>
+    <string name="prevent_reboot_desc">Ngăn khởi động lại bất ngờ</string>
     <string name="pref_category_settings">Cài đặt</string>
+    <string name="enable_monet">Kích hoạt Monet</string>
     <string name="pref_category_info">Thông tin</string>
     <string name="show_licenses">Hiển thị giấy phép</string>
     <string name="licenses">Giấy phép</string>
     <string name="show_incompatible_pref">Hiển thị các mô-đun không tương thích</string>
-    <string name="show_incompatible_desc">Hiển thị các mô-đun không tương thích với thiết bị của bạn dựa trên siêu dữ liệu của chúng</string>
-    <string name="magisk_outdated">Magisk đã lỗi thời!</string>
+    <string name="show_incompatible_desc">Hiển thị các mô-đun dường như sẽ không tương thích với thiết bị của bạn dựa trên siêu dữ liệu của chúng</string>
+    <string name="magisk_outdated">Có một phiên bản Magisk mới hơn để cài đặt!</string>
     <string name="pref_category_repos">Kho</string>
+    <string name="pref_category_security">Bảo mật</string>
+    <string name="pref_category_appearance">Giao diện</string>
+    <string name="pref_category_general">Chung</string>
     <string name="repo_main_desc">Kho lưu trữ Mô-đun Magisk</string>
     <string name="repo_main_alt">Một giải pháp thay thế cho Kho Mô-đun Magisk với ít hạn chế hơn.</string>
     <string name="master_delete">Xóa các tệp mô-đun?</string>
@@ -55,6 +77,7 @@
     <string name="module_id_prefix">ID mô-đun: </string>
     <string name="install_from_storage">Cài đặt mô-đun từ bộ nhớ</string>
     <string name="invalid_format">Mô-đun đã chọn có định dạng không hợp lệ</string>
+    <string name="low_quality_module">Mô-đun chất lượng kém</string>
     <string name="local_install_title">Cài đặt nội bộ</string>
     <string name="source_code">Mã nguồn</string>
     <string name="magisk_builtin_module">Mô-đun tích hợp Magisk</string>
@@ -93,4 +116,11 @@
     <string name="enable_blur_pref">Kích hoạt làm mờ</string>
     <string name="repo_enabled">Kho đã được kích hoạt</string>
     <string name="repo_disabled">Kho đã bị vô hiệu hóa</string>
+    <string name="add_repo">Thêm kho</string>
+    <string name="remove_repo">Gỡ kho</string>
+    <string name="custom_url">Url tuỳ chỉnh</string>
+    <string name="androidacy_repo_info">Kho Androidacy có các quảng cáo và trình theo dõi.</string>
+    <string name="backup_module_list">Sao lưu mô-đun</string>
+    <string name="restore_module_list">Khôi phục mô-đun</string>
+    <string name="require_internet">Quá trình này yêu cầu kết nối internet</string>
 </resources>

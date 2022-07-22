@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- WebView offline webpage support -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!-- Make sure of the module active state by checking enabled modules on boot -->
+    <!-- Check if there is modules updates on boot -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <!-- Open config apps for applications -->
     <uses-permission-sdk-23 android:name="android.permission.QUERY_ALL_PACKAGES" />
@@ -33,8 +33,9 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:usesCleartextTraffic="false"
         tools:targetApi="s"
-        tools:replace="android:supportsRtl">
-        <receiver android:name="com.fox2code.mmm.manager.ModuleBootReceive"
+        tools:replace="android:supportsRtl"
+        tools:ignore="ManifestResource">
+        <receiver android:name="com.fox2code.mmm.background.BackgroundBootListener"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -93,6 +94,8 @@
             android:exported="false"
             tools:node="merge">
             <meta-data android:name="androidx.emoji2.text.EmojiCompatInitializer"
+                tools:node="remove" />
+            <meta-data android:name="androidx.work.WorkManagerInitializer"
                 tools:node="remove" />
         </provider>
     </application>

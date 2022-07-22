@@ -27,6 +27,33 @@ it is a check that verify that the module is declaring the minimum required to
 allow the app to show your module to the user without hurting his experience.  
 Filling all basic Magisk properties is often enough to not get filtered out by it.
 
+## Custom Repo format
+
+Note: This feature is for `0.6.0` version that is not released yet.
+
+`last_update` fields uses unix millis.
+
+Json format is
+```json
+{
+  "name": "Repo name",
+  "website": "repo website",
+  "support": "optional support url",
+  "donate": "optional support url", 
+  "submitModule": "optional submit module URL",
+  "last_update": 0,
+  "modules": [
+    {
+      "id": "module id",
+      "last_update": 0,
+      "notes_url": "notes url",
+      "prop_url": "module.prop url",
+      "zip_url": "module.zip url"
+    }
+  ]
+}
+```
+
 ## Properties
 
 In addition to the following required magisk properties

@@ -27,6 +27,10 @@
     <string name="description">Description</string>
     <string name="uninstall">Uninstall</string>
     <string name="config">Config</string>
+    <string name="favourite">Favourite</string>
+    <string name="report_bugs">Report bugs</string>
+    <string name="sniffed_modules">Sniffed modules</string>
+    <string name="sniffing_modules">Sniffing modules</string>
     <string name="submit_modules">Submit a module</string>
     <string name="require_android_6">Requires Android 6.0+</string>
     <string name="require_android_12">Requires Android 12+</string>
@@ -96,6 +100,7 @@
         so this option behind is hidden behind developer mode.\nTurn this on at your own risk!
     </string>
     <string name="dev_mode_enabled">Developer mode on</string>
+    <string name="dev_mode_disabled">Developer mode off</string>
     <string name="force_english_pref">English app language</string>
     <string name="disable_low_quality_module_filter_pref">Show low-quality modules</string>
     <string name="disable_low_quality_module_filter_desc">
@@ -128,4 +133,21 @@
     <string name="backup_module_list">Backup modules</string>
     <string name="restore_module_list">Restore modules</string>
     <string name="require_internet">This operation require an internet connection</string>
+
+    <!-- Background Notification translation -->
+    <string name="notification_update_title">Found %i module updates</string>
+    <string name="notification_update_title_easter_egg">Sniffed %i module updates</string>
+    <string name="notification_update_subtitle">Click to open the app</string>
+    <string name="notification_update_pref">Background modules update check</string>
+    <string name="notification_update_desc">May increase battery usage</string>
+    <string name="notification_update_debug_pref">Test Notification</string>
+
+    <!-- Set to true in translation file if your language is right to left -->
+    <bool name="lang_support_rtl">false</bool>
+    <!-- Always copy language_support_level when translating -->
+    <integer name="language_support_level">1</integer>
+    <string name="language_support_outdated">Some translations for the current language are
+        not up-to-date, please consider contributing to the app translations on GitHub</string>
+    <!-- Replace with your own username when translating -->
+    <string name="language_translated_by">Translated by Fox2Code</string>
 </resources>

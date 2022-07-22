@@ -1,13 +1,5 @@
 package com.fox2code.mmm;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SearchView;
-import androidx.cardview.widget.CardView;
-import androidx.core.graphics.ColorUtils;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -21,8 +13,18 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
-import com.fox2code.mmm.compat.CompatActivity;
-import com.fox2code.mmm.compat.CompatDisplay;
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SearchView;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.graphics.ColorUtils;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.fox2code.foxcompat.FoxActivity;
+import com.fox2code.foxcompat.FoxDisplay;
+import com.fox2code.mmm.background.BackgroundUpdateChecker;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
@@ -32,14 +34,12 @@ import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.settings.SettingsActivity;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
 
-public class MainActivity extends CompatActivity implements SwipeRefreshLayout.OnRefreshListener,
+public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRefreshListener,
         SearchView.OnQueryTextListener, SearchView.OnCloseListener,
         OverScrollManager.OverScrollHelper {
     private static final String TAG = "MainActivity";
@@ -67,8 +67,15 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
     }
 
     @Override
+    protected void onResume() {
+        BackgroundUpdateChecker.onMainActivityResume(this);
+        super.onResume();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.initMode = true;
+        BackgroundUpdateChecker.onMainActivityCreate(this);
         super.onCreate(savedInstanceState);
          this.setActionBarExtraMenuButton(R.drawable.ic_baseline_settings_24, v -> {
             IntentHelper.startActivity(this, SettingsActivity.class);
@@ -105,12 +112,11 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         this.moduleList.setItemViewCacheSize(4); // Default is 2
         this.swipeRefreshLayout.setOnRefreshListener(this);
         this.actionBarBlur.setBackground(this.actionBarBackground);
-        this.actionBarBlur.setupWith(this.moduleList).setFrameClearDrawable(
-                this.getWindow().getDecorView().getBackground())
-               .setBlurAlgorithm(new RenderScriptBlur(this))
-              .setBlurRadius(4F).setBlurAutoUpdate(true)
-               .setHasFixedTransformationMatrix(true);
-         this.updateBlurState();
+        this.actionBarBlur.setupWith(findViewById(R.id.blur_frame))
+                .setFrameClearDrawable(this.getWindow().getDecorView().getBackground())
+                .setBlurAlgorithm(new RenderScriptBlur(this)).setBlurRadius(4F)
+                .setBlurAutoUpdate(true).setHasFixedTransformationMatrix(true);
+        this.updateBlurState();
         this.moduleList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -119,7 +125,7 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
             }
         });
         this.searchCard.setRadius(this.searchCard.getHeight() / 2F);
-        this.searchView.setMinimumHeight(CompatDisplay.dpToPixel(16));
+        this.searchView.setMinimumHeight(FoxDisplay.dpToPixel(16));
         this.searchView.setImeOptions(EditorInfo.IME_ACTION_SEARCH |
                 EditorInfo.IME_FLAG_NO_FULLSCREEN);
         this.searchView.setOnQueryTextListener(this);
@@ -174,6 +180,9 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                 });
                 Log.i(TAG, "Scanning for modules!");
                 final int max = ModuleManager.getINSTANCE().getUpdatableModuleCount();
+                if (RepoManager.getINSTANCE().getCustomRepoManager().needUpdate()) {
+                    Log.w(TAG, "Need update on create?");
+                }
                 RepoManager.getINSTANCE().update(value -> runOnUiThread(max == 0 ? () ->
                         progressIndicator.setProgressCompat(
                                 (int) (value * PRECISION), true) :() ->
@@ -225,7 +234,8 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
 
     private void cardIconifyUpdate() {
         boolean iconified = this.searchView.isIconified();
-        int backgroundAttr = iconified ?
+        int backgroundAttr = iconified ? MainApplication.isMonetEnabled() ?
+                R.attr.colorSecondaryContainer : // Monet is special...
                 R.attr.colorSecondary : R.attr.colorPrimarySurface;
         Resources.Theme theme = this.searchCard.getContext().getTheme();
         TypedValue value = new TypedValue();
@@ -251,8 +261,8 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                 swipeRefreshLayoutOrigStartOffset + combinedBarsHeight,
                 swipeRefreshLayoutOrigEndOffset + combinedBarsHeight);
         this.moduleViewListBuilder.setHeaderPx(Math.max(statusBarHeight,
-                combinedBarsHeight - CompatDisplay.dpToPixel(4)));
-        this.moduleViewListBuilder.setFooterPx(CompatDisplay.dpToPixel(4) +
+                combinedBarsHeight - FoxDisplay.dpToPixel(4)));
+        this.moduleViewListBuilder.setFooterPx(FoxDisplay.dpToPixel(4) +
                 bottomInset + this.searchCard.getHeight());
         this.searchCard.setRadius(this.searchCard.getHeight() / 2F);
         this.moduleViewListBuilder.updateInsets();
@@ -328,6 +338,19 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
                 else if (AppUpdateManager.getAppUpdateManager().checkUpdate(false))
                     moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
                 RepoManager.getINSTANCE().updateEnabledStates();
+                if (RepoManager.getINSTANCE().getCustomRepoManager().needUpdate()) {
+                    runOnUiThread(() -> {
+                        progressIndicator.setIndeterminate(false);
+                        progressIndicator.setMax(PRECISION);
+                    });
+                    RepoManager.getINSTANCE().update(value -> runOnUiThread(() ->
+                            progressIndicator.setProgressCompat(
+                                    (int) (value * PRECISION), true)));
+                    runOnUiThread(() -> {
+                        progressIndicator.setProgressCompat(PRECISION, true);
+                        progressIndicator.setVisibility(View.GONE);
+                    });
+                }
                 moduleViewListBuilder.appendRemoteModules();
                 Log.i(TAG, "Common Before applyTo");
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
@@ -338,9 +361,8 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
     }
 
     @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        this.updateScreenInsets(newConfig);
-        super.onConfigurationChanged(newConfig);
+    protected void onWindowUpdated() {
+        this.updateScreenInsets();
     }
 
     @Override
@@ -382,7 +404,8 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
         this.searchView.clearFocus();
         if (this.initMode) return false;
         if (this.moduleViewListBuilder.setQueryChange(query)) {
-            new Thread(() -> this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter), "Query update thread").start();
+            new Thread(() -> this.moduleViewListBuilder.applyTo(
+                    moduleList, moduleViewAdapter), "Query update thread").start();
         }
         return true;
     }
@@ -391,7 +414,8 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
     public boolean onQueryTextChange(String query) {
         if (this.initMode) return false;
         if (this.moduleViewListBuilder.setQueryChange(query)) {
-            new Thread(() -> this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter), "Query update thread").start();
+            new Thread(() -> this.moduleViewListBuilder.applyTo(
+                    moduleList, moduleViewAdapter), "Query update thread").start();
         }
         return false;
     }
@@ -400,7 +424,8 @@ public class MainActivity extends CompatActivity implements SwipeRefreshLayout.O
     public boolean onClose() {
         if (this.initMode) return false;
         if (this.moduleViewListBuilder.setQueryChange(null)) {
-            new Thread(() -> this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter), "Query update thread").start();
+            new Thread(() -> this.moduleViewListBuilder.applyTo(
+                    moduleList, moduleViewAdapter), "Query update thread").start();
         }
         return false;
     }

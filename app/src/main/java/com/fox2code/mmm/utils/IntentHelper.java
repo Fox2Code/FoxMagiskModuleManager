@@ -18,13 +18,13 @@ import android.widget.Toast;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.app.BundleCompat;
 
+import com.fox2code.foxcompat.FoxActivity;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.XHooks;
 import com.fox2code.mmm.androidacy.AndroidacyActivity;
-import com.fox2code.mmm.compat.CompatActivity;
 import com.fox2code.mmm.installer.InstallerActivity;
 import com.fox2code.mmm.markdown.MarkdownActivity;
 import com.topjohnwu.superuser.CallbackList;
@@ -263,7 +263,7 @@ public class IntentHelper {
                         intent1.putExtras(bundle);
                     }
                     intent1.putExtra(IntentHelper.EXTRA_TAB_EXIT_ANIMATION_BUNDLE, param);
-                    if (activity instanceof CompatActivity) {
+                    if (activity instanceof FoxActivity) {
                         TypedValue typedValue = new TypedValue();
                         activity.getTheme().resolveAttribute(
                                 android.R.attr.background, typedValue, true);
@@ -271,7 +271,7 @@ public class IntentHelper {
                                 typedValue.type <= TypedValue.TYPE_LAST_COLOR_INT) {
                             intent1.putExtra(IntentHelper.EXTRA_TAB_TOOLBAR_COLOR, typedValue.data);
                             intent1.putExtra(IntentHelper.EXTRA_TAB_COLOR_SCHEME,
-                                    ((CompatActivity) activity).isLightTheme() ?
+                                    ((FoxActivity) activity).isLightTheme() ?
                                     IntentHelper.EXTRA_TAB_COLOR_SCHEME_LIGHT :
                                     IntentHelper.EXTRA_TAB_COLOR_SCHEME_DARK);
                         }
@@ -320,7 +320,7 @@ public class IntentHelper {
     public static final int RESPONSE_URL = 2;
 
     @SuppressLint("SdCardPath")
-    public static void openFileTo(CompatActivity compatActivity, File destination,
+    public static void openFileTo(FoxActivity compatActivity, File destination,
                                   OnFileReceivedCallback callback) {
         File destinationFolder;
         if (destination == null || (destinationFolder = destination.getParentFile()) == null ||

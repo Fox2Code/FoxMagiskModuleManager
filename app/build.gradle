@@ -4,14 +4,14 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.fox2code.mmm"
         minSdk 21
-        targetSdk 32
-        versionCode 43
-        versionName "0.5.0"
+        targetSdk 33
+        versionCode 50
+        versionName "0.6.0-dev1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -36,8 +36,8 @@ android {
             buildConfigField "boolean", "ENABLE_AUTO_UPDATER", "true"
             buildConfigField(
                 "java.util.List<String>",
-                "DISABLED_REPOS",
-                "java.util.Arrays.asList()",
+                "ENABLED_REPOS",
+                "java.util.Arrays.asList(\"magisk_alt_repo\", \"dg_magisk_repo\", \"androidacy_repo\")",
             )
         }
 
@@ -54,8 +54,8 @@ android {
             // F-Droid flavor.
             buildConfigField(
                 "java.util.List<String>",
-                "DISABLED_REPOS",
-                "java.util.Arrays.asList(\"androidacy_repo\")",
+                "ENABLED_REPOS",
+                "java.util.Arrays.asList(\"magisk_alt_repo\")",
             )
         }
     }
@@ -80,7 +80,7 @@ configurations {
 
 dependencies {
     // UI
-    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'androidx.emoji2:emoji2:1.1.0'
     implementation 'androidx.emoji2:emoji2-views-helper:1.1.0'
     implementation 'androidx.preference:preference:1.2.0'
@@ -88,18 +88,20 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.webkit:webkit:1.4.0'
-    implementation 'com.google.android.material:material:1.6.0'
+    implementation 'com.google.android.material:material:1.6.1'
     implementation "com.mikepenz:aboutlibraries:${latestAboutLibsRelease}"
     implementation "dev.rikka.rikkax.layoutinflater:layoutinflater:1.2.0"
-    implementation "dev.rikka.rikkax.insets:insets:1.2.0"
+    implementation "dev.rikka.rikkax.insets:insets:1.3.0"
     implementation 'com.github.Dimezis:BlurView:version-1.6.6'
     implementation 'com.github.KieronQuinn:MonetCompat:0.4.1'
+    implementation 'com.github.Fox2Code:FoxCompat:0.0.2'
 
     // Utils
+    implementation 'androidx.work:work-runtime:2.7.1'
     implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.9.3'
     implementation 'com.squareup.okhttp3:okhttp-brotli:4.9.3'
     implementation 'com.github.topjohnwu.libsu:io:5.0.1'
-    implementation 'com.github.Fox2Code:RosettaX:1.0.2'
+    implementation 'com.github.Fox2Code:RosettaX:1.0.8'
     implementation 'com.github.Fox2Code:AndroidANSI:1.0.1'
 
     // Markdown
@@ -109,9 +111,6 @@ dependencies {
     implementation "io.noties.markwon:syntax-highlight:4.6.2"
     annotationProcessor "io.noties:prism4j-bundler:2.0.0"
     implementation "com.caverock:androidsvg:1.4"
-
-    // Utils for compat (Needs to be outsourced ASAP)
-    // compileOnly "org.robolectric:android-all:11-robolectric-6757853"
 
     // Test
     testImplementation 'junit:junit:4.+'
