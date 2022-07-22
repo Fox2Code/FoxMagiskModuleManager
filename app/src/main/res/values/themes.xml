@@ -26,13 +26,13 @@
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
         <item name="android:dialogCornerRadius" tools:targetApi="p">@dimen/card_corner_radius</item>
         <item name="dialogCornerRadius">@dimen/card_corner_radius</item>
-        <item name="colorBackgroundFloating">#FFFFFFFF</item>
-        <item name="backgroundColor">#FFFFFFFF</item>
+        <item name="colorBackgroundFloating">@color/light_colorBackgroundFloating</item>
+        <item name="backgroundColor">@color/light_backgroundColor</item>
         <item name="chipStyle">@style/Widget.Material.Chip.Choice.Light</item>
     </style>
 
     <style name="Widget.Material.Chip.Choice.Light" parent="Widget.MaterialComponents.Chip.Action">
-        <item name="chipBackgroundColor">#DADADA</item>
+        <item name="chipBackgroundColor">@color/light_chipBackgroundColor</item>
         <item name="chipStrokeWidth">0dp</item>
         <item name="chipIconTint">@color/black</item>
     </style>
@@ -78,13 +78,13 @@
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
         <item name="android:dialogCornerRadius" tools:targetApi="p">@dimen/card_corner_radius</item>
         <item name="dialogCornerRadius">@dimen/card_corner_radius</item>
-        <item name="colorBackgroundFloating">#FF202020</item>
-        <item name="backgroundColor">#FF111111</item>
+        <item name="colorBackgroundFloating">@color/dark_colorBackgroundFloating</item>
+        <item name="backgroundColor">@color/dark_backgroundColor</item>
         <item name="chipStyle">@style/Widget.Material.Chip.Choice.Dark</item>
     </style>
 
     <style name="Widget.Material.Chip.Choice.Dark" parent="Widget.MaterialComponents.Chip.Action">
-        <item name="chipBackgroundColor">#1C1C1C</item>
+        <item name="chipBackgroundColor">@color/dark_chipBackgroundColor</item>
         <item name="chipStrokeWidth">0dp</item>
         <item name="chipIconTint">@color/white</item>
     </style>

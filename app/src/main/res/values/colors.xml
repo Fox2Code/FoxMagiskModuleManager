@@ -17,4 +17,11 @@
     <!-- Icon -->
     <color name="launcher_icon_background">#FF9B08</color>
     <color name="launcher_icon">@android:color/white</color>
+    <!-- Colors for themes (Does not applies to monet) -->
+    <color name="dark_colorBackgroundFloating">#FF202020</color>
+    <color name="dark_backgroundColor">#FF111111</color>
+    <color name="dark_chipBackgroundColor">#FF1C1C1C</color>
+    <color name="light_colorBackgroundFloating">#FFFFFFFF</color>
+    <color name="light_backgroundColor">#FFFFFFFF</color>
+    <color name="light_chipBackgroundColor">#FFDADADA</color>
 </resources>
