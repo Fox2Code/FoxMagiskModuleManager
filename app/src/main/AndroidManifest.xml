@@ -95,6 +95,8 @@
             tools:node="merge">
             <meta-data android:name="androidx.emoji2.text.EmojiCompatInitializer"
                 tools:node="remove" />
+            <meta-data android:name="androidx.work.WorkManagerInitializer"
+                tools:node="remove" />
         </provider>
     </application>
 </manifest>
