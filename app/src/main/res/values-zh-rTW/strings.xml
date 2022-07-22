@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Fox\'s Magisk 模組管理器</string>
     <string name="app_name_short">Fox\'s Mmm</string>
     <string name="fail_root_magisk">無法取得 ROOT 權限或您並沒有裝 Magisk</string>
@@ -10,11 +10,11 @@
     <string name="failed_download">安裝檔下載失敗</string>
     <string name="slow_modules">因模組導致啟動時間過長，考慮禁用部分模組</string>
     <string name="fail_internet">無法連線到網路</string>
-     <string name="no_web_view">無法開啟系統內的 WebView</string>
+    <string name="no_web_view">無法開啟系統內的 WebView</string>
     <string name="title_activity_settings">設定活動</string>
     <string name="app_update_available">可用的應用程序更新</string>
     <string name="app_update">更新</string>
-    <string name="no_desc_found">未找到說明</string>
+    <string name="no_desc_found">沒有安裝說明</string>
     <string name="download_module">下載模組</string>
     <string name="install_module">安裝模組</string>
     <string name="update_module">更新模組</string>
@@ -27,58 +27,58 @@
     <string name="description">說明</string>
     <string name="uninstall">解除安裝</string>
     <string name="config">配置</string>
+    <string name="favourite">提交一個模組</string>
+    <string name="report_bugs">報告錯誤</string>
+    <string name="sniffed_modules">檢查模組更新</string>
+    <string name="sniffing_modules">檢查模組更新中</string>
     <string name="submit_modules">提交一個模組</string>
     <string name="require_android_6">需要 Android 6.0 或更新的版本</string>
     <string name="require_android_12">需要 Android 12 或更新的版本</string>
     <string name="install_terminal_reboot_now">重新啟動</string>
     <string name="language">語言</string>
-    <string name="yes">是</string>
-    <string name="no">否</string>
-    <string name="ok">OK</string>
-    <string name="cancel">取消</string>
 
     <!-- Module section translation -->
-    <string name="module_last_update">最後更新:</string>
+    <string name="module_last_update">最後更新：</string>
     <string name="module_repo">倉庫：</string>
     <string name="module_by">來自</string>
-    <string name="module_downloads">下載:</string>
-    <string name="module_stars">收藏:</string>
-    <string name="module_needs_ramdisk">需要Ramdisk</string>
+    <string name="module_downloads">下載：</string>
+    <string name="module_stars">收藏：</string>
+    <string name="module_needs_ramdisk">需要 Ramdisk</string>
     <string name="module_needs_ramdisk_desc">此模組需要安裝並啟動 Ramdisk</string>
     <string name="module_can_change_boot">可以修改 boot</string>
     <string name="module_can_change_boot_desc">此模組可能會修改 boot.img</string>
-    <string name="module_min_magisk_chip">Min. Magisk "%s"</string>
-    <string name="module_min_sdk_chip">Min. Android</string>
-    <string name="module_max_sdk_chip">Max. Android</string>
+    <string name="module_min_magisk_chip">最低需要 Magisk "%s" 版本</string>
+    <string name="module_min_sdk_chip">最低需要 Android 版本</string>
+    <string name="module_max_sdk_chip">最高需要 Android 版本</string>
 
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">管理倉庫</string>
     <string name="showcase_mode_pref">鎖定模式</string>
-    <string name="showcase_mode_desc">鎖定模式阻止管理器對模組進行操作</string>
+    <string name="showcase_mode_desc">開啟鎖定模式將阻止管理器對模組進行操作</string>
     <string name="prevent_reboot_pref">防止重啟</string>
-    <string name="prevent_reboot_desc">防止意外重啟</string>
+    <string name="prevent_reboot_desc">開啟後將防止意外重啟系統</string>
     <string name="pref_category_settings">設定</string>
     <string name="enable_monet">啟用 Monet</string>
     <string name="pref_category_info">訊息</string>
     <string name="show_licenses">顯示開放原始碼許可</string>
     <string name="licenses">開放原始碼許可</string>
     <string name="show_incompatible_pref">顯示不相容的模組</string>
-    <string name="show_incompatible_desc">顯示與您的裝置不相容的模組</string>
+    <string name="show_incompatible_desc">開啟後將顯示與您的裝置不相容的模組</string>
     <string name="magisk_outdated">您的 Magisk 需要更新!</string>
     <string name="pref_category_repos">倉庫</string>
     <string name="pref_category_security">安全</string>
     <string name="pref_category_appearance">外觀</string>
     <string name="pref_category_general">一般</string>
     <string name="repo_main_desc">官方 Magisk 模組儲存庫</string>
-    <string name="repo_main_alt">替代官方 Magisk 模組儲存庫，限制更少</string>
+    <string name="repo_main_alt">代官方 Magisk 模組儲存庫，限制更少</string>
     <string name="master_delete">刪除已下載的模組安裝檔?</string>
     <string name="master_delete_no">保留模組 zip</string>
     <string name="master_delete_yes">刪除模組 zip</string>
     <string name="master_delete_fail">刪除模組 zip 失敗</string>
     <string name="theme_pref">主題</string>
     <string name="theme_mode_pref">主題模式</string>
-    <string name="module_id_prefix">模組 ID: </string>
+    <string name="module_id_prefix">模組 ID：</string>
     <string name="install_from_storage">從本機安裝</string>
     <string name="invalid_format">所選模組的格式無效或檔案損毀</string>
     <string name="low_quality_module">粗糙的模組</string>
@@ -90,33 +90,29 @@
     <string name="file_picker_failure">您目前的檔案管理員無法使用</string>
     <string name="remote_install_title">遠端安裝</string>
     <string name="file_picker_wierd">您的檔案管理器返回了非標準響應</string>
-    <string name="use_magisk_install_command_pref">使用 Magisk 安裝命令</string>
+    <string name="use_magisk_install_command_pref" tools:ignore="TypographyDashes">使用 Magisk 安裝命令</string>
     <string name="use_magisk_install_command_desc">
         在測試過程中導致模組安裝錯誤診斷工具出現問題，
-        所以我把這個選項隱藏在 dev-mode 後面，啟用它需要自行承擔風險!
-    </string>
+        所以我把這個選項隱藏在 dev-mode 後面，啟用它需要自行承擔風險!</string>
     <string name="dev_mode_enabled">開發者模式已啟用</string>
+    <string name="dev_mode_disabled">開發者模式已關閉</string>
     <string name="force_english_pref">強制使用英語</string>
     <string name="disable_low_quality_module_filter_pref">停止過濾「粗糙的模組」</string>
     <string name="disable_low_quality_module_filter_desc">
         一些模組沒有正確宣告他們的詮釋資訊，導致顯示上的問題。
-        這代表可能這個模組可能會產生未知的問題。
-    </string>
+        這代表可能這個模組可能會產生未知的問題。</string>
     <string name="dns_over_https_pref">加密的 HTTPS 協定進行 DNS 解析請求</string>
     <string name="dns_over_https_desc">
         在某些情況下可能會修復連線問題
-        (不適用於 WebView)
-    </string>
+        (不適用於 WebView)</string>
     <string name="disable_extensions_pref">禁用擴充套件</string>
     <string name="disable_extensions_desc">
         禁用 Fox\'s Mmm 擴充套件, 這可以防止模組使用
-        終端擴充套件, 如果模組濫用 Fox\'s Mmm 的擴充套件, 這將會很有用。
-    </string>
+        終端擴充套件, 如果模組濫用 Fox\'s Mmm 的擴充套件, 這將會很有用。</string>
     <string name="wrap_text_pref">文字換行</string>
     <string name="wrap_text_desc">
         將文字換行至新行，
-        而不是將所有文字放在同一行。
-    </string>
+        而不是將所有文字放在同一行。</string>
     <string name="enable_blur_pref">啟用模糊</string>
     <string name="disable_chips_in_description">在描述中禁用晶片</string>
     <string name="repo_enabled">啟用倉庫</string>
@@ -128,4 +124,20 @@
     <string name="backup_module_list">備份模組</string>
     <string name="restore_module_list">還原模組</string>
     <string name="require_internet">需要網路連線</string>
+
+    <!-- Background Notification translation -->
+    <string name="notification_update_title">發現 %i 模組的更新</string>
+    <string name="notification_update_title_easter_egg">偵測到 %i 模組的更新</string>
+    <string name="notification_update_subtitle">點選開啟該應用程式</string>
+    <string name="notification_update_pref">在後台檢查模組更新</string>
+    <string name="notification_update_desc">開啟後可能會增加電池用量</string>
+    <string name="notification_update_debug_pref">測試通知</string>
+
+    <!-- Set to true in translation file if your language is right to left -->
+    <bool name="lang_support_rtl">false</bool>
+    <!-- Always copy language_support_level when translating -->
+    <integer name="language_support_level">1</integer>
+    <string name="language_support_outdated">如果您使用的當前語言沒有及時更新，請考慮在 GitHub 上的為翻譯做出貢獻。</string>
+    <!-- Replace with your own username when translating -->
+    <string name="language_translated_by">由 OrStudio.tw(@crcky5322) 提供美妙的翻譯</string>
 </resources>
