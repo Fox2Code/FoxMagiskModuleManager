@@ -10,7 +10,7 @@
     <string name="failed_download">Scaricamento del file non riuscito.</string>
     <string name="slow_modules">L\'avvio dei moduli è lento, prova a disabilitarne alcuni</string>
     <string name="fail_internet">Impossibile connettersi a internet</string>
-    <string name="no_web_view">Impossibile aprire la WebView di sistema</string>
+    <string name="no_web_view">Impossibile aprire il WebView di sistema</string>
     <string name="title_activity_settings">Impostazione attività</string>
     <string name="app_update_available">Aggiornamento disponibile</string>
     <string name="app_update">Aggiornamento</string>
@@ -27,6 +27,7 @@
     <string name="description">Descrizione</string>
     <string name="uninstall">Disinstalla</string>
     <string name="config">Configurazione</string>
+    <string name="report_bugs">Segnala bug</string>
     <string name="submit_modules">Invia un modulo</string>
     <string name="require_android_6">Richiede Android 6.0+</string>
     <string name="require_android_12">Richiede Android 12+</string>
@@ -75,7 +76,7 @@
     <string name="theme_pref">Tema</string>
     <string name="theme_mode_pref">Modalità tema</string>
     <string name="module_id_prefix">Id del modulo: </string>
-    <string name="install_from_storage">Installa un modulo dalla memoria di archiviazione</string>
+    <string name="install_from_storage">Installa un modulo dal dispositivo</string>
     <string name="invalid_format">Il modulo selezionato ha un formato non valido</string>
     <string name="low_quality_module">Modulo qualità-bassa</string>
     <string name="local_install_title">Installazione locale</string>
@@ -100,19 +101,17 @@
     </string>
     <string name="dns_over_https_pref">DNS over HTTPS</string>
     <string name="dns_over_https_desc">
-        Potrebbe risolvere porblemi di connessione in alcuni casi.
-        (Non si applica alla WebView.)
+        Potrebbe risolvere problemi di connessione in alcuni casi.
+        (Non si applica a WebView.)
     </string>
     <string name="disable_extensions_pref">No Mmm</string>
     <string name="disable_extensions_desc">
         Disattiva le estensioni di Fox Mmm, impedendo ai moduli di usare
         le estensioni per il terminale.\nUtile se un modulo abusa le estensioni di Fox Mmm.
     </string>
-    <string name="wrap_text_pref">Avvolgimento del testo</string>
+    <string name="wrap_text_pref">Testo a capo</string>
     <string name="wrap_text_desc">
-        Mostra il testo su righee multiple invece che mettere
-        tutto il testo sulla stessa riga quando si installa un modulo.
-    </string>
+        Mostra il testo su più righe\nEvita di mettere tutto il testo in una sola riga quando si installa un modulo.</string>
     <string name="enable_blur_pref">Sfocatura</string>
     <string name="disable_chips_in_description">Disabilita i chip nella descrizione</string>
     <string name="repo_enabled">Repository attiva</string>
@@ -124,4 +123,12 @@
     <string name="backup_module_list">Salva moduli</string>
     <string name="restore_module_list">Ripristina moduli</string>
     <string name="require_internet">Questa operazione richiede una connessione ad internet</string>
+    
+    <!-- Background Notification translation -->
+    <string name="notification_update_desc">Può aumentare il consumo della batteria</string>
+    <string name="notification_update_pref">Controllo aggiornamento moduli in background</string>
+    
+    <!-- Always copy language_support_level when translating -->
+    <string name="language_support_outdated">Alcune traduzioni per la lingua corrente non sono aggiornate, ti preghiamo di considerare di contribuire alle traduzioni dell\'app su GitHub</string>
+
 </resources>
