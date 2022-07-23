@@ -3,8 +3,8 @@
     <string name="app_name_short">Fox\'s Mmm</string>
     <string name="fail_root_magisk">Δεν ήταν δυνατή η πρόσβαση σε δικαιώματα root ή στο magisk</string>
     <string name="loading">Φόρτωση…</string>
-    <string name="updatable">Αναβαθμίσιμο</string>
-    <string name="installed">Εγκατεστημένο</string>
+    <string name="updatable">Αναβαθμίσιμα</string>
+    <string name="installed">Εγκατεστημένα</string>
     <string name="online_repo">Ηλεκτρονικό αποθετήριο</string>
     <string name="showcase_mode">Η εφαρμογή βρίσκεται σε κατάσταση lockdown</string>
     <string name="failed_download">Δεν ήταν δυνατή η λήψη του αρχείου</string>
@@ -128,6 +128,20 @@
     <string name="backup_module_list">Εφεδρικά modules</string>
     <string name="restore_module_list">Επαναφορά module</string>
     <string name="require_internet">Αυτή η λειτουργία απαιτεί σύνδεση στο Διαδίκτυο</string>
+
+    <!-- Background Notification translation -->
+    <string name="notification_update_title">Βρέθηκαν %i ενημερώσεις για τα εγκατεστημενα modules</string>
+    <string name="notification_update_title_easter_egg">Μύρισα %i ενημερώσεις για τα εγκατεστημενα modules</string>
+    <string name="notification_update_subtitle">Κάντε κλικ για να ανοίξετε την εφαρμογή</string>
+    <string name="notification_update_pref">Έλεγχος ενημέρωσης για modules στο παρασκήνιο</string>
+    <string name="notification_update_desc">Μπορεί να αυξήσει τη χρήση της μπαταρίας</string>
+    <string name="notification_update_debug_pref">Ειδοποίηση δοκιμής</string>
+
     <!-- Set to true in translation file if your language is right to left -->
     <bool name="lang_support_rtl">false</bool>
+
+    <integer name="language_support_level">1</integer>
+    <string name="language_support_outdated">Ορισμένες μεταφράσεις για την τρέχουσα γλώσσα δεν είναι ενημερωμένες, παρακαλούμε να συνεισφέρετε στις μεταφράσεις εφαρμογών στο GitHub</string>
+    <!-- Replace with your own username when translating -->
+    <string name="language_translated_by">Μεταφράστηκε απο Tha_14</string>
 </resources>
