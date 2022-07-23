@@ -149,5 +149,5 @@
     <string name="language_support_outdated">当前语言的一些翻译不是最新的，
         请考虑为 GitHub 上的应用程序翻译做出贡献</string>
     <!-- Replace with your own username when translating -->
-    <string name="language_translated_by">Translated by Fox2Code</string>
+    <string name="language_translated_by">由ender-zhao翻译</string>
 </resources>
