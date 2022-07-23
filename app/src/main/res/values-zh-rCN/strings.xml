@@ -27,6 +27,10 @@
     <string name="description">描述</string>
     <string name="uninstall">卸载</string>
     <string name="config">配置</string>
+    <string name="favourite">最喜欢的</string>
+    <string name="report_bugs">报告错误</string>
+    <string name="sniffed_modules">嗅探模块</string>
+    <string name="sniffing_modules">嗅探模块中</string>
     <string name="submit_modules">提交一个模块</string>
     <string name="require_android_6">需要 Android 6.0+</string>
     <string name="require_android_12">需要 Android 12+</string>
@@ -46,7 +50,7 @@
     <string name="module_needs_ramdisk">需要Ramdisk</string>
     <string name="module_needs_ramdisk_desc">该模块需要安装启动Ramdisk</string>
     <string name="module_can_change_boot">可以更改引导</string>
-    <string name="module_can_change_boot_desc">该模块可能会更改启动图像</string>
+    <string name="module_can_change_boot_desc">该模块可能会更改启动镜像</string>
     <string name="module_min_magisk_chip">Min. Magisk "%s"</string>
     <string name="module_min_sdk_chip">Min. Android</string>
     <string name="module_max_sdk_chip">Max. Android</string>
@@ -57,7 +61,7 @@
     <string name="showcase_mode_pref">锁定模式</string>
     <string name="showcase_mode_desc">锁定模式阻止管理器对模块执行操作</string>
     <string name="prevent_reboot_pref">防止重启</string>
-    <string name="prevent_reboot_desc">防止意外重启</string>
+    <string name="prevent_reboot_desc">防止误触重启键而导致意外重启</string>
     <string name="pref_category_settings">设置</string>
     <string name="enable_monet">启用 Monet</string>
     <string name="pref_category_info">信息</string>
@@ -96,6 +100,7 @@
         所以我把这个选项隐藏在开发者模式后面，启用这个后由您自己承担风险!
     </string>
     <string name="dev_mode_enabled">开发者模式开启</string>
+    <string name="dev_mode_disabled">开发者模式关闭</string>
     <string name="force_english_pref">强制设定语言为英语</string>
     <string name="disable_low_quality_module_filter_pref">禁用低质量模块过滤器</string>
     <string name="disable_low_quality_module_filter_desc">
@@ -128,4 +133,21 @@
     <string name="backup_module_list">备份模块</string>
     <string name="restore_module_list">还原模块</string>
     <string name="require_internet">此操作需要互联网连接</string>
+
+    <!-- Background Notification translation -->
+    <string name="notification_update_title">发现 %i 个模块更新</string>
+    <string name="notification_update_title_easter_egg">嗅探 %i 个模块更新</string>
+    <string name="notification_update_subtitle">点击打开应用</string>
+    <string name="notification_update_pref">后台模块更新检查</string>
+    <string name="notification_update_desc">可能会增加电池使用量</string>
+    <string name="notification_update_debug_pref">测试通知</string>
+
+    <!-- Set to true in translation file if your language is right to left -->
+    <bool name="lang_support_rtl">false</bool>
+    <!-- Always copy language_support_level when translating -->
+    <integer name="language_support_level">1</integer>
+    <string name="language_support_outdated">当前语言的一些翻译不是最新的，
+        请考虑为 GitHub 上的应用程序翻译做出贡献</string>
+    <!-- Replace with your own username when translating -->
+    <string name="language_translated_by">由ender-zhao翻译</string>
 </resources>
