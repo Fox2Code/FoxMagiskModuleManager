@@ -27,6 +27,7 @@
     <string name="description">Descrizione</string>
     <string name="uninstall">Disinstalla</string>
     <string name="config">Configurazione</string>
+    <string name="favourite">Preferito</string>
     <string name="report_bugs">Segnala bug</string>
     <string name="submit_modules">Invia un modulo</string>
     <string name="require_android_6">Richiede Android 6.0+</string>
@@ -93,16 +94,17 @@
         per questo l\'opzione è disponibile solo in modalità sviluppatore, abilita a tuo rischio e pericolo!
     </string>
     <string name="dev_mode_enabled">Modalità sviluppatore attivata</string>
+    <string name="dev_mode_disabled">Modalità sviluppatore disattivata</string>
     <string name="force_english_pref">Forza la lingua inglese</string>
     <string name="disable_low_quality_module_filter_pref">Disabilita il filtro qualità per i moduli</string>
     <string name="disable_low_quality_module_filter_desc">
         Alcuni moduli non forniscono correttamente i loro metadati,causando errori grafici,
         e/o indicando bassa qualità.\nDisabilita a tuo rischio e pericolo!
     </string>
-    <string name="dns_over_https_pref">DNS over HTTPS</string>
+    <string name="dns_over_https_pref">DNS sostituisce HTTPS</string>
     <string name="dns_over_https_desc">
         Potrebbe risolvere problemi di connessione in alcuni casi.
-        (Non si applica a WebView.)
+        (Non si applica a WebView)
     </string>
     <string name="disable_extensions_pref">No Mmm</string>
     <string name="disable_extensions_desc">
@@ -125,8 +127,12 @@
     <string name="require_internet">Questa operazione richiede una connessione ad internet</string>
     
     <!-- Background Notification translation -->
-    <string name="notification_update_desc">Può aumentare il consumo della batteria</string>
+    <string name="notification_update_title">Trovato %i aggiornamenti del modulo</string>
+    <string name="notification_update_title_easter_egg">Aggiornamenti del modulo %i rilevati</string>
+    <string name="notification_update_subtitle">Fare clic per aprire l\'app</string>
     <string name="notification_update_pref">Controllo aggiornamento moduli in background</string>
+    <string name="notification_update_desc">Può aumentare il consumo della batteria</string>
+    <string name="notification_update_debug_pref">Notifica di prova</string>
     
     <!-- Always copy language_support_level when translating -->
     <string name="language_support_outdated">Alcune traduzioni per la lingua corrente non sono aggiornate, ti preghiamo di considerare di contribuire alle traduzioni dell\'app su GitHub</string>
