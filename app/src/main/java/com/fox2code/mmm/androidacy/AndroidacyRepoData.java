@@ -58,7 +58,7 @@ public class AndroidacyRepoData extends RepoData {
         this.defaultName = "Androidacy Modules Repo";
         this.defaultWebsite = RepoManager.ANDROIDACY_MAGISK_REPO_HOMEPAGE;
         this.defaultSupport = "https://t.me/androidacy_discussions";
-        this.defaultDonate = "https://patreon.com/androidacy";
+        this.defaultDonate = "https://www.androidacy.com/membership-join/?utm_source=foxmmm&utm-medium=app&utm_campaign=fox-inapp";
         this.defaultSubmitModule = "https://www.androidacy.com/module-repository-applications/";
         this.host = testMode ? "staging-api.androidacy.com" : "api.androidacy.com";
         this.testMode = testMode;
@@ -83,6 +83,7 @@ public class AndroidacyRepoData extends RepoData {
     @Override
     protected boolean prepare() {
         // Implementation details discussed on telegram
+        // DEPRECATED. Please switch to new implementation before v7 hits production
         long time = System.currentTimeMillis();
         if (this.androidacyBlockade > time) return false;
         this.androidacyBlockade = time + 30_000L;
