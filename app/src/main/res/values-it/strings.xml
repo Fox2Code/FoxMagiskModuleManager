@@ -10,7 +10,7 @@
     <string name="failed_download">Scaricamento del file non riuscito.</string>
     <string name="slow_modules">L\'avvio dei moduli è lento, prova a disabilitarne alcuni</string>
     <string name="fail_internet">Impossibile connettersi a internet</string>
-    <string name="no_web_view">Impossibile aprire la WebView di sistema</string>
+    <string name="no_web_view">Impossibile aprire il WebView di sistema</string>
     <string name="title_activity_settings">Impostazione attività</string>
     <string name="app_update_available">Aggiornamento disponibile</string>
     <string name="app_update">Aggiornamento</string>
@@ -27,13 +27,21 @@
     <string name="description">Descrizione</string>
     <string name="uninstall">Disinstalla</string>
     <string name="config">Configurazione</string>
+    <string name="favourite">Preferito</string>
+    <string name="report_bugs">Segnala problemi</string>
+    <string name="sniffed_modules">Moduli trovati</string>
+    <string name="sniffing_modules">Cerco Moduli</string>
     <string name="submit_modules">Invia un modulo</string>
     <string name="require_android_6">Richiede Android 6.0+</string>
     <string name="require_android_12">Richiede Android 12+</string>
     <string name="install_terminal_reboot_now">Riavvia</string>
     <string name="language">Lingua</string>
+    <string name="yes" translatable="false">@android:string/yes</string>
+    <string name="no" translatable="false">@android:string/no</string>
+    <string name="ok" translatable="false">@android:string/ok</string>
+    <string name="cancel" translatable="false">@android:string/cancel</string>
 
-    <!-- Module section translation -->
+    <!-- Traduzione della sezione del modulo -->
     <string name="module_last_update">Ultimo aggiornamento:</string>
     <string name="module_repo">Repo:</string>
     <string name="module_by">da</string>
@@ -47,8 +55,8 @@
     <string name="module_min_sdk_chip">Min. Android</string>
     <string name="module_max_sdk_chip">Max. Android</string>
 
-    <!-- Preference Titles -->
-    <!-- Note: Lockdown mode used to be called showcase mode -->
+    <!-- Preferenze Titoli -->
+    <!-- Nota: la modalità di blocco era chiamata modalità vetrina -->
     <string name="manage_repos_pref">Gestisci repository</string>
     <string name="showcase_mode_pref">Modalità protetta</string>
     <string name="showcase_mode_desc">La modalità protetta impedisce la modifica dei moduli da parte del gestore</string>
@@ -75,7 +83,7 @@
     <string name="theme_pref">Tema</string>
     <string name="theme_mode_pref">Modalità tema</string>
     <string name="module_id_prefix">Id del modulo: </string>
-    <string name="install_from_storage">Installa un modulo dalla memoria di archiviazione</string>
+    <string name="install_from_storage">Installa un modulo dal dispositivo</string>
     <string name="invalid_format">Il modulo selezionato ha un formato non valido</string>
     <string name="low_quality_module">Modulo qualità-bassa</string>
     <string name="local_install_title">Installazione locale</string>
@@ -92,27 +100,26 @@
         per questo l\'opzione è disponibile solo in modalità sviluppatore, abilita a tuo rischio e pericolo!
     </string>
     <string name="dev_mode_enabled">Modalità sviluppatore attivata</string>
+    <string name="dev_mode_disabled">Modalità sviluppatore disattivata</string>
     <string name="force_english_pref">Forza la lingua inglese</string>
     <string name="disable_low_quality_module_filter_pref">Disabilita il filtro qualità per i moduli</string>
     <string name="disable_low_quality_module_filter_desc">
         Alcuni moduli non forniscono correttamente i loro metadati,causando errori grafici,
         e/o indicando bassa qualità.\nDisabilita a tuo rischio e pericolo!
     </string>
-    <string name="dns_over_https_pref">DNS over HTTPS</string>
+    <string name="dns_over_https_pref">DNS sostituisce HTTPS</string>
     <string name="dns_over_https_desc">
-        Potrebbe risolvere porblemi di connessione in alcuni casi.
-        (Non si applica alla WebView.)
+        Potrebbe risolvere problemi di connessione in alcuni casi.
+        (Non si applica a WebView)
     </string>
     <string name="disable_extensions_pref">No Mmm</string>
     <string name="disable_extensions_desc">
         Disattiva le estensioni di Fox Mmm, impedendo ai moduli di usare
         le estensioni per il terminale.\nUtile se un modulo abusa le estensioni di Fox Mmm.
     </string>
-    <string name="wrap_text_pref">Avvolgimento del testo</string>
+    <string name="wrap_text_pref">Testo a capo</string>
     <string name="wrap_text_desc">
-        Mostra il testo su righee multiple invece che mettere
-        tutto il testo sulla stessa riga quando si installa un modulo.
-    </string>
+        Mostra il testo su più righe\nEvita di mettere tutto il testo in una sola riga quando si installa un modulo.</string>
     <string name="enable_blur_pref">Sfocatura</string>
     <string name="disable_chips_in_description">Disabilita i chip nella descrizione</string>
     <string name="repo_enabled">Repository attiva</string>
@@ -120,8 +127,26 @@
     <string name="add_repo">Aggiungi Repository</string>
     <string name="remove_repo">Rimuovi Repository</string>
     <string name="custom_url">Url personalizzato</string>
-    <string name="androidacy_repo_info">La repository di Androidacy contiene pubblicità e trackers.</string>
+    <string name="androidacy_repo_info">La repository di Androidacy contiene pubblicità e tracker.</string>
     <string name="backup_module_list">Salva moduli</string>
     <string name="restore_module_list">Ripristina moduli</string>
     <string name="require_internet">Questa operazione richiede una connessione ad internet</string>
+    
+    <!-- Traduzione della notifica in background -->
+    <string name="notification_update_title">Trovato %i aggiornamenti del modulo</string>
+    <string name="notification_update_title_easter_egg">Aggiornamenti del modulo %i rilevati</string>
+    <string name="notification_update_subtitle">Fare clic per aprire l\'app</string>
+    <string name="notification_update_pref">Controllo aggiornamento moduli in background</string>
+    <string name="notification_update_desc">Può aumentare il consumo della batteria</string>
+    <string name="notification_update_debug_pref">Notifica di prova</string>
+    
+    <!-- Imposta su true nel file di traduzione se la tua lingua è da destra a sinistra -->
+    <bool name="lang_support_rtl">false</bool>
+	
+    <!-- Copia sempre language_support_level durante la traduzione -->
+    <integer name="language_support_level">1</integer>
+    <string name="language_support_outdated">Alcune traduzioni per la lingua corrente non sono aggiornate, ti preghiamo di considerare di contribuire alle traduzioni dell\'app su GitHub</string>
+    
+	<!-- Sostituisci con il tuo nome utente durante la traduzione -->
+    <string name="language_translated_by">Traduzione di tugaia56</string>
 </resources>
