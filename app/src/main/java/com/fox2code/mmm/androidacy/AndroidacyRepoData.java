@@ -191,11 +191,11 @@ public class AndroidacyRepoData extends RepoData {
                     jsonObject.optString("notesUrl", ""));
             if (repoModule.zipUrl == null)  {
                 repoModule.zipUrl = // Fallback url in case the API doesn't have zipUrl
-                        "https://" + this.host + "/magisk/info/?module=" + moduleId;
+                        "https://" + this.host + "/magisk/info/" + moduleId;
             }
             if (repoModule.notesUrl == null) {
                 repoModule.notesUrl = // Fallback url in case the API doesn't have notesUrl
-                        "https://" + this.host + "/magisk/readme/?module=" + moduleId;
+                        "https://" + this.host + "/magisk/readme/" + moduleId;
             }
             repoModule.zipUrl = this.injectToken(repoModule.zipUrl);
             repoModule.notesUrl = this.injectToken(repoModule.notesUrl);
