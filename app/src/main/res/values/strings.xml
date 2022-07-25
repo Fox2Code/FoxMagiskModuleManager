@@ -133,6 +133,8 @@
     <string name="backup_module_list">Backup modules</string>
     <string name="restore_module_list">Restore modules</string>
     <string name="require_internet">This operation require an internet connection</string>
+    <string name="androidacy_test_mode_pref">Androidacy test mode</string>
+    <string name="androidacy_test_mode_desc">Use staging Androidacy Endpoint instead of release endpoint. (Require app process restart)</string>
 
     <!-- Background Notification translation -->
     <string name="notification_update_title">Found %i module updates</string>

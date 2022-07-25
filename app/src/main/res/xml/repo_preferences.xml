@@ -59,6 +59,13 @@
             app:icon="@drawable/ic_baseline_upload_file_24"
             app:title="@string/submit_modules"
             app:singleLineTitle="false" />
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="pref_androidacy_test_mode"
+            app:icon="@drawable/ic_baseline_bug_report_24"
+            app:title="@string/androidacy_test_mode_pref"
+            app:summary="@string/androidacy_test_mode_desc"
+            app:singleLineTitle="false"	/>
         <Preference
             app:key="pref_androidacy_ads_disclaimer"
             app:icon="@drawable/ic_baseline_info_24"

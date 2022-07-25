@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.XHooks;
 import com.fox2code.mmm.androidacy.AndroidacyRepoData;
@@ -37,6 +38,8 @@ public final class RepoManager {
 
     public static final String ANDROIDACY_MAGISK_REPO_ENDPOINT =
             "https://api.androidacy.com/magisk/repo";
+    public static final String ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT =
+            "https://staging-api.androidacy.com/magisk/repo";
     public static final String ANDROIDACY_MAGISK_REPO_HOMEPAGE =
             "https://www.androidacy.com/modules-repo";
 
@@ -125,11 +128,18 @@ public final class RepoManager {
     }
 
     public RepoData addOrGet(String url, String fallBackName) {
+        if (MAGISK_ALT_REPO_JSDELIVR.equals(url))
+            url = MAGISK_ALT_REPO;
+        if (DG_MAGISK_REPO.equals(url))
+            url = DG_MAGISK_REPO_GITHUB;
         RepoData repoData;
         synchronized (this.repoUpdateLock) {
             repoData = this.repoData.get(url);
             if (repoData == null) {
-                if (ANDROIDACY_MAGISK_REPO_ENDPOINT.equals(url)) {
+                if (ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT.equals(url) ||
+                        ANDROIDACY_MAGISK_REPO_ENDPOINT.equals(url)) {
+                    if (this.androidacyRepoData != null)
+                        return this.androidacyRepoData;
                     return this.addAndroidacyRepoData();
                 } else {
                     return this.addRepoData(url, fallBackName);
@@ -276,6 +286,7 @@ public final class RepoManager {
             case MAGISK_ALT_REPO_JSDELIVR:
                 return "magisk_alt_repo";
             case ANDROIDACY_MAGISK_REPO_ENDPOINT:
+            case ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT:
                 return "androidacy_repo";
             case DG_MAGISK_REPO:
             case DG_MAGISK_REPO_GITHUB:
@@ -291,6 +302,7 @@ public final class RepoManager {
             case RepoManager.MAGISK_ALT_REPO:
             case RepoManager.MAGISK_ALT_REPO_JSDELIVR:
             case RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT:
+            case RepoManager.ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT:
             case RepoManager.DG_MAGISK_REPO:
             case RepoManager.DG_MAGISK_REPO_GITHUB:
                 return true;
@@ -299,10 +311,6 @@ public final class RepoManager {
     }
 
     private RepoData addRepoData(String url, String fallBackName) {
-        if (MAGISK_ALT_REPO_JSDELIVR.equals(url))
-            url = MAGISK_ALT_REPO;
-        if (DG_MAGISK_REPO.equals(url))
-            url = DG_MAGISK_REPO_GITHUB;
         String id = internalIdOfUrl(url);
         File cacheRoot = new File(this.mainApplication.getCacheDir(), id);
         SharedPreferences sharedPreferences = this.mainApplication
@@ -335,9 +343,10 @@ public final class RepoManager {
         File cacheRoot = new File(this.mainApplication.getCacheDir(), "androidacy_repo");
         SharedPreferences sharedPreferences = this.mainApplication
                 .getSharedPreferences("mmm_androidacy_repo", Context.MODE_PRIVATE);
-        AndroidacyRepoData repoData = new AndroidacyRepoData(
-                ANDROIDACY_MAGISK_REPO_ENDPOINT, cacheRoot, sharedPreferences);
+        AndroidacyRepoData repoData = new AndroidacyRepoData(cacheRoot,
+                sharedPreferences, MainApplication.isAndroidacyTestMode());
         this.repoData.put(ANDROIDACY_MAGISK_REPO_ENDPOINT, repoData);
+        this.repoData.put(ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT, repoData);
         return repoData;
     }
 

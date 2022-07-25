@@ -76,7 +76,7 @@ public class AndroidacyActivity extends FoxActivity {
             this.forceBackPressed();
             return;
         }
-        if (!url.endsWith(AndroidacyUtil.REFERRER)) {
+        if (!url.contains(AndroidacyUtil.REFERRER)) {
             if (url.lastIndexOf('/') < url.lastIndexOf('?')) {
                 url = url + '&' + AndroidacyUtil.REFERRER;
             } else {

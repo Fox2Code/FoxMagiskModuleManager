@@ -158,6 +158,11 @@ public class MainApplication extends FoxApplication
         return getSharedPreferences().getBoolean("pref_background_update_check", true);
     }
 
+    public static boolean isAndroidacyTestMode() {
+        return isDeveloper() &&
+                getSharedPreferences().getBoolean("pref_androidacy_test_mode", false);
+    }
+
     public static boolean isFirstBoot() {
         return firstBoot;
     }

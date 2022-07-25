@@ -4,6 +4,8 @@ import android.content.SharedPreferences;
 import android.util.Log;
 import android.webkit.CookieManager;
 
+import androidx.annotation.NonNull;
+
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.repo.RepoData;
@@ -40,11 +42,14 @@ public class AndroidacyRepoData extends RepoData {
     // Avoid spamming requests to Androidacy
     private long androidacyBlockade = 0;
     private String token = null;
+    private final boolean testMode;
+    private final String host;
 
-    public AndroidacyRepoData(String url, File cacheRoot,
-                                 SharedPreferences cachedPreferences) {
-        super(url, cacheRoot, cachedPreferences);
-        if (this.metaDataCache.exists()) {
+    public AndroidacyRepoData(File cacheRoot, SharedPreferences cachedPreferences,
+                              boolean testMode) {
+        super(testMode ? RepoManager.ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT :
+                RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT, cacheRoot, cachedPreferences);
+        if (this.metaDataCache.exists() && !testMode) {
             this.androidacyBlockade = this.metaDataCache.lastModified() + 30_000L;
             if (this.androidacyBlockade - 60_000L > System.currentTimeMillis()) {
                 this.androidacyBlockade = 0; // Don't allow time travel. Well why not???
@@ -55,6 +60,8 @@ public class AndroidacyRepoData extends RepoData {
         this.defaultSupport = "https://t.me/androidacy_discussions";
         this.defaultDonate = "https://patreon.com/androidacy";
         this.defaultSubmitModule = "https://www.androidacy.com/module-repository-applications/";
+        this.host = testMode ? "staging-api.androidacy.com" : "api.androidacy.com";
+        this.testMode = testMode;
     }
 
     private static String getCookies() {
@@ -89,7 +96,7 @@ public class AndroidacyRepoData extends RepoData {
         }
         if (token != null) {
             try {
-                Http.doHttpGet("https://api.androidacy.com/auth/me?token=" + token, true);
+                Http.doHttpGet("https://" + this.host + "/auth/me?token=" + token, true);
             } catch (Exception e) {
                 if ("Received error code: 419".equals(e.getMessage()) ||
                         "Received error code: 429".equals(e.getMessage())) {
@@ -113,7 +120,7 @@ public class AndroidacyRepoData extends RepoData {
             try {
                 Log.i(TAG, "Refreshing token...");
                 token = new String(Http.doHttpPost(
-                        "https://api.androidacy.com/auth/register",
+                        "https://" + this.host + "/auth/register",
                         "",true), StandardCharsets.UTF_8);
                 if (Http.hasWebView()) {
                     CookieManager.getInstance().setCookie("https://.androidacy.com/",
@@ -184,11 +191,11 @@ public class AndroidacyRepoData extends RepoData {
                     jsonObject.optString("notesUrl", ""));
             if (repoModule.zipUrl == null)  {
                 repoModule.zipUrl = // Fallback url in case the API doesn't have zipUrl
-                        "https://api.androidacy.com/magisk/info/?module=" + moduleId;
+                        "https://" + this.host + "/magisk/info/?module=" + moduleId;
             }
             if (repoModule.notesUrl == null) {
                 repoModule.notesUrl = // Fallback url in case the API doesn't have notesUrl
-                        "https://api.androidacy.com/magisk/readme/?module=" + moduleId;
+                        "https://" + this.host + "/magisk/readme/?module=" + moduleId;
             }
             repoModule.zipUrl = this.injectToken(repoModule.zipUrl);
             repoModule.notesUrl = this.injectToken(repoModule.notesUrl);
@@ -285,5 +292,11 @@ public class AndroidacyRepoData extends RepoData {
             }
         }
         return url;
+    }
+
+    @NonNull
+    @Override
+    public String getName() {
+        return this.testMode ? super.getName() + " (Test Mode)" : super.getName();
     }
 }

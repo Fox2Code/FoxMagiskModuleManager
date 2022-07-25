@@ -325,6 +325,10 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             setRepoData(RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT);
             setRepoData(RepoManager.DG_MAGISK_REPO_GITHUB);
             updateCustomRepoList(true);
+            if (!MainApplication.isDeveloper()) {
+                Objects.requireNonNull((Preference) findPreference(
+                        "pref_androidacy_test_mode")).setVisible(false);
+            }
         }
 
         @SuppressLint("RestrictedApi")
