@@ -251,7 +251,8 @@ public class AndroidacyActivity extends FoxActivity {
                                             String realUrl = Http.doHttpPostRedirect(downloadUrl,
                                                     jsonObject.toString(), true);
                                             if (downloadUrl.equals(realUrl)) {
-                                                Log.e(TAG, "Failed to resolve URL");
+                                                Log.e(TAG, "Failed to resolve URL from " +
+                                                        downloadUrl);
                                                 return;
                                             }
                                             Log.i(TAG, "Got url: " + realUrl);
