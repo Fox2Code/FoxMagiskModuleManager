@@ -282,9 +282,9 @@ public class AndroidacyActivity extends FoxActivity {
                 IntentHelper.openCustomTab(this, downloadUrl);
             }
         });
+        this.androidacyWebAPI = new AndroidacyWebAPI(this, allowInstall);
         XHooks.onWebViewInitialize(this.webView, allowInstall);
-        this.webView.addJavascriptInterface(androidacyWebAPI =
-                new AndroidacyWebAPI(this, allowInstall), "mmm");
+        this.webView.addJavascriptInterface(this.androidacyWebAPI, "mmm");
         if (compatLevel != 0) androidacyWebAPI.notifyCompatModeRaw(compatLevel);
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Accept-Language", this.getResources()
