@@ -37,6 +37,8 @@ import java.nio.charset.StandardCharsets;
 
 @Keep
 public class AndroidacyWebAPI {
+    public static final int COMPAT_UNSUPPORTED = 0;
+    public static final int COMPAT_DOWNLOAD = 1;
     private static final String TAG = "AndroidacyWebAPI";
     private static final int MAX_COMPAT_MODE = 1;
     private final AndroidacyActivity activity;
@@ -46,6 +48,8 @@ public class AndroidacyWebAPI {
     boolean downloadMode;
     int effectiveCompatMode;
     int notifiedCompatMode;
+    String nonceToken;
+    Runnable nonceTask;
 
     public AndroidacyWebAPI(AndroidacyActivity activity, boolean allowInstall) {
         this.activity = activity;
@@ -505,15 +509,25 @@ public class AndroidacyWebAPI {
         }
     }
 
+    @JavascriptInterface
+    public void setNonceToken(String nonceToken) {
+        this.nonceToken = nonceToken;
+        Runnable nonceTask = this.nonceTask;
+        if (nonceTask != null) {
+            this.nonceTask = null;
+            nonceTask.run();
+        }
+    }
+
     // Androidacy feature level declaration method
 
     @JavascriptInterface
     public void notifyCompatUnsupported() {
-        this.notifyCompatModeRaw(0);
+        this.notifyCompatModeRaw(COMPAT_UNSUPPORTED);
     }
 
     @JavascriptInterface
     public void notifyCompatDownloadButton() {
-        this.notifyCompatModeRaw(1);
+        this.notifyCompatModeRaw(COMPAT_DOWNLOAD);
     }
 }

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.XHooks;
 import com.fox2code.mmm.androidacy.AndroidacyRepoData;
@@ -92,7 +91,11 @@ public final class RepoManager {
         this.androidacyRepoData = this.addAndroidacyRepoData();
         this.customRepoManager = new CustomRepoManager(mainApplication, this);
         // Populate default cache
+        boolean x = false;
         for (RepoData repoData:this.repoData.values()) {
+            if (repoData == this.androidacyRepoData) {
+                if (x) return; x = true;
+            }
             this.populateDefaultCache(repoData);
         }
         this.initialized = true;
@@ -319,12 +322,12 @@ public final class RepoManager {
                 new CustomRepoData(url, cacheRoot, sharedPreferences) :
                 new RepoData(url, cacheRoot, sharedPreferences);
         if (fallBackName != null && !fallBackName.isEmpty()) {
+            repoData.defaultName = fallBackName;
             if (repoData instanceof CustomRepoData) {
                 ((CustomRepoData) repoData).loadedExternal = true;
                 this.customRepoManager.dirty = true;
                 repoData.updateEnabledState();
             }
-            repoData.defaultName = fallBackName;
         }
         switch (url) {
             case MAGISK_REPO:

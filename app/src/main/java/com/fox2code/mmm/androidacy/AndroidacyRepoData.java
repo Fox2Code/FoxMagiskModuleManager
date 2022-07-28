@@ -29,7 +29,7 @@ import okhttp3.Cookie;
 import okhttp3.HttpUrl;
 
 @SuppressWarnings("KotlinInternalInJava")
-public class AndroidacyRepoData extends RepoData {
+public final class AndroidacyRepoData extends RepoData {
     private static final String TAG = "AndroidacyRepoData";
     private static final HttpUrl OK_HTTP_URL;
     static {
@@ -284,6 +284,10 @@ public class AndroidacyRepoData extends RepoData {
         // Do not inject token for non Androidacy urls
         if (!AndroidacyUtil.isAndroidacyLink(url))
             return url;
+        if (this.testMode && url.startsWith("https://api.androidacy.com/")) {
+            Log.e(TAG, "Got non test mode url: " + AndroidacyUtil.hideToken(url));
+            url = "https://staging-api.androidacy.com/" + url.substring(27);
+        }
         String token = "token=" + this.token;
         if (!url.contains(token)) {
             if (url.lastIndexOf('/') < url.lastIndexOf('?')) {
@@ -299,5 +303,9 @@ public class AndroidacyRepoData extends RepoData {
     @Override
     public String getName() {
         return this.testMode ? super.getName() + " (Test Mode)" : super.getName();
+    }
+
+    String getToken() {
+        return this.token;
     }
 }

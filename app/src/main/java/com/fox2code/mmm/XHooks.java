@@ -8,7 +8,6 @@ import android.webkit.WebView;
 import androidx.annotation.Keep;
 
 import com.fox2code.mmm.manager.ModuleManager;
-import com.fox2code.mmm.repo.RepoData;
 import com.fox2code.mmm.repo.RepoManager;
 
 /**

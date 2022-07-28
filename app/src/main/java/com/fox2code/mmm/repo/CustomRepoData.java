@@ -10,7 +10,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 public final class CustomRepoData extends RepoData {
     boolean loadedExternal;

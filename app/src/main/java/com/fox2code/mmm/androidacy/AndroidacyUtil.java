@@ -23,4 +23,18 @@ public class AndroidacyUtil {
                 url.substring(8, i).endsWith(".androidacy.com") &&
                         uri.getHost().endsWith(".androidacy.com");
     }
+
+    // Avoid logging token
+    public static String hideToken(@NonNull String url) {
+        int i = url.lastIndexOf("token=");
+        if (i == -1) return url;
+        int i2 = url.indexOf('&', i);
+        if (i2 == -1) {
+            return url.substring(0, i + 6) +
+                    "<token>";
+        } else {
+            return url.substring(0, i + 6) +
+                    "<token>" + url.substring(i2);
+        }
+    }
 }

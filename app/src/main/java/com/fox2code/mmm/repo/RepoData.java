@@ -47,10 +47,9 @@ public class RepoData extends XRepo {
         this.cachedPreferences = cachedPreferences;
         this.metaDataCache = new File(cacheRoot, "modules.json");
         this.moduleHashMap = new HashMap<>();
-        this.name = this.url; // Set url as default name
+        this.defaultName = url; // Set url as default name
         this.enabled = !this.isLimited() && MainApplication.getSharedPreferences()
                 .getBoolean("pref_" + this.id + "_enabled", this.isEnabledByDefault());
-        this.defaultName = url;
         this.defaultWebsite = "https://" + Uri.parse(url).getHost() + "/";
         if (!this.cacheRoot.isDirectory()) {
             this.cacheRoot.mkdirs();

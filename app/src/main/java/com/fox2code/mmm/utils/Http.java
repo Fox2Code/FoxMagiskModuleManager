@@ -2,7 +2,6 @@ package com.fox2code.mmm.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Build;
 import android.system.ErrnoException;
 import android.system.Os;
@@ -55,6 +54,8 @@ public class Http {
     private static final OkHttpClient httpClientDoH;
     private static final OkHttpClient httpClientWithCache;
     private static final OkHttpClient httpClientWithCacheDoH;
+    private static final OkHttpClient httpClientNoRedirect;
+    private static final OkHttpClient httpClientNoRedirectDoH;
     private static final FallBackDNS fallbackDNS;
     private static final CookieJar cookieJar;
     private static final String androidacyUA;
@@ -152,22 +153,34 @@ public class Http {
         hasWebView = cookieManager != null;
         httpclientBuilder.cookieJar(cookieJar = new CDNCookieJar(cookieManager));
         httpclientBuilder.dns(Dns.SYSTEM);
-        httpClient = httpclientBuilder.build();
+        httpClient = followRedirects(httpclientBuilder, true).build();
+        httpClientNoRedirect = followRedirects(httpclientBuilder, false).build();
         httpclientBuilder.dns(fallbackDNS);
-        httpClientDoH = httpclientBuilder.build();
+        httpClientDoH = followRedirects(httpclientBuilder, true).build();
+        httpClientNoRedirectDoH = followRedirects(httpclientBuilder, false).build();
         httpclientBuilder.cache(new Cache(
                 new File(mainApplication.getCacheDir(), "http_cache"),
                 16L * 1024L * 1024L)); // 16Mib of cache
         httpclientBuilder.dns(Dns.SYSTEM);
-        httpClientWithCache = httpclientBuilder.build();
+        httpClientWithCache = followRedirects(httpclientBuilder, true).build();
         httpclientBuilder.dns(fallbackDNS);
-        httpClientWithCacheDoH = httpclientBuilder.build();
+        httpClientWithCacheDoH = followRedirects(httpclientBuilder, true).build();
         Log.i(TAG, "Initialized Http successfully!");
         doh = MainApplication.isDohEnabled();
     }
 
+    private static OkHttpClient.Builder followRedirects(
+            OkHttpClient.Builder builder, boolean followRedirects) {
+        return builder.followRedirects(followRedirects)
+                .followSslRedirects(followRedirects);
+    }
+
     public static OkHttpClient getHttpClient() {
         return doh ? httpClientDoH : httpClient;
+    }
+
+    public static OkHttpClient getHttpClientNoRedirect() {
+        return doh ? httpClientNoRedirectDoH : httpClientNoRedirect;
     }
 
     public static OkHttpClient getHttpClientWithCache() {
@@ -194,15 +207,29 @@ public class Http {
     }
 
     public static byte[] doHttpPost(String url,String data,boolean allowCache) throws IOException {
-        Response response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(
+        return (byte[]) doHttpPostRaw(url, data, allowCache, false);
+    }
+
+    public static String doHttpPostRedirect(String url, String data, boolean allowCache) throws IOException {
+        return (String) doHttpPostRaw(url, data, allowCache, true);
+    }
+
+    private static Object doHttpPostRaw(String url,String data, boolean allowCache,
+                                          boolean isRedirect) throws IOException {
+        Response response = (isRedirect ? getHttpClientNoRedirect() :
+                allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(
                 new Request.Builder().url(url).post(JsonRequestBody.from(data))
                         .header("Content-Type", "application/json").build()
         ).execute();
+        if (isRedirect && response.isRedirect()) {
+            return response.request().url().uri().toString();
+        }
         // 200/204 == success, 304 == cache valid
         if (response.code() != 200 && response.code() != 204 &&
                 (response.code() != 304 || !allowCache)) {
             throw new IOException("Received error code: "+ response.code());
         }
+        if (isRedirect) return url;
         ResponseBody responseBody = response.body();
         // Use cache api if used cached response
         if (responseBody == null && response.code() == 304) {
