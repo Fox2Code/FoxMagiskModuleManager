@@ -20,13 +20,14 @@ import java.util.HashMap;
 
 // See https://docs.github.com/en/rest/reference/repos#releases
 public class AppUpdateManager {
-    public static int FLAG_COMPAT_LOW_QUALITY = 0x01;
-    public static int FLAG_COMPAT_NO_EXT      = 0x02;
-    public static int FLAG_COMPAT_MAGISK_CMD  = 0x04;
-    public static int FLAG_COMPAT_NEED_32BIT  = 0x08;
-    public static int FLAG_COMPAT_MALWARE     = 0x10;
-    public static int FLAG_COMPAT_NO_ANSI     = 0x20;
-    public static int FLAG_COMPAT_FORCE_ANSI  = 0x40;
+    public static final int FLAG_COMPAT_LOW_QUALITY = 0x01;
+    public static final int FLAG_COMPAT_NO_EXT      = 0x02;
+    public static final int FLAG_COMPAT_MAGISK_CMD  = 0x04;
+    public static final int FLAG_COMPAT_NEED_32BIT  = 0x08;
+    public static final int FLAG_COMPAT_MALWARE     = 0x10;
+    public static final int FLAG_COMPAT_NO_ANSI     = 0x20;
+    public static final int FLAG_COMPAT_FORCE_ANSI  = 0x40;
+    public static final int FLAG_COMPAT_FORCE_HIDE  = 0x80;
     private static final String TAG = "AppUpdateManager";
     private static final AppUpdateManager INSTANCE = new AppUpdateManager();
     private static final String RELEASES_API_URL =
@@ -209,6 +210,9 @@ public class AppUpdateManager {
                     case "forceANSI":
                         value |= FLAG_COMPAT_FORCE_ANSI;
                         break;
+                    case "forceHide":
+                        value |= FLAG_COMPAT_FORCE_HIDE;
+                        break;
                 }
             }
             compatDataId.put(line.substring(0, i), value);
@@ -222,5 +226,13 @@ public class AppUpdateManager {
 
     public static int getFlagsForModule(String moduleId) {
         return INSTANCE.getCompatibilityFlags(moduleId);
+    }
+
+    public static boolean shouldForceHide(String repoId) {
+        if (BuildConfig.DEBUG || repoId.startsWith("repo_") ||
+                repoId.equals("magisk_alt_repo")) return false;
+        return !repoId.startsWith("repo_") &&
+                (INSTANCE.getCompatibilityFlags(repoId) &
+                        FLAG_COMPAT_FORCE_HIDE) != 0;
     }
 }

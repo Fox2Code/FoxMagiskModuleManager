@@ -182,6 +182,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 if (RepoManager.getINSTANCE().getCustomRepoManager().needUpdate()) {
                     Log.w(TAG, "Need update on create?");
                 }
+                AppUpdateManager.getAppUpdateManager().checkUpdateCompat();
                 RepoManager.getINSTANCE().update(value -> runOnUiThread(max == 0 ? () ->
                         progressIndicator.setProgressCompat(
                                 (int) (value * PRECISION), true) :() ->
@@ -194,8 +195,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     AppUpdateManager appUpdateManager = AppUpdateManager.getAppUpdateManager();
                     if (BuildConfig.ENABLE_AUTO_UPDATER && appUpdateManager.checkUpdate(true))
                         moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
-                    if (!BuildConfig.ENABLE_AUTO_UPDATER || appUpdateManager.isLastCheckSuccess())
-                        AppUpdateManager.getAppUpdateManager().checkUpdateCompat();
                     if (max != 0) {
                         int current = 0;
                         for (LocalModuleInfo localModuleInfo :

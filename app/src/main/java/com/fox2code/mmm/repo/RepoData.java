@@ -5,6 +5,7 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
+import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
@@ -38,7 +39,7 @@ public class RepoData extends XRepo {
     protected String defaultName, defaultWebsite,
             defaultSupport, defaultDonate, defaultSubmitModule;
     public String name, website, support, donate, submitModule;
-    private boolean enabled; // Cache for speed
+    private boolean forceHide, enabled; // Cache for speed
 
     protected RepoData(String url, File cacheRoot, SharedPreferences cachedPreferences) {
         this.url = url;
@@ -48,7 +49,8 @@ public class RepoData extends XRepo {
         this.metaDataCache = new File(cacheRoot, "modules.json");
         this.moduleHashMap = new HashMap<>();
         this.defaultName = url; // Set url as default name
-        this.enabled = !this.isLimited() && MainApplication.getSharedPreferences()
+        this.forceHide = AppUpdateManager.shouldForceHide(this.id);
+        this.enabled = (!this.forceHide) && MainApplication.getSharedPreferences()
                 .getBoolean("pref_" + this.id + "_enabled", this.isEnabledByDefault());
         this.defaultWebsite = "https://" + Uri.parse(url).getHost() + "/";
         if (!this.cacheRoot.isDirectory()) {
@@ -189,13 +191,14 @@ public class RepoData extends XRepo {
 
     @Override
     public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+        this.enabled = enabled && !this.forceHide;
         MainApplication.getSharedPreferences().edit()
                 .putBoolean("pref_" + this.getPreferenceId() + "_enabled", enabled).apply();
     }
 
     public void updateEnabledState() {
-        this.enabled = MainApplication.getSharedPreferences()
+        this.forceHide = AppUpdateManager.shouldForceHide(this.id);
+        this.enabled = (!this.forceHide) && MainApplication.getSharedPreferences()
                 .getBoolean("pref_" + this.getPreferenceId() + "_enabled", this.isEnabledByDefault());
     }
 
@@ -250,5 +253,9 @@ public class RepoData extends XRepo {
         if (isNonNull(this.submitModule))
             return this.submitModule;
         return this.defaultSubmitModule;
+    }
+
+    public final boolean isForceHide() {
+        return this.forceHide;
     }
 }

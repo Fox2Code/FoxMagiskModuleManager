@@ -431,7 +431,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         }
 
         private void setRepoData(final RepoData repoData, String preferenceName) {
-            if (repoData == null) {
+            if (repoData == null || repoData.isForceHide()) {
                 hideRepoData(preferenceName);
                 return;
             }
