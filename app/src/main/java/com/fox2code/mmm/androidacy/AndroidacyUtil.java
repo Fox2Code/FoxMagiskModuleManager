@@ -29,6 +29,8 @@ public class AndroidacyUtil {
         int i = url.lastIndexOf("token=");
         if (i == -1) return url;
         int i2 = url.indexOf('&', i);
+        int i3 = url.indexOf(' ', i);
+        if (i3 != -1 && i3 < i2) i2 = i3;
         if (i2 == -1) {
             return url.substring(0, i + 6) +
                     "<token>";

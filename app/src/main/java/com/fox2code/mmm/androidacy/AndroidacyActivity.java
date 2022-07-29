@@ -13,6 +13,7 @@ import android.webkit.ConsoleMessage;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
@@ -38,13 +39,14 @@ import com.fox2code.mmm.utils.IntentHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
 /**
  * Per Androidacy repo implementation agreement, no request of this WebView shall be modified.
  */
-public class AndroidacyActivity extends FoxActivity {
+public final class AndroidacyActivity extends FoxActivity {
     private static final String TAG = "AndroidacyActivity";
 
     static {
@@ -147,6 +149,19 @@ public class AndroidacyActivity extends FoxActivity {
                 return false;
             }
 
+            @Nullable
+            @Override
+            public WebResourceResponse shouldInterceptRequest(
+                    WebView view, WebResourceRequest request) {
+                if (AndroidacyActivity.this.megaIntercept(
+                        this.pageUrl, request.getUrl().toString())) {
+                    // Block request as Androidacy doesn't allow duplicate requests
+                    return new WebResourceResponse("text/plain", "UTF-8",
+                            new ByteArrayInputStream(new byte[0]));
+                }
+                return null;
+            }
+
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 this.pageUrl = url;
@@ -224,18 +239,12 @@ public class AndroidacyActivity extends FoxActivity {
                 AndroidacyWebAPI androidacyWebAPI = this.androidacyWebAPI;
                 if (androidacyWebAPI != null) {
                     if (!androidacyWebAPI.downloadMode) {
+                        // Native module popup may cause download after consumed action
                         if (androidacyWebAPI.consumedAction)
-                            return; // Native module popup may cause download after consumed action
-                        int lenPrefix = 0;
-                        // Workaround WebView/Chromium bug
-                        for (String prefix : new String[]{
-                                "https://api.androidacy.com/magisk/download/",
-                                "https://staging-api.androidacy.com/magisk/download/"
-                        }) { // Make both staging and non staging act the same
-                            if (downloadUrl.startsWith(prefix)) lenPrefix = prefix.length();
-                        }
-                        if (lenPrefix != 0) {
-                            final String moduleId = downloadUrl.substring(lenPrefix);
+                            return;
+                        // Workaround Androidacy bug
+                        final String moduleId = moduleIdOfUrl(downloadUrl);
+                        if (moduleId != null) {
                             webView.evaluateJavascript("document.querySelector(" +
                                             "\"#download-form input[name=_token]\").value",
                                 result -> new Thread("Androidacy popup workaround thread") {
@@ -253,6 +262,8 @@ public class AndroidacyActivity extends FoxActivity {
                                             if (downloadUrl.equals(realUrl)) {
                                                 Log.e(TAG, "Failed to resolve URL from " +
                                                         downloadUrl);
+                                                AndroidacyActivity.this.megaIntercept(
+                                                        webView.getUrl(), downloadUrl);
                                                 return;
                                             }
                                             Log.i(TAG, "Got url: " + realUrl);
@@ -264,7 +275,8 @@ public class AndroidacyActivity extends FoxActivity {
                                     }
                                 }.start());
                             return;
-                        }
+                        } else if (this.megaIntercept(webView.getUrl(), downloadUrl))
+                            return;
                     }
                     androidacyWebAPI.consumedAction = true;
                     androidacyWebAPI.downloadMode = false;
@@ -312,5 +324,45 @@ public class AndroidacyActivity extends FoxActivity {
         } else if (this.androidacyWebAPI != null) {
             this.androidacyWebAPI.consumedAction = false;
         }
+    }
+
+    private String moduleIdOfUrl(String url) {
+        for (String prefix : new String[]{
+                "https://api.androidacy.com/magisk/download/",
+                "https://staging-api.androidacy.com/magisk/download/",
+                "https://api.androidacy.com/magisk/readme/",
+                "https://staging-api.androidacy.com/magisk/readme/",
+                "https://api.androidacy.com/magisk/info/",
+                "https://staging-api.androidacy.com/magisk/info/"
+        }) { // Make both staging and non staging act the same
+            int i = url.indexOf('?', prefix.length()); if (i == -1) i = url.length();
+            if (url.startsWith(prefix)) return url.substring(prefix.length(), i);
+        }
+        return null;
+    }
+
+    private boolean isFileUrl(String url) {
+        for (String prefix : new String[]{
+                "https://api.androidacy.com/magisk/file/",
+                "https://staging-api.androidacy.com/magisk/file/"
+        }) { // Make both staging and non staging act the same
+            if (url.startsWith(prefix)) return true;
+        }
+        return false;
+    }
+
+    private boolean megaIntercept(String pageUrl, String fileUrl) {
+        if (pageUrl == null || fileUrl == null) return false;
+        if (this.isFileUrl(fileUrl)) {
+            Log.d(TAG, "megaIntercept(" +
+                    AndroidacyUtil.hideToken(pageUrl) + ", " +
+                    AndroidacyUtil.hideToken(fileUrl) + ")");
+        }
+        final AndroidacyWebAPI androidacyWebAPI = this.androidacyWebAPI;
+        final String moduleId = this.moduleIdOfUrl(pageUrl);
+        if (moduleId == null || !this.isFileUrl(fileUrl)) return false;
+        androidacyWebAPI.openNativeModuleDialogRaw(fileUrl,
+                moduleId, "", androidacyWebAPI.canInstall());
+        return true;
     }
 }
