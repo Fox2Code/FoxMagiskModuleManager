@@ -2,16 +2,10 @@
 
 ## Fox Module contest
 
-If you publish a modules using ANSI color styling or FoxMMM extensions
-(see [`DEVELOPERS.md`](DEVELOPERS.md)) you can enter the contest to win 20€ via PayPal.
+[NoStorageRestrict](https://github.com/Magisk-Modules-Alt-Repo/NoStorageRestrict) 
+by [@DanGLES3](https://github.com/DanGLES3) won via vote in community telegram server.
 
-The winning module will also be displayed on this spot for at least 2 weeks.
-
-Note: The module install script must **not** be obfuscated and 
-be published on a repo supported by FoxMMM to be able to participate.
-
-The winner will be selected at the end of this month (July).  
-(Don't forget to join telegram to be sure I don't miss your module when selecting the winner)
+Module description: Removes the restriction when selecting folders (Downloads/Android) through the file manager on Android 11 and higher
 
 ## Join us on Telegram! 
 
