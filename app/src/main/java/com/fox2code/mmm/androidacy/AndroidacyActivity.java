@@ -254,8 +254,8 @@ public final class AndroidacyActivity extends FoxActivity {
                                         try {
                                             JSONObject jsonObject = new JSONObject();
                                             jsonObject.put("moduleId", moduleId);
-                                            jsonObject.put("token", RepoManager.getINSTANCE()
-                                                    .getAndroidacyRepoData().getToken());
+                                            jsonObject.put("token", AndroidacyRepoData
+                                                    .getInstance().getToken());
                                             jsonObject.put("_token", result);
                                             String realUrl = Http.doHttpPostRedirect(downloadUrl,
                                                     jsonObject.toString(), true);

@@ -80,6 +80,10 @@ public final class AndroidacyRepoData extends RepoData {
         }
     }
 
+    public static AndroidacyRepoData getInstance() {
+        return RepoManager.getINSTANCE().getAndroidacyRepoData();
+    }
+
     @Override
     protected boolean prepare() {
         // Implementation details discussed on telegram
@@ -307,5 +311,14 @@ public final class AndroidacyRepoData extends RepoData {
 
     String getToken() {
         return this.token;
+    }
+
+    void setToken(String token) {
+        if (Http.hasWebView()) {
+            CookieManager.getInstance().setCookie("https://.androidacy.com/",
+                    "USER=" + token + "; expires=Fri, 31 Dec 9999 23:59:59 GMT;" +
+                            " path=/; secure; domain=.androidacy.com");
+            this.token = token;
+        }
     }
 }

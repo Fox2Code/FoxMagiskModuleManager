@@ -48,8 +48,6 @@ public class AndroidacyWebAPI {
     boolean downloadMode;
     int effectiveCompatMode;
     int notifiedCompatMode;
-    String nonceToken;
-    Runnable nonceTask;
 
     public AndroidacyWebAPI(AndroidacyActivity activity, boolean allowInstall) {
         this.activity = activity;
@@ -66,8 +64,8 @@ public class AndroidacyWebAPI {
     void openNativeModuleDialogRaw(String moduleUrl, String installTitle,
                                    String checksum, boolean canInstall) {
         this.downloadMode = false;
-        RepoModule repoModule = RepoManager.getINSTANCE()
-                .getAndroidacyRepoData().moduleHashMap.get(installTitle);
+        RepoModule repoModule = AndroidacyRepoData
+                .getInstance().moduleHashMap.get(installTitle);
         String title, description;
         if (repoModule != null) {
             title = repoModule.moduleInfo.name;
@@ -246,8 +244,8 @@ public class AndroidacyWebAPI {
                 this.openNativeModuleDialogRaw(moduleUrl, installTitle, checksum, true);
             }
         } else {
-            RepoModule repoModule = RepoManager.getINSTANCE()
-                    .getAndroidacyRepoData().moduleHashMap.get(installTitle);
+            RepoModule repoModule = AndroidacyRepoData
+                    .getInstance().moduleHashMap.get(installTitle);
             String config = null;
             if (repoModule != null && repoModule.moduleInfo.name.length() >= 3) {
                 installTitle = repoModule.moduleInfo.name; // Set title to module name
@@ -510,13 +508,8 @@ public class AndroidacyWebAPI {
     }
 
     @JavascriptInterface
-    public void setNonceToken(String nonceToken) {
-        this.nonceToken = nonceToken;
-        Runnable nonceTask = this.nonceTask;
-        if (nonceTask != null) {
-            this.nonceTask = null;
-            nonceTask.run();
-        }
+    public void setAndroidacyToken(String token) {
+        AndroidacyRepoData.getInstance().setToken(token);
     }
 
     // Androidacy feature level declaration method
