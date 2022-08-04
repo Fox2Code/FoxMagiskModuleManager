@@ -10,6 +10,7 @@
     <string name="failed_download">Não foi possível baixar o arquivo.</string>
     <string name="slow_modules">Os módulos demoraram muito para inicializar, considere remover alguns.</string>
     <string name="fail_internet">Não foi possível conectar à internet.</string>
+    <string name="no_web_view">Não foi possivel abrir Webview do sistema</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="app_update_available">Atualização disponível</string>
     <string name="app_update">Atualizar</string>
@@ -21,8 +22,24 @@
     <string name="website">Website</string>
     <string name="support">Suporte</string>
     <string name="donate">Doar</string>
-    <string name="submit_modules">Enviar um módulo</string>
-    <string name="require_android_6">Necessário Android 6.0 ou superior</string>
+    <string name="update">Atualizar</string>
+    <string name="install">Instalar</string>
+    <string name="description">Descrição</string>
+    <string name="uninstall">Desisntalar</string>
+    <string name="config">Configurações</string>
+    <string name="favourite">Favoritos</string>
+    <string name="report_bugs">Reportar bugs</string>
+    <string name="sniffed_modules">Modulos encontrados</string>
+    <string name="sniffing_modules">Procurando modulos</string>
+    <string name="submit_modules">Envie um modulo</string>
+    <string name="require_android_6">Requer Android 6.0+</string>
+    <string name="require_android_12">Requer Android 12+</string>
+    <string name="install_terminal_reboot_now">Reinciar</string>
+    <string name="language">Lingua</string>
+    <string name="yes" translatable="false">@android:string/yes</string>
+    <string name="no" translatable="false">@android:string/no</string>
+    <string name="ok" translatable="false">@android:string/ok</string>
+    <string name="cancel" translatable="false">@android:string/cancel</string>
 
     <!-- Module section translation -->
     <string name="module_last_update">Atualizado em:</string>
@@ -30,13 +47,23 @@
     <string name="module_by">by</string>
     <string name="module_downloads">Downloads:</string>
     <string name="module_stars">Estrelas:</string>
+    <string name="module_needs_ramdisk">Precisa de ramdisk</string>
+    <string name="module_needs_ramdisk_desc">Esse module necessita de ramdisk no boot para ser instalado</string>
+    <string name="module_can_change_boot">Pode mudar boot</string>
+    <string name="module_can_change_boot_desc">Esse modulo pode mudar a imagem de boot</string>
+    <string name="module_min_magisk_chip">Min. Magisk "%s"</string>
+    <string name="module_min_sdk_chip">Min. Android</string>
+    <string name="module_max_sdk_chip">Max. Android</string>
 
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">Gerenciar repositórios</string>
     <string name="showcase_mode_pref">Modo lockdown</string>
     <string name="showcase_mode_desc">O modo lockdown previne que o app faça qualquer alteração nos módulos.</string>
+    <string name="prevent_reboot_pref">Previne reincialização</string>
+    <string name="prevent_reboot_desc">Previne reinicializações inesperadas</string>
     <string name="pref_category_settings">Configurações</string>
+    <string name="enable_monet">Ativar tema Monet</string>
     <string name="pref_category_info">Info</string>
     <string name="show_licenses">Mostrar licenças</string>
     <string name="licenses">Licenças</string>
@@ -44,6 +71,9 @@
     <string name="show_incompatible_desc">Baseado na metadata do módulo, mostra aqueles que são incompatíveis com seu dispositivo.</string>
     <string name="magisk_outdated">Magisk desatualizado!</string>
     <string name="pref_category_repos">Repositórios</string>
+    <string name="pref_category_security">Segurança</string>
+    <string name="pref_category_appearance">Aparencia</string>
+    <string name="pref_category_general">Geral</string>
     <string name="repo_main_desc">Repositório que hospeda os módulos do Magisk</string>
     <string name="repo_main_alt">Uma alternativa com menos restrições ao Magisk-Modules-Repo.</string>
     <string name="master_delete">Deletar os arquivos do módulo?</string>
@@ -55,6 +85,7 @@
     <string name="module_id_prefix">ID do módulo: </string>
     <string name="install_from_storage">Instalar módulo armazenado localmente</string>
     <string name="invalid_format">O módulo selecionado está em um formato inválido.</string>
+    <string name="low_quality_module">Modulo de baixa qualidade</string>
     <string name="local_install_title">Instalação local</string>
     <string name="source_code">Código fonte</string>
     <string name="magisk_builtin_module">Módulo builtin do Magisk</string>
@@ -93,4 +124,29 @@
     <string name="enable_blur_pref">Habilitar blur</string>
     <string name="repo_enabled">Repositório habilitado</string>
     <string name="repo_disabled">Repositório desabilitado</string>
+    <string name="add_repo">Adicionar Repositório</string>
+    <string name="remove_repo">Remover Repositórios</string>
+    <string name="custom_url">URL Customizado</string>
+    <string name="androidacy_repo_info">O Repositórios Androidacy possui anuncios e rastreadores.</string>
+    <string name="backup_module_list">Fazer backup dos modulos</string>
+    <string name="restore_module_list">Restaurar modulos</string>
+    <string name="require_internet">Essa operação requer uma conexão com a internet</string>
+    <string name="androidacy_test_mode_pref">Androidacy modo teste</string>
+    <string name="androidacy_test_mode_desc">Use a conexão de teste do Androidacy inves da normal. (Requer reinicialização do app)</string>
+
+    <!-- Background Notification translation -->
+    <string name="notification_update_title">Encontrado %i atualizações de modulo</string>
+    <string name="notification_update_title_easter_egg">Sniffed %i module updates</string>
+    <string name="notification_update_subtitle">Clique para abrir o app</string>
+    <string name="notification_update_pref">Verificação de atualizações em segundo plano</string>
+    <string name="notification_update_desc">Pode aumentar o consumo de bateria</string>
+    <string name="notification_update_debug_pref">Notificação de teste</string>
+
+    <!-- Set to true in translation file if your language is right to left -->
+    <bool name="lang_support_rtl">false</bool>
+    <!-- Always copy language_support_level when translating -->
+    <integer name="language_support_level">1</integer>
+    <string name="language_support_outdated">Algumas traduções para sua lingua atual não esta em dia, por favor considere contribuir para as traduções do app no Github</string>
+    <!-- Replace with your own username when translating -->
+    <string name="language_translated_by">Traduzido por mi007d e DanGLES3</string>
 </resources>
