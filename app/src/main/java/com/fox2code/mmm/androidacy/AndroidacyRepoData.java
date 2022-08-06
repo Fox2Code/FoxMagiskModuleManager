@@ -288,9 +288,16 @@ public final class AndroidacyRepoData extends RepoData {
         // Do not inject token for non Androidacy urls
         if (!AndroidacyUtil.isAndroidacyLink(url))
             return url;
-        if (this.testMode && url.startsWith("https://api.androidacy.com/")) {
-            Log.e(TAG, "Got non test mode url: " + AndroidacyUtil.hideToken(url));
-            url = "https://staging-api.androidacy.com/" + url.substring(27);
+        if (this.testMode) {
+            if (url.startsWith("https://api.androidacy.com/")) {
+                Log.e(TAG, "Got non test mode url: " + AndroidacyUtil.hideToken(url));
+                url = "https://staging-api.androidacy.com/" + url.substring(27);
+            }
+        } else {
+            if (url.startsWith("https://staging-api.androidacy.com/")) {
+                Log.e(TAG, "Got test mode url: " + AndroidacyUtil.hideToken(url));
+                url = "https://api.androidacy.com/" + url.substring(35);
+            }
         }
         String token = "token=" + this.token;
         if (!url.contains(token)) {
