@@ -3,7 +3,7 @@
     <string name="app_name_short">FoxMmm</string>
     <string name="fail_root_magisk">Nie udało się uzyskać dostępu do Root lub Magisk</string>
     <string name="loading">Wczytywanie…</string>
-    <string name="updatable">Aktualizowalne</string>
+    <string name="updatable">Aktualizacje modułów</string>
     <string name="installed">Zainstalowane</string>
     <string name="online_repo">Repozytorium online</string>
     <string name="showcase_mode">Aplikacja jest w trybie blokady</string>
@@ -27,12 +27,16 @@
     <string name="description">Opis</string>
     <string name="uninstall">Odinstaluj</string>
     <string name="config">Konfiguracja</string>
+    <string name="favourite">Ulubione</string>
+    <string name="report_bugs">Zgłoś błędy</string>
+    <string name="sniffed_modules">Wywęszone moduły</string>
+    <string name="sniffing_modules">Węszenie modułów</string>
     <string name="submit_modules">Prześlij moduł</string>
     <string name="require_android_6">Wymaga Androida 6.0+</string>
     <string name="require_android_12">Wymaga Androida 12+</string>
     <string name="install_terminal_reboot_now">Restart</string>
     <string name="language">Język</string>
-
+    
     <!-- Module section translation -->
     <string name="module_last_update">Ostatnia aktualizacja:</string>
     <string name="module_repo">Repozytorium:</string>
@@ -115,13 +119,32 @@
     </string>
     <string name="enable_blur_pref">Włącz rozmycie</string>
     <string name="disable_chips_in_description">Wyłącz chipy w opisie</string>
-    <string name="repo_enabled">Repo włączone</string>
-    <string name="repo_disabled">Repo wyłączone</string>
-    <string name="add_repo">Dodaj repo</string>
-    <string name="remove_repo">Usuń repo</string>
+    <string name="repo_enabled">Repozytorium włączone</string>
+    <string name="repo_disabled">Repozytorium wyłączone</string>
+    <string name="add_repo">Dodaj repozytorium</string>
+    <string name="remove_repo">Usuń repozytorium</string>
     <string name="custom_url">Niestandardowy URL</string>
     <string name="androidacy_repo_info">Repo Androidacy korzysta z reklam i trackerów.</string>
     <string name="backup_module_list">Kopia zapasowa modułów</string>
     <string name="restore_module_list">Przywracanie modułów</string>
     <string name="require_internet">Ta operacja wymaga połączenia internetowego</string>
+    <string name="androidacy_test_mode_pref">Tryb testowy Androidacy</string>
+    <string name="androidacy_test_mode_desc">Użyj punktu końcowego Androidacy staging zamiast punktu końcowego release. (Wymagaj ponownego uruchomienia procesu aplikacji)</string>
+
+    <!-- Background Notification translation -->
+    <string name="notification_update_title">Znaleziono %i aktualizacji modułów</string>
+    <string name="notification_update_title_easter_egg">Wywęszono %i aktualizacji modułów</string>
+    <string name="notification_update_subtitle">Kliknij, aby otworzyć aplikację</string>
+    <string name="notification_update_pref">Sprawdzanie aktualizacji modułów w tle</string>
+    <string name="notification_update_desc">Może zwiększyć użycie baterii</string>
+    <string name="notification_update_debug_pref">Powiadomienie testowe</string>
+
+    <!-- Set to true in translation file if your language is right to left -->
+    <bool name="lang_support_rtl">false</bool>
+    <!-- Always copy language_support_level when translating -->
+    <integer name="language_support_level">1</integer>
+    <string name="language_support_outdated">Niektóre tłumaczenia dla bieżącego języka nie są aktualne,
+        prosimy o rozważenie uzupełnienia tłumaczeń aplikacji na GitHubie.</string>
+    <!-- Replace with your own username when translating -->
+    <string name="language_translated_by">Tłumaczenie: Daviteusz</string>
 </resources>
