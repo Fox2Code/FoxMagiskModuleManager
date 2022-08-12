@@ -28,6 +28,10 @@
     <string name="description">Descriere</string>
     <string name="uninstall">Dezinstalare</string>
     <string name="config">Configurare</string>
+    <string name="favourite">Favorit</string>
+    <string name="report_bugs">Raportează erori</string>
+    <string name="sniffed_modules">Sniffed modules</string>
+    <string name="sniffing_modules">Sniffing modules</string>
     <string name="submit_modules">Trimite un modul</string>
     <string name="require_android_6">Necesită Android 6.0+</string>
     <string name="require_android_12">Necesită Android 12+</string>
@@ -40,7 +44,12 @@
     <string name="module_downloads">Descărcări:</string>
     <string name="module_stars">Stele:</string>
     <string name="module_needs_ramdisk">Necesită ramdisk</string>
+    <string name="module_needs_ramdisk_desc">Acest modul are nevoie de un disc ram de pornire pentru a fi instalat</string>
     <string name="module_can_change_boot">Poate schimba pornirea</string>
+    <string name="module_can_change_boot_desc">Acest modul poate modifica imaginea de pornire</string>
+    <string name="module_min_magisk_chip">Min. Magisk \"%s\"</string>
+    <string name="module_min_sdk_chip">Min. Android</string>
+    <string name="module_max_sdk_chip">Max. Android</string>
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">Gestionează depozitele</string>
@@ -85,6 +94,7 @@
         așa că am ascuns această opțiune în spatele modului dezvoltator, activați acest lucru pe propriul risc!
     </string>
     <string name="dev_mode_enabled">Mod dezvoltator activat</string>
+    <string name="dev_mode_disabled">Modul dezvoltator este dezactivat</string>
     <string name="force_english_pref">Forțează limba engleză</string>
     <string name="disable_low_quality_module_filter_pref">Dezactivează filtrul de module de calitate slabă</string>
     <string name="disable_low_quality_module_filter_desc">        Unele module nu declară corect metadatele, cauzând erori vizuale,
@@ -113,4 +123,19 @@
     <string name="backup_module_list">Rezervare module</string>
     <string name="restore_module_list">Restabilire module</string>
     <string name="require_internet">Această operațiune necesită o conexiune la Internet</string>
+    <string name="androidacy_test_mode_pref">Modul de testare Androidacy</string>
+    <string name="androidacy_test_mode_desc">Use staging Androidacy Endpoint instead of release endpoint. (Require app process restart)</string>
+    <!-- Background Notification translation -->
+    <string name="notification_update_title">S-au găsit %i actualizări module</string>
+    <string name="notification_update_title_easter_egg">Sniffed %i module updates</string>
+    <string name="notification_update_subtitle">Clic pentru a deschide aplicația</string>
+    <string name="notification_update_pref">Verificarea actualizării modulelor în fundal</string>
+    <string name="notification_update_desc">Poate crește utilizarea bateriei</string>
+    <string name="notification_update_debug_pref">Notificare test</string>
+    <!-- Set to true in translation file if your language is right to left -->
+    <!-- Always copy language_support_level when translating -->
+    <string name="language_support_outdated">Unele traduceri pentru limba curentă
+        nu sunt actualizate, vă rugăm să luați în considerare contribuția la traducerea aplicației pe GitHub</string>
+    <!-- Replace with your own username when translating -->
+    <string name="language_translated_by">Tradus de Fox2Code</string>
 </resources>
