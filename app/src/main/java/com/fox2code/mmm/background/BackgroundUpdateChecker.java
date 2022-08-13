@@ -57,6 +57,7 @@ public class BackgroundUpdateChecker extends Worker {
         int moduleUpdateCount = 0;
         for (LocalModuleInfo localModuleInfo :
                 ModuleManager.getINSTANCE().getModules().values()) {
+            if ("twrp-keep".equals(localModuleInfo.id)) continue;
             RepoModule repoModule = RepoManager.getINSTANCE()
                     .getModules().get(localModuleInfo.id);
             localModuleInfo.checkModuleUpdate();
