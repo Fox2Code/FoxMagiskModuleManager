@@ -382,7 +382,8 @@ public class PropUtils {
 
     // Make versionName no longer than 16 charters to avoid UI overflow.
     public static String shortenVersionName(String versionName, long versionCode) {
-        if (versionName == null) return "v" + versionCode;
+        if (versionName == null || versionName.isEmpty() ||
+                "null".equals(versionName)) return "v" + versionCode;
         if (versionName.length() <= 16) return versionName;
         int i = versionName.lastIndexOf('.');
         if (i != -1 && i <= 16 && versionName.indexOf('.') != i
