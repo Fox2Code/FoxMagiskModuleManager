@@ -27,6 +27,8 @@ import com.fox2code.mmm.utils.Http;
 import com.fox2code.rosettax.LanguageSwitcher;
 import com.topjohnwu.superuser.Shell;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -42,6 +44,9 @@ import io.noties.markwon.syntax.Prism4jThemeDefault;
 import io.noties.markwon.syntax.SyntaxHighlightPlugin;
 import io.noties.prism4j.Prism4j;
 import io.noties.prism4j.annotations.PrismBundle;
+import io.sentry.JsonObjectWriter;
+import io.sentry.NoOpLogger;
+import io.sentry.android.core.SentryAndroid;
 
 @PrismBundle(
         includeAll = true,
@@ -49,6 +54,7 @@ import io.noties.prism4j.annotations.PrismBundle;
 )
 public class MainApplication extends FoxApplication
         implements androidx.work.Configuration.Provider {
+    private static final String TAG = "MainApplication";
     private static final String timeFormatString = "dd MMM yyyy"; // Example: 13 july 2001
     private static Locale timeFormatLocale =
             Resources.getSystem().getConfiguration().locale;
@@ -166,6 +172,11 @@ public class MainApplication extends FoxApplication
 
     public static void setHasGottenRootAccess(boolean bool) {
         getSharedPreferences().edit().putBoolean("has_root_access", bool).apply();
+    }
+
+    public static boolean isCrashReportingEnabled() {
+        return getSharedPreferences().getBoolean(
+                "crash_reporting", BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING);
     }
 
     public static SharedPreferences getBootSharedPreferences() {
@@ -341,6 +352,57 @@ public class MainApplication extends FoxApplication
                 Log.d("MainApplication", "Emoji compat loaded!");
             }, "Emoji compat init.").start();
         }
+        SentryAndroid.init(this, options -> {
+            // Note: Sentry library only take a screenshot of Fox Magisk Module Manager.
+            // The screen shot doesn't and cannot contain other applications (if in multi windows)
+            // status bar and notifications (even if notification shade is pulled down)
+
+            // In the possibility you find this library sending anything listed above,
+            // it's a serious bug and a security issue you should report to Google
+            // Google bug bounties on Android are huge, so you can also get rich by doing that.
+            options.setAttachScreenshot(true);
+            // Add a callback that will be used before the event is sent to Sentry.
+            // With this callback, you can modify the event or, when returning null, also discard the event.
+            options.setBeforeSend((event, hint) -> {
+                if (BuildConfig.DEBUG) { // Debug sentry events for debug.
+                    StringBuilder stringBuilder = new StringBuilder("Sentry report debug: ");
+                    try {
+                        event.serialize(new JsonObjectWriter(new Writer() {
+                            @Override
+                            public void write(char[] cbuf) {
+                                stringBuilder.append(cbuf);
+                            }
+
+                            @Override
+                            public void write(char[] chars, int i, int i1) {
+                                stringBuilder.append(chars, i, i1);
+                            }
+
+                            @Override
+                            public void write(String str, int off, int len) {
+                                stringBuilder.append(str, off, len);
+                            }
+
+                            @Override
+                            public void flush() {}
+
+                            @Override
+                            public void close() {}
+                        }, 4), NoOpLogger.getInstance());
+                    } catch (IOException ignored) {}
+                    Log.i(TAG, stringBuilder.toString());
+                }
+                // Check saved preferences to see if the user has opted out of crash reporting.
+                // If the user has opted out, return null.
+                if (isCrashReportingEnabled()) {
+                    Log.i(TAG, "Relayed sentry report according to user preference");
+                    return event;
+                } else {
+                    Log.i(TAG, "Blocked sentry report according to user preference");
+                    return null;
+                }
+            });
+        });
     }
 
     @Override
