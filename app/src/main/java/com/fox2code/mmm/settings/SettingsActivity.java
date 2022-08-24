@@ -62,11 +62,6 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
     private static final String TAG = "SettingsActivity";
     private static int devModeStep = 0;
 
-    public static boolean getCrashReporting(MainActivity mainActivity) {
-        return mainActivity.getPreferences(Context.MODE_PRIVATE)
-                .getBoolean("crash_reporting", true);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         devModeStep = 0;
@@ -132,8 +127,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             });
             // Crash reporting
             TwoStatePreference crashReportingPreference = findPreference("pref_crash_reporting");
-            crashReportingPreference.setChecked(getCrashReporting(
-                    (MainActivity) requireActivity()));
+            crashReportingPreference.setChecked(MainApplication.isCrashReportingEnabled());
             crashReportingPreference.setOnPreferenceChangeListener((preference, newValue) -> {
                 devModeStep = 0;
                 getCrashReportingEditor(requireActivity()).putBoolean("crash_reporting",
