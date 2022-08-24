@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -60,6 +61,11 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
     private static final int LANGUAGE_SUPPORT_LEVEL = 1;
     private static final String TAG = "SettingsActivity";
     private static int devModeStep = 0;
+
+    public static boolean getCrashReporting(MainActivity mainActivity) {
+        return mainActivity.getPreferences(Context.MODE_PRIVATE)
+                .getBoolean("crash_reporting", true);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +128,16 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     FoxActivity.getFoxActivity(this).setThemeRecreate(
                             MainApplication.getINSTANCE().getManagerThemeResId());
                 }, 1);
+                return true;
+            });
+            // Crash reporting
+            TwoStatePreference crashReportingPreference = findPreference("pref_crash_reporting");
+            crashReportingPreference.setChecked(getCrashReporting(
+                    (MainActivity) requireActivity()));
+            crashReportingPreference.setOnPreferenceChangeListener((preference, newValue) -> {
+                devModeStep = 0;
+                getCrashReportingEditor(requireActivity()).putBoolean("crash_reporting",
+                        (boolean) newValue).apply();
                 return true;
             });
             Preference enableBlur = findPreference("pref_enable_blur");
@@ -277,6 +293,10 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                             BuildConfig.VERSION_CODE + ")");
         }
 
+        private SharedPreferences.Editor getCrashReportingEditor(FragmentActivity requireActivity) {
+            return requireActivity.getSharedPreferences("crash_reporting", Context.MODE_PRIVATE).edit();
+        }
+
         private void openFragment(Fragment fragment, @StringRes int title) {
             FoxActivity compatActivity = getFoxActivity(this);
             compatActivity.setOnBackPressedCallback(this);
@@ -384,9 +404,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                     } catch (IOException|JSONException e) {
                                         Log.e(TAG, "Failed to preload repo values", e);
                                     }
-                                    UiThreadHandler.handler.post(() -> {
-                                        updateCustomRepoList(false);
-                                    });
+                                    UiThreadHandler.handler.post(() -> updateCustomRepoList(false));
                                 }
                             }.start();
                         }

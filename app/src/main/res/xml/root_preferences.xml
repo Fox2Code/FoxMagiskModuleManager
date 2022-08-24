@@ -115,6 +115,15 @@
             app:title="@string/prevent_reboot_pref"
             app:summary="@string/prevent_reboot_desc"
             app:singleLineTitle="false"	/>
+        <!-- Crash reporting -->
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="pref_crash_reporting"
+            app:icon="@drawable/ic_baseline_bug_report_24"
+            app:title="@string/crash_reporting"
+            app:summary="@string/crash_reporting_desc"
+            app:singleLineTitle="false"	/>
+
     </PreferenceCategory>
 
     <PreferenceCategory

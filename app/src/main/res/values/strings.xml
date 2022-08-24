@@ -129,7 +129,7 @@
     <string name="add_repo">Add Repo</string>
     <string name="remove_repo">Remove Repo</string>
     <string name="custom_url">Custom url</string>
-    <string name="androidacy_repo_info">The Androidacy repo has ads and trackers.</string>
+    <string name="androidacy_repo_info">This repository may display some non-intrusive advertising to cover server and development costs.</string>
     <string name="backup_module_list">Backup modules</string>
     <string name="restore_module_list">Restore modules</string>
     <string name="require_internet">This operation require an internet connection</string>
@@ -152,4 +152,6 @@
         not up-to-date, please consider contributing to the app translations on GitHub</string>
     <!-- Replace with your own username when translating -->
     <string name="language_translated_by">Translated by Fox2Code</string>
+    <string name="crash_reporting">Automatically report bugs and performance to the developers</string>
+    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
 </resources>

@@ -92,4 +92,5 @@
     <string name="enable_blur_pref">Povoliť rozostrenia</string>
     <string name="repo_enabled">Repozitár povolený</string>
     <string name="repo_disabled">Repozitár zakázaný</string>
+    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
 </resources>

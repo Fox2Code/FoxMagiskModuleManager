@@ -120,7 +120,6 @@
     <string name="add_repo">新增倉庫</string>
     <string name="remove_repo">移除倉庫</string>
     <string name="custom_url">自定義網址</string>
-    <string name="androidacy_repo_info">Androidacy repo 內建廣告和跟蹤器.</string>
     <string name="backup_module_list">備份模組</string>
     <string name="restore_module_list">還原模組</string>
     <string name="require_internet">需要網路連線</string>
@@ -140,4 +139,5 @@
     <string name="language_support_outdated">如果您使用的當前語言沒有及時更新，請考慮在 GitHub 上的為翻譯做出貢獻。</string>
     <!-- Replace with your own username when translating -->
     <string name="language_translated_by">由 OrStudio.tw(@crcky5322) 提供美妙的翻譯</string>
+    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
 </resources>

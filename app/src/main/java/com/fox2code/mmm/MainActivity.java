@@ -37,6 +37,7 @@ import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
+import io.sentry.android.core.SentryAndroid;
 
 public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRefreshListener,
         SearchView.OnQueryTextListener, SearchView.OnCloseListener,
@@ -73,6 +74,19 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SentryAndroid.init(this, options -> {
+            // Add a callback that will be used before the event is sent to Sentry.
+            // With this callback, you can modify the event or, when returning null, also discard the event.
+            options.setBeforeSend((event, hint) -> {
+                // Check saved preferences to see if the user has opted out of crash reporting.
+                // If the user has opted out, return null.
+                if (SettingsActivity.getCrashReporting(this)) {
+                    return event;
+                } else {
+                    return null;
+                }
+            });
+        });
         this.initMode = true;
         BackgroundUpdateChecker.onMainActivityCreate(this);
         super.onCreate(savedInstanceState);

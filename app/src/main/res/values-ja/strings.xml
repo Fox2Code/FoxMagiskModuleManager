@@ -40,4 +40,5 @@
     <string name="source_code">ソースコード</string>
     <string name="dev_mode_enabled">開発者モードが有効です</string>
     <string name="force_english_pref">Force English language</string>
+    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
 </resources>
