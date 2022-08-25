@@ -270,6 +270,12 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         "https://github.com/Fox2Code/FoxMagiskModuleManager");
                 return true;
             });
+            // Add a listener to pref_androidacy_repo_api_key to update the api key in shared preferences
+            findPreference("pref_androidacy_repo_api_key").setOnPreferenceChangeListener((preference, newValue) -> {
+                MainApplication.getSharedPreferences().edit()
+                        .putString("androidacy_api_token", String.valueOf(newValue)).apply();
+                return true;
+            });
             findPreference("pref_support").setOnPreferenceClickListener(p -> {
                 devModeStep = 0;
                 IntentHelper.openUrl(p.getContext(), "https://t.me/Fox2Code_Chat");

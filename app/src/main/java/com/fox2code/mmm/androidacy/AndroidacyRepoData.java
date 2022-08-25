@@ -74,8 +74,8 @@ public final class AndroidacyRepoData extends RepoData {
         long time = System.currentTimeMillis();
         if (this.androidacyBlockade > time) return false;
         this.androidacyBlockade = time + 30_000L;
-        // Get token from androidacy_token shared preference
-        String token = this.cachedPreferences.getString("androidacy_token", null);
+        // Get token from androidacy_api_token shared preference
+        String token = this.cachedPreferences.getString("androidacy_api_token", null);
         if (token != null) {
             try {
                 Http.doHttpGet("https://" + this.host + "/auth/me?token=" + token, true);
@@ -89,7 +89,7 @@ public final class AndroidacyRepoData extends RepoData {
                 Log.w(TAG, "Invalid token, resetting...");
                 // Remove saved preference
                 SharedPreferences.Editor editor = this.cachedPreferences.edit();
-                editor.remove("androidacy_token");
+                editor.remove("androidacy_api_token");
                 editor.apply();
                 this.token = token = null;
             }
@@ -97,12 +97,16 @@ public final class AndroidacyRepoData extends RepoData {
         if (token == null) {
             try {
                 Log.i(TAG, "Refreshing token...");
+                // POST request to https://production-api.androidacy.com/auth/register
                 token = new String(Http.doHttpPost(
                         "https://" + this.host + "/auth/register",
                         "foxmmm=true", true), StandardCharsets.UTF_8);
+                // Parse token
+                JSONObject jsonObject = new JSONObject(token);
+                token = jsonObject.getString("token");
                 // Save token to shared preference
                 SharedPreferences.Editor editor = this.cachedPreferences.edit();
-                editor.putString("androidacy_token", token);
+                editor.putString("androidacy_api_token", token);
                 editor.apply();
             } catch (Exception e) {
                 if ("Received error code: 419".equals(e.getMessage()) ||

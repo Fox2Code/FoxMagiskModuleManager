@@ -154,4 +154,6 @@
     <string name="language_translated_by">Translated by Fox2Code</string>
     <string name="crash_reporting">Automatically report bugs and performance to the developers</string>
     <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
+    <string name="api_key">Androidacy API Key</string>
+    <string name="api_key_summary">Use a custom API key for Androidacy</string>
 </resources>

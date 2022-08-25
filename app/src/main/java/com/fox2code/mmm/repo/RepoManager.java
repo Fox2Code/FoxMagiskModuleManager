@@ -36,7 +36,7 @@ public final class RepoManager {
             "https://cdn.jsdelivr.net/gh/Magisk-Modules-Alt-Repo/json@main/modules.json";
 
     public static final String ANDROIDACY_MAGISK_REPO_ENDPOINT =
-            "https://api.androidacy.com/magisk/repo";
+            "https://production-api.androidacy.com/magisk/repo";
     public static final String ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT =
             "https://staging-api.androidacy.com/magisk/repo";
     public static final String ANDROIDACY_MAGISK_REPO_HOMEPAGE =

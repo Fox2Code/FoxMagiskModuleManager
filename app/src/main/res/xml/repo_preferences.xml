@@ -59,6 +59,13 @@
             app:icon="@drawable/ic_baseline_upload_file_24"
             app:title="@string/submit_modules"
             app:singleLineTitle="false" />
+        <!-- Allow user to set custom API key for Androidacy repo -->
+        <EditTextPreference
+            app:key="pref_androidacy_repo_api_key"
+            app:icon="@drawable/ic_baseline_security_24"
+            app:title="@string/api_key"
+            app:summary="@string/api_key_summary"
+            app:singleLineTitle="false" />
         <SwitchPreferenceCompat
             app:defaultValue="false"
             app:key="pref_androidacy_test_mode"

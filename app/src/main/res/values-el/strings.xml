@@ -144,4 +144,5 @@
     <!-- Replace with your own username when translating -->
     <string name="language_translated_by">Μεταφράστηκε απο Tha_14</string>
     <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
+    <string name="api_key">Androidacy API Key</string>
 </resources>
