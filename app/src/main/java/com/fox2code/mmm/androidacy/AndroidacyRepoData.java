@@ -67,6 +67,28 @@ public final class AndroidacyRepoData extends RepoData {
         return RepoManager.getINSTANCE().getAndroidacyRepoData();
     }
 
+    public <string> boolean isValidToken(string token) {
+        try {
+            Http.doHttpGet("https://" + this.host + "/auth/me?token=" + token, false);
+        } catch (Exception e) {
+            if ("Received error code: 419".equals(e.getMessage()) ||
+                    "Received error code: 429".equals(e.getMessage())) {
+                Log.e(TAG, "We are being rate limited!", e);
+                long time = System.currentTimeMillis();
+                this.androidacyBlockade = time + 3_600_000L;
+                return false;
+            }
+            Log.w(TAG, "Invalid token, resetting...");
+            // Remove saved preference
+            SharedPreferences.Editor editor = this.cachedPreferences.edit();
+            editor.remove("androidacy_api_token");
+            editor.apply();
+            return false;
+        }
+        // If status code is 200, we are good
+        return true;
+    }
+
     @Override
     protected boolean prepare() {
         // Implementation details discussed on telegram
@@ -77,21 +99,9 @@ public final class AndroidacyRepoData extends RepoData {
         // Get token from androidacy_api_token shared preference
         String token = this.cachedPreferences.getString("androidacy_api_token", null);
         if (token != null) {
-            try {
-                Http.doHttpGet("https://" + this.host + "/auth/me?token=" + token, true);
-            } catch (Exception e) {
-                if ("Received error code: 419".equals(e.getMessage()) ||
-                        "Received error code: 429".equals(e.getMessage())) {
-                    Log.e(TAG, "We are being rate limited!", e);
-                    this.androidacyBlockade = time + 3_600_000L;
-                    return false;
-                }
-                Log.w(TAG, "Invalid token, resetting...");
-                // Remove saved preference
-                SharedPreferences.Editor editor = this.cachedPreferences.edit();
-                editor.remove("androidacy_api_token");
-                editor.apply();
-                this.token = token = null;
+            this.token = token;
+            if (!isValidToken(token)) {
+                token = null;
             }
         }
         if (token == null) {

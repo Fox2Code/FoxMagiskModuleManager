@@ -3,11 +3,14 @@ package com.fox2code.mmm.settings;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -19,6 +22,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -51,11 +55,15 @@ import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Random;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 public class SettingsActivity extends FoxActivity implements LanguageActivity {
     private static final int LANGUAGE_SUPPORT_LEVEL = 1;
@@ -270,11 +278,56 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         "https://github.com/Fox2Code/FoxMagiskModuleManager");
                 return true;
             });
-            // Add a listener to pref_androidacy_repo_api_key to update the api key in shared preferences
-            findPreference("pref_androidacy_repo_api_key").setOnPreferenceChangeListener((preference, newValue) -> {
-                MainApplication.getSharedPreferences().edit()
-                        .putString("androidacy_api_token", String.valueOf(newValue)).apply();
-                return true;
+            // Create the pref_androidacy_repo_api_key text input
+            EditTextPreference prefAndroidacyRepoApiKey = new EditTextPreference(this.requireContext());
+            prefAndroidacyRepoApiKey.setKey("pref_androidacy_repo_api_key");
+            prefAndroidacyRepoApiKey.setTitle(R.string.api_key);
+            prefAndroidacyRepoApiKey.setDialogTitle(R.string.api_key);
+            // Set the summary to the current androidacy_api_token
+            prefAndroidacyRepoApiKey.setSummary(MainApplication.getSharedPreferences()
+                    .getString("androidacy_api_token", ""));
+            prefAndroidacyRepoApiKey.setOnBindEditTextListener(editText -> {
+                editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            });
+            // Bind ok button to save the new androidacy_api_token
+            // On hitting OK, save the new androidacy_api_token after checking it. While checking, show a progress dialog
+            prefAndroidacyRepoApiKey.setOnPreferenceChangeListener((preference, newValue) -> {
+                String newToken = String.valueOf(newValue);
+                if (newToken.isEmpty()) {
+                    MainApplication.getSharedPreferences().edit()
+                            .remove("androidacy_api_token").apply();
+                    return true;
+                }
+                ProgressDialog progressDialog = new ProgressDialog(this.requireContext());
+                progressDialog.setMessage(getString(R.string.checking_api_key));
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+                new Thread(() -> {
+                    try {
+                        String response = new OkHttpClient().newCall(new Request.Builder()
+                                .url("https://production-api.androidacy.com/auth/me")
+                                .header("Authorization", "Bearer " + newToken)
+                                .build()).execute().body().string();
+                        JSONObject jsonObject = new JSONObject(response);
+                        if (!jsonObject.has("role")) {
+                            throw new IOException("Invalid response");
+                        }
+                        MainApplication.getSharedPreferences().edit()
+                                .putString("androidacy_api_token", newToken).apply();
+                        progressDialog.dismiss();
+                        this.requireActivity().runOnUiThread(() -> {
+                            prefAndroidacyRepoApiKey.setSummary(newToken);
+                            Toast.makeText(this.requireContext(),
+                                    R.string.api_key_valid, Toast.LENGTH_SHORT).show();
+                        });
+                    } catch (IOException | JSONException e) {
+                        progressDialog.dismiss();
+                        this.requireActivity().runOnUiThread(() -> Toast.makeText(this.requireContext(),
+                                R.string.api_key_invalid, Toast.LENGTH_SHORT).show());
+                    }
+                }).start();
+                return false;
             });
             findPreference("pref_support").setOnPreferenceClickListener(p -> {
                 devModeStep = 0;

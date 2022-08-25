@@ -156,4 +156,9 @@
     <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
     <string name="api_key">Androidacy API Key</string>
     <string name="api_key_summary">Use a custom API key for Androidacy</string>
+    <string name="api_key_not_set">Androidacy API key is empty</string>
+    <string name="api_key_set">Current Androidacy API key</string>
+    <string name="api_key_invalid">Could not validate API key. Please try again.</string>
+    <string name="api_key_valid">API key is valid.</string>
+    <string name="checking_api_key">Validating API key...</string>
 </resources>
