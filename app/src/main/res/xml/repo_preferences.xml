@@ -40,6 +40,26 @@
             app:switchTextOn="@string/repo_enabled"
             app:switchTextOff="@string/repo_disabled"
             app:singleLineTitle="false"	/>
+        <!-- Allow user to set custom API key for Androidacy repo -->
+        <EditTextPreference
+            app:key="pref_androidacy_repo_api_key"
+            app:icon="@drawable/ic_baseline_vpn_key_24"
+            app:title="@string/api_key"
+            app:summary="@string/api_key_summary"
+            app:singleLineTitle="true"
+            app:dialogTitle="@string/api_key"
+            app:dialogIcon="@drawable/ic_baseline_vpn_key_24"
+            app:dependency="pref_androidacy_repo_enabled"
+            android:inputType="text"
+            android:imeOptions="actionDone" />
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="pref_androidacy_test_mode"
+            app:icon="@drawable/ic_baseline_bug_report_24"
+            app:title="@string/androidacy_test_mode_pref"
+            app:summary="@string/androidacy_test_mode_desc"
+            app:dependency="pref_androidacy_repo_enabled"
+            app:singleLineTitle="false"	/>
         <Preference
             app:key="pref_androidacy_repo_website"
             app:icon="@drawable/ic_baseline_language_24"
@@ -60,23 +80,6 @@
             app:icon="@drawable/ic_baseline_upload_file_24"
             app:title="@string/submit_modules"
             app:singleLineTitle="false" />
-        <!-- Allow user to set custom API key for Androidacy repo -->
-        <EditTextPreference
-            app:key="pref_androidacy_repo_api_key"
-            app:icon="@drawable/ic_baseline_security_24"
-            app:title="@string/api_key"
-            app:summary="@string/api_key_summary"
-            app:singleLineTitle="false"
-            app:dialogTitle="@string/api_key"
-            app:dialogMessage="@string/api_key_summary"
-            android:imeOptions="actionDone" />
-        <SwitchPreferenceCompat
-            app:defaultValue="false"
-            app:key="pref_androidacy_test_mode"
-            app:icon="@drawable/ic_baseline_bug_report_24"
-            app:title="@string/androidacy_test_mode_pref"
-            app:summary="@string/androidacy_test_mode_desc"
-            app:singleLineTitle="false"	/>
         <Preference
             app:key="pref_androidacy_ads_disclaimer"
             app:icon="@drawable/ic_baseline_info_24"

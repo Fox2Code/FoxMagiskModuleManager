@@ -3,6 +3,7 @@ package com.fox2code.mmm.settings;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -36,6 +37,7 @@ import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
+import com.fox2code.mmm.androidacy.AndroidacyRepoData;
 import com.fox2code.mmm.background.BackgroundUpdateChecker;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.module.ActionButtonType;
@@ -53,19 +55,12 @@ import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Random;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class SettingsActivity extends FoxActivity implements LanguageActivity {
     private static final int LANGUAGE_SUPPORT_LEVEL = 1;
@@ -96,7 +91,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         int mPendingIntentId = 123456;
         PendingIntent mPendingIntent = PendingIntent.getActivity(this, mPendingIntentId,
                 mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        AlarmManager mgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager mgr = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
         System.exit(0); // Exit app process
     }
@@ -280,51 +275,6 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         "https://github.com/Fox2Code/FoxMagiskModuleManager");
                 return true;
             });
-            // Create the pref_androidacy_repo_api_key text input
-            EditTextPreference prefAndroidacyRepoApiKey = new EditTextPreference(this.requireContext());
-            prefAndroidacyRepoApiKey.setKey("pref_androidacy_repo_api_key");
-            prefAndroidacyRepoApiKey.setTitle(R.string.api_key);
-            prefAndroidacyRepoApiKey.setDialogTitle(R.string.api_key);
-            // Set the summary to the current androidacy_api_token
-            prefAndroidacyRepoApiKey.setSummary(MainApplication.getSharedPreferences()
-                    .getString("androidacy_api_token", ""));
-            // On user input, save the new androidacy_api_token after validating it
-            prefAndroidacyRepoApiKey.setOnPreferenceChangeListener((preference, newValue) -> {
-                String newToken = String.valueOf(newValue);
-                if (newToken.length() == 0) {
-                    MainApplication.getSharedPreferences().edit()
-                            .remove("androidacy_api_token").apply();
-                    return true;
-                }
-                // Call the androidacy api to validate the token
-                OkHttpClient client = new OkHttpClient();
-                Request request = new Request.Builder()
-                        .url("https://production-api.androidacy.com/auth/me")
-                        .header("Authorization", "Bearer " + newToken)
-                        .build();
-                client.newCall(request).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        // If the request failed, show an error message
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            Toast.makeText(getContext(), R.string.api_key_invalid,
-                                    Toast.LENGTH_SHORT).show();
-                        });
-                    }
-
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) {
-                        // If the request succeeded, save the token
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            MainApplication.getSharedPreferences().edit()
-                                    .putString("androidacy_api_token", newToken).apply();
-                            Toast.makeText(getContext(), R.string.api_key_valid,
-                                    Toast.LENGTH_SHORT).show();
-                        });
-                    }
-                });
-                return true;
-            });
             findPreference("pref_support").setOnPreferenceClickListener(p -> {
                 devModeStep = 0;
                 IntentHelper.openUrl(p.getContext(), "https://t.me/Fox2Code_Chat");
@@ -342,7 +292,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                             BuildConfig.VERSION_CODE + ")");
         }
 
-        private SharedPreferences.Editor getCrashReportingEditor(FragmentActivity requireActivity) {
+        private SharedPreferences.Editor getCrashReportingEditor(FragmentActivity
+                                                                         requireActivity) {
             return requireActivity.getSharedPreferences("crash_reporting", Context.MODE_PRIVATE).edit();
         }
 
@@ -398,6 +349,73 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 Objects.requireNonNull((Preference) findPreference(
                         "pref_androidacy_test_mode")).setVisible(false);
             }
+            String originalApiKey = MainApplication.getSharedPreferences()
+                    .getString("pref_androidacy_api_token", "");
+            // Create the pref_androidacy_repo_api_key text input with validation
+            EditTextPreference prefAndroidacyRepoApiKey = findPreference("pref_androidacy_repo_api_key");
+            prefAndroidacyRepoApiKey.setKey("pref_androidacy_repo_api_key");
+            prefAndroidacyRepoApiKey.setOnBindEditTextListener(editText -> {
+                editText.setSingleLine();
+                // Make the single line wrap
+                editText.setHorizontallyScrolling(false);
+                // Set the height to the height of 2 lines
+                editText.setHeight(editText.getLineHeight() * 2);
+            });
+            prefAndroidacyRepoApiKey.setOnPreferenceChangeListener((preference, newValue) -> {
+                // Curious if this actually works - so crash the app on purpose
+                // throw new RuntimeException("This is a test crash");
+                // get original api key
+                String apiKey = String.valueOf(newValue);
+                // Show progress dialog
+                ProgressDialog progressDialog = new ProgressDialog(getContext());
+                progressDialog.setMessage(getString(R.string.checking_api_key));
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+                // Check the API key on a background thread
+                new Thread(() -> {
+                    // If key is empty, just remove it and show a toast
+                    if (apiKey.isEmpty()) {
+                        MainApplication.getSharedPreferences().edit()
+                                .remove("pref_androidacy_repo_api_key").apply();
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            progressDialog.dismiss();
+                            Toast.makeText(getContext(), R.string.api_key_removed, Toast.LENGTH_SHORT).show();
+                        });
+                        return;
+                    } else {
+                        // If key < 64 chars, it's not valid
+                        if (apiKey.length() < 64) {
+                            new Handler(Looper.getMainLooper()).post(() -> {
+                                progressDialog.dismiss();
+                                Toast.makeText(getContext(), R.string.api_key_invalid, Toast.LENGTH_SHORT).show();
+                            });
+                            return;
+                        }
+                    }
+                    // Check the API key
+                    boolean valid = AndroidacyRepoData.getInstance().isValidToken(apiKey);
+                    // Update the UI on the main thread
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        progressDialog.dismiss();
+                        if (valid) {
+                            // Show a success message
+                            Toast.makeText(getContext(), R.string.api_key_valid,
+                                    Toast.LENGTH_SHORT).show();
+                            // Save the API key
+                            MainApplication.getSharedPreferences().edit()
+                                    .putString("pref_androidacy_api_token", apiKey).apply();
+                        } else {
+                            // Show an error message
+                            Toast.makeText(getContext(), R.string.api_key_invalid,
+                                    Toast.LENGTH_SHORT).show();
+                            // Restore the original API key
+                            MainApplication.getSharedPreferences().edit()
+                                    .putString("pref_androidacy_api_token", originalApiKey).apply();
+                        }
+                    });
+                }).start();
+                return true;
+            });
         }
 
         @SuppressLint("RestrictedApi")
@@ -411,7 +429,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 setRepoData(repoData, "pref_custom_repo_" + i);
                 if (initial) {
                     Preference preference =
-                        findPreference("pref_custom_repo_" + i + "_delete");
+                            findPreference("pref_custom_repo_" + i + "_delete");
                     if (preference == null) continue;
                     final int index = i;
                     preference.setOnPreferenceClickListener(preference1 -> {
@@ -450,7 +468,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                 public void run() {
                                     try {
                                         customRepoData.quickPrePopulate();
-                                    } catch (IOException|JSONException e) {
+                                    } catch (IOException | JSONException e) {
                                         Log.e(TAG, "Failed to preload repo values", e);
                                     }
                                     UiThreadHandler.handler.post(() -> updateCustomRepoList(false));
