@@ -161,4 +161,6 @@
     <string name="api_key_invalid">Could not validate API key. Please try again.</string>
     <string name="api_key_valid">API key is valid.</string>
     <string name="checking_api_key">Validating API key...</string>
+    <string name="validating_api_key">Validating API key...</string>
+    <string name="please_wait">Please wait</string>
 </resources>

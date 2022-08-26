@@ -3,14 +3,13 @@ package com.fox2code.mmm.settings;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.InputType;
-import android.text.method.PasswordTransformationMethod;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -54,16 +53,19 @@ import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Random;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 
 public class SettingsActivity extends FoxActivity implements LanguageActivity {
     private static final int LANGUAGE_SUPPORT_LEVEL = 1;
@@ -286,48 +288,42 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             // Set the summary to the current androidacy_api_token
             prefAndroidacyRepoApiKey.setSummary(MainApplication.getSharedPreferences()
                     .getString("androidacy_api_token", ""));
-            prefAndroidacyRepoApiKey.setOnBindEditTextListener(editText -> {
-                editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
-            });
-            // Bind ok button to save the new androidacy_api_token
-            // On hitting OK, save the new androidacy_api_token after checking it. While checking, show a progress dialog
+            // On user input, save the new androidacy_api_token after validating it
             prefAndroidacyRepoApiKey.setOnPreferenceChangeListener((preference, newValue) -> {
                 String newToken = String.valueOf(newValue);
-                if (newToken.isEmpty()) {
+                if (newToken.length() == 0) {
                     MainApplication.getSharedPreferences().edit()
                             .remove("androidacy_api_token").apply();
                     return true;
                 }
-                ProgressDialog progressDialog = new ProgressDialog(this.requireContext());
-                progressDialog.setMessage(getString(R.string.checking_api_key));
-                progressDialog.setCancelable(false);
-                progressDialog.show();
-                new Thread(() -> {
-                    try {
-                        String response = new OkHttpClient().newCall(new Request.Builder()
-                                .url("https://production-api.androidacy.com/auth/me")
-                                .header("Authorization", "Bearer " + newToken)
-                                .build()).execute().body().string();
-                        JSONObject jsonObject = new JSONObject(response);
-                        if (!jsonObject.has("role")) {
-                            throw new IOException("Invalid response");
-                        }
-                        MainApplication.getSharedPreferences().edit()
-                                .putString("androidacy_api_token", newToken).apply();
-                        progressDialog.dismiss();
-                        this.requireActivity().runOnUiThread(() -> {
-                            prefAndroidacyRepoApiKey.setSummary(newToken);
-                            Toast.makeText(this.requireContext(),
-                                    R.string.api_key_valid, Toast.LENGTH_SHORT).show();
+                // Call the androidacy api to validate the token
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder()
+                        .url("https://production-api.androidacy.com/auth/me")
+                        .header("Authorization", "Bearer " + newToken)
+                        .build();
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        // If the request failed, show an error message
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            Toast.makeText(getContext(), R.string.api_key_invalid,
+                                    Toast.LENGTH_SHORT).show();
                         });
-                    } catch (IOException | JSONException e) {
-                        progressDialog.dismiss();
-                        this.requireActivity().runOnUiThread(() -> Toast.makeText(this.requireContext(),
-                                R.string.api_key_invalid, Toast.LENGTH_SHORT).show());
                     }
-                }).start();
-                return false;
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) {
+                        // If the request succeeded, save the token
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            MainApplication.getSharedPreferences().edit()
+                                    .putString("androidacy_api_token", newToken).apply();
+                            Toast.makeText(getContext(), R.string.api_key_valid,
+                                    Toast.LENGTH_SHORT).show();
+                        });
+                    }
+                });
+                return true;
             });
             findPreference("pref_support").setOnPreferenceClickListener(p -> {
                 devModeStep = 0;

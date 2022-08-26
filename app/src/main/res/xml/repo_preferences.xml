@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
         app:key="pref_magisk_alt_repo"
         app:title="@string/loading">
@@ -65,7 +66,10 @@
             app:icon="@drawable/ic_baseline_security_24"
             app:title="@string/api_key"
             app:summary="@string/api_key_summary"
-            app:singleLineTitle="false" />
+            app:singleLineTitle="false"
+            app:dialogTitle="@string/api_key"
+            app:dialogMessage="@string/api_key_summary"
+            android:imeOptions="actionDone" />
         <SwitchPreferenceCompat
             app:defaultValue="false"
             app:key="pref_androidacy_test_mode"
