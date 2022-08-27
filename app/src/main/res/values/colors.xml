@@ -24,4 +24,5 @@
     <color name="light_colorBackgroundFloating">#FFFFFFFF</color>
     <color name="light_backgroundColor">#FFFFFFFF</color>
     <color name="light_chipBackgroundColor">#FFDADADA</color>
+    <color name="gray_900">#3A3A3A</color>
 </resources>

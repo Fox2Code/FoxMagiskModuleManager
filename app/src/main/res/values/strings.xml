@@ -165,4 +165,7 @@
     <string name="please_wait">Please wait</string>
     <string name="api_key_removed">Successfully reset API key</string>
     <string name="save_api_key">Validate</string>
+    <string name="warning">Warning!</string>
+    <string name="androidacy_test_mode_warning">You are setting the app to use a non-production endpoint for Androidacy. This may result in app instability and failure to load the online repo. Do NOT report bugs if you have this switch on. Change will take effect on app restart.</string>
+    <string name="crash">Crash the app for testing</string>
 </resources>

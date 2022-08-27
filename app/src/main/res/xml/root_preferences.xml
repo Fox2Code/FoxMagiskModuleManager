@@ -3,161 +3,165 @@
     <!-- Custom repos has been announced, check https://github.com/Fox2Code/FoxMagiskModuleManager/issues/131 -->
     <PreferenceCategory app:title="@string/pref_category_repos">
         <Preference
-            app:key="pref_manage_repos"
             app:icon="@drawable/ic_baseline_extension_24"
-            app:title="@string/manage_repos_pref"
-            app:singleLineTitle="false"	/>
+            app:key="pref_manage_repos"
+            app:singleLineTitle="false"
+            app:title="@string/manage_repos_pref" />
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
-            app:key="pref_show_incompatible"
             app:icon="@drawable/ic_baseline_hide_source_24"
-            app:title="@string/show_incompatible_pref"
+            app:key="pref_show_incompatible"
+            app:singleLineTitle="false"
             app:summary="@string/show_incompatible_desc"
-            app:singleLineTitle="false"	/>
+            app:title="@string/show_incompatible_pref" />
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
-            app:key="pref_disable_low_quality_module_filter"
             app:icon="@drawable/ic_baseline_warning_24"
-            app:title="@string/disable_low_quality_module_filter_pref"
+            app:key="pref_disable_low_quality_module_filter"
+            app:singleLineTitle="false"
             app:summary="@string/disable_low_quality_module_filter_desc"
-            app:singleLineTitle="false"	/>
+            app:title="@string/disable_low_quality_module_filter_pref" />
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
-            app:key="pref_use_magisk_install_command"
             app:icon="@drawable/ic_baseline_numbers_24"
-            app:title="@string/use_magisk_install_command_pref"
+            app:key="pref_use_magisk_install_command"
+            app:singleLineTitle="false"
             app:summary="@string/use_magisk_install_command_desc"
-            app:singleLineTitle="false"	/>
+            app:title="@string/use_magisk_install_command_pref" />
 
         <SwitchPreferenceCompat
             app:defaultValue="true"
-            app:key="pref_background_update_check"
             app:icon="@drawable/ic_baseline_notifications_24"
-            app:title="@string/notification_update_pref"
+            app:key="pref_background_update_check"
+            app:singleLineTitle="false"
             app:summary="@string/notification_update_desc"
-            app:singleLineTitle="false"	/>
+            app:title="@string/notification_update_pref" />
 
         <Preference
             app:key="pref_background_update_check_debug"
-            app:title="@string/notification_update_debug_pref"
-            app:singleLineTitle="false"	/>
+            app:singleLineTitle="false"
+            app:title="@string/notification_update_debug_pref" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/pref_category_appearance">
         <ListPreference
-            app:key="pref_theme"
-            app:icon="@drawable/ic_baseline_palette_24"
-            app:title="@string/theme_pref"
             app:defaultValue="system"
             app:entries="@array/theme_values_names"
             app:entryValues="@array/theme_values"
-            app:singleLineTitle="false"	/>
+            app:icon="@drawable/ic_baseline_palette_24"
+            app:key="pref_theme"
+            app:singleLineTitle="false"
+            app:title="@string/theme_pref" />
 
         <Preference
-            app:key="pref_language_selector"
             app:icon="@drawable/ic_baseline_language_24"
-            app:title="@string/language"	/>
+            app:key="pref_language_selector"
+            app:title="@string/language" />
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
-            app:key="pref_enable_blur"
             app:icon="@drawable/ic_baseline_blur_on_24"
-            app:title="@string/enable_blur_pref"
-            app:singleLineTitle="false" />
+            app:key="pref_enable_blur"
+            app:singleLineTitle="false"
+            app:title="@string/enable_blur_pref" />
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
-            app:key="pref_force_dark_terminal"
             app:icon="@drawable/ic_baseline_list_24"
-            app:title="@string/force_dark_terminal_title"
-            app:singleLineTitle="false"	/>
+            app:key="pref_force_dark_terminal"
+            app:singleLineTitle="false"
+            app:title="@string/force_dark_terminal_title" />
 
         <SwitchPreferenceCompat
             app:defaultValue="@bool/monet_enabled_by_default"
-            app:key="pref_enable_monet"
             app:icon="@drawable/ic_baseline_design_services_24"
-            app:title="@string/enable_monet"
-            app:singleLineTitle="false" />
+            app:key="pref_enable_monet"
+            app:singleLineTitle="false"
+            app:title="@string/enable_monet" />
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
-            app:key="pref_wrap_text"
             app:icon="@drawable/ic_baseline_keyboard_return_24"
-            app:title="@string/wrap_text_pref"
+            app:key="pref_wrap_text"
+            app:singleLineTitle="false"
             app:summary="@string/wrap_text_desc"
-            app:singleLineTitle="false"	/>
+            app:title="@string/wrap_text_pref" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/pref_category_security">
         <SwitchPreferenceCompat
             app:defaultValue="true"
-            app:key="pref_dns_over_https"
             app:icon="@drawable/ic_baseline_security_24"
-            app:title="@string/dns_over_https_pref"
+            app:key="pref_dns_over_https"
+            app:singleLineTitle="false"
             app:summary="@string/dns_over_https_desc"
-            app:singleLineTitle="false"	/>
+            app:title="@string/dns_over_https_pref" />
         <!-- Note: Lockdown mode used to be called showcase mode -->
         <SwitchPreferenceCompat
             app:defaultValue="false"
-            app:key="pref_showcase_mode"
             app:icon="@drawable/ic_baseline_lock_24"
-            app:title="@string/showcase_mode_pref"
+            app:key="pref_showcase_mode"
+            app:singleLineTitle="false"
             app:summary="@string/showcase_mode_desc"
-            app:singleLineTitle="false"	/>
+            app:title="@string/showcase_mode_pref" />
 
         <SwitchPreferenceCompat
             app:defaultValue="true"
-            app:key="pref_prevent_reboot"
             app:icon="@drawable/ic_reboot_24"
-            app:title="@string/prevent_reboot_pref"
+            app:key="pref_prevent_reboot"
+            app:singleLineTitle="false"
             app:summary="@string/prevent_reboot_desc"
-            app:singleLineTitle="false"	/>
+            app:title="@string/prevent_reboot_pref" />
         <!-- Crash reporting -->
         <SwitchPreferenceCompat
             app:defaultValue="true"
-            app:key="pref_crash_reporting"
             app:icon="@drawable/ic_baseline_bug_report_24"
-            app:title="@string/crash_reporting"
+            app:key="pref_crash_reporting"
+            app:singleLineTitle="false"
             app:summary="@string/crash_reporting_desc"
-            app:singleLineTitle="false"	/>
-
+            app:title="@string/crash_reporting" />
+        <!-- Purposely crash the app -->
+        <Preference
+            app:icon="@drawable/ic_baseline_bug_report_24"
+            app:key="pref_crash"
+            app:singleLineTitle="false"
+            app:title="@string/crash" />
     </PreferenceCategory>
 
-    <PreferenceCategory
-        app:title="@string/pref_category_info">
+    <PreferenceCategory app:title="@string/pref_category_info">
         <Preference
-            app:key="pref_update"
             app:icon="@drawable/ic_baseline_system_update_24"
-            app:title="@string/app_update"
-            app:singleLineTitle="false"	/>
-        <Preference
-            app:key="pref_report_bug"
-            app:icon="@drawable/ic_baseline_bug_report_24"
-            app:title="@string/report_bugs"
-            app:singleLineTitle="false"	/>
-        <Preference
-            app:key="pref_source_code"
-            app:icon="@drawable/ic_github"
-            app:title="@string/source_code"
-            app:singleLineTitle="false"	/>
-        <Preference
-            app:key="pref_support"
-            app:icon="@drawable/ic_baseline_telegram_24"
-            app:title="@string/support"
-            app:singleLineTitle="false"	/>
-        <Preference
-            app:key="pref_show_licenses"
-            app:icon="@drawable/ic_baseline_info_24"
-            app:title="@string/show_licenses"
-            app:singleLineTitle="false"	/>
-        <Preference
-            app:key="pref_pkg_info"
-            app:enabled="false"
-            app:summary="@string/loading"
+            app:key="pref_update"
             app:singleLineTitle="false"
-            app:iconSpaceReserved="false"	/>
+            app:title="@string/app_update" />
+        <Preference
+            app:icon="@drawable/ic_baseline_bug_report_24"
+            app:key="pref_report_bug"
+            app:singleLineTitle="false"
+            app:title="@string/report_bugs" />
+        <Preference
+            app:icon="@drawable/ic_github"
+            app:key="pref_source_code"
+            app:singleLineTitle="false"
+            app:title="@string/source_code" />
+        <Preference
+            app:icon="@drawable/ic_baseline_telegram_24"
+            app:key="pref_support"
+            app:singleLineTitle="false"
+            app:title="@string/support" />
+        <Preference
+            app:icon="@drawable/ic_baseline_info_24"
+            app:key="pref_show_licenses"
+            app:singleLineTitle="false"
+            app:title="@string/show_licenses" />
+        <Preference
+            app:enabled="false"
+            app:iconSpaceReserved="false"
+            app:key="pref_pkg_info"
+            app:singleLineTitle="false"
+            app:summary="@string/loading" />
     </PreferenceCategory>
 </PreferenceScreen>
