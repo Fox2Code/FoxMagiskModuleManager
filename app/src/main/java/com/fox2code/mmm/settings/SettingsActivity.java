@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
@@ -337,6 +338,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
     public static class RepoFragment extends PreferenceFragmentCompat {
         private static final int CUSTOM_REPO_ENTRIES = 5;
 
+        @SuppressLint("RestrictedApi")
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             getPreferenceManager().setSharedPreferencesName("mmm");
@@ -353,14 +355,16 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     .getString("pref_androidacy_api_token", "");
             // Create the pref_androidacy_repo_api_key text input with validation
             EditTextPreference prefAndroidacyRepoApiKey = findPreference("pref_androidacy_repo_api_key");
-            prefAndroidacyRepoApiKey.setKey("pref_androidacy_repo_api_key");
             prefAndroidacyRepoApiKey.setOnBindEditTextListener(editText -> {
                 editText.setSingleLine();
                 // Make the single line wrap
                 editText.setHorizontallyScrolling(false);
                 // Set the height to the height of 2 lines
-                editText.setHeight(editText.getLineHeight() * 2);
+                editText.setHeight(editText.getLineHeight() * 3);
+                // Make ok button say "Save"
+                editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
             });
+            prefAndroidacyRepoApiKey.setPositiveButtonText(R.string.save_api_key);
             prefAndroidacyRepoApiKey.setOnPreferenceChangeListener((preference, newValue) -> {
                 // Curious if this actually works - so crash the app on purpose
                 // throw new RuntimeException("This is a test crash");
@@ -387,6 +391,14 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         if (apiKey.length() < 64) {
                             new Handler(Looper.getMainLooper()).post(() -> {
                                 progressDialog.dismiss();
+                                // Save the original key
+                                MainApplication.getSharedPreferences().edit()
+                                        .putString("pref_androidacy_api_token", originalApiKey).apply();
+                                // Re-show the dialog with an error
+                                prefAndroidacyRepoApiKey.performClick();
+                                // Show error
+                                prefAndroidacyRepoApiKey.setDialogMessage(getString(R.string.api_key_invalid));
+                                // Set the error color
                                 Toast.makeText(getContext(), R.string.api_key_invalid, Toast.LENGTH_SHORT).show();
                             });
                             return;

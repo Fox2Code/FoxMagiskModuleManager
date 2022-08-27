@@ -51,6 +51,7 @@
             app:dialogIcon="@drawable/ic_baseline_vpn_key_24"
             app:dependency="pref_androidacy_repo_enabled"
             android:inputType="text"
+            android:selectAllOnFocus="true"
             android:imeOptions="actionDone" />
         <SwitchPreferenceCompat
             app:defaultValue="false"
