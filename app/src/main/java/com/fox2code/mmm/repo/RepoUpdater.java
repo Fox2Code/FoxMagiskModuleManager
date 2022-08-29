@@ -48,7 +48,7 @@ public class RepoUpdater {
             // Return repo to update
             return this.toUpdate.size();
         } catch (Exception e) {
-            Log.e(TAG, "Failed to get manifest", e);
+            Log.e(TAG, "Failed to get manifest of " + this.repoData.id, e);
             this.indexRaw = null;
             this.toUpdate = Collections.emptyList();
             this.toApply = Collections.emptySet();

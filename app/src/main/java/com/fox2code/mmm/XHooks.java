@@ -17,6 +17,11 @@ import com.fox2code.mmm.repo.RepoManager;
 @Keep
 public class XHooks {
     @Keep
+    public static void onRepoManagerInitialize() {
+        // Call addXRepo here if you are an XPosed module
+    }
+
+    @Keep
     public static void onRepoManagerInitialized() {}
 
     @Keep

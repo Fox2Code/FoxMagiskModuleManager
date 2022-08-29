@@ -380,10 +380,13 @@ public class PropUtils {
                 moduleId.substring(1).replace('_', ' ');
     }
 
+    public static boolean isNullString(String string) {
+        return string == null || string.isEmpty() || "null".equals(string);
+    }
+
     // Make versionName no longer than 16 charters to avoid UI overflow.
     public static String shortenVersionName(String versionName, long versionCode) {
-        if (versionName == null || versionName.isEmpty() ||
-                "null".equals(versionName)) return "v" + versionCode;
+        if (isNullString(versionName)) return "v" + versionCode;
         if (versionName.length() <= 16) return versionName;
         int i = versionName.lastIndexOf('.');
         if (i != -1 && i <= 16 && versionName.indexOf('.') != i

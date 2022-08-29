@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.XHooks;
 import com.fox2code.mmm.androidacy.AndroidacyRepoData;
@@ -12,14 +14,16 @@ import com.fox2code.mmm.utils.Files;
 import com.fox2code.mmm.utils.Hashes;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.PropUtils;
+import com.fox2code.mmm.utils.SyncManager;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 
-public final class RepoManager {
+public final class RepoManager extends SyncManager {
     private static final String TAG = "RepoManager";
 
     private static final String MAGISK_REPO_MANAGER =
@@ -75,6 +79,7 @@ public final class RepoManager {
     private boolean initialized;
 
     private RepoManager(MainApplication mainApplication) {
+        INSTANCE = this; // Set early fox XHooks
         this.initialized = false;
         this.mainApplication = mainApplication;
         this.repoData = new LinkedHashMap<>();
@@ -90,6 +95,7 @@ public final class RepoManager {
         dgRepo.defaultWebsite = "https://dergoogler.com/repo";
         this.androidacyRepoData = this.addAndroidacyRepoData();
         this.customRepoManager = new CustomRepoManager(mainApplication, this);
+        XHooks.onRepoManagerInitialize();
         // Populate default cache
         boolean x = false;
         for (RepoData repoData:this.repoData.values()) {
@@ -136,7 +142,7 @@ public final class RepoManager {
         if (DG_MAGISK_REPO.equals(url))
             url = DG_MAGISK_REPO_GITHUB;
         RepoData repoData;
-        synchronized (this.repoUpdateLock) {
+        synchronized (this.syncLock) {
             repoData = this.repoData.get(url);
             if (repoData == null) {
                 if (ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT.equals(url) ||
@@ -152,57 +158,18 @@ public final class RepoManager {
         return repoData;
     }
 
-    public interface UpdateListener {
-        void update(double value);
-    }
-
-    private final Object repoUpdateLock = new Object();
-    private boolean repoUpdating;
     private boolean repoLastResult = true;
-
-    public boolean isRepoUpdating() {
-        return this.repoUpdating;
-    }
-
-    public void afterUpdate() {
-        if (this.repoUpdating) synchronized (this.repoUpdateLock) {}
-    }
-
-    public void runAfterUpdate(Runnable runnable) {
-        synchronized (this.repoUpdateLock) {
-            runnable.run();
-        }
-    }
-
-    // MultiThread friendly method
-    public void update(UpdateListener updateListener) {
-        if (updateListener == null)
-            updateListener = value -> {};
-        if (!this.repoUpdating) {
-            // Do scan
-            synchronized (this.repoUpdateLock) {
-                this.repoUpdating = true;
-                try {
-                    this.repoLastResult =
-                            this.scanInternal(updateListener);
-                } finally {
-                    this.repoUpdating = false;
-                }
-            }
-        } else {
-            // Wait for current scan
-            synchronized (this.repoUpdateLock) {}
-        }
-    }
 
     private static final double STEP1 = 0.1D;
     private static final double STEP2 = 0.8D;
     private static final double STEP3 = 0.1D;
 
-    private boolean scanInternal(UpdateListener updateListener) {
+    protected void scanInternal(@NonNull UpdateListener updateListener) {
         this.modules.clear();
         updateListener.update(0D);
-        RepoData[] repoDatas = this.repoData.values().toArray(new RepoData[0]);
+        // Using LinkedHashSet to deduplicate Androidacy entry.
+        RepoData[] repoDatas = new LinkedHashSet<>(
+                this.repoData.values()).toArray(new RepoData[0]);
         RepoUpdater[] repoUpdaters = new RepoUpdater[repoDatas.length];
         int moduleToUpdate = 0;
         for (int i = 0; i < repoDatas.length; i++) {
@@ -215,7 +182,7 @@ public final class RepoManager {
         for (int i = 0; i < repoUpdaters.length; i++) {
             List<RepoModule> repoModules = repoUpdaters[i].toUpdate();
             RepoData repoData = repoDatas[i];
-            Log.d(TAG, "Registering " + repoData.name);
+            Log.d(TAG, "Registering " + repoData.getName());
             for (RepoModule repoModule:repoModules) {
                 try {
                     if (repoModule.propUrl != null &&
@@ -261,7 +228,7 @@ public final class RepoManager {
         }
         Log.i(TAG, "Got " + this.modules.size() + " modules!");
         updateListener.update(1D);
-        return hasInternet;
+        this.repoLastResult = hasInternet;
     }
 
     public void updateEnabledStates() {
