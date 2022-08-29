@@ -34,6 +34,7 @@ android {
         "default" {
             dimension "type"
             buildConfigField "boolean", "ENABLE_AUTO_UPDATER", "true"
+            buildConfigField "boolean", "DEFAULT_ENABLE_CRASH_REPORTING", "true"
             buildConfigField(
                 "java.util.List<String>",
                 "ENABLED_REPOS",
@@ -49,6 +50,9 @@ android {
             // forbids downloading blobs from third-party websites (and F-Droid APK isn't signed
             // with our keys, so the APK wouldn't install anyways).
             buildConfigField "boolean", "ENABLE_AUTO_UPDATER", "false"
+
+            // Disable crash reporting for F-Droid flavor by default
+            buildConfigField "boolean", "DEFAULT_ENABLE_CRASH_REPORTING", "false"
 
             // Repo with ads or tracking feature are disabled by default for the
             // F-Droid flavor.
@@ -79,6 +83,8 @@ configurations {
 }
 
 dependencies {
+    // Error reporting
+    implementation 'io.sentry:sentry-android:6.4.0'
     // UI
     implementation 'androidx.appcompat:appcompat:1.5.0'
     implementation 'androidx.emoji2:emoji2:1.2.0'
@@ -87,7 +93,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-    implementation 'androidx.webkit:webkit:1.4.0'
+    implementation 'androidx.webkit:webkit:1.5.0'
     implementation 'com.google.android.material:material:1.6.1'
     implementation "com.mikepenz:aboutlibraries:${latestAboutLibsRelease}"
     implementation "dev.rikka.rikkax.layoutinflater:layoutinflater:1.2.0"
