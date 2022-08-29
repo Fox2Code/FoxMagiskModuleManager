@@ -37,7 +37,7 @@ android {
             buildConfigField(
                 "java.util.List<String>",
                 "ENABLED_REPOS",
-                "java.util.Arrays.asList(\"magisk_alt_repo\", \"dg_magisk_repo\", \"androidacy_repo\")",
+                "java.util.Arrays.asList(\"magisk_alt_repo\", \"androidacy_repo\")",
             )
         }
 

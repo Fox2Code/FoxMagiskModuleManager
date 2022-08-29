@@ -24,12 +24,15 @@ import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.repo.RepoModule;
+import com.fox2code.mmm.utils.PropUtils;
 
+import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class BackgroundUpdateChecker extends Worker {
     private static boolean easterEggActive = false;
+    static final Object lock = new Object(); // Avoid concurrency issues
     public static final String NOTIFICATION_CHANNEL_ID = "background_update";
     public static final int NOTIFICATION_ID = 1;
 
@@ -43,9 +46,9 @@ public class BackgroundUpdateChecker extends Worker {
     public Result doWork() {
         if (!NotificationManagerCompat.from(this.getApplicationContext()).areNotificationsEnabled()
                 || !MainApplication.isBackgroundUpdateCheckEnabled()) return Result.success();
-
-        doCheck(this.getApplicationContext());
-
+        synchronized (lock) {
+            doCheck(this.getApplicationContext());
+        }
         return Result.success();
     }
 
@@ -53,18 +56,20 @@ public class BackgroundUpdateChecker extends Worker {
         Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
         RepoManager.getINSTANCE().update(null);
         ModuleManager.getINSTANCE().scan();
-        ModuleManager.getINSTANCE().scan();
         int moduleUpdateCount = 0;
+        HashMap<String, RepoModule> repoModules =
+                RepoManager.getINSTANCE().getModules();
         for (LocalModuleInfo localModuleInfo :
                 ModuleManager.getINSTANCE().getModules().values()) {
             if ("twrp-keep".equals(localModuleInfo.id)) continue;
-            RepoModule repoModule = RepoManager.getINSTANCE()
-                    .getModules().get(localModuleInfo.id);
+            RepoModule repoModule = repoModules.get(localModuleInfo.id);
             localModuleInfo.checkModuleUpdate();
-            if (localModuleInfo.updateVersionCode > localModuleInfo.versionCode) {
+            if (localModuleInfo.updateVersionCode > localModuleInfo.versionCode &&
+                    !PropUtils.isNullString(localModuleInfo.updateVersion)) {
                 moduleUpdateCount++;
             } else if (repoModule != null &&
-                    repoModule.moduleInfo.versionCode > localModuleInfo.versionCode) {
+                    repoModule.moduleInfo.versionCode > localModuleInfo.versionCode &&
+                    !PropUtils.isNullString(repoModule.moduleInfo.version)) {
                 moduleUpdateCount++;
             }
         }

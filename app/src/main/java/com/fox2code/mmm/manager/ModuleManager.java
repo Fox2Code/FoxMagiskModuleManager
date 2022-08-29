@@ -3,9 +3,13 @@ package com.fox2code.mmm.manager;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.installer.InstallerInitializer;
+import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.PropUtils;
+import com.fox2code.mmm.utils.SyncManager;
 import com.topjohnwu.superuser.Shell;
 import com.topjohnwu.superuser.io.SuFile;
 import com.topjohnwu.superuser.io.SuFileInputStream;
@@ -17,7 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public final class ModuleManager {
+public final class ModuleManager extends SyncManager {
     private static final String TAG = "ModuleManager";
 
     private static final int FLAG_MM_INVALID = ModuleInfo.FLAG_METADATA_INVALID;
@@ -28,9 +32,7 @@ public final class ModuleManager {
     private static final int FLAGS_RESET_UPDATE = FLAG_MM_INVALID | FLAG_MM_UNPROCESSED;
     private final HashMap<String, LocalModuleInfo> moduleInfos;
     private final SharedPreferences bootPrefs;
-    private final Object scanLock = new Object();
     private int updatableModuleCount = 0;
-    private boolean scanning;
 
     private static final ModuleManager INSTANCE = new ModuleManager();
 
@@ -43,36 +45,7 @@ public final class ModuleManager {
         this.bootPrefs = MainApplication.getBootSharedPreferences();
     }
 
-    // MultiThread friendly method
-    public void scan() {
-        if (!this.scanning) {
-            // Do scan
-            synchronized (scanLock) {
-                this.scanning = true;
-                try {
-                    this.scanInternal();
-                } finally {
-                    this.scanning = false;
-                }
-            }
-        } else {
-            // Wait for current scan
-            synchronized (scanLock) {}
-        }
-    }
-
-    // Pause execution until the scan is completed if one is currently running
-    public void afterScan() {
-        if (this.scanning) synchronized (this.scanLock) {}
-    }
-
-    public void runAfterScan(Runnable runnable) {
-        synchronized (this.scanLock) {
-            runnable.run();
-        }
-    }
-
-    private void scanInternal() {
+    protected void scanInternal(@NonNull UpdateListener updateListener) {
         boolean firstBoot = MainApplication.isFirstBoot();
         boolean firstScan = this.bootPrefs.getBoolean("mm_first_scan", true);
         SharedPreferences.Editor editor = firstScan ? this.bootPrefs.edit() : null;

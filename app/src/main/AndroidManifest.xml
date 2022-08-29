@@ -18,6 +18,8 @@
     <!-- Supposed to fix bugs with old firmware, only requested on pre Marshmallow -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="22" />
+    <!-- Post background notifications -->
+    <uses-permission-sdk-23 android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".MainApplication"
