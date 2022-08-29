@@ -37,6 +37,7 @@ import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
+import io.sentry.android.core.SentryAndroid;
 
 public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRefreshListener,
         SearchView.OnQueryTextListener, SearchView.OnCloseListener,

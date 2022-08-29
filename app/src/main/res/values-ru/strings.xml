@@ -120,8 +120,9 @@
     <string name="add_repo">Добавить репо</string>
     <string name="remove_repo">Убрать репо</string>
     <string name="custom_url">Свой URL</string>
-    <string name="androidacy_repo_info">Репо Androidacy содержит рекламу и трекеры.</string>
     <string name="backup_module_list">Резервное копирование модулей</string>
     <string name="restore_module_list">Восстановить модули</string>
     <string name="require_internet">Для этого действия потребуется подключение к Интернету</string>
+    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
+    <string name="api_key">Androidacy API Key</string>
 </resources>

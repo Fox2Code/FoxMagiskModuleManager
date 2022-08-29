@@ -119,8 +119,9 @@
     <string name="add_repo">Thêm kho</string>
     <string name="remove_repo">Gỡ kho</string>
     <string name="custom_url">Url tuỳ chỉnh</string>
-    <string name="androidacy_repo_info">Kho Androidacy có các quảng cáo và trình theo dõi.</string>
     <string name="backup_module_list">Sao lưu mô-đun</string>
     <string name="restore_module_list">Khôi phục mô-đun</string>
     <string name="require_internet">Quá trình này yêu cầu kết nối internet</string>
+    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
+    <string name="api_key">Androidacy API Key</string>
 </resources>

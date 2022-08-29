@@ -129,7 +129,7 @@
     <string name="add_repo">Add Repo</string>
     <string name="remove_repo">Remove Repo</string>
     <string name="custom_url">Custom url</string>
-    <string name="androidacy_repo_info">The Androidacy repo has ads and trackers.</string>
+    <string name="androidacy_repo_info">This repository may display some non-intrusive advertising to cover server and development costs.</string>
     <string name="backup_module_list">Backup modules</string>
     <string name="restore_module_list">Restore modules</string>
     <string name="require_internet">This operation require an internet connection</string>
@@ -152,4 +152,20 @@
         not up-to-date, please consider contributing to the app translations on GitHub</string>
     <!-- Replace with your own username when translating -->
     <string name="language_translated_by">Translated by Fox2Code</string>
+    <string name="crash_reporting">Automatically report bugs and performance to the developers</string>
+    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
+    <string name="api_key">Androidacy API Key</string>
+    <string name="api_key_summary">Use a custom API key for Androidacy. Useful for premium subscribers, to remove ads and more.</string>
+    <string name="api_key_not_set">Androidacy API key is empty</string>
+    <string name="api_key_set">Current Androidacy API key</string>
+    <string name="api_key_invalid">Could not validate API key. Please check it and try again.</string>
+    <string name="api_key_valid">API key is valid.</string>
+    <string name="checking_api_key">Validating API key...</string>
+    <string name="validating_api_key">Validating API key...</string>
+    <string name="please_wait">Please wait</string>
+    <string name="api_key_removed">Successfully reset API key</string>
+    <string name="save_api_key">Validate</string>
+    <string name="warning">Warning!</string>
+    <string name="androidacy_test_mode_warning">You are setting the app to use a non-production endpoint for Androidacy. This may result in app instability and failure to load the online repo. Do NOT report bugs if you have this switch on. Change will take effect on app restart.</string>
+    <string name="crash">Crash the app for testing</string>
 </resources>

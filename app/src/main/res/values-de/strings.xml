@@ -94,7 +94,6 @@
     <string name="add_repo">Repo hinzufügen</string>
     <string name="remove_repo">Repo entfernen</string>
     <string name="custom_url">Eigene URL</string>
-    <string name="androidacy_repo_info">Das Androidacy-Repo enthält Anzeigen und Tracker.</string>
     <string name="backup_module_list">Backup Modules</string>
     <string name="restore_module_list">Module wiederherstellen</string>
     <string name="require_internet">Dieser Vorgang erfordert eine Internetverbindung</string>
@@ -103,4 +102,6 @@
     <string name="description">Beschreibung</string>
     <string name="uninstall">Deinstallieren</string>
     <string name="config">Konfig</string>
+    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
+    <string name="api_key">Androidacy API Key</string>
 </resources>

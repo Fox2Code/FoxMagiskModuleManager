@@ -21,24 +21,23 @@ import org.json.JSONObject;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import okhttp3.Cookie;
 import okhttp3.HttpUrl;
 
 @SuppressWarnings("KotlinInternalInJava")
 public final class AndroidacyRepoData extends RepoData {
     private static final String TAG = "AndroidacyRepoData";
-    private static final HttpUrl OK_HTTP_URL;
+
     static {
         HttpUrl.Builder OK_HTTP_URL_BUILDER =
                 new HttpUrl.Builder().scheme("https");
         // Using HttpUrl.Builder.host(String) crash the app
         OK_HTTP_URL_BUILDER.setHost$okhttp(".androidacy.com");
-        OK_HTTP_URL = OK_HTTP_URL_BUILDER.build();
+        OK_HTTP_URL_BUILDER.build();
     }
+
     // Avoid spamming requests to Androidacy
     private long androidacyBlockade = 0;
     private String token = null;
@@ -60,28 +59,34 @@ public final class AndroidacyRepoData extends RepoData {
         this.defaultSupport = "https://t.me/androidacy_discussions";
         this.defaultDonate = "https://www.androidacy.com/membership-join/?utm_source=foxmmm&utm-medium=app&utm_campaign=fox-inapp";
         this.defaultSubmitModule = "https://www.androidacy.com/module-repository-applications/";
-        this.host = testMode ? "staging-api.androidacy.com" : "api.androidacy.com";
+        this.host = testMode ? "staging-api.androidacy.com" : "production-api.androidacy.com";
         this.testMode = testMode;
-    }
-
-    private static String getCookies() {
-        if (Http.hasWebView()) {
-            return CookieManager.getInstance().getCookie("https://.androidacy.com/");
-        } else {
-            Iterator<Cookie> cookies = Http.getCookieJar()
-                    .loadForRequest(OK_HTTP_URL).iterator();
-            if (!cookies.hasNext()) return "";
-            StringBuilder stringBuilder = new StringBuilder();
-            while (true) {
-                stringBuilder.append(cookies.next().toString());
-                if (!cookies.hasNext()) return stringBuilder.toString();
-                stringBuilder.append(",");
-            }
-        }
     }
 
     public static AndroidacyRepoData getInstance() {
         return RepoManager.getINSTANCE().getAndroidacyRepoData();
+    }
+
+    public <string> boolean isValidToken(string token) {
+        try {
+            Http.doHttpGet("https://" + this.host + "/auth/me?token=" + token, false);
+        } catch (Exception e) {
+            if ("Received error code: 419".equals(e.getMessage()) ||
+                    "Received error code: 429".equals(e.getMessage())) {
+                Log.e(TAG, "We are being rate limited!", e);
+                long time = System.currentTimeMillis();
+                this.androidacyBlockade = time + 3_600_000L;
+                return false;
+            }
+            Log.w(TAG, "Invalid token, resetting...");
+            // Remove saved preference
+            SharedPreferences.Editor editor = this.cachedPreferences.edit();
+            editor.remove("androidacy_api_token");
+            editor.apply();
+            return false;
+        }
+        // If status code is 200, we are good
+        return true;
     }
 
     @Override
@@ -91,57 +96,33 @@ public final class AndroidacyRepoData extends RepoData {
         long time = System.currentTimeMillis();
         if (this.androidacyBlockade > time) return false;
         this.androidacyBlockade = time + 30_000L;
-        String cookies = AndroidacyRepoData.getCookies();
-        int start = cookies == null ? -1 : cookies.indexOf("USER=") + 5;
-        String token = null;
-        if (start != -1) {
-            int end = cookies.indexOf(";", start);
-            if (end != -1)
-                token = cookies.substring(start, end);
-        }
+        // Get token from androidacy_api_token shared preference
+        String token = this.cachedPreferences.getString("androidacy_api_token", null);
         if (token != null) {
-            try {
-                Http.doHttpGet("https://" + this.host + "/auth/me?token=" + token, true);
-            } catch (Exception e) {
-                if ("Received error code: 419".equals(e.getMessage()) ||
-                        "Received error code: 429".equals(e.getMessage())) {
-                    Log.e(TAG, "We are being rate limited!", e);
-                    this.androidacyBlockade = time + 3_600_000L;
-                    return false;
-                }
-                Log.w(TAG, "Invalid token, resetting...");
-                if (Http.hasWebView()) {
-                    CookieManager.getInstance().setCookie("https://.androidacy.com/",
-                            "USER=; expires=Thu, 01 Jan 1970 00:00:00 GMT;" +
-                                    " path=/; secure; domain=.androidacy.com");
-                } else {
-                    Http.getCookieJar().saveFromResponse(
-                            OK_HTTP_URL, Collections.emptyList());
-                }
-                this.token = token = null;
+            this.token = token;
+            if (!isValidToken(token)) {
+                token = null;
             }
         }
         if (token == null) {
             try {
                 Log.i(TAG, "Refreshing token...");
+                // POST request to https://production-api.androidacy.com/auth/register
                 token = new String(Http.doHttpPost(
                         "https://" + this.host + "/auth/register",
-                        "",true), StandardCharsets.UTF_8);
-                if (Http.hasWebView()) {
-                    CookieManager.getInstance().setCookie("https://.androidacy.com/",
-                            "USER=" + token + "; expires=Fri, 31 Dec 9999 23:59:59 GMT;" +
-                                    " path=/; secure; domain=.androidacy.com");
-                } else {
-                    Http.getCookieJar().saveFromResponse(OK_HTTP_URL,
-                            Collections.singletonList(Cookie.parse(OK_HTTP_URL,
-                                    "USER=" + token + "; expires=Fri, 31 Dec 9999 23:59:59 GMT;" +
-                                            " path=/; secure; domain=.androidacy.com")));
-                }
+                        "foxmmm=true", true), StandardCharsets.UTF_8);
+                // Parse token
+                JSONObject jsonObject = new JSONObject(token);
+                token = jsonObject.getString("token");
+                // Save token to shared preference
+                SharedPreferences.Editor editor = this.cachedPreferences.edit();
+                editor.putString("androidacy_api_token", token);
+                editor.apply();
             } catch (Exception e) {
                 if ("Received error code: 419".equals(e.getMessage()) ||
                         "Received error code: 429".equals(e.getMessage()) ||
                         "Received error code: 503".equals(e.getMessage())
-                        ) {
+                ) {
                     Log.e(TAG, "We are being rate limited!", e);
                     this.androidacyBlockade = time + 3_600_000L;
                 }
@@ -194,7 +175,7 @@ public final class AndroidacyRepoData extends RepoData {
                     jsonObject.optString("zipUrl", ""));
             repoModule.notesUrl = filterURL(
                     jsonObject.optString("notesUrl", ""));
-            if (repoModule.zipUrl == null)  {
+            if (repoModule.zipUrl == null) {
                 repoModule.zipUrl = // Fallback url in case the API doesn't have zipUrl
                         "https://" + this.host + "/magisk/info/" + moduleId;
             }
@@ -264,7 +245,8 @@ public final class AndroidacyRepoData extends RepoData {
     }
 
     @Override
-    public void storeMetadata(RepoModule repoModule, byte[] data) {}
+    public void storeMetadata(RepoModule repoModule, byte[] data) {
+    }
 
     @Override
     public boolean tryLoadMetadata(RepoModule repoModule) {

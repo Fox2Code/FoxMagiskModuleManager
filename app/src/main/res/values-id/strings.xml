@@ -93,4 +93,6 @@
     <string name="enable_blur_pref">Aktifkan blur</string>
     <string name="repo_enabled">Repo diaktifkan</string>
     <string name="repo_disabled">Repo dinonaktifkan</string>
+    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
+    <string name="api_key">Androidacy API Key</string>
 </resources>

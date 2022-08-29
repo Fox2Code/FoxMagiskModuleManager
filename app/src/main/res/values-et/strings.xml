@@ -87,4 +87,6 @@
     </string>
     <string name="repo_enabled">Hoidla lubatud</string>
     <string name="repo_disabled">Hoidla keelatud</string>
+    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
+    <string name="api_key">Androidacy API Key</string>
 </resources>
