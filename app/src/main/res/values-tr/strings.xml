@@ -132,7 +132,7 @@
     <string name="restore_module_list">Modülleri geri yükle</string>
     <string name="require_internet">Bu işlem bir internet bağlantısı gerektirir</string>
     <string name="androidacy_test_mode_pref">Androidacy test modu</string>
-    <string name="androidacy_test_mode_desc">Release endpoint yerine Androidacy Endpoint'i kullan. (Uygulama sürecinin yeniden başlatılması gerekir)</string>
+    <string name="androidacy_test_mode_desc">Release endpoint yerine Androidacy Endpoint\'i kullan. (Uygulama sürecinin yeniden başlatılması gerekir)</string>
 
 
     <!-- Background Notification translation -->
