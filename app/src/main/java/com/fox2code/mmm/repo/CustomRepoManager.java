@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.utils.PropUtils;
 
 public class CustomRepoManager {
     private static final boolean AUTO_RECOMPILE = true;
@@ -23,7 +24,7 @@ public class CustomRepoManager {
         int lastFilled = 0;
         for (int i = 0; i < MAX_CUSTOM_REPOS; i++) {
             String repo = sharedPreferences.getString("repo_" + i, "");
-            if (!repo.isEmpty() && !RepoManager.isBuiltInRepo(repo)) {
+            if (!PropUtils.isNullString(repo) && !RepoManager.isBuiltInRepo(repo)) {
                 lastFilled = i;
                 int index = AUTO_RECOMPILE ?
                         this.customReposCount : i;

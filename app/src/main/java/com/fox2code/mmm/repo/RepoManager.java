@@ -50,6 +50,8 @@ public final class RepoManager extends SyncManager {
             "https://repo.dergoogler.com/modules.json";
     public static final String DG_MAGISK_REPO_GITHUB =
             "https://googlers-magisk-repo.github.io/modules.json";
+    public static final String DG_MAGISK_REPO_GITHUB_RAW =
+            "https://raw.githubusercontent.com/Googlers-Repo/googlers-repo.github.io/master/modules.json";
 
     private static final Object lock = new Object();
     private static volatile RepoManager INSTANCE;
@@ -91,7 +93,7 @@ public final class RepoManager extends SyncManager {
         altRepo.defaultSubmitModule =
                 "https://github.com/Magisk-Modules-Alt-Repo/submission/issues";
         RepoData dgRepo = this.addRepoData(
-                DG_MAGISK_REPO_GITHUB, "Googlers Magisk Repo");
+                DG_MAGISK_REPO_GITHUB_RAW, "Googlers Magisk Repo");
         dgRepo.defaultWebsite = "https://dergoogler.com/repo";
         this.androidacyRepoData = this.addAndroidacyRepoData();
         this.customRepoManager = new CustomRepoManager(mainApplication, this);
@@ -139,8 +141,9 @@ public final class RepoManager extends SyncManager {
     public RepoData addOrGet(String url, String fallBackName) {
         if (MAGISK_ALT_REPO_JSDELIVR.equals(url))
             url = MAGISK_ALT_REPO;
-        if (DG_MAGISK_REPO.equals(url))
-            url = DG_MAGISK_REPO_GITHUB;
+        if (DG_MAGISK_REPO.equals(url) ||
+                DG_MAGISK_REPO_GITHUB.equals(url))
+            url = DG_MAGISK_REPO_GITHUB_RAW;
         RepoData repoData;
         synchronized (this.syncLock) {
             repoData = this.repoData.get(url);
@@ -260,6 +263,7 @@ public final class RepoManager extends SyncManager {
                 return "androidacy_repo";
             case DG_MAGISK_REPO:
             case DG_MAGISK_REPO_GITHUB:
+            case DG_MAGISK_REPO_GITHUB_RAW:
                 return "dg_magisk_repo";
             default:
                 return "repo_" + Hashes.hashSha1(
@@ -275,6 +279,7 @@ public final class RepoManager extends SyncManager {
             case RepoManager.ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT:
             case RepoManager.DG_MAGISK_REPO:
             case RepoManager.DG_MAGISK_REPO_GITHUB:
+            case RepoManager.DG_MAGISK_REPO_GITHUB_RAW:
                 return true;
         }
         return false;
