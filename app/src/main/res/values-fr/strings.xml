@@ -27,6 +27,10 @@
     <string name="description">Description</string>
     <string name="uninstall">Désinstaller</string>
     <string name="config">Configuration</string>
+    <string name="favourite">Favoris</string>
+    <string name="report_bugs">Rapporter un bug</string>
+    <string name="sniffed_modules">Modules filtrés</string>
+    <string name="sniffing_modules">Filtrer modules</string>
     <string name="submit_modules">Soumettre un module</string>
     <string name="require_android_6">Requière Android 6.0+</string>
     <string name="require_android_12">Requière Android 12+</string>
@@ -96,6 +100,7 @@
         donc j\’ai caché cette option derrière le mode développeur, activez-la à vos risques et périls!
     </string>
     <string name="dev_mode_enabled">Mode développeur activé</string>
+    <string name="dev_mode_disabled">Mode développeur désactivé</string>
     <string name="force_english_pref">Forcer la langue Anglaise</string>
     <string name="disable_low_quality_module_filter_pref">Désactiver le filtre de module de basse qualité</string>
     <string name="disable_low_quality_module_filter_desc">
@@ -127,6 +132,40 @@
     <string name="backup_module_list">Sauvegarder les modules</string>
     <string name="restore_module_list">Restaurer les modules</string>
     <string name="require_internet">Cette opération requière une connexion internet</string>
-    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
-    <string name="api_key">Androidacy API Key</string>
+    <string name="androidacy_test_mode_pref">Mode test Androidacy</string>
+    <string name="androidacy_test_mode_desc">Utiliser la mise à disposition Androidacy de test au lieu du point de terminaison stable. (Nécessite le redémarrage du processus d\’application)</string>
+
+    <!-- Background Notification translation -->
+    <string name="notification_update_title">%i mises à jours de module trouvé</string>
+    <string name="notification_update_title_easter_egg">%i mises à jours de module camouflée</string>
+    <string name="notification_update_subtitle">Appuyer pour ouvrir l\’application</string>
+    <string name="notification_update_pref">Vérification de mise à jour pour les modules en arrière-plan</string>
+    <string name="notification_update_desc">Peut améliorer l\’usage de la batterie</string>
+    <string name="notification_update_debug_pref">Test de notification</string>
+
+    <!-- Set to true in translation file if your language is right to left -->
+    <bool name="lang_support_rtl">false</bool>
+    <!-- Always copy language_support_level when translating -->
+    <integer name="language_support_level">1</integer>
+    <string name="language_support_outdated">Certaines traductions pour la langue actuelle ne sont pas à jour, merci de considérer une contribution aux traudcitons sur Github</string>
+    <!-- Replace with your own username when translating -->
+    <string name="language_translated_by">Traduit par xerta555</string>
+    <string name="crash_reporting">Soumettre automatiquement les bugs et performances auxdéveloppeurs</string>
+    <string name="crash_reporting_desc">Si vous désactivez ceci, le développeur n\’aura pas de rapports de bugs automatiques, et celà peut rendre les corrections plus complexes</string>
+    <string name="api_key">Clé API Androidacy</string>
+    <string name="api_key_summary">Utiliser une clé d\’API pour Androidacy. Très utile pour les membres prémiums, pour supprimer les pubs et plus encore.</string>
+    <string name="api_key_not_set">La clé API Androidacyest vide</string>
+    <string name="api_key_set">Clé API Androidacy actuelle</string>
+    <string name="api_key_invalid">La clé d\’API n\’a pas pu être validée. Merci de vérifier et de retenter.</string>
+    <string name="api_key_valid">Clé API valide.</string>
+    <string name="checking_api_key">Validation de la clé d\’API...</string>
+    <string name="validating_api_key">Validation de la clé d\’API...</string>
+    <string name="please_wait">Merci de patienter</string>
+    <string name="api_key_removed">Réinitialisation de la clé API éffectuée avec succès</string>
+    <string name="save_api_key">Validation</string>
+    <string name="warning">Avertissement!</string>
+    <string name="androidacy_test_mode_warning">Vous êtes en train de configurer l\’application pour une utilisation non productivepour Androidacy. Celà pourrait conduire à une instabilité ainsi que des échecs à charger le dépôt en ligne. Ne rapportez PAS  des bugs si vous avez activé ce paramètrage. Les changements seront effectifs après un redémarrage de l\’application.</string>
+    <string name="crash">Planter l\’application pour tester</string>
+    <string name="repackaged_as">Reconstituer en:</string>
+    <string name="wrapped_from">Emballé depuis:</string>
 </resources>
