@@ -140,7 +140,7 @@
     <string name="notification_update_title_easter_egg">%i mises à jours de module camouflée</string>
     <string name="notification_update_subtitle">Appuyer pour ouvrir l\’application</string>
     <string name="notification_update_pref">Vérification de mise à jour pour les modules en arrière-plan</string>
-    <string name="notification_update_desc">Peut améliorer l'usage de la batterie</string>
+    <string name="notification_update_desc">Peut améliorer l\’usage de la batterie</string>
     <string name="notification_update_debug_pref">Test de notification</string>
 
     <!-- Set to true in translation file if your language is right to left -->
