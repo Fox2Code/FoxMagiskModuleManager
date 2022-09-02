@@ -133,7 +133,7 @@
     <string name="restore_module_list">Restaurer les modules</string>
     <string name="require_internet">Cette opération requière une connexion internet</string>
     <string name="androidacy_test_mode_pref">Mode test Androidacy</string>
-    <string name="androidacy_test_mode_desc">Utiliser la mise à disposition Androidacy de test au lieu du point de terminaison stable. (Nécessite le redémarrage du processus d'application)</string>
+    <string name="androidacy_test_mode_desc">Utiliser la mise à disposition Androidacy de test au lieu du point de terminaison stable. (Nécessite le redémarrage du processus d\’application)</string>
 
     <!-- Background Notification translation -->
     <string name="notification_update_title">%i mises à jours de module trouvé</string>
