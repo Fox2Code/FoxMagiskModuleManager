@@ -57,7 +57,7 @@
     <string name="showcase_mode_pref">Tryb blokady</string>
     <string name="showcase_mode_desc">Tryb blokady uniemożliwia menedżerowi wykonywanie działań na modułach</string>
     <string name="prevent_reboot_pref">Uniemożliwiaj restart</string>
-    <string name="prevent_reboot_desc">Zapobiega niespodziewanym restartom</string>
+    <string name="prevent_reboot_desc">Zapobiega niespodziewanym restartom urządzenia po instalacji modułu</string>
     <string name="pref_category_settings">Ustawienia</string>
     <string name="enable_monet">Włącz Monet</string>
     <string name="pref_category_info">Informacje</string>
@@ -96,6 +96,7 @@
         dlatego ukryłem tę opcję za trybem deweloperskim, włącz ją na własne ryzyko!
     </string>
     <string name="dev_mode_enabled">Tryb programisty włączony</string>
+    <string name="dev_mode_disabled">Tryb programisty wyłączony</string>
     <string name="force_english_pref">Wymuś język angielski</string>
     <string name="disable_low_quality_module_filter_pref">Wyłącz filtr modułu niskiej jakości</string>
     <string name="disable_low_quality_module_filter_desc">
@@ -124,6 +125,7 @@
     <string name="add_repo">Dodaj repozytorium</string>
     <string name="remove_repo">Usuń repozytorium</string>
     <string name="custom_url">Niestandardowy URL</string>
+    <string name="androidacy_repo_info">To repozytorium może wyświetlać nieinwazyjne reklamy, aby pokryć koszty serwera i rozwoju.</string>
     <string name="backup_module_list">Kopia zapasowa modułów</string>
     <string name="restore_module_list">Przywracanie modułów</string>
     <string name="require_internet">Ta operacja wymaga połączenia internetowego</string>
@@ -146,6 +148,22 @@
         prosimy o rozważenie uzupełnienia tłumaczeń aplikacji na GitHubie.</string>
     <!-- Replace with your own username when translating -->
     <string name="language_translated_by">Tłumaczenie: Daviteusz</string>
-    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
-    <string name="api_key">Androidacy API Key</string>
+    <string name="crash_reporting">Automatycznie zgłaszaj błędy i działanie programistom</string>
+    <string name="crash_reporting_desc">Jeśli to wyłączysz, programista nie będzie otrzymywał automatycznych raportów o błędach, co może utrudnić rozwiązywanie problemów.</string>
+    <string name="api_key">Klucz API Androidacy</string>
+    <string name="api_key_summary">Użyj niestandardowego klucza API dla Androidacy. Przydatne dla subskrybentów premium, aby usunąć reklamy i więcej.</string>
+    <string name="api_key_not_set">Klucz API Androidacy jest pusty</string>
+    <string name="api_key_set">Bieżący klucz API Androidacy</string>
+    <string name="api_key_invalid">Nie można zweryfikować klucza API. Proszę sprawdzić i spróbować ponownie.</string>
+    <string name="api_key_valid">Klucz API jest prawidłowy.</string>
+    <string name="checking_api_key">Sprawdzanie klucza API...</string>
+    <string name="validating_api_key">Weryfikacja klucza API...</string>
+    <string name="please_wait">Proszę czekać</string>
+    <string name="api_key_removed">Zresetowano klucz API</string>
+    <string name="save_api_key">Weryfikacja</string>
+    <string name="warning">Uwaga!</string>
+    <string name="androidacy_test_mode_warning">Ustawiasz aplikację, aby używać nieprodukcyjnego punktu końcowego dla Androida. Może to spowodować niestabilność aplikacji i brak możliwości załadowania repo online. NIE zgłaszaj błędów, jeśli masz włączony ten przełącznik. Zmiana będzie obowiązywać po ponownym uruchomieniu aplikacji.</string>
+    <string name="crash">Ubij aplikację do testów</string>
+    <string name="repackaged_as">Przepakowano jako:</string>
+    <string name="wrapped_from">Przepakowane z:</string>
 </resources>
