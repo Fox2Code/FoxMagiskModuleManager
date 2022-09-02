@@ -74,23 +74,23 @@
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
-            <intent-filter>
+            <!-- <intent-filter>
                 <action android:name="${applicationId}.intent.action.INSTALL_MODULE_INTERNAL" />
-            </intent-filter>
+            </intent-filter> -->
         </activity>
         <activity
             android:name=".markdown.MarkdownActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/Theme.MagiskModuleManager"></activity>
+            android:theme="@style/Theme.MagiskModuleManager" />
         <activity
             android:name=".androidacy.AndroidacyActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.MagiskModuleManager">
-            <intent-filter>
+            <!-- <intent-filter>
                 <action android:name="${applicationId}.intent.action.OPEN_ANDROIDACY_INTERNAL" />
-            </intent-filter>
+            </intent-filter> -->
         </activity>
         <activity
             android:name="com.mikepenz.aboutlibraries.ui.LibsActivity"

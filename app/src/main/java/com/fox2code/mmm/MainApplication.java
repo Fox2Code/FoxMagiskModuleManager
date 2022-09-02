@@ -9,6 +9,8 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.SystemClock;
+import android.system.ErrnoException;
+import android.system.Os;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
 
@@ -21,6 +23,7 @@ import androidx.emoji2.text.FontRequestEmojiCompatConfig;
 import com.fox2code.foxcompat.FoxActivity;
 import com.fox2code.foxcompat.FoxApplication;
 import com.fox2code.foxcompat.FoxThemeWrapper;
+import com.fox2code.foxcompat.internal.FoxProcessExt;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.utils.GMSProviderInstaller;
 import com.fox2code.mmm.utils.Http;
@@ -46,7 +49,10 @@ import io.noties.prism4j.Prism4j;
 import io.noties.prism4j.annotations.PrismBundle;
 import io.sentry.JsonObjectWriter;
 import io.sentry.NoOpLogger;
+import io.sentry.TypeCheckHint;
+import io.sentry.UncaughtExceptionHandlerIntegration;
 import io.sentry.android.core.SentryAndroid;
+import io.sentry.hints.DiskFlushNotification;
 
 @PrismBundle(
         includeAll = true,
@@ -62,7 +68,10 @@ public class MainApplication extends FoxApplication
             new SimpleDateFormat(timeFormatString, timeFormatLocale);
     private static final Shell.Builder shellBuilder;
     private static final long secret;
+    @SuppressLint("RestrictedApi") // Use FoxProcess wrapper helper.
+    private static final boolean wrapped = !FoxProcessExt.isRootLoader();
     private static SharedPreferences bootSharedPreferences;
+    private static String relPackageName = BuildConfig.APPLICATION_ID;
     private static MainApplication INSTANCE;
     private static boolean firstBoot;
 
@@ -88,11 +97,18 @@ public class MainApplication extends FoxApplication
         ComponentName componentName = intent.getComponent();
         String packageName = componentName != null ?
                 componentName.getPackageName() : intent.getPackage();
-        if (!BuildConfig.APPLICATION_ID.equalsIgnoreCase(packageName)) {
+        if (!BuildConfig.APPLICATION_ID.equalsIgnoreCase(packageName) &&
+                !relPackageName.equals(packageName)) {
             // Code safeguard, we should never reach here.
             throw new IllegalArgumentException("Can't add secret to outbound Intent");
         }
         intent.putExtra("secret", secret);
+    }
+
+    // Is application wrapped, and therefore must reduce it's feature set.
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public static boolean isWrapped() {
+        return wrapped;
     }
 
     public static boolean checkSecret(Intent intent) {
@@ -154,7 +170,7 @@ public class MainApplication extends FoxApplication
     }
 
     public static boolean isBackgroundUpdateCheckEnabled() {
-        return getSharedPreferences().getBoolean("pref_background_update_check", true);
+        return !wrapped && getSharedPreferences().getBoolean("pref_background_update_check", true);
     }
 
     public static boolean isAndroidacyTestMode() {
@@ -175,8 +191,8 @@ public class MainApplication extends FoxApplication
     }
 
     public static boolean isCrashReportingEnabled() {
-        return getSharedPreferences().getBoolean(
-                "crash_reporting", BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING);
+        return getSharedPreferences().getBoolean("pref_crash_reporting",
+                BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING && !BuildConfig.DEBUG);
     }
 
     public static SharedPreferences getBootSharedPreferences() {
@@ -310,6 +326,7 @@ public class MainApplication extends FoxApplication
     @Override
     public void onCreate() {
         if (INSTANCE == null) INSTANCE = this;
+        relPackageName = this.getPackageName();
         super.onCreate();
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             DynamicColors.applyToActivitiesIfAvailable(this,
@@ -352,6 +369,7 @@ public class MainApplication extends FoxApplication
                 Log.d("MainApplication", "Emoji compat loaded!");
             }, "Emoji compat init.").start();
         }
+
         SentryAndroid.init(this, options -> {
             // Note: Sentry library only take a screenshot of Fox Magisk Module Manager.
             // The screen shot doesn't and cannot contain other applications (if in multi windows)
@@ -361,6 +379,8 @@ public class MainApplication extends FoxApplication
             // it's a serious bug and a security issue you should report to Google
             // Google bug bounties on Android are huge, so you can also get rich by doing that.
             options.setAttachScreenshot(true);
+            // User interaction tracing is not needed to get context of crash
+            options.setEnableUserInteractionTracing(false);
             // Add a callback that will be used before the event is sent to Sentry.
             // With this callback, you can modify the event or, when returning null, also discard the event.
             options.setBeforeSend((event, hint) -> {
@@ -371,6 +391,11 @@ public class MainApplication extends FoxApplication
                             @Override
                             public void write(char[] cbuf) {
                                 stringBuilder.append(cbuf);
+                            }
+
+                            @Override
+                            public void write(String str) {
+                                stringBuilder.append(str);
                             }
 
                             @Override
@@ -399,6 +424,10 @@ public class MainApplication extends FoxApplication
                     return event;
                 } else {
                     Log.i(TAG, "Blocked sentry report according to user preference");
+                    // We need to do this to avoid crash delay on crash when the event is dropped
+                    DiskFlushNotification diskFlushNotification = hint.getAs(
+                            TypeCheckHint.SENTRY_TYPE_CHECK_HINT, DiskFlushNotification.class);
+                    if (diskFlushNotification != null) diskFlushNotification.markFlushed();
                     return null;
                 }
             });

@@ -134,7 +134,7 @@
     <string name="restore_module_list">Restore modules</string>
     <string name="require_internet">This operation require an internet connection</string>
     <string name="androidacy_test_mode_pref">Androidacy test mode</string>
-    <string name="androidacy_test_mode_desc">Use staging Androidacy Endpoint instead of release endpoint. (Require app process restart)</string>
+    <string name="androidacy_test_mode_desc">Use staging Androidacy endpoint instead of release endpoint. (Require app process restart)</string>
 
     <!-- Background Notification translation -->
     <string name="notification_update_title">Found %i module updates</string>
@@ -168,4 +168,6 @@
     <string name="warning">Warning!</string>
     <string name="androidacy_test_mode_warning">You are setting the app to use a non-production endpoint for Androidacy. This may result in app instability and failure to load the online repo. Do NOT report bugs if you have this switch on. Change will take effect on app restart.</string>
     <string name="crash">Crash the app for testing</string>
+    <string name="repackaged_as">Repackaged as:</string>
+    <string name="wrapped_from">Wrapped from:</string>
 </resources>
