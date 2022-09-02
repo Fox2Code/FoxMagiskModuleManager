@@ -151,7 +151,7 @@
     <!-- Replace with your own username when translating -->
     <string name="language_translated_by">Traduit par xerta555</string>
     <string name="crash_reporting">Soumettre automatiquement les bugs et performances auxdéveloppeurs</string>
-    <string name="crash_reporting_desc">Si vous désactivez ceci, le développeur n'aura pas de rapports de bugs automatiques, et celà peut rendre les corrections plus complexes</string>
+    <string name="crash_reporting_desc">Si vous désactivez ceci, le développeur n\’aura pas de rapports de bugs automatiques, et celà peut rendre les corrections plus complexes</string>
     <string name="api_key">Clé API Androidacy</string>
     <string name="api_key_summary">Utiliser une clé d\’API pour Androidacy. Très utile pour les membres prémiums, pour supprimer les pubs et plus encore.</string>
     <string name="api_key_not_set">La clé API Androidacyest vide</string>
