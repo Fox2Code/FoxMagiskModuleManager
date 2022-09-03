@@ -2,6 +2,8 @@ package com.fox2code.mmm.utils;
 
 import android.util.Log;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Locale;
@@ -85,6 +87,35 @@ public class Hashes {
                 return false;
         }
         Log.d(TAG, "Checksum result (data: " + hash+ ",expected: " + checksum + ")");
+        return hash.equals(checksum.toLowerCase(Locale.ROOT));
+    }
+
+    /**
+     * Check if the checksum match a file by picking the correct
+     * hashing algorithm depending on the length of the checksum
+     */
+    public static boolean checkSumMatch(InputStream data, String checksum) throws IOException {
+        String hash;
+        if (checksum == null) return false;
+        String checksumAlgorithm = checkSumName(checksum);
+        if (checksumAlgorithm == null) {
+            Log.e(TAG, "No hash algorithm for " +
+                    checksum.length() * 8 + "bit checksums");
+            return false;
+        }
+        try {
+            MessageDigest md = MessageDigest.getInstance(checksumAlgorithm);
+
+            byte[] bytes = new byte[2048];
+            int nRead;
+            while ((nRead = data.read(bytes)) > 0) {
+                md.update(bytes, 0, nRead);
+            }
+            hash = bytesToHex(md.digest());
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        Log.d(TAG, "Checksum result (data: " + hash + ",expected: " + checksum + ")");
         return hash.equals(checksum.toLowerCase(Locale.ROOT));
     }
 

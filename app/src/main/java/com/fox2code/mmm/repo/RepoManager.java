@@ -57,6 +57,23 @@ public final class RepoManager extends SyncManager {
     private static volatile RepoManager INSTANCE;
 
     public static RepoManager getINSTANCE() {
+        if (INSTANCE == null || !INSTANCE.initialized) {
+            synchronized (lock) {
+                if (INSTANCE == null) {
+                    MainApplication mainApplication = MainApplication.getINSTANCE();
+                    if (mainApplication != null) {
+                        INSTANCE = new RepoManager(mainApplication);
+                        XHooks.onRepoManagerInitialized();
+                    } else {
+                        throw new RuntimeException("Getting RepoManager too soon!");
+                    }
+                }
+            }
+        }
+        return INSTANCE;
+    }
+
+    public static RepoManager getINSTANCE_UNSAFE() {
         if (INSTANCE == null) {
             synchronized (lock) {
                 if (INSTANCE == null) {

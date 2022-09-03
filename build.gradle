@@ -6,6 +6,8 @@ buildscript {
         gradlePluginPortal()
     }
     project.ext.latestAboutLibsRelease = "10.4.1-a01"
+    project.ext.isLocalSentry = new File(
+            rootProject.rootDir, "sentry.properties").exists()
     dependencies {
         classpath 'com.android.tools.build:gradle:7.3.0-rc01'
         classpath "com.mikepenz.aboutlibraries.plugin:aboutlibraries-plugin:${latestAboutLibsRelease}"

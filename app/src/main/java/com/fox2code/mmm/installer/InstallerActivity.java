@@ -49,6 +49,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
+import io.sentry.Breadcrumb;
+import io.sentry.Sentry;
+import io.sentry.SentryLevel;
+
 public class InstallerActivity extends FoxActivity {
     private static final String TAG = "InstallerActivity";
     public LinearProgressIndicator progressIndicator;
@@ -99,6 +103,17 @@ public class InstallerActivity extends FoxActivity {
             return;
         }
         Log.i(TAG, "Install link: " + target);
+        // Note: Sentry only send this info on crash.
+        if (MainApplication.isCrashReportingEnabled()) {
+            Breadcrumb breadcrumb = new Breadcrumb();
+            breadcrumb.setType("install");
+            breadcrumb.setData("target", target);
+            breadcrumb.setData("name", name);
+            breadcrumb.setData("checksum", checksum);
+            breadcrumb.setCategory("app.action.preinstall");
+            breadcrumb.setLevel(SentryLevel.INFO);
+            Sentry.addBreadcrumb(breadcrumb);
+        }
         boolean urlMode = target.startsWith("http://") || target.startsWith("https://");
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setTitle(name);
@@ -138,9 +153,10 @@ public class InstallerActivity extends FoxActivity {
                     !new SuFile(moduleCache.getAbsolutePath()).delete())
                 Log.e(TAG, "Failed to delete module cache");
             String errMessage = "Failed to download module zip";
+            byte[] rawModule;
             try {
                 Log.i(TAG, (urlMode ? "Downloading: " : "Loading: ") + target);
-                byte[] rawModule = urlMode ? Http.doHttpGet(target, (progress, max, done) -> {
+                rawModule = urlMode ? Http.doHttpGet(target, (progress, max, done) -> {
                     if (max <= 0 && this.progressIndicator.isIndeterminate())
                         return;
                     this.runOnUiThread(() -> {
@@ -227,6 +243,14 @@ public class InstallerActivity extends FoxActivity {
                 Log.e(TAG, errMessage, e);
                 this.setInstallStateFinished(false,
                         "! " + errMessage, "");
+            } catch (OutOfMemoryError e) {
+                //noinspection UnusedAssignment (Important to avoid OutOfMemoryError)
+                rawModule = null; // Because reference is kept when calling setInstallStateFinished
+                if ("Failed to install module zip".equals(errMessage))
+                    throw e; // Ignore if in installation state.
+                Log.e(TAG, "Module too large", e);
+                this.setInstallStateFinished(false,
+                        "! Module is too large to be loaded on this device", "");
             }
         }, "Module install Thread").start();
     }
@@ -415,6 +439,19 @@ public class InstallerActivity extends FoxActivity {
                                 InstallerInitializer.peekMagiskPath() + "/ak3tmpfs" :
                                 "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
                         installCommand).to(installerController, installerMonitor);
+            }
+            // Note: Sentry only send this info on crash.
+            if (MainApplication.isCrashReportingEnabled()) {
+                Breadcrumb breadcrumb = new Breadcrumb();
+                breadcrumb.setType("install");
+                breadcrumb.setData("moduleId", moduleId == null ? "<null>" : moduleId);
+                breadcrumb.setData("isAnyKernel3", anyKernel3 ? "true" : "false");
+                breadcrumb.setData("noExtensions", noExtensions ? "true" : "false");
+                breadcrumb.setData("ansi", this.installerTerminal
+                        .isAnsiEnabled() ? "enabled" : "disabled");
+                breadcrumb.setCategory("app.action.install");
+                breadcrumb.setLevel(SentryLevel.INFO);
+                Sentry.addBreadcrumb(breadcrumb);
             }
         }
         boolean success = installJob.exec().isSuccess();

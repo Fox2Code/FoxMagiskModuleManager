@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'com.mikepenz.aboutlibraries.plugin'
+    id "io.sentry.android.gradle" version "3.1.5"
 }
 
 android {
@@ -78,8 +79,25 @@ aboutLibraries {
     additionalLicenses = ["LGPL_3_0_only"]
 }
 
+sentry {
+    ignoredBuildTypes = ["debug"]
+
+    includeProguardMapping = true
+
+    autoUploadProguardMapping = isLocalSentry
+
+    tracingInstrumentation {
+        enabled = false
+    }
+
+    autoInstallation {
+        enabled = false
+    }
+}
+
 configurations {
     implementation.exclude group: 'org.jetbrains' , module: 'annotations'
+    implementation.exclude group: 'io.sentry' , module: 'sentry-android-okhttp'
 }
 
 dependencies {
@@ -109,8 +127,8 @@ dependencies {
     implementation 'com.github.Fox2Code:AndroidANSI:1.0.1'
 
     // Error reporting
-    implementation 'io.sentry:sentry-android:6.4.0'
-    implementation 'io.sentry:sentry-android-fragment:6.4.0'
+    implementation 'io.sentry:sentry-android:6.4.1'
+    implementation 'io.sentry:sentry-android-fragment:6.4.1'
 
     // Markdown
     implementation "io.noties.markwon:core:4.6.2"

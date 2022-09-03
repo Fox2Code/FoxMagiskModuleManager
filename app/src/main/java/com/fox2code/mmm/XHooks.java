@@ -50,11 +50,11 @@ public class XHooks {
 
     @Keep
     public static XRepo addXRepo(String url, String fallbackName) {
-        return RepoManager.getINSTANCE().addOrGet(url, fallbackName);
+        return RepoManager.getINSTANCE_UNSAFE().addOrGet(url, fallbackName);
     }
 
     @Keep
     public static XRepo getXRepo(String url) {
-        return RepoManager.getINSTANCE().get(url);
+        return RepoManager.getINSTANCE_UNSAFE().get(url);
     }
 }

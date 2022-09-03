@@ -9,8 +9,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.SystemClock;
-import android.system.ErrnoException;
-import android.system.Os;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
 
@@ -50,8 +48,8 @@ import io.noties.prism4j.annotations.PrismBundle;
 import io.sentry.JsonObjectWriter;
 import io.sentry.NoOpLogger;
 import io.sentry.TypeCheckHint;
-import io.sentry.UncaughtExceptionHandlerIntegration;
 import io.sentry.android.core.SentryAndroid;
+import io.sentry.android.fragment.FragmentLifecycleIntegration;
 import io.sentry.hints.DiskFlushNotification;
 
 @PrismBundle(
@@ -371,6 +369,7 @@ public class MainApplication extends FoxApplication
         }
 
         SentryAndroid.init(this, options -> {
+            options.addIntegration(new FragmentLifecycleIntegration(this, true, false));
             // Note: Sentry library only take a screenshot of Fox Magisk Module Manager.
             // The screen shot doesn't and cannot contain other applications (if in multi windows)
             // status bar and notifications (even if notification shade is pulled down)
@@ -381,6 +380,10 @@ public class MainApplication extends FoxApplication
             options.setAttachScreenshot(true);
             // User interaction tracing is not needed to get context of crash
             options.setEnableUserInteractionTracing(false);
+            // Send client reports has nothing to do with error reporting
+            options.setSendClientReports(false);
+            // Auto session tracking has nothing to do with error reporting
+            options.setEnableAutoSessionTracking(false);
             // Add a callback that will be used before the event is sent to Sentry.
             // With this callback, you can modify the event or, when returning null, also discard the event.
             options.setBeforeSend((event, hint) -> {
