@@ -192,7 +192,12 @@ public class IntentHelper {
     }
 
     public static void openInstaller(Context context, String url, String title, String config,
-                                       String checksum,boolean testDebug) {
+                                       String checksum, boolean mmtReborn) {
+        openInstaller(context, url, title, config, checksum, mmtReborn, false);
+    }
+
+    public static void openInstaller(Context context, String url, String title, String config,
+                                     String checksum, boolean mmtReborn, boolean testDebug) {
         try {
             Intent intent = new Intent(context, InstallerActivity.class);
             intent.setAction(Constants.INTENT_INSTALL_INTERNAL);
@@ -203,6 +208,8 @@ public class IntentHelper {
                 intent.putExtra(Constants.EXTRA_INSTALL_CONFIG, config);
             if (checksum != null && !checksum.isEmpty())
                 intent.putExtra(Constants.EXTRA_INSTALL_CHECKSUM, checksum);
+            if (mmtReborn) // Allow early styling of install process
+                intent.putExtra(Constants.EXTRA_INSTALL_MMT_REBORN, true);
             if (testDebug && BuildConfig.DEBUG)
                 intent.putExtra(Constants.EXTRA_INSTALL_TEST_ROOTLESS, true);
             startActivity(context, intent, true);

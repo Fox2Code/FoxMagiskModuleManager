@@ -20,14 +20,15 @@ import java.util.HashMap;
 
 // See https://docs.github.com/en/rest/reference/repos#releases
 public class AppUpdateManager {
-    public static final int FLAG_COMPAT_LOW_QUALITY = 0x01;
-    public static final int FLAG_COMPAT_NO_EXT      = 0x02;
-    public static final int FLAG_COMPAT_MAGISK_CMD  = 0x04;
-    public static final int FLAG_COMPAT_NEED_32BIT  = 0x08;
-    public static final int FLAG_COMPAT_MALWARE     = 0x10;
-    public static final int FLAG_COMPAT_NO_ANSI     = 0x20;
-    public static final int FLAG_COMPAT_FORCE_ANSI  = 0x40;
-    public static final int FLAG_COMPAT_FORCE_HIDE  = 0x80;
+    public static final int FLAG_COMPAT_LOW_QUALITY = 0x0001;
+    public static final int FLAG_COMPAT_NO_EXT      = 0x0002;
+    public static final int FLAG_COMPAT_MAGISK_CMD  = 0x0004;
+    public static final int FLAG_COMPAT_NEED_32BIT  = 0x0008;
+    public static final int FLAG_COMPAT_MALWARE     = 0x0010;
+    public static final int FLAG_COMPAT_NO_ANSI     = 0x0020;
+    public static final int FLAG_COMPAT_FORCE_ANSI  = 0x0040;
+    public static final int FLAG_COMPAT_FORCE_HIDE  = 0x0080;
+    public static final int FLAG_COMPAT_MMT_REBORN  = 0x0100;
     private static final String TAG = "AppUpdateManager";
     private static final AppUpdateManager INSTANCE = new AppUpdateManager();
     private static final String RELEASES_API_URL =
@@ -212,6 +213,9 @@ public class AppUpdateManager {
                         break;
                     case "forceHide":
                         value |= FLAG_COMPAT_FORCE_HIDE;
+                        break;
+                    case "mmtReborn":
+                        value |= FLAG_COMPAT_MMT_REBORN;
                         break;
                 }
             }

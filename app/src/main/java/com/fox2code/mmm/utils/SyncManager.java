@@ -13,6 +13,7 @@ public abstract class SyncManager {
     private static final UpdateListener NO_OP = value -> {};
     protected final Object syncLock = new Object();
     private boolean syncing;
+    private long lastSync;
 
     public final void scan() {
         this.update(null);
@@ -24,10 +25,13 @@ public abstract class SyncManager {
         if (!this.syncing) {
             // Do scan
             synchronized (this.syncLock) {
+                if (System.currentTimeMillis() < this.lastSync + 50L)
+                    return; // Skip sync if it was synced too recently
                 this.syncing = true;
                 try {
                     this.scanInternal(updateListener);
                 } finally {
+                    this.lastSync = System.currentTimeMillis();
                     this.syncing = false;
                 }
             }

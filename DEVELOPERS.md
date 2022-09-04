@@ -79,6 +79,7 @@ support=<url>
 donate=<url>
 config=<package>
 changeBoot=<boolean>
+mmtReborn=<boolean>
 ```
 Note: All urls must start with `https://`, or else will be ignored
 Note²: For `minMagisk`, `XX.Y` is parsed as `XXY00`, so you can just put the Magisk version name.
@@ -93,6 +94,8 @@ Note²: For `minMagisk`, `XX.Y` is parsed as `XXY00`, so you can just put the Ma
 - `config` package name of the application that configure your module
   (Note: The icon won't appear in the module list if the module or target app is not installed)
 - `changeBoot` tell the manager the module may change the boot image
+- `mmtReborn` tell the manager to use [MMT-Reborn](https://github.com/iamlooper/MMT-Reborn) logging style  
+  (For example `- Hello world` will be transformed to `[*] Hello world`, do not apply to modules installed from storage)
 
 Note: Fox's Mmm use fallback 
 [here](app/src/main/java/com/fox2code/mmm/utils/PropUtils.java#L36)

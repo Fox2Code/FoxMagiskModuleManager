@@ -14,9 +14,6 @@ import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
-import com.fox2code.mmm.module.ModuleHolder;
-import com.fox2code.mmm.module.ModuleSorter;
-import com.fox2code.mmm.module.ModuleViewAdapter;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.repo.RepoModule;
 
@@ -48,6 +45,10 @@ public class ModuleViewListBuilder {
     }
 
     public void addNotification(NotificationType notificationType) {
+        if (notificationType == null) {
+            Log.w(TAG, "addNotification(null) called!");
+            return;
+        }
         synchronized (this.updateLock) {
             this.notifications.add(notificationType);
         }

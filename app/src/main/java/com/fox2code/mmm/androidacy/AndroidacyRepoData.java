@@ -213,6 +213,7 @@ public final class AndroidacyRepoData extends RepoData {
             }
             moduleInfo.needRamdisk = jsonObject.optBoolean("needRamdisk", false);
             moduleInfo.changeBoot = jsonObject.optBoolean("changeBoot", false);
+            moduleInfo.mmtReborn = jsonObject.optBoolean("mmtReborn", false);
             moduleInfo.support = filterURL(jsonObject.optString("support"));
             moduleInfo.donate = filterURL(jsonObject.optString("donate"));
             String config = jsonObject.optString("config", "");
@@ -226,6 +227,8 @@ public final class AndroidacyRepoData extends RepoData {
             RepoModule repoModule = moduleInfoIterator.next();
             if (!repoModule.processed) {
                 moduleInfoIterator.remove();
+            } else {
+                repoModule.moduleInfo.verify();
             }
         }
         this.lastUpdate = lastLastUpdate;

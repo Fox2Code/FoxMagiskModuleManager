@@ -24,11 +24,12 @@ import java.util.Iterator;
 public final class ModuleManager extends SyncManager {
     private static final String TAG = "ModuleManager";
 
+    // New method is not really effective, this flag force app to use old method
+    public static final boolean FORCE_NEED_FALLBACK = true;
     private static final int FLAG_MM_INVALID = ModuleInfo.FLAG_METADATA_INVALID;
-    private static final int FLAG_MM_UNPROCESSED = 0x40000000;
-    private static final int FLAGS_RESET_INIT = FLAG_MM_INVALID |
-            ModuleInfo.FLAG_MODULE_DISABLED | ModuleInfo.FLAG_MODULE_UPDATING |
-            ModuleInfo.FLAG_MODULE_UNINSTALLING | ModuleInfo.FLAG_MODULE_ACTIVE;
+    private static final int FLAG_MM_UNPROCESSED = ModuleInfo.FLAG_CUSTOM_INTERNAL;
+    private static final int FLAGS_KEEP_INIT = FLAG_MM_UNPROCESSED |
+            ModuleInfo.FLAGS_MODULE_ACTIVE | ModuleInfo.FLAG_MODULE_UPDATING_ONLY;
     private static final int FLAGS_RESET_UPDATE = FLAG_MM_INVALID | FLAG_MM_UNPROCESSED;
     private final HashMap<String, LocalModuleInfo> moduleInfos;
     private final SharedPreferences bootPrefs;
@@ -46,12 +47,11 @@ public final class ModuleManager extends SyncManager {
     }
 
     protected void scanInternal(@NonNull UpdateListener updateListener) {
-        boolean firstBoot = MainApplication.isFirstBoot();
         boolean firstScan = this.bootPrefs.getBoolean("mm_first_scan", true);
         SharedPreferences.Editor editor = firstScan ? this.bootPrefs.edit() : null;
         for (ModuleInfo v : this.moduleInfos.values()) {
             v.flags |= FLAG_MM_UNPROCESSED;
-            v.flags &= ~FLAGS_RESET_INIT;
+            v.flags &= FLAGS_KEEP_INIT;
             v.name = v.id;
             v.version = null;
             v.versionCode = 0;
@@ -62,9 +62,9 @@ public final class ModuleManager extends SyncManager {
         }
         String modulesPath = InstallerInitializer.peekModulesPath();
         String[] modules = new SuFile("/data/adb/modules").list();
-        boolean needFallback = modulesPath == null ||
-                !new SuFile(modulesPath).exists();
-        if (needFallback) {
+        boolean needFallback = FORCE_NEED_FALLBACK ||
+                modulesPath == null || !new SuFile(modulesPath).exists();
+        if (!FORCE_NEED_FALLBACK && needFallback) {
             Log.e(TAG, "Failed to detect modules folder, using fallback instead.");
         }
         if (modules != null) {
@@ -75,25 +75,34 @@ public final class ModuleManager extends SyncManager {
                 if (moduleInfo == null) {
                     moduleInfo = new LocalModuleInfo(module);
                     moduleInfos.put(module, moduleInfo);
-                    // Shis should not really happen, but let's handles theses cases anyway
+                    // This should not really happen, but let's handles theses cases anyway
                     moduleInfo.flags |= ModuleInfo.FLAG_MODULE_UPDATING_ONLY;
                 }
                 moduleInfo.flags &= ~FLAGS_RESET_UPDATE;
                 if (new SuFile("/data/adb/modules/" + module + "/disable").exists()) {
                     moduleInfo.flags |= ModuleInfo.FLAG_MODULE_DISABLED;
-                } else if (needFallback && firstScan) {
+                } else if (firstScan && needFallback) {
                     moduleInfo.flags |= ModuleInfo.FLAG_MODULE_ACTIVE;
                     editor.putBoolean("module_" + moduleInfo.id + "_active", true);
                 }
                 if (new SuFile("/data/adb/modules/" + module + "/remove").exists()) {
                     moduleInfo.flags |= ModuleInfo.FLAG_MODULE_UNINSTALLING;
                 }
-                if ((!needFallback && new SuFile(modulesPath, module).exists()) || (!firstBoot
-                        && bootPrefs.getBoolean("module_" + moduleInfo.id + "_active", false))) {
+                if ((firstScan && !needFallback && new SuFile(modulesPath, module).exists()) ||
+                        bootPrefs.getBoolean("module_" + moduleInfo.id + "_active", false)) {
                     moduleInfo.flags |= ModuleInfo.FLAG_MODULE_ACTIVE;
                     if (firstScan) {
                         editor.putBoolean("module_" + moduleInfo.id + "_active", true);
                     }
+                } else if (!needFallback) {
+                    moduleInfo.flags &= ~ModuleInfo.FLAG_MODULE_ACTIVE;
+                }
+                if ((moduleInfo.flags & ModuleInfo.FLAGS_MODULE_ACTIVE) != 0
+                        && (new SuFile("/data/adb/modules/" + module + "/system").exists() ||
+                        new SuFile("/data/adb/modules/" + module + "/vendor").exists() ||
+                        new SuFile("/data/adb/modules/" + module + "/zygisk").exists() ||
+                        new SuFile("/data/adb/modules/" + module + "/riru").exists())) {
+                    moduleInfo.flags |= ModuleInfo.FLAG_MODULE_HAS_ACTIVE_MOUNT;
                 }
                 try {
                     PropUtils.readProperties(moduleInfo,
@@ -147,6 +156,7 @@ public final class ModuleManager extends SyncManager {
             if (moduleInfo.version == null || moduleInfo.version.trim().isEmpty()) {
                 moduleInfo.version = "v" + moduleInfo.versionCode;
             }
+            moduleInfo.verify();
         }
         if (firstScan) {
             editor.putBoolean("mm_first_scan", false);
@@ -201,7 +211,7 @@ public final class ModuleManager extends SyncManager {
     }
 
     public boolean masterClear(ModuleInfo moduleInfo) {
-        if (moduleInfo.hasFlag(ModuleInfo.FLAGS_MODULE_ACTIVE)) return false;
+        if (moduleInfo.hasFlag(ModuleInfo.FLAG_MODULE_HAS_ACTIVE_MOUNT)) return false;
         String escapedId = moduleInfo.id.replace("\\", "\\\\")
                 .replace("\"", "\\\"").replace(" ", "\\ ");
         try { // Check for module that declare having file outside their own folder.

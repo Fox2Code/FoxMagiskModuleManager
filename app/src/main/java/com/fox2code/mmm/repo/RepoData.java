@@ -142,6 +142,8 @@ public class RepoData extends XRepo {
                 if (!repoModule.processed) {
                     new File(this.cacheRoot, repoModule.id + ".prop").delete();
                     moduleInfoIterator.remove();
+                } else {
+                    repoModule.moduleInfo.verify();
                 }
             }
             // Update final metadata

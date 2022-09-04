@@ -186,6 +186,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 this.buttonAction.setBackground(null);
                 LocalModuleInfo localModuleInfo = moduleHolder.moduleInfo;
                 if (localModuleInfo != null) {
+                    localModuleInfo.verify();
                     this.switchMaterial.setVisibility(View.VISIBLE);
                     this.switchMaterial.setChecked((localModuleInfo.flags &
                             ModuleInfo.FLAG_MODULE_DISABLED) == 0);
@@ -198,6 +199,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 this.descriptionText.setVisibility(View.VISIBLE);
 
                 ModuleInfo moduleInfo = moduleHolder.getMainModuleInfo();
+                moduleInfo.verify();
                 this.titleText.setText(moduleInfo.name);
                 if (localModuleInfo == null || moduleInfo.versionCode >
                         localModuleInfo.updateVersionCode) {

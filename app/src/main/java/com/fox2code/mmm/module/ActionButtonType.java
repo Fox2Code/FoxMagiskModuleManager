@@ -118,7 +118,8 @@ public enum ActionButtonType {
                         R.string.update_module : R.string.install_module, (x, y) -> {
                     String updateZipChecksum = moduleHolder.getUpdateZipChecksum();
                     IntentHelper.openInstaller(button.getContext(), updateZipUrl,
-                            moduleInfo.name, moduleInfo.config, updateZipChecksum);
+                            moduleInfo.name, moduleInfo.config, updateZipChecksum,
+                            moduleInfo.mmtReborn);
                 });
             }
             int dim5dp = FoxDisplay.dpToPixel(5);
@@ -158,6 +159,7 @@ public enum ActionButtonType {
                 doActionLong(button, moduleHolder);
                 return;
             }
+            Log.d("ActionButtonType", Integer.toHexString(moduleHolder.moduleInfo.flags));
             if (!ModuleManager.getINSTANCE().setUninstallState(moduleHolder.moduleInfo,
                     !moduleHolder.hasFlag(ModuleInfo.FLAG_MODULE_UNINSTALLING))) {
                 Log.e("ActionButtonType", "Failed to switch uninstalled state!");
@@ -167,16 +169,19 @@ public enum ActionButtonType {
 
         @Override
         public boolean doActionLong(Chip button, ModuleHolder moduleHolder) {
-            // We can't trust active flag on first boot
-            if (moduleHolder.moduleInfo.hasFlag(ModuleInfo.FLAGS_MODULE_ACTIVE)) return false;
+            // Actually a module having mount is the only issue when deleting module
+            if (moduleHolder.moduleInfo.hasFlag(ModuleInfo.FLAG_MODULE_HAS_ACTIVE_MOUNT))
+                return false; // We can't trust active flag on first boot
             new AlertDialog.Builder(button.getContext()).setTitle(R.string.master_delete)
                     .setPositiveButton(R.string.master_delete_yes, (v, i) -> {
+                        String moduleId = moduleHolder.moduleInfo.id;
                         if (!ModuleManager.getINSTANCE().masterClear(moduleHolder.moduleInfo)) {
                             Toast.makeText(button.getContext(), R.string.master_delete_fail,
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             moduleHolder.moduleInfo = null;
                             FoxActivity.getFoxActivity(button).refreshUI();
+                            Log.e("ActionButtonType", "Cleared: " + moduleId);
                         }
                     }).setNegativeButton(R.string.master_delete_no, (v, i) -> {
                     }).create().show();
@@ -205,13 +210,15 @@ public enum ActionButtonType {
         @Override
         public void update(Chip button, ModuleHolder moduleHolder) {
             ModuleInfo moduleInfo = moduleHolder.getMainModuleInfo();
-            button.setChipIcon(button.getContext().getDrawable(supportIconForUrl(moduleInfo.support)));
+            button.setChipIcon(button.getContext().getDrawable(
+                    supportIconForUrl(moduleInfo.support)));
             button.setText(R.string.support);
         }
 
         @Override
         public void doAction(Chip button, ModuleHolder moduleHolder) {
-            IntentHelper.openUrl(button.getContext(), moduleHolder.getMainModuleInfo().support);
+            IntentHelper.openUrl(button.getContext(),
+                    moduleHolder.getMainModuleInfo().support);
         }
     },
     DONATE() {
@@ -232,7 +239,9 @@ public enum ActionButtonType {
     @DrawableRes
     public static int supportIconForUrl(String url) {
         int icon = R.drawable.ic_baseline_support_24;
-        if (url.startsWith("https://t.me/")) {
+        if (url == null) {
+            return icon;
+        } else if (url.startsWith("https://t.me/")) {
             icon = R.drawable.ic_baseline_telegram_24;
         } else if (url.startsWith("https://discord.gg/") ||
                 url.startsWith("https://discord.com/invite/")) {
@@ -250,7 +259,9 @@ public enum ActionButtonType {
     @DrawableRes
     public static int donateIconForUrl(String url) {
         int icon = R.drawable.ic_baseline_monetization_on_24;
-        if (url.startsWith("https://www.paypal.me/") ||
+        if (url == null) {
+            return icon;
+        } else if (url.startsWith("https://www.paypal.me/") ||
                 url.startsWith("https://www.paypal.com/paypalme/")) {
             icon = R.drawable.ic_baseline_paypal_24;
         } else if (url.startsWith("https://patreon.com/") ||

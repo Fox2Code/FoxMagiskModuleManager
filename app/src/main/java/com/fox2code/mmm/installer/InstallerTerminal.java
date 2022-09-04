@@ -19,13 +19,16 @@ public class InstallerTerminal extends RecyclerView.Adapter<InstallerTerminal.Te
     private final AnsiContext ansiContext;
     private final Object lock = new Object();
     private final int foreground;
+    private final boolean mmtReborn;
     private boolean ansiEnabled = false;
 
-    public InstallerTerminal(RecyclerView recyclerView, boolean isLightTheme,int foreground) {
+    public InstallerTerminal(RecyclerView recyclerView, boolean isLightTheme,
+                             int foreground, boolean mmtReborn) {
         recyclerView.setLayoutManager(
                 new LinearLayoutManager(recyclerView.getContext()));
         this.recyclerView = recyclerView;
         this.foreground = foreground;
+        this.mmtReborn = mmtReborn;
         this.terminal = new ArrayList<>();
         this.ansiContext = (isLightTheme ? AnsiContext.LIGHT : AnsiContext.DARK).copy();
         this.recyclerView.setAdapter(this);
@@ -125,6 +128,13 @@ public class InstallerTerminal extends RecyclerView.Adapter<InstallerTerminal.Te
 
     private ProcessedLine process(String line) {
         if (line.isEmpty()) return new ProcessedLine(" ", null);
+        if (this.mmtReborn) {
+            if (line.startsWith("- ")) {
+                line = "[*] " + line.substring(2);
+            } else if (line.startsWith("! ")) {
+                line = "[!] " + line.substring(2);
+            }
+        }
         return new ProcessedLine(line, this.ansiEnabled ?
                 this.ansiContext.parseAsSpannable(line) : null);
     }
@@ -140,10 +150,6 @@ public class InstallerTerminal extends RecyclerView.Adapter<InstallerTerminal.Te
             itemView.setTextSize(12);
             itemView.setLines(1);
             itemView.setText(" ");
-        }
-
-        private void setText(String text) {
-            this.textView.setText(text.isEmpty() ? " " : text);
         }
     }
 

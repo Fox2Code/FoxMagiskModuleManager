@@ -53,15 +53,15 @@ settings() {
   fi
 }
 
-if [ $MAGISK_VER_CODE -ge 20400 ]; then
+if [ $MAGISK_VER_CODE -ge 20400 ] && [ -z "$MMM_MMT_REBORN" ]; then
   # New Magisk have complete installation logic within util_functions.sh
   install_module
   exit 0
 fi
 
-#################
-# Legacy Support
-#################
+#######################################################
+# Legacy Support + compat mode for MMT Reborn template
+#######################################################
 
 TMPDIR=/dev/tmp
 PERSISTDIR=/sbin/.magisk/mirror/persist
@@ -98,6 +98,7 @@ abort() {
 
 rm -rf $TMPDIR 2>/dev/null
 mkdir -p $TMPDIR
+chcon u:object_r:system_file:s0 $TMPDIR || true
 cd $TMPDIR
 
 # Preperation for flashable zips
@@ -121,7 +122,9 @@ $BOOTMODE && boot_actions || recovery_actions
 unzip -o "$ZIPFILE" module.prop -d $TMPDIR >&2
 [ ! -f $TMPDIR/module.prop ] && abort "! Unable to extract zip file!"
 
-$BOOTMODE && MODDIRNAME=modules_update || MODDIRNAME=modules
+[ -z "$NVBASE" ] && NVBASE="/data/adb"
+MODDIRNAME=modules
+$BOOTMODE && MODDIRNAME=modules_update
 MODULEROOT=$NVBASE/$MODDIRNAME
 MODID=`grep_prop id $TMPDIR/module.prop`
 MODNAME=`grep_prop name $TMPDIR/module.prop`
@@ -166,6 +169,50 @@ if is_legacy_script; then
 
   ui_print "- Setting permissions"
   set_permissions
+elif [ -n "$MMM_MMT_REBORN" ]; then
+  # https://github.com/iamlooper/MMT-Reborn
+  ui_print "[*] Using FoxMMM MMT-Reborn compatibility mode"
+
+  load_vksel() { source "$MODPATH/addon/Volume-Key-Selector/install.sh"; }
+
+  rmtouch() { [[ -e "$1" ]] && rm -rf "$1" 2>/dev/null; }
+
+  unzip -o "$ZIPFILE" -d "$MODPATH" >&2
+
+  # Load install script
+  source "$MODPATH/setup.sh"
+
+  # Remove all old files before doing installation if want to
+  "$CLEANSERVICE" && rm -rf "/data/adb/modules/$MODID"
+
+  # Enable debugging if true
+  "$DEBUG" && set -x || set +x
+
+  # Print mod info
+  info_print
+
+  # Auto vskel load
+  "$AUTOVKSEL" && load_vksel
+
+  # Main
+  init_main
+
+  # Skip mount
+  "$SKIPMOUNT" && touch "$MODPATH/skip_mount"
+
+  # Set permissions
+  set_permissions
+
+  # Remove stuffs that don't belong to modules
+  rmtouch "$MODPATH/META-INF"
+  rmtouch "$MODPATH/addon"
+  rmtouch "$MODPATH/setup.sh"
+  rmtouch "$MODPATH/LICENSE"
+  rmtouch "$MODPATH/README.md"
+  rmtouch "$MODPATH/system/bin/placeholder"
+  rmtouch "$MODPATH/zygisk/placeholder"
+  ui_print "[*] Exiting FoxMMM MMT-Reborn compatibility mode"
+  sleep 0.5
 else
   print_modname
 
@@ -198,13 +245,20 @@ if $BOOTMODE; then
 fi
 
 # Copy over custom sepolicy rules
-if [ -f $MODPATH/sepolicy.rule -a -e $PERSISTDIR ]; then
-  ui_print "- Installing custom sepolicy patch"
-  # Remove old recovery logs (which may be filling partition) to make room
-  rm -f $PERSISTDIR/cache/recovery/*
-  PERSISTMOD=$PERSISTDIR/magisk/$MODID
-  mkdir -p $PERSISTMOD
-  cp -af $MODPATH/sepolicy.rule $PERSISTMOD/sepolicy.rule || abort "! Insufficient partition size"
+if ! type copy_sepolicy_rules &>/dev/null; then
+  if [ -f $MODPATH/sepolicy.rule -a -e $PERSISTDIR ]; then
+    ui_print "- Installing custom sepolicy patch"
+    # Remove old recovery logs (which may be filling partition) to make room
+    rm -f $PERSISTDIR/cache/recovery/*
+    PERSISTMOD=$PERSISTDIR/magisk/$MODID
+    mkdir -p $PERSISTMOD
+    cp -af $MODPATH/sepolicy.rule $PERSISTMOD/sepolicy.rule || abort "! Insufficient partition size"
+  fi
+else
+  if [ -f $MODPATH/sepolicy.rule ]; then
+    ui_print "- Installing custom sepolicy rules"
+    copy_sepolicy_rules
+  fi
 fi
 
 # Remove stuff that doesn't belong to modules and clean up any empty directories

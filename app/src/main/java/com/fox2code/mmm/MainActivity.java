@@ -37,7 +37,6 @@ import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
-import io.sentry.android.core.SentryAndroid;
 
 public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRefreshListener,
         SearchView.OnQueryTextListener, SearchView.OnCloseListener,
@@ -153,14 +152,16 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 if (!MainApplication.isShowcaseMode())
                     moduleViewListBuilder.addNotification(NotificationType.INSTALL_FROM_STORAGE);
                 ModuleManager.getINSTANCE().scan();
-                moduleViewListBuilder.appendInstalledModules();
+                ModuleManager.getINSTANCE().runAfterScan(
+                        moduleViewListBuilder::appendInstalledModules);
                 this.commonNext();
             }
 
             @Override
             public void onFailure(int error) {
                 Log.i(TAG, "Failed to get magisk path!");
-                moduleViewListBuilder.addNotification(NotificationType.NO_ROOT);
+                moduleViewListBuilder.addNotification(
+                        InstallerInitializer.getErrorNotification());
                 this.commonNext();
             }
 
@@ -223,7 +224,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     setActionBarBackground(null);
                     updateScreenInsets(getResources().getConfiguration());
                 });
-                moduleViewListBuilder.appendRemoteModules();
+                RepoManager.getINSTANCE().runAfterUpdate(
+                        moduleViewListBuilder::appendRemoteModules);
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
                 Log.i(TAG, "Finished app opening state!");
             }
@@ -318,13 +320,15 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 if (!MainApplication.isShowcaseMode())
                     moduleViewListBuilder.addNotification(NotificationType.INSTALL_FROM_STORAGE);
                 ModuleManager.getINSTANCE().scan();
-                moduleViewListBuilder.appendInstalledModules();
+                ModuleManager.getINSTANCE().runAfterScan(
+                        moduleViewListBuilder::appendInstalledModules);
                 this.commonNext();
             }
 
             @Override
             public void onFailure(int error) {
-                moduleViewListBuilder.addNotification(NotificationType.NO_ROOT);
+                moduleViewListBuilder.addNotification(
+                        InstallerInitializer.getErrorNotification());
                 this.commonNext();
             }
 
@@ -350,7 +354,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                         progressIndicator.setVisibility(View.GONE);
                     });
                 }
-                moduleViewListBuilder.appendRemoteModules();
+                RepoManager.getINSTANCE().runAfterUpdate(
+                        moduleViewListBuilder::appendRemoteModules);
                 Log.i(TAG, "Common Before applyTo");
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
                 Log.i(TAG, "Common After");
@@ -393,7 +398,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 this.moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
             }
             RepoManager.getINSTANCE().updateEnabledStates();
-            this.moduleViewListBuilder.appendRemoteModules();
+            RepoManager.getINSTANCE().runAfterUpdate(
+                    moduleViewListBuilder::appendRemoteModules);
             this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
         },"Repo update thread").start();
     }
