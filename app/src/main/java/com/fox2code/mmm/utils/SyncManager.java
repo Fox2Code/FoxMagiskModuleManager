@@ -15,6 +15,12 @@ public abstract class SyncManager {
     private boolean syncing;
     private long lastSync;
 
+    public final void scanAsync() {
+        if (!this.syncing) {
+            new Thread(this::scan, "Scan Thread").start();
+        }
+    }
+
     public final void scan() {
         this.update(null);
     }

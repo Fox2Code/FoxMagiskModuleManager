@@ -114,6 +114,8 @@ public class ModuleViewListBuilder {
     public void applyTo(final RecyclerView moduleList,final ModuleViewAdapter moduleViewAdapter) {
         if (this.updating) return;
         this.updating = true;
+        ModuleManager.getINSTANCE().afterScan();
+        RepoManager.getINSTANCE().afterUpdate();
         final ArrayList<ModuleHolder> moduleHolders;
         final int newNotificationsLen;
         final boolean first;
