@@ -28,8 +28,6 @@ import com.fox2code.mmm.utils.Http;
 import com.fox2code.rosettax.LanguageSwitcher;
 import com.topjohnwu.superuser.Shell;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -45,12 +43,6 @@ import io.noties.markwon.syntax.Prism4jThemeDefault;
 import io.noties.markwon.syntax.SyntaxHighlightPlugin;
 import io.noties.prism4j.Prism4j;
 import io.noties.prism4j.annotations.PrismBundle;
-import io.sentry.JsonObjectWriter;
-import io.sentry.NoOpLogger;
-import io.sentry.TypeCheckHint;
-import io.sentry.android.core.SentryAndroid;
-import io.sentry.android.fragment.FragmentLifecycleIntegration;
-import io.sentry.hints.DiskFlushNotification;
 
 @PrismBundle(
         includeAll = true,
@@ -188,10 +180,10 @@ public class MainApplication extends FoxApplication
         getSharedPreferences().edit().putBoolean("has_root_access", bool).apply();
     }
 
-    public static boolean isCrashReportingEnabled() {
+    /*public static boolean isCrashReportingEnabled() {
         return getSharedPreferences().getBoolean("pref_crash_reporting",
                 BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING && !BuildConfig.DEBUG);
-    }
+    }*/
 
     public static SharedPreferences getBootSharedPreferences() {
         return bootSharedPreferences;
@@ -368,7 +360,7 @@ public class MainApplication extends FoxApplication
             }, "Emoji compat init.").start();
         }
 
-        SentryAndroid.init(this, options -> {
+        /*SentryAndroid.init(this, options -> {
             options.addIntegration(new FragmentLifecycleIntegration(this, true, false));
             // Note: Sentry library only take a screenshot of Fox Magisk Module Manager.
             // The screen shot doesn't and cannot contain other applications (if in multi windows)
@@ -434,7 +426,7 @@ public class MainApplication extends FoxApplication
                     return null;
                 }
             });
-        });
+        });*/
     }
 
     @Override

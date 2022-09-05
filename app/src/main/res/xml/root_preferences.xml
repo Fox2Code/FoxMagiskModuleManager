@@ -116,13 +116,13 @@
             app:summary="@string/prevent_reboot_desc"
             app:title="@string/prevent_reboot_pref" />
         <!-- Crash reporting -->
-        <SwitchPreferenceCompat
+        <!--<SwitchPreferenceCompat
             app:defaultValue="true"
             app:icon="@drawable/ic_baseline_bug_report_24"
             app:key="pref_crash_reporting"
             app:singleLineTitle="false"
             app:summary="@string/crash_reporting_desc"
-            app:title="@string/crash_reporting" />
+            app:title="@string/crash_reporting" />-->
         <!-- Purposely crash the app -->
         <Preference
             app:icon="@drawable/ic_baseline_bug_report_24"

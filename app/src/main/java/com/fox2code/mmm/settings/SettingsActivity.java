@@ -132,13 +132,13 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 return true;
             });
             // Crash reporting
-            TwoStatePreference crashReportingPreference = findPreference("pref_crash_reporting");
+            /*TwoStatePreference crashReportingPreference = findPreference("pref_crash_reporting");
             crashReportingPreference.setChecked(MainApplication.isCrashReportingEnabled());
             crashReportingPreference.setOnPreferenceChangeListener((preference, newValue) -> {
                 devModeStepFirstBootIgnore = true;
                 devModeStep = 0;
                 return true;
-            });
+            });*/
             Preference enableBlur = findPreference("pref_enable_blur");
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                 enableBlur.setSummary(R.string.require_android_6);
