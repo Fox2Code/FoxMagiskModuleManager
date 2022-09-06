@@ -2,6 +2,7 @@
     <string name="app_name">Fox\'s Magisk模块管理器</string>
     <string name="app_name_short">Fox\'s Mmm</string>
     <string name="fail_root_magisk">无法访问Root权限或者您没有安装Magisk</string>
+    <string name="fail_root_denied">Root被Magisk拒绝</string>
     <string name="loading">加载中…</string>
     <string name="updatable">可更新</string>
     <string name="installed">已安装</string>
@@ -59,7 +60,7 @@
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">管理仓库</string>
     <string name="showcase_mode_pref">锁定模式</string>
-    <string name="showcase_mode_desc">锁定模式阻止管理器对模块执行操作</string>
+    <string name="showcase_mode_desc">锁定模式会阻止管理器对模块执行操作</string>
     <string name="prevent_reboot_pref">防止重启</string>
     <string name="prevent_reboot_desc">防止误触重启键而导致意外重启</string>
     <string name="pref_category_settings">设置</string>
@@ -129,9 +130,12 @@
     <string name="add_repo">添加库</string>
     <string name="remove_repo">移除库</string>
     <string name="custom_url">自定义网址</string>
+    <string name="androidacy_repo_info">此存储库可能会显示一些非侵入性广告以支付服务器和开发成本</string>
     <string name="backup_module_list">备份模块</string>
     <string name="restore_module_list">还原模块</string>
     <string name="require_internet">此操作需要互联网连接</string>
+    <string name="androidacy_test_mode_pref">Androidacy测试模式</string>
+    <string name="androidacy_test_mode_desc">使用暂存 Androidacy 端点而不是发布端点 (要求重新启动应用程序进程)</string>
 
     <!-- Background Notification translation -->
     <string name="notification_update_title">发现 %i 个模块更新</string>
@@ -149,6 +153,22 @@
         请考虑为 GitHub 上的应用程序翻译做出贡献</string>
     <!-- Replace with your own username when translating -->
     <string name="language_translated_by">由ender-zhao翻译</string>
-    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
+    <string name="crash_reporting">自动向开发人员报告错误和性能</string>
+    <string name="crash_reporting_desc">如果禁用此功能，开发人员将不会收到自动错误报告，这可能会使故障排除变得困难</string>
     <string name="api_key">Androidacy API Key</string>
+    <string name="api_key_summary">使用Androidacy的自定义 API key, 对高级订阅者有用，以删除广告等</string>
+    <string name="api_key_not_set">Androidacy API key 为空</string>
+    <string name="api_key_set">当前的 Androidacy API key</string>
+    <string name="api_key_invalid">无法验证 API Key。 请检查并重试。</string>
+    <string name="api_key_valid">API key有效.</string>
+    <string name="checking_api_key">正在验证 API key...</string>
+    <string name="validating_api_key">正在验证 API key...</string>
+    <string name="please_wait">请等待</string>
+    <string name="api_key_removed">成功重置 API key</string>
+    <string name="save_api_key">验证</string>
+    <string name="warning">警告!</string>
+    <string name="androidacy_test_mode_warning">您正在将应用设置为使用 Androidacy 的非生产端点。 这可能会导致应用不稳定和无法加载在线 repo。 如果您打开此开关，请勿报告错误。 更改将在应用重启时生效</string>
+    <string name="crash">使应用程序崩溃以进行测试</string>
+    <string name="repackaged_as">重新包装为:</string>
+    <string name="wrapped_from">包来自:</string>
 </resources>
