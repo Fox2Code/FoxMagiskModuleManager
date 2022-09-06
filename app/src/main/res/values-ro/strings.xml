@@ -3,12 +3,13 @@
     <string name="app_name">Fox - Manager module Magisk</string>
     <string name="app_name_short">Fox\'s Mmm</string>
     <string name="fail_root_magisk">Obținerea accesului la rădăcină sau Magisk a eșuat</string>
+    <string name="fail_root_denied">Accesul root a fost refuzat în aplicația Magisk</string>
     <string name="loading">Se încarcă…</string>
     <string name="updatable">Actualizabil</string>
     <string name="installed">Instalat</string>
     <string name="online_repo">Depozit online</string>
     <string name="showcase_mode">Aplicația este în modul blocare</string>
-    <string name="failed_download">Descărcarea fișierului a eșuat.</string>
+    <string name="failed_download">Descărcarea fișierului a eșuat</string>
     <string name="slow_modules">A durat prea mult pentru pornirea modulelor, ia în considerare dezactivarea unor module</string>
     <string name="fail_internet">Conectarea la internet a eșuat</string>
     <string name="no_web_view">Nu s-a putut obține WebView de sistem</string>
@@ -30,8 +31,6 @@
     <string name="config">Configurare</string>
     <string name="favourite">Favorit</string>
     <string name="report_bugs">Raportează erori</string>
-    <string name="sniffed_modules">Sniffed modules</string>
-    <string name="sniffing_modules">Sniffing modules</string>
     <string name="submit_modules">Trimite un modul</string>
     <string name="require_android_6">Necesită Android 6.0+</string>
     <string name="require_android_12">Necesită Android 12+</string>
@@ -60,11 +59,11 @@
     <string name="pref_category_settings">Setări</string>
     <string name="enable_monet">Activează Monet</string>
     <string name="pref_category_info">Informații</string>
-    <string name="show_licenses">Afişează licenţa</string>
+    <string name="show_licenses">Afișează licențe</string>
     <string name="licenses">Licențe</string>
     <string name="show_incompatible_pref">Arată modulele incompatibile</string>
     <string name="show_incompatible_desc">Arată module incompatibile cu dispozitivul tău pe baza metadatelor lor</string>
-    <string name="magisk_outdated">Magisk este învechit!</string>
+    <string name="magisk_outdated">Există o nouă versiune Magisk de instalat!</string>
     <string name="pref_category_repos">Depozite</string>
     <string name="pref_category_security">Securitate</string>
     <string name="pref_category_appearance">Aspect</string>
@@ -77,7 +76,7 @@
     <string name="master_delete_fail">Ștergerea fișierelor modulului a eșuat</string>
     <string name="theme_pref">Temă</string>
     <string name="theme_mode_pref">Mod temă</string>
-    <string name="module_id_prefix">ID modul:</string>
+    <string name="module_id_prefix">ID modul: </string>
     <string name="install_from_storage">Instalare modul de pe stocare</string>
     <string name="invalid_format">Modulul selectat este într-un format greșit</string>
     <string name="low_quality_module">Modul de calitate scăzută</string>
@@ -89,7 +88,7 @@
     <string name="file_picker_failure">Selectorul de fișiere curent nu a reușit să permită accesul la fișier.</string>
     <string name="remote_install_title">Instalare la distanță</string>
     <string name="file_picker_wierd">Selectorul tău de fișiere a returnat un răspuns non-standard.</string>
-    <string name="use_magisk_install_command_pref" tools:ignore="TypographyDashes">Folosește comanda de instalare modul Magisk</string>
+    <string name="use_magisk_install_command_pref" tools:ignore="TypographyDashes">Folosește comanda \"magisk --install-module\"</string>
     <string name="use_magisk_install_command_desc">        În timpul testului, a cauzat probleme la instalarea instrumentului de diagnosticare a erorilor,
         așa că am ascuns această opțiune în spatele modului dezvoltator, activați acest lucru pe propriul risc!
     </string>
@@ -97,19 +96,21 @@
     <string name="dev_mode_disabled">Modul dezvoltator este dezactivat</string>
     <string name="force_english_pref">Forțează limba engleză</string>
     <string name="disable_low_quality_module_filter_pref">Dezactivează filtrul de module de calitate slabă</string>
-    <string name="disable_low_quality_module_filter_desc">        Unele module nu declară corect metadatele, cauzând erori vizuale,
+    <string name="disable_low_quality_module_filter_desc">        
+        Unele module nu declară corect metadatele, cauzând erori vizuale,
         și/sau indicând calitatea proastă a modulelor, dezactivează pe propriul risc!
     </string>
-    <string name="dns_over_https_pref">Dns prin https</string>
+    <string name="dns_over_https_pref">DNS prin HTTPS</string>
     <string name="dns_over_https_desc">        Poate rezolva problemele de conexiune în unele cazuri.
-        (Nu se aplică WebView)
+        (Nu se aplică la WebView)
     </string>
     <string name="disable_extensions_pref">Dezactivează extensiile</string>
     <string name="disable_extensions_desc">        Dezactivează extensiile Fox\'s Mmm, acest lucru împiedică modulele să folosească
         extensii terminal, util dacă un modul folosește în mod abuziv extensiile Fox\'s Mmm.
     </string>
     <string name="wrap_text_pref">Încadrează textul</string>
-    <string name="wrap_text_desc">        Se încadrează textul la o linie nouă în loc să fie pus
+    <string name="wrap_text_desc">   
+       Se încadrează textul la o linie nouă în loc să fie pus
         tot textul pe aceeași linie atunci când se instalează un modul
     </string>
     <string name="enable_blur_pref">Activează estomparea</string>
@@ -119,14 +120,14 @@
     <string name="add_repo">Adăugare depozit</string>
     <string name="remove_repo">Eliminare depozit</string>
     <string name="custom_url">URL personalizat</string>
+    <string name="androidacy_repo_info">Acest depozit poate afișa unele reclame neinvazive pentru a acoperi costurile de dezvoltare și pentru server.</string>
     <string name="backup_module_list">Rezervare module</string>
     <string name="restore_module_list">Restabilire module</string>
     <string name="require_internet">Această operațiune necesită o conexiune la Internet</string>
     <string name="androidacy_test_mode_pref">Modul de testare Androidacy</string>
-    <string name="androidacy_test_mode_desc">Use staging Androidacy Endpoint instead of release endpoint. (Require app process restart)</string>
+    <string name="androidacy_test_mode_desc">Folosiți punctul final Androidacy staging în loc de punctul final de lansare. (Necesită repornirea procesului aplicației)</string>
     <!-- Background Notification translation -->
     <string name="notification_update_title">S-au găsit %i actualizări module</string>
-    <string name="notification_update_title_easter_egg">Sniffed %i module updates</string>
     <string name="notification_update_subtitle">Clic pentru a deschide aplicația</string>
     <string name="notification_update_pref">Verificarea actualizării modulelor în fundal</string>
     <string name="notification_update_desc">Poate crește utilizarea bateriei</string>
@@ -137,6 +138,22 @@
         nu sunt actualizate, vă rugăm să luați în considerare contribuția la traducerea aplicației pe GitHub</string>
     <!-- Replace with your own username when translating -->
     <string name="language_translated_by">Tradus de Fox2Code</string>
-    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
-    <string name="api_key">Androidacy API Key</string>
+    <string name="crash_reporting">Raportează automat dezvoltatorilor erorile și performanțele</string>
+    <string name="crash_reporting_desc">Dacă dezactivați acestă opțiune, dezvoltatorul nu va primi rapoarte automate de erori, iar acest lucru poate face depanarea mai dificilă</string>
+    <string name="api_key">Cheie API Androidacy</string>
+    <string name="api_key_summary">Folosiți o cheie API personalizată pentru Androidacy. Util pentru abonații premium, pentru a elimina reclamele și multe altele.</string>
+    <string name="api_key_not_set">Cheia API Androidacy este goală</string>
+    <string name="api_key_set">Cheie API Androidacy actuală</string>
+    <string name="api_key_invalid">Nu s-a putut valida cheia API. Vă rugăm verificați-o și încercați din nou.</string>
+    <string name="api_key_valid">Cheia API este validă.</string>
+    <string name="checking_api_key">Validare cheie API...</string>
+    <string name="validating_api_key">Validare cheie API...</string>
+    <string name="please_wait">Așteptați</string>
+    <string name="api_key_removed">Resetare cheie API reușită</string>
+    <string name="save_api_key">Validare</string>
+    <string name="warning">Avertisment!</string>
+    <string name="androidacy_test_mode_warning">Setați aplicația să utilizeze un punct final non-producție pentru Androidacy. Acest lucru poate duce la instabilitatea aplicației și la eșecul încărcării depozitului online. NU raportați erori dacă aveți acest comutator pornit. Modificarea va intra în vigoare la repornirea aplicației.</string>
+    <string name="crash">Oprește forțat aplicația pentru testare</string>
+    <string name="repackaged_as">Reambalat ca:</string>
+    <string name="wrapped_from">Înglobat din:</string>
 </resources>
