@@ -1,0 +1,169 @@
+<resources>
+    <string name="app_name">Fox\'un Magisk Modül Yöneticisi</string>
+    <string name="app_name_short">Fox\'un Mmy</string>
+    <string name="fail_root_magisk">Kök ya da Magisk\'e erişim sağlanamadı.</string>
+    <string name="loading">Yükleniyor...</string>
+    <string name="updatable">Güncellenebilir</string>
+    <string name="installed">Yüklendi</string>
+    <string name="online_repo">Çevrimiçi Depo</string>
+    <string name="showcase_mode">Uygulama kilit modunda</string>
+    <string name="failed_download">Dosya indirilemedi.</string>
+    <string name="slow_modules">Modüllerin açılışı çok uzun sürdü, bazı modülleri devre dışı bırakmayı düşünün</string>
+    <string name="fail_internet">İnternete bağlanılamadı</string>
+    <string name="no_web_view">Sistem WebView açılamadı</string>
+    <string name="title_activity_settings">AyarlarEtkinliği</string>
+    <string name="app_update_available">Uygulama güncellemesi mevcut</string>
+    <string name="app_update">Güncelle</string>
+    <string name="no_desc_found">Açıklama bulunamadı.</string>
+    <string name="download_module">Modülü indir</string>
+    <string name="install_module">Modülü yükle</string>
+    <string name="update_module">Modülü güncelle</string>
+    <string name="changelog">Değişiklik günlüğü</string>
+    <string name="website">Web sitesi</string>
+    <string name="support">Destek</string>
+    <string name="donate">Bağış yap</string>
+    <string name="update">Güncelle</string>
+    <string name="install">Yükle</string>
+    <string name="description">Açıklama</string>
+    <string name="uninstall">Kaldır</string>
+    <string name="config">Yapılandırma</string>
+    <string name="favourite">Favori</string>
+    <string name="report_bugs">Hataları bildir</string>
+    <string name="sniffed_modules">Koklanmış modüller</string>
+    <string name="sniffing_modules">Koklama modülleri</string>
+    <string name="submit_modules">Bir modül gönder</string>
+    <string name="require_android_6">Android 6.0+ gerekir</string>
+    <string name="require_android_12">Android 12+ gerekir</string>
+    <string name="language">Dil</string>
+    <string name="install_terminal_reboot_now">Yeniden başlat</string>
+    <string name="yes">Evet</string>
+    <string name="no">Hayır</string>
+    <string name="ok">Tamam</string>
+    <string name="cancel">İptal</string>
+
+    <!-- Module section translation -->
+    <string name="module_last_update">Son güncelleme:</string>
+    <string name="module_repo">Depo:</string>
+    <string name="module_by">tarafından</string>
+    <string name="module_downloads">İndirmeler:</string>
+    <string name="module_stars">Yıldızlar:</string>
+    <string name="module_needs_ramdisk">Ramdisk gerekli</string>
+    <string name="module_needs_ramdisk_desc">Bu modülün yüklenebilmesi için boot ramdisk gereklidir</string>
+    <string name="module_can_change_boot">Boot\'u değiştirebilir</string>
+    <string name="module_can_change_boot_desc">Bu modül boot imajını değiştirebilir</string>
+    <string name="module_min_magisk_chip">Min. Magisk "%s"</string>
+    <string name="module_min_sdk_chip">Min. Android</string>
+    <string name="module_max_sdk_chip">Max. Android</string>
+
+    <!-- Preference Titles -->
+    <!-- Note: Lockdown mode used to be called showcase mode -->
+    <string name="manage_repos_pref">Depoları yönet</string>
+    <string name="showcase_mode_pref">Kilit modu</string>
+    <string name="showcase_mode_desc">Kilit modu yöneticinin modüller üzerinde işlem yapmayı önler</string>
+    <string name="prevent_reboot_pref">Yeniden başlatmayı engelle</string>
+    <string name="prevent_reboot_desc">Beklenmeyen yeniden başlatmaları önler</string>
+    <string name="pref_category_settings">Ayarlar</string>
+    <string name="enable_monet">Monet\'i etkinleştir</string>
+    <string name="pref_category_info">Bilgi</string>
+    <string name="show_licenses">Lisansları göster</string>
+    <string name="licenses">Lisanslar</string>
+    <string name="show_incompatible_pref">Desteklenmeyen modülleri göster</string>
+    <string name="show_incompatible_desc">Metaveri\'ye bağlı olarak cihazınızla uyumlu olmayan modülleri gösterir</string>
+    <string name="magisk_outdated">Magisk\'in yüklenecek yeni bir sürümü var!</string>
+    <string name="pref_category_repos">Depolar</string>
+    <string name="pref_category_security">Güvenlik</string>
+    <string name="pref_category_appearance">Görünüm</string>
+    <string name="pref_category_general">Genel</string>
+    <string name="repo_main_desc">Magisk Modülleri barındıran depo</string>
+    <string name="repo_main_alt">Daha az kısıtlamalara sahip bir Magisk-Modules-Repo\'ya alternatifi.</string>
+    <string name="master_delete">Modül dosyalarını sil?</string>
+    <string name="master_delete_no">Dosyaları sakla</string>
+    <string name="master_delete_yes">Dosyaları sil</string>
+    <string name="master_delete_fail">Modül dosyaları silinemedi</string>
+    <string name="theme_pref">Tema</string>
+    <string name="theme_mode_pref">Tema modu</string>
+    <string name="module_id_prefix">Modül id: </string>
+    <string name="install_from_storage">Depolamadan modül yükle</string>
+    <string name="invalid_format">Seçilmiş modül geçersiz biçimde</string>
+    <string name="low_quality_module">Düşük kaliteli modül</string>
+    <string name="local_install_title">Yerel yükleme</string>
+    <string name="source_code">Kaynak kodu</string>
+    <string name="magisk_builtin_module">Magisk yerleşik modülü</string>
+    <string name="substratum_builtin_module">Substratum yerleşik modülü</string>
+    <string name="force_dark_terminal_title">Koyu terminal</string>
+    <string name="file_picker_failure">Mevcut dosya seçicisi dosyaya erişemedi.</string>
+    <string name="remote_install_title">Uzaktan yükleme</string>
+    <string name="file_picker_wierd">Dosya seçicisi standart olmayan bir yanıtı geri getirdi</string>
+    <string name="use_magisk_install_command_pref">\"magisk --install-module\" komutunu kullan</string>
+    <string name="use_magisk_install_command_desc">
+        Test sırasında modül yükleme hata teşhis aracında sorunlar meydana geldi,
+        bu yüzden o seçeneği geliştirici modunun arkasına gizledim, bunu etkinleştirmenizde sorumluluk size aittir!
+    </string>
+    <string name="dev_mode_enabled">Geliştirici modu açık</string>
+    <string name="dev_mode_disabled">Geliştirici modu kapalı</string>
+    <string name="force_english_pref">İngilizce dilini zorla</string>
+    <string name="disable_low_quality_module_filter_pref">Düşük kalite modül filtresini devre dışı bırak</string>
+    <string name="disable_low_quality_module_filter_desc">
+        Bazı modüller metaveri\'lerini düzgün bir şekilde bildirmiyor, görsel hatalara neden oluyor,
+        ve/veya modül kalitesini zayıf gösteriyor, devre dışı bırakmada sorumluluk size aittir!
+    </string>
+    <string name="dns_over_https_pref">Https üzerinden dns</string>
+    <string name="dns_over_https_desc">
+        Bazı durumlarda bağlantı sorunlarını düzeltebilir.
+        (WebView için geçerli değildir)
+    </string>
+    <string name="disable_extensions_pref">Mmy yok</string>
+    <string name="disable_extensions_desc">
+        Fox\'un Mmy eklentilerini devre dışı bırakır; bu, modüllerin terminal eklentilerini kullanmasını önler; Eğer modül Fox\'un Mmy eklentilerini kötüye kullanırsa yararlıdır.
+    </string>
+    <string name="wrap_text_pref">Metni kaydır</string>
+    <string name="wrap_text_desc">
+        Bir modül yüklerken tüm metni aynı satıra koymak yerine metni yeni bir satıra kaydırır.
+    </string>
+    <string name="enable_blur_pref">Bulanıklık</string>
+    <string name="disable_chips_in_description">Açıklamadaki çipleri devre dışı bırak</string>
+    <string name="repo_enabled">Depo açık</string>
+    <string name="repo_disabled">Depo kapalı</string>
+    <string name="add_repo">Depo ekle</string>
+    <string name="remove_repo">Depo\'yu kaldır</string>
+    <string name="custom_url">Özel url</string>
+    <string name="androidacy_repo_info">Bu depo, sunucu ve geliştirme masraflarını karşılamak için bazı kesintisiz reklamlar görüntüleyebilir.</string>
+    <string name="backup_module_list">Modülleri yedekle</string>
+    <string name="restore_module_list">Modülleri geri yükle</string>
+    <string name="require_internet">Bu işlem bir internet bağlantısı gerektirir</string>
+    <string name="androidacy_test_mode_pref">Androidacy test modu</string>
+    <string name="androidacy_test_mode_desc">Release endpoint yerine Androidacy Endpoint\'i kullan. (Uygulama sürecinin yeniden başlatılması gerekir)</string>
+
+
+    <!-- Background Notification translation -->
+    <string name="notification_update_title">%i modül güncellemesi bulundu</string>
+    <string name="notification_update_title_easter_egg">%i modül güncellemesi koklandı</string>
+    <string name="notification_update_subtitle">Uygulamayı açmak için tıkla</string>
+    <string name="notification_update_pref">Modül güncellemesi arkaplan kontrolü</string>
+    <string name="notification_update_desc">Pil kullanımını arttırabilir</string>
+    <string name="notification_update_debug_pref">Bildirim Testi</string>
+
+    <!-- Set to true in translation file if your language is right to left -->
+    <bool name="lang_support_rtl">false</bool>
+    <!-- Always copy language_support_level when translating -->
+    <integer name="language_support_level">1</integer>
+    <string name="language_support_outdated">Mevcut dil için bazı çeviriler güncel değil, lütfen GitHub\'daki uygulama çevirilerine katkıda bulunmayı düşünün</string>
+    <!-- Replace with your own username when translating -->
+    <string name="language_translated_by">Alprnn357 tarafından çevrildi</string>
+    <string name="crash_reporting">Geliştiricilere performans ve hataları otomatik olarak bildir</string>
+    <string name="crash_reporting_desc">Bunu devre dışı bırakırsanız geliştirici otomatik hata raporları almayacak ve bu, sorunları çözmeyi zorlaştırabilir</string>
+    <string name="api_key">Androidacy API Anahtarı</string>
+    <string name="api_key_summary">Androidacy için özel API anahtarı kullan. Premium aboneler için, reklamları ve daha fazlasını kaldırmak için, kullanışlıdır.</string>
+    <string name="api_key_not_set">Androidacy API anahtarı boş</string>
+    <string name="api_key_set">Mevcut Androidacy API anahtarı</string>
+    <string name="api_key_invalid">API anahtarı doğrulanamadı. Lütfen kontrol edin ve tekrar deneyin.</string>
+    <string name="api_key_valid">API key is valid.</string>
+    <string name="checking_api_key">API anahtarı doğrulanıyor...</string>
+    <string name="validating_api_key">API anahtarı doğrulanıyor...</string>
+    <string name="please_wait">Lütfen bekleyin</string>
+    <string name="api_key_removed">API anahtarı başarıyla sıfırlandı</string>
+    <string name="save_api_key">Doğrula</string>
+    <string name="warning">Uyarı!</string>
+    <string name="androidacy_test_mode_warning">Uygulamayı Androidacy için üretim dışı bir endpoint kullanmak için ayarlıyorsunuz. Bu, uygulamada kararsızlığa ve çevrimiçi deponun yüklenememesine neden olabilir.  Bu anahtar açıksa hataları BİLDİRMEYİN.  Değişiklik, uygulama yeniden başlatıldığında etkili olacaktır.</string>
+    <string name="crash">Test etmek için uygulamayı çökert</string>
+</resources>
