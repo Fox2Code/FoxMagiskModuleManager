@@ -69,7 +69,7 @@ import java.util.Random;
 public class SettingsActivity extends FoxActivity implements LanguageActivity {
     private static final int LANGUAGE_SUPPORT_LEVEL = 1;
     private static final String TAG = "SettingsActivity";
-    private static boolean devModeStepFirstBootIgnore = false;
+    private static boolean devModeStepFirstBootIgnore = MainApplication.isDeveloper();
     private static int devModeStep = 0;
 
     @Override
@@ -251,6 +251,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             if (BuildConfig.DEBUG || BuildConfig.ENABLE_AUTO_UPDATER) {
                 findPreference("pref_report_bug").setOnPreferenceClickListener(p -> {
                     devModeStep = 0;
+                    devModeStepFirstBootIgnore = true;
                     IntentHelper.openUrl(p.getContext(), "https://github.com/Fox2Code/FoxMagiskModuleManager/issues");
                     return true;
                 });
