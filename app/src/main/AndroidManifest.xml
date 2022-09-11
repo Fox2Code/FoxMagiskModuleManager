@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.fox2code.mmm"
     tools:ignore="QueryAllPackagesPermission">
+
+    <queries>
+        <intent>
+            <action android:name="com.fox2code.mmm.utils.intent.action.OPEN_EXTERNAL" />
+        </intent>
+    </queries>
 
     <!-- Wifi is not the only way to get an internet connection -->
     <uses-feature

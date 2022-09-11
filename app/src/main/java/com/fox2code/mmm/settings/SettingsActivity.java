@@ -48,6 +48,7 @@ import com.fox2code.mmm.repo.CustomRepoData;
 import com.fox2code.mmm.repo.CustomRepoManager;
 import com.fox2code.mmm.repo.RepoData;
 import com.fox2code.mmm.repo.RepoManager;
+import com.fox2code.mmm.utils.ExternalHelper;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.fox2code.rosettax.LanguageActivity;
@@ -270,6 +271,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         Toast.makeText(getContext(), // Tell the user something changed
                                 R.string.dev_mode_enabled, Toast.LENGTH_SHORT).show();
                     }
+                    ExternalHelper.INSTANCE.refreshHelper(getContext());
                     return true;
                 }
                 IntentHelper.openUrl(p.getContext(), "https://github.com/Fox2Code/FoxMagiskModuleManager");

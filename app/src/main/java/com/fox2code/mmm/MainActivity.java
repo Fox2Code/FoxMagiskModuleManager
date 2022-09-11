@@ -31,6 +31,7 @@ import com.fox2code.mmm.module.ModuleViewAdapter;
 import com.fox2code.mmm.module.ModuleViewListBuilder;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.settings.SettingsActivity;
+import com.fox2code.mmm.utils.ExternalHelper;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
@@ -230,6 +231,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 Log.i(TAG, "Finished app opening state!");
             }
         }, true);
+        ExternalHelper.INSTANCE.refreshHelper(this);
         this.initMode = false;
     }
 

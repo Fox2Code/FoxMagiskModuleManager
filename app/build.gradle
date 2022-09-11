@@ -5,6 +5,7 @@ plugins {
 }
 
 android {
+    namespace "com.fox2code.mmm"
     compileSdk 33
 
     defaultConfig {

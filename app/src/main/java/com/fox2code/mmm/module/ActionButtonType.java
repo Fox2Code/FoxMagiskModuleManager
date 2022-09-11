@@ -2,6 +2,7 @@ package com.fox2code.mmm.module;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.net.Uri;
 import android.text.Spanned;
 import android.util.Log;
 import android.widget.Button;
@@ -20,6 +21,7 @@ import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
+import com.fox2code.mmm.utils.ExternalHelper;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -122,6 +124,8 @@ public enum ActionButtonType {
                             moduleInfo.mmtReborn);
                 });
             }
+            ExternalHelper.INSTANCE.injectButton(builder,
+                    Uri.parse(updateZipUrl), moduleHolder.getUpdateZipRepo());
             int dim5dp = FoxDisplay.dpToPixel(5);
             builder.setBackgroundInsetStart(dim5dp).setBackgroundInsetEnd(dim5dp);
             AlertDialog alertDialog = builder.show();

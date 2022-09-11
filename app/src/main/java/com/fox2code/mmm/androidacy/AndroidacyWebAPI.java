@@ -24,6 +24,7 @@ import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
 import com.fox2code.mmm.repo.RepoModule;
+import com.fox2code.mmm.utils.ExternalHelper;
 import com.fox2code.mmm.utils.Files;
 import com.fox2code.mmm.utils.Hashes;
 import com.fox2code.mmm.utils.IntentHelper;
@@ -115,6 +116,8 @@ public class AndroidacyWebAPI {
             if (!this.activity.backOnResume)
                 this.consumedAction = false;
         });
+        ExternalHelper.INSTANCE.injectButton(builder,
+                Uri.parse(moduleUrl), "androidacy_repo");
         final int dim5dp = FoxDisplay.dpToPixel(5);
         builder.setBackgroundInsetStart(dim5dp).setBackgroundInsetEnd(dim5dp);
         this.activity.runOnUiThread(() -> {
