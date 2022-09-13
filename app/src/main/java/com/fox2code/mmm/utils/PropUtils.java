@@ -370,9 +370,8 @@ public class PropUtils {
         return moduleInfo == null || moduleInfo.hasFlag(ModuleInfo.FLAG_METADATA_INVALID)
                 || moduleInfo.name.length() < 3 || moduleInfo.versionCode < 0
                 || moduleInfo.author == null || !TextUtils.isGraphic(moduleInfo.author)
-                || (description = moduleInfo.description) == null || !TextUtils.isGraphic(description)
+                || isNullString(description = moduleInfo.description) || !TextUtils.isGraphic(description)
                 || description.toLowerCase(Locale.ROOT).equals(moduleInfo.name.toLowerCase(Locale.ROOT))
-                || description.length() < Math.min(Math.max(moduleInfo.name.length() + 4, 16), 24)
                 || (getFlagsForModule(moduleInfo.id) & FLAG_COMPAT_LOW_QUALITY) != 0;
     }
 
