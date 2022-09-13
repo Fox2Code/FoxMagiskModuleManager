@@ -305,6 +305,8 @@ public class MarkdownActivity extends FoxActivity {
                 return "12 (S)";
             case Build.VERSION_CODES.S_V2:
                 return "12L";
+            case Build.VERSION_CODES.TIRAMISU:
+                return "13 Tiramisu";
             default:
                 return "Sdk: " + version;
         }
