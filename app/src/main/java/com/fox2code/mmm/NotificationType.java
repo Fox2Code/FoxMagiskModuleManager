@@ -32,9 +32,15 @@ public enum NotificationType implements NotificationTypeCst {
             return !MainApplication.isShowcaseMode();
         }
     },
-    NO_ROOT(R.string.fail_root_magisk, R.drawable.ic_baseline_numbers_24, v -> {
-        IntentHelper.openUrl(v.getContext(), "https://github.com/topjohnwu/Magisk/blob/master/docs/install.md");
-    }) {
+    NO_MAGISK(R.string.fail_magisk_missing, R.drawable.ic_baseline_numbers_24, v ->
+            IntentHelper.openUrl(v.getContext(),
+                    "https://github.com/topjohnwu/Magisk/blob/master/docs/install.md")) {
+        @Override
+        public boolean shouldRemove() {
+            return InstallerInitializer.getErrorNotification() != this;
+        }
+    },
+    NO_ROOT(R.string.fail_root_magisk, R.drawable.ic_baseline_numbers_24) {
         @Override
         public boolean shouldRemove() {
             return InstallerInitializer.getErrorNotification() != this;

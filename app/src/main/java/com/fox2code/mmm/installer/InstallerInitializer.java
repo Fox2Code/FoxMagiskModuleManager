@@ -48,7 +48,9 @@ public class InstallerInitializer extends Shell.Initializer {
                 hasRoot != Boolean.FALSE) {
             return null;
         }
-        if (hasRoot != Boolean.TRUE && HAS_MAGISK) {
+        if (!HAS_MAGISK) {
+            return NotificationType.NO_MAGISK;
+        } else if (hasRoot != Boolean.TRUE) {
             return NotificationType.ROOT_DENIED;
         }
         return NotificationType.NO_ROOT;

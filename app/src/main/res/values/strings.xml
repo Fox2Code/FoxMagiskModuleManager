@@ -3,6 +3,7 @@
     <string name="app_name_short">Fox\'s Mmm</string>
     <string name="fail_root_magisk">Could not access either Root or Magisk</string>
     <string name="fail_root_denied">Root has been denied via the Magisk app</string>
+    <string name="fail_magisk_missing">Magisk is not installed on this device</string>
     <string name="loading">Loading…</string>
     <string name="updatable">Upgradable</string>
     <string name="installed">Installed</string>
