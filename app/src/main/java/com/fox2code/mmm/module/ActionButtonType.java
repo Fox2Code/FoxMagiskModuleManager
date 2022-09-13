@@ -266,7 +266,8 @@ public enum ActionButtonType {
         if (url == null) {
             return icon;
         } else if (url.startsWith("https://www.paypal.me/") ||
-                url.startsWith("https://www.paypal.com/paypalme/")) {
+                url.startsWith("https://www.paypal.com/paypalme/") ||
+                url.startsWith("https://www.paypal.com/donate/")) {
             icon = R.drawable.ic_baseline_paypal_24;
         } else if (url.startsWith("https://patreon.com/") ||
                 url.startsWith("https://www.patreon.com/")) {

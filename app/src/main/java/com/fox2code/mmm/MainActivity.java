@@ -244,7 +244,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     setActionBarBackground(null);
                     updateScreenInsets(getResources().getConfiguration());
                 });
-                noodleDebug.push("Apply");
+                noodleDebug.replace("Apply");
                 RepoManager.getINSTANCE().runAfterUpdate(
                         moduleViewListBuilder::appendRemoteModules);
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
