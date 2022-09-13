@@ -65,7 +65,7 @@ public class NoodleDebug {
             this.thread = new WeakReference<>(Thread.currentThread());
             THREAD_NOODLE.set(this);
         } else {
-            this.thread = null;
+            this.thread = NULL_THREAD_REF;
             THREAD_NOODLE.remove();
         }
         return this;
