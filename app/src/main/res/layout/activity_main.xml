@@ -51,6 +51,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/action_bar_blur" />
 
+    <TextView
+        android:id="@+id/noodle_debug"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/action_bar_blur" />
+
     <LinearLayout
         android:id="@+id/search_container"
         android:layout_width="match_parent"

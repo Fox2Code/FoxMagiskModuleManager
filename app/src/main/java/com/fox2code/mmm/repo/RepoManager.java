@@ -13,6 +13,7 @@ import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.utils.Files;
 import com.fox2code.mmm.utils.Hashes;
 import com.fox2code.mmm.utils.Http;
+import com.fox2code.mmm.utils.NoodleDebug;
 import com.fox2code.mmm.utils.PropUtils;
 import com.fox2code.mmm.utils.SyncManager;
 
@@ -185,6 +186,8 @@ public final class RepoManager extends SyncManager {
     private static final double STEP3 = 0.1D;
 
     protected void scanInternal(@NonNull UpdateListener updateListener) {
+        NoodleDebug noodleDebug = NoodleDebug.getNoodleDebug();
+        noodleDebug.push("Downloading indexes");
         this.modules.clear();
         updateListener.update(0D);
         // Using LinkedHashSet to deduplicate Androidacy entry.
@@ -192,18 +195,26 @@ public final class RepoManager extends SyncManager {
                 this.repoData.values()).toArray(new RepoData[0]);
         RepoUpdater[] repoUpdaters = new RepoUpdater[repoDatas.length];
         int moduleToUpdate = 0;
+        noodleDebug.push("");
         for (int i = 0; i < repoDatas.length; i++) {
+            noodleDebug.replace(repoDatas[i].getName());
             moduleToUpdate += (repoUpdaters[i] =
                     new RepoUpdater(repoDatas[i])).fetchIndex();
             updateListener.update(STEP1 / repoDatas.length * (i + 1));
         }
+        noodleDebug.pop();
+        noodleDebug.replace("Updating meta-data");
         int updatedModules = 0;
         boolean allowLowQualityModules = MainApplication.isDisableLowQualityModuleFilter();
+        noodleDebug.push("");
         for (int i = 0; i < repoUpdaters.length; i++) {
             List<RepoModule> repoModules = repoUpdaters[i].toUpdate();
             RepoData repoData = repoDatas[i];
+            noodleDebug.replace(repoData.getName());
             Log.d(TAG, "Registering " + repoData.getName());
+            noodleDebug.push("");
             for (RepoModule repoModule:repoModules) {
+                noodleDebug.replace(repoModule.id);
                 try {
                     if (repoModule.propUrl != null &&
                             !repoModule.propUrl.isEmpty()) {
@@ -229,6 +240,7 @@ public final class RepoManager extends SyncManager {
                 updatedModules++;
                 updateListener.update(STEP1 + (STEP2 / moduleToUpdate * updatedModules));
             }
+            noodleDebug.pop();
             for (RepoModule repoModule:repoUpdaters[i].toApply()) {
                 if ((repoModule.moduleInfo.flags & ModuleInfo.FLAG_METADATA_INVALID) == 0) {
                     RepoModule registeredRepoModule = this.modules.get(repoModule.id);
@@ -241,14 +253,20 @@ public final class RepoManager extends SyncManager {
                 }
             }
         }
+        noodleDebug.pop();
+        noodleDebug.replace("Finishing update");
+        noodleDebug.push("");
         boolean hasInternet = false;
         for (int i = 0; i < repoDatas.length; i++) {
+            noodleDebug.replace(repoUpdaters[i].repoData.getName());
             hasInternet |= repoUpdaters[i].finish();
             updateListener.update(STEP1 + STEP2 + (STEP3 / repoDatas.length * (i + 1)));
         }
+        noodleDebug.pop();
         Log.i(TAG, "Got " + this.modules.size() + " modules!");
         updateListener.update(1D);
         this.repoLastResult = hasInternet;
+        noodleDebug.pop(); // pop "Finishing update"
     }
 
     public void updateEnabledStates() {
