@@ -23,7 +23,7 @@ import java.util.List;
 
 public final class ExternalHelper {
     private static final String TAG = "ExternalHelper";
-    private static final boolean TEST_MODE = true;
+    private static final boolean TEST_MODE = false;
     private static final String FOX_MMM_OPEN_EXTERNAL =
             "com.fox2code.mmm.utils.intent.action.OPEN_EXTERNAL";
     private static final String FOX_MMM_EXTRA_REPO_ID = "extra_repo_id";
@@ -35,12 +35,6 @@ public final class ExternalHelper {
     private ExternalHelper() {}
 
     public void refreshHelper(Context context) {
-        // This feature is still WIP
-        if (!MainApplication.isDeveloper()) {
-            label = null;
-            multi = false;
-            return;
-        }
         Intent intent = new Intent(FOX_MMM_OPEN_EXTERNAL,
                 Uri.parse("https://fox2code.com/module.zip"));
         List<ResolveInfo> resolveInfos = context.getPackageManager()
