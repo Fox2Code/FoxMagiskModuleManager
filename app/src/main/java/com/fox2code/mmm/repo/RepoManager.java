@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.XHooks;
+import com.fox2code.mmm.XRepo;
 import com.fox2code.mmm.androidacy.AndroidacyRepoData;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.utils.Files;
@@ -19,6 +20,7 @@ import com.fox2code.mmm.utils.SyncManager;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -366,5 +368,9 @@ public final class RepoManager extends SyncManager {
 
     public CustomRepoManager getCustomRepoManager() {
         return customRepoManager;
+    }
+
+    public Collection<XRepo> getXRepos() {
+        return new LinkedHashSet<>(this.repoData.values());
     }
 }

@@ -222,6 +222,7 @@ public class RepoData extends XRepo {
 
     // Repo data info getters
     @NonNull
+    @Override
     public String getName() {
         if (isNonNull(this.name))
             return this.name;
