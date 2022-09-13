@@ -2,6 +2,8 @@
     <string name="app_name">Fox - Menedżer modułów Magisk</string>
     <string name="app_name_short">FoxMmm</string>
     <string name="fail_root_magisk">Nie udało się uzyskać dostępu do Root lub Magisk</string>
+    <string name="fail_root_denied">Odmówiono dostępu do roota w aplikacji Magisk</string>
+    <string name="fail_magisk_missing">Magisk nie jest zainstalowany na tym urządzeniu</string>
     <string name="loading">Wczytywanie…</string>
     <string name="updatable">Aktualizacje modułów</string>
     <string name="installed">Zainstalowane</string>
