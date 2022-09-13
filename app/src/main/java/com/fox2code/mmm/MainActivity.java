@@ -78,6 +78,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.initMode = true;
+        noodleDebugState = MainApplication.isDeveloper();
         BackgroundUpdateChecker.onMainActivityCreate(this);
         super.onCreate(savedInstanceState);
          this.setActionBarExtraMenuButton(R.drawable.ic_baseline_settings_24, v -> {
@@ -333,6 +334,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         this.updateBlurState();
         this.moduleViewListBuilder.setQuery(null);
         Log.i(TAG, "Item After");
+        noodleDebugState = MainApplication.isDeveloper();
         this.moduleViewListBuilder.refreshNotificationsUI(this.moduleViewAdapter);
         InstallerInitializer.tryGetMagiskPathAsync(new InstallerInitializer.Callback() {
             @Override
