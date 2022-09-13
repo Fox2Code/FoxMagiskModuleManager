@@ -11,6 +11,8 @@ Index:
 - [Properties](DEVELOPERS.md#properties)
 - [ANSI Styling](DEVELOPERS.md#ansi-styling)
 - [Installer commands](DEVELOPERS.md#installer-commands)
+- [Developer mode](DEVELOPERS.md#developer-mode)
+- [End note](DEVELOPERS.md#end-note)
 
 ## Special notes
 
@@ -172,6 +174,22 @@ mmm_exec setSupportLink https://github.com/Fox2Code/FoxMagiskModuleManager
 ```
 
 [You may look at the examples modules and their codes.](examples)
+
+## Developer mode
+
+FoxMMM contain a developer mode to unlock unstable, dangerous, or experimental features.
+
+To unlock developer mode you must do the following in this order:
+- Go to setting
+- Open theme selector option
+- Close it without selecting a theme
+- Click on show license
+- Go back to setting page
+- Click on source code button
+
+To disable dev mode just repeat the exact same steps.
+
+## End Note
 
 Have fun with the API making your user install experience a unique experience
 
