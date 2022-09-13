@@ -2,6 +2,8 @@
     <string name="app_name">Fox\'un Magisk Modül Yöneticisi</string>
     <string name="app_name_short">Fox\'un Mmy</string>
     <string name="fail_root_magisk">Kök ya da Magisk\'e erişim sağlanamadı.</string>
+    <string name="fail_root_denied">Kök erişimi, Magisk uygulaması aracılığıyla reddedildi</string>
+    <string name="fail_magisk_missing">Magisk, bu cihazda yüklü değil</string>
     <string name="loading">Yükleniyor...</string>
     <string name="updatable">Güncellenebilir</string>
     <string name="installed">Yüklendi</string>
@@ -157,7 +159,7 @@
     <string name="api_key_not_set">Androidacy API anahtarı boş</string>
     <string name="api_key_set">Mevcut Androidacy API anahtarı</string>
     <string name="api_key_invalid">API anahtarı doğrulanamadı. Lütfen kontrol edin ve tekrar deneyin.</string>
-    <string name="api_key_valid">API key is valid.</string>
+    <string name="api_key_valid">API anahtarı geçerli.</string>
     <string name="checking_api_key">API anahtarı doğrulanıyor...</string>
     <string name="validating_api_key">API anahtarı doğrulanıyor...</string>
     <string name="please_wait">Lütfen bekleyin</string>
@@ -166,4 +168,6 @@
     <string name="warning">Uyarı!</string>
     <string name="androidacy_test_mode_warning">Uygulamayı Androidacy için üretim dışı bir endpoint kullanmak için ayarlıyorsunuz. Bu, uygulamada kararsızlığa ve çevrimiçi deponun yüklenememesine neden olabilir.  Bu anahtar açıksa hataları BİLDİRMEYİN.  Değişiklik, uygulama yeniden başlatıldığında etkili olacaktır.</string>
     <string name="crash">Test etmek için uygulamayı çökert</string>
+    <string name="repackaged_as">Bu şekilde yeniden paketlendi:</string>
+    <string name="wrapped_from">Tarafından sarmalandı:</string>
 </resources>
