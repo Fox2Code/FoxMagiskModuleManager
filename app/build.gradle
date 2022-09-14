@@ -1,17 +1,19 @@
 plugins {
+    id "io.sentry.android.gradle" version "3.1.5"
     id 'com.android.application'
     id 'com.mikepenz.aboutlibraries.plugin'
 }
 
 android {
+    namespace "com.fox2code.mmm"
     compileSdk 33
 
     defaultConfig {
         applicationId "com.fox2code.mmm"
         minSdk 21
         targetSdk 33
-        versionCode 53
-        versionName "0.6.1"
+        versionCode 57
+        versionName "0.6.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -20,12 +22,15 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
-            proguardFiles getDefaultProguardFile(
-                    'proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             applicationIdSuffix '.debug'
             debuggable true
+            // ONLY FOR TESTING SENTRY
+            // minifyEnabled true
+            // shrinkResources true
+            // proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -35,11 +40,9 @@ android {
             dimension "type"
             buildConfigField "boolean", "ENABLE_AUTO_UPDATER", "true"
             buildConfigField "boolean", "DEFAULT_ENABLE_CRASH_REPORTING", "true"
-            buildConfigField(
-                "java.util.List<String>",
-                "ENABLED_REPOS",
-                "java.util.Arrays.asList(\"magisk_alt_repo\", \"androidacy_repo\")",
-            )
+            buildConfigField("java.util.List<String>",
+                    "ENABLED_REPOS",
+                    "java.util.Arrays.asList(\"magisk_alt_repo\", \"androidacy_repo\")",)
         }
 
         fdroid {
@@ -56,11 +59,9 @@ android {
 
             // Repo with ads or tracking feature are disabled by default for the
             // F-Droid flavor.
-            buildConfigField(
-                "java.util.List<String>",
-                "ENABLED_REPOS",
-                "java.util.Arrays.asList(\"magisk_alt_repo\")",
-            )
+            buildConfigField("java.util.List<String>",
+                    "ENABLED_REPOS",
+                    "java.util.Arrays.asList(\"magisk_alt_repo\")",)
         }
     }
 
@@ -78,15 +79,71 @@ aboutLibraries {
     additionalLicenses = ["LGPL_3_0_only"]
 }
 
+sentry {
+    // Disables or enables the handling of Proguard mapping for Sentry.
+    // If enabled the plugin will generate a UUID and will take care of
+    // uploading the mapping to Sentry. If disabled, all the logic
+    // related to proguard mapping will be excluded.
+    // Default is enabled.
+    includeProguardMapping = true
+
+    // Whether the plugin should attempt to auto-upload the mapping file to Sentry or not.
+    // If disabled the plugin will run a dry-run and just generate a UUID.
+    // The mapping file has to be uploaded manually via sentry-cli in this case.
+    // Default is enabled.
+    autoUploadProguardMapping = true
+
+    // Experimental flag to turn on support for GuardSquare's tools integration (Dexguard and External Proguard).
+    // If enabled, the plugin will try to consume and upload the mapping file produced by Dexguard and External Proguard.
+    // Default is disabled.
+    experimentalGuardsquareSupport = true
+
+    // Disables or enables the automatic configuration of Native Symbols
+    // for Sentry. This executes sentry-cli automatically so
+    // you don't need to do it manually.
+    // Default is disabled.
+    uploadNativeSymbols = true
+
+    // Does or doesn't include the source code of native code for Sentry.
+    // This executes sentry-cli with the --include-sources param. automatically so
+    // you don't need to do it manually.
+    // Default is disabled.
+    includeNativeSources = true
+
+    // Enable or disable the tracing instrumentation.
+    // Does auto instrumentation for specified features through bytecode manipulation.
+    // Default is enabled.
+    tracingInstrumentation {
+        enabled = true
+    }
+
+    // Enable auto-installation of Sentry components (sentry-android SDK and okhttp, timber and fragment integrations).
+    // Default is enabled.
+    // Only available v3.1.0 and above.
+    autoInstallation {
+        enabled = true
+
+        // Specifies a version of the sentry-android SDK and fragment, timber and okhttp integrations.
+        //
+        // This is also useful, when you have the sentry-android SDK already included into a transitive dependency/module and want to
+        // align integration versions with it (if it's a direct dependency, the version will be inferred).
+        //
+        // NOTE: if you have a higher version of the sentry-android SDK or integrations on the classpath, this setting will have no effect
+        // as Gradle will resolve it to the latest version.
+        //
+        // Defaults to the latest published sentry version.
+        sentryVersion = '6.4.1'
+    }
+}
+
 configurations {
-    implementation.exclude group: 'org.jetbrains' , module: 'annotations'
+    implementation.exclude group: 'org.jetbrains', module: 'annotations'
+    implementation.exclude group: 'io.sentry', module: 'sentry-android-okhttp'
 }
 
 dependencies {
-    // Error reporting
-    implementation 'io.sentry:sentry-android:6.4.0'
     // UI
-    implementation 'androidx.appcompat:appcompat:1.5.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'androidx.emoji2:emoji2:1.2.0'
     implementation 'androidx.emoji2:emoji2-views-helper:1.2.0'
     implementation 'androidx.preference:preference:1.2.0'
@@ -100,15 +157,22 @@ dependencies {
     implementation "dev.rikka.rikkax.insets:insets:1.3.0"
     implementation 'com.github.Dimezis:BlurView:version-1.6.6'
     implementation 'com.github.KieronQuinn:MonetCompat:0.4.1'
-    implementation 'com.github.Fox2Code:FoxCompat:0.1.0'
+    implementation 'com.github.Fox2Code:FoxCompat:0.1.4b'
 
     // Utils
     implementation 'androidx.work:work-runtime:2.7.1'
     implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.9.3'
     implementation 'com.squareup.okhttp3:okhttp-brotli:4.9.3'
     implementation 'com.github.topjohnwu.libsu:io:5.0.1'
-    implementation 'com.github.Fox2Code:RosettaX:1.0.8'
+    implementation 'com.github.Fox2Code:RosettaX:1.0.9'
     implementation 'com.github.Fox2Code:AndroidANSI:1.0.1'
+
+    // Error reporting
+    implementation 'io.sentry:sentry-android:6.4.1'
+    implementation 'io.sentry:sentry-android-fragment:6.4.1'
+    implementation 'io.sentry:sentry-android-okhttp:6.4.1'
+    implementation 'io.sentry:sentry-android-core:6.4.1'
+    implementation 'io.sentry:sentry-android-ndk:6.4.1'
 
     // Markdown
     implementation "io.noties.markwon:core:4.6.2"

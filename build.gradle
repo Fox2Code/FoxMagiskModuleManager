@@ -6,6 +6,7 @@ buildscript {
         gradlePluginPortal()
     }
     project.ext.latestAboutLibsRelease = "10.4.1-a01"
+    project.ext.blockSentry = false // TODO: Make this block Sentry from even being added to the project
     dependencies {
         classpath 'com.android.tools.build:gradle:7.2.2'
         classpath "com.mikepenz.aboutlibraries.plugin:aboutlibraries-plugin:${latestAboutLibsRelease}"

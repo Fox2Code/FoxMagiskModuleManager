@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.fox2code.mmm"
     tools:ignore="QueryAllPackagesPermission">
+
+    <queries>
+        <intent>
+            <action android:name="com.fox2code.mmm.utils.intent.action.OPEN_EXTERNAL" />
+        </intent>
+    </queries>
 
     <!-- Wifi is not the only way to get an internet connection -->
     <uses-feature
@@ -74,23 +79,23 @@
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
-            <intent-filter>
+            <!-- <intent-filter>
                 <action android:name="${applicationId}.intent.action.INSTALL_MODULE_INTERNAL" />
-            </intent-filter>
+            </intent-filter> -->
         </activity>
         <activity
             android:name=".markdown.MarkdownActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/Theme.MagiskModuleManager"></activity>
+            android:theme="@style/Theme.MagiskModuleManager" />
         <activity
             android:name=".androidacy.AndroidacyActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.MagiskModuleManager">
-            <intent-filter>
+            <!-- <intent-filter>
                 <action android:name="${applicationId}.intent.action.OPEN_ANDROIDACY_INTERNAL" />
-            </intent-filter>
+            </intent-filter> -->
         </activity>
         <activity
             android:name="com.mikepenz.aboutlibraries.ui.LibsActivity"
@@ -108,15 +113,19 @@
                 android:name="androidx.work.WorkManagerInitializer"
                 tools:node="remove" />
         </provider>
+
         <meta-data
             android:name="io.sentry.dsn"
             android:value="https://ba5cb5ef513b423cbd54a2a8457113b1@sentry.androidacy.com/7" />
+        <!-- Sane value, but feel free to lower it -->
         <meta-data
             android:name="io.sentry.traces.sample-rate"
             android:value="0.5" />
+        <!-- Doesn't actually monitor anything, just used to get the activities the user went through -->
         <meta-data
             android:name="io.sentry.traces.user-interaction.enable"
             android:value="true" />
+        <!-- Just a screenshot of ONLY the current activity at the time of the crash -->
         <meta-data
             android:name="io.sentry.attach-screenshot"
             android:value="true" />
