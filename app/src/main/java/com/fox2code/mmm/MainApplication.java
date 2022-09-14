@@ -1,5 +1,8 @@
 package com.fox2code.mmm;
 
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -28,6 +31,8 @@ import com.fox2code.mmm.utils.Http;
 import com.fox2code.rosettax.LanguageSwitcher;
 import com.topjohnwu.superuser.Shell;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -43,6 +48,10 @@ import io.noties.markwon.syntax.Prism4jThemeDefault;
 import io.noties.markwon.syntax.SyntaxHighlightPlugin;
 import io.noties.prism4j.Prism4j;
 import io.noties.prism4j.annotations.PrismBundle;
+import io.sentry.JsonObjectWriter;
+import io.sentry.NoOpLogger;
+import io.sentry.android.core.SentryAndroid;
+import io.sentry.android.fragment.FragmentLifecycleIntegration;
 
 @PrismBundle(
         includeAll = true,
@@ -180,10 +189,10 @@ public class MainApplication extends FoxApplication
         getSharedPreferences().edit().putBoolean("has_root_access", bool).apply();
     }
 
-    /*public static boolean isCrashReportingEnabled() {
+    public static boolean isCrashReportingEnabled() {
         return getSharedPreferences().getBoolean("pref_crash_reporting",
                 BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING && !BuildConfig.DEBUG);
-    }*/
+    }
 
     public static SharedPreferences getBootSharedPreferences() {
         return bootSharedPreferences;
@@ -360,73 +369,60 @@ public class MainApplication extends FoxApplication
             }, "Emoji compat init.").start();
         }
 
-        /*SentryAndroid.init(this, options -> {
-            options.addIntegration(new FragmentLifecycleIntegration(this, true, false));
-            // Note: Sentry library only take a screenshot of Fox Magisk Module Manager.
-            // The screen shot doesn't and cannot contain other applications (if in multi windows)
-            // status bar and notifications (even if notification shade is pulled down)
+        SentryAndroid.init(this, options -> {
+            // If crash reporting is disabled, stop here.
+            if (!sharedPreferences.getBoolean("pref_crash_reporting", true)) {
+                options.setDsn("");
+            } else {
+                options.addIntegration(new FragmentLifecycleIntegration(this, true, true));
+                // Sentry sends ABSOLUTELY NO Personally Identifiable Information (PII) by default.
+                // A screenshot of the app itself is only sent if the app crashes, and it only shows the last activity
+                // In addition, sentry is configured with a trusted third party other than sentry.io, and only trusted people have access to the sentry instance
+                // Add a callback that will be used before the event is sent to Sentry.
+                // With this callback, you can modify the event or, when returning null, also discard the event.
+                options.setBeforeSend((event, hint) -> {
+                    if (BuildConfig.DEBUG) { // Debug sentry events for debug.
+                        StringBuilder stringBuilder = new StringBuilder("Sentry report debug: ");
+                        try {
+                            event.serialize(new JsonObjectWriter(new Writer() {
+                                @Override
+                                public void write(char[] cbuf) {
+                                    stringBuilder.append(cbuf);
+                                }
 
-            // In the possibility you find this library sending anything listed above,
-            // it's a serious bug and a security issue you should report to Google
-            // Google bug bounties on Android are huge, so you can also get rich by doing that.
-            options.setAttachScreenshot(true);
-            // User interaction tracing is not needed to get context of crash
-            options.setEnableUserInteractionTracing(false);
-            // Send client reports has nothing to do with error reporting
-            options.setSendClientReports(false);
-            // Auto session tracking has nothing to do with error reporting
-            options.setEnableAutoSessionTracking(false);
-            // Add a callback that will be used before the event is sent to Sentry.
-            // With this callback, you can modify the event or, when returning null, also discard the event.
-            options.setBeforeSend((event, hint) -> {
-                if (BuildConfig.DEBUG) { // Debug sentry events for debug.
-                    StringBuilder stringBuilder = new StringBuilder("Sentry report debug: ");
-                    try {
-                        event.serialize(new JsonObjectWriter(new Writer() {
-                            @Override
-                            public void write(char[] cbuf) {
-                                stringBuilder.append(cbuf);
-                            }
+                                @Override
+                                public void write(String str) {
+                                    stringBuilder.append(str);
+                                }
 
-                            @Override
-                            public void write(String str) {
-                                stringBuilder.append(str);
-                            }
+                                @Override
+                                public void write(char[] chars, int i, int i1) {
+                                    stringBuilder.append(chars, i, i1);
+                                }
 
-                            @Override
-                            public void write(char[] chars, int i, int i1) {
-                                stringBuilder.append(chars, i, i1);
-                            }
+                                @Override
+                                public void write(String str, int off, int len) {
+                                    stringBuilder.append(str, off, len);
+                                }
 
-                            @Override
-                            public void write(String str, int off, int len) {
-                                stringBuilder.append(str, off, len);
-                            }
+                                @Override
+                                public void flush() {
+                                }
 
-                            @Override
-                            public void flush() {}
-
-                            @Override
-                            public void close() {}
-                        }, 4), NoOpLogger.getInstance());
-                    } catch (IOException ignored) {}
-                    Log.i(TAG, stringBuilder.toString());
-                }
-                // Check saved preferences to see if the user has opted out of crash reporting.
-                // If the user has opted out, return null.
-                if (isCrashReportingEnabled()) {
-                    Log.i(TAG, "Relayed sentry report according to user preference");
+                                @Override
+                                public void close() {
+                                }
+                            }, 4), NoOpLogger.getInstance());
+                        } catch (IOException ignored) {
+                        }
+                        Log.i(TAG, stringBuilder.toString());
+                    }
+                    // We already know that the user has opted in to crash reporting, so we don't need to ask again.
                     return event;
-                } else {
-                    Log.i(TAG, "Blocked sentry report according to user preference");
-                    // We need to do this to avoid crash delay on crash when the event is dropped
-                    DiskFlushNotification diskFlushNotification = hint.getAs(
-                            TypeCheckHint.SENTRY_TYPE_CHECK_HINT, DiskFlushNotification.class);
-                    if (diskFlushNotification != null) diskFlushNotification.markFlushed();
-                    return null;
-                }
-            });
-        });*/
+                });
+            }
+
+        });
     }
 
     @Override

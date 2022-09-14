@@ -32,7 +32,6 @@ import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.XHooks;
-import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 
@@ -60,6 +59,7 @@ public final class AndroidacyActivity extends FoxActivity {
     AndroidacyWebAPI androidacyWebAPI;
     boolean backOnResume;
 
+    @SuppressWarnings("deprecation")
     @Override
     @SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface"})
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -115,7 +115,8 @@ public final class AndroidacyActivity extends FoxActivity {
                                 IntentHelper.openConfig(this, config);
                                 return true;
                             });
-                } catch (PackageManager.NameNotFoundException ignored) {}
+                } catch (PackageManager.NameNotFoundException ignored) {
+                }
             }
         }
         this.webView = this.findViewById(R.id.webView);
@@ -125,12 +126,21 @@ public final class AndroidacyActivity extends FoxActivity {
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setAllowFileAccess(false);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { // Make website follow app theme
-            webSettings.setForceDark(MainApplication.getINSTANCE().isLightTheme() ?
-                    WebSettings.FORCE_DARK_OFF : WebSettings.FORCE_DARK_ON);
-        } else if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
-            WebSettingsCompat.setForceDark(webSettings, MainApplication.getINSTANCE().isLightTheme() ?
-                    WebSettingsCompat.FORCE_DARK_OFF : WebSettingsCompat.FORCE_DARK_ON);
+        // If API level is .= 33, allow setAlgorithmicDarkeningAllowed
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
+            try {
+                webSettings.setAlgorithmicDarkeningAllowed(true);
+            } catch (NoSuchMethodError ignored) {
+            }
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { // Make website follow app theme
+                webSettings.setForceDark(MainApplication.getINSTANCE().isLightTheme() ?
+                        WebSettings.FORCE_DARK_OFF : WebSettings.FORCE_DARK_ON);
+            } else if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+                // If api level is < 32, use force dark
+                WebSettingsCompat.setForceDark(webSettings, MainApplication.getINSTANCE().isLightTheme() ?
+                        WebSettingsCompat.FORCE_DARK_OFF : WebSettingsCompat.FORCE_DARK_ON);
+            }
         }
         this.webView.setWebViewClient(new WebViewClientCompat() {
             private String pageUrl;
@@ -173,7 +183,7 @@ public final class AndroidacyActivity extends FoxActivity {
             }
 
             private void onReceivedError(String url, int errorCode) {
-                if ((url.startsWith("https://api.androidacy.com/magisk/") ||
+                if ((url.startsWith("https://production-api.androidacy.com/magisk/") ||
                         url.startsWith("https://staging-api.androidacy.com/magisk/") ||
                         url.equals(pageUrl)) && (errorCode == 419 || errorCode == 429 || errorCode == 503)) {
                     Toast.makeText(AndroidacyActivity.this,
@@ -247,33 +257,33 @@ public final class AndroidacyActivity extends FoxActivity {
                         if (moduleId != null) {
                             webView.evaluateJavascript("document.querySelector(" +
                                             "\"#download-form input[name=_token]\").value",
-                                result -> new Thread("Androidacy popup workaround thread") {
-                                    @Override
-                                    public void run() {
-                                        if (androidacyWebAPI.consumedAction) return;
-                                        try {
-                                            JSONObject jsonObject = new JSONObject();
-                                            jsonObject.put("moduleId", moduleId);
-                                            jsonObject.put("token", AndroidacyRepoData
-                                                    .getInstance().getToken());
-                                            jsonObject.put("_token", result);
-                                            String realUrl = Http.doHttpPostRedirect(downloadUrl,
-                                                    jsonObject.toString(), true);
-                                            if (downloadUrl.equals(realUrl)) {
-                                                Log.e(TAG, "Failed to resolve URL from " +
-                                                        downloadUrl);
-                                                AndroidacyActivity.this.megaIntercept(
-                                                        webView.getUrl(), downloadUrl);
-                                                return;
+                                    result -> new Thread("Androidacy popup workaround thread") {
+                                        @Override
+                                        public void run() {
+                                            if (androidacyWebAPI.consumedAction) return;
+                                            try {
+                                                JSONObject jsonObject = new JSONObject();
+                                                jsonObject.put("moduleId", moduleId);
+                                                jsonObject.put("token", AndroidacyRepoData
+                                                        .getInstance().getToken());
+                                                jsonObject.put("_token", result);
+                                                String realUrl = Http.doHttpPostRedirect(downloadUrl,
+                                                        jsonObject.toString(), true);
+                                                if (downloadUrl.equals(realUrl)) {
+                                                    Log.e(TAG, "Failed to resolve URL from " +
+                                                            downloadUrl);
+                                                    AndroidacyActivity.this.megaIntercept(
+                                                            webView.getUrl(), downloadUrl);
+                                                    return;
+                                                }
+                                                Log.i(TAG, "Got url: " + realUrl);
+                                                androidacyWebAPI.openNativeModuleDialogRaw(realUrl,
+                                                        moduleId, "", androidacyWebAPI.canInstall());
+                                            } catch (IOException | JSONException e) {
+                                                Log.e(TAG, "Failed redirect intercept", e);
                                             }
-                                            Log.i(TAG, "Got url: " + realUrl);
-                                            androidacyWebAPI.openNativeModuleDialogRaw(realUrl,
-                                                    moduleId, "", androidacyWebAPI.canInstall());
-                                        } catch (IOException | JSONException e) {
-                                            Log.e(TAG, "Failed redirect intercept", e);
                                         }
-                                    }
-                                }.start());
+                                    }.start());
                             return;
                         } else if (this.megaIntercept(webView.getUrl(), downloadUrl))
                             return;
@@ -285,7 +295,7 @@ public final class AndroidacyActivity extends FoxActivity {
                 Log.i(TAG, "Exiting WebView " +
                         AndroidacyUtil.hideToken(downloadUrl));
                 for (String prefix : new String[]{
-                        "https://api.androidacy.com/magisk/download/",
+                        "https://production-api.androidacy.com/magisk/download/",
                         "https://staging-api.androidacy.com/magisk/download/"
                 }) {
                     if (downloadUrl.startsWith(prefix)) {
@@ -328,14 +338,15 @@ public final class AndroidacyActivity extends FoxActivity {
 
     private String moduleIdOfUrl(String url) {
         for (String prefix : new String[]{
-                "https://api.androidacy.com/magisk/download/",
+                "https://production-api.androidacy.com/magisk/download/",
                 "https://staging-api.androidacy.com/magisk/download/",
-                "https://api.androidacy.com/magisk/readme/",
+                "https://production-api.androidacy.com/magisk/readme/",
                 "https://staging-api.androidacy.com/magisk/readme/",
-                "https://api.androidacy.com/magisk/info/",
+                "https://prodiuction-api.androidacy.com/magisk/info/",
                 "https://staging-api.androidacy.com/magisk/info/"
         }) { // Make both staging and non staging act the same
-            int i = url.indexOf('?', prefix.length()); if (i == -1) i = url.length();
+            int i = url.indexOf('?', prefix.length());
+            if (i == -1) i = url.length();
             if (url.startsWith(prefix)) return url.substring(prefix.length(), i);
         }
         return null;
@@ -343,7 +354,7 @@ public final class AndroidacyActivity extends FoxActivity {
 
     private boolean isFileUrl(String url) {
         for (String prefix : new String[]{
-                "https://api.androidacy.com/magisk/file/",
+                "https://production-api.androidacy.com/magisk/file/",
                 "https://staging-api.androidacy.com/magisk/file/"
         }) { // Make both staging and non staging act the same
             if (url.startsWith(prefix)) return true;

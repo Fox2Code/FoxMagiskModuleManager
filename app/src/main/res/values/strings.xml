@@ -136,7 +136,7 @@
     <string name="restore_module_list">Restore modules</string>
     <string name="require_internet">This operation require an internet connection</string>
     <string name="androidacy_test_mode_pref">Androidacy test mode</string>
-    <string name="androidacy_test_mode_desc">Use staging Androidacy endpoint instead of release endpoint. (Require app process restart)</string>
+    <string name="androidacy_test_mode_desc">Use staging Androidacy endpoint instead of release endpoint. (Will restart app)</string>
 
     <!-- Background Notification translation -->
     <string name="notification_update_title">Found %i module updates</string>
@@ -168,8 +168,12 @@
     <string name="api_key_removed">Successfully reset API key</string>
     <string name="save_api_key">Validate</string>
     <string name="warning">Warning!</string>
-    <string name="androidacy_test_mode_warning">You are setting the app to use a non-production endpoint for Androidacy. This may result in app instability and failure to load the online repo. Do NOT report bugs if you have this switch on. Change will take effect on app restart.</string>
+    <string name="androidacy_test_mode_warning">You are setting the app to use a non-production endpoint for Androidacy. This may result in app instability and failure to load the online repo. Do NOT report bugs if you have this switch on. App will be restarted to reload repos.</string>
     <string name="crash">Crash the app for testing</string>
     <string name="repackaged_as">Repackaged as:</string>
     <string name="wrapped_from">Wrapped from:</string>
+    <string name="crash_reporting_restart_title">Restart app to apply changes?</string>
+    <string name="crash_reporting_restart_message">The app needs to restart to apply this setting</string>
+    <string name="restart">Restart</string>
+    <string name="androidacy_test_mode_disable_warning">App will be restarted to disable staging endpoint</string>
 </resources>

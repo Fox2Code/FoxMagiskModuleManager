@@ -50,6 +50,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
+import io.sentry.Breadcrumb;
+import io.sentry.Sentry;
+import io.sentry.SentryLevel;
+
 public class InstallerActivity extends FoxActivity {
     private static final String TAG = "InstallerActivity";
     public LinearProgressIndicator progressIndicator;
@@ -104,7 +108,7 @@ public class InstallerActivity extends FoxActivity {
         }
         Log.i(TAG, "Install link: " + target);
         // Note: Sentry only send this info on crash.
-        /*if (MainApplication.isCrashReportingEnabled()) {
+        if (MainApplication.isCrashReportingEnabled()) {
             Breadcrumb breadcrumb = new Breadcrumb();
             breadcrumb.setType("install");
             breadcrumb.setData("target", target);
@@ -113,7 +117,7 @@ public class InstallerActivity extends FoxActivity {
             breadcrumb.setCategory("app.action.preinstall");
             breadcrumb.setLevel(SentryLevel.INFO);
             Sentry.addBreadcrumb(breadcrumb);
-        }*/
+        }
         boolean urlMode = target.startsWith("http://") || target.startsWith("https://");
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setTitle(name);
@@ -173,9 +177,7 @@ public class InstallerActivity extends FoxActivity {
                 if (this.canceled) return;
                 if (checksum != null && !checksum.isEmpty()) {
                     Log.d(TAG, "Checking for checksum: " + checksum);
-                    this.runOnUiThread(() -> {
-                        this.installerTerminal.addLine("- Checking file integrity");
-                    });
+                    this.runOnUiThread(() -> this.installerTerminal.addLine("- Checking file integrity"));
                     if (!Hashes.checkSumMatch(rawModule, checksum)) {
                         this.setInstallStateFinished(false,
                                 "! File integrity check failed", "");
@@ -223,9 +225,7 @@ public class InstallerActivity extends FoxActivity {
                     }
                 } else {
                     errMessage = "Failed to patch module zip";
-                    this.runOnUiThread(() -> {
-                        this.installerTerminal.addLine("- Patching " + name);
-                    });
+                    this.runOnUiThread(() -> this.installerTerminal.addLine("- Patching " + name));
                     Log.i(TAG, "Patching: " + moduleCache.getName());
                     try (OutputStream outputStream = new FileOutputStream(moduleCache)) {
                         Files.patchModuleSimple(rawModule, outputStream);
@@ -235,9 +235,7 @@ public class InstallerActivity extends FoxActivity {
                 //noinspection UnusedAssignment (Important to avoid OutOfMemoryError)
                 rawModule = null; // Because reference is kept when calling doInstall
                 if (this.canceled) return;
-                this.runOnUiThread(() -> {
-                    this.installerTerminal.addLine("- Installing " + name);
-                });
+                this.runOnUiThread(() -> this.installerTerminal.addLine("- Installing " + name));
                 errMessage = "Failed to install module zip";
                 this.doInstall(moduleCache, noExtensions, rootless);
             } catch (IOException e) {
@@ -451,7 +449,7 @@ public class InstallerActivity extends FoxActivity {
                         installCommand).to(installerController, installerMonitor);
             }
             // Note: Sentry only send this info on crash.
-            /*if (MainApplication.isCrashReportingEnabled()) {
+            if (MainApplication.isCrashReportingEnabled()) {
                 Breadcrumb breadcrumb = new Breadcrumb();
                 breadcrumb.setType("install");
                 breadcrumb.setData("moduleId", moduleId == null ? "<null>" : moduleId);
@@ -464,7 +462,7 @@ public class InstallerActivity extends FoxActivity {
                 breadcrumb.setCategory("app.action.install");
                 breadcrumb.setLevel(SentryLevel.INFO);
                 Sentry.addBreadcrumb(breadcrumb);
-            }*/
+            }
             if (mmtReborn && magiskCmdLine) {
                 Log.w(TAG, "mmtReborn and magiskCmdLine may not work well together");
             }
@@ -738,12 +736,8 @@ public class InstallerActivity extends FoxActivity {
                             .setTitle(R.string.install_terminal_reboot_now)
                             .setCancelable(false)
                             .setIcon(R.drawable.ic_reboot_24)
-                            .setPositiveButton(R.string.yes, (x, y) -> {
-                                Shell.cmd(reboot_cmd).submit();
-                            })
-                            .setNegativeButton(R.string.no, (x, y) -> {
-                                x.dismiss();
-                            }).show();
+                            .setPositiveButton(R.string.yes, (x, y) -> Shell.cmd(reboot_cmd).submit())
+                            .setNegativeButton(R.string.no, (x, y) -> x.dismiss()).show();
                 } else {
                     Shell.cmd(reboot_cmd).submit();
                 }

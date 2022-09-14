@@ -1,5 +1,6 @@
 package com.fox2code.mmm.androidacy;
 
+import android.annotation.SuppressLint;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
@@ -107,10 +108,8 @@ public class AndroidacyWebAPI {
                     fConfig = config, fChecksum = checksum;
             final boolean fMMTReborn = mmtReborn;
             builder.setPositiveButton(hasUpdate ?
-                    R.string.update_module : R.string.install_module, (x, y) -> {
-                IntentHelper.openInstaller(this.activity,
-                        fModuleUrl, fTitle, fConfig, fChecksum, fMMTReborn);
-            });
+                    R.string.update_module : R.string.install_module, (x, y) -> IntentHelper.openInstaller(this.activity,
+                            fModuleUrl, fTitle, fConfig, fChecksum, fMMTReborn));
         }
         builder.setOnCancelListener(dialogInterface -> {
             if (!this.activity.backOnResume)
@@ -500,7 +499,7 @@ public class AndroidacyWebAPI {
      */
     @JavascriptInterface
     public String getMonetColor(String id) {
-        int nameResourceID = this.activity.getResources().getIdentifier("@android:color/" + id,
+        @SuppressLint("DiscouragedApi") int nameResourceID = this.activity.getResources().getIdentifier("@android:color/" + id,
                 "color", this.activity.getApplicationInfo().packageName);
         if (nameResourceID == 0) {
             throw new IllegalArgumentException(

@@ -113,10 +113,10 @@
                 android:name="androidx.work.WorkManagerInitializer"
                 tools:node="remove" />
         </provider>
-
+        <meta-data android:name="io.sentry.auto-init" android:value="false" />
         <meta-data
             android:name="io.sentry.dsn"
-            android:value="https://ba5cb5ef513b423cbd54a2a8457113b1@sentry.androidacy.com/7" />
+            android:value="https://cdcdb0efca4a42a28df90e4b7f087347@sentry.androidacy.com/2" />
         <!-- Sane value, but feel free to lower it -->
         <meta-data
             android:name="io.sentry.traces.sample-rate"

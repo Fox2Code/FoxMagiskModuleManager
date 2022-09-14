@@ -21,7 +21,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
@@ -106,6 +105,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat implements FoxActivity.OnBackPressedCallback {
+        @SuppressLint("UnspecifiedImmutableFlag")
         @Override
         @SuppressWarnings("ConstantConditions")
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -133,13 +133,47 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 return true;
             });
             // Crash reporting
-            /*TwoStatePreference crashReportingPreference = findPreference("pref_crash_reporting");
+            TwoStatePreference crashReportingPreference = findPreference("pref_crash_reporting");
             crashReportingPreference.setChecked(MainApplication.isCrashReportingEnabled());
             crashReportingPreference.setOnPreferenceChangeListener((preference, newValue) -> {
                 devModeStepFirstBootIgnore = true;
                 devModeStep = 0;
+                // Save the new value and restart the app
+                MainApplication.getSharedPreferences().edit()
+                        .putBoolean("crash_reporting", (boolean) newValue).apply();
+                // Show a dialog to restart the app
+                MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(requireContext());
+                materialAlertDialogBuilder.setTitle(R.string.crash_reporting_restart_title);
+                materialAlertDialogBuilder.setMessage(R.string.crash_reporting_restart_message);
+                materialAlertDialogBuilder.setPositiveButton(R.string.restart, (dialog, which) -> {
+                    Intent mStartActivity = new Intent(requireContext(), MainActivity.class);
+                    mStartActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    int mPendingIntentId = 123456;
+                    // If < 23, FLAG_IMMUTABLE is not available
+                    PendingIntent mPendingIntent;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                    } else {
+                        mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                    }
+                    AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+                    mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+                    if (BuildConfig.DEBUG) {
+                        Log.d(TAG, "Restarting app to save crash reporting preference: " + newValue);
+                    }
+                    System.exit(0); // Exit app process
+                });
+                // Reverse the change if the user cancels the dialog
+                materialAlertDialogBuilder.setNegativeButton(R.string.cancel, (dialog, which) -> {
+                    crashReportingPreference.setChecked(!crashReportingPreference.isChecked());
+                    MainApplication.getSharedPreferences().edit()
+                            .putBoolean("crash_reporting", crashReportingPreference.isChecked()).apply();
+                });
+                materialAlertDialogBuilder.show();
                 return true;
-            });*/
+            });
             Preference enableBlur = findPreference("pref_enable_blur");
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                 enableBlur.setSummary(R.string.require_android_6);
@@ -289,7 +323,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 return true;
             });
             findPreference("pref_pkg_info").setSummary(BuildConfig.APPLICATION_ID +
-                            " v" + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")" +
+                    " v" + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")" +
                     getRepackageState()); // State may not be "I am just running from myself as myself"
         }
 
@@ -298,7 +332,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             Application initialApplication = null;
             try {
                 initialApplication = FoxProcessExt.getInitialApplication();
-            } catch (Throwable ignored) {}
+            } catch (Throwable ignored) {
+            }
             String realPackageName;
             if (initialApplication != null) {
                 realPackageName = initialApplication.getPackageName();
@@ -350,7 +385,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             onCreatePreferencesAndroidacy();
         }
 
-        @SuppressLint("RestrictedApi")
+        @SuppressLint({"RestrictedApi", "UnspecifiedImmutableFlag"})
         public void onCreatePreferencesAndroidacy() {
             Preference androidacyTestMode = Objects.requireNonNull(findPreference("pref_androidacy_test_mode"));
             if (!MainApplication.isDeveloper()) {
@@ -359,12 +394,70 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 // Show a warning if user tries to enable test mode
                 androidacyTestMode.setOnPreferenceChangeListener((preference, newValue) -> {
                     if (Boolean.parseBoolean(String.valueOf(newValue))) {
-                        new AlertDialog.Builder(this.requireContext())
+                        // Use MaterialAlertDialogBuilder
+                        new MaterialAlertDialogBuilder(this.requireContext())
                                 .setTitle(R.string.warning)
                                 .setMessage(R.string.androidacy_test_mode_warning)
                                 .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                                    // Do nothing
-                                }).show();
+                                    // User clicked OK button
+                                    MainApplication.getSharedPreferences().edit().putBoolean("androidacy_test_mode", true).apply();
+                                    // Check the switch
+                                    Intent mStartActivity = new Intent(requireContext(), MainActivity.class);
+                                    mStartActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    int mPendingIntentId = 123456;
+                                    // If < 23, FLAG_IMMUTABLE is not available
+                                    PendingIntent mPendingIntent;
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                        mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                                                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                                    } else {
+                                        mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                                                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                                    }
+                                    AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+                                    mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+                                    if (BuildConfig.DEBUG) {
+                                        Log.d(TAG, "Restarting app to save staging endpoint preference: " + newValue);
+                                    }
+                                    System.exit(0); // Exit app process
+                                })
+                                .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+                                    // User cancelled the dialog
+                                    // Uncheck the switch
+                                    SwitchPreferenceCompat switchPreferenceCompat = (SwitchPreferenceCompat) androidacyTestMode;
+                                    switchPreferenceCompat.setChecked(false);
+                                    // There's probably a better way to do this than duplicate code but I'm too lazy to figure it out
+                                    MainApplication.getSharedPreferences().edit().putBoolean("androidacy_test_mode", false).apply();
+                                })
+                                .show();
+                    } else {
+                        MainApplication.getSharedPreferences().edit().putBoolean("androidacy_test_mode", false).apply();
+                        // Show dialog to restart app with ok button
+                        new MaterialAlertDialogBuilder(this.requireContext())
+                                .setTitle(R.string.warning)
+                                .setMessage(R.string.androidacy_test_mode_disable_warning)
+                                .setNeutralButton(android.R.string.ok, (dialog, which) -> {
+                                    // User clicked OK button
+                                    Intent mStartActivity = new Intent(requireContext(), MainActivity.class);
+                                    mStartActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    int mPendingIntentId = 123456;
+                                    // If < 23, FLAG_IMMUTABLE is not available
+                                    PendingIntent mPendingIntent;
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                        mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                                                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                                    } else {
+                                        mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                                                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                                    }
+                                    AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+                                    mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+                                    if (BuildConfig.DEBUG) {
+                                        Log.d(TAG, "Restarting app to save staging endpoint preference: " + newValue);
+                                    }
+                                    System.exit(0); // Exit app process
+                                })
+                                .show();
                     }
                     return true;
                 });
