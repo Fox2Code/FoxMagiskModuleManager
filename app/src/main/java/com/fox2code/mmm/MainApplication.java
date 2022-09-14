@@ -1,8 +1,5 @@
 package com.fox2code.mmm;
 
-import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -371,7 +368,7 @@ public class MainApplication extends FoxApplication
 
         SentryAndroid.init(this, options -> {
             // If crash reporting is disabled, stop here.
-            if (!sharedPreferences.getBoolean("pref_crash_reporting", true)) {
+            if (!isCrashReportingEnabled()) {
                 options.setDsn("");
             } else {
                 options.addIntegration(new FragmentLifecycleIntegration(this, true, true));
