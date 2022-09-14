@@ -11,6 +11,8 @@ Index:
 - [Properties](DEVELOPERS.md#properties)
 - [ANSI Styling](DEVELOPERS.md#ansi-styling)
 - [Installer commands](DEVELOPERS.md#installer-commands)
+- [Developer mode](DEVELOPERS.md#developer-mode)
+- [End note](DEVELOPERS.md#end-note)
 
 ## Special notes
 
@@ -79,6 +81,7 @@ support=<url>
 donate=<url>
 config=<package>
 changeBoot=<boolean>
+mmtReborn=<boolean>
 ```
 Note: All urls must start with `https://`, or else will be ignored
 Note²: For `minMagisk`, `XX.Y` is parsed as `XXY00`, so you can just put the Magisk version name.
@@ -93,6 +96,8 @@ Note²: For `minMagisk`, `XX.Y` is parsed as `XXY00`, so you can just put the Ma
 - `config` package name of the application that configure your module
   (Note: The icon won't appear in the module list if the module or target app is not installed)
 - `changeBoot` tell the manager the module may change the boot image
+- `mmtReborn` tell the manager to use [MMT-Reborn](https://github.com/iamlooper/MMT-Reborn) logging style  
+  (For example `- Hello world` will be transformed to `[*] Hello world`, do not apply to modules installed from storage)
 
 Note: Fox's Mmm use fallback 
 [here](app/src/main/java/com/fox2code/mmm/utils/PropUtils.java#L36)
@@ -169,6 +174,22 @@ mmm_exec setSupportLink https://github.com/Fox2Code/FoxMagiskModuleManager
 ```
 
 [You may look at the examples modules and their codes.](examples)
+
+## Developer mode
+
+FoxMMM contain a developer mode to unlock unstable, dangerous, or experimental features.
+
+To unlock developer mode you must do the following in this order:
+- Go to setting
+- Open theme selector option
+- Close it without selecting a theme
+- Click on show license
+- Go back to setting page
+- Click on source code button
+
+To disable dev mode just repeat the exact same steps.
+
+## End Note
 
 Have fun with the API making your user install experience a unique experience
 

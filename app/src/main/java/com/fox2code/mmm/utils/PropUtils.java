@@ -7,6 +7,7 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.topjohnwu.superuser.io.SuFileInputStream;
 
@@ -25,6 +26,7 @@ public class PropUtils {
     private static final HashMap<String, String> moduleConfigsFallbacks = new HashMap<>();
     private static final HashMap<String, Integer> moduleMinApiFallbacks = new HashMap<>();
     private static final HashMap<String, String> moduleUpdateJsonFallbacks = new HashMap<>();
+    private static final HashSet<String> moduleMTTRebornFallback = new HashSet<>();
     private static final HashSet<String> moduleImportantProp = new HashSet<>(Arrays.asList(
             "id", "name", "version", "versionCode"
     ));
@@ -100,7 +102,8 @@ public class PropUtils {
                                       String name, boolean local) throws IOException {
         boolean readId = false, readIdSec = false, readName = false,
                 readVersionCode = false, readVersion = false, readDescription = false,
-                readUpdateJson = false, invalid = false, readMinApi = false, readMaxApi = false;
+                readUpdateJson = false, invalid = false, readMinApi = false, readMaxApi = false,
+                readMMTReborn = false;
         try (BufferedReader bufferedReader = new BufferedReader(
                 new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             String line;
@@ -203,6 +206,10 @@ public class PropUtils {
                     case "changeBoot":
                         moduleInfo.changeBoot = Boolean.parseBoolean(value);
                         break;
+                    case "mmtReborn":
+                        moduleInfo.mmtReborn = Boolean.parseBoolean(value);
+                        readMMTReborn = true;
+                        break;
                     case "support":
                         // Do not accept invalid or too broad support links
                         if (isInvalidURL(value) ||
@@ -304,6 +311,11 @@ public class PropUtils {
         if (moduleInfo.config == null) {
             moduleInfo.config = moduleConfigsFallbacks.get(moduleInfo.id);
         }
+        if (!readMMTReborn) {
+            moduleInfo.mmtReborn = moduleMTTRebornFallback.contains(moduleInfo.id) ||
+                    (AppUpdateManager.getFlagsForModule(moduleInfo.id) &
+                            AppUpdateManager.FLAG_COMPAT_MMT_REBORN) != 0;
+        }
         // All local modules should have an author
         // set to "Unknown" if author is missing.
         if (local && moduleInfo.author == null) {
@@ -358,9 +370,8 @@ public class PropUtils {
         return moduleInfo == null || moduleInfo.hasFlag(ModuleInfo.FLAG_METADATA_INVALID)
                 || moduleInfo.name.length() < 3 || moduleInfo.versionCode < 0
                 || moduleInfo.author == null || !TextUtils.isGraphic(moduleInfo.author)
-                || (description = moduleInfo.description) == null || !TextUtils.isGraphic(description)
+                || isNullString(description = moduleInfo.description) || !TextUtils.isGraphic(description)
                 || description.toLowerCase(Locale.ROOT).equals(moduleInfo.name.toLowerCase(Locale.ROOT))
-                || description.length() < Math.min(Math.max(moduleInfo.name.length() + 4, 16), 24)
                 || (getFlagsForModule(moduleInfo.id) & FLAG_COMPAT_LOW_QUALITY) != 0;
     }
 

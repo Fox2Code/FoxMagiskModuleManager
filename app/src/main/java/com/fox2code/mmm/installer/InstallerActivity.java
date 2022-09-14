@@ -45,6 +45,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.HashSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -79,6 +80,7 @@ public class InstallerActivity extends FoxActivity {
         final String checksum;
         final boolean noExtensions;
         final boolean rootless;
+        final boolean mmtReborn;
         // Should we allow 3rd part app to install modules?
         if (Constants.INTENT_INSTALL_INTERNAL.equals(intent.getAction())) {
             if (!MainApplication.checkSecret(intent)) {
@@ -93,12 +95,25 @@ public class InstallerActivity extends FoxActivity {
                     Constants.EXTRA_INSTALL_NO_EXTENSIONS, false);
             rootless = intent.getBooleanExtra(// For debug only
                     Constants.EXTRA_INSTALL_TEST_ROOTLESS, false);
+            mmtReborn = intent.getBooleanExtra(// For debug only
+                    Constants.EXTRA_INSTALL_MMT_REBORN, false);
         } else {
             Toast.makeText(this, "Unknown intent!", Toast.LENGTH_SHORT).show();
             this.forceBackPressed();
             return;
         }
         Log.i(TAG, "Install link: " + target);
+        // Note: Sentry only send this info on crash.
+        /*if (MainApplication.isCrashReportingEnabled()) {
+            Breadcrumb breadcrumb = new Breadcrumb();
+            breadcrumb.setType("install");
+            breadcrumb.setData("target", target);
+            breadcrumb.setData("name", name);
+            breadcrumb.setData("checksum", checksum);
+            breadcrumb.setCategory("app.action.preinstall");
+            breadcrumb.setLevel(SentryLevel.INFO);
+            Sentry.addBreadcrumb(breadcrumb);
+        }*/
         boolean urlMode = target.startsWith("http://") || target.startsWith("https://");
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setTitle(name);
@@ -121,9 +136,10 @@ public class InstallerActivity extends FoxActivity {
         this.rebootFloatingButton = findViewById(R.id.install_terminal_reboot_fab);
         this.installerTerminal = new InstallerTerminal(
                 installTerminal = findViewById(R.id.install_terminal),
-                this.isLightTheme(), foreground);
+                this.isLightTheme(), foreground, mmtReborn);
         (horizontalScroller != null ? horizontalScroller : installTerminal)
                 .setBackground(new ColorDrawable(background));
+        installTerminal.setItemAnimator(null);
         this.progressIndicator.setVisibility(View.GONE);
         this.progressIndicator.setIndeterminate(true);
         this.getWindow().setFlags( // Note: Doesn't require WAKELOCK permission
@@ -138,9 +154,10 @@ public class InstallerActivity extends FoxActivity {
                     !new SuFile(moduleCache.getAbsolutePath()).delete())
                 Log.e(TAG, "Failed to delete module cache");
             String errMessage = "Failed to download module zip";
+            byte[] rawModule;
             try {
                 Log.i(TAG, (urlMode ? "Downloading: " : "Loading: ") + target);
-                byte[] rawModule = urlMode ? Http.doHttpGet(target, (progress, max, done) -> {
+                rawModule = urlMode ? Http.doHttpGet(target, (progress, max, done) -> {
                     if (max <= 0 && this.progressIndicator.isIndeterminate())
                         return;
                     this.runOnUiThread(() -> {
@@ -227,6 +244,14 @@ public class InstallerActivity extends FoxActivity {
                 Log.e(TAG, errMessage, e);
                 this.setInstallStateFinished(false,
                         "! " + errMessage, "");
+            } catch (OutOfMemoryError e) {
+                //noinspection UnusedAssignment (Important to avoid OutOfMemoryError)
+                rawModule = null; // Because reference is kept when calling setInstallStateFinished
+                if ("Failed to install module zip".equals(errMessage))
+                    throw e; // Ignore if in installation state.
+                Log.e(TAG, "Module too large", e);
+                this.setInstallStateFinished(false,
+                        "! Module is too large to be loaded on this device", "");
             }
         }, "Module install Thread").start();
     }
@@ -281,6 +306,7 @@ public class InstallerActivity extends FoxActivity {
             String moduleId = null;
             boolean anyKernel3 = false;
             boolean magiskModule = false;
+            boolean mmtReborn = false;
             String MAGISK_PATH = InstallerInitializer.peekMagiskPath();
             if (MAGISK_PATH == null) {
                 this.setInstallStateFinished(false, "! Unable to resolve magisk path", "");
@@ -313,6 +339,11 @@ public class InstallerActivity extends FoxActivity {
                 }
                 ZipEntry moduleProp = zipFile.getEntry("module.prop");
                 magiskModule = moduleProp != null;
+                if (zipFile.getEntry("install.sh") == null &&
+                        zipFile.getEntry("customize.sh") == null &&
+                        zipFile.getEntry("setup.sh") != null && magiskModule) {
+                    mmtReborn = true; // MMT-Reborn require a separate runtime
+                }
                 moduleId = PropUtils.readModuleId(zipFile
                         .getInputStream(zipFile.getEntry("module.prop")));
             } catch (IOException ignored) {
@@ -354,6 +385,7 @@ public class InstallerActivity extends FoxActivity {
             }
             String installCommand;
             File installExecutable;
+            boolean magiskCmdLine = false;
             if (anyKernel3 && moduleId == null) { // AnyKernel zip don't have a moduleId
                 this.warnReboot = true; // We should probably re-flash magisk...
                 installExecutable = this.extractInstallScript("anykernel3_installer.sh");
@@ -374,6 +406,7 @@ public class InstallerActivity extends FoxActivity {
                 installCommand = "magisk --install-module \"" + file.getAbsolutePath() + "\"";
                 installExecutable = new File(MAGISK_PATH.equals("/sbin") ?
                         "/sbin/magisk" : "/system/bin/magisk");
+                magiskCmdLine = true;
             } else if (moduleId != null) {
                 installExecutable = this.extractInstallScript("module_installer_compat.sh");
                 if (installExecutable == null) {
@@ -411,10 +444,29 @@ public class InstallerActivity extends FoxActivity {
                         "export MMM_TEXT_WRAP=" + (this.textWrap ? "1" : "0"),
                         this.installerTerminal.isAnsiEnabled() ?
                                 AnsiConstants.ANSI_CMD_SUPPORT : "true",
+                        mmtReborn ? "export MMM_MMT_REBORN=1" : "true",
                         "export BOOTMODE=true", anyKernel3 ? "export AK3TMPFS=" +
                                 InstallerInitializer.peekMagiskPath() + "/ak3tmpfs" :
                                 "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
                         installCommand).to(installerController, installerMonitor);
+            }
+            // Note: Sentry only send this info on crash.
+            /*if (MainApplication.isCrashReportingEnabled()) {
+                Breadcrumb breadcrumb = new Breadcrumb();
+                breadcrumb.setType("install");
+                breadcrumb.setData("moduleId", moduleId == null ? "<null>" : moduleId);
+                breadcrumb.setData("mmtReborn", mmtReborn ? "true" : "false");
+                breadcrumb.setData("isAnyKernel3", anyKernel3 ? "true" : "false");
+                breadcrumb.setData("noExtensions", noExtensions ? "true" : "false");
+                breadcrumb.setData("magiskCmdLine", magiskCmdLine ? "true" : "false");
+                breadcrumb.setData("ansi", this.installerTerminal
+                        .isAnsiEnabled() ? "enabled" : "disabled");
+                breadcrumb.setCategory("app.action.install");
+                breadcrumb.setLevel(SentryLevel.INFO);
+                Sentry.addBreadcrumb(breadcrumb);
+            }*/
+            if (mmtReborn && magiskCmdLine) {
+                Log.w(TAG, "mmtReborn and magiskCmdLine may not work well together");
             }
         }
         boolean success = installJob.exec().isSuccess();
@@ -641,14 +693,18 @@ public class InstallerActivity extends FoxActivity {
         }
     }
 
+    private static final HashSet<String> extracted = new HashSet<>();
     private File extractInstallScript(String script) {
         File compatInstallScript = new File(this.moduleCache, script);
-        if (!compatInstallScript.exists() || compatInstallScript.length() == 0) {
+        if (!compatInstallScript.exists() || compatInstallScript.length() == 0 ||
+                !extracted.contains(script)) {
             try {
                 Files.write(compatInstallScript, Files.readAllBytes(
                         this.getAssets().open(script)));
+                extracted.add(script);
             } catch (IOException e) {
-                compatInstallScript.delete();
+                if (compatInstallScript.delete())
+                    extracted.remove(script);
                 Log.e(TAG, "Failed to extract " + script, e);
                 return null;
             }

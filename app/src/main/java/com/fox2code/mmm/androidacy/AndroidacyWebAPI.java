@@ -23,8 +23,8 @@ import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
-import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.repo.RepoModule;
+import com.fox2code.mmm.utils.ExternalHelper;
 import com.fox2code.mmm.utils.Files;
 import com.fox2code.mmm.utils.Hashes;
 import com.fox2code.mmm.utils.IntentHelper;
@@ -67,9 +67,11 @@ public class AndroidacyWebAPI {
         RepoModule repoModule = AndroidacyRepoData
                 .getInstance().moduleHashMap.get(installTitle);
         String title, description;
+        boolean mmtReborn = false;
         if (repoModule != null) {
             title = repoModule.moduleInfo.name;
             description = repoModule.moduleInfo.description;
+            mmtReborn = repoModule.moduleInfo.mmtReborn;
             if (description == null || description.length() == 0) {
                 description = this.activity.getString(R.string.no_desc_found);
             }
@@ -103,16 +105,19 @@ public class AndroidacyWebAPI {
             }
             final String fModuleUrl = moduleUrl, fTitle = title,
                     fConfig = config, fChecksum = checksum;
+            final boolean fMMTReborn = mmtReborn;
             builder.setPositiveButton(hasUpdate ?
                     R.string.update_module : R.string.install_module, (x, y) -> {
                 IntentHelper.openInstaller(this.activity,
-                        fModuleUrl, fTitle, fConfig, fChecksum);
+                        fModuleUrl, fTitle, fConfig, fChecksum, fMMTReborn);
             });
         }
         builder.setOnCancelListener(dialogInterface -> {
             if (!this.activity.backOnResume)
                 this.consumedAction = false;
         });
+        ExternalHelper.INSTANCE.injectButton(builder,
+                Uri.parse(moduleUrl), "androidacy_repo");
         final int dim5dp = FoxDisplay.dpToPixel(5);
         builder.setBackgroundInsetStart(dim5dp).setBackgroundInsetEnd(dim5dp);
         this.activity.runOnUiThread(() -> {
@@ -247,13 +252,15 @@ public class AndroidacyWebAPI {
             RepoModule repoModule = AndroidacyRepoData
                     .getInstance().moduleHashMap.get(installTitle);
             String config = null;
+            boolean mmtReborn = false;
             if (repoModule != null && repoModule.moduleInfo.name.length() >= 3) {
                 installTitle = repoModule.moduleInfo.name; // Set title to module name
                 config = repoModule.moduleInfo.config;
+                mmtReborn = repoModule.moduleInfo.mmtReborn;
             }
             this.activity.backOnResume = true;
             IntentHelper.openInstaller(this.activity,
-                    moduleUrl, installTitle, config, checksum);
+                    moduleUrl, installTitle, config, checksum, mmtReborn);
         }
     }
 

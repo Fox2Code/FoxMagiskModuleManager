@@ -14,6 +14,7 @@ public class Constants {
     public static final String EXTRA_INSTALL_NAME = "extra_install_name";
     public static final String EXTRA_INSTALL_CONFIG = "extra_install_config";
     public static final String EXTRA_INSTALL_CHECKSUM = "extra_install_checksum";
+    public static final String EXTRA_INSTALL_MMT_REBORN = "extra_install_mmt_reborn";
     public static final String EXTRA_INSTALL_NO_EXTENSIONS = "extra_install_no_extensions";
     public static final String EXTRA_INSTALL_TEST_ROOTLESS = "extra_install_test_rootless";
     public static final String EXTRA_ANDROIDACY_COMPAT_LEVEL = "extra_androidacy_compat_level";

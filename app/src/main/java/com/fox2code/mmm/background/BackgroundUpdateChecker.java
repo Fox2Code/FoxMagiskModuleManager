@@ -54,28 +54,30 @@ public class BackgroundUpdateChecker extends Worker {
 
     static void doCheck(Context context) {
         Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+        ModuleManager.getINSTANCE().scanAsync();
         RepoManager.getINSTANCE().update(null);
-        ModuleManager.getINSTANCE().scan();
-        int moduleUpdateCount = 0;
-        HashMap<String, RepoModule> repoModules =
-                RepoManager.getINSTANCE().getModules();
-        for (LocalModuleInfo localModuleInfo :
-                ModuleManager.getINSTANCE().getModules().values()) {
-            if ("twrp-keep".equals(localModuleInfo.id)) continue;
-            RepoModule repoModule = repoModules.get(localModuleInfo.id);
-            localModuleInfo.checkModuleUpdate();
-            if (localModuleInfo.updateVersionCode > localModuleInfo.versionCode &&
-                    !PropUtils.isNullString(localModuleInfo.updateVersion)) {
-                moduleUpdateCount++;
-            } else if (repoModule != null &&
-                    repoModule.moduleInfo.versionCode > localModuleInfo.versionCode &&
-                    !PropUtils.isNullString(repoModule.moduleInfo.version)) {
-                moduleUpdateCount++;
+        ModuleManager.getINSTANCE().runAfterScan(() -> {
+            int moduleUpdateCount = 0;
+            HashMap<String, RepoModule> repoModules =
+                    RepoManager.getINSTANCE().getModules();
+            for (LocalModuleInfo localModuleInfo :
+                    ModuleManager.getINSTANCE().getModules().values()) {
+                if ("twrp-keep".equals(localModuleInfo.id)) continue;
+                RepoModule repoModule = repoModules.get(localModuleInfo.id);
+                localModuleInfo.checkModuleUpdate();
+                if (localModuleInfo.updateVersionCode > localModuleInfo.versionCode &&
+                        !PropUtils.isNullString(localModuleInfo.updateVersion)) {
+                    moduleUpdateCount++;
+                } else if (repoModule != null &&
+                        repoModule.moduleInfo.versionCode > localModuleInfo.versionCode &&
+                        !PropUtils.isNullString(repoModule.moduleInfo.version)) {
+                    moduleUpdateCount++;
+                }
             }
-        }
-        if (moduleUpdateCount != 0) {
-            postNotification(context, moduleUpdateCount);
-        }
+            if (moduleUpdateCount != 0) {
+                postNotification(context, moduleUpdateCount);
+            }
+        });
     }
 
     public static void postNotification(Context context, int updateCount) {

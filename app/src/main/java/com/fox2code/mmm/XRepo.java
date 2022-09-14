@@ -16,4 +16,7 @@ public abstract class XRepo {
 
     @Keep
     public abstract void setEnabled(boolean enabled);
+
+    @Keep
+    public abstract String getName();
 }

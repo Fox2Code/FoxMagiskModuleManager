@@ -32,12 +32,24 @@ public enum NotificationType implements NotificationTypeCst {
             return !MainApplication.isShowcaseMode();
         }
     },
-    NO_ROOT(R.string.fail_root_magisk, R.drawable.ic_baseline_numbers_24, v -> {
-        IntentHelper.openUrl(v.getContext(), "https://github.com/topjohnwu/Magisk/blob/master/docs/install.md");
-    }) {
+    NO_MAGISK(R.string.fail_magisk_missing, R.drawable.ic_baseline_numbers_24, v ->
+            IntentHelper.openUrl(v.getContext(),
+                    "https://github.com/topjohnwu/Magisk/blob/master/docs/install.md")) {
         @Override
         public boolean shouldRemove() {
-            return InstallerInitializer.peekMagiskPath() != null;
+            return InstallerInitializer.getErrorNotification() != this;
+        }
+    },
+    NO_ROOT(R.string.fail_root_magisk, R.drawable.ic_baseline_numbers_24) {
+        @Override
+        public boolean shouldRemove() {
+            return InstallerInitializer.getErrorNotification() != this;
+        }
+    },
+    ROOT_DENIED(R.string.fail_root_denied, R.drawable.ic_baseline_numbers_24) {
+        @Override
+        public boolean shouldRemove() {
+            return InstallerInitializer.getErrorNotification() != this;
         }
     },
     MAGISK_OUTDATED(R.string.magisk_outdated, R.drawable.ic_baseline_update_24, v -> {
@@ -102,7 +114,7 @@ public enum NotificationType implements NotificationTypeCst {
                     } else {
                         IntentHelper.openInstaller(compatActivity, d.getAbsolutePath(),
                                 compatActivity.getString(
-                                        R.string.local_install_title), null, null,
+                                        R.string.local_install_title), null, null, false,
                                 BuildConfig.DEBUG && // Use debug mode if no root
                                         InstallerInitializer.peekMagiskPath() == null);
                     }
@@ -115,7 +127,7 @@ public enum NotificationType implements NotificationTypeCst {
             } else if (s == IntentHelper.RESPONSE_URL) {
                 IntentHelper.openInstaller(compatActivity, u.toString(),
                         compatActivity.getString(
-                                R.string.remote_install_title), null, null,
+                                R.string.remote_install_title), null, null, false,
                         BuildConfig.DEBUG && // Use debug mode if no root
                                 InstallerInitializer.peekMagiskPath() == null);
             }

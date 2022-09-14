@@ -2,6 +2,7 @@ package com.fox2code.mmm.settings;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
+import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -32,6 +33,7 @@ import androidx.preference.TwoStatePreference;
 import com.fox2code.foxcompat.FoxActivity;
 import com.fox2code.foxcompat.FoxDisplay;
 import com.fox2code.foxcompat.FoxViewCompat;
+import com.fox2code.foxcompat.internal.FoxProcessExt;
 import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
@@ -46,6 +48,7 @@ import com.fox2code.mmm.repo.CustomRepoData;
 import com.fox2code.mmm.repo.CustomRepoManager;
 import com.fox2code.mmm.repo.RepoData;
 import com.fox2code.mmm.repo.RepoManager;
+import com.fox2code.mmm.utils.ExternalHelper;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.fox2code.rosettax.LanguageActivity;
@@ -67,6 +70,7 @@ import java.util.Random;
 public class SettingsActivity extends FoxActivity implements LanguageActivity {
     private static final int LANGUAGE_SUPPORT_LEVEL = 1;
     private static final String TAG = "SettingsActivity";
+    private static boolean devModeStepFirstBootIgnore = MainApplication.isDeveloper();
     private static int devModeStep = 0;
 
     @Override
@@ -88,7 +92,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         Intent mStartActivity = new Intent(this, MainActivity.class);
         mStartActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         int mPendingIntentId = 123456;
-        PendingIntent mPendingIntent = PendingIntent.getActivity(this, mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent mPendingIntent = PendingIntent.getActivity(this, mPendingIntentId,
+                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         AlarmManager mgr = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
         System.exit(0); // Exit app process
@@ -115,25 +120,26 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             themePreference.setSummaryProvider(p -> themePreference.getEntry());
             themePreference.setOnPreferenceClickListener(p -> {
                 // You need to reboot your device at least once to be able to access dev-mode
-                if (!MainApplication.isFirstBoot()) devModeStep = 1;
+                if (devModeStepFirstBootIgnore || !MainApplication.isFirstBoot()) devModeStep = 1;
                 return false;
             });
             themePreference.setOnPreferenceChangeListener((preference, newValue) -> {
                 devModeStep = 0;
                 UiThreadHandler.handler.postDelayed(() -> {
                     MainApplication.getINSTANCE().updateTheme();
-                    FoxActivity.getFoxActivity(this).setThemeRecreate(MainApplication.getINSTANCE().getManagerThemeResId());
+                    FoxActivity.getFoxActivity(this).setThemeRecreate(
+                            MainApplication.getINSTANCE().getManagerThemeResId());
                 }, 1);
                 return true;
             });
             // Crash reporting
-            TwoStatePreference crashReportingPreference = findPreference("pref_crash_reporting");
+            /*TwoStatePreference crashReportingPreference = findPreference("pref_crash_reporting");
             crashReportingPreference.setChecked(MainApplication.isCrashReportingEnabled());
             crashReportingPreference.setOnPreferenceChangeListener((preference, newValue) -> {
+                devModeStepFirstBootIgnore = true;
                 devModeStep = 0;
-                getCrashReportingEditor(requireActivity()).putBoolean("crash_reporting", (boolean) newValue).apply();
                 return true;
-            });
+            });*/
             Preference enableBlur = findPreference("pref_enable_blur");
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                 enableBlur.setSummary(R.string.require_android_6);
@@ -204,12 +210,14 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
 
             if (!MainApplication.isDeveloper()) {
                 findPreference("pref_disable_low_quality_module_filter").setVisible(false);
+            }
+            if (!BuildConfig.DEBUG || InstallerInitializer.peekMagiskPath() == null) {
                 // Hide the pref_crash option if not in debug mode - stop users from purposely crashing the app
                 Objects.requireNonNull((Preference) findPreference("pref_crash")).setVisible(false);
             } else {
                 findPreference("pref_crash").setOnPreferenceClickListener(preference -> {
                     // Hard crash the app
-                    throw new RuntimeException("This is a test crash");
+                    throw new Error("This is a test crash");
                 });
             }
             if (InstallerInitializer.peekMagiskVersion() < Constants.MAGISK_VER_CODE_INSTALL_COMMAND || !MainApplication.isDeveloper()) {
@@ -217,12 +225,14 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             }
             Preference debugNotification = findPreference("pref_background_update_check_debug");
             debugNotification.setEnabled(MainApplication.isBackgroundUpdateCheckEnabled());
-            debugNotification.setVisible(MainApplication.isDeveloper());
+            debugNotification.setVisible(MainApplication.isDeveloper() && !MainApplication.isWrapped());
             debugNotification.setOnPreferenceClickListener(preference -> {
                 BackgroundUpdateChecker.postNotification(this.requireContext(), new Random().nextInt(4) + 2);
                 return true;
             });
-            findPreference("pref_background_update_check").setOnPreferenceChangeListener((preference, newValue) -> {
+            Preference backgroundUpdateCheck = findPreference("pref_background_update_check");
+            backgroundUpdateCheck.setVisible(!MainApplication.isWrapped());
+            backgroundUpdateCheck.setOnPreferenceChangeListener((preference, newValue) -> {
                 boolean enabled = Boolean.parseBoolean(String.valueOf(newValue));
                 debugNotification.setEnabled(enabled);
                 if (!enabled) {
@@ -242,6 +252,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             if (BuildConfig.DEBUG || BuildConfig.ENABLE_AUTO_UPDATER) {
                 findPreference("pref_report_bug").setOnPreferenceClickListener(p -> {
                     devModeStep = 0;
+                    devModeStepFirstBootIgnore = true;
                     IntentHelper.openUrl(p.getContext(), "https://github.com/Fox2Code/FoxMagiskModuleManager/issues");
                     return true;
                 });
@@ -260,6 +271,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         Toast.makeText(getContext(), // Tell the user something changed
                                 R.string.dev_mode_enabled, Toast.LENGTH_SHORT).show();
                     }
+                    ExternalHelper.INSTANCE.refreshHelper(getContext());
                     return true;
                 }
                 IntentHelper.openUrl(p.getContext(), "https://github.com/Fox2Code/FoxMagiskModuleManager");
@@ -276,11 +288,26 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 openFragment(libsBuilder.supportFragment(), R.string.licenses);
                 return true;
             });
-            findPreference("pref_pkg_info").setSummary(BuildConfig.APPLICATION_ID + " v" + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")");
+            findPreference("pref_pkg_info").setSummary(BuildConfig.APPLICATION_ID +
+                            " v" + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")" +
+                    getRepackageState()); // State may not be "I am just running from myself as myself"
         }
 
-        private SharedPreferences.Editor getCrashReportingEditor(FragmentActivity requireActivity) {
-            return requireActivity.getSharedPreferences("crash_reporting", Context.MODE_PRIVATE).edit();
+        @SuppressLint("RestrictedApi")
+        private String getRepackageState() {
+            Application initialApplication = null;
+            try {
+                initialApplication = FoxProcessExt.getInitialApplication();
+            } catch (Throwable ignored) {}
+            String realPackageName;
+            if (initialApplication != null) {
+                realPackageName = initialApplication.getPackageName();
+            } else {
+                realPackageName = this.requireContext().getPackageName();
+            }
+            if (BuildConfig.APPLICATION_ID.equals(realPackageName)) return "";
+            return "\n" + this.getString(FoxProcessExt.isRootLoader() ?
+                    R.string.repackaged_as : R.string.wrapped_from) + realPackageName;
         }
 
         private void openFragment(Fragment fragment, @StringRes int title) {
@@ -300,7 +327,9 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         private int currentLanguageLevel() {
             int declaredLanguageLevel = this.getResources().getInteger(R.integer.language_support_level);
             if (declaredLanguageLevel != LANGUAGE_SUPPORT_LEVEL) return declaredLanguageLevel;
-            if (!this.getResources().getConfiguration().locale.getLanguage().equals("en") && this.getResources().getString(R.string.notification_update_pref).equals("Background modules update check") && this.getResources().getString(R.string.notification_update_desc).equals("May increase battery usage")) {
+            if (!this.getResources().getConfiguration().locale.getLanguage().equals("en") &&
+                    this.getResources().getString(R.string.notification_update_pref).equals("Background modules update check") &&
+                    this.getResources().getString(R.string.notification_update_desc).equals("May increase battery usage")) {
                 return 0;
             }
             return LANGUAGE_SUPPORT_LEVEL;
@@ -310,7 +339,6 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
     public static class RepoFragment extends PreferenceFragmentCompat {
         private static final int CUSTOM_REPO_ENTRIES = 5;
 
-        @SuppressLint("RestrictedApi")
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             getPreferenceManager().setSharedPreferencesName("mmm");
@@ -319,19 +347,24 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             setRepoData(RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT);
             setRepoData(RepoManager.DG_MAGISK_REPO_GITHUB);
             updateCustomRepoList(true);
+            onCreatePreferencesAndroidacy();
+        }
+
+        @SuppressLint("RestrictedApi")
+        public void onCreatePreferencesAndroidacy() {
+            Preference androidacyTestMode = Objects.requireNonNull(findPreference("pref_androidacy_test_mode"));
             if (!MainApplication.isDeveloper()) {
-                Objects.requireNonNull((Preference) findPreference("pref_androidacy_test_mode")).setVisible(false);
+                androidacyTestMode.setVisible(false);
             } else {
                 // Show a warning if user tries to enable test mode
-                Objects.requireNonNull((SwitchPreferenceCompat) findPreference("pref_androidacy_test_mode")).setOnPreferenceChangeListener((preference, newValue) -> {
+                androidacyTestMode.setOnPreferenceChangeListener((preference, newValue) -> {
                     if (Boolean.parseBoolean(String.valueOf(newValue))) {
                         new AlertDialog.Builder(this.requireContext())
                                 .setTitle(R.string.warning)
                                 .setMessage(R.string.androidacy_test_mode_warning)
                                 .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                                     // Do nothing
-                                })
-                                .show();
+                                }).show();
                     }
                     return true;
                 });
@@ -423,7 +456,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             }
             Preference preference = findPreference("pref_custom_add_repo");
             if (preference == null) return;
-            preference.setVisible(customRepoManager.canAddRepo() && customRepoManager.getRepoCount() < CUSTOM_REPO_ENTRIES);
+            preference.setVisible(customRepoManager.canAddRepo() &&
+                    customRepoManager.getRepoCount() < CUSTOM_REPO_ENTRIES);
             if (initial) { // Custom repo add button part.
                 preference = findPreference("pref_custom_add_repo_button");
                 if (preference == null) return;
@@ -470,7 +504,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     input.addTextChangedListener(new TextWatcherAdapter() {
                         @Override
                         public void onTextChanged(@NonNull CharSequence charSequence, int i, int i1, int i2) {
-                            positiveButton.setEnabled(customRepoManager.canAddRepo(charSequence.toString()) && customRepoManager.getRepoCount() < CUSTOM_REPO_ENTRIES);
+                            positiveButton.setEnabled(customRepoManager.canAddRepo(charSequence.toString()) &&
+                                    customRepoManager.getRepoCount() < CUSTOM_REPO_ENTRIES);
                         }
                     });
                     positiveButton.setEnabled(false);

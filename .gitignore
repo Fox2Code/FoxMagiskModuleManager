@@ -1,5 +1,6 @@
 *.iml
 .gradle
+/sentry.properties
 /local.properties
 /.idea/
 .DS_Store

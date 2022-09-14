@@ -4,9 +4,11 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.NotificationType;
 import com.fox2code.mmm.utils.Files;
 import com.topjohnwu.superuser.NoShellException;
 import com.topjohnwu.superuser.Shell;
@@ -16,8 +18,14 @@ import java.util.ArrayList;
 
 public class InstallerInitializer extends Shell.Initializer {
     private static final String TAG = "InstallerInitializer";
+    private static final File MAGISK_SBIN =
+            new File("/sbin/magisk");
     private static final File MAGISK_SYSTEM =
             new File("/system/bin/magisk");
+    private static final File MAGISK_SYSTEM_EX =
+            new File("/system/xbin/magisk");
+    private static final boolean HAS_MAGISK = MAGISK_SBIN.exists() ||
+            MAGISK_SYSTEM.exists() || MAGISK_SYSTEM_EX.exists();
     private static String MAGISK_PATH;
     private static int MAGISK_VERSION_CODE;
     private static boolean HAS_RAMDISK;
@@ -31,6 +39,21 @@ public class InstallerInitializer extends Shell.Initializer {
         void onPathReceived(String path);
 
         void onFailure(int error);
+    }
+
+    @Nullable
+    public static NotificationType getErrorNotification() {
+        Boolean hasRoot = Shell.isAppGrantedRoot();
+        if (MAGISK_PATH != null &&
+                hasRoot != Boolean.FALSE) {
+            return null;
+        }
+        if (!HAS_MAGISK) {
+            return NotificationType.NO_MAGISK;
+        } else if (hasRoot != Boolean.TRUE) {
+            return NotificationType.ROOT_DENIED;
+        }
+        return NotificationType.NO_ROOT;
     }
 
     public static String peekMagiskPath() {

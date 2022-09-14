@@ -14,7 +14,9 @@ public class BackgroundBootListener extends BroadcastReceiver {
         if (!BOOT_COMPLETED.equals(intent.getAction())) return;
         synchronized (BackgroundUpdateChecker.lock) {
             BackgroundUpdateChecker.onMainActivityCreate(context);
-            BackgroundUpdateChecker.doCheck(context);
+            if (MainApplication.isBackgroundUpdateCheckEnabled()) {
+                BackgroundUpdateChecker.doCheck(context);
+            }
         }
     }
 }

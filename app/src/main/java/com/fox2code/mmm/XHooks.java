@@ -10,6 +10,8 @@ import androidx.annotation.Keep;
 import com.fox2code.mmm.manager.ModuleManager;
 import com.fox2code.mmm.repo.RepoManager;
 
+import java.util.Collection;
+
 /**
  * Class made to expose some manager functions to xposed modules.
  * It will not be obfuscated on release builds
@@ -50,11 +52,16 @@ public class XHooks {
 
     @Keep
     public static XRepo addXRepo(String url, String fallbackName) {
-        return RepoManager.getINSTANCE().addOrGet(url, fallbackName);
+        return RepoManager.getINSTANCE_UNSAFE().addOrGet(url, fallbackName);
     }
 
     @Keep
     public static XRepo getXRepo(String url) {
-        return RepoManager.getINSTANCE().get(url);
+        return RepoManager.getINSTANCE_UNSAFE().get(url);
+    }
+
+    @Keep
+    public static Collection<XRepo> getXRepos() {
+        return RepoManager.getINSTANCE_UNSAFE().getXRepos();
     }
 }
