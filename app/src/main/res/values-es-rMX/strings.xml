@@ -135,7 +135,6 @@
   <string name="backup_module_list">Hacer copia de seguridad de los módulos</string>
   <string name="restore_module_list">Restaurar módulos</string>
   <string name="require_internet">Esta operación requiere una conexión a Internet.</string>
-  <string name="api_key">Clave API de Androidacy</string>
   <string name="androidacy_test_mode_pref">Modo de prueba de Androidacy</string>
   <string name="androidacy_test_mode_desc">Usa el canal de prueba en vez del canal estable de Androidacy. (Se reiniciará la aplicación)</string>
 
