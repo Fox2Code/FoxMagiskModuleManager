@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Fox - Menedżer modułów Magisk</string>
     <string name="app_name_short">FoxMmm</string>
@@ -9,7 +10,7 @@
     <string name="installed">Zainstalowane</string>
     <string name="online_repo">Repozytorium online</string>
     <string name="showcase_mode">Aplikacja jest w trybie blokady</string>
-    <string name="failed_download">Nie udało się pobrać pliku.</string>
+    <string name="failed_download">Nie udało się pobrać pliku</string>
     <string name="slow_modules">Uruchomienie modułów trwało zbyt długo, rozważ wyłączenie niektórych modułów</string>
     <string name="fail_internet">Nie udało się nawiązać połączenia z Internetem</string>
     <string name="no_web_view">Nie można otworzyć systemowego WebView</string>
@@ -38,7 +39,6 @@
     <string name="require_android_12">Wymaga Androida 12+</string>
     <string name="install_terminal_reboot_now">Restart</string>
     <string name="language">Język</string>
-    
     <!-- Module section translation -->
     <string name="module_last_update">Ostatnia aktualizacja:</string>
     <string name="module_repo">Repozytorium:</string>
@@ -52,7 +52,6 @@
     <string name="module_min_magisk_chip">Min. Magisk \"%s\"</string>
     <string name="module_min_sdk_chip">Min. Android</string>
     <string name="module_max_sdk_chip">Maks. Android</string>
-
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">Zarządzaj repozytoriami</string>
@@ -93,33 +92,24 @@
     <string name="remote_install_title">Zdalna instalacja</string>
     <string name="file_picker_wierd">Bieżący selektor plików zwrócił niestandardową odpowiedź.</string>
     <string name="use_magisk_install_command_pref" tools:ignore="TypographyDashes">Użyj polecenia \"magisk --install-module\"</string>
-    <string name="use_magisk_install_command_desc">
-        Podczas testów powodowało to problemy z narzędziem do diagnozowania błędów instalacji modułów,
-        dlatego ukryłem tę opcję za trybem deweloperskim, włącz ją na własne ryzyko!
-    </string>
+    <string name="use_magisk_install_command_desc">Podczas testów spowodowało to problemy z narzędziem do diagnozowania błędów instalacji modułu, więc ta opcja jest ukryta za trybem deweloperskim.
+\nWłącz ją na własne ryzyko!</string>
     <string name="dev_mode_enabled">Tryb programisty włączony</string>
     <string name="dev_mode_disabled">Tryb programisty wyłączony</string>
     <string name="force_english_pref">Wymuś język angielski</string>
     <string name="disable_low_quality_module_filter_pref">Wyłącz filtr modułu niskiej jakości</string>
-    <string name="disable_low_quality_module_filter_desc">
-        Niektóre moduły nie deklarują poprawnie swoich metadanych, powodując zakłócenia wizualne,
-        i/lub wskazują na niską jakość modułu, wyłączaj na własne ryzyko!
-    </string>
+    <string name="disable_low_quality_module_filter_desc">Niektóre moduły nie deklarują swoich metadanych poprawnie, powodując wizualne zakłócenia i/lub wskazują na niską jakość modułu.
+\nWyłącz to na własne ryzyko!</string>
     <string name="dns_over_https_pref">DNS przez HTTPS</string>
     <string name="dns_over_https_desc">
         W niektórych przypadkach może naprawić problemy z połączeniami.
         (Nie dotyczy WebView)
     </string>
     <string name="disable_extensions_pref">Wyłącz rozszerzenia</string>
-    <string name="disable_extensions_desc">
-        Wyłącz rozszerzenia Fox\'a. Uniemożliwi to modułom używanie
-        rozszerzeń terminala. Przydatne, gdy moduł nadużywa rozszerzeń Fox\'a.
-    </string>
+    <string name="disable_extensions_desc">Wyłącza rozszerzenia Foxa, uniemożliwiając modułom korzystanie z rozszerzeń terminala.
+\nPrzydatne, jeśli moduł nadużywa rozszerzeń Foxa.</string>
     <string name="wrap_text_pref">Zawijanie tekstu</string>
-    <string name="wrap_text_desc">
-        Zawijaj tekst do nowego wiersza zamiast umieszczać
-        cały tekst w tym samym wierszu podczas instalowania modułu
-    </string>
+    <string name="wrap_text_desc">Pokaż tekst w wielu liniach zamiast umieszczania całego tekstu w jednej linii podczas instalacji modułu.</string>
     <string name="enable_blur_pref">Włącz rozmycie</string>
     <string name="disable_chips_in_description">Wyłącz chipy w opisie</string>
     <string name="repo_enabled">Repozytorium włączone</string>
@@ -132,8 +122,7 @@
     <string name="restore_module_list">Przywracanie modułów</string>
     <string name="require_internet">Ta operacja wymaga połączenia internetowego</string>
     <string name="androidacy_test_mode_pref">Tryb testowy Androidacy</string>
-    <string name="androidacy_test_mode_desc">Użyj punktu końcowego Androidacy staging zamiast punktu końcowego release. (Wymagaj ponownego uruchomienia procesu aplikacji)</string>
-
+    <string name="androidacy_test_mode_desc">Użyj punktu końcowego staging Androidacy zamiast punktu końcowego release. (Spowoduje restart aplikacji)</string>
     <!-- Background Notification translation -->
     <string name="notification_update_title">Znaleziono %i aktualizacji modułów</string>
     <string name="notification_update_title_easter_egg">Wywęszono %i aktualizacji modułów</string>
@@ -141,17 +130,15 @@
     <string name="notification_update_pref">Sprawdzanie aktualizacji modułów w tle</string>
     <string name="notification_update_desc">Może zwiększyć użycie baterii</string>
     <string name="notification_update_debug_pref">Powiadomienie testowe</string>
-
     <!-- Set to true in translation file if your language is right to left -->
     <bool name="lang_support_rtl">false</bool>
     <!-- Always copy language_support_level when translating -->
     <integer name="language_support_level">1</integer>
-    <string name="language_support_outdated">Niektóre tłumaczenia dla bieżącego języka nie są aktualne,
-        prosimy o rozważenie uzupełnienia tłumaczeń aplikacji na GitHubie.</string>
+    <string name="language_support_outdated">Niektóre tłumaczenia dla bieżącego języka nie są aktualne, prosimy o rozważenie wniesienia wkładu do tłumaczeń aplikacji na GitHubie</string>
     <!-- Replace with your own username when translating -->
     <string name="language_translated_by">Tłumaczenie: Daviteusz</string>
     <string name="crash_reporting">Automatycznie zgłaszaj błędy i działanie programistom</string>
-    <string name="crash_reporting_desc">Jeśli to wyłączysz, programista nie będzie otrzymywał automatycznych raportów o błędach, co może utrudnić rozwiązywanie problemów.</string>
+    <string name="crash_reporting_desc">Jeśli to wyłączysz, programista nie będzie otrzymywał automatycznych raportów o błędach, co może utrudnić rozwiązywanie problemów</string>
     <string name="api_key">Klucz API Androidacy</string>
     <string name="api_key_summary">Użyj niestandardowego klucza API dla Androidacy. Przydatne dla subskrybentów premium, aby usunąć reklamy i więcej.</string>
     <string name="api_key_not_set">Klucz API Androidacy jest pusty</string>
@@ -164,8 +151,12 @@
     <string name="api_key_removed">Zresetowano klucz API</string>
     <string name="save_api_key">Weryfikacja</string>
     <string name="warning">Uwaga!</string>
-    <string name="androidacy_test_mode_warning">Ustawiasz aplikację, aby używać nieprodukcyjnego punktu końcowego dla Androida. Może to spowodować niestabilność aplikacji i brak możliwości załadowania repo online. NIE zgłaszaj błędów, jeśli masz włączony ten przełącznik. Zmiana będzie obowiązywać po ponownym uruchomieniu aplikacji.</string>
+    <string name="androidacy_test_mode_warning">Ustawiasz aplikację, aby używała nieprodukcyjnego punktu końcowego dla Androida. Może to spowodować niestabilność aplikacji i brak możliwości załadowania repo online. NIE zgłaszaj błędów, jeśli masz włączony ten przełącznik. Aplikacja zostanie zrestartowana, aby załadować repozytoria.</string>
     <string name="crash">Ubij aplikację do testów</string>
     <string name="repackaged_as">Przepakowano jako:</string>
     <string name="wrapped_from">Przepakowane z:</string>
+    <string name="crash_reporting_restart_title">Uruchomić ponownie aplikację, aby zastosować zmiany\?</string>
+    <string name="androidacy_test_mode_disable_warning">Aplikacja zostanie zrestartowana, aby wyłączyć punkt końcowy staging</string>
+    <string name="crash_reporting_restart_message">Aby zastosować to ustawienie, aplikacja musi się ponownie uruchomić</string>
+    <string name="restart">Uruchom ponownie</string>
 </resources>
