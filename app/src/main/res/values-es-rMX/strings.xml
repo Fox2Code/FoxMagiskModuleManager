@@ -1,132 +1,178 @@
 <resources>
-    <string name="app_name">Fox\'s Magisk Module Manager</string>
-    <string name="app_name_short">Fox\'s Mmm</string>
-    <string name="fail_root_magisk">No fue posible obtener acceso root o Magisk.</string>
-    <string name="loading">Cargando...</string>
-    <string name="updatable">Actualización disponible</string>
-    <string name="installed">Instalado</string>
-    <string name="online_repo">Repositorio online</string>
-    <string name="showcase_mode">La aplicación está en modo Lockdown.</string>
-    <string name="failed_download">No fue posible descargar el archivo.</string>
-    <string name="slow_modules">Los módulos tardaron mucho en iniciar, considere eliminar algunos.</string>
-    <string name="fail_internet">No fue posible conectarse a Internet.</string>
-    <string name="no_web_view">No se pudo abrir el WebView del sistema.</string>
-    <string name="title_activity_settings">SettingsActivity</string>
-    <string name="app_update_available">Actualización disponible</string>
-    <string name="app_update">Actualizar</string>
-    <string name="no_desc_found">Sin descripción.</string>
-    <string name="download_module">Descargar módulo</string>
-    <string name="install_module">Instalar módulo</string>
-    <string name="update_module">Actualizar módulo</string>
-    <string name="changelog">Changelog</string>
-    <string name="website">Sitio web</string>
-    <string name="support">Soporte</string>
-    <string name="donate">Donar</string>
-    <string name="update">Actualizar</string>
-    <string name="install">Instalar</string>
-    <string name="description">Descripción</string>
-    <string name="uninstall">Desinstalar</string>
-    <string name="config">Configuración</string>
-    <string name="submit_modules">Enviar un módulo</string>
-    <string name="require_android_6">Requiere Android 6.0 o superior</string>
-    <string name="require_android_12">Requiere Android 12 o superior</string>
-    <string name="install_terminal_reboot_now">Reiniciar</string>
-    <string name="language">Idioma</string>
-    <string name="yes" translatable="false">@android:string/yes</string>
-    <string name="no" translatable="false">@android:string/no</string>
-    <string name="ok" translatable="false">@android:string/ok</string>
-    <string name="cancel" translatable="false">@android:string/cancel</string>
+  <string name="app_name">Fox\'s Magisk Module Manager</string>
+  <string name="app_name_short">Fox\'s Mmm</string>
+  <string name="fail_root_magisk">No fue posible obtener acceso root o Magisk.</string>
+  <string name="fail_root_denied">El Acceso Root ha sido negado desde la aplicación Magisk.</string>
+  <string name="fail_magisk_missing">Magisk no se encuentra instalado en este dispositivo.</string>
+  <string name="loading">Cargando...</string>
+  <string name="updatable">Actualización disponible</string>
+  <string name="installed">Instalado</string>
+  <string name="online_repo">Repositorio online</string>
+  <string name="showcase_mode">La aplicación está en modo Lockdown.</string>
+  <string name="failed_download">No fue posible descargar el archivo.</string>
+  <string name="slow_modules">Los módulos tardaron mucho en iniciar, considere eliminar algunos.</string>
+  <string name="fail_internet">No fue posible conectarse a Internet.</string>
+  <string name="no_web_view">No se pudo abrir el WebView del sistema.</string>
+  <string name="title_activity_settings">SettingsActivity</string>
+  <string name="app_update_available">Actualización disponible</string>
+  <string name="app_update">Actualizar</string>
+  <string name="no_desc_found">Sin descripción.</string>
+  <string name="download_module">Descargar módulo</string>
+  <string name="install_module">Instalar módulo</string>
+  <string name="update_module">Actualizar módulo</string>
+  <string name="changelog">Changelog</string>
+  <string name="website">Sitio web</string>
+  <string name="support">Soporte</string>
+  <string name="donate">Donar</string>
+  <string name="update">Actualizar</string>
+  <string name="install">Instalar</string>
+  <string name="description">Descripción</string>
+  <string name="uninstall">Desinstalar</string>
+  <string name="config">Configuración</string>
+  <string name="favourite">Favoritos</string>
+  <string name="report_bugs">Informar de errores</string>
+  <string name="sniffed_modules">Modulos detectados</string>
+  <string name="sniffing_modules">Detectando modulos</string>
+  <string name="submit_modules">Enviar un módulo</string>
+  <string name="require_android_6">Requiere Android 6.0 o superior</string>
+  <string name="require_android_12">Requiere Android 12 o superior</string>
+  <string name="install_terminal_reboot_now">Reiniciar</string>
+  <string name="language">Idioma</string>
+  <string name="yes" translatable="false">@android:string/yes</string>
+  <string name="no" translatable="false">@android:string/no</string>
+  <string name="ok" translatable="false">@android:string/ok</string>
+  <string name="cancel" translatable="false">@android:string/cancel</string>
 
-    <!-- Module section translation -->
-    <string name="module_last_update">Actualizado el:</string>
-    <string name="module_repo">Repositorio:</string>
-    <string name="module_by">por</string>
-    <string name="module_downloads">Descargas:</string>
-    <string name="module_stars">Estrellas:</string>
-    <string name="module_needs_ramdisk">Requiere ramdisk</string>
-    <string name="module_needs_ramdisk_desc">Este módulo requiere un ramdisk de arranque para ser instalado</string>
-    <string name="module_can_change_boot">Puede cambiar el arranque</string>
-    <string name="module_can_change_boot_desc">Este módulo puede cambiar la imagen de arranque</string>
-    <string name="module_min_magisk_chip">Min. Magisk "%s"</string>
-    <string name="module_min_sdk_chip">Min. Android</string>
-    <string name="module_max_sdk_chip">Máx. Android</string>
+  <!-- Module section translation -->
+  <string name="module_last_update">Actualizado el:</string>
+  <string name="module_repo">Repositorio:</string>
+  <string name="module_by">por</string>
+  <string name="module_downloads">Descargas:</string>
+  <string name="module_stars">Estrellas:</string>
+  <string name="module_needs_ramdisk">Requiere ramdisk</string>
+  <string name="module_needs_ramdisk_desc">Este módulo requiere un ramdisk de arranque para ser instalado</string>
+  <string name="module_can_change_boot">Puede cambiar el arranque</string>
+  <string name="module_can_change_boot_desc">Este módulo puede cambiar la imagen de arranque</string>
+  <string name="module_min_magisk_chip">Min. Magisk "%s"</string>
+  <string name="module_min_sdk_chip">Min. Android</string>
+  <string name="module_max_sdk_chip">Máx. Android</string>
 
-    <!-- Preference Titles -->
-    <!-- Note: Lockdown mode used to be called showcase mode -->
-    <string name="manage_repos_pref">Administrar repositorios</string>
-    <string name="showcase_mode_pref">Modo Lockdown</string>
-    <string name="showcase_mode_desc">Modo Lockdown previene que la aplicación haga cambios en los módulos</string>
-    <string name="prevent_reboot_pref">Evitar reinicio</string>
-    <string name="prevent_reboot_desc">Evita los reincios inesperados</string>
-    <string name="pref_category_settings">Ajustes</string>
-    <string name="enable_monet">Habilitar Monet</string>
-    <string name="pref_category_info">Info</string>
-    <string name="show_licenses">Mostrar licencias</string>
-    <string name="licenses">Licencias</string>
-    <string name="show_incompatible_pref">Mostrar módulos incompatibles</string>
-    <string name="show_incompatible_desc">Muestra los módulos que son incompatibles con su dispositivo basandose en sus metadatos</string>
-    <string name="magisk_outdated">Magisk está desactualizado!</string>
-    <string name="pref_category_repos">Repositorios</string>
-    <string name="pref_category_security">Seguridad</string>
-    <string name="pref_category_appearance">Apariencia</string>
-    <string name="pref_category_general">General</string>
-    <string name="repo_main_desc">Repositorio que aloja los módulos de Magisk</string>
-    <string name="repo_main_alt">Una alternativa del repositorio de módulos de Magisk pero con menos restricciones.</string>
-    <string name="master_delete">Desea borrar los archivos del módulo?</string>
-    <string name="master_delete_no">Mantener archivos</string>
-    <string name="master_delete_yes">Borrar archivos</string>
-    <string name="master_delete_fail">No fue posible borrar los archivos del módulo</string>
-    <string name="theme_pref">Tema</string>
-    <string name="theme_mode_pref">Modo del tema</string>
-    <string name="module_id_prefix">Id del módulo: </string>
-    <string name="install_from_storage">Instalar módulo desde el almacenamiento</string>
-    <string name="invalid_format">El módulo seleccionado tiene un formato inválido</string>
-    <string name="low_quality_module">Módulo de baja calidad</string>
-    <string name="local_install_title">Instalación local</string>
-    <string name="source_code">Código fuente</string>
-    <string name="magisk_builtin_module">Módulo incorporado de Magisk</string>
-    <string name="substratum_builtin_module">Módulo incorporado de Substratum</string>
-    <string name="force_dark_terminal_title">Forzar el modo oscuro en la terminal</string>
-    <string name="file_picker_failure">Su administrador de archivos no pudo dar acceso a los archivos.</string>
-    <string name="remote_install_title">Instalación remota</string>
-    <string name="file_picker_wierd">Su administrador de archivos retorno una respuesta no esperada.</string>
-    <string name="use_magisk_install_command_pref">Usar el comando de instalación de Magisk</string>
-    <string name="use_magisk_install_command_desc">
+  <!-- Preference Titles -->
+  <!-- Note: Lockdown mode used to be called showcase mode -->
+  <string name="manage_repos_pref">Administrar repositorios</string>
+  <string name="showcase_mode_pref">Modo Lockdown</string>
+  <string name="showcase_mode_desc">Modo Lockdown previene que la aplicación haga cambios en los módulos</string>
+  <string name="prevent_reboot_pref">Evitar reinicio</string>
+  <string name="prevent_reboot_desc">Evita los reincios inesperados</string>
+  <string name="pref_category_settings">Ajustes</string>
+  <string name="enable_monet">Habilitar Monet</string>
+  <string name="pref_category_info">Info</string>
+  <string name="show_licenses">Mostrar licencias</string>
+  <string name="licenses">Licencias</string>
+  <string name="show_incompatible_pref">Mostrar módulos incompatibles</string>
+  <string name="show_incompatible_desc">Muestra los módulos que son incompatibles con su dispositivo basandose en sus metadatos</string>
+  <string name="magisk_outdated">Magisk está desactualizado!</string>
+  <string name="pref_category_repos">Repositorios</string>
+  <string name="pref_category_security">Seguridad</string>
+  <string name="pref_category_appearance">Apariencia</string>
+  <string name="pref_category_general">General</string>
+  <string name="repo_main_desc">Repositorio que aloja los módulos de Magisk</string>
+  <string name="repo_main_alt">Una alternativa del repositorio de módulos de Magisk pero con menos restricciones.</string>
+  <string name="master_delete">Desea borrar los archivos del módulo?</string>
+  <string name="master_delete_no">Mantener archivos</string>
+  <string name="master_delete_yes">Borrar archivos</string>
+  <string name="master_delete_fail">No fue posible borrar los archivos del módulo</string>
+  <string name="theme_pref">Tema</string>
+  <string name="theme_mode_pref">Modo del tema</string>
+  <string name="module_id_prefix">Id del módulo: </string>
+  <string name="install_from_storage">Instalar módulo desde el almacenamiento</string>
+  <string name="invalid_format">El módulo seleccionado tiene un formato inválido</string>
+  <string name="low_quality_module">Módulo de baja calidad</string>
+  <string name="local_install_title">Instalación local</string>
+  <string name="source_code">Código fuente</string>
+  <string name="magisk_builtin_module">Módulo incorporado de Magisk</string>
+  <string name="substratum_builtin_module">Módulo incorporado de Substratum</string>
+  <string name="force_dark_terminal_title">Forzar el modo oscuro en la terminal</string>
+  <string name="file_picker_failure">Su administrador de archivos no pudo dar acceso a los archivos.</string>
+  <string name="remote_install_title">Instalación remota</string>
+  <string name="file_picker_wierd">Su administrador de archivos retorno una respuesta no esperada.</string>
+  <string name="use_magisk_install_command_pref">Usa el siguiente comando: \"magisk --install-module\"</string>
+  <string name="use_magisk_install_command_desc">
         Durante las pruebas causó problemas a la herramienta de diagnóstico de errores de instalación de módulo,
         así que escondí esta opción en el modo desarrollador, activala bajo tu propio riesgo!
-    </string>
-    <string name="dev_mode_enabled">Modo desarrollador activado</string>
-    <string name="force_english_pref">Forzar el idioma al Inglés</string>
-    <string name="disable_low_quality_module_filter_pref">Desactivar el filtro de módulos de baja calidad</string>
-    <string name="disable_low_quality_module_filter_desc">
+  </string>
+  <string name="dev_mode_enabled">Modo desarrollador activado</string>
+  <string name="dev_mode_disabled">Modo desarrollador desactivado</string>
+  <string name="force_english_pref">Forzar el idioma al Inglés</string>
+  <string name="disable_low_quality_module_filter_pref">Desactivar el filtro de módulos de baja calidad</string>
+  <string name="disable_low_quality_module_filter_desc">
         Algunos módulos no declaran de manera adecuada sus metadatos causando errores visuales
         y/o indicando una mala calidad del módulo, desactivalo bajo su propio riesgo!
-    </string>
-    <string name="dns_over_https_pref">DNS over HTTPS</string>
-    <string name="dns_over_https_desc">
+  </string>
+  <string name="dns_over_https_pref">DNS over HTTPS</string>
+  <string name="dns_over_https_desc">
         En algunos casos puede solucionar problemas de conexión
         (No se aplica al WebView)
-    </string>
-    <string name="disable_extensions_pref">Desactivar extensiones</string>
-    <string name="disable_extensions_desc">
+  </string>
+  <string name="disable_extensions_pref">Desactivar extensiones</string>
+  <string name="disable_extensions_desc">
         Desactiva las extensiones de Fox\'s Mmm, esto previene que los módulos usen
         extensiones de la terminal, útil si un módulo hace mal uso de las extensiones de Fox\'s Mmm.
-    </string>
-    <string name="wrap_text_pref">Dividir el texto</string>
-    <string name="wrap_text_desc">
+  </string>
+  <string name="wrap_text_pref">Dividir el texto</string>
+  <string name="wrap_text_desc">
         Divide el texto en una linea nueva en vez de colocar
         todo el texto en la misma linea durante la instalación de un módulo
-    </string>
-    <string name="enable_blur_pref">Activar desenfoque</string>
-    <string name="disable_chips_in_description">Deshabilitar chips en la descripción</string>
-    <string name="repo_enabled">Repositorio activado</string>
-    <string name="repo_disabled">Repositorio desactivado</string>
-    <string name="add_repo">Añadir Repositorio</string>
-    <string name="remove_repo">Eliminar Repositorio</string>
-    <string name="custom_url">URL Personalizado</string>
-    <string name="backup_module_list">Hacer copia de seguridad de los módulos</string>
-    <string name="restore_module_list">Restaurar módulos</string>
-    <string name="require_internet">Esta operación requiere una conexión a Internet.</string>
-    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
-    <string name="api_key">Androidacy API Key</string>
+  </string>
+  <string name="enable_blur_pref">Activar desenfoque</string>
+  <string name="disable_chips_in_description">Deshabilitar chips en la descripción</string>
+  <string name="repo_enabled">Repositorio activado</string>
+  <string name="repo_disabled">Repositorio desactivado</string>
+  <string name="add_repo">Añadir Repositorio</string>
+  <string name="remove_repo">Eliminar Repositorio</string>
+  <string name="custom_url">URL Personalizado</string>
+  <string name="androidacy_repo_info">Este repositorio puede mostrar algunos anuncios no intrusivos para cubrir los costos del servidor y del desarrollo.</string>
+  <string name="backup_module_list">Hacer copia de seguridad de los módulos</string>
+  <string name="restore_module_list">Restaurar módulos</string>
+  <string name="require_internet">Esta operación requiere una conexión a Internet.</string>
+  <string name="androidacy_test_mode_pref">Modo de prueba de Androidacy</string>
+  <string name="androidacy_test_mode_desc">Usa el canal de prueba en vez del canal estable de Androidacy. (Se reiniciará la aplicación)</string>
+
+  <!-- Background Notification translation -->
+  <string name="notification_update_title">Se encontraron %i actualizaciones de modulos</string>
+  <string name="notification_update_title_easter_egg">Se detectaron %i actualizaciones</string>
+  <string name="notification_update_subtitle">Abrir en la aplicación</string>
+  <string name="notification_update_pref">Comprobación de actualización de módulos en segundo plano</string>
+  <string name="notification_update_desc">Puede aumentar el consumo de la bateria</string>
+  <string name="notification_update_debug_pref">Notificación de prueba</string>
+
+  <!-- Set to true in translation file if your language is right to left -->
+  <bool name="lang_support_rtl">false</bool>
+  <!-- Always copy language_support_level when translating -->
+  <integer name="language_support_level">1</integer>
+  <string name="language_support_outdated">Algunas traducciones del lenguaje seleccionado no estan actualizadas, por favor considera contribuir con las traducciones de la aplicación en GitHub.</string>
+  <!-- Replace with your own username when translating // Staging y non-production endpoint = canal de prueba, release endpoint = Canal estable (quizas se cambie la traducción en futuras actualizaciones) -->
+  <string name="language_translated_by">Traducido por Leshu7w7</string>
+  <string name="crash_reporting">Informa automáticamente de errores y rendimiento a los desarrolladores.</string>
+  <string name="crash_reporting_desc">Si desactivas esto, el desarrollador no tendrá informes automáticos de errores, y esto puede dificultar la resolución de problemas</string>
+  <string name="api_key">Clave API de Androidacy</string>
+  <string name="api_key_summary">Usa una clave API Personalizada para Androidacy. Útil para usuarios premium, para quitar anuncios y más.</string>
+  <string name="api_key_not_set">La clave API de Androidacy esta vacia.</string>
+  <string name="api_key_set">Clave API de Androidacy actual.</string>
+  <string name="api_key_invalid">No se pudo validar la clave API. Por favor revisala e intentalo de nuevo.</string>
+  <string name="api_key_valid">La clave API es valida.</string>
+  <string name="checking_api_key">Validando clave API...</string>
+  <string name="validating_api_key">Validando clave API...</string>
+  <string name="please_wait">Por favor, espera un momento</string>
+  <string name="api_key_removed">Se ha restaurado la clave API satisfactoriamente.</string>
+  <string name="save_api_key">Validar</string>
+  <string name="warning">Advertencia!</string>
+  <string name="androidacy_test_mode_warning">Está configurando la aplicación para usar un canal de prueba de Androidacy. Esto puede resultar en la inestabilidad de la aplicación y cuasar fallas cargando el repositorio en línea. NO informar de errores si tienes activado este canal. La aplicación se reiniciará para volver a cargar los repositorios.</string>
+  <string name="crash">Detén la aplicación por motivos de prueba</string>
+  <string name="repackaged_as">Reempaquetado como:</string>
+  <string name="wrapped_from">Obtenido de:</string>
+  <string name="crash_reporting_restart_title">Desea reinicar la aplicación para que los cambios se realicen?</string>
+  <string name="crash_reporting_restart_message">La aplicación necesita ser reiniciada para que los cambios sean aplicados.</string>
+  <string name="restart">Reiniciar</string>
+  <string name="androidacy_test_mode_disable_warning">La aplicación se reiniciará para deshabilitar el canal de prueba</string>
 </resources>
