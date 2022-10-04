@@ -373,4 +373,13 @@ public final class RepoManager extends SyncManager {
     public Collection<XRepo> getXRepos() {
         return new LinkedHashSet<>(this.repoData.values());
     }
+
+    /**
+     * Safe way to do {@code RepoManager.getInstance().androidacyRepoData.isEnabled()}
+     * without initializing RepoManager
+     */
+    public static boolean isAndroidacyRepoEnabled() {
+        return INSTANCE != null && INSTANCE.androidacyRepoData != null &&
+                INSTANCE.androidacyRepoData.isEnabled();
+    }
 }

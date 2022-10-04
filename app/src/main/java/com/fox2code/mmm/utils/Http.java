@@ -14,7 +14,9 @@ import androidx.annotation.Nullable;
 
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.androidacy.AndroidacyUtil;
 import com.fox2code.mmm.installer.InstallerInitializer;
+import com.fox2code.mmm.repo.RepoManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -193,7 +195,12 @@ public class Http {
         return doh ? httpClientWithCacheDoH : httpClientWithCache;
     }
 
+    @SuppressWarnings("resource")
     public static byte[] doHttpGet(String url,boolean allowCache) throws IOException {
+        if (!RepoManager.isAndroidacyRepoEnabled() &&
+                AndroidacyUtil.isAndroidacyLink(url)) {
+            throw new IOException("Androidacy repo is disabled, blocking url: " + url);
+        }
         Response response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(
                 new Request.Builder().url(url).get().build()
         ).execute();
@@ -220,8 +227,13 @@ public class Http {
         return (String) doHttpPostRaw(url, data, allowCache, true);
     }
 
+    @SuppressWarnings("resource")
     private static Object doHttpPostRaw(String url,String data, boolean allowCache,
                                           boolean isRedirect) throws IOException {
+        if (!RepoManager.isAndroidacyRepoEnabled() &&
+                AndroidacyUtil.isAndroidacyLink(url)) {
+            throw new IOException("Androidacy repo is disabled, blocking url: " + url);
+        }
         Response response = (isRedirect ? getHttpClientNoRedirect() :
                 allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(
                 new Request.Builder().url(url).post(JsonRequestBody.from(data))
@@ -248,6 +260,10 @@ public class Http {
 
     public static byte[] doHttpGet(String url,ProgressListener progressListener) throws IOException {
         Log.d("Http", "Progress URL: " + url);
+        if (!RepoManager.isAndroidacyRepoEnabled() &&
+                AndroidacyUtil.isAndroidacyLink(url)) {
+            throw new IOException("Androidacy repo is disabled, blocking url: " + url);
+        }
         Response response = getHttpClient().newCall(
                 new Request.Builder().url(url).get().build()).execute();
         if (response.code() != 200 && response.code() != 204) {
