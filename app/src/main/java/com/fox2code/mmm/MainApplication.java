@@ -23,6 +23,7 @@ import com.fox2code.foxcompat.FoxApplication;
 import com.fox2code.foxcompat.FoxThemeWrapper;
 import com.fox2code.foxcompat.internal.FoxProcessExt;
 import com.fox2code.mmm.installer.InstallerInitializer;
+import com.fox2code.mmm.sentry.SentryMain;
 import com.fox2code.mmm.utils.GMSProviderInstaller;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.rosettax.LanguageSwitcher;
@@ -366,60 +367,7 @@ public class MainApplication extends FoxApplication
             }, "Emoji compat init.").start();
         }
 
-        SentryAndroid.init(this, options -> {
-            // If crash reporting is disabled, stop here.
-            if (!isCrashReportingEnabled()) {
-                options.setDsn("");
-            } else {
-                options.addIntegration(new FragmentLifecycleIntegration(this, true, true));
-                // Sentry sends ABSOLUTELY NO Personally Identifiable Information (PII) by default.
-                // A screenshot of the app itself is only sent if the app crashes, and it only shows the last activity
-                // In addition, sentry is configured with a trusted third party other than sentry.io, and only trusted people have access to the sentry instance
-                // Add a callback that will be used before the event is sent to Sentry.
-                // With this callback, you can modify the event or, when returning null, also discard the event.
-                options.setBeforeSend((event, hint) -> {
-                    if (BuildConfig.DEBUG) { // Debug sentry events for debug.
-                        StringBuilder stringBuilder = new StringBuilder("Sentry report debug: ");
-                        try {
-                            event.serialize(new JsonObjectWriter(new Writer() {
-                                @Override
-                                public void write(char[] cbuf) {
-                                    stringBuilder.append(cbuf);
-                                }
-
-                                @Override
-                                public void write(String str) {
-                                    stringBuilder.append(str);
-                                }
-
-                                @Override
-                                public void write(char[] chars, int i, int i1) {
-                                    stringBuilder.append(chars, i, i1);
-                                }
-
-                                @Override
-                                public void write(String str, int off, int len) {
-                                    stringBuilder.append(str, off, len);
-                                }
-
-                                @Override
-                                public void flush() {
-                                }
-
-                                @Override
-                                public void close() {
-                                }
-                            }, 4), NoOpLogger.getInstance());
-                        } catch (IOException ignored) {
-                        }
-                        Log.i(TAG, stringBuilder.toString());
-                    }
-                    // We already know that the user has opted in to crash reporting, so we don't need to ask again.
-                    return event;
-                });
-            }
-
-        });
+        SentryMain.initialize(this);
     }
 
     @Override

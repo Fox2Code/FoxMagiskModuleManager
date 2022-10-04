@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="QueryAllPackagesPermission">
+
+    <application android:icon="@mipmap/ic_launcher">
+        <meta-data android:name="io.sentry.auto-init" android:value="false" />
+        <meta-data
+            android:name="io.sentry.dsn"
+            android:value="https://cdcdb0efca4a42a28df90e4b7f087347@sentry.androidacy.com/2" />
+        <!-- Sane value, but feel free to lower it -->
+        <meta-data
+            android:name="io.sentry.traces.sample-rate"
+            android:value="0.5" />
+        <!-- Doesn't actually monitor anything, just used to get the activities the user went through -->
+        <meta-data
+            android:name="io.sentry.traces.user-interaction.enable"
+            android:value="true" />
+        <!-- Just a screenshot of ONLY the current activity at the time of the crash -->
+        <meta-data
+            android:name="io.sentry.attach-screenshot"
+            android:value="true" />
+    </application>
+</manifest>

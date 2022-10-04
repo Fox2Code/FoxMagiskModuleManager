@@ -79,6 +79,9 @@ aboutLibraries {
 }
 
 sentry {
+    // Disable sentry on F-Droid flavor
+    ignoredFlavors = [ "fdroid" ]
+
     // Disables or enables the handling of Proguard mapping for Sentry.
     // If enabled the plugin will generate a UUID and will take care of
     // uploading the mapping to Sentry. If disabled, all the logic
@@ -137,7 +140,6 @@ sentry {
 
 configurations {
     implementation.exclude group: 'org.jetbrains', module: 'annotations'
-    implementation.exclude group: 'io.sentry', module: 'sentry-android-okhttp'
 }
 
 dependencies {
@@ -156,7 +158,7 @@ dependencies {
     implementation "dev.rikka.rikkax.insets:insets:1.3.0"
     implementation 'com.github.Dimezis:BlurView:version-1.6.6'
     implementation 'com.github.KieronQuinn:MonetCompat:0.4.1'
-    implementation 'com.github.Fox2Code:FoxCompat:0.1.4b'
+    implementation 'com.github.Fox2Code:FoxCompat:0.1.5'
 
     // Utils
     implementation 'androidx.work:work-runtime:2.7.1'
@@ -167,11 +169,11 @@ dependencies {
     implementation 'com.github.Fox2Code:AndroidANSI:1.0.1'
 
     // Error reporting
-    implementation 'io.sentry:sentry-android:6.4.1'
-    implementation 'io.sentry:sentry-android-fragment:6.4.1'
-    implementation 'io.sentry:sentry-android-okhttp:6.4.1'
-    implementation 'io.sentry:sentry-android-core:6.4.1'
-    implementation 'io.sentry:sentry-android-ndk:6.4.1'
+    defaultImplementation 'io.sentry:sentry-android:6.4.1'
+    defaultImplementation 'io.sentry:sentry-android-fragment:6.4.1'
+    defaultImplementation 'io.sentry:sentry-android-okhttp:6.4.1'
+    defaultImplementation 'io.sentry:sentry-android-core:6.4.1'
+    defaultImplementation 'io.sentry:sentry-android-ndk:6.4.1'
 
     // Markdown
     implementation "io.noties.markwon:core:4.6.2"

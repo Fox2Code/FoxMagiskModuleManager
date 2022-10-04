@@ -47,6 +47,7 @@ import com.fox2code.mmm.repo.CustomRepoData;
 import com.fox2code.mmm.repo.CustomRepoManager;
 import com.fox2code.mmm.repo.RepoData;
 import com.fox2code.mmm.repo.RepoManager;
+import com.fox2code.mmm.sentry.SentryMain;
 import com.fox2code.mmm.utils.ExternalHelper;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
@@ -134,13 +135,13 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             });
             // Crash reporting
             TwoStatePreference crashReportingPreference = findPreference("pref_crash_reporting");
+            if (!SentryMain.IS_SENTRY_INSTALLED) crashReportingPreference.setVisible(false);
             crashReportingPreference.setChecked(MainApplication.isCrashReportingEnabled());
+            final Object initialValue = MainApplication.isCrashReportingEnabled();
             crashReportingPreference.setOnPreferenceChangeListener((preference, newValue) -> {
                 devModeStepFirstBootIgnore = true;
                 devModeStep = 0;
-                // Save the new value and restart the app
-                MainApplication.getSharedPreferences().edit()
-                        .putBoolean("crash_reporting", (boolean) newValue).apply();
+                if (initialValue == newValue) return true;
                 // Show a dialog to restart the app
                 MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(requireContext());
                 materialAlertDialogBuilder.setTitle(R.string.crash_reporting_restart_title);
@@ -165,12 +166,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     }
                     System.exit(0); // Exit app process
                 });
-                // Reverse the change if the user cancels the dialog
-                materialAlertDialogBuilder.setNegativeButton(R.string.cancel, (dialog, which) -> {
-                    crashReportingPreference.setChecked(!crashReportingPreference.isChecked());
-                    MainApplication.getSharedPreferences().edit()
-                            .putBoolean("crash_reporting", crashReportingPreference.isChecked()).apply();
-                });
+                // Do not reverse the change if the user cancels the dialog
+                materialAlertDialogBuilder.setNegativeButton(R.string.no, (dialog, which) -> {});
                 materialAlertDialogBuilder.show();
                 return true;
             });
@@ -245,7 +242,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             if (!MainApplication.isDeveloper()) {
                 findPreference("pref_disable_low_quality_module_filter").setVisible(false);
             }
-            if (!BuildConfig.DEBUG || InstallerInitializer.peekMagiskPath() == null) {
+            if (!SentryMain.IS_SENTRY_INSTALLED || !BuildConfig.DEBUG ||
+                    InstallerInitializer.peekMagiskPath() == null) {
                 // Hide the pref_crash option if not in debug mode - stop users from purposely crashing the app
                 Objects.requireNonNull((Preference) findPreference("pref_crash")).setVisible(false);
             } else {

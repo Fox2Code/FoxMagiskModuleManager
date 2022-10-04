@@ -24,6 +24,8 @@ import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.XHooks;
 import com.fox2code.mmm.module.ActionButtonType;
+import com.fox2code.mmm.sentry.SentryBreadcrumb;
+import com.fox2code.mmm.sentry.SentryMain;
 import com.fox2code.mmm.utils.FastException;
 import com.fox2code.mmm.utils.Files;
 import com.fox2code.mmm.utils.Hashes;
@@ -49,10 +51,6 @@ import java.util.HashSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
-
-import io.sentry.Breadcrumb;
-import io.sentry.Sentry;
-import io.sentry.SentryLevel;
 
 public class InstallerActivity extends FoxActivity {
     private static final String TAG = "InstallerActivity";
@@ -109,14 +107,13 @@ public class InstallerActivity extends FoxActivity {
         Log.i(TAG, "Install link: " + target);
         // Note: Sentry only send this info on crash.
         if (MainApplication.isCrashReportingEnabled()) {
-            Breadcrumb breadcrumb = new Breadcrumb();
+            SentryBreadcrumb breadcrumb = new SentryBreadcrumb();
             breadcrumb.setType("install");
             breadcrumb.setData("target", target);
             breadcrumb.setData("name", name);
             breadcrumb.setData("checksum", checksum);
             breadcrumb.setCategory("app.action.preinstall");
-            breadcrumb.setLevel(SentryLevel.INFO);
-            Sentry.addBreadcrumb(breadcrumb);
+            SentryMain.addSentryBreadcrumb(breadcrumb);
         }
         boolean urlMode = target.startsWith("http://") || target.startsWith("https://");
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -450,7 +447,7 @@ public class InstallerActivity extends FoxActivity {
             }
             // Note: Sentry only send this info on crash.
             if (MainApplication.isCrashReportingEnabled()) {
-                Breadcrumb breadcrumb = new Breadcrumb();
+                SentryBreadcrumb breadcrumb = new SentryBreadcrumb();
                 breadcrumb.setType("install");
                 breadcrumb.setData("moduleId", moduleId == null ? "<null>" : moduleId);
                 breadcrumb.setData("mmtReborn", mmtReborn ? "true" : "false");
@@ -460,8 +457,7 @@ public class InstallerActivity extends FoxActivity {
                 breadcrumb.setData("ansi", this.installerTerminal
                         .isAnsiEnabled() ? "enabled" : "disabled");
                 breadcrumb.setCategory("app.action.install");
-                breadcrumb.setLevel(SentryLevel.INFO);
-                Sentry.addBreadcrumb(breadcrumb);
+                SentryMain.addSentryBreadcrumb(breadcrumb);
             }
             if (mmtReborn && magiskCmdLine) {
                 Log.w(TAG, "mmtReborn and magiskCmdLine may not work well together");
