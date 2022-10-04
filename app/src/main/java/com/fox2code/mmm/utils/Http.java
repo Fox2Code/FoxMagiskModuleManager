@@ -7,6 +7,7 @@ import android.system.ErrnoException;
 import android.system.Os;
 import android.util.Log;
 import android.webkit.CookieManager;
+import android.webkit.WebSettings;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -77,6 +78,16 @@ public class Http {
             }
             throw error;
         }
+        CookieManager cookieManager;
+        try {
+            cookieManager = CookieManager.getInstance();
+            cookieManager.setAcceptCookie(true);
+            cookieManager.flush(); // Make sure the instance work
+        } catch (Throwable t) {
+            cookieManager = null;
+            Log.e(TAG, "No WebView support!", t);
+        }
+        hasWebView = cookieManager != null;
         OkHttpClient.Builder httpclientBuilder = new OkHttpClient.Builder();
         // Default is 10, extend it a bit for slow mobile connections.
         httpclientBuilder.connectTimeout(15, TimeUnit.SECONDS);
@@ -112,10 +123,15 @@ public class Http {
             Log.e(TAG, "Failed to init DoH", e);
         }
         httpclientBuilder.cookieJar(CookieJar.NO_COOKIES);
-        androidacyUA = // User-Agent format was agreed on telegram
-                "Mozilla/5.0 (Linux; Android " + Build.VERSION.RELEASE + "; " + Build.DEVICE +")" +
-                " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36"
-                + " FoxMmm/" + BuildConfig.VERSION_CODE;
+        // User-Agent format was agreed on telegram
+        if (hasWebView) {
+            androidacyUA = WebSettings.getDefaultUserAgent(mainApplication).replace("; wv", "")
+                    + " FoxMmm/" + BuildConfig.VERSION_CODE;
+        } else {
+            androidacyUA = "Mozilla/5.0 (Linux; Android " + Build.VERSION.RELEASE + "; " + Build.DEVICE +")" +
+                    " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36"
+                    + " FoxMmm/" + BuildConfig.VERSION_CODE;
+        }
         httpclientBuilder.addInterceptor(chain -> {
             Request.Builder request = chain.request().newBuilder();
             request.header("Upgrade-Insecure-Requests", "1");
@@ -141,16 +157,6 @@ public class Http {
                 "camo.githubusercontent.com", "user-images.githubusercontent.com",
                 "cdn.jsdelivr.net", "img.shields.io", "magisk-modules-repo.github.io",
                 "www.androidacy.com", "api.androidacy.com");
-        CookieManager cookieManager;
-        try {
-            cookieManager = CookieManager.getInstance();
-            cookieManager.setAcceptCookie(true);
-            cookieManager.flush(); // Make sure the instance work
-        } catch (Throwable t) {
-            cookieManager = null;
-            Log.e(TAG, "No WebView support!", t);
-        }
-        hasWebView = cookieManager != null;
         httpclientBuilder.cookieJar(cookieJar = new CDNCookieJar(cookieManager));
         httpclientBuilder.dns(Dns.SYSTEM);
         httpClient = followRedirects(httpclientBuilder, true).build();

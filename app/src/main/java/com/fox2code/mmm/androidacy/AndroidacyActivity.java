@@ -61,7 +61,7 @@ public final class AndroidacyActivity extends FoxActivity {
 
     @SuppressWarnings("deprecation")
     @Override
-    @SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface"})
+    @SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface", "RestrictedApi"})
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = this.getIntent();
@@ -126,6 +126,11 @@ public final class AndroidacyActivity extends FoxActivity {
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setAllowFileAccess(false);
+        // Attempt at fixing CloudFlare captcha.
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.REQUESTED_WITH_HEADER_CONTROL)) {
+            WebSettingsCompat.setRequestedWithHeaderMode(
+                    webSettings, WebSettingsCompat.REQUESTED_WITH_HEADER_MODE_NO_HEADER);
+        }
         // If API level is .= 33, allow setAlgorithmicDarkeningAllowed
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
             try {
