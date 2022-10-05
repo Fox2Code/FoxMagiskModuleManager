@@ -4,6 +4,7 @@
     <string name="app_name_short">Fox\'s Mmm</string>
     <string name="fail_root_magisk">Obținerea accesului la rădăcină sau Magisk a eșuat</string>
     <string name="fail_root_denied">Accesul root a fost refuzat în aplicația Magisk</string>
+    <string name="fail_magisk_missing">Magisk nu este instalat pe acest dispozitiv</string>
     <string name="loading">Se încarcă…</string>
     <string name="updatable">Actualizabil</string>
     <string name="installed">Instalat</string>
@@ -31,6 +32,7 @@
     <string name="config">Configurare</string>
     <string name="favourite">Favorit</string>
     <string name="report_bugs">Raportează erori</string>
+    <string name="sniffed_modules">Module închise</string>
     <string name="submit_modules">Trimite un modul</string>
     <string name="require_android_6">Necesită Android 6.0+</string>
     <string name="require_android_12">Necesită Android 12+</string>
@@ -125,7 +127,7 @@
     <string name="restore_module_list">Restabilire module</string>
     <string name="require_internet">Această operațiune necesită o conexiune la Internet</string>
     <string name="androidacy_test_mode_pref">Modul de testare Androidacy</string>
-    <string name="androidacy_test_mode_desc">Folosiți punctul final Androidacy staging în loc de punctul final de lansare. (Necesită repornirea procesului aplicației)</string>
+    <string name="androidacy_test_mode_desc">Folosiți punctul final Androidacy staging în loc de punctul final de lansare. (Va reporni aplicația)</string>
     <!-- Background Notification translation -->
     <string name="notification_update_title">S-au găsit %i actualizări module</string>
     <string name="notification_update_subtitle">Clic pentru a deschide aplicația</string>
@@ -152,8 +154,12 @@
     <string name="api_key_removed">Resetare cheie API reușită</string>
     <string name="save_api_key">Validare</string>
     <string name="warning">Avertisment!</string>
-    <string name="androidacy_test_mode_warning">Setați aplicația să utilizeze un punct final non-producție pentru Androidacy. Acest lucru poate duce la instabilitatea aplicației și la eșecul încărcării depozitului online. NU raportați erori dacă aveți acest comutator pornit. Modificarea va intra în vigoare la repornirea aplicației.</string>
+    <string name="androidacy_test_mode_warning">Setați aplicația să utilizeze un punct final non-producție pentru Androidacy. Acest lucru poate duce la instabilitatea aplicației și la eșecul încărcării depozitului online. NU raportați erori dacă aveți acest comutator pornit. Aplicația va fi repornită pentru a reîncărca depozitele.</string>
     <string name="crash">Oprește forțat aplicația pentru testare</string>
     <string name="repackaged_as">Reambalat ca:</string>
     <string name="wrapped_from">Înglobat din:</string>
+    <string name="crash_reporting_restart_title">Reporniți aplicația pentru a aplica modificările?</string>
+    <string name="crash_reporting_restart_message">Aplicația trebuie să repornească pentru a aplica această setare</string>
+    <string name="restart">Repornire</string>
+    <string name="androidacy_test_mode_disable_warning">Aplicația va fi repornită pentru a dezactiva finalizarea etapelor</string>
 </resources>
