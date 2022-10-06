@@ -10,9 +10,8 @@ public class SentryBreadcrumb {
 
     public void setType(@Nullable String type) {}
 
-    public void setData(@NotNull String key, @NotNull Object value) {
+    public void setData(@NotNull String key, @Nullable Object value) {
         Objects.requireNonNull(key);
-        Objects.requireNonNull(value);
     }
 
     public void setCategory(@Nullable String category) {}

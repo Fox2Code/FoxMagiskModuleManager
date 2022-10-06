@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import io.sentry.android.okhttp.SentryOkHttpInterceptor;
 import okhttp3.Cache;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;

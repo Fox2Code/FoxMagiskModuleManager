@@ -1,6 +1,5 @@
 *.iml
 .gradle
-/sentry.properties
 /local.properties
 /.idea/
 .DS_Store
@@ -9,3 +8,4 @@
 .externalNativeBuild
 .cxx
 local.properties
+sentry.properties

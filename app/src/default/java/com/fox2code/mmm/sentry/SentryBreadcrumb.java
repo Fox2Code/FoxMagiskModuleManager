@@ -20,9 +20,9 @@ public class SentryBreadcrumb {
         breadcrumb.setType(type);
     }
 
-    public void setData(@NotNull String key, @NotNull Object value) {
+    public void setData(@NotNull String key, @Nullable Object value) {
+        if (value == null) value = "null";
         Objects.requireNonNull(key);
-        Objects.requireNonNull(value);
         breadcrumb.setData(key, value);
     }
 
