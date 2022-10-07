@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Fox\'s Magisk Module Manager</string>
     <string name="app_name_short">Fox\'s Mmm</string>
@@ -7,7 +8,7 @@
     <string name="installed">Nainštalované</string>
     <string name="online_repo">Online Repo</string>
     <string name="showcase_mode">Aplikácia je v obmedzenom režime</string>
-    <string name="failed_download">Sťahovanie súboru zlyhalo.</string>
+    <string name="failed_download">Sťahovanie súboru zlyhalo</string>
     <string name="slow_modules">Načítanie modulov trvalo príliš dlho, zvážte ich obmedziť</string>
     <string name="fail_internet">Pripojenie k internetu zlyhalo</string>
     <string name="title_activity_settings">SettingsActivity</string>
@@ -23,14 +24,12 @@
     <string name="donate">Prispejte na vývoj</string>
     <string name="submit_modules">Odoslat modul</string>
     <string name="require_android_6">Požaduje sa Android 6.0+</string>
-
     <!-- Module section translation -->
     <string name="module_last_update">Posledná aktualizácia:</string>
     <string name="module_repo">Repo:</string>
     <string name="module_by">by</string>
     <string name="module_downloads">Stiahnuté:</string>
     <string name="module_stars">Hviezdičiek:</string>
-
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">Spravovat repozitáre</string>
@@ -92,6 +91,4 @@
     <string name="enable_blur_pref">Povoliť rozostrenia</string>
     <string name="repo_enabled">Repozitár povolený</string>
     <string name="repo_disabled">Repozitár zakázaný</string>
-    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
-    <string name="api_key">Androidacy API Key</string>
 </resources>

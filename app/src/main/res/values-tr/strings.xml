@@ -1,15 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Fox\'un Magisk Modül Yöneticisi</string>
     <string name="app_name_short">Fox\'un Mmy</string>
-    <string name="fail_root_magisk">Kök ya da Magisk\'e erişim sağlanamadı.</string>
+    <string name="fail_root_magisk">Kök ya da Magisk\'e erişim sağlanamadı</string>
     <string name="fail_root_denied">Kök erişimi, Magisk uygulaması aracılığıyla reddedildi</string>
     <string name="fail_magisk_missing">Magisk, bu cihazda yüklü değil</string>
-    <string name="loading">Yükleniyor...</string>
+    <string name="loading">Yükleniyor…</string>
     <string name="updatable">Güncellenebilir</string>
     <string name="installed">Yüklendi</string>
     <string name="online_repo">Çevrimiçi Depo</string>
     <string name="showcase_mode">Uygulama kilit modunda</string>
-    <string name="failed_download">Dosya indirilemedi.</string>
+    <string name="failed_download">Dosya indirilemedi</string>
     <string name="slow_modules">Modüllerin açılışı çok uzun sürdü, bazı modülleri devre dışı bırakmayı düşünün</string>
     <string name="fail_internet">İnternete bağlanılamadı</string>
     <string name="no_web_view">Sistem WebView açılamadı</string>
@@ -42,7 +43,6 @@
     <string name="no">Hayır</string>
     <string name="ok">Tamam</string>
     <string name="cancel">İptal</string>
-
     <!-- Module section translation -->
     <string name="module_last_update">Son güncelleme:</string>
     <string name="module_repo">Depo:</string>
@@ -56,7 +56,6 @@
     <string name="module_min_magisk_chip">Min. Magisk "%s"</string>
     <string name="module_min_sdk_chip">Min. Android</string>
     <string name="module_max_sdk_chip">Max. Android</string>
-
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">Depoları yönet</string>
@@ -95,7 +94,7 @@
     <string name="force_dark_terminal_title">Koyu terminal</string>
     <string name="file_picker_failure">Mevcut dosya seçicisi dosyaya erişemedi.</string>
     <string name="remote_install_title">Uzaktan yükleme</string>
-    <string name="file_picker_wierd">Dosya seçicisi standart olmayan bir yanıtı geri getirdi</string>
+    <string name="file_picker_wierd">Dosya seçicisi standart olmayan bir yanıtı geri getirdi.</string>
     <string name="use_magisk_install_command_pref">\"magisk --install-module\" komutunu kullan</string>
     <string name="use_magisk_install_command_desc">
         Test sırasında modül yükleme hata teşhis aracında sorunlar meydana geldi,
@@ -135,8 +134,6 @@
     <string name="require_internet">Bu işlem bir internet bağlantısı gerektirir</string>
     <string name="androidacy_test_mode_pref">Androidacy test modu</string>
     <string name="androidacy_test_mode_desc">Release endpoint yerine Androidacy Endpoint\'i kullan. (Uygulama sürecinin yeniden başlatılması gerekir)</string>
-
-
     <!-- Background Notification translation -->
     <string name="notification_update_title">%i modül güncellemesi bulundu</string>
     <string name="notification_update_title_easter_egg">%i modül güncellemesi koklandı</string>
@@ -144,7 +141,6 @@
     <string name="notification_update_pref">Modül güncellemesi arkaplan kontrolü</string>
     <string name="notification_update_desc">Pil kullanımını arttırabilir</string>
     <string name="notification_update_debug_pref">Bildirim Testi</string>
-
     <!-- Set to true in translation file if your language is right to left -->
     <bool name="lang_support_rtl">false</bool>
     <!-- Always copy language_support_level when translating -->

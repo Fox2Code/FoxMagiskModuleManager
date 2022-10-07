@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Trình quản lý Mô-đun Magisk của Fox</string>
     <string name="app_name_short">Quản lý MM</string>
@@ -7,7 +8,7 @@
     <string name="installed">Đã cài đặt</string>
     <string name="online_repo">Kho trực tuyến</string>
     <string name="showcase_mode">Ứng dụng đang ở chế độ khóa</string>
-    <string name="failed_download">Tải xuống tệp tin thất bại.</string>
+    <string name="failed_download">Tải xuống tệp tin thất bại</string>
     <string name="slow_modules">Các mô-đun mất quá nhiều thời gian để khởi động, hãy xem xét việc tắt một số mô-đun</string>
     <string name="fail_internet">Kết nối với internet thất bại</string>
     <string name="no_web_view">Không thể mở WebView của Hệ thống</string>
@@ -32,7 +33,6 @@
     <string name="require_android_12">Yêu cầu Android 12+</string>
     <string name="install_terminal_reboot_now">Khởi động lại</string>
     <string name="language">Ngôn ngữ</string>
-	
     <!-- Module section translation -->
     <string name="module_last_update">Cập nhật lần cuối:</string>
     <string name="module_repo">Kho:</string>
@@ -46,7 +46,6 @@
     <string name="module_min_magisk_chip">Tối thiểu Magisk "%s"</string>
     <string name="module_min_sdk_chip">Tối thiểu Android</string>
     <string name="module_max_sdk_chip">Tối đa Android</string>
-
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">Quản lý kho</string>
@@ -109,10 +108,7 @@
         thiết bị đầu cuối, hữu ích nếu một mô-đun sử dụng sai tiện ích mở rộng Tr. quản lý MM của Fox.
     </string>
     <string name="wrap_text_pref">Gói gọn văn bản</string>
-    <string name="wrap_text_desc">
-        Gói văn bản thành một dòng mới thay vì đặt tất cả
-        văn bản trên cùng một dòng khi cài đặt một mô-đun
-    </string>
+    <string name="wrap_text_desc">Gói văn bản thành một dòng mới thay vì đặt tất cả văn bản trên cùng một dòng khi cài đặt một mô-đun.</string>
     <string name="enable_blur_pref">Kích hoạt làm mờ</string>
     <string name="repo_enabled">Kho đã được kích hoạt</string>
     <string name="repo_disabled">Kho đã bị vô hiệu hóa</string>
@@ -122,6 +118,4 @@
     <string name="backup_module_list">Sao lưu mô-đun</string>
     <string name="restore_module_list">Khôi phục mô-đun</string>
     <string name="require_internet">Quá trình này yêu cầu kết nối internet</string>
-    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
-    <string name="api_key">Androidacy API Key</string>
 </resources>

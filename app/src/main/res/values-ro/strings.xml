@@ -111,10 +111,7 @@
         extensii terminal, util dacă un modul folosește în mod abuziv extensiile Fox\'s Mmm.
     </string>
     <string name="wrap_text_pref">Încadrează textul</string>
-    <string name="wrap_text_desc">   
-       Se încadrează textul la o linie nouă în loc să fie pus
-        tot textul pe aceeași linie atunci când se instalează un modul
-    </string>
+    <string name="wrap_text_desc">Se încadrează textul la o linie nouă în loc să fie pus tot textul pe aceeași linie atunci când se instalează un modul.</string>
     <string name="enable_blur_pref">Activează estomparea</string>
     <string name="disable_chips_in_description">Dezactivează cipurile în descriere</string>
     <string name="repo_enabled">Depozit activat</string>

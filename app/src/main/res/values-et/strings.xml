@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Foxi Magiski moodulihaldur</string>
     <string name="app_name_short">Foxi Mmh</string>
@@ -7,7 +8,7 @@
     <string name="installed">Paigaldatud</string>
     <string name="online_repo">Veebihoidla</string>
     <string name="showcase_mode">Rakendus on lukustusrežiimis</string>
-    <string name="failed_download">Faili allalaadimine ebaõnnestus.</string>
+    <string name="failed_download">Faili allalaadimine ebaõnnestus</string>
     <string name="slow_modules">Moodulite laadimine võttis liiga kaua aega, kaalu mõndade moodulite keelamist</string>
     <string name="fail_internet">Internetiga ühendumine ebaõnnestus</string>
     <string name="title_activity_settings">SettingsActivity</string>
@@ -22,14 +23,12 @@
     <string name="support">Tugi</string>
     <string name="donate">Anneta</string>
     <string name="submit_modules">Esita moodul</string>
-
     <!-- Module section translation -->
     <string name="module_last_update">Viimane uuendus:</string>
     <string name="module_repo">Hoidla:</string>
     <string name="module_by">autorilt</string>
     <string name="module_downloads">Allalaadimisi:</string>
     <string name="module_stars">Tähti:</string>
-
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">Halda hoidlaid</string>
@@ -81,12 +80,7 @@
         kasulik, kui moodul väärkasutab Foxi Mmh laiendusi.
     </string>
     <string name="wrap_text_pref">Teksti murdmine</string>
-    <string name="wrap_text_desc">
-        Murrab teksti uuele reale, selle asemel et asetada
-        kogu tekst moodulit installides samale reale
-    </string>
+    <string name="wrap_text_desc">Murrab teksti uuele reale, selle asemel et asetada kogu tekst moodulit installides samale reale.</string>
     <string name="repo_enabled">Hoidla lubatud</string>
     <string name="repo_disabled">Hoidla keelatud</string>
-    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
-    <string name="api_key">Androidacy API Key</string>
 </resources>

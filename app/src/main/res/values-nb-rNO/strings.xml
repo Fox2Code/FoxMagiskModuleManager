@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Fox sin Magisk-modulbehandler</string>
     <string name="app_name_short">Mmm fra Fox</string>
@@ -8,7 +9,7 @@
     <string name="online_repo">Nettbasert pakkebrønn</string>
     <string name="showcase_mode">Programmet er i nedlåst modus</string>
     <string name="failed_download">Kunne ikke laste ned filen</string>
-    <string name="slow_modules">Det tok for lang tid å starte opp moduler. Overvei å skru av noen av dem.</string>
+    <string name="slow_modules">Det tok for lang tid å starte opp moduler. Overvei å skru av noen av dem</string>
     <string name="fail_internet">Kunne ikke koble til Internett</string>
     <string name="no_web_view">Kunne ikke åpne systemets WebView</string>
     <string name="title_activity_settings">SettingsActivity</string>
@@ -24,14 +25,12 @@
     <string name="donate">Doner</string>
     <string name="submit_modules">Send inn en modul</string>
     <string name="require_android_6">Krever Android 6.0+</string>
-
     <!-- Module section translation -->
     <string name="module_last_update">Siste versjon:</string>
     <string name="module_repo">Pakkebrønn:</string>
     <string name="module_by">av</string>
     <string name="module_downloads">Nedlastninger:</string>
     <string name="module_stars">Stjerner:</string>
-
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">Håndter pakkebrønner</string>
@@ -76,7 +75,6 @@
         Noen moduler kunngjør ikke metadataen sin riktig, noe som forårsaker synlige grafikkproblemer,
         og/eller indikerer dårlig modulkvalitet. Skru av dette på egen risiko!
     </string>
-    <string name="dns_over_https_pref">DNS over HTTPS</string>
     <string name="dns_over_https_desc">
         Kan fikse problemer i noen tilfeller.
         (Har ikke innvirkning på WebView.)
@@ -94,6 +92,4 @@
     <string name="enable_blur_pref">Tilsløring</string>
     <string name="repo_enabled">Pakkebrønn på</string>
     <string name="repo_disabled">Pakkebrønn av</string>
-    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
-    <string name="api_key">Androidacy API Key</string>
 </resources>

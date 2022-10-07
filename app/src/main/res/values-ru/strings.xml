@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Менеджер модулей Magisk Fox’а</string>
     <string name="app_name_short">МмM Fox’а</string>
@@ -10,7 +11,7 @@
     <string name="failed_download">Не удалось скачать файл</string>
     <string name="slow_modules">Модули слишком долго запускались, рассмотрите вариант отключения некоторых из них</string>
     <string name="fail_internet">Не удается подключиться к Интернету</string>
-	<string name="no_web_view">Не удается открыть системный WebView</string>
+    <string name="no_web_view">Не удается открыть системный WebView</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="app_update_available">Вышла новая версия приложения</string>
     <string name="app_update">Обновить</string>
@@ -32,7 +33,6 @@
     <string name="require_android_12">Требуется Android 12+</string>
     <string name="install_terminal_reboot_now">Перезагрузить</string>
     <string name="language">Язык</string>
-
     <!-- Module section translation -->
     <string name="module_last_update">Посл. обновление:</string>
     <string name="module_repo">Репозиторий:</string>
@@ -46,7 +46,6 @@
     <string name="module_min_magisk_chip">Мин. Magisk "%s"</string>
     <string name="module_min_sdk_chip">Мин. Android</string>
     <string name="module_max_sdk_chip">Макс. Android</string>
-
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">Выбранные репозитории</string>
@@ -109,10 +108,7 @@
         использовать встроенный терминал, полезно, если модуль некорректно работает с расширениями МмM Fox’а.
     </string>
     <string name="wrap_text_pref">Перенос по словам</string>
-    <string name="wrap_text_desc">
-        Переносить текст на другую строку, чтобы
-        не помещать всё на одной во время установки модуля
-    </string>
+    <string name="wrap_text_desc">Переносить текст на другую строку, чтобы не помещать всё на одной во время установки модуля.</string>
     <string name="enable_blur_pref">Включить эффект размытия</string>
     <string name="disable_chips_in_description">Отключить форматирование в описании</string>
     <string name="repo_enabled">Репо включен</string>
@@ -123,6 +119,4 @@
     <string name="backup_module_list">Резервное копирование модулей</string>
     <string name="restore_module_list">Восстановить модули</string>
     <string name="require_internet">Для этого действия потребуется подключение к Интернету</string>
-    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
-    <string name="api_key">Androidacy API Key</string>
 </resources>

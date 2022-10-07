@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="fail_root_magisk">RootまたはMagiskへのアクセスに失敗しました</string>
     <string name="loading">読み込み中…</string>
@@ -9,12 +10,10 @@
     <string name="fail_internet">インターネットに接続できませんでした</string>
     <string name="app_update_available">アプリのアップデートが利用可能</string>
     <string name="app_update">アップデート</string>
-
     <!-- Module section translation -->
     <string name="module_last_update">最終更新:</string>
     <string name="module_repo">リポジトリ:</string>
     <string name="module_by">作者:</string>
-
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="showcase_mode_pref">ショーケースモード</string>
@@ -40,6 +39,4 @@
     <string name="source_code">ソースコード</string>
     <string name="dev_mode_enabled">開発者モードが有効です</string>
     <string name="force_english_pref">Force English language</string>
-    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
-    <string name="api_key">Androidacy API Key</string>
 </resources>

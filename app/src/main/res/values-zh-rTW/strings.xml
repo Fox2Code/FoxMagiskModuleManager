@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Fox\'s Magisk 模組管理器</string>
     <string name="app_name_short">Fox\'s Mmm</string>
@@ -36,7 +37,6 @@
     <string name="require_android_12">需要 Android 12 或更新的版本</string>
     <string name="install_terminal_reboot_now">重新啟動</string>
     <string name="language">語言</string>
-
     <!-- Module section translation -->
     <string name="module_last_update">最後更新：</string>
     <string name="module_repo">倉庫：</string>
@@ -50,7 +50,6 @@
     <string name="module_min_magisk_chip">最低需要 Magisk "%s" 版本</string>
     <string name="module_min_sdk_chip">最低需要 Android 版本</string>
     <string name="module_max_sdk_chip">最高需要 Android 版本</string>
-
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">管理倉庫</string>
@@ -123,7 +122,6 @@
     <string name="backup_module_list">備份模組</string>
     <string name="restore_module_list">還原模組</string>
     <string name="require_internet">需要網路連線</string>
-
     <!-- Background Notification translation -->
     <string name="notification_update_title">發現 %i 模組的更新</string>
     <string name="notification_update_title_easter_egg">偵測到 %i 模組的更新</string>
@@ -131,7 +129,6 @@
     <string name="notification_update_pref">在後台檢查模組更新</string>
     <string name="notification_update_desc">開啟後可能會增加電池用量</string>
     <string name="notification_update_debug_pref">測試通知</string>
-
     <!-- Set to true in translation file if your language is right to left -->
     <bool name="lang_support_rtl">false</bool>
     <!-- Always copy language_support_level when translating -->
@@ -139,6 +136,4 @@
     <string name="language_support_outdated">如果您使用的當前語言沒有及時更新，請考慮在 GitHub 上的為翻譯做出貢獻。</string>
     <!-- Replace with your own username when translating -->
     <string name="language_translated_by">由 OrStudio.tw(@crcky5322) 提供美妙的翻譯</string>
-    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
-    <string name="api_key">Androidacy API Key</string>
 </resources>

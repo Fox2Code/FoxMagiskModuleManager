@@ -2,24 +2,22 @@
 <resources>
     <string name="app_name">Fox\'s Magisk Module Manager</string>
     <string name="app_name_short">Fox\'s Mmm</string>
-    <string name="fail_root_magisk">Zugriff auf Root oder Magisk fehlgeschlagen.</string>
-    <string name="loading">Laden...</string>
+    <string name="fail_root_magisk">Zugriff auf Root oder Magisk fehlgeschlagen</string>
+    <string name="loading">Laden…</string>
     <string name="updatable">Aktualisierbar</string>
     <string name="installed">Installiert</string>
     <string name="online_repo">Online Repo</string>
     <string name="showcase_mode">Die Anwendung befindet sich im Sperrmodus</string>
-    <string name="failed_download">Download der Datei ist fehlgeschlagen.</string>
+    <string name="failed_download">Download der Datei ist fehlgeschlagen</string>
     <string name="slow_modules">Module brauchten zu lange zum Booten, erwägen Sie, einige Module zu deaktivieren</string>
     <string name="fail_internet">Verbindung mit dem Internet fehlgeschlagen</string>
     <string name="title_activity_settings">Aktivitätseinstellungen</string>
     <string name="app_update_available">Anwendungsaktualisierung verfügbar</string>
     <string name="app_update">Update</string>
-
     <!-- Module section translation -->
     <string name="module_last_update">Letzte Aktualisierung:</string>
     <string name="module_repo">Repo:</string>
     <string name="module_by">von</string>
-
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="showcase_mode_pref">Sperrmodus</string>
@@ -47,19 +45,15 @@
     <string name="remote_install_title">Remote-Installation</string>
     <string name="file_picker_wierd">Ihr Dateimanager hat eine nicht standardmäßige Antwort zurückgegeben.</string>
     <string name="use_magisk_install_command_pref">Magisk-Modul Installationsbefehl verwenden</string>
-    <string name="use_magisk_install_command_desc">
-        Während des Tests verursachte diese Option Probleme mit dem Fehlerdiagnosetool für die Modulinstallation,
-        daher habe ich sie hinter dem Entwicklermodus versteckt. Aktivieren Sie diese auf eigene Gefahr!
-    </string>
+    <string name="use_magisk_install_command_desc">Während des Tests verursachte diese Option Probleme mit dem Fehlerdiagnosetool für die Modulinstallation, daher habe ich sie hinter dem Entwicklermodus versteckt.
+\nAktivieren Sie diese auf eigene Gefahr!</string>
     <string name="dev_mode_enabled">Entwicklermodus aktiviert</string>
     <string name="force_english_pref">Englische Sprache erzwingen</string>
     <string name="disable_low_quality_module_filter_pref">Modulfilter niedriger Qualität deaktivieren</string>
-    <string name="disable_low_quality_module_filter_desc">
-        Einige Module deklarieren ihre Metadaten nicht richtig, was zu visuellen Störungen führt,
-        und/oder auf eine schlechte Modulqualität hinweisen, deaktivieren auf eigene Gefahr!
-    </string>
+    <string name="disable_low_quality_module_filter_desc">Einige Module deklarieren ihre Metadaten nicht richtig, was zu visuellen Störungen führt, und/oder auf eine schlechte Modulqualität hinweisen.
+\nDeaktivieren auf eigene Gefahr!</string>
     <string name="no_web_view">System WebView konnte nicht geöffnet werden</string>
-    <string name="no_desc_found">Keine Beschreibung gefunden</string>
+    <string name="no_desc_found">Keine Beschreibung gefunden.</string>
     <string name="download_module">Module herunterladen</string>
     <string name="install_module">Module instalieren</string>
     <string name="update_module">Module aktualisieren</string>
@@ -85,7 +79,8 @@
     <string name="theme_mode_pref">Theme Modus</string>
     <string name="dns_over_https_pref">DNS über HTTPS</string>
     <string name="dns_over_https_desc">Kann in einigen Fällen Verbindungsprobleme beheben</string>
-    <string name="disable_extensions_desc">Deaktivieren Sie die Mmm-Erweiterungen von Fox, um zu verhindern, dass Module Terminalerweiterungen verwenden. Nützlich, wenn ein Modul die Mmm-Erweiterungen von Fox missbraucht</string>
+    <string name="disable_extensions_desc">Deaktivieren Sie die FoxMmm-Erweiterungen, um zu verhindern, dass Module Terminalerweiterungen verwenden.
+\nNützlich, wenn ein Modul die FoxMmm-Erweiterungen missbraucht.</string>
     <string name="wrap_text_pref">Textumbruch</string>
     <string name="wrap_text_desc">Zeigen Sie Text in mehreren Zeilen an, anstatt den gesamten Text in derselben Zeile zu platzieren, wenn Sie ein Modul installieren.</string>
     <string name="disable_chips_in_description">Chips in Beschreibung deaktivieren</string>
@@ -102,6 +97,59 @@
     <string name="description">Beschreibung</string>
     <string name="uninstall">Deinstallieren</string>
     <string name="config">Konfig</string>
-    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
-    <string name="api_key">Androidacy API Key</string>
+    <string name="crash_reporting_desc">Falls du dies deaktivierst, wird der Entwickler keine automatisierten Bug-Reports erhalten, was Problemlösung eventuell komplizierter macht</string>
+    <string name="api_key">Androidacy API-Schlüssel</string>
+    <string name="fail_magisk_missing">Magisk ist auf diesem Gerät nicht installiert</string>
+    <string name="favourite">Favorit</string>
+    <string name="report_bugs">Fehler melden</string>
+    <string name="language">Sprache</string>
+    <string name="sniffed_modules">Geschnüffelte Module</string>
+    <string name="sniffing_modules">Schnüffle Module</string>
+    <string name="module_stars">Sterne:</string>
+    <string name="module_can_change_boot_desc">Dieses Modul könnte das Boot-Image verändern</string>
+    <string name="module_min_magisk_chip">Min. Magisk %s</string>
+    <string name="module_min_sdk_chip">Min. Android</string>
+    <string name="module_max_sdk_chip">Max. Android</string>
+    <string name="pref_category_info">Info</string>
+    <string name="pref_category_repos">Repos</string>
+    <string name="theme_pref">Thema</string>
+    <string name="module_id_prefix">Modul-ID:</string>
+    <string name="low_quality_module">Modul mit niedriger Qualität</string>
+    <string name="dev_mode_disabled">Entwicklermodus aus</string>
+    <string name="disable_extensions_pref">Erweiterungen deaktivieren</string>
+    <string name="enable_blur_pref">Blur</string>
+    <string name="androidacy_repo_info">Dieses Repository könnte Anzeigen anzeigen.</string>
+    <string name="androidacy_test_mode_pref">Androidacy Testmodus</string>
+    <string name="androidacy_test_mode_desc">Androidacy Beta aktivieren (wird App neu starten)</string>
+    <string name="notification_update_title">%i Updates gefunden</string>
+    <string name="notification_update_title_easter_egg">%i Updates geschnüffelt</string>
+    <string name="notification_update_subtitle">Tippen, um die App zu öffnen</string>
+    <string name="notification_update_pref">Aktualisierungsbenachrichtigung</string>
+    <string name="notification_update_desc">Könnte Batterie-Nutzung erhöhen</string>
+    <string name="notification_update_debug_pref">Test-Benachrichtigung</string>
+    <string name="language_support_outdated">Einige Übersetzungen für die aktuelle Sprache sind nicht aktuell, bitte überlege, auf GitHub beizutragen</string>
+    <string name="language_translated_by">Übersetzt von nift4</string>
+    <string name="crash_reporting">Automatisch Entwickler über Bugs informieren</string>
+    <string name="api_key_not_set">Androidacy API-Schlüssel ist leer</string>
+    <string name="api_key_set">Aktueller Androidacy API-Schlüssel</string>
+    <string name="api_key_invalid">Konnte API-Schlüssel nicht überprüfen. Bitte auf Fehler überprüfen.</string>
+    <string name="api_key_valid">API-Schlüssel ist valide.</string>
+    <string name="checking_api_key">Validiere API-Schlüssel…</string>
+    <string name="please_wait">Bitte warten</string>
+    <string name="api_key_removed">API-Schlüssel erfolgreich zurückgesetzt</string>
+    <string name="save_api_key">Validieren</string>
+    <string name="warning">Warnung!</string>
+    <string name="crash">App zum Testen Abstürzen lassen</string>
+    <string name="repackaged_as">Paketiert als:</string>
+    <string name="wrapped_from">Eingepackt von:</string>
+    <string name="crash_reporting_restart_title">App neustarten, um Änderungen anzuwenden\?</string>
+    <string name="crash_reporting_restart_message">Die App muss neu gestartet werden um die Änderungen anzuwenden</string>
+    <string name="restart">Neustart</string>
+    <string name="androidacy_test_mode_disable_warning">App wird neu gestartet um Betamodus zu deaktivieren</string>
+    <string name="fail_root_denied">Root wurde via Magisk-App verweigert</string>
+    <string name="module_downloads">Downloads:</string>
+    <string name="module_needs_ramdisk_desc">Dieses Modul braucht eine installierte Boot-Ramdisk</string>
+    <string name="api_key_summary">Eigenen API-Schlüssel für Androidacy verwenden. Nützlich für Androidacy-Kunden, um Werbung zu entfernen.</string>
+    <string name="validating_api_key">Validiere API-Schlüssel…</string>
+    <string name="androidacy_test_mode_warning">Androidacy Betamodus wird aktiviert. Dies könnte Fehler verursachen. Bitte keine Fehlerberichte einreichen, wenn aktiviert. Die App wird neu gestartet.</string>
 </resources>

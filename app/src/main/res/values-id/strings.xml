@@ -2,23 +2,23 @@
 <resources>
     <string name="app_name">Fox\'s Magisk Module Manager</string>
     <string name="app_name_short">Fox\'s Mmm</string>
-    <string name="fail_root_magisk">Tidak dapat mengakses root atau Magisk</string>
+    <string name="fail_root_magisk">Tidak dapat mengakses Root atau Magisk</string>
     <string name="loading">Memuat…</string>
     <string name="updatable">Dapat diperbarui</string>
     <string name="installed">Terpasang</string>
     <string name="online_repo">Repo Online</string>
     <string name="showcase_mode">Aplikasi berada dalam mode lockdown</string>
-    <string name="failed_download">Tidak dapat mengunduh file.</string>
-    <string name="slow_modules">Modul membutuhkan waktu yang terlalu lama untuk melakukan boot, pertimbangkanglah untuk mematikan beberapa modul</string>
+    <string name="failed_download">Gagal mengunduh berkas</string>
+    <string name="slow_modules">Modul membutuhkan waktu yang terlalu lama untuk melakukan boot, pertimbangkanlah untuk mematikan beberapa modul</string>
     <string name="fail_internet">Tidak dapat terhubung dengan internet</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="app_update_available">Tersedia pembaruan aplikasi</string>
     <string name="app_update">Perbarui</string>
-    <string name="no_desc_found">Tidak dapat menemukan deskripsi.</string>
+    <string name="no_desc_found">Deskripsi tidak ditemukan.</string>
     <string name="download_module">Unduh modul</string>
     <string name="install_module">Instal modul</string>
     <string name="update_module">Perbarui modul</string>
-    <string name="changelog">Changelog</string>
+    <string name="changelog">Log Perubahan</string>
     <string name="website">Situs</string>
     <string name="support">Dukungan</string>
     <string name="donate">Donasi</string>
@@ -85,15 +85,10 @@
         ekstensi terminal, berguna jika sebuah modul menyalahgunakan ekstensi Fox\'s Mmm.
     </string>
     <string name="wrap_text_pref">Wrap teks</string>
-    <string name="wrap_text_desc">
-        Wrap teks ke sebuah garis baru daripada menaruh
-        semua teks pada garis yang sama pada saat menginstal sebuah modul
-    </string>
+    <string name="wrap_text_desc">Wrap teks ke sebuah garis baru daripada menaruh semua teks pada garis yang sama pada saat menginstal sebuah modul.</string>
     <string name="enable_blur_pref">Aktifkan blur</string>
     <string name="repo_enabled">Repo diaktifkan</string>
     <string name="repo_disabled">Repo dinonaktifkan</string>
-    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
-    <string name="api_key">Androidacy API Key</string>
     <string name="fail_root_denied">Akses Root telah ditolak oleh aplikasi Magisk</string>
     <string name="update">Perbarui</string>
     <string name="config">Pengaturan</string>
@@ -103,7 +98,7 @@
     <string name="low_quality_module">Modul kualitas rendah</string>
     <string name="add_repo">Tambahkan Repo</string>
     <string name="fail_magisk_missing">Magisk tidak terinstal pada perangkat anda</string>
-    <string name="no_web_view">Tidak dapat membuka sistem WebView</string>
+    <string name="no_web_view">Tidak dapat membuka WebView sistem</string>
     <string name="install">Pasang</string>
     <string name="description">Deskripsi</string>
     <string name="uninstall">Hapus Instalasi</string>
@@ -134,4 +129,31 @@
     <string name="notification_update_subtitle">Klik untuk membuka aplikasi</string>
     <string name="androidacy_repo_info">Repositori ini mungkin akan menampilkan iklan yang tidak mengganggu untuk membantu kebutuhan biaya server dan pengembangan.</string>
     <string name="androidacy_test_mode_desc">Gunakan endpoint staging daripada endpoint release dari Androidacy. (Akan memuat ulang aplikasi)</string>
+    <string name="sniffed_modules">Berhasil mengendus modul</string>
+    <string name="sniffing_modules">Sedang mengendus modul</string>
+    <string name="notification_update_pref">Pengecekan pembaruan modul di belakang layar</string>
+    <string name="notification_update_desc">Mungkin akan meningkatkan konsumsi baterai</string>
+    <string name="notification_update_debug_pref">Tes Notifikasi</string>
+    <string name="language_support_outdated">Beberapa terjemahan pada bahasa ini tidak terbarui, kami mohon pertimbangan anda untuk memberikan kontribusi terjemahan pada aplikasi kami di GitHub</string>
+    <string name="language_translated_by">Diterjemahkan oleh Muhammad Rizqi Imani (rizqiimani)</string>
+    <string name="crash_reporting">Otomatis melaporkan gangguan dan performa ke pengembang</string>
+    <string name="api_key_summary">Gunakan API key kustom untuk Androidacy. Berguna untuk pengguna yang sudah berlangganan premium, untuk menghapus iklan dan lainnya.</string>
+    <string name="api_key_not_set">API key Androidacy kosong</string>
+    <string name="api_key_set">API key Androidacy yang digunakan</string>
+    <string name="api_key_invalid">Tidak dapat mengesahkan API key. Mohon periksa kembali lalu coba lagi.</string>
+    <string name="api_key_valid">API Key sah.</string>
+    <string name="checking_api_key">Memeriksa API Key...</string>
+    <string name="validating_api_key">Memeriksa API key...</string>
+    <string name="please_wait">Mohon tunggu</string>
+    <string name="api_key_removed">API Key berhasil diatur ulang</string>
+    <string name="save_api_key">Simpan API Key</string>
+    <string name="warning">Peringatan!</string>
+    <string name="androidacy_test_mode_warning">Anda mengatur aplikasi untuk menggunakan endpoint non-production untuk Androidacy. Ini dapat menyebabkan ketidakstabilan pada aplikasi dan dapat menyebabkan gagal memuat repo online. JANGAN melaporkan gangguan jika anda menggunakan fitur ini. Aplikasi akan dimuat ulang untuk memuat repo baru.</string>
+    <string name="crash">Paksa error aplikasi untuk pengujian</string>
+    <string name="repackaged_as">Dikemas ulang sebagai:</string>
+    <string name="wrapped_from">Dikemas dari:</string>
+    <string name="crash_reporting_restart_title">Muat ulang aplikasi untuk menerapkan perubahan\?</string>
+    <string name="crash_reporting_restart_message">Aplikasi perlu dimuat ulang untuk menerapkan pengaturan ini</string>
+    <string name="restart">Muat Ulang</string>
+    <string name="androidacy_test_mode_disable_warning">Aplikasi akan dimuat ulang untuk mematikan endpoint staging</string>
 </resources>

@@ -1,15 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Fox\'s Magisk Module Manager</string>
     <string name="app_name_short">Fox\'s Mmm</string>
-    <string name="fail_root_magisk">Não foi possível obter acesso root e/ou ao Magisk.</string>
+    <string name="fail_root_magisk">Não foi possível obter acesso root e/ou ao Magisk</string>
     <string name="loading">Carregando…</string>
     <string name="updatable">Atualização disponível</string>
     <string name="installed">Instalado</string>
     <string name="online_repo">Repositório online</string>
-    <string name="showcase_mode">O aplicativo está no modo lockdown.</string>
-    <string name="failed_download">Não foi possível baixar o arquivo.</string>
-    <string name="slow_modules">Os módulos demoraram muito para inicializar, considere remover alguns.</string>
-    <string name="fail_internet">Não foi possível conectar à internet.</string>
+    <string name="showcase_mode">O aplicativo está no modo lockdown</string>
+    <string name="failed_download">Não foi possível baixar o arquivo</string>
+    <string name="slow_modules">Os módulos demoraram muito para inicializar, considere remover alguns</string>
+    <string name="fail_internet">Não foi possível conectar à internet</string>
     <string name="no_web_view">Não foi possivel abrir Webview do sistema</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="app_update_available">Atualização disponível</string>
@@ -40,7 +41,6 @@
     <string name="no" translatable="false">@android:string/no</string>
     <string name="ok" translatable="false">@android:string/ok</string>
     <string name="cancel" translatable="false">@android:string/cancel</string>
-
     <!-- Module section translation -->
     <string name="module_last_update">Atualizado em:</string>
     <string name="module_repo">Repositório:</string>
@@ -54,12 +54,11 @@
     <string name="module_min_magisk_chip">Min. Magisk "%s"</string>
     <string name="module_min_sdk_chip">Min. Android</string>
     <string name="module_max_sdk_chip">Max. Android</string>
-
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">Gerenciar repositórios</string>
     <string name="showcase_mode_pref">Modo lockdown</string>
-    <string name="showcase_mode_desc">O modo lockdown previne que o app faça qualquer alteração nos módulos.</string>
+    <string name="showcase_mode_desc">O modo lockdown previne que o app faça qualquer alteração nos módulos</string>
     <string name="prevent_reboot_pref">Previne reincialização</string>
     <string name="prevent_reboot_desc">Previne reinicializações inesperadas</string>
     <string name="pref_category_settings">Configurações</string>
@@ -68,7 +67,7 @@
     <string name="show_licenses">Mostrar licenças</string>
     <string name="licenses">Licenças</string>
     <string name="show_incompatible_pref">Mostrar módulos incompatíveis</string>
-    <string name="show_incompatible_desc">Baseado na metadata do módulo, mostra aqueles que são incompatíveis com seu dispositivo.</string>
+    <string name="show_incompatible_desc">Baseado na metadata do módulo, mostra aqueles que são incompatíveis com seu dispositivo</string>
     <string name="magisk_outdated">Magisk desatualizado!</string>
     <string name="pref_category_repos">Repositórios</string>
     <string name="pref_category_security">Segurança</string>
@@ -84,7 +83,7 @@
     <string name="theme_mode_pref">Modo do Tema</string>
     <string name="module_id_prefix">ID do módulo: </string>
     <string name="install_from_storage">Instalar módulo armazenado localmente</string>
-    <string name="invalid_format">O módulo selecionado está em um formato inválido.</string>
+    <string name="invalid_format">O módulo selecionado está em um formato inválido</string>
     <string name="low_quality_module">Modulo de baixa qualidade</string>
     <string name="local_install_title">Instalação local</string>
     <string name="source_code">Código fonte</string>
@@ -106,7 +105,6 @@
         Alguns módulos não declaram a metadata corretamente, causando glitchs visuais.
         Isso indica que o módulo é de baixa qualidade, desabilite por sua conta e risco!
     </string>
-    <string name="dns_over_https_pref">DNS over HTTPS</string>
     <string name="dns_over_https_desc">
         Em alguns casos pode consertar erros de conexão.
         (Não se aplica ao WebView)
@@ -117,10 +115,7 @@
         extensões do terminal. Útil se algum módulo fazer algum uso indevido de extensões do Fox\'s Mmm.
     </string>
     <string name="wrap_text_pref">Quebrar texto</string>
-    <string name="wrap_text_desc">
-        Pula uma linha ao invés de manter
-        todo o texto na mesma linha durante a instalação de um módulo
-    </string>
+    <string name="wrap_text_desc">Pula uma linha ao invés de manter todo o texto na mesma linha durante a instalação de um módulo.</string>
     <string name="enable_blur_pref">Habilitar blur</string>
     <string name="repo_enabled">Repositório habilitado</string>
     <string name="repo_disabled">Repositório desabilitado</string>
@@ -132,15 +127,12 @@
     <string name="require_internet">Essa operação requer uma conexão com a internet</string>
     <string name="androidacy_test_mode_pref">Androidacy modo teste</string>
     <string name="androidacy_test_mode_desc">Use a conexão de teste do Androidacy inves da normal. (Requer reinicialização do app)</string>
-
     <!-- Background Notification translation -->
     <string name="notification_update_title">Encontrado %i atualizações de modulo</string>
-    <string name="notification_update_title_easter_egg">Sniffed %i module updates</string>
     <string name="notification_update_subtitle">Clique para abrir o app</string>
     <string name="notification_update_pref">Verificação de atualizações em segundo plano</string>
     <string name="notification_update_desc">Pode aumentar o consumo de bateria</string>
     <string name="notification_update_debug_pref">Notificação de teste</string>
-
     <!-- Set to true in translation file if your language is right to left -->
     <bool name="lang_support_rtl">false</bool>
     <!-- Always copy language_support_level when translating -->
@@ -148,6 +140,4 @@
     <string name="language_support_outdated">Algumas traduções para sua lingua atual não esta em dia, por favor considere contribuir para as traduções do app no Github</string>
     <!-- Replace with your own username when translating -->
     <string name="language_translated_by">Traduzido por mi007d e DanGLES3</string>
-    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
-    <string name="api_key">Androidacy API Key</string>
 </resources>

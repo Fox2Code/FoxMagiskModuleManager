@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Fox\'s Magisk Module Manager</string>
     <string name="app_name_short">Fox\'s Mmm</string>
@@ -36,7 +37,6 @@
     <string name="no" translatable="false">@android:string/no</string>
     <string name="ok" translatable="false">@android:string/ok</string>
     <string name="cancel" translatable="false">@android:string/cancel</string>
-
     <!-- Module section translation -->
     <string name="module_last_update">Τελευταία ενημέρωση:</string>
     <string name="module_repo">Αποθετήριο:</string>
@@ -50,7 +50,6 @@
     <string name="module_min_magisk_chip">Ελάχ. έκδοση Magisk "%s"</string>
     <string name="module_min_sdk_chip">Ελάχ. έκδοση Android</string>
     <string name="module_max_sdk_chip">Μέγ. έκδοση Android</string>
-
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">Διαχείριση αποθετηρίων</string>
@@ -127,7 +126,6 @@
     <string name="backup_module_list">Εφεδρικά modules</string>
     <string name="restore_module_list">Επαναφορά module</string>
     <string name="require_internet">Αυτή η λειτουργία απαιτεί σύνδεση στο Διαδίκτυο</string>
-
     <!-- Background Notification translation -->
     <string name="notification_update_title">Βρέθηκαν %i ενημερώσεις για τα εγκατεστημενα modules</string>
     <string name="notification_update_title_easter_egg">Μύρισα %i ενημερώσεις για τα εγκατεστημενα modules</string>
@@ -135,14 +133,10 @@
     <string name="notification_update_pref">Έλεγχος ενημέρωσης για modules στο παρασκήνιο</string>
     <string name="notification_update_desc">Μπορεί να αυξήσει τη χρήση της μπαταρίας</string>
     <string name="notification_update_debug_pref">Ειδοποίηση δοκιμής</string>
-
     <!-- Set to true in translation file if your language is right to left -->
     <bool name="lang_support_rtl">false</bool>
-
     <integer name="language_support_level">1</integer>
     <string name="language_support_outdated">Ορισμένες μεταφράσεις για την τρέχουσα γλώσσα δεν είναι ενημερωμένες, παρακαλούμε να συνεισφέρετε στις μεταφράσεις εφαρμογών στο GitHub</string>
     <!-- Replace with your own username when translating -->
     <string name="language_translated_by">Μεταφράστηκε απο Tha_14</string>
-    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
-    <string name="api_key">Androidacy API Key</string>
 </resources>

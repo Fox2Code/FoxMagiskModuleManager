@@ -1,13 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Fox Magisk Module Manager</string>
     <string name="app_name_short">Fox Mmm</string>
     <string name="fail_root_magisk">Impossibile ottenere l\'accesso al Root o a Magisk</string>
-    <string name="loading">Caricamento</string>
+    <string name="loading">Caricamento…</string>
     <string name="updatable">Aggiornamento disponibile</string>
     <string name="installed">Installato</string>
     <string name="online_repo">Repository Online</string>
     <string name="showcase_mode">L\'applicazione è in modalità protetta </string>
-    <string name="failed_download">Scaricamento del file non riuscito.</string>
+    <string name="failed_download">Scaricamento del file non riuscito</string>
     <string name="slow_modules">L\'avvio dei moduli è lento, prova a disabilitarne alcuni</string>
     <string name="fail_internet">Impossibile connettersi a internet</string>
     <string name="no_web_view">Impossibile aprire il WebView di sistema</string>
@@ -40,7 +41,6 @@
     <string name="no" translatable="false">@android:string/no</string>
     <string name="ok" translatable="false">@android:string/ok</string>
     <string name="cancel" translatable="false">@android:string/cancel</string>
-
     <!-- Traduzione della sezione del modulo -->
     <string name="module_last_update">Ultimo aggiornamento:</string>
     <string name="module_repo">Repo:</string>
@@ -54,7 +54,6 @@
     <string name="module_min_magisk_chip">Min. Magisk "%s"</string>
     <string name="module_min_sdk_chip">Min. Android</string>
     <string name="module_max_sdk_chip">Max. Android</string>
-
     <!-- Preferenze Titoli -->
     <!-- Nota: la modalità di blocco era chiamata modalità vetrina -->
     <string name="manage_repos_pref">Gestisci repository</string>
@@ -130,7 +129,6 @@
     <string name="backup_module_list">Salva moduli</string>
     <string name="restore_module_list">Ripristina moduli</string>
     <string name="require_internet">Questa operazione richiede una connessione ad internet</string>
-    
     <!-- Traduzione della notifica in background -->
     <string name="notification_update_title">Trovato %i aggiornamenti del modulo</string>
     <string name="notification_update_title_easter_egg">Aggiornamenti del modulo %i rilevati</string>
@@ -138,16 +136,11 @@
     <string name="notification_update_pref">Controllo aggiornamento moduli in background</string>
     <string name="notification_update_desc">Può aumentare il consumo della batteria</string>
     <string name="notification_update_debug_pref">Notifica di prova</string>
-    
     <!-- Imposta su true nel file di traduzione se la tua lingua è da destra a sinistra -->
     <bool name="lang_support_rtl">false</bool>
-	
     <!-- Copia sempre language_support_level durante la traduzione -->
     <integer name="language_support_level">1</integer>
     <string name="language_support_outdated">Alcune traduzioni per la lingua corrente non sono aggiornate, ti preghiamo di considerare di contribuire alle traduzioni dell\'app su GitHub</string>
-    
-	<!-- Sostituisci con il tuo nome utente durante la traduzione -->
+    <!-- Sostituisci con il tuo nome utente durante la traduzione -->
     <string name="language_translated_by">Traduzione di tugaia56</string>
-    <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
-    <string name="api_key">Androidacy API Key</string>
 </resources>
