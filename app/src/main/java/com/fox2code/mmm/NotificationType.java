@@ -93,20 +93,11 @@ public enum NotificationType implements NotificationTypeCst {
         IntentHelper.openFileTo(compatActivity, module, (d, u, s) -> {
             if (s == IntentHelper.RESPONSE_FILE) {
                 try {
-                    boolean needPatch;
-                    try (ZipFile zipFile = new ZipFile(d)) {
-                        needPatch = zipFile.getEntry("module.prop") == null &&
-                                zipFile.getEntry("anykernel.sh") == null;
-                    }
-                    if (needPatch) {
+                    if (needPatch(d)) {
                         Files.patchModuleSimple(Files.read(d),
                                 new FileOutputStream(d));
                     }
-                    try (ZipFile zipFile = new ZipFile(d)) {
-                        needPatch = zipFile.getEntry("module.prop") == null &&
-                                zipFile.getEntry("anykernel.sh") == null;
-                    }
-                    if (needPatch) {
+                    if (needPatch(d)) {
                         if (d.exists() && !d.delete())
                             Log.w(TAG, "Failed to delete non module zip");
                         Toast.makeText(compatActivity,
@@ -140,6 +131,14 @@ public enum NotificationType implements NotificationTypeCst {
                             InstallerInitializer.peekMagiskPath() == null);
         }
     };
+
+    private static boolean needPatch(File target) throws IOException {
+        try (ZipFile zipFile = new ZipFile(target)) {
+            return zipFile.getEntry("module.prop") == null &&
+                    zipFile.getEntry("anykernel.sh") == null &&
+                    zipFile.getEntry("META-INF/com/google/android/magisk/module.prop") == null;
+        }
+    }
 
     @StringRes
     public final int textId;

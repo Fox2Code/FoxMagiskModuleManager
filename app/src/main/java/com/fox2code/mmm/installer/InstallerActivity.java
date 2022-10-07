@@ -189,6 +189,7 @@ public class InstallerActivity extends FoxActivity {
                 boolean noPatch = false;
                 boolean isModule = false;
                 boolean isAnyKernel3 = false;
+                boolean isInstallZipModule = false;
                 errMessage = "File is not a valid zip file";
                 try (ZipInputStream zipInputStream = new ZipInputStream(
                         new ByteArrayInputStream(rawModule))) {
@@ -203,14 +204,21 @@ public class InstallerActivity extends FoxActivity {
                             noPatch = true;
                             isModule = true;
                             break;
+                        } if (entryName.equals("META-INF/com/google/android/magisk/module.prop")) {
+                            noPatch = true;
+                            isInstallZipModule = true;
+                            break;
                         } else if (entryName.endsWith("/tools/ak3-core.sh")) {
                             isAnyKernel3 = true;
+                        } else if (entryName.endsWith(
+                                "/META-INF/com/google/android/magisk/module.prop")) {
+                            isInstallZipModule = true;
                         } else if (entryName.endsWith("/module.prop")) {
                             isModule = true;
                         }
                     }
                 }
-                if (!isModule && !isAnyKernel3) {
+                if (!isModule && !isAnyKernel3 && !isInstallZipModule) {
                     if (androidacyBlame) {
                         this.installerTerminal.addLine(
                                 "! Note: The following error is probably an Androidacy backend error");
@@ -313,6 +321,7 @@ public class InstallerActivity extends FoxActivity {
             String moduleId = null;
             boolean anyKernel3 = false;
             boolean magiskModule = false;
+            boolean installZipMagiskModule = false;
             boolean mmtReborn = false;
             String MAGISK_PATH = InstallerInitializer.peekMagiskPath();
             if (MAGISK_PATH == null) {
@@ -338,10 +347,11 @@ public class InstallerActivity extends FoxActivity {
                         bufferedReader.close();
                     }
                 }
-                if (zipFile.getEntry( // Check if module hard require 32bit support
+                if ((zipFile.getEntry( // Check if module hard require 32bit support
                         "common/addon/Volume-Key-Selector/tools/arm64/keycheck") == null &&
-                        zipFile.getEntry(
-                                "common/addon/Volume-Key-Selector/install.sh") != null) {
+                        zipFile.getEntry("common/addon/Volume-Key-Selector/install.sh") != null) ||
+                        (zipFile.getEntry("META-INF/zbin/keycheck_arm64") == null &&
+                                zipFile.getEntry("META-INF/zbin/keycheck_arm") != null)) {
                     needs32bit = true;
                 }
                 ZipEntry moduleProp = zipFile.getEntry("module.prop");
@@ -351,8 +361,11 @@ public class InstallerActivity extends FoxActivity {
                         zipFile.getEntry("setup.sh") != null && magiskModule) {
                     mmtReborn = true; // MMT-Reborn require a separate runtime
                 }
-                moduleId = PropUtils.readModuleId(zipFile
-                        .getInputStream(zipFile.getEntry("module.prop")));
+                if (!magiskModule && (moduleProp = zipFile.getEntry(
+                        "META-INF/com/google/android/magisk/module.prop")) != null) {
+                    installZipMagiskModule = true;
+                }
+                moduleId = PropUtils.readModuleId(zipFile.getInputStream(moduleProp));
             } catch (IOException ignored) {
             }
             int compatFlags = AppUpdateManager.getFlagsForModule(moduleId);
@@ -404,6 +417,17 @@ public class InstallerActivity extends FoxActivity {
                 // "unshare -m" is needed to force mount namespace isolation.
                 // This allow AnyKernel to mess-up with mounts point without crashing the system!
                 installCommand = "unshare -m " + ASH + " \"" +
+                        installExecutable.getAbsolutePath() + "\"" +
+                        " 3 1 \"" + file.getAbsolutePath() + "\"";
+            } else if (installZipMagiskModule ||
+                    (compatFlags & AppUpdateManager.FLAG_COMPAT_ZIP_WRAPPER) != 0) {
+                installExecutable = this.extractInstallScript("module_installer_wrapper.sh");
+                if (installExecutable == null) {
+                    this.setInstallStateFinished(false,
+                            "! Failed to extract Magisk module wrapper script", "");
+                    return;
+                }
+                installCommand = ASH + " \"" +
                         installExecutable.getAbsolutePath() + "\"" +
                         " 3 1 \"" + file.getAbsolutePath() + "\"";
             } else if (InstallerInitializer.peekMagiskVersion() >=

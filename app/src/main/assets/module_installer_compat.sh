@@ -42,6 +42,8 @@ grep_get_prop() {
 }
 fi
 
+# Prevent setenforce because it can causes issues on some devices
+setenforce() { true; }
 # prevent old modules from disabling hidden_apis, please use LSPosed library instead.
 # See: https://github.com/LSPosed/AndroidHiddenApiBypass
 settings() {

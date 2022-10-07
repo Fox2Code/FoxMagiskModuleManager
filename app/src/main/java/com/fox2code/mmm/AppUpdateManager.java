@@ -29,6 +29,7 @@ public class AppUpdateManager {
     public static final int FLAG_COMPAT_FORCE_ANSI  = 0x0040;
     public static final int FLAG_COMPAT_FORCE_HIDE  = 0x0080;
     public static final int FLAG_COMPAT_MMT_REBORN  = 0x0100;
+    public static final int FLAG_COMPAT_ZIP_WRAPPER = 0x0200;
     private static final String TAG = "AppUpdateManager";
     private static final AppUpdateManager INSTANCE = new AppUpdateManager();
     private static final String RELEASES_API_URL =
@@ -216,6 +217,9 @@ public class AppUpdateManager {
                         break;
                     case "mmtReborn":
                         value |= FLAG_COMPAT_MMT_REBORN;
+                        break;
+                    case "wrapper":
+                        value |= FLAG_COMPAT_ZIP_WRAPPER;
                         break;
                 }
             }
