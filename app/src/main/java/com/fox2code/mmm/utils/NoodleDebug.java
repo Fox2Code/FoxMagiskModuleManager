@@ -19,6 +19,13 @@ public class NoodleDebug {
     @SuppressLint("StaticFieldLeak") // <- Null initialized
     private static final NoodleDebug NULL = new NoodleDebug() {
         @Override
+        public NoodleDebug bind() {
+            getNoodleDebug().unbind();
+            THREAD_NOODLE.remove();
+            return this;
+        }
+
+        @Override
         public void setEnabled(boolean enabled) {}
 
         @Override
@@ -154,7 +161,8 @@ public class NoodleDebug {
     public static NoodleDebug getNoodleDebug() {
         NoodleDebug noodleDebug = THREAD_NOODLE.get();
         if (noodleDebug == null) return NULL;
-        if (noodleDebug.thread.get() != Thread.currentThread()) {
+        if (noodleDebug.thread.get() != Thread.currentThread() ||
+                noodleDebug.activity.isDestroyed()) {
             THREAD_NOODLE.remove();
             return NULL;
         }
