@@ -156,7 +156,7 @@ dependencies {
     implementation "com.mikepenz:aboutlibraries:${latestAboutLibsRelease}"
     implementation "dev.rikka.rikkax.layoutinflater:layoutinflater:1.2.0"
     implementation "dev.rikka.rikkax.insets:insets:1.3.0"
-    implementation 'com.github.Dimezis:BlurView:version-1.6.6'
+    implementation 'com.github.Dimezis:BlurView:version-2.0.2'
     implementation 'com.github.KieronQuinn:MonetCompat:0.4.1'
     implementation 'com.github.Fox2Code:FoxCompat:0.1.5'
 

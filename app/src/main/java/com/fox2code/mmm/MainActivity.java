@@ -34,6 +34,7 @@ import com.fox2code.mmm.module.ModuleViewAdapter;
 import com.fox2code.mmm.module.ModuleViewListBuilder;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.settings.SettingsActivity;
+import com.fox2code.mmm.utils.BlurUtils;
 import com.fox2code.mmm.utils.ExternalHelper;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
@@ -42,6 +43,7 @@ import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.topjohnwu.superuser.Shell;
 
 import eightbitlab.com.blurview.BlurView;
+import eightbitlab.com.blurview.RenderEffectBlur;
 import eightbitlab.com.blurview.RenderScriptBlur;
 
 public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRefreshListener,
@@ -121,10 +123,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         this.moduleList.setItemViewCacheSize(4); // Default is 2
         this.swipeRefreshLayout.setOnRefreshListener(this);
         this.actionBarBlur.setBackground(this.actionBarBackground);
-        this.actionBarBlur.setupWith(findViewById(R.id.blur_frame))
-                .setFrameClearDrawable(this.getWindow().getDecorView().getBackground())
-                .setBlurAlgorithm(new RenderScriptBlur(this)).setBlurRadius(4F)
-                .setBlurAutoUpdate(true).setHasFixedTransformationMatrix(true);
+        BlurUtils.setupBlur(this.actionBarBlur, this, R.id.blur_frame);
         this.updateBlurState();
         this.moduleList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

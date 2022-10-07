@@ -23,6 +23,7 @@ import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.XHooks;
+import com.fox2code.mmm.utils.BlurUtils;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.google.android.material.chip.Chip;
@@ -131,7 +132,8 @@ public class MarkdownActivity extends FoxActivity {
         this.header = findViewById(R.id.markdownHeader);
         this.footer = findViewById(R.id.markdownFooter);
         this.actionBarBlur.setBackground(this.actionBarBackground);
-        this.setupBlurView(this.actionBarBlur, markdownBackground);
+        BlurUtils.setupBlur(this.actionBarBlur, this, markdownBackground);
+        this.updateBlurState();
         UiThreadHandler.handler.post(() -> // Fix header/footer height
                 this.updateScreenInsets(this.getResources().getConfiguration()));
 
@@ -170,15 +172,6 @@ public class MarkdownActivity extends FoxActivity {
             }
         }, "Markdown load thread").start();
     }
-
-   private void setupBlurView(BlurView view, ViewGroup setupWith) {
-       view.setupWith(setupWith).setFrameClearDrawable(
-                       this.getWindow().getDecorView().getBackground())
-               .setBlurAlgorithm(new RenderScriptBlur(this))
-               .setBlurRadius(4F).setBlurAutoUpdate(true)
-               .setHasFixedTransformationMatrix(true);
-       this.updateBlurState();
-   }
 
     private void updateBlurState() {
         boolean isLightMode = this.isLightTheme();
