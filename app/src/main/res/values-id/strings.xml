@@ -63,33 +63,27 @@
     <string name="remote_install_title">Instal jarak jauh</string>
     <string name="file_picker_wierd">Pemilih file anda mengembalikan tanggapan yang tidak standar.</string>
     <string name="use_magisk_install_command_pref">Gunakan perintah instal modul magisk</string>
-    <string name="use_magisk_install_command_desc">
-        Waktu diuji ini menyebabkan masalah kepada alat diagnosis kesalahan instal modul,
-        jadi saya menyembunyikan opsi ini dibelakan mode pengembang, aktifkan pada risiko anda sendiri!
-    </string>
+    <string name="use_magisk_install_command_desc">Ketika pengembang menguji fitur ini, muncul masalah pada alat diagnosa instalasi modul, maka fitur ini disembunyikan di dalam mode pengembang.
+\nJika anda menyalakan fitur ini, resiko anda tanggung sendiri!</string>
     <string name="dev_mode_enabled">Mode pengembang aktif</string>
     <string name="force_english_pref">Paksa Bahasa Inggris</string>
     <string name="disable_low_quality_module_filter_pref">Nonaktifkan filter modul qualitas rendah</string>
-    <string name="disable_low_quality_module_filter_desc">
-        Beberapa modul tidak menyatakan metadata mereka dengan benar,menyebabkan glitch visual,
-        dan/atau mengindikasikan modul qualitas rendah, nonaktifkan pada risiko anda sendiri!
-    </string>
+    <string name="disable_low_quality_module_filter_desc">Beberapa modul tidak menyatakan metadata mereka dengan benar,menyebabkan gangguan visual, dan/atau mengindikasikan modul kualitas rendah.
+\nJika anda mematikan fitur ini, resiko anda tanggung sendiri!</string>
     <string name="dns_over_https_pref">DNS melalui HTTPS</string>
     <string name="dns_over_https_desc">
         Mungkin dapat memperbaiki masalah koneksi didalam beberapa kasus.
         (Tidak berlaku untuk WebView)
     </string>
     <string name="disable_extensions_pref">Nonaktifkan ekstensi</string>
-    <string name="disable_extensions_desc">
-        Nonaktifkan ekstensi Fox\'s Mmm, ini mencegah modul dari menggunakan
-        ekstensi terminal, berguna jika sebuah modul menyalahgunakan ekstensi Fox\'s Mmm.
-    </string>
+    <string name="disable_extensions_desc">Nonaktifkan ekstensi Fox\'s Mmm, ini mencegah modul dari menggunakan ekstensi terminal.
+\nBerguna jika sebuah modul menyalahgunakan ekstensi Fox\'s Mmm.</string>
     <string name="wrap_text_pref">Wrap teks</string>
     <string name="wrap_text_desc">Wrap teks ke sebuah garis baru daripada menaruh semua teks pada garis yang sama pada saat menginstal sebuah modul.</string>
     <string name="enable_blur_pref">Aktifkan blur</string>
     <string name="repo_enabled">Repo diaktifkan</string>
     <string name="repo_disabled">Repo dinonaktifkan</string>
-    <string name="fail_root_denied">Akses Root telah ditolak oleh aplikasi Magisk</string>
+    <string name="fail_root_denied">Akses Root ditolak oleh aplikasi Magisk</string>
     <string name="update">Perbarui</string>
     <string name="config">Pengaturan</string>
     <string name="module_needs_ramdisk_desc">Modul ini membutuhkan ramdisk untuk melakukan instalasi</string>
