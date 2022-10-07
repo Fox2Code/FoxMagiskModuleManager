@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.webkit.WebResourceErrorCompat;
 import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewClientCompat;
@@ -34,11 +35,14 @@ import com.fox2code.mmm.R;
 import com.fox2code.mmm.XHooks;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -54,15 +58,19 @@ public final class AndroidacyActivity extends FoxActivity {
         }
     }
 
+    File moduleFile;
     WebView webView;
     TextView webViewNote;
     AndroidacyWebAPI androidacyWebAPI;
+    LinearProgressIndicator progressIndicator;
     boolean backOnResume;
+    boolean downloadMode;
 
     @SuppressWarnings("deprecation")
     @Override
     @SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface", "RestrictedApi"})
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        this.moduleFile = new File(this.getCacheDir(), "module.zip");
         super.onCreate(savedInstanceState);
         Intent intent = this.getIntent();
         Uri uri;
@@ -119,6 +127,8 @@ public final class AndroidacyActivity extends FoxActivity {
                 }
             }
         }
+        this.progressIndicator = this.findViewById(R.id.progress_bar);
+        this.progressIndicator.setMax(100);
         this.webView = this.findViewById(R.id.webView);
         this.webViewNote = this.findViewById(R.id.webViewNote);
         WebSettings webSettings = this.webView.getSettings();
@@ -156,6 +166,7 @@ public final class AndroidacyActivity extends FoxActivity {
                 // Don't open non Androidacy urls inside WebView
                 if (request.isForMainFrame() &&
                         !AndroidacyUtil.isAndroidacyLink(request.getUrl())) {
+                    if (downloadMode || backOnResume) return true;
                     Log.i(TAG, "Exiting WebView " + // hideToken in case isAndroidacyLink fail.
                             AndroidacyUtil.hideToken(request.getUrl().toString()));
                     IntentHelper.openUri(view.getContext(), request.getUrl().toString());
@@ -185,6 +196,8 @@ public final class AndroidacyActivity extends FoxActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 webViewNote.setVisibility(View.GONE);
+                progressIndicator.setVisibility(View.INVISIBLE);
+                progressIndicator.setProgressCompat(0, false);
             }
 
             private void onReceivedError(String url, int errorCode) {
@@ -247,9 +260,22 @@ public final class AndroidacyActivity extends FoxActivity {
                 }
                 return super.onConsoleMessage(consoleMessage);
             }
+
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                if (downloadMode) return;
+                if (newProgress != 100 && // Show progress bar
+                        progressIndicator.getVisibility() != View.VISIBLE)
+                    progressIndicator.setVisibility(View.VISIBLE);
+                progressIndicator.setProgressCompat(newProgress, true);
+                if (newProgress == 100 && // Hide progress bar
+                        progressIndicator.getVisibility() != View.INVISIBLE)
+                    progressIndicator.setVisibility(View.INVISIBLE);
+            }
         });
         this.webView.setDownloadListener((
                 downloadUrl, userAgent, contentDisposition, mimetype, contentLength) -> {
+            if (this.downloadMode || this.isDownloadUrl(downloadUrl)) return;
             if (AndroidacyUtil.isAndroidacyLink(downloadUrl) && !this.backOnResume) {
                 AndroidacyWebAPI androidacyWebAPI = this.androidacyWebAPI;
                 if (androidacyWebAPI != null) {
@@ -259,7 +285,7 @@ public final class AndroidacyActivity extends FoxActivity {
                             return;
                         // Workaround Androidacy bug
                         final String moduleId = moduleIdOfUrl(downloadUrl);
-                        if (moduleId != null) {
+                        if (moduleId != null && !this.isFileUrl(downloadUrl)) {
                             webView.evaluateJavascript("document.querySelector(" +
                                             "\"#download-form input[name=_token]\").value",
                                     result -> new Thread("Androidacy popup workaround thread") {
@@ -354,13 +380,35 @@ public final class AndroidacyActivity extends FoxActivity {
             if (i == -1) i = url.length();
             if (url.startsWith(prefix)) return url.substring(prefix.length(), i);
         }
+        if (this.isFileUrl(url)) {
+            int i = url.indexOf("&module=");
+            if (i != -1) {
+                int j = url.indexOf('&', i + 1);
+                if (j == -1) {
+                    return url.substring(i + 8);
+                } else {
+                    return url.substring(i + 8, j);
+                }
+            }
+        }
         return null;
     }
 
     private boolean isFileUrl(String url) {
+        if (url == null) return false;
         for (String prefix : new String[]{
                 "https://production-api.androidacy.com/magisk/file/",
                 "https://staging-api.androidacy.com/magisk/file/"
+        }) { // Make both staging and non staging act the same
+            if (url.startsWith(prefix)) return true;
+        }
+        return false;
+    }
+
+    private boolean isDownloadUrl(String url) {
+        for (String prefix : new String[]{
+                "https://production-api.androidacy.com/magisk/download/",
+                "https://staging-api.androidacy.com/magisk/download/"
         }) { // Make both staging and non staging act the same
             if (url.startsWith(prefix)) return true;
         }
@@ -373,12 +421,41 @@ public final class AndroidacyActivity extends FoxActivity {
             Log.d(TAG, "megaIntercept(" +
                     AndroidacyUtil.hideToken(pageUrl) + ", " +
                     AndroidacyUtil.hideToken(fileUrl) + ")");
-        }
+        } else return false;
         final AndroidacyWebAPI androidacyWebAPI = this.androidacyWebAPI;
-        final String moduleId = this.moduleIdOfUrl(pageUrl);
-        if (moduleId == null || !this.isFileUrl(fileUrl)) return false;
+        String moduleId = this.moduleIdOfUrl(fileUrl);
+        if (moduleId == null) moduleId = this.moduleIdOfUrl(pageUrl);
+        if (moduleId == null) {
+            Log.d(TAG, "No module id?");
+            return false;
+        }
         androidacyWebAPI.openNativeModuleDialogRaw(fileUrl,
                 moduleId, "", androidacyWebAPI.canInstall());
         return true;
+    }
+
+    Uri downloadFileAsync(String url) throws IOException {
+        this.downloadMode = true;
+        this.runOnUiThread(() -> {
+            progressIndicator.setIndeterminate(false);
+            progressIndicator.setVisibility(View.VISIBLE);
+        });
+        byte[] module;
+        try {
+            module = Http.doHttpGet(url, (downloaded, total, done) ->
+                    progressIndicator.setProgressCompat((downloaded * 100) / total, true));
+            try (FileOutputStream fileOutputStream = new FileOutputStream(this.moduleFile)) {
+                fileOutputStream.write(module);
+            }
+        } finally {
+            module = null;
+            this.runOnUiThread(() ->
+                    progressIndicator.setVisibility(View.INVISIBLE));
+        }
+        this.backOnResume = true;
+        this.downloadMode = false;
+        return FileProvider.getUriForFile(this,
+                this.getPackageName() + ".file-provider",
+                this.moduleFile);
     }
 }

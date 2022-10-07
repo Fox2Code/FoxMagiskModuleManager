@@ -14,10 +14,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.util.Supplier;
 
-import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
-import com.fox2code.mmm.MainApplication;
+import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import java.util.List;
 
@@ -60,6 +60,7 @@ public final class ExternalHelper {
         Bundle param = ActivityOptionsCompat.makeCustomAnimation(context,
                 android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
         Intent intent = new Intent(FOX_MMM_OPEN_EXTERNAL, uri);
+        intent.setFlags(IntentHelper.FLAG_GRANT_URI_PERMISSION);
         intent.putExtra(FOX_MMM_EXTRA_REPO_ID, repoId);
         if (multi) {
             intent = Intent.createChooser(intent, label);
@@ -93,15 +94,24 @@ public final class ExternalHelper {
         return false;
     }
 
-    public void injectButton(AlertDialog.Builder builder, Uri uri, String repoId) {
+    public void injectButton(AlertDialog.Builder builder, Supplier<Uri> uriSupplier, String repoId) {
         if (label == null) return;
         builder.setNeutralButton(label, (dialog, button) -> {
             Context context = ((Dialog) dialog).getContext();
-            if (!openExternal(context, uri, repoId)) {
-                Toast.makeText(context,
-                        "Failed to launch external activity",
-                        Toast.LENGTH_SHORT).show();
-            }
+            new Thread("Async downloader") {
+                @Override
+                public void run() {
+                    final Uri uri = uriSupplier.get();
+                    if (uri == null) return;
+                    UiThreadHandler.run(() -> {
+                        if (!openExternal(context, uri, repoId)) {
+                            Toast.makeText(context,
+                                    "Failed to launch external activity",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }.start();
         });
     }
 }

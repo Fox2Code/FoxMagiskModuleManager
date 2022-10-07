@@ -23,6 +23,7 @@ import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.XHooks;
+import com.fox2code.mmm.androidacy.AndroidacyUtil;
 import com.fox2code.mmm.module.ActionButtonType;
 import com.fox2code.mmm.sentry.SentryBreadcrumb;
 import com.fox2code.mmm.sentry.SentryMain;
@@ -156,6 +157,7 @@ public class InstallerActivity extends FoxActivity {
                 Log.e(TAG, "Failed to delete module cache");
             String errMessage = "Failed to download module zip";
             byte[] rawModule;
+            boolean androidacyBlame = false; // In case Androidacy mess-up again...
             try {
                 Log.i(TAG, (urlMode ? "Downloading: " : "Loading: ") + target);
                 rawModule = urlMode ? Http.doHttpGet(target, (progress, max, done) -> {
@@ -172,6 +174,7 @@ public class InstallerActivity extends FoxActivity {
                     this.progressIndicator.setIndeterminate(true);
                 });
                 if (this.canceled) return;
+                androidacyBlame = urlMode && AndroidacyUtil.isAndroidacyFileUrl(target);
                 if (checksum != null && !checksum.isEmpty()) {
                     Log.d(TAG, "Checking for checksum: " + checksum);
                     this.runOnUiThread(() -> this.installerTerminal.addLine("- Checking file integrity"));
@@ -208,10 +211,15 @@ public class InstallerActivity extends FoxActivity {
                     }
                 }
                 if (!isModule && !isAnyKernel3) {
+                    if (androidacyBlame) {
+                        this.installerTerminal.addLine(
+                                "! Note: The following error is probably an Androidacy backend error");
+                    }
                     this.setInstallStateFinished(false,
                             "! File is not a valid Magisk module or AnyKernel3 zip", "");
                     return;
                 }
+                androidacyBlame = false;
                 if (noPatch) {
                     if (urlMode) {
                         errMessage = "Failed to save module zip";
@@ -237,6 +245,10 @@ public class InstallerActivity extends FoxActivity {
                 this.doInstall(moduleCache, noExtensions, rootless);
             } catch (IOException e) {
                 Log.e(TAG, errMessage, e);
+                if (androidacyBlame) {
+                    this.installerTerminal.addLine(
+                            "! Note: The following error is probably an Androidacy backend error");
+                }
                 this.setInstallStateFinished(false,
                         "! " + errMessage, "");
             } catch (OutOfMemoryError e) {

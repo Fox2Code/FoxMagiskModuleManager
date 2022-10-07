@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -49,6 +50,11 @@ public class IntentHelper {
             "android.support.customtabs.extra.TOOLBAR_COLOR";
     private static final String EXTRA_TAB_EXIT_ANIMATION_BUNDLE =
             "android.support.customtabs.extra.EXIT_ANIMATION_BUNDLE";
+    static final int FLAG_GRANT_URI_PERMISSION =
+            Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP ?
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION |
+                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION :
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION;
 
     public static void openUri(Context context, String uri) {
         if (uri.startsWith("intent://")) {
@@ -67,7 +73,7 @@ public class IntentHelper {
     public static void openUrl(Context context, String url, boolean forceBrowser) {
         try {
             Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            myIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            myIntent.setFlags(FLAG_GRANT_URI_PERMISSION);
             if (forceBrowser) {
                 myIntent.addCategory(Intent.CATEGORY_BROWSABLE);
             }
@@ -82,8 +88,9 @@ public class IntentHelper {
     public static void openCustomTab(Context context, String url) {
         try {
             Intent viewIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            viewIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            viewIntent.setFlags(FLAG_GRANT_URI_PERMISSION);
             Intent tabIntent = new Intent(viewIntent);
+            tabIntent.setFlags(FLAG_GRANT_URI_PERMISSION);
             tabIntent.addCategory(Intent.CATEGORY_BROWSABLE);
             startActivityEx(context, tabIntent, viewIntent);
         } catch (ActivityNotFoundException e) {

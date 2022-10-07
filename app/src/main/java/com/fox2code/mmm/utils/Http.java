@@ -61,7 +61,7 @@ public class Http {
     private static final OkHttpClient httpClientNoRedirect;
     private static final OkHttpClient httpClientNoRedirectDoH;
     private static final FallBackDNS fallbackDNS;
-    private static final CookieJar cookieJar;
+    private static final CDNCookieJar cookieJar;
     private static final String androidacyUA;
     private static final boolean hasWebView;
     private static boolean doh;
@@ -311,9 +311,18 @@ public class Http {
         return androidacyUA;
     }
 
+    public static String getMagiskUA() {
+        return "Magisk/" + InstallerInitializer.peekMagiskVersion();
+    }
+
     public static void setDoh(boolean doh) {
         Log.d(TAG, "DoH: " + Http.doh + " -> " + doh);
         Http.doh = doh;
+    }
+
+    public static String getAndroidacyCookies(String url) {
+        if (!AndroidacyUtil.isAndroidacyLink(url)) return "";
+        return cookieJar.getAndroidacyCookies(url);
     }
 
     /**
@@ -401,6 +410,18 @@ public class Http {
             } else {
                 cookieMap.put(host, cdnCookie);
             }
+        }
+
+        String getAndroidacyCookies(String url) {
+            if (this.cookieManager != null) {
+                return this.cookieManager.getCookie(url);
+            }
+            StringBuilder stringBuilder = new StringBuilder();
+            for (Cookie cookie : this.androidacyCookies) {
+                stringBuilder.append(cookie.toString()).append("; ");
+            }
+            stringBuilder.setLength(stringBuilder.length() - 2);
+            return stringBuilder.toString();
         }
     }
 
@@ -575,9 +596,5 @@ public class Http {
                     tokens[0] + "/" + tokens[1] + "@" + tokens[2] + "/" + tokens[3];
         }
         return string;
-    }
-
-    public static CookieJar getCookieJar() {
-        return cookieJar;
     }
 }

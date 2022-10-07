@@ -64,6 +64,7 @@ public class AndroidacyWebAPI {
 
     void openNativeModuleDialogRaw(String moduleUrl, String installTitle,
                                    String checksum, boolean canInstall) {
+        Log.d(TAG, "ModuleDialog, downloadUrl: " + AndroidacyUtil.hideToken(moduleUrl));
         this.downloadMode = false;
         RepoModule repoModule = AndroidacyRepoData
                 .getInstance().moduleHashMap.get(installTitle);
@@ -92,7 +93,7 @@ public class AndroidacyWebAPI {
                 .setIcon(R.drawable.ic_baseline_extension_24);
         builder.setNegativeButton(R.string.download_module, (x, y) -> {
             this.downloadMode = true;
-            this.activity.webView.loadUrl(moduleUrl);
+            IntentHelper.openCustomTab(this.activity, moduleUrl);
         });
         if (canInstall) {
             boolean hasUpdate = false;
@@ -115,8 +116,18 @@ public class AndroidacyWebAPI {
             if (!this.activity.backOnResume)
                 this.consumedAction = false;
         });
-        ExternalHelper.INSTANCE.injectButton(builder,
-                Uri.parse(moduleUrl), "androidacy_repo");
+        ExternalHelper.INSTANCE.injectButton(builder, () -> {
+            this.downloadMode = true;
+            try {
+                return this.activity.downloadFileAsync(moduleUrl);
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to download module", e);
+                AndroidacyWebAPI.this.activity.runOnUiThread(() ->
+                        Toast.makeText(AndroidacyWebAPI.this.activity,
+                                R.string.failed_download, Toast.LENGTH_SHORT).show());
+                return null;
+            }
+        }, "androidacy_repo");
         final int dim5dp = FoxDisplay.dpToPixel(5);
         builder.setBackgroundInsetStart(dim5dp).setBackgroundInsetEnd(dim5dp);
         this.activity.runOnUiThread(() -> {

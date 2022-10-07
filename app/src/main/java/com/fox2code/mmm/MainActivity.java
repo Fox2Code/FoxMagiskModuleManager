@@ -1,5 +1,7 @@
 package com.fox2code.mmm;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,6 +39,7 @@ import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.fox2code.mmm.utils.NoodleDebug;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.topjohnwu.superuser.Shell;
 
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
@@ -159,6 +163,9 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     moduleViewListBuilder.addNotification(NotificationType.INSTALL_FROM_STORAGE);
                 noodleDebug.setEnabled(noodleDebugState);
                 noodleDebug.bind();
+                noodleDebug.push("Ensure Permissions");
+                ensurePermissions();
+                noodleDebug.pop();
                 ModuleManager.getINSTANCE().scan();
                 ModuleManager.getINSTANCE().runAfterScan(
                         moduleViewListBuilder::appendInstalledModules);
@@ -515,5 +522,16 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     @Override
     public int getOverScrollInsetBottom() {
         return this.overScrollInsetBottom;
+    }
+
+    private void ensurePermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.POST_NOTIFICATIONS) !=
+                        PackageManager.PERMISSION_GRANTED) {
+            // TODO Use standard Android API to ask for permissions
+            Shell.cmd("pm grant " + this.getPackageName() + " " +
+                    Manifest.permission.POST_NOTIFICATIONS);
+        }
     }
 }

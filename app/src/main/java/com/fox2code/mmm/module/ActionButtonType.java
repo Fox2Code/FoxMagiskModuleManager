@@ -113,8 +113,9 @@ public enum ActionButtonType {
                 builder.setMessage(desc);
             }
             Log.d("Test", "URL: " + updateZipUrl);
-            builder.setNegativeButton(R.string.download_module, (x, y) ->
-                    IntentHelper.openCustomTab(button.getContext(), updateZipUrl));
+            builder.setNegativeButton(R.string.download_module, (x, y) -> {
+                IntentHelper.openCustomTab(button.getContext(), updateZipUrl);
+            });
             if (hasRoot) {
                 builder.setPositiveButton(moduleHolder.hasUpdate() ?
                         R.string.update_module : R.string.install_module, (x, y) -> {
@@ -125,7 +126,7 @@ public enum ActionButtonType {
                 });
             }
             ExternalHelper.INSTANCE.injectButton(builder,
-                    Uri.parse(updateZipUrl), moduleHolder.getUpdateZipRepo());
+                    () -> Uri.parse(updateZipUrl), moduleHolder.getUpdateZipRepo());
             int dim5dp = FoxDisplay.dpToPixel(5);
             builder.setBackgroundInsetStart(dim5dp).setBackgroundInsetEnd(dim5dp);
             AlertDialog alertDialog = builder.show();

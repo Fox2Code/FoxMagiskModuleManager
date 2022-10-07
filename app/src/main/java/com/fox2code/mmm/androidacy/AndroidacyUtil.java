@@ -24,6 +24,17 @@ public class AndroidacyUtil {
                         uri.getHost().endsWith(".androidacy.com");
     }
 
+    public static boolean isAndroidacyFileUrl(@Nullable String url) {
+        if (url == null) return false;
+        for (String prefix : new String[]{
+                "https://production-api.androidacy.com/magisk/file/",
+                "https://staging-api.androidacy.com/magisk/file/"
+        }) { // Make both staging and non staging act the same
+            if (url.startsWith(prefix)) return true;
+        }
+        return false;
+    }
+
     // Avoid logging token
     public static String hideToken(@NonNull String url) {
         int i = url.lastIndexOf("token=");
