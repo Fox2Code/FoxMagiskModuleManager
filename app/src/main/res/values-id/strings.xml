@@ -23,7 +23,7 @@
     <string name="support">Dukungan</string>
     <string name="donate">Donasi</string>
     <string name="submit_modules">Kirim sebuah modul</string>
-    <string name="require_android_6">Membutuhkan Android 6.0+</string>
+    <string name="require_android_6">Memerlukan Android 6.0+</string>
     <!-- Module section translation -->
     <string name="module_last_update">Pembaruan terakhir:</string>
     <string name="module_repo">Repo:</string>
@@ -156,4 +156,7 @@
     <string name="crash_reporting_restart_message">Aplikasi perlu dimuat ulang untuk menerapkan pengaturan ini</string>
     <string name="restart">Muat Ulang</string>
     <string name="androidacy_test_mode_disable_warning">Aplikasi akan dimuat ulang untuk mematikan endpoint staging</string>
+    <string name="notification_update_title_easter_egg">Berhasil mengendus %i pembaruan modul</string>
+    <string name="crash_reporting_desc">Jika anda mematikan ini, pengembang tidak dapat menerima laporan gangguan secara otomatis, dan ini akan membuat proses perbaikan lebih sulit</string>
+    <string name="api_key">API Key Androidacy</string>
 </resources>
