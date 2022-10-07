@@ -1,0 +1,4 @@
+Diese App wird nicht von Magisk oder seinen Entwicklern unterstützt.
+
+Die Module, die in dieser App angezeigt werden, werden nicht von den App-Entwicklern verwaltet.
+Bitte kontaktieren Sie stattdessen die Repository-Besitzer.

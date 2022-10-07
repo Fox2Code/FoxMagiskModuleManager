@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Fox\'s Magisk Module Manager</string>
     <string name="app_name_short">Fox\'s Mmm</string>
@@ -23,14 +24,12 @@
     <string name="donate">Donasi</string>
     <string name="submit_modules">Kirim sebuah modul</string>
     <string name="require_android_6">Membutuhkan Android 6.0+</string>
-
     <!-- Module section translation -->
     <string name="module_last_update">Pembaruan terakhir:</string>
     <string name="module_repo">Repo:</string>
     <string name="module_by">oleh</string>
     <string name="module_downloads">Diunduh:</string>
     <string name="module_stars">Bintang:</string>
-
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">Kelola repo</string>
@@ -95,4 +94,44 @@
     <string name="repo_disabled">Repo dinonaktifkan</string>
     <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
     <string name="api_key">Androidacy API Key</string>
+    <string name="fail_root_denied">Akses Root telah ditolak oleh aplikasi Magisk</string>
+    <string name="update">Perbarui</string>
+    <string name="config">Pengaturan</string>
+    <string name="module_needs_ramdisk_desc">Modul ini membutuhkan ramdisk untuk melakukan instalasi</string>
+    <string name="prevent_reboot_desc">Cegah proses nyala ulang yang tiba-tiba</string>
+    <string name="pref_category_security">Keamanan</string>
+    <string name="low_quality_module">Modul kualitas rendah</string>
+    <string name="add_repo">Tambahkan Repo</string>
+    <string name="fail_magisk_missing">Magisk tidak terinstal pada perangkat anda</string>
+    <string name="no_web_view">Tidak dapat membuka sistem WebView</string>
+    <string name="install">Pasang</string>
+    <string name="description">Deskripsi</string>
+    <string name="uninstall">Hapus Instalasi</string>
+    <string name="favourite">Favorit</string>
+    <string name="report_bugs">Laporkan gangguan/kesalahan/bug</string>
+    <string name="require_android_12">Memerlukan Android 12+</string>
+    <string name="install_terminal_reboot_now">Nyalakan Ulang</string>
+    <string name="language">Bahasa</string>
+    <string name="module_needs_ramdisk">Membutuhkan ramdisk</string>
+    <string name="module_can_change_boot">Dapat mengubah boot</string>
+    <string name="module_can_change_boot_desc">Modul ini mungkin akan mengubah boot image</string>
+    <string name="module_min_magisk_chip">Minimal Magisk %s</string>
+    <string name="module_min_sdk_chip">Minimal Android</string>
+    <string name="module_max_sdk_chip">Maksimum Android</string>
+    <string name="prevent_reboot_pref">Cegah Nyala Ulang</string>
+    <string name="enable_monet">Aktifkan Monet</string>
+    <string name="pref_category_appearance">Tampilan</string>
+    <string name="pref_category_general">Umum</string>
+    <string name="dev_mode_disabled">Mode pengembang mati</string>
+    <string name="disable_chips_in_description">Matikan \"chips\" dalam deskripsi</string>
+    <string name="remove_repo">Hapus Repo</string>
+    <string name="custom_url">Url Kustom</string>
+    <string name="backup_module_list">Cadangkan modul-modul</string>
+    <string name="restore_module_list">Pulihkan modul-modul</string>
+    <string name="require_internet">Proses ini memerlukan koneksi internet</string>
+    <string name="androidacy_test_mode_pref">Mode tes Androidacy</string>
+    <string name="notification_update_title">Ditemukan %i pembaruan modul</string>
+    <string name="notification_update_subtitle">Klik untuk membuka aplikasi</string>
+    <string name="androidacy_repo_info">Repositori ini mungkin akan menampilkan iklan yang tidak mengganggu untuk membantu kebutuhan biaya server dan pengembangan.</string>
+    <string name="androidacy_test_mode_desc">Gunakan endpoint staging daripada endpoint release dari Androidacy. (Akan memuat ulang aplikasi)</string>
 </resources>

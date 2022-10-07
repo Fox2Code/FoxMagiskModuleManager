@@ -1,0 +1,1 @@
+Ein Modul-Manager für Magisk, weil die offizielle App dies nicht mehr kann.
