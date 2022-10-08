@@ -1,0 +1,4 @@
+Dette programmet har ikke offisiell støtte av Magisk eller dets utviklere.
+
+Modulene vist i programmet er ikke tilknyttet programmet.
+Kontakt respektive eiere av pakkebrønner ved feil.
