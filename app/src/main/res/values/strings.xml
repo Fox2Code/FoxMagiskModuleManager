@@ -153,7 +153,7 @@
     <string name="language_support_outdated">Some translations for the current language are
         not up-to-date, please consider contributing to the app translations on GitHub</string>
     <!-- Replace with your own username when translating -->
-    <string name="language_translated_by">Translated by Fox2Code</string>
+    <string name="language_translated_by">Translated by Fox2Code (Put your name here)</string>
     <string name="crash_reporting">Automatically report bugs and performance to the developers</string>
     <string name="crash_reporting_desc">If you disable this, the developer will not get automatic bug reports, and this may make troubleshooting harder</string>
     <string name="api_key">Androidacy API Key</string>

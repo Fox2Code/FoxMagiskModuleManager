@@ -93,6 +93,11 @@ For more information please check the [developer documentation](DEVELOPERS.md)
 
 ## For translators
 
+Go check here: https://translate.nift4.org/projects/foxmmm/foxmmm/
+You may also want to check other project on this site to translate.
+
+Or you can try to do a pull request on GitHub:
+
 See [`app/src/main/res/values/strings.xml`](https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/app/src/main/res/values/strings.xml)
 and [`app/src/main/res/values/arrays.xml`](https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/app/src/main/res/values/arrays.xml)
 

@@ -231,8 +231,10 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 Log.e(TAG, "Detected language level " + level + ", latest is " + LANGUAGE_SUPPORT_LEVEL);
                 languageSelector.setSummary(R.string.language_support_outdated);
             } else {
-                if (!"Translated by Fox2Code".equals( // I don't "translate" english
-                        this.getString(R.string.language_translated_by))) {
+                String translatedBy = this.getString(R.string.language_translated_by);
+                // I don't "translate" english
+                if (!("Translated by Fox2Code (Put your name here)".equals(translatedBy) ||
+                        "Translated by Fox2Code".equals(translatedBy))) {
                     languageSelector.setSummary(R.string.language_translated_by);
                 } else {
                     languageSelector.setSummary(null);
