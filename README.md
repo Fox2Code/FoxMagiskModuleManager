@@ -6,9 +6,12 @@
 
 Module description: Removes the restriction when selecting folders (Downloads/Android) through the file manager on Android 11 and higher
 
-## Join us on Telegram! 
+## Community
 
 [![Telegram Group](https://img.shields.io/endpoint?color=neon&style=flat&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2FFox2Code_Chat)](https://telegram.dog/Fox2Code_Chat)
+<a href="https://translate.nift4.org/engage/foxmmm/">
+<img src="https://translate.nift4.org/widgets/foxmmm/-/foxmmm/svg-badge.svg" alt="Translation status" />
+</a>
 
 ## Screenshots
 
@@ -93,10 +96,10 @@ For more information please check the [developer documentation](DEVELOPERS.md)
 
 ## For translators
 
-Go check here: https://translate.nift4.org/projects/foxmmm/foxmmm/
-You may also want to check other project on this site to translate.
+We use Weblate for translations: https://translate.nift4.org/engage/foxmmm/
+(Make sure to check your spam folder when registering)
 
-Or you can try to do a pull request on GitHub:
+If you do not want to register on the self-hosted Weblate instance, you can do a pull request on GitHub:
 
 See [`app/src/main/res/values/strings.xml`](https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/app/src/main/res/values/strings.xml)
 and [`app/src/main/res/values/arrays.xml`](https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/app/src/main/res/values/arrays.xml)
