@@ -176,4 +176,7 @@
     <string name="crash_reporting_restart_message">The app needs to restart to apply this setting</string>
     <string name="restart">Restart</string>
     <string name="androidacy_test_mode_disable_warning">App will be restarted to disable staging endpoint</string>
+    <string name="androidacy_failed_to_parse_token">Could not retrieve token from Androidacy. Please try again later.</string>
+    <string name="androidacy_failed_to_validate_token">Could not validate token for Androidacy. Please try again later.</string>
+    <string name="androidacy_server_down">Unable to contact Androidacy server. Check your connection and try again.</string>
 </resources>

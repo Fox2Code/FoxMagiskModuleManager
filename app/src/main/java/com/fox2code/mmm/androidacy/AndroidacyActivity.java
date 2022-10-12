@@ -135,7 +135,10 @@ public final class AndroidacyActivity extends FoxActivity {
         webSettings.setUserAgentString(Http.getAndroidacyUA());
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
+        // Disable cache
+        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webSettings.setAllowFileAccess(false);
+        webSettings.setAllowContentAccess(false);
         // Attempt at fixing CloudFlare captcha.
         if (WebViewFeature.isFeatureSupported(WebViewFeature.REQUESTED_WITH_HEADER_CONTROL)) {
             WebSettingsCompat.setRequestedWithHeaderMode(
@@ -448,6 +451,7 @@ public final class AndroidacyActivity extends FoxActivity {
                 fileOutputStream.write(module);
             }
         } finally {
+            //noinspection UnusedAssignment
             module = null;
             this.runOnUiThread(() ->
                     progressIndicator.setVisibility(View.INVISIBLE));

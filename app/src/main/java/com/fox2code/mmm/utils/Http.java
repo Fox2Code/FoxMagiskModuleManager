@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import io.sentry.android.okhttp.SentryOkHttpInterceptor;
 import okhttp3.Cache;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
@@ -100,7 +99,7 @@ public class Http {
         httpclientBuilder.proxy(Proxy.NO_PROXY); // Do not use system proxy
         Dns dns = Dns.SYSTEM;
         try {
-            InetAddress[] cloudflareBootstrap = new InetAddress[] {
+            InetAddress[] cloudflareBootstrap = new InetAddress[]{
                     InetAddress.getByName("162.159.36.1"),
                     InetAddress.getByName("162.159.46.1"),
                     InetAddress.getByName("1.1.1.1"),
@@ -120,18 +119,18 @@ public class Http {
             httpclientBuilder.dns(dns);
             httpclientBuilder.cookieJar(new CDNCookieJar());
             dns = new DnsOverHttps.Builder().client(httpclientBuilder.build()).url(
-                    Objects.requireNonNull(HttpUrl.parse("https://cloudflare-dns.com/dns-query")))
+                            Objects.requireNonNull(HttpUrl.parse("https://cloudflare-dns.com/dns-query")))
                     .bootstrapDnsHosts(cloudflareBootstrap).resolvePrivateAddresses(true).build();
-        } catch (UnknownHostException|RuntimeException e) {
+        } catch (UnknownHostException | RuntimeException e) {
             Log.e(TAG, "Failed to init DoH", e);
         }
         httpclientBuilder.cookieJar(CookieJar.NO_COOKIES);
         // User-Agent format was agreed on telegram
         if (hasWebView) {
-            androidacyUA = WebSettings.getDefaultUserAgent(mainApplication).replace("; wv", "")
-                    + " FoxMmm/" + BuildConfig.VERSION_CODE;
+            androidacyUA = WebSettings.getDefaultUserAgent(mainApplication).replace("wv", "FoxMmm" +
+                    "/" + BuildConfig.VERSION_CODE);
         } else {
-            androidacyUA = "Mozilla/5.0 (Linux; Android " + Build.VERSION.RELEASE + "; " + Build.DEVICE +")" +
+            androidacyUA = "Mozilla/5.0 (Linux; Android " + Build.VERSION.RELEASE + "; " + Build.DEVICE + ")" +
                     " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36"
                     + " FoxMmm/" + BuildConfig.VERSION_CODE;
         }
@@ -197,7 +196,7 @@ public class Http {
     }
 
     @SuppressWarnings("resource")
-    public static byte[] doHttpGet(String url,boolean allowCache) throws IOException {
+    public static byte[] doHttpGet(String url, boolean allowCache) throws IOException {
         if (!RepoManager.isAndroidacyRepoEnabled() &&
                 AndroidacyUtil.isAndroidacyLink(url)) {
             throw new IOException("Androidacy repo is disabled, blocking url: " + url);
@@ -208,19 +207,19 @@ public class Http {
         // 200/204 == success, 304 == cache valid
         if (response.code() != 200 && response.code() != 204 &&
                 (response.code() != 304 || !allowCache)) {
-            throw new IOException("Received error code: "+ response.code());
+            throw new IOException("Received error code: " + response.code());
         }
         ResponseBody responseBody = response.body();
         // Use cache api if used cached response
-        if (responseBody == null && response.code() == 304) {
+        if (response.code() == 304) {
             response = response.cacheResponse();
             if (response != null)
                 responseBody = response.body();
         }
-        return responseBody == null ? new byte[0] : responseBody.bytes();
+        return responseBody.bytes();
     }
 
-    public static byte[] doHttpPost(String url,String data,boolean allowCache) throws IOException {
+    public static byte[] doHttpPost(String url, String data, boolean allowCache) throws IOException {
         return (byte[]) doHttpPostRaw(url, data, allowCache, false);
     }
 
@@ -229,8 +228,8 @@ public class Http {
     }
 
     @SuppressWarnings("resource")
-    private static Object doHttpPostRaw(String url,String data, boolean allowCache,
-                                          boolean isRedirect) throws IOException {
+    private static Object doHttpPostRaw(String url, String data, boolean allowCache,
+                                        boolean isRedirect) throws IOException {
         if (!RepoManager.isAndroidacyRepoEnabled() &&
                 AndroidacyUtil.isAndroidacyLink(url)) {
             throw new IOException("Androidacy repo is disabled, blocking url: " + url);
@@ -246,20 +245,20 @@ public class Http {
         // 200/204 == success, 304 == cache valid
         if (response.code() != 200 && response.code() != 204 &&
                 (response.code() != 304 || !allowCache)) {
-            throw new IOException("Received error code: "+ response.code());
+            throw new IOException("Received error code: " + response.code());
         }
         if (isRedirect) return url;
         ResponseBody responseBody = response.body();
         // Use cache api if used cached response
-        if (responseBody == null && response.code() == 304) {
+        if (response.code() == 304) {
             response = response.cacheResponse();
             if (response != null)
                 responseBody = response.body();
         }
-        return responseBody == null ? new byte[0] : responseBody.bytes();
+        return responseBody.bytes();
     }
 
-    public static byte[] doHttpGet(String url,ProgressListener progressListener) throws IOException {
+    public static byte[] doHttpGet(String url, ProgressListener progressListener) throws IOException {
         Log.d("Http", "Progress URL: " + url);
         if (!RepoManager.isAndroidacyRepoEnabled() &&
                 AndroidacyUtil.isAndroidacyLink(url)) {
@@ -268,7 +267,7 @@ public class Http {
         Response response = getHttpClient().newCall(
                 new Request.Builder().url(url).get().build()).execute();
         if (response.code() != 200 && response.code() != 204) {
-            throw new IOException("Received error code: "+ response.code());
+            throw new IOException("Received error code: " + response.code());
         }
         ResponseBody responseBody = Objects.requireNonNull(response.body());
         InputStream inputStream = responseBody.byteStream();
@@ -287,7 +286,7 @@ public class Http {
         progressListener.onUpdate(0, (int) (target / divider), false);
         while (true) {
             int read = inputStream.read(buff);
-            if(read == -1) break;
+            if (read == -1) break;
             byteArrayOutputStream.write(buff, 0, read);
             downloaded += read;
             currentUpdate = System.currentTimeMillis();
@@ -325,15 +324,65 @@ public class Http {
         return cookieJar.getAndroidacyCookies(url);
     }
 
+    public static boolean hasWebView() {
+        return hasWebView;
+    }
+
+    /**
+     * Change URL to appropriate url and force Magisk link to use latest version.
+     */
+    public static String updateLink(String string) {
+        if (string.startsWith("https://cdn.jsdelivr.net/gh/Magisk-Modules-Repo/")) {
+            String tmp = string.substring(48);
+            int start = tmp.lastIndexOf('@'),
+                    end = tmp.lastIndexOf('/');
+            if ((end - 8) <= start) return string; // Skip if not a commit id
+            return "https://raw.githubusercontent.com/" +
+                    tmp.substring(0, start) + "/master" + string.substring(end);
+        }
+        if (string.startsWith("https://github.com/Magisk-Modules-Repo/")) {
+            int i = string.lastIndexOf("/archive/");
+            if (i != -1 && string.indexOf('/', i + 9) == -1)
+                return string.substring(0, i + 9) + "master.zip";
+        }
+        return string;
+    }
+
+    /**
+     * Change GitHub user-content url to jsdelivr url
+     * (Unused but kept as a documentation)
+     */
+    public static String cdnIfyLink(String string) {
+        if (string.startsWith("https://raw.githubusercontent.com/")) {
+            String[] tokens = string.substring(34).split("/", 4);
+            if (tokens.length != 4) return string;
+            return "https://cdn.jsdelivr.net/gh/" +
+                    tokens[0] + "/" + tokens[1] + "@" + tokens[2] + "/" + tokens[3];
+        }
+        if (string.startsWith("https://github.com/")) {
+            int i = string.lastIndexOf("/archive/");
+            if (i == -1 || string.indexOf('/', i + 9) != -1)
+                return string; // Not an archive link
+            String[] tokens = string.substring(19).split("/", 4);
+            return "https://cdn.jsdelivr.net/gh/" +
+                    tokens[0] + "/" + tokens[1] + "@" + tokens[2] + "/" + tokens[3];
+        }
+        return string;
+    }
+
+    public interface ProgressListener {
+        void onUpdate(int downloaded, int total, boolean done);
+    }
+
     /**
      * Cookie jar that allow CDN cookies, reset on app relaunch
      * Note: An argument can be made that it allow tracking but
      * caching is a better attack vector for tracking, this system
      * only exist to improve CDN response time, any other cookies
      * that are not CDN related are just simply ignored.
-     *
+     * <p>
      * Note: CDNCookies are only stored in RAM unlike https cache
-     * */
+     */
     private static class CDNCookieJar implements CookieJar {
         private final HashMap<String, Cookie> cookieMap = new HashMap<>();
         private final boolean androidacySupport;
@@ -425,17 +474,13 @@ public class Http {
         }
     }
 
-    public interface ProgressListener {
-        void onUpdate(int downloaded,int total, boolean done);
-    }
-
     /**
      * FallBackDNS store successful DNS request to return them later
      * can help make the app to work later when the current DNS system
      * isn't functional or available.
-     *
+     * <p>
      * Note: DNS Cache is stored in user data.
-     * */
+     */
     private static class FallBackDNS implements Dns {
         private final Dns parent;
         private final SharedPreferences sharedPreferences;
@@ -448,6 +493,31 @@ public class Http {
             this.parent = parent;
             this.fallbacks = new HashSet<>(Arrays.asList(fallbacks));
             this.fallbackCache = new HashMap<>();
+        }
+
+        @NonNull
+        private static String toString(@NonNull List<InetAddress> inetAddresses) {
+            if (inetAddresses.isEmpty()) return "";
+            Iterator<InetAddress> inetAddressIterator = inetAddresses.iterator();
+            StringBuilder stringBuilder = new StringBuilder();
+            while (true) {
+                stringBuilder.append(inetAddressIterator.next().getHostAddress());
+                if (!inetAddressIterator.hasNext())
+                    return stringBuilder.toString();
+                stringBuilder.append("|");
+            }
+        }
+
+        @NonNull
+        private static List<InetAddress> fromString(@NonNull String string)
+                throws UnknownHostException {
+            if (string.isEmpty()) return Collections.emptyList();
+            String[] strings = string.split("\\|");
+            ArrayList<InetAddress> inetAddresses = new ArrayList<>(strings.length);
+            for (String address : strings) {
+                inetAddresses.add(InetAddress.getByName(address));
+            }
+            return inetAddresses;
         }
 
         @NonNull
@@ -491,48 +561,22 @@ public class Http {
                 this.fallbackCache.clear();
             }
         }
-
-        @NonNull
-        private static String toString(@NonNull List<InetAddress> inetAddresses) {
-            if (inetAddresses.isEmpty()) return "";
-            Iterator<InetAddress> inetAddressIterator = inetAddresses.iterator();
-            StringBuilder stringBuilder = new StringBuilder();
-            while (true) {
-                stringBuilder.append(inetAddressIterator.next().getHostAddress());
-                if (!inetAddressIterator.hasNext())
-                    return stringBuilder.toString();
-                stringBuilder.append("|");
-            }
-        }
-
-        @NonNull
-        private static List<InetAddress> fromString(@NonNull String string)
-                throws UnknownHostException {
-            if (string.isEmpty()) return Collections.emptyList();
-            String[] strings = string.split("\\|");
-            ArrayList<InetAddress> inetAddresses = new ArrayList<>(strings.length);
-            for (String address : strings) {
-                inetAddresses.add(InetAddress.getByName(address));
-            }
-            return inetAddresses;
-        }
     }
 
     private static class JsonRequestBody extends RequestBody {
         private static final MediaType JSON_MEDIA_TYPE = MediaType.get("application/json");
         private static final JsonRequestBody EMPTY = new JsonRequestBody(new byte[0]);
+        final byte[] data;
+
+        private JsonRequestBody(byte[] data) {
+            this.data = data;
+        }
 
         static JsonRequestBody from(String data) {
             if (data == null || data.length() == 0) {
                 return EMPTY;
             }
             return new JsonRequestBody(data.getBytes(StandardCharsets.UTF_8));
-        }
-
-        final byte[] data;
-
-        private JsonRequestBody(byte[] data) {
-            this.data = data;
         }
 
         @Nullable
@@ -550,51 +594,5 @@ public class Http {
         public void writeTo(@NonNull BufferedSink bufferedSink) throws IOException {
             bufferedSink.write(this.data);
         }
-    }
-
-    public static boolean hasWebView() {
-        return hasWebView;
-    }
-
-    /**
-     * Change URL to appropriate url and force Magisk link to use latest version.
-     */
-    public static String updateLink(String string) {
-        if (string.startsWith("https://cdn.jsdelivr.net/gh/Magisk-Modules-Repo/")) {
-            String tmp = string.substring(48);
-            int start = tmp.lastIndexOf('@'),
-                    end = tmp.lastIndexOf('/');
-            if ((end - 8) <= start) return string; // Skip if not a commit id
-            return "https://raw.githubusercontent.com/" +
-                    tmp.substring(0, start) + "/master" + string.substring(end);
-        }
-        if (string.startsWith("https://github.com/Magisk-Modules-Repo/")) {
-            int i = string.lastIndexOf("/archive/");
-            if (i != -1 && string.indexOf('/', i + 9) == -1)
-                return string.substring(0, i + 9) + "master.zip";
-        }
-        return string;
-    }
-
-    /**
-     * Change GitHub user-content url to jsdelivr url
-     * (Unused but kept as a documentation)
-     */
-    public static String cdnIfyLink(String string) {
-        if (string.startsWith("https://raw.githubusercontent.com/")) {
-            String[] tokens = string.substring(34).split("/", 4);
-            if (tokens.length != 4) return string;
-            return "https://cdn.jsdelivr.net/gh/" +
-                    tokens[0] + "/" + tokens[1] + "@" + tokens[2] + "/" + tokens[3];
-        }
-        if (string.startsWith("https://github.com/")) {
-            int i = string.lastIndexOf("/archive/");
-            if (i == -1 || string.indexOf('/', i + 9) != -1)
-                return string; // Not an archive link
-            String[] tokens = string.substring(19).split("/", 4);
-            return "https://cdn.jsdelivr.net/gh/" +
-                    tokens[0] + "/" + tokens[1] + "@" + tokens[2] + "/" + tokens[3];
-        }
-        return string;
     }
 }

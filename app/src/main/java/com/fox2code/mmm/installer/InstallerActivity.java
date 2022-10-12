@@ -53,6 +53,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
+@SuppressWarnings("IOStreamConstructor")
 public class InstallerActivity extends FoxActivity {
     private static final String TAG = "InstallerActivity";
     public LinearProgressIndicator progressIndicator;
@@ -156,8 +157,9 @@ public class InstallerActivity extends FoxActivity {
                     !new SuFile(moduleCache.getAbsolutePath()).delete())
                 Log.e(TAG, "Failed to delete module cache");
             String errMessage = "Failed to download module zip";
+            // Set this to the error message if it's a HTTP error
             byte[] rawModule;
-            boolean androidacyBlame = false; // In case Androidacy mess-up again...
+            boolean androidacyBlame = false; // In case Androidacy mess-up again... yeah screw you too jk jk
             try {
                 Log.i(TAG, (urlMode ? "Downloading: " : "Loading: ") + target);
                 rawModule = urlMode ? Http.doHttpGet(target, (progress, max, done) -> {
@@ -254,11 +256,9 @@ public class InstallerActivity extends FoxActivity {
             } catch (IOException e) {
                 Log.e(TAG, errMessage, e);
                 if (androidacyBlame) {
-                    this.installerTerminal.addLine(
-                            "! Note: The following error is probably an Androidacy backend error");
+                    errMessage += " (" + e.getLocalizedMessage() + ")";
                 }
-                this.setInstallStateFinished(false,
-                        "! " + errMessage, "");
+                this.setInstallStateFinished(false, errMessage, null);
             } catch (OutOfMemoryError e) {
                 //noinspection UnusedAssignment (Important to avoid OutOfMemoryError)
                 rawModule = null; // Because reference is kept when calling setInstallStateFinished
