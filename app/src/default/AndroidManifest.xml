@@ -4,7 +4,9 @@
     tools:ignore="QueryAllPackagesPermission">
 
     <application android:icon="@mipmap/ic_launcher">
-        <meta-data android:name="io.sentry.auto-init" android:value="false" />
+        <meta-data
+            android:name="io.sentry.auto-init"
+            android:value="false" />
         <meta-data
             android:name="io.sentry.dsn"
             android:value="https://cdcdb0efca4a42a28df90e4b7f087347@sentry.androidacy.com/2" />
@@ -20,5 +22,13 @@
         <meta-data
             android:name="io.sentry.attach-screenshot"
             android:value="true" />
+        <!-- Just the current activity at the time of the crash -->
+        <meta-data
+            android:name="io.sentry.attach-stacktrace"
+            android:value="true" />
+        <!-- Don't send PII, this is actually default but let's be explicit -->
+        <meta-data
+            android:name="io.sentry.sendDefaultPii"
+            android:value="false" />
     </application>
 </manifest>
