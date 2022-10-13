@@ -1,19 +1,28 @@
 package com.fox2code.mmm.sentry;
 
+import android.net.Uri;
 import android.util.Log;
 
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.androidacy.AndroidacyUtil;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.Writer;
 
+import io.sentry.Breadcrumb;
+import io.sentry.Hint;
 import io.sentry.JsonObjectWriter;
 import io.sentry.NoOpLogger;
 import io.sentry.Sentry;
+import io.sentry.SentryOptions;
 import io.sentry.TypeCheckHint;
 import io.sentry.android.core.SentryAndroid;
 import io.sentry.android.fragment.FragmentLifecycleIntegration;
+import io.sentry.android.okhttp.SentryOkHttpInterceptor;
 import io.sentry.hints.DiskFlushNotification;
 
 public class SentryMain {
@@ -85,7 +94,17 @@ public class SentryMain {
                     }
                 });
             }
-
+            // Filter breadrcrumb content from crash report.
+            options.setBeforeBreadcrumb((breadcrumb, hint) -> {
+                String url = (String) breadcrumb.getData("url");
+                if (url == null || url.isEmpty()) return breadcrumb;
+                if ("cloudflare-dns.com".equals(Uri.parse(url).getHost()))
+                    return null;
+                if (AndroidacyUtil.isAndroidacyLink(url)) {
+                    breadcrumb.setData("url", AndroidacyUtil.hideToken(url));
+                }
+                return breadcrumb;
+            });
         });
     }
 

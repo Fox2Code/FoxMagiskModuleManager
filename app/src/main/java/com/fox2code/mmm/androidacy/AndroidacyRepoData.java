@@ -279,7 +279,7 @@ public final class AndroidacyRepoData extends RepoData {
         if (this.testMode) {
             if (url.startsWith("https://production-api.androidacy.com/")) {
                 Log.e(TAG, "Got non test mode url: " + AndroidacyUtil.hideToken(url));
-                url = "https://staging-api.androidacy.com/" + url.substring(27);
+                url = "https://staging-api.androidacy.com/" + url.substring(38);
             }
         } else {
             if (url.startsWith("https://staging-api.androidacy.com/")) {
