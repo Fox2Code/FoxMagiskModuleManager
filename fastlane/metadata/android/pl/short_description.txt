@@ -1,0 +1,1 @@
+Nowy menedżer modułów dla Magiska.

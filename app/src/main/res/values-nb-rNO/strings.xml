@@ -162,4 +162,7 @@
     <string name="sniffing_modules">Sniffer moduler</string>
     <string name="module_needs_ramdisk_desc">Denne modulen krever at ramdisk er isntallert</string>
     <string name="androidacy_repo_info">Denne pakkebrønnen kan vise reklame for å dekke tjener- og utviklingskostnader.</string>
+    <string name="androidacy_failed_to_validate_token">Kunne ikke bekrefte symbol for Androidacy. Prøv igjen senere.</string>
+    <string name="androidacy_failed_to_parse_token">Kunne ikke hente symbol fra Androidacy. Prøv igjen senere.</string>
+    <string name="androidacy_server_down">Kunne ikke kontakte Androidacy-tjeneren. Sjekk tilkoblingen din og prøv igjen.</string>
 </resources>

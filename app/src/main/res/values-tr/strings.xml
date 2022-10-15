@@ -96,27 +96,22 @@
     <string name="remote_install_title">Uzaktan yükleme</string>
     <string name="file_picker_wierd">Dosya seçicisi standart olmayan bir yanıtı geri getirdi.</string>
     <string name="use_magisk_install_command_pref">\"magisk --install-module\" komutunu kullan</string>
-    <string name="use_magisk_install_command_desc">
-        Test sırasında modül yükleme hata teşhis aracında sorunlar meydana geldi,
-        bu yüzden o seçeneği geliştirici modunun arkasına gizledim, bunu etkinleştirmenizde sorumluluk size aittir!
-    </string>
+    <string name="use_magisk_install_command_desc">Test sırasında modül yükleme hata teşhis aracında sorunlar meydana geldi, bu yüzden o seçenek geliştirici modunun arkasına gizlenmiştir.
+\nBunu etkinleştirmenizde sorumluluk size aittir!</string>
     <string name="dev_mode_enabled">Geliştirici modu açık</string>
     <string name="dev_mode_disabled">Geliştirici modu kapalı</string>
     <string name="force_english_pref">İngilizce dilini zorla</string>
     <string name="disable_low_quality_module_filter_pref">Düşük kalite modül filtresini devre dışı bırak</string>
-    <string name="disable_low_quality_module_filter_desc">
-        Bazı modüller metaveri\'lerini düzgün bir şekilde bildirmiyor, görsel hatalara neden oluyor,
-        ve/veya modül kalitesini zayıf gösteriyor, devre dışı bırakmada sorumluluk size aittir!
-    </string>
+    <string name="disable_low_quality_module_filter_desc">Bazı modüller metaveri\'lerini düzgün bir şekilde bildirmiyor, görsel hatalara neden oluyor, ve/veya modül kalitesini zayıf gösteriyor.
+\nDevre dışı bırakmada sorumluluk size aittir!</string>
     <string name="dns_over_https_pref">Https üzerinden dns</string>
     <string name="dns_over_https_desc">
         Bazı durumlarda bağlantı sorunlarını düzeltebilir.
         (WebView için geçerli değildir)
     </string>
     <string name="disable_extensions_pref">Mmy yok</string>
-    <string name="disable_extensions_desc">
-        Fox\'un Mmy eklentilerini devre dışı bırakır; bu, modüllerin terminal eklentilerini kullanmasını önler; Eğer modül Fox\'un Mmy eklentilerini kötüye kullanırsa yararlıdır.
-    </string>
+    <string name="disable_extensions_desc">Fox\'un Mmy eklentilerini devre dışı bırakır; bu, modüllerin terminal eklentilerini kullanmasını önler.
+\nEğer modül Fox\'un Mmy eklentilerini kötüye kullanırsa yararlıdır.</string>
     <string name="wrap_text_pref">Metni kaydır</string>
     <string name="wrap_text_desc">
         Bir modül yüklerken tüm metni aynı satıra koymak yerine metni yeni bir satıra kaydırır.
@@ -166,4 +161,11 @@
     <string name="crash">Test etmek için uygulamayı çökert</string>
     <string name="repackaged_as">Bu şekilde yeniden paketlendi:</string>
     <string name="wrapped_from">Tarafından sarmalandı:</string>
+    <string name="crash_reporting_restart_title">Değişiklikleri uygulamak için yeniden başlat\?</string>
+    <string name="crash_reporting_restart_message">Bu ayarı uygulamak için uygulamanın yeniden başlatılması gerekli</string>
+    <string name="restart">Yeniden başlat</string>
+    <string name="androidacy_test_mode_disable_warning">Uygulama, endpoint\'i devre dışı bırakmak için yeniden başlatılacaktır</string>
+    <string name="androidacy_failed_to_parse_token">Androidacy\'den jeton alınamadı. Lütfen sonra tekrar deneyin.</string>
+    <string name="androidacy_failed_to_validate_token">Androidacy için jeton doğrulanamadı. Lütfen sonra tekrar deneyin.</string>
+    <string name="androidacy_server_down">Androidacy sunucusuna ulaşılamadı. Bağlantınızı kontrol edin ve tekrar deneyin.</string>
 </resources>

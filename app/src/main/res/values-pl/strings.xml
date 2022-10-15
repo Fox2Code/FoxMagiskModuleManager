@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Fox - Menedżer modułów Magisk</string>
-    <string name="app_name_short">FoxMmm</string>
+    <string name="app_name">Fox - Menedżer Modułów Magisk</string>
+    <string name="app_name_short">FoxMMM</string>
     <string name="fail_root_magisk">Nie udało się uzyskać dostępu do Root lub Magisk</string>
     <string name="fail_root_denied">Odmówiono dostępu do roota w aplikacji Magisk</string>
-    <string name="fail_magisk_missing">Magisk nie jest zainstalowany na tym urządzeniu</string>
+    <string name="fail_magisk_missing">Magisk nie jest zainstalowany</string>
     <string name="loading">Wczytywanie…</string>
     <string name="updatable">Aktualizacje modułów</string>
     <string name="installed">Zainstalowane</string>
@@ -23,7 +23,7 @@
     <string name="update_module">Aktualizuj</string>
     <string name="changelog">Dziennik zmian</string>
     <string name="website">Strona domowa</string>
-    <string name="support">Wsparcie</string>
+    <string name="support">Uzyskaj pomoc</string>
     <string name="donate">Przekaż darowiznę</string>
     <string name="update">Aktualizuj</string>
     <string name="install">Zainstaluj</string>
@@ -66,7 +66,7 @@
     <string name="licenses">Licencje</string>
     <string name="show_incompatible_pref">Pokaż niekompatybilne moduły</string>
     <string name="show_incompatible_desc">Pokaż moduły, które są niekompatybilne z urządzeniem na podstawie ich metadanych</string>
-    <string name="magisk_outdated">Magisk jest nieaktualny!</string>
+    <string name="magisk_outdated">Pojawiła się nowa wersja Magiska do zainstalowania!</string>
     <string name="pref_category_repos">Repozytoria</string>
     <string name="pref_category_security">Zabezpieczenia</string>
     <string name="pref_category_appearance">Wygląd</string>
@@ -101,10 +101,7 @@
     <string name="disable_low_quality_module_filter_desc">Niektóre moduły nie deklarują swoich metadanych poprawnie, powodując wizualne zakłócenia i/lub wskazują na niską jakość modułu.
 \nWyłącz to na własne ryzyko!</string>
     <string name="dns_over_https_pref">DNS przez HTTPS</string>
-    <string name="dns_over_https_desc">
-        W niektórych przypadkach może naprawić problemy z połączeniami.
-        (Nie dotyczy WebView)
-    </string>
+    <string name="dns_over_https_desc">W niektórych przypadkach może naprawić problemy z połączeniami (nie dotyczy WebView).</string>
     <string name="disable_extensions_pref">Wyłącz rozszerzenia</string>
     <string name="disable_extensions_desc">Wyłącza rozszerzenia Foxa, uniemożliwiając modułom korzystanie z rozszerzeń terminala.
 \nPrzydatne, jeśli moduł nadużywa rozszerzeń Foxa.</string>
@@ -124,7 +121,7 @@
     <string name="androidacy_test_mode_pref">Tryb testowy Androidacy</string>
     <string name="androidacy_test_mode_desc">Użyj punktu końcowego staging Androidacy zamiast punktu końcowego release. (Spowoduje restart aplikacji)</string>
     <!-- Background Notification translation -->
-    <string name="notification_update_title">Znaleziono %i aktualizacji modułów</string>
+    <string name="notification_update_title">Dostępne są nowe wersje modułów: %i</string>
     <string name="notification_update_title_easter_egg">Wywęszono %i aktualizacji modułów</string>
     <string name="notification_update_subtitle">Kliknij, aby otworzyć aplikację</string>
     <string name="notification_update_pref">Sprawdzanie aktualizacji modułów w tle</string>
@@ -159,4 +156,7 @@
     <string name="androidacy_test_mode_disable_warning">Aplikacja zostanie zrestartowana, aby wyłączyć punkt końcowy staging</string>
     <string name="crash_reporting_restart_message">Aby zastosować to ustawienie, aplikacja musi się ponownie uruchomić</string>
     <string name="restart">Uruchom ponownie</string>
+    <string name="androidacy_failed_to_parse_token">Nie można pobrać tokena z Androidacy. Proszę spróbować ponownie później.</string>
+    <string name="androidacy_failed_to_validate_token">Nie można zweryfikować tokena dla Androidacy. Proszę spróbować ponownie później.</string>
+    <string name="androidacy_server_down">Nie można skontaktować się z serwerem Androidacy. Sprawdź swoje połączenie i spróbuj ponownie.</string>
 </resources>

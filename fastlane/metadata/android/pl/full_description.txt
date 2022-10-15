@@ -1,0 +1,3 @@
+Ta aplikacja nie jest oficjalnie wspierana przez Magisk ani jego programistów.
+
+Moduły wyświetlane w tej aplikacji nie są z nią powiązane. W razie potrzeby skontaktuj się z właścicielami repozytoriów.
