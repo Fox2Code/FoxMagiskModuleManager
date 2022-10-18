@@ -29,8 +29,6 @@ import com.fox2code.mmm.utils.Http;
 import com.fox2code.rosettax.LanguageSwitcher;
 import com.topjohnwu.superuser.Shell;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -205,6 +203,10 @@ public class MainApplication extends FoxApplication
     private int managerThemeResId = R.style.Theme_MagiskModuleManager;
     private FoxThemeWrapper markwonThemeContext;
     private Markwon markwon;
+
+    public static MainApplication getInstance() {
+        return INSTANCE;
+    }
 
     public Markwon getMarkwon() {
         if (this.markwon != null)

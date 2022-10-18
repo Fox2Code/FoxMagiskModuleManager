@@ -1,13 +1,18 @@
 package com.fox2code.mmm.utils;
 
+import static com.fox2code.mmm.MainApplication.getInstance;
+
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.system.ErrnoException;
 import android.system.Os;
 import android.util.Log;
+import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.WebSettings;
+import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -52,6 +57,7 @@ import okhttp3.dnsoverhttps.DnsOverHttps;
 import okio.BufferedSink;
 
 public class Http {
+    private static final MainApplication mainApplication = getInstance();
     private static final String TAG = "Http";
     private static final OkHttpClient httpClient;
     private static final OkHttpClient httpClientDoH;
@@ -99,17 +105,7 @@ public class Http {
         httpclientBuilder.proxy(Proxy.NO_PROXY); // Do not use system proxy
         Dns dns = Dns.SYSTEM;
         try {
-            InetAddress[] cloudflareBootstrap = new InetAddress[]{
-                    InetAddress.getByName("162.159.36.1"),
-                    InetAddress.getByName("162.159.46.1"),
-                    InetAddress.getByName("1.1.1.1"),
-                    InetAddress.getByName("1.0.0.1"),
-                    InetAddress.getByName("162.159.132.53"),
-                    InetAddress.getByName("2606:4700:4700::1111"),
-                    InetAddress.getByName("2606:4700:4700::1001"),
-                    InetAddress.getByName("2606:4700:4700::0064"),
-                    InetAddress.getByName("2606:4700:4700::6400")
-            };
+            InetAddress[] cloudflareBootstrap = new InetAddress[]{InetAddress.getByName("162.159.36.1"), InetAddress.getByName("162.159.46.1"), InetAddress.getByName("1.1.1.1"), InetAddress.getByName("1.0.0.1"), InetAddress.getByName("162.159.132.53"), InetAddress.getByName("2606:4700:4700::1111"), InetAddress.getByName("2606:4700:4700::1001"), InetAddress.getByName("2606:4700:4700::0064"), InetAddress.getByName("2606:4700:4700::6400")};
             dns = s -> {
                 if ("cloudflare-dns.com".equals(s)) {
                     return Arrays.asList(cloudflareBootstrap);
@@ -118,21 +114,16 @@ public class Http {
             };
             httpclientBuilder.dns(dns);
             httpclientBuilder.cookieJar(new CDNCookieJar());
-            dns = new DnsOverHttps.Builder().client(httpclientBuilder.build()).url(
-                            Objects.requireNonNull(HttpUrl.parse("https://cloudflare-dns.com/dns-query")))
-                    .bootstrapDnsHosts(cloudflareBootstrap).resolvePrivateAddresses(true).build();
+            dns = new DnsOverHttps.Builder().client(httpclientBuilder.build()).url(Objects.requireNonNull(HttpUrl.parse("https://cloudflare-dns.com/dns-query"))).bootstrapDnsHosts(cloudflareBootstrap).resolvePrivateAddresses(true).build();
         } catch (UnknownHostException | RuntimeException e) {
             Log.e(TAG, "Failed to init DoH", e);
         }
         httpclientBuilder.cookieJar(CookieJar.NO_COOKIES);
         // User-Agent format was agreed on telegram
         if (hasWebView) {
-            androidacyUA = WebSettings.getDefaultUserAgent(mainApplication).replace("wv", "FoxMmm" +
-                    "/" + BuildConfig.VERSION_CODE);
+            androidacyUA = WebSettings.getDefaultUserAgent(mainApplication).replace("wv", "FoxMmm" + "/" + BuildConfig.VERSION_CODE);
         } else {
-            androidacyUA = "Mozilla/5.0 (Linux; Android " + Build.VERSION.RELEASE + "; " + Build.DEVICE + ")" +
-                    " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36"
-                    + " FoxMmm/" + BuildConfig.VERSION_CODE;
+            androidacyUA = "Mozilla/5.0 (Linux; Android " + Build.VERSION.RELEASE + "; " + Build.DEVICE + ")" + " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36" + " FoxMmm/" + BuildConfig.VERSION_CODE;
         }
         httpclientBuilder.addInterceptor(chain -> {
             Request.Builder request = chain.request().newBuilder();
@@ -140,8 +131,7 @@ public class Http {
             String host = chain.request().url().host();
             if (host.endsWith(".androidacy.com")) {
                 request.header("User-Agent", androidacyUA);
-            } else if (!(host.equals("github.com") || host.endsWith(".github.com") ||
-                    host.endsWith(".jsdelivr.net") || host.endsWith(".githubusercontent.com"))) {
+            } else if (!(host.equals("github.com") || host.endsWith(".github.com") || host.endsWith(".jsdelivr.net") || host.endsWith(".githubusercontent.com"))) {
                 if (InstallerInitializer.peekMagiskPath() != null) {
                     request.header("User-Agent", // Declare Magisk version to the server
                             "Magisk/" + InstallerInitializer.peekMagiskVersion());
@@ -154,11 +144,7 @@ public class Http {
             return chain.proceed(request.build());
         });
         // Fallback DNS cache responses in case request fail but already succeeded once in the past
-        fallbackDNS = new FallBackDNS(mainApplication, dns,
-                "github.com", "api.github.com", "raw.githubusercontent.com",
-                "camo.githubusercontent.com", "user-images.githubusercontent.com",
-                "cdn.jsdelivr.net", "img.shields.io", "magisk-modules-repo.github.io",
-                "www.androidacy.com", "api.androidacy.com");
+        fallbackDNS = new FallBackDNS(mainApplication, dns, "github.com", "api.github.com", "raw.githubusercontent.com", "camo.githubusercontent.com", "user-images.githubusercontent.com", "cdn.jsdelivr.net", "img.shields.io", "magisk-modules-repo.github.io", "www.androidacy.com", "api.androidacy.com");
         httpclientBuilder.cookieJar(cookieJar = new CDNCookieJar(cookieManager));
         httpclientBuilder.dns(Dns.SYSTEM);
         httpClient = followRedirects(httpclientBuilder, true).build();
@@ -166,9 +152,7 @@ public class Http {
         httpclientBuilder.dns(fallbackDNS);
         httpClientDoH = followRedirects(httpclientBuilder, true).build();
         httpClientNoRedirectDoH = followRedirects(httpclientBuilder, false).build();
-        httpclientBuilder.cache(new Cache(
-                new File(mainApplication.getCacheDir(), "http_cache"),
-                16L * 1024L * 1024L)); // 16Mib of cache
+        httpclientBuilder.cache(new Cache(new File(mainApplication.getCacheDir(), "http_cache"), 16L * 1024L * 1024L)); // 16Mib of cache
         httpclientBuilder.dns(Dns.SYSTEM);
         httpClientWithCache = followRedirects(httpclientBuilder, true).build();
         httpclientBuilder.dns(fallbackDNS);
@@ -177,10 +161,8 @@ public class Http {
         doh = MainApplication.isDohEnabled();
     }
 
-    private static OkHttpClient.Builder followRedirects(
-            OkHttpClient.Builder builder, boolean followRedirects) {
-        return builder.followRedirects(followRedirects)
-                .followSslRedirects(followRedirects);
+    private static OkHttpClient.Builder followRedirects(OkHttpClient.Builder builder, boolean followRedirects) {
+        return builder.followRedirects(followRedirects).followSslRedirects(followRedirects);
     }
 
     public static OkHttpClient getHttpClient() {
@@ -195,26 +177,46 @@ public class Http {
         return doh ? httpClientWithCacheDoH : httpClientWithCache;
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
+    public static void captchaWebview(String url) {
+        if (hasWebView) {
+           // Open the specified url in a webview
+            WebView webView = new WebView(mainApplication);
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.getSettings().setUserAgentString(androidacyUA);
+            webView.getSettings().setDomStorageEnabled(true);
+            webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+            // Open the url in the webview
+            webView.loadUrl(url);
+            // Show the webview
+            webView.setVisibility(View.VISIBLE);
+        } else {
+            // Throw an exception if the webview is not available
+            throw new IllegalStateException("Webview is not available");
+        }
+    }
+
     @SuppressWarnings("resource")
     public static byte[] doHttpGet(String url, boolean allowCache) throws IOException {
-        if (!RepoManager.isAndroidacyRepoEnabled() &&
-                AndroidacyUtil.isAndroidacyLink(url)) {
+        if (!RepoManager.isAndroidacyRepoEnabled() && AndroidacyUtil.isAndroidacyLink(url)) {
             throw new IOException("Androidacy repo is disabled, blocking url: " + url);
         }
-        Response response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(
-                new Request.Builder().url(url).get().build()
-        ).execute();
+        Response response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).get().build()).execute();
         // 200/204 == success, 304 == cache valid
-        if (response.code() != 200 && response.code() != 204 &&
-                (response.code() != 304 || !allowCache)) {
+        if (response.code() != 200 && response.code() != 204 && (response.code() != 304 || !allowCache)) {
+            // If error is 403 and it's an Androidacy link, it's probably a 403 from Cloudflare
+            // and we should open a webview to solve the captcha
+            if (response.code() == 403 && AndroidacyUtil.isAndroidacyLink(url)) {
+                // Open webview to solve captcha
+                captchaWebview(url);
+            }
             throw new IOException("Received error code: " + response.code());
         }
         ResponseBody responseBody = response.body();
         // Use cache api if used cached response
         if (response.code() == 304) {
             response = response.cacheResponse();
-            if (response != null)
-                responseBody = response.body();
+            if (response != null) responseBody = response.body();
         }
         return responseBody.bytes();
     }
@@ -228,44 +230,39 @@ public class Http {
     }
 
     @SuppressWarnings("resource")
-    private static Object doHttpPostRaw(String url, String data, boolean allowCache,
-                                        boolean isRedirect) throws IOException {
-        if (!RepoManager.isAndroidacyRepoEnabled() &&
-                AndroidacyUtil.isAndroidacyLink(url)) {
+    private static Object doHttpPostRaw(String url, String data, boolean allowCache, boolean isRedirect) throws IOException {
+        if (!RepoManager.isAndroidacyRepoEnabled() && AndroidacyUtil.isAndroidacyLink(url)) {
             throw new IOException("Androidacy repo is disabled, blocking url: " + url);
         }
-        Response response = (isRedirect ? getHttpClientNoRedirect() :
-                allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(
-                new Request.Builder().url(url).post(JsonRequestBody.from(data))
-                        .header("Content-Type", "application/json").build()
-        ).execute();
+        Response response = (isRedirect ? getHttpClientNoRedirect() : allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).post(JsonRequestBody.from(data)).header("Content-Type", "application/json").build()).execute();
         if (isRedirect && response.isRedirect()) {
             return response.request().url().uri().toString();
         }
         // 200/204 == success, 304 == cache valid
-        if (response.code() != 200 && response.code() != 204 &&
-                (response.code() != 304 || !allowCache)) {
+        if (response.code() == 403 && AndroidacyUtil.isAndroidacyLink(url)) {
+            // Open webview to solve captcha
+            Log.e(TAG, "Received 403 error code, opening webview to solve captcha");
+            captchaWebview(url);
+        } else if (isRedirect) {
+            return url;
+        } else if (response.code() != 200 && response.code() != 204 && (response.code() != 304 || !allowCache)) {
             throw new IOException("Received error code: " + response.code());
         }
-        if (isRedirect) return url;
         ResponseBody responseBody = response.body();
         // Use cache api if used cached response
         if (response.code() == 304) {
             response = response.cacheResponse();
-            if (response != null)
-                responseBody = response.body();
+            if (response != null) responseBody = response.body();
         }
         return responseBody.bytes();
     }
 
     public static byte[] doHttpGet(String url, ProgressListener progressListener) throws IOException {
         Log.d("Http", "Progress URL: " + url);
-        if (!RepoManager.isAndroidacyRepoEnabled() &&
-                AndroidacyUtil.isAndroidacyLink(url)) {
+        if (!RepoManager.isAndroidacyRepoEnabled() && AndroidacyUtil.isAndroidacyLink(url)) {
             throw new IOException("Androidacy repo is disabled, blocking url: " + url);
         }
-        Response response = getHttpClient().newCall(
-                new Request.Builder().url(url).get().build()).execute();
+        Response response = getHttpClient().newCall(new Request.Builder().url(url).get().build()).execute();
         if (response.code() != 200 && response.code() != 204) {
             throw new IOException("Received error code: " + response.code());
         }
@@ -334,11 +331,9 @@ public class Http {
     public static String updateLink(String string) {
         if (string.startsWith("https://cdn.jsdelivr.net/gh/Magisk-Modules-Repo/")) {
             String tmp = string.substring(48);
-            int start = tmp.lastIndexOf('@'),
-                    end = tmp.lastIndexOf('/');
+            int start = tmp.lastIndexOf('@'), end = tmp.lastIndexOf('/');
             if ((end - 8) <= start) return string; // Skip if not a commit id
-            return "https://raw.githubusercontent.com/" +
-                    tmp.substring(0, start) + "/master" + string.substring(end);
+            return "https://raw.githubusercontent.com/" + tmp.substring(0, start) + "/master" + string.substring(end);
         }
         if (string.startsWith("https://github.com/Magisk-Modules-Repo/")) {
             int i = string.lastIndexOf("/archive/");
@@ -356,16 +351,13 @@ public class Http {
         if (string.startsWith("https://raw.githubusercontent.com/")) {
             String[] tokens = string.substring(34).split("/", 4);
             if (tokens.length != 4) return string;
-            return "https://cdn.jsdelivr.net/gh/" +
-                    tokens[0] + "/" + tokens[1] + "@" + tokens[2] + "/" + tokens[3];
+            return "https://cdn.jsdelivr.net/gh/" + tokens[0] + "/" + tokens[1] + "@" + tokens[2] + "/" + tokens[3];
         }
         if (string.startsWith("https://github.com/")) {
             int i = string.lastIndexOf("/archive/");
-            if (i == -1 || string.indexOf('/', i + 9) != -1)
-                return string; // Not an archive link
+            if (i == -1 || string.indexOf('/', i + 9) != -1) return string; // Not an archive link
             String[] tokens = string.substring(19).split("/", 4);
-            return "https://cdn.jsdelivr.net/gh/" +
-                    tokens[0] + "/" + tokens[1] + "@" + tokens[2] + "/" + tokens[3];
+            return "https://cdn.jsdelivr.net/gh/" + tokens[0] + "/" + tokens[1] + "@" + tokens[2] + "/" + tokens[3];
         }
         return string;
     }
@@ -418,8 +410,7 @@ public class Http {
                 return cookieList;
             }
             Cookie cookies = cookieMap.get(httpUrl.url().getHost());
-            return cookies == null || cookies.expiresAt() < System.currentTimeMillis() ?
-                    Collections.emptyList() : Collections.singletonList(cookies);
+            return cookies == null || cookies.expiresAt() < System.currentTimeMillis() ? Collections.emptyList() : Collections.singletonList(cookies);
         }
 
         @Override
@@ -432,8 +423,7 @@ public class Http {
                     return;
                 }
                 for (Cookie cookie : cookies) {
-                    this.cookieManager.setCookie(
-                            httpUrl.uri().toString(), cookie.toString());
+                    this.cookieManager.setCookie(httpUrl.uri().toString(), cookie.toString());
                 }
                 return;
             }
@@ -442,10 +432,8 @@ public class Http {
             Cookie cdnCookie = cookieMap.get(host);
             while (cookieIterator.hasNext()) {
                 Cookie cookie = cookieIterator.next();
-                if (host.equals(cookie.domain()) && cookie.secure() && cookie.httpOnly() &&
-                        cookie.expiresAt() < (System.currentTimeMillis() + 1000 * 60 * 60 * 48)) {
-                    if (cdnCookie != null &&
-                            !cdnCookie.name().equals(cookie.name())) {
+                if (host.equals(cookie.domain()) && cookie.secure() && cookie.httpOnly() && cookie.expiresAt() < (System.currentTimeMillis() + 1000 * 60 * 60 * 48)) {
+                    if (cdnCookie != null && !cdnCookie.name().equals(cookie.name())) {
                         cookieMap.remove(host);
                         cdnCookie = null;
                         break;
@@ -488,8 +476,7 @@ public class Http {
         private final HashMap<String, List<InetAddress>> fallbackCache;
 
         public FallBackDNS(Context context, Dns parent, String... fallbacks) {
-            this.sharedPreferences = context.getSharedPreferences(
-                    "mmm_dns", Context.MODE_PRIVATE);
+            this.sharedPreferences = context.getSharedPreferences("mmm_dns", Context.MODE_PRIVATE);
             this.parent = parent;
             this.fallbacks = new HashSet<>(Arrays.asList(fallbacks));
             this.fallbackCache = new HashMap<>();
@@ -502,15 +489,13 @@ public class Http {
             StringBuilder stringBuilder = new StringBuilder();
             while (true) {
                 stringBuilder.append(inetAddressIterator.next().getHostAddress());
-                if (!inetAddressIterator.hasNext())
-                    return stringBuilder.toString();
+                if (!inetAddressIterator.hasNext()) return stringBuilder.toString();
                 stringBuilder.append("|");
             }
         }
 
         @NonNull
-        private static List<InetAddress> fromString(@NonNull String string)
-                throws UnknownHostException {
+        private static List<InetAddress> fromString(@NonNull String string) throws UnknownHostException {
             if (string.isEmpty()) return Collections.emptyList();
             String[] strings = string.split("\\|");
             ArrayList<InetAddress> inetAddresses = new ArrayList<>(strings.length);
@@ -527,25 +512,21 @@ public class Http {
                 List<InetAddress> addresses;
                 synchronized (this.fallbackCache) {
                     addresses = this.fallbackCache.get(s);
-                    if (addresses != null)
-                        return addresses;
+                    if (addresses != null) return addresses;
                     try {
                         addresses = this.parent.lookup(s);
                         if (addresses.isEmpty() || addresses.get(0).isLoopbackAddress())
                             throw new UnknownHostException(s);
                         this.fallbackCache.put(s, addresses);
-                        this.sharedPreferences.edit().putString(
-                                s.replace('.', '_'), toString(addresses)).apply();
+                        this.sharedPreferences.edit().putString(s.replace('.', '_'), toString(addresses)).apply();
                     } catch (UnknownHostException e) {
-                        String key = this.sharedPreferences.getString(
-                                s.replace('.', '_'), "");
+                        String key = this.sharedPreferences.getString(s.replace('.', '_'), "");
                         if (key.isEmpty()) throw e;
                         try {
                             addresses = fromString(key);
                             this.fallbackCache.put(s, addresses);
                         } catch (UnknownHostException e2) {
-                            this.sharedPreferences.edit().remove(
-                                    s.replace('.', '_')).apply();
+                            this.sharedPreferences.edit().remove(s.replace('.', '_')).apply();
                             throw e;
                         }
                     }

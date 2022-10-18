@@ -5,9 +5,5 @@
         <trust-anchors>
             <certificates src="@raw/androidacy_root_ca" />
         </trust-anchors>
-        <pin-set expiration="2023-03-16">
-            <pin digest="SHA-256">6x/7mHVkS/6XLcenTc5gxonnGPTB1MD5mPQFqHTbfa4=</pin>
-            <pin digest="SHA-256">Y9mvm0exBk1JoQ57f9Vm28jKo5lFm/woKcVxrYxu80o=</pin>
-        </pin-set>
     </domain-config>
 </network-security-config>
