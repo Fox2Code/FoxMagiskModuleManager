@@ -1,4 +1,5 @@
 plugins {
+    // Gradle doesn't allow conditionally enabling/disabling plugins
     id "io.sentry.android.gradle" version "3.1.5"
     id 'com.android.application'
     id 'com.mikepenz.aboutlibraries.plugin'
@@ -78,16 +79,18 @@ aboutLibraries {
     additionalLicenses = ["LGPL_3_0_only"]
 }
 
+// "true" is not allowed inside this block, use "hasSentryConfig" instead.
+// This is because gradle doesn't allow to enable/disable plugins conditionally
 sentry {
     // Disable sentry on F-Droid flavor
-    ignoredFlavors = ["fdroid"]
+    ignoredFlavors = hasSentryConfig ? [] : ["default", "fdroid"]
 
     // Disables or enables the handling of Proguard mapping for Sentry.
     // If enabled the plugin will generate a UUID and will take care of
     // uploading the mapping to Sentry. If disabled, all the logic
     // related to proguard mapping will be excluded.
     // Default is enabled.
-    includeProguardMapping = true
+    includeProguardMapping = hasSentryConfig
 
     // Whether the plugin should attempt to auto-upload the mapping file to Sentry or not.
     // If disabled the plugin will run a dry-run and just generate a UUID.
@@ -98,7 +101,7 @@ sentry {
     // Experimental flag to turn on support for GuardSquare's tools integration (Dexguard and External Proguard).
     // If enabled, the plugin will try to consume and upload the mapping file produced by Dexguard and External Proguard.
     // Default is disabled.
-    experimentalGuardsquareSupport = true
+    experimentalGuardsquareSupport = hasSentryConfig
 
     // Disables or enables the automatic configuration of Native Symbols
     // for Sentry. This executes sentry-cli automatically so
@@ -110,20 +113,20 @@ sentry {
     // This executes sentry-cli with the --include-sources param. automatically so
     // you don't need to do it manually.
     // Default is disabled.
-    includeNativeSources = true
+    includeNativeSources = hasSentryConfig
 
     // Enable or disable the tracing instrumentation.
     // Does auto instrumentation for specified features through bytecode manipulation.
     // Default is enabled.
     tracingInstrumentation {
-        enabled = true
+        enabled = hasSentryConfig
     }
 
     // Enable auto-installation of Sentry components (sentry-android SDK and okhttp, timber and fragment integrations).
     // Default is enabled.
     // Only available v3.1.0 and above.
     autoInstallation {
-        enabled = true
+        enabled = hasSentryConfig
 
         // Specifies a version of the sentry-android SDK and fragment, timber and okhttp integrations.
         //
@@ -140,6 +143,13 @@ sentry {
 
 configurations {
     implementation.exclude group: 'org.jetbrains', module: 'annotations'
+    if (!hasSentryConfig) {
+        implementation.exclude group: 'io.sentry', module: 'sentry-android'
+        implementation.exclude group: 'io.sentry', module: 'sentry-android-fragment'
+        implementation.exclude group: 'io.sentry', module: 'sentry-android-okhttp'
+        implementation.exclude group: 'io.sentry', module: 'sentry-android-core'
+        implementation.exclude group: 'io.sentry', module: 'sentry-android-ndk'
+    }
 }
 
 dependencies {
@@ -169,12 +179,14 @@ dependencies {
     implementation 'com.github.Fox2Code:RosettaX:1.0.9'
     implementation 'com.github.Fox2Code:AndroidANSI:1.0.1'
 
-    // Error reporting
-    defaultImplementation 'io.sentry:sentry-android:6.5.0'
-    defaultImplementation 'io.sentry:sentry-android-fragment:6.5.0'
-    defaultImplementation 'io.sentry:sentry-android-okhttp:6.5.0'
-    defaultImplementation 'io.sentry:sentry-android-core:6.5.0'
-    defaultImplementation 'io.sentry:sentry-android-ndk:6.5.0'
+    if (hasSentryConfig) {
+        // Error reporting
+        defaultImplementation 'io.sentry:sentry-android:6.5.0'
+        defaultImplementation 'io.sentry:sentry-android-fragment:6.5.0'
+        defaultImplementation 'io.sentry:sentry-android-okhttp:6.5.0'
+        defaultImplementation 'io.sentry:sentry-android-core:6.5.0'
+        defaultImplementation 'io.sentry:sentry-android-ndk:6.5.0'
+    }
 
     // Markdown
     implementation "io.noties.markwon:core:4.6.2"
@@ -200,5 +212,27 @@ if (hasSentryConfig) {
         environment "SENTRY_ORG", properties.getProperty("defaults.org")
         environment "SENTRY_URL", properties.getProperty("defaults.url")
         environment "SENTRY_AUTH_TOKEN", properties.getProperty("auth.token")
+    }
+}
+
+final String sentrySrc = hasSentryConfig ? 'src/sentry/java' : 'src/sentryless/java'
+final String sentryManifestSrc = hasSentryConfig ?
+        'src/sentry/AndroidManifest.xml' : 'src/sentryless/AndroidManifest.xml'
+
+android {
+    sourceSets {
+        main {
+            java.srcDirs += sentrySrc
+            // manifest.srcFile += sentryManifestSrc // Not supported
+        }
+
+        // Workaround useless gradle restriction
+        "default" {
+            manifest.srcFile sentryManifestSrc
+        }
+
+        fdroid {
+            manifest.srcFile sentryManifestSrc
+        }
     }
 }

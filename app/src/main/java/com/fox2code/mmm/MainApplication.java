@@ -46,10 +46,6 @@ import io.noties.markwon.syntax.Prism4jThemeDefault;
 import io.noties.markwon.syntax.SyntaxHighlightPlugin;
 import io.noties.prism4j.Prism4j;
 import io.noties.prism4j.annotations.PrismBundle;
-import io.sentry.JsonObjectWriter;
-import io.sentry.NoOpLogger;
-import io.sentry.android.core.SentryAndroid;
-import io.sentry.android.fragment.FragmentLifecycleIntegration;
 
 @PrismBundle(
         includeAll = true,

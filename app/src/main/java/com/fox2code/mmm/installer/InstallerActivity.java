@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import androidx.annotation.Keep;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fox2code.androidansi.AnsiConstants;
@@ -272,6 +273,7 @@ public class InstallerActivity extends FoxActivity {
     }
 
 
+    @Keep
     private void doInstall(File file, boolean noExtensions, boolean rootless) {
         if (this.canceled) return;
         UiThreadHandler.runAndWait(() -> {
