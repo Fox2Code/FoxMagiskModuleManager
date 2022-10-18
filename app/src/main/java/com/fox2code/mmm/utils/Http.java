@@ -180,7 +180,7 @@ public class Http {
     @SuppressLint("SetJavaScriptEnabled")
     public static void captchaWebview(String url) {
         if (hasWebView) {
-           // Open the specified url in a webview
+            // Open the specified url in a webview
             WebView webView = new WebView(mainApplication);
             webView.getSettings().setJavaScriptEnabled(true);
             webView.getSettings().setUserAgentString(androidacyUA);
@@ -203,13 +203,11 @@ public class Http {
         }
         Response response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).get().build()).execute();
         // 200/204 == success, 304 == cache valid
-        if (response.code() != 200 && response.code() != 204 && (response.code() != 304 || !allowCache)) {
-            // If error is 403 and it's an Androidacy link, it's probably a 403 from Cloudflare
-            // and we should open a webview to solve the captcha
-            if (response.code() == 403 && AndroidacyUtil.isAndroidacyLink(url)) {
-                // Open webview to solve captcha
-                captchaWebview(url);
-            }
+        if (response.code() == 403 && AndroidacyUtil.isAndroidacyLink(url)) {
+            // Open webview to solve captcha
+            Log.e(TAG, "Received 403 error code, opening webview to solve captcha");
+            captchaWebview(url);
+        } else if (response.code() != 200 && response.code() != 204 && (response.code() != 304 || !allowCache)) {
             throw new IOException("Received error code: " + response.code());
         }
         ResponseBody responseBody = response.body();
@@ -243,8 +241,6 @@ public class Http {
             // Open webview to solve captcha
             Log.e(TAG, "Received 403 error code, opening webview to solve captcha");
             captchaWebview(url);
-        } else if (isRedirect) {
-            return url;
         } else if (response.code() != 200 && response.code() != 204 && (response.code() != 304 || !allowCache)) {
             throw new IOException("Received error code: " + response.code());
         }
