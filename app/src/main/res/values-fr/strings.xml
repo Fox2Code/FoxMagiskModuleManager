@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Gestionnaire de modules Magisk de Fox</string>
     <string name="app_name_short">Gestionnaire de Fox</string>
     <string name="fail_root_magisk">Échec de l\’accès à la racine ou à Magisk</string>
+    <string name="fail_root_denied">L\’accès raçine a été refusé par l\’application Magisk</string>
+    <string name="fail_magisk_missing">Magisk n\’est pas installé sur ce périphérique</string>
     <string name="loading">Chargement…</string>
     <string name="updatable">Actualisable</string>
     <string name="installed">Installé</string>
@@ -41,6 +42,7 @@
     <string name="no" translatable="false">@android:string/no</string>
     <string name="ok" translatable="false">@android:string/ok</string>
     <string name="cancel" translatable="false">@android:string/cancel</string>
+    
     <!-- Module section translation -->
     <string name="module_last_update">Dernière mis-à-jour :</string>
     <string name="module_repo">Dépôt :</string>
@@ -54,6 +56,7 @@
     <string name="module_min_magisk_chip">Magisk min. "%s"</string>
     <string name="module_min_sdk_chip">Android Min.</string>
     <string name="module_max_sdk_chip">Android Max.</string>
+    
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">Gestion des dépôts</string>
@@ -84,6 +87,7 @@
     <string name="module_id_prefix">Id du module :</string>
     <string name="install_from_storage">Installer un module depuis le stockage</string>
     <string name="invalid_format">Le module sélectionné est dans un format invalide</string>
+    <string name="low_quality_module">Module de qualité médiocre</string>
     <string name="local_install_title">Installation locale</string>
     <string name="source_code">Code source</string>
     <string name="magisk_builtin_module">Module intégré à Magisk</string>
@@ -93,12 +97,18 @@
     <string name="remote_install_title">Installation à distance</string>
     <string name="file_picker_wierd">Votre sélecteur de fichier n\’a pas renvoyé une réponse standart.</string>
     <string name="use_magisk_install_command_pref">Utiliser la commande d\’installation de module</string>
-    <string name="use_magisk_install_command_desc">Pendant le test, il a causé des problèmes à loutil de diagnostic derreur dinstallation du module, donc jai caché cette option derrière le mode développeur, activez-la à vos risques et périls !</string>
+    <string name="use_magisk_install_command_desc">
+        Pendant le test, il a causé des problèmes à loutil de diagnostic derreur dinstallation du module,
+        cette option est donc cachée derrière le mode développeur. Activez-la à vos risques et périls !
+    </string>
     <string name="dev_mode_enabled">Mode développeur activé</string>
     <string name="dev_mode_disabled">Mode développeur désactivé</string>
     <string name="force_english_pref">Forcer la langue Anglaise</string>
     <string name="disable_low_quality_module_filter_pref">Désactiver le filtre de module de basse qualité</string>
-    <string name="disable_low_quality_module_filter_desc">Certains modules ne déclarent pas leur métadonnées correctement, causant des bugs visuels, et/ou indicant une qualité de module and/or indiquant une mauvaise qualité du module, à désactiver à vos risques et périls !</string>
+    <string name="disable_low_quality_module_filter_desc">
+        Certains modules ne déclarent pas leur métadonnées correctement, causant des bugs visuels,
+        et/ou indicant une qualité de module and/or indiquant une mauvaise qualité du module, à désactiver à vos risques et périls !
+    </string>
     <string name="dns_over_https_pref">DNS sur https</string>
     <string name="dns_over_https_desc">
         Pourrait corriger les problèmes de connexions dans certains cas.
@@ -110,7 +120,10 @@
         les extensions du terminal, très pratique si un module n\’utilise pas correctement les extensions du Gestionnaire de Fox.
     </string>
     <string name="wrap_text_pref">Mise en forme du texte</string>
-    <string name="wrap_text_desc">Mise en forme du texte avec une nouvelle ligne au lieu de mettre tout le texte sur la même ligne lors de linstallation dun module.</string>
+    <string name="wrap_text_desc">
+        Mise en forme du texte avec une nouvelle ligne au lieu de mettre
+        tout le texte sur la même ligne lors de linstallation dun module.
+    </string>
     <string name="enable_blur_pref">Activer l\’effet de flou</string>
     <string name="disable_chips_in_description">Désactiver chips dans la description</string>
     <string name="repo_enabled">Dépôt activé</string>
@@ -118,11 +131,13 @@
     <string name="add_repo">Ajouter dépôt</string>
     <string name="remove_repo">Supprimer dépôt</string>
     <string name="custom_url">URL personnalisée</string>
+    <string name="androidacy_repo_info">Ce dépôt pourrait afficher certaines publicitées non intruisives pour pallier aux couts financiers des serveurs et du développement.</string>
     <string name="backup_module_list">Sauvegarder les modules</string>
     <string name="restore_module_list">Restaurer les modules</string>
     <string name="require_internet">Cette opération requière une connexion internet</string>
     <string name="androidacy_test_mode_pref">Mode test Androidacy</string>
     <string name="androidacy_test_mode_desc">Utiliser la mise à disposition Androidacy de test au lieu du point de terminaison stable. (Nécessite le redémarrage du processus d\’application)</string>
+    
     <!-- Background Notification translation -->
     <string name="notification_update_title">%i mises à jours de module trouvé</string>
     <string name="notification_update_title_easter_egg">%i mises à jours de module camouflée</string>
@@ -130,11 +145,13 @@
     <string name="notification_update_pref">Vérification de mise à jour pour les modules en arrière-plan</string>
     <string name="notification_update_desc">Peut améliorer l\’usage de la batterie</string>
     <string name="notification_update_debug_pref">Test de notification</string>
+    
     <!-- Set to true in translation file if your language is right to left -->
     <bool name="lang_support_rtl">false</bool>
     <!-- Always copy language_support_level when translating -->
     <integer name="language_support_level">1</integer>
-    <string name="language_support_outdated">Certaines traductions pour la langue actuelle ne sont pas à jour, merci de considérer une contribution aux traudcitons sur Github</string>
+    <string name="language_support_outdated">Certaines traductions pour la langue actuelle ne sont
+        pas à jour, merci de considérer une contribution aux traductions sur Github</string>
     <!-- Replace with your own username when translating -->
     <string name="language_translated_by">Traduit par xerta555</string>
     <string name="crash_reporting">Soumettre automatiquement les bugs et performances auxdéveloppeurs</string>
@@ -155,4 +172,11 @@
     <string name="crash">Planter l\’application pour tester</string>
     <string name="repackaged_as">Reconstituer en :</string>
     <string name="wrapped_from">Emballé depuis :</string>
+    <string name="crash_reporting_restart_title">Redémarrer l\’application pour appliquer les changements?</string>
+    <string name="crash_reporting_restart_message">L\’application nécessite un redémarrage pour appliquer les réglages</string>
+    <string name="restart">Redémarrer</string>
+    <string name="androidacy_test_mode_disable_warning">L\’application sera redémarrée pour dépasser le point de passage de mise à disposition.</string>
+    <string name="androidacy_failed_to_parse_token">La clé n\’a pas pu être retrouvée sur Androidacy. Merci de retenter ultérieurement.</string>
+    <string name="androidacy_failed_to_validate_token">La clé n\’a pas pu être validée chez Androidacy. Merci de retenter ultérieurement.</string>
+    <string name="androidacy_server_down">Impossible de contacter les serveurs d\’Androidacy. Vérifiez votre connexion et réessayer.</string>
 </resources>
