@@ -204,10 +204,6 @@ public class MainApplication extends FoxApplication
     private FoxThemeWrapper markwonThemeContext;
     private Markwon markwon;
 
-    public static MainApplication getInstance() {
-        return INSTANCE;
-    }
-
     public Markwon getMarkwon() {
         if (this.markwon != null)
             return this.markwon;

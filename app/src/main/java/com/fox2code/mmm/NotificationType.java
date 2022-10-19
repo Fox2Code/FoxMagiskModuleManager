@@ -10,6 +10,7 @@ import androidx.annotation.StringRes;
 
 import com.fox2code.foxcompat.FoxActivity;
 import com.fox2code.mmm.installer.InstallerInitializer;
+import com.fox2code.mmm.module.ModuleViewListBuilder;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.utils.Files;
 import com.fox2code.mmm.utils.Http;
@@ -67,6 +68,15 @@ public enum NotificationType implements NotificationTypeCst {
         public boolean shouldRemove() {
             return AppUpdateManager.getAppUpdateManager().isLastCheckSuccess() ||
                     RepoManager.getINSTANCE().hasConnectivity();
+        }
+    },
+    NEED_CAPTCHA_ANDROIDACY(R.string.androidacy_need_captcha, R.drawable.ic_baseline_refresh_24, v ->
+            IntentHelper.openUrlAndroidacy(v.getContext(),
+                    "https://" + Http.needCaptchaAndroidacyHost() + "/", false)) {
+        @Override
+        public boolean shouldRemove() {
+            return !RepoManager.isAndroidacyRepoEnabled()
+                    || !Http.needCaptchaAndroidacy();
         }
     },
     NO_WEB_VIEW(R.string.no_web_view, R.drawable.ic_baseline_android_24) {
@@ -180,5 +190,9 @@ public enum NotificationType implements NotificationTypeCst {
 
     public boolean shouldRemove() {
         return false;
+    }
+
+    public final void autoAdd(ModuleViewListBuilder moduleViewListBuilder) {
+        if (!shouldRemove()) moduleViewListBuilder.addNotification(this);
     }
 }

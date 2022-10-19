@@ -2,7 +2,6 @@ package com.fox2code.mmm.androidacy;
 
 import android.content.SharedPreferences;
 import android.util.Log;
-import android.webkit.CookieManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -14,13 +13,16 @@ import com.fox2code.mmm.repo.RepoData;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.repo.RepoModule;
 import com.fox2code.mmm.utils.Http;
+import com.fox2code.mmm.utils.HttpException;
 import com.fox2code.mmm.utils.PropUtils;
+import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -73,22 +75,19 @@ public final class AndroidacyRepoData extends RepoData {
         return url;
     }
 
-    public <string> boolean isValidToken(string token) {
+    public boolean isValidToken(String token) throws IOException {
         try {
             Http.doHttpGet("https://" + this.host + "/auth/me?token=" + token, false);
-        } catch (Exception e) {
-            if ("Received error code: 419".equals(e.getMessage()) || "Received error code: 429".equals(e.getMessage())) {
-                Log.e(TAG, "We are being rate limited!", e);
-                long time = System.currentTimeMillis();
-                this.androidacyBlockade = time + 3_600_000L;
+        } catch (HttpException e) {
+            if (e.getErrorCode() == 401) {
+                Log.w(TAG, "Invalid token, resetting...");
+                // Remove saved preference
+                SharedPreferences.Editor editor = this.cachedPreferences.edit();
+                editor.remove("androidacy_api_token");
+                editor.apply();
                 return false;
             }
-            Log.w(TAG, "Invalid token, resetting...");
-            // Remove saved preference
-            SharedPreferences.Editor editor = this.cachedPreferences.edit();
-            editor.remove("androidacy_api_token");
-            editor.apply();
-            return false;
+            throw e;
         }
         // If status code is 200, we are good
         return true;
@@ -96,6 +95,7 @@ public final class AndroidacyRepoData extends RepoData {
 
     @Override
     protected boolean prepare() {
+        if (Http.needCaptchaAndroidacy()) return false;
         // Implementation details discussed on telegram
         // First, ping the server to check if it's alive
         try {
@@ -103,19 +103,30 @@ public final class AndroidacyRepoData extends RepoData {
         } catch (Exception e) {
             Log.e(TAG, "Failed to ping server", e);
             // Inform user
-            new Thread(() -> Toast.makeText(MainApplication.getINSTANCE(), R.string.androidacy_server_down, Toast.LENGTH_LONG).show()).start();
+            if (!HttpException.shouldTimeout(e)) {
+                UiThreadHandler.run(() -> Toast.makeText(MainApplication.getINSTANCE(),
+                        R.string.androidacy_server_down, Toast.LENGTH_SHORT).show());
+            }
             return false;
         }
         long time = System.currentTimeMillis();
         if (this.androidacyBlockade > time) return false;
         this.androidacyBlockade = time + 30_000L;
-        if (this.token == null) {
-            this.token = this.cachedPreferences.getString("pref_androidacy_api_token", null);
-            if (this.token != null && !this.isValidToken(this.token)) {
+        try {
+            if (this.token == null) {
+                this.token = this.cachedPreferences.getString("pref_androidacy_api_token", null);
+                if (this.token != null && !this.isValidToken(this.token)) {
+                    this.token = null;
+                }
+            } else if (!this.isValidToken(this.token)) {
                 this.token = null;
             }
-        } else if (!this.isValidToken(this.token)) {
-            this.token = null;
+        } catch (IOException e) {
+            if (HttpException.shouldTimeout(e)) {
+                Log.e(TAG, "We are being rate limited!", e);
+                this.androidacyBlockade = time + 3_600_000L;
+            }
+            return false;
         }
         if (token == null) {
             try {
@@ -142,7 +153,7 @@ public final class AndroidacyRepoData extends RepoData {
                 // Save token to shared preference
                 MainApplication.getSharedPreferences().edit().putString("pref_androidacy_api_token", token).apply();
             } catch (Exception e) {
-                if ("Received error code: 419".equals(e.getMessage()) || "Received error code: 429".equals(e.getMessage()) || "Received error code: 503".equals(e.getMessage())) {
+                if (HttpException.shouldTimeout(e)) {
                     Log.e(TAG, "We are being rate limited!", e);
                     this.androidacyBlockade = time + 3_600_000L;
                 }
@@ -308,10 +319,8 @@ public final class AndroidacyRepoData extends RepoData {
         return this.token;
     }
 
-    void setToken(String token) {
+    public void setToken(String token) {
         if (Http.hasWebView()) {
-            // TODO: Figure out why this is needed
-            CookieManager.getInstance().setCookie("https://.androidacy.com/", "USER=" + token + "; expires=Fri, 31 Dec 9999 23:59:59 GMT;" + " path=/; secure; domain=.androidacy.com");
             this.token = token;
         }
     }
