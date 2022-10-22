@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -276,24 +278,42 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             });
 
             final LibsBuilder libsBuilder = new LibsBuilder().withShowLoadingProgress(false).withLicenseShown(true).withAboutMinimalDesign(false);
-            Preference update = findPreference("pref_update");
-            update.setVisible(BuildConfig.ENABLE_AUTO_UPDATER && (BuildConfig.DEBUG || AppUpdateManager.getAppUpdateManager().peekHasUpdate()));
-            update.setOnPreferenceClickListener(p -> {
+            ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
+            LongClickablePreference linkClickable = findPreference("pref_update");
+            linkClickable.setVisible(BuildConfig.ENABLE_AUTO_UPDATER &&
+                    (BuildConfig.DEBUG || AppUpdateManager.getAppUpdateManager().peekHasUpdate()));
+            linkClickable.setOnPreferenceClickListener(p -> {
                 devModeStep = 0;
                 IntentHelper.openUrl(p.getContext(), "https://github.com/Fox2Code/FoxMagiskModuleManager/releases");
                 return true;
             });
+            linkClickable.setOnPreferenceLongClickListener(p -> {
+                String toastText = requireContext().getString(R.string.link_copied);
+                clipboard.setPrimaryClip(ClipData.newPlainText(toastText,
+                        "https://github.com/Fox2Code/FoxMagiskModuleManager/releases"));
+                Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
+                return true;
+            });
             if (BuildConfig.DEBUG || BuildConfig.ENABLE_AUTO_UPDATER) {
-                findPreference("pref_report_bug").setOnPreferenceClickListener(p -> {
+                linkClickable = findPreference("pref_report_bug");
+                linkClickable.setOnPreferenceClickListener(p -> {
                     devModeStep = 0;
                     devModeStepFirstBootIgnore = true;
                     IntentHelper.openUrl(p.getContext(), "https://github.com/Fox2Code/FoxMagiskModuleManager/issues");
                     return true;
                 });
+                linkClickable.setOnPreferenceLongClickListener(p -> {
+                    String toastText = requireContext().getString(R.string.link_copied);
+                    clipboard.setPrimaryClip(ClipData.newPlainText(toastText,
+                            "https://github.com/Fox2Code/FoxMagiskModuleManager/issues"));
+                    Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
+                    return true;
+                });
             } else {
                 findPreference("pref_report_bug").setVisible(false);
             }
-            findPreference("pref_source_code").setOnPreferenceClickListener(p -> {
+            linkClickable = findPreference("pref_source_code");
+            linkClickable.setOnPreferenceClickListener(p -> {
                 if (devModeStep == 2) {
                     devModeStep = 0;
                     if (MainApplication.isDeveloper() && !BuildConfig.DEBUG) {
@@ -311,9 +331,24 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 IntentHelper.openUrl(p.getContext(), "https://github.com/Fox2Code/FoxMagiskModuleManager");
                 return true;
             });
-            findPreference("pref_support").setOnPreferenceClickListener(p -> {
+            linkClickable.setOnPreferenceLongClickListener(p -> {
+                String toastText = requireContext().getString(R.string.link_copied);
+                clipboard.setPrimaryClip(ClipData.newPlainText(toastText,
+                        "https://github.com/Fox2Code/FoxMagiskModuleManager"));
+                Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
+                return true;
+            });
+            linkClickable = findPreference("pref_support");
+            linkClickable.setOnPreferenceClickListener(p -> {
                 devModeStep = 0;
                 IntentHelper.openUrl(p.getContext(), "https://t.me/Fox2Code_Chat");
+                return true;
+            });
+            linkClickable.setOnPreferenceLongClickListener(p -> {
+                String toastText = requireContext().getString(R.string.link_copied);
+                clipboard.setPrimaryClip(ClipData.newPlainText(toastText,
+                        "https://t.me/Fox2Code_Chat"));
+                Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
                 return true;
             });
             findPreference("pref_show_licenses").setOnPreferenceClickListener(p -> {
@@ -631,6 +666,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         }
 
         private void setRepoData(final RepoData repoData, String preferenceName) {
+            ClipboardManager clipboard = (ClipboardManager)
+                    requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
             if (repoData == null || repoData.isForceHide()) {
                 hideRepoData(preferenceName);
                 return;
@@ -661,6 +698,12 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         }
                         return true;
                     });
+                    ((LongClickablePreference) preference).setOnPreferenceLongClickListener(p -> {
+                        String toastText = requireContext().getString(R.string.link_copied);
+                        clipboard.setPrimaryClip(ClipData.newPlainText(toastText, homepage));
+                        Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
+                        return true;
+                    });
                 } else {
                     preference.setVisible(false);
                 }
@@ -675,6 +718,12 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         IntentHelper.openUrl(getFoxActivity(this), supportUrl);
                         return true;
                     });
+                    ((LongClickablePreference) preference).setOnPreferenceLongClickListener(p -> {
+                        String toastText = requireContext().getString(R.string.link_copied);
+                        clipboard.setPrimaryClip(ClipData.newPlainText(toastText, supportUrl));
+                        Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
+                        return true;
+                    });
                 } else {
                     preference.setVisible(false);
                 }
@@ -687,6 +736,12 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     preference.setIcon(ActionButtonType.donateIconForUrl(donateUrl));
                     preference.setOnPreferenceClickListener(p -> {
                         IntentHelper.openUrl(getFoxActivity(this), donateUrl);
+                        return true;
+                    });
+                    ((LongClickablePreference) preference).setOnPreferenceLongClickListener(p -> {
+                        String toastText = requireContext().getString(R.string.link_copied);
+                        clipboard.setPrimaryClip(ClipData.newPlainText(toastText, donateUrl));
+                        Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
                         return true;
                     });
                 } else {
@@ -704,6 +759,12 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         } else {
                             IntentHelper.openUrl(getFoxActivity(this), submissionUrl);
                         }
+                        return true;
+                    });
+                    ((LongClickablePreference) preference).setOnPreferenceLongClickListener(p -> {
+                        String toastText = requireContext().getString(R.string.link_copied);
+                        clipboard.setPrimaryClip(ClipData.newPlainText(toastText, submissionUrl));
+                        Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
                         return true;
                     });
                 } else {

@@ -132,22 +132,22 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/pref_category_info">
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:icon="@drawable/ic_baseline_system_update_24"
             app:key="pref_update"
             app:singleLineTitle="false"
             app:title="@string/app_update" />
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:icon="@drawable/ic_baseline_bug_report_24"
             app:key="pref_report_bug"
             app:singleLineTitle="false"
             app:title="@string/report_bugs" />
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:icon="@drawable/ic_github"
             app:key="pref_source_code"
             app:singleLineTitle="false"
             app:title="@string/source_code" />
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:icon="@drawable/ic_baseline_telegram_24"
             app:key="pref_support"
             app:singleLineTitle="false"
