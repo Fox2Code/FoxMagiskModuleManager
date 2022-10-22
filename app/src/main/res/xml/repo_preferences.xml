@@ -10,22 +10,22 @@
             app:switchTextOn="@string/repo_enabled"
             app:switchTextOff="@string/repo_disabled"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_magisk_alt_repo_website"
             app:icon="@drawable/ic_baseline_language_24"
             app:title="@string/website"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_magisk_alt_repo_support"
             app:icon="@drawable/ic_baseline_support_24"
             app:title="@string/support"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_magisk_alt_repo_donate"
             app:icon="@drawable/ic_baseline_monetization_on_24"
             app:title="@string/donate"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_magisk_alt_repo_submit"
             app:icon="@drawable/ic_baseline_upload_file_24"
             app:title="@string/submit_modules"
@@ -61,22 +61,22 @@
             app:summary="@string/androidacy_test_mode_desc"
             app:dependency="pref_androidacy_repo_enabled"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_androidacy_repo_website"
             app:icon="@drawable/ic_baseline_language_24"
             app:title="@string/website"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_androidacy_repo_support"
             app:icon="@drawable/ic_baseline_telegram_24"
             app:title="@string/support"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_androidacy_repo_donate"
             app:icon="@drawable/ic_patreon"
             app:title="@string/donate"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_androidacy_repo_submit"
             app:icon="@drawable/ic_baseline_upload_file_24"
             app:title="@string/submit_modules"
@@ -97,22 +97,22 @@
             app:switchTextOn="@string/repo_enabled"
             app:switchTextOff="@string/repo_disabled"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_dg_magisk_repo_website"
             app:icon="@drawable/ic_baseline_language_24"
             app:title="@string/website"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_dg_magisk_repo_support"
             app:icon="@drawable/ic_baseline_support_24"
             app:title="@string/support"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_dg_magisk_repo_donate"
             app:icon="@drawable/ic_baseline_monetization_on_24"
             app:title="@string/donate"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_dg_magisk_repo_submit"
             app:icon="@drawable/ic_baseline_upload_file_24"
             app:title="@string/submit_modules"
@@ -127,27 +127,27 @@
             app:switchTextOn="@string/repo_enabled"
             app:switchTextOff="@string/repo_disabled"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_0_website"
             app:icon="@drawable/ic_baseline_language_24"
             app:title="@string/website"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_0_support"
             app:icon="@drawable/ic_baseline_support_24"
             app:title="@string/support"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_0_donate"
             app:icon="@drawable/ic_baseline_monetization_on_24"
             app:title="@string/donate"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_0_submit"
             app:icon="@drawable/ic_baseline_upload_file_24"
             app:title="@string/submit_modules"
             app:singleLineTitle="false" />
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_0_delete"
             app:icon="@drawable/ic_baseline_delete_forever_24"
             app:title="@string/remove_repo"
@@ -162,27 +162,27 @@
             app:switchTextOn="@string/repo_enabled"
             app:switchTextOff="@string/repo_disabled"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_1_website"
             app:icon="@drawable/ic_baseline_language_24"
             app:title="@string/website"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_1_support"
             app:icon="@drawable/ic_baseline_support_24"
             app:title="@string/support"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_1_donate"
             app:icon="@drawable/ic_baseline_monetization_on_24"
             app:title="@string/donate"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_1_submit"
             app:icon="@drawable/ic_baseline_upload_file_24"
             app:title="@string/submit_modules"
             app:singleLineTitle="false" />
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_1_delete"
             app:icon="@drawable/ic_baseline_delete_forever_24"
             app:title="@string/remove_repo"
@@ -197,27 +197,27 @@
             app:switchTextOn="@string/repo_enabled"
             app:switchTextOff="@string/repo_disabled"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_2_website"
             app:icon="@drawable/ic_baseline_language_24"
             app:title="@string/website"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_2_support"
             app:icon="@drawable/ic_baseline_support_24"
             app:title="@string/support"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_2_donate"
             app:icon="@drawable/ic_baseline_monetization_on_24"
             app:title="@string/donate"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_2_submit"
             app:icon="@drawable/ic_baseline_upload_file_24"
             app:title="@string/submit_modules"
             app:singleLineTitle="false" />
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_2_delete"
             app:icon="@drawable/ic_baseline_delete_forever_24"
             app:title="@string/remove_repo"
@@ -232,27 +232,27 @@
             app:switchTextOn="@string/repo_enabled"
             app:switchTextOff="@string/repo_disabled"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_3_website"
             app:icon="@drawable/ic_baseline_language_24"
             app:title="@string/website"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_3_support"
             app:icon="@drawable/ic_baseline_support_24"
             app:title="@string/support"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_3_donate"
             app:icon="@drawable/ic_baseline_monetization_on_24"
             app:title="@string/donate"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_3_submit"
             app:icon="@drawable/ic_baseline_upload_file_24"
             app:title="@string/submit_modules"
             app:singleLineTitle="false" />
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_3_delete"
             app:icon="@drawable/ic_baseline_delete_forever_24"
             app:title="@string/remove_repo"
@@ -267,27 +267,27 @@
             app:switchTextOn="@string/repo_enabled"
             app:switchTextOff="@string/repo_disabled"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_4_website"
             app:icon="@drawable/ic_baseline_language_24"
             app:title="@string/website"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_4_support"
             app:icon="@drawable/ic_baseline_support_24"
             app:title="@string/support"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_4_donate"
             app:icon="@drawable/ic_baseline_monetization_on_24"
             app:title="@string/donate"
             app:singleLineTitle="false"	/>
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_4_submit"
             app:icon="@drawable/ic_baseline_upload_file_24"
             app:title="@string/submit_modules"
             app:singleLineTitle="false" />
-        <Preference
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:key="pref_custom_repo_4_delete"
             app:icon="@drawable/ic_baseline_delete_forever_24"
             app:title="@string/remove_repo"
