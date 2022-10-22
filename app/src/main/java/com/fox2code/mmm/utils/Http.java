@@ -1,24 +1,23 @@
 package com.fox2code.mmm.utils;
 
-import static com.fox2code.mmm.MainApplication.getInstance;
-
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.system.ErrnoException;
 import android.system.Os;
 import android.util.Log;
-import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.R;
 import com.fox2code.mmm.androidacy.AndroidacyUtil;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.repo.RepoManager;
@@ -57,7 +56,6 @@ import okhttp3.dnsoverhttps.DnsOverHttps;
 import okio.BufferedSink;
 
 public class Http {
-    private static final MainApplication mainApplication = getInstance();
     private static final String TAG = "Http";
     private static final OkHttpClient httpClient;
     private static final OkHttpClient httpClientDoH;
@@ -177,25 +175,6 @@ public class Http {
         return doh ? httpClientWithCacheDoH : httpClientWithCache;
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
-    public static void captchaWebview(String url) {
-        if (hasWebView) {
-            // Open the specified url in a webview
-            WebView webView = new WebView(mainApplication);
-            webView.getSettings().setJavaScriptEnabled(true);
-            webView.getSettings().setUserAgentString(androidacyUA);
-            webView.getSettings().setDomStorageEnabled(true);
-            webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-            // Open the url in the webview
-            webView.loadUrl(url);
-            // Show the webview
-            webView.setVisibility(View.VISIBLE);
-        } else {
-            // Throw an exception if the webview is not available
-            throw new IllegalStateException("Webview is not available");
-        }
-    }
-
     @SuppressWarnings("resource")
     public static byte[] doHttpGet(String url, boolean allowCache) throws IOException {
         if (!RepoManager.isAndroidacyRepoEnabled() && AndroidacyUtil.isAndroidacyLink(url)) {
@@ -206,7 +185,8 @@ public class Http {
         if (response.code() == 403 && AndroidacyUtil.isAndroidacyLink(url)) {
             // Open webview to solve captcha
             Log.e(TAG, "Received 403 error code, opening webview to solve captcha");
-            captchaWebview(url);
+            // Show toast on main thread
+            new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(MainApplication.getInstance(), R.string.androidacy_server_down, Toast.LENGTH_LONG).show());
         } else if (response.code() != 200 && response.code() != 204 && (response.code() != 304 || !allowCache)) {
             throw new IOException("Received error code: " + response.code());
         }
@@ -240,7 +220,8 @@ public class Http {
         if (response.code() == 403 && AndroidacyUtil.isAndroidacyLink(url)) {
             // Open webview to solve captcha
             Log.e(TAG, "Received 403 error code, opening webview to solve captcha");
-            captchaWebview(url);
+            // Show toast on main thread
+            new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(MainApplication.getInstance(), R.string.androidacy_server_down, Toast.LENGTH_LONG).show());
         } else if (response.code() != 200 && response.code() != 204 && (response.code() != 304 || !allowCache)) {
             throw new IOException("Received error code: " + response.code());
         }

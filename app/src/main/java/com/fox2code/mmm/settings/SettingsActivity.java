@@ -387,6 +387,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
 
         @SuppressLint({"RestrictedApi", "UnspecifiedImmutableFlag"})
         public void onCreatePreferencesAndroidacy() {
+            // Bind the pref_show_captcha_webview to captchaWebview('https://production-api.androidacy.com/')
+            // Also require dev modeowCaptchaWebview.setVisible(false);
             Preference androidacyTestMode = Objects.requireNonNull(findPreference("pref_androidacy_test_mode"));
             if (!MainApplication.isDeveloper()) {
                 androidacyTestMode.setVisible(false);
