@@ -103,10 +103,10 @@ public final class AndroidacyRepoData extends RepoData {
         } catch (Exception e) {
             Log.e(TAG, "Failed to ping server", e);
             // Inform user
-            if (!HttpException.shouldTimeout(e)) {
+            /*if (!HttpException.shouldTimeout(e)) {
                 UiThreadHandler.run(() -> Toast.makeText(MainApplication.getINSTANCE(),
                         R.string.androidacy_server_down, Toast.LENGTH_SHORT).show());
-            }
+            }*/
             return false;
         }
         long time = System.currentTimeMillis();
