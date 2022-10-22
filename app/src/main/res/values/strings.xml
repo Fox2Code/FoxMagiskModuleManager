@@ -179,5 +179,5 @@
     <string name="androidacy_failed_to_parse_token">Could not retrieve token from Androidacy. Please try again later.</string>
     <string name="androidacy_failed_to_validate_token">Could not validate token for Androidacy. Please try again later.</string>
     <string name="androidacy_server_down">Unable to contact Androidacy server. Check your connection and try again.</string>
-    <string name="show_captcha">Test the captcha webview implementation</string>
+    <string name="androidacy_need_captcha">Androidacy update blocked by Captcha</string>
 </resources>

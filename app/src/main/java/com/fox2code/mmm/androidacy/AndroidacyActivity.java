@@ -91,6 +91,7 @@ public final class AndroidacyActivity extends FoxActivity {
             this.forceBackPressed();
             return;
         }
+        Http.markCaptchaAndroidacySolved();
         if (!url.contains(AndroidacyUtil.REFERRER)) {
             if (url.lastIndexOf('/') < url.lastIndexOf('?')) {
                 url = url + '&' + AndroidacyUtil.REFERRER;

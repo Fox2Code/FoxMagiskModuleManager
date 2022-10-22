@@ -2,22 +2,19 @@ package com.fox2code.mmm.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.system.ErrnoException;
 import android.system.Os;
 import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.WebSettings;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
-import com.fox2code.mmm.R;
 import com.fox2code.mmm.androidacy.AndroidacyUtil;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.repo.RepoManager;
@@ -67,6 +64,7 @@ public class Http {
     private static final CDNCookieJar cookieJar;
     private static final String androidacyUA;
     private static final boolean hasWebView;
+    private static String needCaptchaAndroidacyHost;
     private static boolean doh;
 
     static {
@@ -103,7 +101,16 @@ public class Http {
         httpclientBuilder.proxy(Proxy.NO_PROXY); // Do not use system proxy
         Dns dns = Dns.SYSTEM;
         try {
-            InetAddress[] cloudflareBootstrap = new InetAddress[]{InetAddress.getByName("162.159.36.1"), InetAddress.getByName("162.159.46.1"), InetAddress.getByName("1.1.1.1"), InetAddress.getByName("1.0.0.1"), InetAddress.getByName("162.159.132.53"), InetAddress.getByName("2606:4700:4700::1111"), InetAddress.getByName("2606:4700:4700::1001"), InetAddress.getByName("2606:4700:4700::0064"), InetAddress.getByName("2606:4700:4700::6400")};
+            InetAddress[] cloudflareBootstrap = new InetAddress[]{
+                    InetAddress.getByName("162.159.36.1"),
+                    InetAddress.getByName("162.159.46.1"),
+                    InetAddress.getByName("1.1.1.1"),
+                    InetAddress.getByName("1.0.0.1"),
+                    InetAddress.getByName("162.159.132.53"),
+                    InetAddress.getByName("2606:4700:4700::1111"),
+                    InetAddress.getByName("2606:4700:4700::1001"),
+                    InetAddress.getByName("2606:4700:4700::0064"),
+                    InetAddress.getByName("2606:4700:4700::6400")};
             dns = s -> {
                 if ("cloudflare-dns.com".equals(s)) {
                     return Arrays.asList(cloudflareBootstrap);
@@ -112,16 +119,21 @@ public class Http {
             };
             httpclientBuilder.dns(dns);
             httpclientBuilder.cookieJar(new CDNCookieJar());
-            dns = new DnsOverHttps.Builder().client(httpclientBuilder.build()).url(Objects.requireNonNull(HttpUrl.parse("https://cloudflare-dns.com/dns-query"))).bootstrapDnsHosts(cloudflareBootstrap).resolvePrivateAddresses(true).build();
+            dns = new DnsOverHttps.Builder().client(httpclientBuilder.build()).url(
+                    Objects.requireNonNull(HttpUrl.parse("https://cloudflare-dns.com/dns-query")))
+                    .bootstrapDnsHosts(cloudflareBootstrap).resolvePrivateAddresses(true).build();
         } catch (UnknownHostException | RuntimeException e) {
             Log.e(TAG, "Failed to init DoH", e);
         }
         httpclientBuilder.cookieJar(CookieJar.NO_COOKIES);
         // User-Agent format was agreed on telegram
         if (hasWebView) {
-            androidacyUA = WebSettings.getDefaultUserAgent(mainApplication).replace("wv", "FoxMmm" + "/" + BuildConfig.VERSION_CODE);
+            androidacyUA = WebSettings.getDefaultUserAgent(mainApplication)
+                    .replace("wv", "") + "FoxMmm/" + BuildConfig.VERSION_CODE;
         } else {
-            androidacyUA = "Mozilla/5.0 (Linux; Android " + Build.VERSION.RELEASE + "; " + Build.DEVICE + ")" + " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36" + " FoxMmm/" + BuildConfig.VERSION_CODE;
+            androidacyUA = "Mozilla/5.0 (Linux; Android " + Build.VERSION.RELEASE + "; " + Build.DEVICE + ")" +
+                    " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36" +
+                    " FoxMmm/" + BuildConfig.VERSION_CODE;
         }
         httpclientBuilder.addInterceptor(chain -> {
             Request.Builder request = chain.request().newBuilder();
@@ -129,7 +141,8 @@ public class Http {
             String host = chain.request().url().host();
             if (host.endsWith(".androidacy.com")) {
                 request.header("User-Agent", androidacyUA);
-            } else if (!(host.equals("github.com") || host.endsWith(".github.com") || host.endsWith(".jsdelivr.net") || host.endsWith(".githubusercontent.com"))) {
+            } else if (!(host.equals("github.com") || host.endsWith(".github.com") ||
+                    host.endsWith(".jsdelivr.net") || host.endsWith(".githubusercontent.com"))) {
                 if (InstallerInitializer.peekMagiskPath() != null) {
                     request.header("User-Agent", // Declare Magisk version to the server
                             "Magisk/" + InstallerInitializer.peekMagiskVersion());
@@ -142,7 +155,12 @@ public class Http {
             return chain.proceed(request.build());
         });
         // Fallback DNS cache responses in case request fail but already succeeded once in the past
-        fallbackDNS = new FallBackDNS(mainApplication, dns, "github.com", "api.github.com", "raw.githubusercontent.com", "camo.githubusercontent.com", "user-images.githubusercontent.com", "cdn.jsdelivr.net", "img.shields.io", "magisk-modules-repo.github.io", "www.androidacy.com", "api.androidacy.com");
+        fallbackDNS = new FallBackDNS(mainApplication, dns, "github.com", "api.github.com",
+                "raw.githubusercontent.com", "camo.githubusercontent.com",
+                "user-images.githubusercontent.com", "cdn.jsdelivr.net",
+                "img.shields.io", "magisk-modules-repo.github.io",
+                "www.androidacy.com", "api.androidacy.com",
+                "production-api.androidacy.com");
         httpclientBuilder.cookieJar(cookieJar = new CDNCookieJar(cookieManager));
         httpclientBuilder.dns(Dns.SYSTEM);
         httpClient = followRedirects(httpclientBuilder, true).build();
@@ -175,20 +193,44 @@ public class Http {
         return doh ? httpClientWithCacheDoH : httpClientWithCache;
     }
 
+    private static void checkNeedCaptchaAndroidacy(String url, int errorCode) {
+        if (errorCode == 403 && AndroidacyUtil.isAndroidacyLink(url)) {
+            needCaptchaAndroidacyHost = Uri.parse(url).getHost();
+        }
+    }
+
+    private static void checkNeedBlockAndroidacyRequest(String url) throws IOException {
+        if (!RepoManager.isAndroidacyRepoEnabled()) {
+            if (AndroidacyUtil.isAndroidacyLink(url)) {
+                throw new IOException("Androidacy repo is disabled, blocking url: " + url);
+            }
+        } else if (needCaptchaAndroidacy() && AndroidacyUtil.isAndroidacyLink(url)) {
+            throw new HttpException("Androidacy require the user to solve a captcha", 403);
+        }
+    }
+
+    public static boolean needCaptchaAndroidacy() {
+        return needCaptchaAndroidacyHost != null;
+    }
+    
+    public static String needCaptchaAndroidacyHost() {
+        return needCaptchaAndroidacyHost;
+    }
+
+    public static void markCaptchaAndroidacySolved() {
+        needCaptchaAndroidacyHost = null;
+    }
+
     @SuppressWarnings("resource")
     public static byte[] doHttpGet(String url, boolean allowCache) throws IOException {
-        if (!RepoManager.isAndroidacyRepoEnabled() && AndroidacyUtil.isAndroidacyLink(url)) {
-            throw new IOException("Androidacy repo is disabled, blocking url: " + url);
-        }
-        Response response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).get().build()).execute();
+        checkNeedBlockAndroidacyRequest(url);
+        Response response = (allowCache ? getHttpClientWithCache() : getHttpClient())
+                .newCall(new Request.Builder().url(url).get().build()).execute();
         // 200/204 == success, 304 == cache valid
-        if (response.code() == 403 && AndroidacyUtil.isAndroidacyLink(url)) {
-            // Open webview to solve captcha
-            Log.e(TAG, "Received 403 error code, opening webview to solve captcha");
-            // Show toast on main thread
-            new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(MainApplication.getInstance(), R.string.androidacy_server_down, Toast.LENGTH_LONG).show());
-        } else if (response.code() != 200 && response.code() != 204 && (response.code() != 304 || !allowCache)) {
-            throw new IOException("Received error code: " + response.code());
+        if (response.code() != 200 && response.code() != 204 &&
+                (response.code() != 304 || !allowCache)) {
+            checkNeedCaptchaAndroidacy(url, response.code());
+            throw new HttpException(response.code());
         }
         ResponseBody responseBody = response.body();
         // Use cache api if used cached response
@@ -209,21 +251,16 @@ public class Http {
 
     @SuppressWarnings("resource")
     private static Object doHttpPostRaw(String url, String data, boolean allowCache, boolean isRedirect) throws IOException {
-        if (!RepoManager.isAndroidacyRepoEnabled() && AndroidacyUtil.isAndroidacyLink(url)) {
-            throw new IOException("Androidacy repo is disabled, blocking url: " + url);
-        }
+        checkNeedBlockAndroidacyRequest(url);
         Response response = (isRedirect ? getHttpClientNoRedirect() : allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).post(JsonRequestBody.from(data)).header("Content-Type", "application/json").build()).execute();
         if (isRedirect && response.isRedirect()) {
             return response.request().url().uri().toString();
         }
         // 200/204 == success, 304 == cache valid
-        if (response.code() == 403 && AndroidacyUtil.isAndroidacyLink(url)) {
-            // Open webview to solve captcha
-            Log.e(TAG, "Received 403 error code, opening webview to solve captcha");
-            // Show toast on main thread
-            new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(MainApplication.getInstance(), R.string.androidacy_server_down, Toast.LENGTH_LONG).show());
-        } else if (response.code() != 200 && response.code() != 204 && (response.code() != 304 || !allowCache)) {
-            throw new IOException("Received error code: " + response.code());
+        if (response.code() != 200 && response.code() != 204 &&
+                (response.code() != 304 || !allowCache)) {
+            checkNeedCaptchaAndroidacy(url, response.code());
+            throw new HttpException(response.code());
         }
         ResponseBody responseBody = response.body();
         // Use cache api if used cached response
@@ -236,12 +273,11 @@ public class Http {
 
     public static byte[] doHttpGet(String url, ProgressListener progressListener) throws IOException {
         Log.d("Http", "Progress URL: " + url);
-        if (!RepoManager.isAndroidacyRepoEnabled() && AndroidacyUtil.isAndroidacyLink(url)) {
-            throw new IOException("Androidacy repo is disabled, blocking url: " + url);
-        }
+        checkNeedBlockAndroidacyRequest(url);
         Response response = getHttpClient().newCall(new Request.Builder().url(url).get().build()).execute();
         if (response.code() != 200 && response.code() != 204) {
-            throw new IOException("Received error code: " + response.code());
+            checkNeedCaptchaAndroidacy(url, response.code());
+            throw new HttpException(response.code());
         }
         ResponseBody responseBody = Objects.requireNonNull(response.body());
         InputStream inputStream = responseBody.byteStream();

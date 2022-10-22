@@ -211,6 +211,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                                 (int) (value * PRECISION), true) :() ->
                         progressIndicator.setProgressCompat(
                                 (int) (value * PRECISION * 0.75F), true)));
+                NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
                 if (!NotificationType.NO_INTERNET.shouldRemove()) {
                     moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
                 } else {
@@ -372,6 +373,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 NoodleDebug noodleDebug = NoodleDebug.getNoodleDebug();
                 if (MainApplication.isShowcaseMode())
                     moduleViewListBuilder.addNotification(NotificationType.SHOWCASE_MODE);
+                NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
                 if (!NotificationType.NO_INTERNET.shouldRemove())
                     moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
                 else if (AppUpdateManager.getAppUpdateManager().checkUpdate(false))
@@ -433,6 +435,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                             (int) (value * PRECISION), true) :() ->
                     progressIndicator.setProgressCompat(
                             (int) (value * PRECISION * 0.75F), true)));
+            NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
             if (!NotificationType.NO_INTERNET.shouldRemove()) {
                 moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
             } else {
@@ -470,6 +473,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 this.progressIndicator.setVisibility(View.GONE);
                 this.swipeRefreshLayout.setRefreshing(false);
             });
+            NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
             if (!NotificationType.NO_INTERNET.shouldRemove()) {
                 this.moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
             }

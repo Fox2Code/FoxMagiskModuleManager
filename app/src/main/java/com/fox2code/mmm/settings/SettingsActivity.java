@@ -464,7 +464,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     return true;
                 });
             }
-            String originalApiKey = MainApplication.getSharedPreferences().getString("pref_androidacy_api_token", "");
+            String[] originalApiKeyRef = new String[]{
+                    MainApplication.getSharedPreferences().getString("pref_androidacy_api_token", "")};
             // Create the pref_androidacy_repo_api_key text input with validation
             EditTextPreference prefAndroidacyRepoApiKey = findPreference("pref_androidacy_repo_api_key");
             assert prefAndroidacyRepoApiKey != null;
@@ -479,44 +480,57 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             });
             prefAndroidacyRepoApiKey.setPositiveButtonText(R.string.save_api_key);
             prefAndroidacyRepoApiKey.setOnPreferenceChangeListener((preference, newValue) -> {
+                if (originalApiKeyRef[0].equals(newValue)) return true; // Skip if nothing changed.
                 // Curious if this actually works - so crash the app on purpose
                 // throw new RuntimeException("This is a test crash");
                 // get original api key
                 String apiKey = String.valueOf(newValue);
                 // Show snack bar with indeterminate progress
-                Snackbar.make(requireView(), R.string.checking_api_key, Snackbar.LENGTH_INDEFINITE).setAction(R.string.cancel, v -> {
+                Snackbar.make(requireView(), R.string.checking_api_key, Snackbar.LENGTH_INDEFINITE)
+                        .setAction(R.string.cancel, v -> {
                     // Restore the original api key
-                    prefAndroidacyRepoApiKey.setText(originalApiKey);
+                    prefAndroidacyRepoApiKey.setText(originalApiKeyRef[0]);
                 }).show();
                 // Check the API key on a background thread
                 new Thread(() -> {
                     // If key is empty, just remove it and change the text of the snack bar
                     if (apiKey.isEmpty()) {
-                        MainApplication.getSharedPreferences().edit().remove("pref_androidacy_repo_api_key").apply();
-                        new Handler(Looper.getMainLooper()).post(() -> Snackbar.make(requireView(), R.string.api_key_removed, Snackbar.LENGTH_SHORT).show());
+                        MainApplication.getSharedPreferences().edit().remove(
+                                "pref_androidacy_repo_api_key").apply();
+                        new Handler(Looper.getMainLooper()).post(() -> Snackbar.make(requireView(),
+                                R.string.api_key_removed, Snackbar.LENGTH_SHORT).show());
                     } else {
                         // If key < 64 chars, it's not valid
                         if (apiKey.length() < 64) {
                             new Handler(Looper.getMainLooper()).post(() -> {
                                 Snackbar.make(requireView(), R.string.api_key_invalid, Snackbar.LENGTH_SHORT).show();
                                 // Save the original key
-                                MainApplication.getSharedPreferences().edit().putString("pref_androidacy_api_token", originalApiKey).apply();
+                                MainApplication.getSharedPreferences().edit().putString(
+                                        "pref_androidacy_api_token", originalApiKeyRef[0]).apply();
                                 // Re-show the dialog with an error
                                 prefAndroidacyRepoApiKey.performClick();
                                 // Show error
                                 prefAndroidacyRepoApiKey.setDialogMessage(getString(R.string.api_key_invalid));
                             });
                         } else {
-                            boolean valid = AndroidacyRepoData.getInstance().isValidToken(apiKey);
+                            boolean valid = false;
+                            try {
+                                valid = AndroidacyRepoData.getInstance().isValidToken(apiKey);
+                            } catch (IOException ignored) {}
                             // If the key is valid, save it
                             if (valid) {
-                                MainApplication.getSharedPreferences().edit().putString("pref_androidacy_repo_api_key", apiKey).apply();
-                                new Handler(Looper.getMainLooper()).post(() -> Snackbar.make(requireView(), R.string.api_key_valid, Snackbar.LENGTH_SHORT).show());
+                                originalApiKeyRef[0] = apiKey;
+                                RepoManager.getINSTANCE().getAndroidacyRepoData().setToken(apiKey);
+                                MainApplication.getSharedPreferences().edit().putString(
+                                        "pref_androidacy_repo_api_key", apiKey).apply();
+                                new Handler(Looper.getMainLooper()).post(() -> Snackbar.make(requireView(),
+                                        R.string.api_key_valid, Snackbar.LENGTH_SHORT).show());
                             } else {
                                 new Handler(Looper.getMainLooper()).post(() -> {
                                     Snackbar.make(requireView(), R.string.api_key_invalid, Snackbar.LENGTH_SHORT).show();
                                     // Save the original key
-                                    MainApplication.getSharedPreferences().edit().putString("pref_androidacy_api_token", originalApiKey).apply();
+                                    MainApplication.getSharedPreferences().edit().putString(
+                                            "pref_androidacy_api_token", originalApiKeyRef[0]).apply();
                                     // Re-show the dialog with an error
                                     prefAndroidacyRepoApiKey.performClick();
                                     // Show error
