@@ -38,10 +38,10 @@
     <string name="require_android_12">Requière Android 12+</string>
     <string name="install_terminal_reboot_now">Redémarrer</string>
     <string name="language">Language</string>
-    <string name="yes" translatable="false">@android:string/yes</string>
-    <string name="no" translatable="false">@android:string/no</string>
+    <string name="yes" translatable="false">@android:string/oui</string>
+    <string name="no" translatable="false">@android:string/non</string>
     <string name="ok" translatable="false">@android:string/ok</string>
-    <string name="cancel" translatable="false">@android:string/cancel</string>
+    <string name="cancel" translatable="false">@android:string/annuler</string>
     
     <!-- Module section translation -->
     <string name="module_last_update">Dernière mis-à-jour :</string>
@@ -122,7 +122,7 @@
     <string name="wrap_text_pref">Mise en forme du texte</string>
     <string name="wrap_text_desc">
         Mise en forme du texte avec une nouvelle ligne au lieu de mettre
-        tout le texte sur la même ligne lors de linstallation dun module.
+        tout le texte sur la même ligne lors de l\’installation dun module.
     </string>
     <string name="enable_blur_pref">Activer l\’effet de flou</string>
     <string name="disable_chips_in_description">Désactiver chips dans la description</string>
@@ -154,7 +154,7 @@
         pas à jour, merci de considérer une contribution aux traductions sur Github</string>
     <!-- Replace with your own username when translating -->
     <string name="language_translated_by">Traduit par xerta555</string>
-    <string name="crash_reporting">Soumettre automatiquement les bugs et performances auxdéveloppeurs</string>
+    <string name="crash_reporting">Soumettre automatiquement les bugs et performances aux développeurs</string>
     <string name="crash_reporting_desc">Si vous désactivez ceci, le développeur n\’aura pas de rapports de bugs automatiques, et celà peut rendre les corrections plus complexes</string>
     <string name="api_key">Clé API Androidacy</string>
     <string name="api_key_summary">Utiliser une clé d\’API pour Androidacy. Très utile pour les membres prémiums, pour supprimer les pubs et plus encore.</string>
