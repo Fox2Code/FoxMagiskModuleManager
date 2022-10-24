@@ -38,10 +38,10 @@
     <string name="require_android_12">Requière Android 12+</string>
     <string name="install_terminal_reboot_now">Redémarrer</string>
     <string name="language">Language</string>
-    <string name="yes" translatable="false">@android:string/oui</string>
-    <string name="no" translatable="false">@android:string/non</string>
+    <string name="yes" translatable="false">Oui</string>
+    <string name="no" translatable="false">Non</string>
     <string name="ok" translatable="false">@android:string/ok</string>
-    <string name="cancel" translatable="false">@android:string/annuler</string>
+    <string name="cancel" translatable="false">Annuler</string>
     
     <!-- Module section translation -->
     <string name="module_last_update">Dernière mis-à-jour :</string>
