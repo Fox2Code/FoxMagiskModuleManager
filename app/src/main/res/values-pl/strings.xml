@@ -122,7 +122,7 @@
     <string name="androidacy_test_mode_desc">Użyj punktu końcowego staging Androidacy zamiast punktu końcowego release. (Spowoduje restart aplikacji)</string>
     <!-- Background Notification translation -->
     <string name="notification_update_title">Dostępne są nowe wersje modułów: %i</string>
-    <string name="notification_update_title_easter_egg">Wywęszono %i aktualizacji modułów</string>
+    <string name="notification_update_title_easter_egg">Wywęszono nowe wersje modułów: %i</string>
     <string name="notification_update_subtitle">Kliknij, aby otworzyć aplikację</string>
     <string name="notification_update_pref">Sprawdzanie aktualizacji modułów w tle</string>
     <string name="notification_update_desc">Może zwiększyć użycie baterii</string>
@@ -159,4 +159,6 @@
     <string name="androidacy_failed_to_parse_token">Nie można pobrać tokena z Androidacy. Proszę spróbować ponownie później.</string>
     <string name="androidacy_failed_to_validate_token">Nie można zweryfikować tokena dla Androidacy. Proszę spróbować ponownie później.</string>
     <string name="androidacy_server_down">Nie można skontaktować się z serwerem Androidacy. Sprawdź swoje połączenie i spróbuj ponownie.</string>
+    <string name="androidacy_need_captcha">Aktualizacja Androidacy została zablokowana przez Captcha</string>
+    <string name="link_copied">Łącze zostało skopiowane</string>
 </resources>

@@ -165,4 +165,6 @@
     <string name="androidacy_failed_to_validate_token">Kunne ikke bekrefte symbol for Androidacy. Prøv igjen senere.</string>
     <string name="androidacy_failed_to_parse_token">Kunne ikke hente symbol fra Androidacy. Prøv igjen senere.</string>
     <string name="androidacy_server_down">Kunne ikke kontakte Androidacy-tjeneren. Sjekk tilkoblingen din og prøv igjen.</string>
+    <string name="androidacy_need_captcha">Oppgradering til ny versjon av Androidacy blokkert av CAPTCHA</string>
+    <string name="link_copied">Lenke kopiert</string>
 </resources>
