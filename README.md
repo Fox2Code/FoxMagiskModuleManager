@@ -1,10 +1,6 @@
 # Fox's Magisk Module Manager
 
-## Fox Module contest
-
-[NoStorageRestrict](https://github.com/Magisk-Modules-Alt-Repo/NoStorageRestrict) by [@DanGLES3](https://github.com/DanGLES3) won via vote in community telegram server.
-
-Module description: Removes the restriction when selecting folders (Downloads/Android) through the file manager on Android 11 and higher
+<!-- Test -->
 
 ## Community
 
