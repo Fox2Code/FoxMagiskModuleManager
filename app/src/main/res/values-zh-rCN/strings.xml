@@ -42,6 +42,7 @@
     <string name="no">否</string>
     <string name="ok">OK</string>
     <string name="cancel">取消</string>
+    
     <!-- Module section translation -->
     <string name="module_last_update">最后更新:</string>
     <string name="module_repo">仓库:</string>
@@ -52,8 +53,10 @@
     <string name="module_needs_ramdisk_desc">该模块需要安装启动Ramdisk</string>
     <string name="module_can_change_boot">可以更改引导</string>
     <string name="module_can_change_boot_desc">该模块可能会更改启动镜像</string>
+    <string name="module_min_magisk_chip">Min. Magisk "%s"</string>
     <string name="module_min_sdk_chip">Min. Android</string>
     <string name="module_max_sdk_chip">Max. Android</string>
+    
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">管理仓库</string>
@@ -128,12 +131,14 @@
     <string name="add_repo">添加库</string>
     <string name="remove_repo">移除库</string>
     <string name="custom_url">自定义网址</string>
+    <string name="link_copied">已复制链接</string>
     <string name="androidacy_repo_info">此存储库可能会显示一些非侵入性广告以支付服务器和开发成本</string>
     <string name="backup_module_list">备份模块</string>
     <string name="restore_module_list">还原模块</string>
     <string name="require_internet">此操作需要互联网连接</string>
     <string name="androidacy_test_mode_pref">Androidacy测试模式</string>
     <string name="androidacy_test_mode_desc">使用暂存 Androidacy 端点而不是发布端点 (要求重新启动应用程序进程)</string>
+    
     <!-- Background Notification translation -->
     <string name="notification_update_title">发现 %i 个模块更新</string>
     <string name="notification_update_title_easter_egg">嗅探 %i 个模块更新</string>
@@ -141,6 +146,7 @@
     <string name="notification_update_pref">后台模块更新检查</string>
     <string name="notification_update_desc">可能会增加电池使用量</string>
     <string name="notification_update_debug_pref">测试通知</string>
+    
     <!-- Set to true in translation file if your language is right to left -->
     <bool name="lang_support_rtl">false</bool>
     <!-- Always copy language_support_level when translating -->
@@ -151,6 +157,7 @@
     <string name="language_translated_by">由ender-zhao翻译</string>
     <string name="crash_reporting">自动向开发人员报告错误和性能</string>
     <string name="crash_reporting_desc">如果禁用此功能，开发人员将不会收到自动错误报告，这可能会使故障排除变得困难</string>
+    <string name="api_key">Androidacy API Key</string>
     <string name="api_key_summary">使用Androidacy的自定义 API key, 对高级订阅者有用，以删除广告等</string>
     <string name="api_key_not_set">Androidacy API key 为空</string>
     <string name="api_key_set">当前的 Androidacy API key</string>
@@ -166,4 +173,12 @@
     <string name="crash">使应用程序崩溃以进行测试</string>
     <string name="repackaged_as">重新包装为:</string>
     <string name="wrapped_from">包来自:</string>
+    <string name="crash_reporting_restart_title">重启程序以应用更改?</string>
+    <string name="crash_reporting_restart_message">应用需要重启以启用这个设置</string>
+    <string name="restart">重新启动</string>
+    <string name="androidacy_test_mode_disable_warning">应用程序将重新启动以禁用暂存端点</string>
+    <string name="androidacy_failed_to_parse_token">无法从 Androidacy 中检索令牌。请稍后再试。</string>
+    <string name="androidacy_failed_to_validate_token">无法验证 Androidacy 令牌。请稍后再试。</string>
+    <string name="androidacy_server_down">无法连接 Androidacy 服务器。检查你的连接并再试一次</string>
+    <string name="androidacy_need_captcha">验证码阻止了 Androidacy 更新</string>
 </resources>
