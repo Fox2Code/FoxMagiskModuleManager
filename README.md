@@ -1,6 +1,9 @@
 # Fox's Magisk Module Manager
 
-## Important
+<details>
+<summary>
+  Important news
+</summary>
 
 I have health problems that made me work slow on everything.
 I don't like sharing my health problmes but it has been to much recently for me to keep it for myself.
@@ -49,6 +52,8 @@ at least you won't be hurting peoples with mental/health issues by faking having
 
 I'll probably delete this section once my health would be gotten better, or at 
 least good enough for me to not be stuck on my bed at least once a day because of pain.
+
+</details>
 
 ## Community
 
