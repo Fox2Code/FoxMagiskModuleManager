@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Менеджер модулей Magisk Fox’а</string>
     <string name="app_name_short">МмM Fox’а</string>
-    <string name="fail_root_magisk">Не удалось получить доступ к Root-правам или Magisk</string>
+    <string name="fail_root_magisk">Не удалось получить доступ к root-правам или Magisk</string>
     <string name="loading">Загрузка…</string>
     <string name="updatable">Доступно обновление</string>
     <string name="installed">Установленные</string>
@@ -10,10 +10,10 @@
     <string name="showcase_mode">Активна защита от изменений</string>
     <string name="failed_download">Не удалось скачать файл</string>
     <string name="slow_modules">Модули слишком долго запускались, рассмотрите вариант отключения некоторых из них</string>
-    <string name="fail_internet">Не удается подключиться к Интернету</string>
-    <string name="no_web_view">Не удается открыть системный WebView</string>
+    <string name="fail_internet">Не удаётся подключиться к Интернету</string>
+    <string name="no_web_view">Не удаётся открыть системный WebView</string>
     <string name="title_activity_settings">SettingsActivity</string>
-    <string name="app_update_available">Вышла новая версия приложения</string>
+    <string name="app_update_available">Доступна новая версия приложения</string>
     <string name="app_update">Обновить</string>
     <string name="no_desc_found">Описание не прилагается.</string>
     <string name="download_module">Скачать модуль</string>
@@ -21,7 +21,7 @@
     <string name="update_module">Обновить модуль</string>
     <string name="changelog">Изменения</string>
     <string name="website">Сайт</string>
-    <string name="support">Помощь</string>
+    <string name="support">Поддержка</string>
     <string name="donate">Поддержать</string>
     <string name="update">Обновить</string>
     <string name="install">Установить</string>
@@ -83,14 +83,12 @@
     <string name="substratum_builtin_module">Встроенный модуль Substratum</string>
     <string name="force_dark_terminal_title">Терминал всегда с тёмной темой</string>
     <string name="file_picker_failure">Установленное по умолчанию средство выбора файлов не смогло предоставить доступ к файлу.</string>
-    <string name="remote_install_title">Удаленная установка</string>
+    <string name="remote_install_title">Удалённая установка</string>
     <string name="file_picker_wierd">Средство выбора файлов вернуло нестандартный ответ.</string>
     <string name="use_magisk_install_command_pref" tools:ignore="TypographyDashes">Использовать команду \"magisk --install-module\"</string>
-    <string name="use_magisk_install_command_desc">
-        Во время теста это вызвало проблемы с инструментом диагностики ошибок установки модуля,
-        поэтому я спрятал эту опцию за режимом разработчика.\nВключайте ее на свой страх и риск!
-    </string>
-    <string name="dev_mode_enabled">Режим разработчика включен</string>
+    <string name="use_magisk_install_command_desc">Во время теста это вызвало проблемы с инструментом диагностики ошибок установки модуля, поэтому я спрятал эту опцию за режимом разработчика.
+\nВключайте её на свой страх и риск!</string>
+    <string name="dev_mode_enabled">Режим разработчика включён</string>
     <string name="force_english_pref">Интерфейс всегда на английском языке</string>
     <string name="disable_low_quality_module_filter_pref">Не отсеивать спорные модули</string>
     <string name="disable_low_quality_module_filter_desc">
@@ -98,10 +96,7 @@
         и/или указывает на плохую реализацию всего модуля.\nОтключайте фильтрацию на свой страх и риск!
     </string>
     <string name="dns_over_https_pref">DNS поверх HTTPS</string>
-    <string name="dns_over_https_desc">
-        Используйте при проблемах с подключением к сети.
-        (Не распространяется на WebView)
-    </string>
+    <string name="dns_over_https_desc">Может исправить проблемы с подключением к сети (не распространяется на WebView)</string>
     <string name="disable_extensions_pref">Отключить расширения</string>
     <string name="disable_extensions_desc">
         Отключает расширения МмM Fox’а, тем самым не давая модулям
@@ -111,12 +106,57 @@
     <string name="wrap_text_desc">Переносить текст на другую строку, чтобы не помещать всё на одной во время установки модуля.</string>
     <string name="enable_blur_pref">Включить эффект размытия</string>
     <string name="disable_chips_in_description">Отключить форматирование в описании</string>
-    <string name="repo_enabled">Репо включен</string>
+    <string name="repo_enabled">Репо включён</string>
     <string name="repo_disabled">Репо отключен</string>
     <string name="add_repo">Добавить репо</string>
     <string name="remove_repo">Убрать репо</string>
     <string name="custom_url">Свой URL</string>
-    <string name="backup_module_list">Резервное копирование модулей</string>
-    <string name="restore_module_list">Восстановить модули</string>
-    <string name="require_internet">Для этого действия потребуется подключение к Интернету</string>
+    <string name="backup_module_list">Рез. копирование модулей</string>
+    <string name="restore_module_list">Восстановление модули</string>
+    <string name="require_internet">Для этого действия требуется Интернет-соединение</string>
+    <string name="link_copied">Ссылка скопирована</string>
+    <string name="notification_update_title_easter_egg">Обнаружены обновления модулей: %i</string>
+    <string name="notification_update_desc">Может увеличить расход батареи</string>
+    <string name="language_support_outdated">Некоторые переводы для текущего языка не обновлены. Пожалуйста, внесите свой вклад, улучшив их на GitHub</string>
+    <string name="crash_reporting_desc">Если вы отключите эту функцию, разработчик не будет получать автоматические сообщения об ошибках, что может затруднить поиск и устранение неисправностей</string>
+    <string name="api_key_valid">Ключ API действителен.</string>
+    <string name="androidacy_test_mode_warning">Вы настраиваете приложение на использование непроизводственной конечной точки для Androidacy. Это может привести к нестабильности приложения и невозможности загрузить онлайн-репо. НЕ сообщайте об ошибках, если у вас включён этот переключатель. Приложение будет перезапущено для перезагрузки репозиториев.</string>
+    <string name="save_api_key">Проверить</string>
+    <string name="androidacy_test_mode_disable_warning">Приложение будет перезапущено для отключения конечной точки хранения</string>
+    <string name="fail_root_denied">В root-доступе отказано через приложение Magisk</string>
+    <string name="fail_magisk_missing">Magisk не установлен на устройстве</string>
+    <string name="favourite">Избранные</string>
+    <string name="report_bugs">Сообщить об ошибке</string>
+    <string name="sniffed_modules">Обнаруженные модули</string>
+    <string name="sniffing_modules">Обнаружение модулей</string>
+    <string name="dev_mode_disabled">Режим разработчика отключён</string>
+    <string name="androidacy_repo_info">Этот репозиторий может показывать рекламу для покрытия расходов на сервер и разработку.</string>
+    <string name="androidacy_test_mode_pref">Тестовый режим Androidacy</string>
+    <string name="notification_update_title">Найдены обновления модулей: %i</string>
+    <string name="androidacy_test_mode_desc">Использовать конечную точку Androidacy staging вместо конечной точки release. (Это приведет к перезапуску приложения)</string>
+    <string name="api_key">Ключ API Androidacy</string>
+    <string name="androidacy_failed_to_parse_token">Не удалось получить токен из Androidacy. Пожалуйста, повторите попытку позже.</string>
+    <string name="androidacy_failed_to_validate_token">Не удалось проверить токен для Androidacy. Пожалуйста, повторите попытку позже.</string>
+    <string name="androidacy_server_down">Невозможно связаться с сервером Androidacy. Проверьте соединение и повторите попытку.</string>
+    <string name="androidacy_need_captcha">Обновление Androidacy заблокировано капчей</string>
+    <string name="notification_update_subtitle">Нажмите, чтобы открыть приложение</string>
+    <string name="notification_update_pref">Фоновая проверка обновлений модулей</string>
+    <string name="notification_update_debug_pref">Тестовое уаедомление</string>
+    <string name="language_translated_by">Перевёл Omegaplex</string>
+    <string name="crash_reporting">Автоматически отправлять разработчикам отчёты об ошибках</string>
+    <string name="api_key_summary">Использовать пользовательский API-ключ для Androidacy. Полезен для премиум-подписчиков для удаления рекламы и многого другого.</string>
+    <string name="api_key_not_set">API-ключ Androidacy отсутствует</string>
+    <string name="api_key_set">Текущий API-ключ Androidacy</string>
+    <string name="api_key_invalid">Не удалось подтвердить ключ API. Пожалуйста, проверьте его и повторите попытку.</string>
+    <string name="checking_api_key">Проверка ключа...</string>
+    <string name="validating_api_key">Подтверждение ключа...</string>
+    <string name="please_wait">Пожалуйста, подождите</string>
+    <string name="api_key_removed">API-ключ успешно сброшен</string>
+    <string name="warning">Внимание!</string>
+    <string name="crash">Тестовый вылет приложения</string>
+    <string name="crash_reporting_restart_title">Перезапустить приложение для применения изменений\?</string>
+    <string name="crash_reporting_restart_message">Приложение необходимо перезапустить, чтобы применить эту опцию</string>
+    <string name="restart">Перезапустить</string>
+    <string name="wrapped_from">Упаковано из:</string>
+    <string name="repackaged_as">Переупаковано как:</string>
 </resources>

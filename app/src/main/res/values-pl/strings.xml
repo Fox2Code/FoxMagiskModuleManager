@@ -9,7 +9,7 @@
     <string name="updatable">Aktualizacje modułów</string>
     <string name="installed">Zainstalowane</string>
     <string name="online_repo">Repozytorium online</string>
-    <string name="showcase_mode">Aplikacja jest w trybie blokady</string>
+    <string name="showcase_mode">Menedżer jest zablokowany</string>
     <string name="failed_download">Nie udało się pobrać pliku</string>
     <string name="slow_modules">Uruchomienie modułów trwało zbyt długo, rozważ wyłączenie niektórych modułów</string>
     <string name="fail_internet">Nie udało się nawiązać połączenia z Internetem</string>
@@ -55,17 +55,17 @@
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">Zarządzaj repozytoriami</string>
-    <string name="showcase_mode_pref">Tryb blokady</string>
-    <string name="showcase_mode_desc">Tryb blokady uniemożliwia menedżerowi wykonywanie działań na modułach</string>
+    <string name="showcase_mode_pref">Blokada aplikacji</string>
+    <string name="showcase_mode_desc">Uniemożliwia menedżerowi wykonywanie działań na modułach</string>
     <string name="prevent_reboot_pref">Uniemożliwiaj restart</string>
     <string name="prevent_reboot_desc">Zapobiega niespodziewanym restartom urządzenia po instalacji modułu</string>
     <string name="pref_category_settings">Ustawienia</string>
-    <string name="enable_monet">Włącz Monet</string>
+    <string name="enable_monet">Wygląd Material You</string>
     <string name="pref_category_info">Informacje</string>
     <string name="show_licenses">Pokaż licencje</string>
     <string name="licenses">Licencje</string>
     <string name="show_incompatible_pref">Pokaż niekompatybilne moduły</string>
-    <string name="show_incompatible_desc">Pokaż moduły, które są niekompatybilne z urządzeniem na podstawie ich metadanych</string>
+    <string name="show_incompatible_desc">Wyświetla niekompatybilne moduły z tym urządzeniem na podstawie ich metadanych</string>
     <string name="magisk_outdated">Pojawiła się nowa wersja Magiska do zainstalowania!</string>
     <string name="pref_category_repos">Repozytoria</string>
     <string name="pref_category_security">Zabezpieczenia</string>
@@ -87,7 +87,7 @@
     <string name="source_code">Kod źródłowy</string>
     <string name="magisk_builtin_module">Wbudowany moduł Magisk</string>
     <string name="substratum_builtin_module">Moduł wbudowany Substratum</string>
-    <string name="force_dark_terminal_title">Wymuś terminal w trybie ciemnym</string>
+    <string name="force_dark_terminal_title">Ciemny terminal</string>
     <string name="file_picker_failure">Bieżący selektor plików nie umożliwił dostępu do pliku.</string>
     <string name="remote_install_title">Zdalna instalacja</string>
     <string name="file_picker_wierd">Bieżący selektor plików zwrócił niestandardową odpowiedź.</string>
@@ -103,11 +103,11 @@
     <string name="dns_over_https_pref">DNS przez HTTPS</string>
     <string name="dns_over_https_desc">W niektórych przypadkach może naprawić problemy z połączeniami (nie dotyczy WebView).</string>
     <string name="disable_extensions_pref">Wyłącz rozszerzenia</string>
-    <string name="disable_extensions_desc">Wyłącza rozszerzenia Foxa, uniemożliwiając modułom korzystanie z rozszerzeń terminala.
-\nPrzydatne, jeśli moduł nadużywa rozszerzeń Foxa.</string>
+    <string name="disable_extensions_desc">Wyłącza rozszerzenia FoxMMM, uniemożliwiając modułom korzystanie z rozszerzeń terminala.
+\nPrzydatne, jeśli moduł nadużywa rozszerzeń.</string>
     <string name="wrap_text_pref">Zawijanie tekstu</string>
-    <string name="wrap_text_desc">Pokaż tekst w wielu liniach zamiast umieszczania całego tekstu w jednej linii podczas instalacji modułu.</string>
-    <string name="enable_blur_pref">Włącz rozmycie</string>
+    <string name="wrap_text_desc">Rozbija jednoliniowy tekst na kilka linii podczas instalacji modułu.</string>
+    <string name="enable_blur_pref">Rozmycie</string>
     <string name="disable_chips_in_description">Wyłącz chipy w opisie</string>
     <string name="repo_enabled">Repozytorium włączone</string>
     <string name="repo_disabled">Repozytorium wyłączone</string>
@@ -122,7 +122,7 @@
     <string name="androidacy_test_mode_desc">Użyj punktu końcowego staging Androidacy zamiast punktu końcowego release. (Spowoduje restart aplikacji)</string>
     <!-- Background Notification translation -->
     <string name="notification_update_title">Dostępne są nowe wersje modułów: %i</string>
-    <string name="notification_update_title_easter_egg">Wywęszono %i aktualizacji modułów</string>
+    <string name="notification_update_title_easter_egg">Wywęszono nowe wersje modułów: %i</string>
     <string name="notification_update_subtitle">Kliknij, aby otworzyć aplikację</string>
     <string name="notification_update_pref">Sprawdzanie aktualizacji modułów w tle</string>
     <string name="notification_update_desc">Może zwiększyć użycie baterii</string>
@@ -134,8 +134,8 @@
     <string name="language_support_outdated">Niektóre tłumaczenia dla bieżącego języka nie są aktualne, prosimy o rozważenie wniesienia wkładu do tłumaczeń aplikacji na GitHubie</string>
     <!-- Replace with your own username when translating -->
     <string name="language_translated_by">Tłumaczenie: Daviteusz</string>
-    <string name="crash_reporting">Automatycznie zgłaszaj błędy i działanie programistom</string>
-    <string name="crash_reporting_desc">Jeśli to wyłączysz, programista nie będzie otrzymywał automatycznych raportów o błędach, co może utrudnić rozwiązywanie problemów</string>
+    <string name="crash_reporting">Raportowanie błędów</string>
+    <string name="crash_reporting_desc">Po wyłączeniu twórca nie będzie otrzymywał automatycznych raportów o błędach</string>
     <string name="api_key">Klucz API Androidacy</string>
     <string name="api_key_summary">Użyj niestandardowego klucza API dla Androidacy. Przydatne dla subskrybentów premium, aby usunąć reklamy i więcej.</string>
     <string name="api_key_not_set">Klucz API Androidacy jest pusty</string>
@@ -148,7 +148,7 @@
     <string name="api_key_removed">Zresetowano klucz API</string>
     <string name="save_api_key">Weryfikacja</string>
     <string name="warning">Uwaga!</string>
-    <string name="androidacy_test_mode_warning">Ustawiasz aplikację, aby używała nieprodukcyjnego punktu końcowego dla Androida. Może to spowodować niestabilność aplikacji i brak możliwości załadowania repo online. NIE zgłaszaj błędów, jeśli masz włączony ten przełącznik. Aplikacja zostanie zrestartowana, aby załadować repozytoria.</string>
+    <string name="androidacy_test_mode_warning">Ustawiono aplikację, aby używała nieprodukcyjnego punktu końcowego dla Androidacy. Może to spowodować niestabilność aplikacji i brak możliwości załadowania repo online. NIE zgłaszaj błędów, jeśli masz włączony ten przełącznik. Aplikacja zostanie zrestartowana, aby odświeżyć repozytoria.</string>
     <string name="crash">Ubij aplikację do testów</string>
     <string name="repackaged_as">Przepakowano jako:</string>
     <string name="wrapped_from">Przepakowane z:</string>
@@ -159,4 +159,6 @@
     <string name="androidacy_failed_to_parse_token">Nie można pobrać tokena z Androidacy. Proszę spróbować ponownie później.</string>
     <string name="androidacy_failed_to_validate_token">Nie można zweryfikować tokena dla Androidacy. Proszę spróbować ponownie później.</string>
     <string name="androidacy_server_down">Nie można skontaktować się z serwerem Androidacy. Sprawdź swoje połączenie i spróbuj ponownie.</string>
+    <string name="androidacy_need_captcha">Aktualizacja Androidacy została zablokowana przez Captcha</string>
+    <string name="link_copied">Łącze zostało skopiowane</string>
 </resources>

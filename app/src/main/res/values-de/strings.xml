@@ -152,4 +152,9 @@
     <string name="api_key_summary">Eigenen API-Schlüssel für Androidacy verwenden. Nützlich für Androidacy-Kunden, um Werbung zu entfernen.</string>
     <string name="validating_api_key">Validiere API-Schlüssel…</string>
     <string name="androidacy_test_mode_warning">Androidacy Betamodus wird aktiviert. Dies könnte Fehler verursachen. Bitte keine Fehlerberichte einreichen, wenn aktiviert. Die App wird neu gestartet.</string>
+    <string name="androidacy_failed_to_parse_token">Konnte Token nicht von Androidacy laden. Bitte versuche es später noch einmal.</string>
+    <string name="androidacy_failed_to_validate_token">Konnte Token für Androidacy nicht validieren. Bitte versuche es später noch einmal.</string>
+    <string name="androidacy_server_down">Konnte Androidacy-Server nicht erreichen. Bitte überprüfe deine Verbindung und versuche es noch einmal.</string>
+    <string name="androidacy_need_captcha">Androidacy-Update von CAPTCHA blockiert</string>
+    <string name="link_copied">Link kopiert</string>
 </resources>
