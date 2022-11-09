@@ -99,9 +99,9 @@ and download and install the latest `.apk` on your device.
 ## Repositories Available
 
 
-The app currently use these three repo as it's module sources, with it's benefits and drawback:  
+The app currently use these two repos as module sources, each with their own benefits and drawback:  
 (Note: Each module repo can be disabled in the settings of the app)  
-(Note²: I do not own or monitor any of the repo, **download at your own risk**)
+(Note²: I do not own or actively monitor any of the repos or modules, **download at your own risk**)
 
 #### [https://github.com/Magisk-Modules-Alt-Repo](https://github.com/Magisk-Modules-Alt-Repo)  
 - Accepting new modules [here](https://github.com/Magisk-Modules-Alt-Repo/submission)
@@ -117,6 +117,7 @@ Support:
 - Modules downloadable easily outside the app
 - Officially supported by Fox's mmm
 - Contains ads to help cover server costs
+- Added features like module reviews, automatic VirusTotal scans, and more
 
 Support:
 
