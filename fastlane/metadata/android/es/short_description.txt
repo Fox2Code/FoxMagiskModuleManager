@@ -1,0 +1,1 @@
+Un administrador de módulos para Magisk porque la oficial dejó de admitirlo.

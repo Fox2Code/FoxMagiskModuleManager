@@ -1,2 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="app_name">Fox Magisk Modulo Manager</string>
+    <string name="app_name_short">Fox Mmm</string>
+    <string name="fail_root_magisk">No se pudo acceder a Root o Magisk</string>
+    <string name="fail_root_denied">Root negado a través de la aplicación Magisk</string>
+    <string name="fail_magisk_missing">Magisk no está instalado en este dispositivo</string>
+    <string name="loading">Cargando…</string>
+    <string name="updatable">Actualizable</string>
+    <string name="installed">Instalado</string>
+    <string name="online_repo">Repositorio en línea</string>
+    <string name="showcase_mode">La aplicación está en modo de bloqueo</string>
+    <string name="slow_modules">Los módulos tardaron demasiado en arrancar, considere deshabilitar algunos módulos</string>
+    <string name="fail_internet">No se pudo conectar a Internet</string>
+    <string name="title_activity_settings">AjustesActividad</string>
+    <string name="app_update_available">Una nueva versión de la aplicación está disponible</string>
+    <string name="app_update">Actualizar</string>
+    <string name="no_desc_found">No se ha encontrado ninguna descripción.</string>
+    <string name="download_module">Descargar Modulo</string>
+    <string name="install_module">Instalar el módulo</string>
+    <string name="update_module">Actualizar Modulo</string>
+    <string name="changelog">Registro de cambios</string>
+    <string name="website">Sitio web</string>
+    <string name="support">Soporte</string>
+    <string name="donate">Donar</string>
+    <string name="failed_download">No se pudo descargar el archivo</string>
+    <string name="no_web_view">No se pudo abrir el system WebView</string>
+</resources>

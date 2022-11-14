@@ -1,0 +1,4 @@
+Esta aplicación no cuenta con el apoyo oficial de Magisk o sus desarrolladores.
+
+Los módulos que se muestran en esta aplicación no están afiliados a esta aplicación. Por favor contactar
+propietarios de repos en su lugar.
