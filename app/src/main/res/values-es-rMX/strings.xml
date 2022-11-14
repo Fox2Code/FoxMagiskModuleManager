@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Fox\'s Magisk Module Manager</string>
+    <string name="app_name">Fox Magisk Module Manager</string>
     <string name="app_name_short">Fox\'s Mmm</string>
     <string name="fail_root_magisk">No fue posible obtener acceso root o Magisk</string>
     <string name="fail_root_denied">El Acceso Root ha sido negado desde la aplicación Magisk</string>
