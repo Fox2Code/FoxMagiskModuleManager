@@ -5,23 +5,22 @@ on:
   push:
     branches:
       - master
-      - debug
   pull_request:
     branches: 
       - master
-      - debug
 jobs:
   build:
 
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
 
       - name: Set Up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
-          java-version: 11
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Change wrapper permissions
         run: chmod +x ./gradlew

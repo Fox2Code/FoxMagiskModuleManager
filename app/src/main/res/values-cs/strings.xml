@@ -91,4 +91,13 @@
     <string name="enable_blur_pref">Povolit rozostření</string>
     <string name="repo_enabled">Repozitář povolen</string>
     <string name="repo_disabled">Repozitář zakázán</string>
+    <string name="fail_magisk_missing">Magisk není nainstalovaný na tomto zařízení</string>
+    <string name="no_web_view">Nelze otevřít systémové WebView</string>
+    <string name="update">Aktualizace</string>
+    <string name="install">Instalovat</string>
+    <string name="description">Popis</string>
+    <string name="uninstall">Odinstalovat</string>
+    <string name="config">Konfigurace</string>
+    <string name="favourite">Oblíbené</string>
+    <string name="report_bugs">Nahlásit chyby</string>
 </resources>
