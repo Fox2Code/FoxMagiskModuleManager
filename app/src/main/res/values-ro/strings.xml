@@ -159,4 +159,11 @@
     <string name="crash_reporting_restart_message">Aplicația trebuie să repornească pentru a aplica această setare</string>
     <string name="restart">Repornire</string>
     <string name="androidacy_test_mode_disable_warning">Aplicația va fi repornită pentru a dezactiva finalizarea etapelor</string>
+    <string name="sniffing_modules">Detectare module</string>
+    <string name="link_copied">Link copiat</string>
+    <string name="notification_update_title_easter_egg">Actualizări ale modulelor: %i</string>
+    <string name="androidacy_failed_to_parse_token">Nu s-a putut prelua token-ul de la Androidacy. Vă rugăm să încercați din nou mai târziu.</string>
+    <string name="androidacy_failed_to_validate_token">Nu s-a putut valida token-ul pentru Androidacy. Vă rugăm să încercați din nou mai târziu.</string>
+    <string name="androidacy_server_down">Nu se poate contacta serverul Androidacy. Verificați conexiunea și încercați din nou.</string>
+    <string name="androidacy_need_captcha">Actualizare Androidacy blocată de Captcha</string>
 </resources>
