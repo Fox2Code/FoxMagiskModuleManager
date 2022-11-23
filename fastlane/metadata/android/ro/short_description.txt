@@ -1,0 +1,1 @@
+Manager de module Magisk, deoarece aplicația oficială a renunțat la suport.

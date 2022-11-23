@@ -1,0 +1,4 @@
+Această aplicație nu este susținută oficial de Magisk sau de dezvoltatorii săi. 
+
+Modulele afișate în această aplicație nu sunt afiliate cu această aplicație. Vă rog să 
+contactați proprietarii depozitelor în schimb.
