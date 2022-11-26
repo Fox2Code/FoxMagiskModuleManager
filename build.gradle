@@ -10,7 +10,7 @@ buildscript {
     project.ext.hasSentryConfig = sentryConfigFile.exists()
     project.ext.sentryCli = [
             logLevel: "debug",
-            flavorAware: false
+            flavorAware: true
     ]
     dependencies {
         classpath 'com.android.tools.build:gradle:7.3.1'

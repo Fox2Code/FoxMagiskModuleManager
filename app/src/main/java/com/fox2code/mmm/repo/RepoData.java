@@ -27,7 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 
 public class RepoData extends XRepo {
-    private static final String TAG = "RepoData";
     private final Object populateLock = new Object();
     public final String url;
     public final String id;
@@ -54,7 +53,10 @@ public class RepoData extends XRepo {
                 .getBoolean("pref_" + this.id + "_enabled", this.isEnabledByDefault());
         this.defaultWebsite = "https://" + Uri.parse(url).getHost() + "/";
         if (!this.cacheRoot.isDirectory()) {
-            this.cacheRoot.mkdirs();
+            boolean mkdirs = this.cacheRoot.mkdirs();
+            if (!mkdirs) {
+                throw new RuntimeException("Failed to create cache directory");
+            }
         } else {
             if (this.metaDataCache.exists()) {
                 this.lastUpdate = metaDataCache.lastModified();
@@ -70,7 +72,10 @@ public class RepoData extends XRepo {
                         }
                     }
                 } catch (Exception e) {
-                    this.metaDataCache.delete();
+                    boolean delete = this.metaDataCache.delete();
+                    if (!delete) {
+                        throw new RuntimeException("Failed to delete invalid cache file");
+                    }
                 }
             }
         }
@@ -140,7 +145,10 @@ public class RepoData extends XRepo {
             while (moduleInfoIterator.hasNext()) {
                 RepoModule repoModule = moduleInfoIterator.next();
                 if (!repoModule.processed) {
-                    new File(this.cacheRoot, repoModule.id + ".prop").delete();
+                    boolean delete = new File(this.cacheRoot, repoModule.id + ".prop").delete();
+                    if (!delete) {
+                        throw new RuntimeException("Failed to delete module metadata");
+                    }
                     moduleInfoIterator.remove();
                 } else {
                     repoModule.moduleInfo.verify();
@@ -179,7 +187,10 @@ public class RepoData extends XRepo {
                 }
                 return true;
             } catch (Exception ignored) {
-                file.delete();
+                boolean delete = file.delete();
+                if (!delete) {
+                    throw new RuntimeException("Failed to delete invalid metadata file");
+                }
             }
         }
         repoModule.moduleInfo.flags |= ModuleInfo.FLAG_METADATA_INVALID;
@@ -206,10 +217,6 @@ public class RepoData extends XRepo {
 
     public String getUrl() {
         return this.url;
-    }
-
-    public boolean isLimited() {
-        return false;
     }
 
     public String getPreferenceId() {

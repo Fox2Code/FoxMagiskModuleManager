@@ -186,3 +186,14 @@
     int getSafeInsetTop();
     android.graphics.Insets getWaterfallInsets();
 }
+
+# Silence some warnings
+-dontwarn android.os.SystemProperties
+-dontwarn android.view.ThreadedRenderer
+-dontwarn cyanogenmod.providers.CMSettings$Secure
+-dontwarn lineageos.providers.LineageSettings$System
+-dontwarn lineageos.style.StyleInterface
+-dontwarn me.weishu.reflection.Reflection
+-dontwarn org.lsposed.hiddenapibypass.HiddenApiBypass
+-dontwarn rikka.core.res.ResourcesCompatLayoutInflaterListener
+-dontwarn rikka.core.util.ResourceUtils

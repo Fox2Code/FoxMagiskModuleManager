@@ -30,11 +30,6 @@ public final class CustomRepoData extends RepoData {
                 this.id : this.override;
     }
 
-    @Override
-    public boolean isLimited() {
-        return true;
-    }
-
     public void quickPrePopulate() throws IOException, JSONException {
         JSONObject jsonObject = new JSONObject(
                 new String(Http.doHttpGet(this.getUrl(),
