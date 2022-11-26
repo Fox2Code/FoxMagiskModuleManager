@@ -50,7 +50,7 @@
     static void enableDebugLogging(boolean);
 }
 -assumevalues class androidx.loader.app.LoaderManagerImpl {
-    static boolean DEBUG return false;
+    static boolean DEBUG;
 }
 
 # This is just some proguard rules testes, might do a separate lib after
