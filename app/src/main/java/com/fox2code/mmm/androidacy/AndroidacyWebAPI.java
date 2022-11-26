@@ -62,9 +62,11 @@ public class AndroidacyWebAPI {
         this.downloadMode = false;
     }
 
-    void openNativeModuleDialogRaw(String moduleUrl, String installTitle,
+    void openNativeModuleDialogRaw(String moduleUrl, String moduleId, String installTitle,
                                    String checksum, boolean canInstall) {
-        Log.d(TAG, "ModuleDialog, downloadUrl: " + AndroidacyUtil.hideToken(moduleUrl));
+        Log.d(TAG, "ModuleDialog, downloadUrl: " + AndroidacyUtil.hideToken(moduleUrl) +
+                ", moduleId: " + moduleId + ", installTitle: " + installTitle +
+                ", checksum: " + checksum + ", canInstall: " + canInstall);
         this.downloadMode = false;
         RepoModule repoModule = AndroidacyRepoData
                 .getInstance().moduleHashMap.get(installTitle);
@@ -78,7 +80,8 @@ public class AndroidacyWebAPI {
                 description = this.activity.getString(R.string.no_desc_found);
             }
         } else {
-            title = PropUtils.makeNameFromId(installTitle);
+            // URL Decode installTitle
+            title = installTitle;
             String checkSumType = Hashes.checkSumName(checksum);
             if (checkSumType == null) {
                 description = "Checksum: " + ((
@@ -249,6 +252,8 @@ public class AndroidacyWebAPI {
             this.forceQuitRaw("Androidacy didn't provided a valid checksum");
             return;
         }
+        // moduleId is the module parameter in the url
+        String moduleId = AndroidacyUtil.getModuleId(moduleUrl);
         // Let's handle download mode ourself if not implemented
         if (this.effectiveCompatMode < 1) {
             if (!this.canInstall()) {
@@ -256,7 +261,7 @@ public class AndroidacyWebAPI {
                 this.activity.runOnUiThread(() ->
                         this.activity.webView.loadUrl(moduleUrl));
             } else {
-                this.openNativeModuleDialogRaw(moduleUrl, installTitle, checksum, true);
+                this.openNativeModuleDialogRaw(moduleUrl, moduleId, installTitle, checksum, true);
             }
         } else {
             RepoModule repoModule = AndroidacyRepoData
@@ -293,7 +298,9 @@ public class AndroidacyWebAPI {
             this.forceQuitRaw("Androidacy didn't provided a valid checksum");
             return;
         }
-        this.openNativeModuleDialogRaw(moduleUrl, moduleId, checksum, this.canInstall());
+        // Get moduleTitle from url
+String moduleTitle = AndroidacyUtil.getModuleTitle(moduleUrl);
+        this.openNativeModuleDialogRaw(moduleUrl, moduleId, moduleTitle, checksum, this.canInstall());
     }
 
     /**

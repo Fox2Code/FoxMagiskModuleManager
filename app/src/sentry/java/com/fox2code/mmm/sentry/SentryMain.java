@@ -29,6 +29,10 @@ public class SentryMain {
     public static final boolean IS_SENTRY_INSTALLED = true;
     private static final String TAG = "SentryMain";
 
+    /**
+     * Initialize Sentry
+     * Sentry is used for crash reporting and performance monitoring. The SDK is explcitly configured not to send PII, and server side scrubbing of sensitive data is enabled (which also removes IP addresses)
+     */
     public static void initialize(final MainApplication mainApplication) {
         SentryAndroid.init(mainApplication, options -> {
             // If crash reporting is disabled, stop here.
@@ -39,11 +43,9 @@ public class SentryMain {
                 // Sentry sends ABSOLUTELY NO Personally Identifiable Information (PII) by default.
                 // Already set to false by default, just set it again to make peoples feel safer.
                 options.setSendDefaultPii(false);
-                // It just tell if sentry should ping the sentry dsn to tell the app is running.
-                // This is not needed at all for crash reporting purposes, so disable it.
-                options.setEnableAutoSessionTracking(false);
+                // It just tell if sentry should ping the sentry dsn to tell the app is running. Useful for performance and profiling.
+                options.setEnableAutoSessionTracking(true);
                 // A screenshot of the app itself is only sent if the app crashes, and it only shows the last activity
-                // In addition, sentry is configured with a trusted third party other than sentry.io, and only trusted people have access to the sentry instance
                 // Add a callback that will be used before the event is sent to Sentry.
                 // With this callback, you can modify the event or, when returning null, also discard the event.
                 options.setBeforeSend((event, hint) -> {

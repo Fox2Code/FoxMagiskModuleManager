@@ -1,10 +1,20 @@
 package com.fox2code.mmm.repo;
 
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
+import com.fox2code.mmm.MainActivity;
+import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.utils.Files;
 import com.fox2code.mmm.utils.Http;
+import com.fox2code.mmm.utils.HttpException;
+import com.google.android.material.snackbar.Snackbar;
 
+import org.jetbrains.annotations.Contract;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -40,6 +50,13 @@ public class RepoUpdater {
                 return 0;
             }
             this.indexRaw = Http.doHttpGet(this.repoData.getUrl(), false);
+            // Ensure it's a valid json and response code is 200
+            if (this.indexRaw.hashCode() == 0) {
+                this.indexRaw = null;
+                this.toUpdate = Collections.emptyList();
+                this.toApply = this.repoData.moduleHashMap.values();
+                return 0;
+            }
             this.toUpdate = this.repoData.populate(new JSONObject(
                     new String(this.indexRaw, StandardCharsets.UTF_8)));
             // Since we reuse instances this should work

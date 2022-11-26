@@ -2,6 +2,7 @@ package com.fox2code.mmm;
 
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -65,6 +66,8 @@ public class MainApplication extends FoxApplication
     private static String relPackageName = BuildConfig.APPLICATION_ID;
     private static MainApplication INSTANCE;
     private static boolean firstBoot;
+    // Provides the Context for the base application
+    public Context FoxApplication = this;
 
     static {
         Shell.setDefaultBuilder(shellBuilder = Shell.Builder.create()

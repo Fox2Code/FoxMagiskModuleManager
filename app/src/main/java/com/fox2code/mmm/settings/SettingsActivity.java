@@ -502,7 +502,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             String[] originalApiKeyRef = new String[]{
                     MainApplication.getSharedPreferences().getString("pref_androidacy_api_token", "")};
             // Create the pref_androidacy_repo_api_key text input with validation
-            EditTextPreference prefAndroidacyRepoApiKey = findPreference("pref_androidacy_repo_api_key");
+            EditTextPreference prefAndroidacyRepoApiKey = findPreference("pref_androidacy_api_token");
             assert prefAndroidacyRepoApiKey != null;
             prefAndroidacyRepoApiKey.setOnBindEditTextListener(editText -> {
                 editText.setSingleLine();
@@ -531,9 +531,36 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     // If key is empty, just remove it and change the text of the snack bar
                     if (apiKey.isEmpty()) {
                         MainApplication.getSharedPreferences().edit().remove(
-                                "pref_androidacy_repo_api_key").apply();
-                        new Handler(Looper.getMainLooper()).post(() -> Snackbar.make(requireView(),
-                                R.string.api_key_removed, Snackbar.LENGTH_SHORT).show());
+                                "pref_androidacy_api_token").apply();
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            Snackbar.make(requireView(), R.string.api_key_removed, Snackbar.LENGTH_SHORT).show();
+                            // Show dialog to restart app with ok button
+                            new MaterialAlertDialogBuilder(this.requireContext())
+                                    .setTitle(R.string.restart)
+                                    .setMessage(R.string.api_key_restart)
+                                    .setNeutralButton(android.R.string.ok, (dialog, which) -> {
+                                        // User clicked OK button
+                                        Intent mStartActivity = new Intent(requireContext(), MainActivity.class);
+                                        mStartActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        int mPendingIntentId = 123456;
+                                        // If < 23, FLAG_IMMUTABLE is not available
+                                        PendingIntent mPendingIntent;
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                            mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                                                    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                                        } else {
+                                            mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                                                    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                                        }
+                                        AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+                                        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+                                        if (BuildConfig.DEBUG) {
+                                            Log.d(TAG, "Restarting app to save token preference: " + newValue);
+                                        }
+                                        System.exit(0); // Exit app process
+                                    })
+                                    .show();
+                        });
                     } else {
                         // If key < 64 chars, it's not valid
                         if (apiKey.length() < 64) {
@@ -548,6 +575,11 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                 prefAndroidacyRepoApiKey.setDialogMessage(getString(R.string.api_key_invalid));
                             });
                         } else {
+                            // If the key is the same as the original, just show a snack bar
+                            if (apiKey.equals(originalApiKeyRef[0])) {
+                                new Handler(Looper.getMainLooper()).post(() -> Snackbar.make(requireView(), R.string.api_key_unchanged, Snackbar.LENGTH_SHORT).show());
+                                return;
+                            }
                             boolean valid = false;
                             try {
                                 valid = AndroidacyRepoData.getInstance().isValidToken(apiKey);
@@ -557,9 +589,37 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                 originalApiKeyRef[0] = apiKey;
                                 RepoManager.getINSTANCE().getAndroidacyRepoData().setToken(apiKey);
                                 MainApplication.getSharedPreferences().edit().putString(
-                                        "pref_androidacy_repo_api_key", apiKey).apply();
-                                new Handler(Looper.getMainLooper()).post(() -> Snackbar.make(requireView(),
-                                        R.string.api_key_valid, Snackbar.LENGTH_SHORT).show());
+                                        "pref_androidacy_api_token", apiKey).apply();
+                                // Snackbar with success and restart button
+                                new Handler(Looper.getMainLooper()).post(() -> {
+                                    Snackbar.make(requireView(), R.string.api_key_valid, Snackbar.LENGTH_SHORT).show();
+                                    // Show dialog to restart app with ok button
+                                    new MaterialAlertDialogBuilder(this.requireContext())
+                                            .setTitle(R.string.restart)
+                                            .setMessage(R.string.api_key_restart)
+                                            .setNeutralButton(android.R.string.ok, (dialog, which) -> {
+                                                // User clicked OK button
+                                                Intent mStartActivity = new Intent(requireContext(), MainActivity.class);
+                                                mStartActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                int mPendingIntentId = 123456;
+                                                // If < 23, FLAG_IMMUTABLE is not available
+                                                PendingIntent mPendingIntent;
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                                    mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                                                            mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                                                } else {
+                                                    mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                                                            mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                                                }
+                                                AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+                                                mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+                                                if (BuildConfig.DEBUG) {
+                                                    Log.d(TAG, "Restarting app to save token preference: " + newValue);
+                                                }
+                                                System.exit(0); // Exit app process
+                                            })
+                                            .show();
+                                });
                             } else {
                                 new Handler(Looper.getMainLooper()).post(() -> {
                                     Snackbar.make(requireView(), R.string.api_key_invalid, Snackbar.LENGTH_SHORT).show();

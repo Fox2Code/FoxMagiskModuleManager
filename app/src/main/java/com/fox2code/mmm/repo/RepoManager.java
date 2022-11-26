@@ -189,6 +189,7 @@ public final class RepoManager extends SyncManager {
 
     protected void scanInternal(@NonNull UpdateListener updateListener) {
         NoodleDebug noodleDebug = NoodleDebug.getNoodleDebug();
+        // First, check if we have internet connection
         noodleDebug.push("Downloading indexes");
         this.modules.clear();
         updateListener.update(0D);

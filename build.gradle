@@ -8,6 +8,10 @@ buildscript {
     project.ext.latestAboutLibsRelease = "10.5.0"
     project.ext.sentryConfigFile = new File(rootDir, "sentry.properties").getAbsoluteFile()
     project.ext.hasSentryConfig = sentryConfigFile.exists()
+    project.ext.sentryCli = [
+            logLevel: "debug",
+            flavorAware: false
+    ]
     dependencies {
         classpath 'com.android.tools.build:gradle:7.3.1'
         classpath "com.mikepenz.aboutlibraries.plugin:aboutlibraries-plugin:${latestAboutLibsRelease}"

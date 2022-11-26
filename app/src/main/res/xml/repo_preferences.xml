@@ -42,7 +42,7 @@
             app:singleLineTitle="false"	/>
         <!-- Allow user to set custom API key for Androidacy repo -->
         <EditTextPreference
-            app:key="pref_androidacy_repo_api_key"
+            app:key="pref_androidacy_api_token"
             app:icon="@drawable/ic_baseline_vpn_key_24"
             app:title="@string/api_key"
             app:summary="@string/api_key_summary"

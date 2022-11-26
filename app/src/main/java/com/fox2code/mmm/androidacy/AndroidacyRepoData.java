@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.manager.ModuleInfo;
@@ -45,7 +46,7 @@ public final class AndroidacyRepoData extends RepoData {
     private final String host;
     // Avoid spamming requests to Androidacy
     private long androidacyBlockade = 0;
-    private String token = this.cachedPreferences.getString("pref_androidacy_api_token", null);
+    public String token = this.cachedPreferences.getString("pref_androidacy_api_token", null);
 
     public AndroidacyRepoData(File cacheRoot, SharedPreferences cachedPreferences, boolean testMode) {
         super(testMode ? RepoManager.ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT : RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT, cacheRoot, cachedPreferences);
@@ -83,7 +84,7 @@ public final class AndroidacyRepoData extends RepoData {
                 Log.w(TAG, "Invalid token, resetting...");
                 // Remove saved preference
                 SharedPreferences.Editor editor = this.cachedPreferences.edit();
-                editor.remove("androidacy_api_token");
+                editor.remove("pref_androidacy_api_token");
                 editor.apply();
                 return false;
             }
@@ -117,8 +118,13 @@ public final class AndroidacyRepoData extends RepoData {
                 this.token = this.cachedPreferences.getString("pref_androidacy_api_token", null);
                 if (this.token != null && !this.isValidToken(this.token)) {
                     this.token = null;
+                } else {
+                    Log.i(TAG, "Using cached token");
                 }
             } else if (!this.isValidToken(this.token)) {
+                if (BuildConfig.DEBUG) {
+                    throw new IllegalStateException("Invalid token: " + this.token);
+                }
                 this.token = null;
             }
         } catch (IOException e) {
@@ -130,9 +136,9 @@ public final class AndroidacyRepoData extends RepoData {
         }
         if (token == null) {
             try {
-                Log.i(TAG, "Refreshing token...");
+                Log.i(TAG, "Requesting new token...");
                 // POST request to https://production-api.androidacy.com/auth/register
-                token = new String(Http.doHttpPost("https://" + this.host + "/auth/register", "foxmmm=true", false), StandardCharsets.UTF_8);
+                token = new String(Http.doHttpPost("https://" + this.host + "/auth/register", "{\"foxmmm\": \"true\"}", false), StandardCharsets.UTF_8);
                 // Parse token
                 try {
                     JSONObject jsonObject = new JSONObject(token);
@@ -151,7 +157,9 @@ public final class AndroidacyRepoData extends RepoData {
                     return false;
                 }
                 // Save token to shared preference
-                MainApplication.getSharedPreferences().edit().putString("pref_androidacy_api_token", token).apply();
+                SharedPreferences.Editor editor = this.cachedPreferences.edit();
+                editor.putString("pref_androidacy_api_token", token);
+                editor.apply();
             } catch (Exception e) {
                 if (HttpException.shouldTimeout(e)) {
                     Log.e(TAG, "We are being rate limited!", e);

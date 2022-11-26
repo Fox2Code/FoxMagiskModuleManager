@@ -9,7 +9,7 @@
             android:value="false" />
         <meta-data
             android:name="io.sentry.dsn"
-            android:value="https://cdcdb0efca4a42a28df90e4b7f087347@sentry.androidacy.com/2" />
+            android:value="https://198c68516cb0412b9832204631a3fac8@o993586.ingest.sentry.io/4504069942804480" />
         <!-- Sane value, but feel free to lower it -->
         <meta-data
             android:name="io.sentry.traces.sample-rate"
@@ -30,5 +30,8 @@
         <meta-data
             android:name="io.sentry.sendDefaultPii"
             android:value="false" />
+        <meta-data
+            android:name="io.sentry.traces.profiling.sample-rate"
+            android:value="0.5" />
     </application>
 </manifest>

@@ -1,6 +1,8 @@
 package com.fox2code.mmm.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
@@ -13,16 +15,26 @@ import android.webkit.WebSettings;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.fox2code.foxcompat.FoxActivity;
+import com.fox2code.foxcompat.internal.FoxCompat;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.R;
 import com.fox2code.mmm.androidacy.AndroidacyUtil;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.repo.RepoManager;
+import com.fox2code.mmm.settings.SettingsActivity;
+import com.google.android.gms.net.CronetProviderInstaller;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.net.cronet.okhttptransport.CronetInterceptor;
+
+import org.chromium.net.CronetEngine;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.Proxy;
 import java.net.UnknownHostException;
@@ -42,13 +54,13 @@ import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.Dns;
 import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import okhttp3.brotli.BrotliInterceptor;
 import okhttp3.dnsoverhttps.DnsOverHttps;
 import okio.BufferedSink;
 
@@ -97,20 +109,10 @@ public class Http {
         httpclientBuilder.connectTimeout(15, TimeUnit.SECONDS);
         httpclientBuilder.writeTimeout(15, TimeUnit.SECONDS);
         httpclientBuilder.readTimeout(15, TimeUnit.SECONDS);
-        httpclientBuilder.addInterceptor(BrotliInterceptor.INSTANCE);
         httpclientBuilder.proxy(Proxy.NO_PROXY); // Do not use system proxy
         Dns dns = Dns.SYSTEM;
         try {
-            InetAddress[] cloudflareBootstrap = new InetAddress[]{
-                    InetAddress.getByName("162.159.36.1"),
-                    InetAddress.getByName("162.159.46.1"),
-                    InetAddress.getByName("1.1.1.1"),
-                    InetAddress.getByName("1.0.0.1"),
-                    InetAddress.getByName("162.159.132.53"),
-                    InetAddress.getByName("2606:4700:4700::1111"),
-                    InetAddress.getByName("2606:4700:4700::1001"),
-                    InetAddress.getByName("2606:4700:4700::0064"),
-                    InetAddress.getByName("2606:4700:4700::6400")};
+            InetAddress[] cloudflareBootstrap = new InetAddress[]{InetAddress.getByName("162.159.36.1"), InetAddress.getByName("162.159.46.1"), InetAddress.getByName("1.1.1.1"), InetAddress.getByName("1.0.0.1"), InetAddress.getByName("162.159.132.53"), InetAddress.getByName("2606:4700:4700::1111"), InetAddress.getByName("2606:4700:4700::1001"), InetAddress.getByName("2606:4700:4700::0064"), InetAddress.getByName("2606:4700:4700::6400")};
             dns = s -> {
                 if ("cloudflare-dns.com".equals(s)) {
                     return Arrays.asList(cloudflareBootstrap);
@@ -119,21 +121,16 @@ public class Http {
             };
             httpclientBuilder.dns(dns);
             httpclientBuilder.cookieJar(new CDNCookieJar());
-            dns = new DnsOverHttps.Builder().client(httpclientBuilder.build()).url(
-                    Objects.requireNonNull(HttpUrl.parse("https://cloudflare-dns.com/dns-query")))
-                    .bootstrapDnsHosts(cloudflareBootstrap).resolvePrivateAddresses(true).build();
+            dns = new DnsOverHttps.Builder().client(httpclientBuilder.build()).url(Objects.requireNonNull(HttpUrl.parse("https://cloudflare-dns.com/dns-query"))).bootstrapDnsHosts(cloudflareBootstrap).resolvePrivateAddresses(true).build();
         } catch (UnknownHostException | RuntimeException e) {
             Log.e(TAG, "Failed to init DoH", e);
         }
         httpclientBuilder.cookieJar(CookieJar.NO_COOKIES);
         // User-Agent format was agreed on telegram
         if (hasWebView) {
-            androidacyUA = WebSettings.getDefaultUserAgent(mainApplication)
-                    .replace("wv", "") + "FoxMmm/" + BuildConfig.VERSION_CODE;
+            androidacyUA = WebSettings.getDefaultUserAgent(mainApplication).replace("wv", "") + " FoxMMM/" + BuildConfig.VERSION_CODE;
         } else {
-            androidacyUA = "Mozilla/5.0 (Linux; Android " + Build.VERSION.RELEASE + "; " + Build.DEVICE + ")" +
-                    " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36" +
-                    " FoxMmm/" + BuildConfig.VERSION_CODE;
+            androidacyUA = "Mozilla/5.0 (Linux; Android " + Build.VERSION.RELEASE + "; " + Build.DEVICE + ")" + " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36" + " FoxMmm/" + BuildConfig.VERSION_CODE;
         }
         httpclientBuilder.addInterceptor(chain -> {
             Request.Builder request = chain.request().newBuilder();
@@ -141,8 +138,7 @@ public class Http {
             String host = chain.request().url().host();
             if (host.endsWith(".androidacy.com")) {
                 request.header("User-Agent", androidacyUA);
-            } else if (!(host.equals("github.com") || host.endsWith(".github.com") ||
-                    host.endsWith(".jsdelivr.net") || host.endsWith(".githubusercontent.com"))) {
+            } else if (!(host.equals("github.com") || host.endsWith(".github.com") || host.endsWith(".jsdelivr.net") || host.endsWith(".githubusercontent.com"))) {
                 if (InstallerInitializer.peekMagiskPath() != null) {
                     request.header("User-Agent", // Declare Magisk version to the server
                             "Magisk/" + InstallerInitializer.peekMagiskVersion());
@@ -154,13 +150,22 @@ public class Http {
             }
             return chain.proceed(request.build());
         });
+        // Add cronet interceptor
+        // install cronet
+        try {
+           CronetProviderInstaller.installProvider(mainApplication);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to install cronet", e);
+        }
+        // init cronet
+        try {
+            CronetEngine engine = new CronetEngine.Builder(mainApplication).build();
+            httpclientBuilder.addInterceptor(CronetInterceptor.newBuilder(engine).build());
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to init cronet", e);
+        }
         // Fallback DNS cache responses in case request fail but already succeeded once in the past
-        fallbackDNS = new FallBackDNS(mainApplication, dns, "github.com", "api.github.com",
-                "raw.githubusercontent.com", "camo.githubusercontent.com",
-                "user-images.githubusercontent.com", "cdn.jsdelivr.net",
-                "img.shields.io", "magisk-modules-repo.github.io",
-                "www.androidacy.com", "api.androidacy.com",
-                "production-api.androidacy.com");
+        fallbackDNS = new FallBackDNS(mainApplication, dns, "github.com", "api.github.com", "raw.githubusercontent.com", "camo.githubusercontent.com", "user-images.githubusercontent.com", "cdn.jsdelivr.net", "img.shields.io", "magisk-modules-repo.github.io", "www.androidacy.com", "api.androidacy.com", "production-api.androidacy.com");
         httpclientBuilder.cookieJar(cookieJar = new CDNCookieJar(cookieManager));
         httpclientBuilder.dns(Dns.SYSTEM);
         httpClient = followRedirects(httpclientBuilder, true).build();
@@ -212,7 +217,7 @@ public class Http {
     public static boolean needCaptchaAndroidacy() {
         return needCaptchaAndroidacyHost != null;
     }
-    
+
     public static String needCaptchaAndroidacyHost() {
         return needCaptchaAndroidacyHost;
     }
@@ -221,15 +226,20 @@ public class Http {
         needCaptchaAndroidacyHost = null;
     }
 
+    @SuppressLint("RestrictedApi")
     @SuppressWarnings("resource")
     public static byte[] doHttpGet(String url, boolean allowCache) throws IOException {
         checkNeedBlockAndroidacyRequest(url);
-        Response response = (allowCache ? getHttpClientWithCache() : getHttpClient())
-                .newCall(new Request.Builder().url(url).get().build()).execute();
+        Response response =
+                (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).get().build()).execute();
         // 200/204 == success, 304 == cache valid
-        if (response.code() != 200 && response.code() != 204 &&
-                (response.code() != 304 || !allowCache)) {
+        if (response.code() != 200 && response.code() != 204 && (response.code() != 304 || !allowCache)) {
             checkNeedCaptchaAndroidacy(url, response.code());
+            // If it's a 401, and an androidacy link, it's probably an invalid token
+            MainApplication mainApplication = MainApplication.getINSTANCE();
+            if (response.code() == 401 && AndroidacyUtil.isAndroidacyLink(url)) {
+                throw new HttpException("Androidacy token is invalid", 401);
+            }
             throw new HttpException(response.code());
         }
         ResponseBody responseBody = response.body();
@@ -257,8 +267,7 @@ public class Http {
             return response.request().url().uri().toString();
         }
         // 200/204 == success, 304 == cache valid
-        if (response.code() != 200 && response.code() != 204 &&
-                (response.code() != 304 || !allowCache)) {
+        if (response.code() != 200 && response.code() != 204 && (response.code() != 304 || !allowCache)) {
             checkNeedCaptchaAndroidacy(url, response.code());
             throw new HttpException(response.code());
         }
