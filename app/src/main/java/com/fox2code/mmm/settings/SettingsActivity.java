@@ -262,12 +262,18 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             Preference debugNotification = findPreference("pref_background_update_check_debug");
             debugNotification.setEnabled(MainApplication.isBackgroundUpdateCheckEnabled());
             debugNotification.setVisible(MainApplication.isDeveloper() && !MainApplication.isWrapped());
+            debugNotification.setVisible(MainApplication.isDeveloper() && !MainApplication.isWrapped());
             debugNotification.setOnPreferenceClickListener(preference -> {
                 BackgroundUpdateChecker.postNotification(this.requireContext(), new Random().nextInt(4) + 2);
                 return true;
             });
             Preference backgroundUpdateCheck = findPreference("pref_background_update_check");
             backgroundUpdateCheck.setVisible(!MainApplication.isWrapped());
+            // Make uncheckable if POST_NOTIFICATIONS permission is not granted
+            if (!MainApplication.isNotificationPermissionGranted()) {
+                backgroundUpdateCheck.setSummary(R.string.background_update_check_permission_required);
+                backgroundUpdateCheck.setEnabled(false);
+            }
             backgroundUpdateCheck.setOnPreferenceChangeListener((preference, newValue) -> {
                 boolean enabled = Boolean.parseBoolean(String.valueOf(newValue));
                 debugNotification.setEnabled(enabled);
@@ -651,7 +657,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     if (preference == null) continue;
                     final int index = i;
                     preference.setOnPreferenceClickListener(preference1 -> {
-                        sharedPreferences.edit().putBoolean("pref_custom_repo_" + index + "_enabled", false).apply();
+                        sharedPreferences.edit().remove("pref_custom_repo_" + index + "_enabled").apply();
                         customRepoManager.removeRepo(index);
                         updateCustomRepoList(false);
                         return true;
@@ -677,7 +683,6 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         String text = String.valueOf(input.getText());
                         if (customRepoManager.canAddRepo(text)) {
                             final CustomRepoData customRepoData = customRepoManager.addRepo(text);
-                            customRepoData.setEnabled(true);
                             new Thread("Add Custom Repo Thread") {
                                 @Override
                                 public void run() {

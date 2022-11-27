@@ -15,6 +15,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StyleRes;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.emoji2.text.DefaultEmojiCompatConfig;
 import androidx.emoji2.text.EmojiCompat;
 import androidx.emoji2.text.FontRequestEmojiCompatConfig;
@@ -206,6 +207,10 @@ public class MainApplication extends FoxApplication
     private int managerThemeResId = R.style.Theme_MagiskModuleManager;
     private FoxThemeWrapper markwonThemeContext;
     private Markwon markwon;
+
+    public static boolean isNotificationPermissionGranted() {
+        return NotificationManagerCompat.from(INSTANCE).areNotificationsEnabled();
+    }
 
     public Markwon getMarkwon() {
         if (this.markwon != null)

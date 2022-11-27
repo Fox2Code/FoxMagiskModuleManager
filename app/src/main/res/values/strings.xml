@@ -183,4 +183,8 @@
     <string name="androidacy_need_captcha">Androidacy update blocked by Captcha</string>
     <string name="api_key_restart">API key has been changed. Restart the app to apply changes.</string>
     <string name="api_key_unchanged">The API key you input is the same as the one already in use.</string>
+    <string name="permission_notification_title">Allow notifications?</string>
+    <string name="permission_notification_message">We need the notifications permission to notify you on app and module updates. If you don\'t grant this permission, background update checks will not run.</string>
+    <string name="permission_notification_grant">Grant permission</string>
+    <string name="background_update_check_permission_required">Please enable notifications to enable this option.</string>
 </resources>

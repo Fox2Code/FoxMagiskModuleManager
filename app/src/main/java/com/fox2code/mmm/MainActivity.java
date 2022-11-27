@@ -1,6 +1,7 @@
 package com.fox2code.mmm;
 
 import android.Manifest;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -20,6 +21,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -39,12 +41,10 @@ import com.fox2code.mmm.utils.ExternalHelper;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.fox2code.mmm.utils.NoodleDebug;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.topjohnwu.superuser.Shell;
 
 import eightbitlab.com.blurview.BlurView;
-import eightbitlab.com.blurview.RenderEffectBlur;
-import eightbitlab.com.blurview.RenderScriptBlur;
 
 public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRefreshListener,
         SearchView.OnQueryTextListener, SearchView.OnCloseListener,
@@ -87,10 +87,10 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         noodleDebugState = MainApplication.isDeveloper();
         BackgroundUpdateChecker.onMainActivityCreate(this);
         super.onCreate(savedInstanceState);
-         this.setActionBarExtraMenuButton(R.drawable.ic_baseline_settings_24, v -> {
+        this.setActionBarExtraMenuButton(R.drawable.ic_baseline_settings_24, v -> {
             IntentHelper.startActivity(this, SettingsActivity.class);
-         return true;
-         }, R.string.pref_category_settings);
+            return true;
+        }, R.string.pref_category_settings);
         setContentView(R.layout.activity_main);
         this.setTitle(R.string.app_name);
         this.getWindow().setFlags(
@@ -208,7 +208,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 noodleDebug.replace("Check Update");
                 RepoManager.getINSTANCE().update(value -> runOnUiThread(max == 0 ? () ->
                         progressIndicator.setProgressCompat(
-                                (int) (value * PRECISION), true) :() ->
+                                (int) (value * PRECISION), true) : () ->
                         progressIndicator.setProgressCompat(
                                 (int) (value * PRECISION * 0.75F), true)));
                 NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
@@ -432,7 +432,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             final int max = ModuleManager.getINSTANCE().getUpdatableModuleCount();
             RepoManager.getINSTANCE().update(value -> runOnUiThread(max == 0 ? () ->
                     progressIndicator.setProgressCompat(
-                            (int) (value * PRECISION), true) :() ->
+                            (int) (value * PRECISION), true) : () ->
                     progressIndicator.setProgressCompat(
                             (int) (value * PRECISION * 0.75F), true)));
             NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
@@ -483,7 +483,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
             noodleDebug.pop();
             noodleDebug.unbind();
-        },"Repo update thread").start();
+        }, "Repo update thread").start();
     }
 
     @Override
@@ -532,9 +532,22 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 ContextCompat.checkSelfPermission(this,
                         Manifest.permission.POST_NOTIFICATIONS) !=
                         PackageManager.PERMISSION_GRANTED) {
-            // TODO Use standard Android API to ask for permissions
-            Shell.cmd("pm grant " + this.getPackageName() + " " +
-                    Manifest.permission.POST_NOTIFICATIONS);
+            // Show a dialog explaining why we need this permission, which is to show
+            // notifications for updates
+            runOnUiThread(() -> {
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+                builder.setTitle(R.string.permission_notification_title);
+                builder.setMessage(R.string.permission_notification_message);
+                builder.setPositiveButton(R.string.permission_notification_grant, (dialog, which) -> this.requestPermissions(new String[]{
+                        Manifest.permission.POST_NOTIFICATIONS}, 0));
+                builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
+                    // Set pref_background_update_check to false and dismiss dialog
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                    prefs.edit().putBoolean("pref_background_update_check", false).apply();
+                    dialog.dismiss();
+                });
+                builder.show();
+            });
         }
     }
 }
