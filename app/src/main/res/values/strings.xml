@@ -187,4 +187,5 @@
     <string name="permission_notification_message">We need the notifications permission to notify you on app and module updates. If you don\'t grant this permission, background update checks will not run.</string>
     <string name="permission_notification_grant">Grant permission</string>
     <string name="background_update_check_permission_required">Please enable notifications to enable this option.</string>
+    <string name="dont_ask_again">Don\'t ask again</string>
 </resources>

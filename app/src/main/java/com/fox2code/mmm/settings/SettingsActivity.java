@@ -9,10 +9,12 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
@@ -271,8 +273,29 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             backgroundUpdateCheck.setVisible(!MainApplication.isWrapped());
             // Make uncheckable if POST_NOTIFICATIONS permission is not granted
             if (!MainApplication.isNotificationPermissionGranted()) {
+                // Instead of disabling the preference, we make it uncheckable and when the user
+                // clicks on it, we show a dialog explaining why the permission is needed
+                backgroundUpdateCheck.setOnPreferenceClickListener(preference -> {
+                    // set the box to unchecked
+                    ((SwitchPreferenceCompat) backgroundUpdateCheck).setChecked(false);
+                    // ensure that the preference is false
+                    MainApplication.getSharedPreferences().edit().putBoolean("pref_background_update_check", false).apply();
+                    new MaterialAlertDialogBuilder(this.requireContext())
+                            .setTitle(R.string.permission_notification_title)
+                            .setMessage(R.string.permission_notification_message)
+                            .setPositiveButton(R.string.ok, (dialog, which) -> {
+                                // Open the app settings
+                                Intent intent = new Intent();
+                                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                Uri uri = Uri.fromParts("package", this.requireContext().getPackageName(), null);
+                                intent.setData(uri);
+                                this.startActivity(intent);
+                            })
+                            .setNegativeButton(R.string.cancel, (dialog, which) -> {})
+                            .show();
+                    return true;
+                });
                 backgroundUpdateCheck.setSummary(R.string.background_update_check_permission_required);
-                backgroundUpdateCheck.setEnabled(false);
             }
             backgroundUpdateCheck.setOnPreferenceChangeListener((preference, newValue) -> {
                 boolean enabled = Boolean.parseBoolean(String.valueOf(newValue));
