@@ -83,6 +83,16 @@
         <item name="chipStyle">@style/Widget.Material.Chip.Choice.Dark</item>
     </style>
 
+    <!-- Black theme, which is just a dark theme with a black background -->
+    <style name="Theme.MagiskModuleManager.Black" parent="Theme.MagiskModuleManager.Dark">
+        <item name="colorBackgroundFloating">@color/black</item>
+        <item name="android:windowBackground">@color/black</item>
+        <item name="boxBackgroundColor">@color/black</item>
+        <item name="cardBackgroundColor">@color/black</item>
+        <item name="backgroundColor">@color/black</item>
+        <item name="colorSurface">@color/black</item>
+    </style>
+
     <style name="Widget.Material.Chip.Choice.Dark" parent="Widget.MaterialComponents.Chip.Action">
         <item name="chipBackgroundColor">@color/dark_chipBackgroundColor</item>
         <item name="chipStrokeWidth">0dp</item>

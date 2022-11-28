@@ -188,4 +188,7 @@
     <string name="permission_notification_grant">Grant permission</string>
     <string name="background_update_check_permission_required">Please enable notifications to enable this option.</string>
     <string name="dont_ask_again">Don\'t ask again</string>
+    <string name="force_black_theme_desc">Forces AMOLED black backgrounds when using dark theme.
+        Please be aware this may have contrast problems with some color themes.</string>
+    <string name="force_black_theme_pref">Force black theme</string>
 </resources>

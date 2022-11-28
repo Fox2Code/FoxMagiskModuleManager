@@ -22,6 +22,16 @@
         <item name="chipStyle">@style/Widget.Material3.Chip.Choice.Dark</item>
     </style>
 
+    <!-- Black monet theme, which is just dark monet theme with black background -->
+    <style name="Theme.MagiskModuleManager.Monet.Black" parent="Theme.MagiskModuleManager.Monet.Dark">
+        <item name="colorBackgroundFloating">@color/black</item>
+        <item name="android:windowBackground">@color/black</item>
+        <item name="boxBackgroundColor">@color/black</item>
+        <item name="cardBackgroundColor">@color/black</item>
+        <item name="backgroundColor">@color/black</item>
+        <item name="colorSurface">@color/black</item>
+    </style>
+
     <style name="Widget.Material3.Chip.Choice.Dark" parent="Widget.Material3.Chip.Assist">
         <item name="chipBackgroundColor">@color/system_accent2_700</item>
         <item name="chipStrokeWidth">0dp</item>
