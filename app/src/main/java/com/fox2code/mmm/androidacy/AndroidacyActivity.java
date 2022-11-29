@@ -37,9 +37,6 @@ import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -104,6 +101,13 @@ public final class AndroidacyActivity extends FoxActivity {
             // get from shared preferences
             token = MainApplication.getSharedPreferences().getString("pref_androidacy_api_token", null);
             url = url + "&token=" + token;
+        }
+        // Add device_id to url if not present
+        String device_id = uri.getQueryParameter("device_id");
+        if (device_id == null) {
+            // get from shared preferences
+            device_id = AndroidacyRepoData.generateDeviceId();
+            url = url + "&device_id=" + device_id;
         }
         boolean allowInstall = intent.getBooleanExtra(Constants.EXTRA_ANDROIDACY_ALLOW_INSTALL, false);
         String title = intent.getStringExtra(Constants.EXTRA_ANDROIDACY_ACTIONBAR_TITLE);

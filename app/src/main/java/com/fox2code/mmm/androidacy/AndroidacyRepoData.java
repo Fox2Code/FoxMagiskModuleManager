@@ -1,5 +1,6 @@
 package com.fox2code.mmm.androidacy;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
@@ -16,7 +17,6 @@ import com.fox2code.mmm.repo.RepoModule;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.HttpException;
 import com.fox2code.mmm.utils.PropUtils;
-import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,7 +24,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -44,9 +43,9 @@ public final class AndroidacyRepoData extends RepoData {
 
     private final boolean testMode;
     private final String host;
+    public String token = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).getString("pref_androidacy_api_token", null);
     // Avoid spamming requests to Androidacy
     private long androidacyBlockade = 0;
-    public String token = this.cachedPreferences.getString("pref_androidacy_api_token", null);
 
     public AndroidacyRepoData(File cacheRoot, SharedPreferences cachedPreferences, boolean testMode) {
         super(testMode ? RepoManager.ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT : RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT, cacheRoot, cachedPreferences);
@@ -76,14 +75,65 @@ public final class AndroidacyRepoData extends RepoData {
         return url;
     }
 
+    // Generates a unique device ID. This is used to identify the device in the API for rate
+    // limiting and fraud detection.
+    public static String generateDeviceId() {
+        // Try to get the device ID from the shared preferences
+        SharedPreferences sharedPreferences = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0);
+        String deviceIdPref = sharedPreferences.getString("device_id", null);
+        if (deviceIdPref != null) {
+            return deviceIdPref;
+        } else {
+            // Collect device information
+            String device = android.os.Build.DEVICE;
+            String model = android.os.Build.MODEL;
+            String product = android.os.Build.PRODUCT;
+            String manufacturer = android.os.Build.MANUFACTURER;
+            String brand = android.os.Build.BRAND;
+            String androidVersion = android.os.Build.VERSION.RELEASE;
+            String androidSdk = String.valueOf(android.os.Build.VERSION.SDK_INT);
+            @SuppressLint("HardwareIds") String androidId = android.provider.Settings.Secure.getString(MainApplication.getINSTANCE().getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+            // Generate a unique ID for this device. For privacy reasons, we don't want to send this
+            // info directly to the server, so we hash it.
+            String deviceId = androidId + device + model + product + manufacturer + brand + androidVersion + androidSdk;
+            // Now, we need to hash the device ID. We use SHA-256, which is a secure hash function.
+            // This means that it's impossible to reverse the hash and get the original device ID.
+            // We use the SHA-256 hash because it's the same hash function used by the API to hash
+            // the device ID.
+            try {
+                java.security.MessageDigest digest = java.security.MessageDigest.getInstance("SHA-256");
+                byte[] hash = digest.digest(deviceId.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+                // Convert the hash to a normal string
+                StringBuilder hexString = new StringBuilder();
+                for (byte b : hash) {
+                    String hex = Integer.toHexString(0xff & b);
+                    if (hex.length() == 1) {
+                        hexString.append('0');
+                    }
+                    hexString.append(hex);
+                }
+                // Save the device ID to the shared preferences
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("device_id", hexString.toString());
+                editor.apply();
+                return hexString.toString();
+            } catch (java.security.NoSuchAlgorithmException e) {
+                // This should never happen, but if it does, we'll just return the device ID without
+                // hashing it.
+                return deviceId;
+            }
+        }
+    }
+
     public boolean isValidToken(String token) throws IOException {
+        String deviceId = generateDeviceId();
         try {
-            Http.doHttpGet("https://" + this.host + "/auth/me?token=" + token, false);
+            Http.doHttpGet("https://" + this.host + "/auth/me?token=" + token + "&device_id=" + deviceId, false);
         } catch (HttpException e) {
             if (e.getErrorCode() == 401) {
                 Log.w(TAG, "Invalid token, resetting...");
                 // Remove saved preference
-                SharedPreferences.Editor editor = this.cachedPreferences.edit();
+                SharedPreferences.Editor editor = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit();
                 editor.remove("pref_androidacy_api_token");
                 editor.apply();
                 return false;
@@ -110,6 +160,7 @@ public final class AndroidacyRepoData extends RepoData {
             }*/
             return false;
         }
+        String deviceId = generateDeviceId();
         long time = System.currentTimeMillis();
         if (this.androidacyBlockade > time) return false;
         this.androidacyBlockade = time + 30_000L;
@@ -137,8 +188,8 @@ public final class AndroidacyRepoData extends RepoData {
         if (token == null) {
             try {
                 Log.i(TAG, "Requesting new token...");
-                // POST request to https://production-api.androidacy.com/auth/register
-                token = new String(Http.doHttpPost("https://" + this.host + "/auth/register", "{\"foxmmm\": \"true\"}", false), StandardCharsets.UTF_8);
+                // POST json request to https://production-api.androidacy.com/auth/register
+                token = new String(Http.doHttpPost("https://" + this.host + "/auth/register", "{\"device_id\":\"" + deviceId + "\"}", false));
                 // Parse token
                 try {
                     JSONObject jsonObject = new JSONObject(token);
@@ -157,7 +208,7 @@ public final class AndroidacyRepoData extends RepoData {
                     return false;
                 }
                 // Save token to shared preference
-                SharedPreferences.Editor editor = this.cachedPreferences.edit();
+                SharedPreferences.Editor editor = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit();
                 editor.putString("pref_androidacy_api_token", token);
                 editor.apply();
             } catch (Exception e) {
@@ -289,7 +340,8 @@ public final class AndroidacyRepoData extends RepoData {
 
     @Override
     public String getUrl() {
-        return this.token == null ? this.url : this.url + "?token=" + this.token;
+        return this.token == null ? this.url :
+                this.url + "?token=" + this.token + "&v=" + BuildConfig.VERSION_CODE + "&c=" + BuildConfig.VERSION_NAME + "&device_id=" + generateDeviceId();
     }
 
     private String injectToken(String url) {
@@ -307,11 +359,19 @@ public final class AndroidacyRepoData extends RepoData {
             }
         }
         String token = "token=" + this.token;
+        String deviceId = "device_id=" + generateDeviceId();
         if (!url.contains(token)) {
             if (url.lastIndexOf('/') < url.lastIndexOf('?')) {
                 return url + '&' + token;
             } else {
                 return url + '?' + token;
+            }
+        }
+        if (!url.contains(deviceId)) {
+            if (url.lastIndexOf('/') < url.lastIndexOf('?')) {
+                return url + '&' + deviceId;
+            } else {
+                return url + '?' + deviceId;
             }
         }
         return url;
