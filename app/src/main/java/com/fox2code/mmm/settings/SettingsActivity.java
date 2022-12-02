@@ -137,20 +137,6 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 }, 1);
                 return true;
             });
-            // Force black theme - depends on themePreference being system or dark
-            SwitchPreferenceCompat forceBlackPreference = findPreference("pref_force_black_theme");
-            // Set invisible if theme is not dark or system
-            forceBlackPreference.setVisible(themePreference.getValue().equals("dark") ||
-                    themePreference.getValue().equals("system"));
-            forceBlackPreference.setOnPreferenceChangeListener((preference, newValue) -> {
-                devModeStep = 0;
-                UiThreadHandler.handler.postDelayed(() -> {
-                    MainApplication.getINSTANCE().updateTheme();
-                    FoxActivity.getFoxActivity(this).setThemeRecreate(
-                            MainApplication.getINSTANCE().getManagerThemeResId());
-                }, 1);
-                return true;
-            });
             // Crash reporting
             TwoStatePreference crashReportingPreference = findPreference("pref_crash_reporting");
             if (!SentryMain.IS_SENTRY_INSTALLED) crashReportingPreference.setVisible(false);

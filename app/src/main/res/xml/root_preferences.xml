@@ -56,15 +56,6 @@
             app:singleLineTitle="false"
             app:title="@string/theme_pref" />
 
-        <!-- Force black theme -->
-        <SwitchPreferenceCompat
-            app:defaultValue="false"
-            app:icon="@drawable/ic_baseline_palette_24"
-            app:key="pref_force_black_theme"
-            app:singleLineTitle="false"
-            app:summary="@string/force_black_theme_desc"
-            app:title="@string/force_black_theme_pref" />
-
         <Preference
             app:icon="@drawable/ic_baseline_language_24"
             app:key="pref_language_selector"

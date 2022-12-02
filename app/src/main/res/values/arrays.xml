@@ -3,12 +3,14 @@
     <string-array name="theme_values" translatable="false">
         <item>system</item>
         <item>dark</item>
+        <item>black</item>
         <item>light</item>
     </string-array>
 
     <string-array name="theme_values_names">
         <item>System</item>
         <item>Dark</item>
+        <item>AMOLED Black</item>
         <item>Light</item>
     </string-array>
     <string-array name="permission_notification_dont_ask_again">Don't prompt again</string-array>
