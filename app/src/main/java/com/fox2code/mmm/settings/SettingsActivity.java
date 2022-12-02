@@ -542,17 +542,22 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     return true;
                 });
             }
-            String[] originalApiKeyRef = new String[]{
-                    MainApplication.getSharedPreferences().getString("pref_androidacy_api_token", "")};
-            // Create the pref_androidacy_repo_api_key text input with validation
-            EditTextPreference prefAndroidacyRepoApiKey = findPreference("pref_androidacy_api_token");
-            assert prefAndroidacyRepoApiKey != null;
+            String[] originalApiKeyRef = new String[]{MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).getString("pref_androidacy_api_token", null)};
+            // Get the dummy pref_androidacy_repo_api_token EditTextPreference
+            EditTextPreference prefAndroidacyRepoApiKey = Objects.requireNonNull(findPreference("pref_androidacy_api_token"));
+            prefAndroidacyRepoApiKey.setDependency("pref_androidacy_repo_enabled");
+            prefAndroidacyRepoApiKey.setTitle(R.string.api_key);
+            prefAndroidacyRepoApiKey.setSummary(R.string.api_key_summary);
+            prefAndroidacyRepoApiKey.setDialogTitle(R.string.api_key);
+            prefAndroidacyRepoApiKey.setDefaultValue(originalApiKeyRef[0]);
+            // Set the value to the current value
+            prefAndroidacyRepoApiKey.setText(originalApiKeyRef[0]);
             prefAndroidacyRepoApiKey.setOnBindEditTextListener(editText -> {
                 editText.setSingleLine();
                 // Make the single line wrap
                 editText.setHorizontallyScrolling(false);
-                // Set the height to the height of 2 lines
-                editText.setHeight(editText.getLineHeight() * 3);
+                // Set the height to the maximum required to fit the text
+                editText.setMaxLines(Integer.MAX_VALUE);
                 // Make ok button say "Save"
                 editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
             });
@@ -573,8 +578,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 new Thread(() -> {
                     // If key is empty, just remove it and change the text of the snack bar
                     if (apiKey.isEmpty()) {
-                        MainApplication.getSharedPreferences().edit().remove(
-                                "pref_androidacy_api_token").apply();
+                        MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit().remove("pref_androidacy_api_token").apply();
                         new Handler(Looper.getMainLooper()).post(() -> {
                             Snackbar.make(requireView(), R.string.api_key_removed, Snackbar.LENGTH_SHORT).show();
                             // Show dialog to restart app with ok button
@@ -610,8 +614,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                             new Handler(Looper.getMainLooper()).post(() -> {
                                 Snackbar.make(requireView(), R.string.api_key_invalid, Snackbar.LENGTH_SHORT).show();
                                 // Save the original key
-                                MainApplication.getSharedPreferences().edit().putString(
-                                        "pref_androidacy_api_token", originalApiKeyRef[0]).apply();
+                                MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit().putString("pref_androidacy_api_token", originalApiKeyRef[0]).apply();
                                 // Re-show the dialog with an error
                                 prefAndroidacyRepoApiKey.performClick();
                                 // Show error
@@ -631,8 +634,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                             if (valid) {
                                 originalApiKeyRef[0] = apiKey;
                                 RepoManager.getINSTANCE().getAndroidacyRepoData().setToken(apiKey);
-                                MainApplication.getSharedPreferences().edit().putString(
-                                        "pref_androidacy_api_token", apiKey).apply();
+                                MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit().putString("pref_androidacy_api_token", apiKey).apply();
                                 // Snackbar with success and restart button
                                 new Handler(Looper.getMainLooper()).post(() -> {
                                     Snackbar.make(requireView(), R.string.api_key_valid, Snackbar.LENGTH_SHORT).show();
@@ -667,7 +669,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                 new Handler(Looper.getMainLooper()).post(() -> {
                                     Snackbar.make(requireView(), R.string.api_key_invalid, Snackbar.LENGTH_SHORT).show();
                                     // Save the original key
-                                    MainApplication.getSharedPreferences().edit().putString(
+                                    MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit().putString(
                                             "pref_androidacy_api_token", originalApiKeyRef[0]).apply();
                                     // Re-show the dialog with an error
                                     prefAndroidacyRepoApiKey.performClick();
@@ -680,6 +682,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 }).start();
                 return true;
             });
+            // make sure the preference is visible if repo is enabled
+            prefAndroidacyRepoApiKey.setVisible(RepoManager.getINSTANCE().getAndroidacyRepoData().isEnabled());
         }
 
         @SuppressLint("RestrictedApi")

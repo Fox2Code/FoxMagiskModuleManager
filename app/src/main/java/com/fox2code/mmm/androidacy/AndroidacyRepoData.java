@@ -1,12 +1,18 @@
 package com.fox2code.mmm.androidacy;
 
-import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.fingerprintjs.android.fingerprint.Fingerprinter;
+import com.fingerprintjs.android.fingerprint.FingerprinterFactory;
+import com.fingerprintjs.android.fpjs_pro.Configuration;
+import com.fingerprintjs.android.fpjs_pro.FingerprintJS;
+import com.fingerprintjs.android.fpjs_pro.FingerprintJSFactory;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
@@ -17,6 +23,7 @@ import com.fox2code.mmm.repo.RepoModule;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.HttpException;
 import com.fox2code.mmm.utils.PropUtils;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -84,44 +91,31 @@ public final class AndroidacyRepoData extends RepoData {
         if (deviceIdPref != null) {
             return deviceIdPref;
         } else {
-            // Collect device information
-            String device = android.os.Build.DEVICE;
-            String model = android.os.Build.MODEL;
-            String product = android.os.Build.PRODUCT;
-            String manufacturer = android.os.Build.MANUFACTURER;
-            String brand = android.os.Build.BRAND;
-            String androidVersion = android.os.Build.VERSION.RELEASE;
-            String androidSdk = String.valueOf(android.os.Build.VERSION.SDK_INT);
-            @SuppressLint("HardwareIds") String androidId = android.provider.Settings.Secure.getString(MainApplication.getINSTANCE().getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
-            // Generate a unique ID for this device. For privacy reasons, we don't want to send this
-            // info directly to the server, so we hash it.
-            String deviceId = androidId + device + model + product + manufacturer + brand + androidVersion + androidSdk;
-            // Now, we need to hash the device ID. We use SHA-256, which is a secure hash function.
-            // This means that it's impossible to reverse the hash and get the original device ID.
-            // We use the SHA-256 hash because it's the same hash function used by the API to hash
-            // the device ID.
-            try {
-                java.security.MessageDigest digest = java.security.MessageDigest.getInstance("SHA-256");
-                byte[] hash = digest.digest(deviceId.getBytes(java.nio.charset.StandardCharsets.UTF_8));
-                // Convert the hash to a normal string
-                StringBuilder hexString = new StringBuilder();
-                for (byte b : hash) {
-                    String hex = Integer.toHexString(0xff & b);
-                    if (hex.length() == 1) {
-                        hexString.append('0');
-                    }
-                    hexString.append(hex);
-                }
-                // Save the device ID to the shared preferences
+            Context context = MainApplication.getINSTANCE().getApplicationContext();
+            FingerprintJSFactory factory = new FingerprintJSFactory(context);
+            Configuration.Region region = Configuration.Region.US;
+            Configuration configuration = new Configuration(
+                    "NiZiHi266YaTLreOIOzc",
+                    region,
+                    region.getEndpointUrl(),
+                    true
+            );
+
+            FingerprintJS fpjsClient = factory.createInstance(
+                    configuration
+            );
+
+            fpjsClient.getVisitorId(visitorIdResponse -> {
+                // Use the ID
+                String visitorId = visitorIdResponse.getVisitorId();
+                // Save the ID in the shared preferences
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("device_id", hexString.toString());
+                editor.putString("device_id", visitorId);
                 editor.apply();
-                return hexString.toString();
-            } catch (java.security.NoSuchAlgorithmException e) {
-                // This should never happen, but if it does, we'll just return the device ID without
-                // hashing it.
-                return deviceId;
-            }
+                return null;
+            });
+            // return the id
+            return sharedPreferences.getString("device_id", null);
         }
     }
 
@@ -147,6 +141,21 @@ public final class AndroidacyRepoData extends RepoData {
     @Override
     protected boolean prepare() {
         if (Http.needCaptchaAndroidacy()) return false;
+        // Check if we have a device ID yet
+        SharedPreferences sharedPreferences = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0);
+        String deviceIdPref = sharedPreferences.getString("device_id", null);
+        if (deviceIdPref == null) {
+            // Generate a device ID
+            generateDeviceId();
+            // Loop until we have a device ID
+            while (sharedPreferences.getString("device_id", null) == null) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         // Implementation details discussed on telegram
         // First, ping the server to check if it's alive
         try {
@@ -154,10 +163,15 @@ public final class AndroidacyRepoData extends RepoData {
         } catch (Exception e) {
             Log.e(TAG, "Failed to ping server", e);
             // Inform user
-            /*if (!HttpException.shouldTimeout(e)) {
-                UiThreadHandler.run(() -> Toast.makeText(MainApplication.getINSTANCE(),
-                        R.string.androidacy_server_down, Toast.LENGTH_SHORT).show());
-            }*/
+            Looper.prepare();
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainApplication.getINSTANCE().getBaseContext());
+            builder.setTitle("Androidacy Server Down");
+            builder.setMessage("The Androidacy server is down. Unfortunately, this means that you" +
+                    " will not be able to download or view modules from the Androidacy repository" +
+                    ". Please try again later.");
+            builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+            builder.show();
+            Looper.loop();
             return false;
         }
         String deviceId = generateDeviceId();
@@ -381,10 +395,6 @@ public final class AndroidacyRepoData extends RepoData {
     @Override
     public String getName() {
         return this.testMode ? super.getName() + " (Test Mode)" : super.getName();
-    }
-
-    String getToken() {
-        return this.token;
     }
 
     public void setToken(String token) {

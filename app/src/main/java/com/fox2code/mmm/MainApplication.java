@@ -241,9 +241,12 @@ public class MainApplication extends FoxApplication
     private class Prism4jSwitchTheme implements Prism4jTheme {
         private final Prism4jTheme light = new Prism4jThemeDefault(Color.TRANSPARENT);
         private final Prism4jTheme dark = new Prism4jThemeDarkula(Color.TRANSPARENT);
+        // Black theme
+        private final Prism4jTheme black = new Prism4jThemeDefault(Color.BLACK);
 
         private Prism4jTheme getTheme() {
-            return isLightTheme() ? this.light : this.dark;
+            // isLightTheme() means light, isDarkTheme() means dark, and isBlackTheme() means black
+            return isLightTheme() ? light : isDarkTheme() ? dark : black;
         }
 
         @Override
@@ -331,6 +334,11 @@ public class MainApplication extends FoxApplication
             default:
                 return super.isLightTheme();
         }
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    public boolean isDarkTheme() {
+        return !this.isLightTheme();
     }
 
     @Override

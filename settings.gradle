@@ -6,6 +6,7 @@ dependencyResolutionManagement {
         maven {
             url 'https://jitpack.io'
         }
+        maven { url 'https://maven.fpregistry.io/releases' }
     }
 }
 rootProject.name = "MagiskModuleManager"
