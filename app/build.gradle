@@ -47,7 +47,13 @@ android {
                     "java.util.Arrays.asList(\"magisk_alt_repo\", \"androidacy_repo\")",)
             // Get the androidacy client ID from the androidacy.properties
             Properties properties = new Properties()
-            properties.load(project.rootProject.file('androidacy.properties').newDataInputStream())
+            // If androidacy.properties doesn't exist, use the default client ID (an empty string
+            // - won't work, but it's better than failing to build)
+            if (project.rootProject.file('androidacy.properties').exists()) {
+                properties.load(project.rootProject.file('androidacy.properties').newDataInputStream())
+            } else {
+                properties.setProperty('client_id', '""')
+            }
             buildConfigField("String", "ANDROIDACY_CLIENT_ID", properties.getProperty('client_id'))
         }
 
@@ -71,7 +77,13 @@ android {
 
             // Get the androidacy client ID from the androidacy.properties
             Properties properties = new Properties()
-            properties.load(project.rootProject.file('androidacy.properties').newDataInputStream())
+            // If androidacy.properties doesn't exist, use the default client ID (an empty string
+            // - won't work, but it's better than failing to build)
+            if (project.rootProject.file('androidacy.properties').exists()) {
+                properties.load(project.rootProject.file('androidacy.properties').newDataInputStream())
+            } else {
+                properties.setProperty('client_id', '""')
+            }
             buildConfigField("String", "ANDROIDACY_CLIENT_ID", properties.getProperty('client_id'))
         }
     }
