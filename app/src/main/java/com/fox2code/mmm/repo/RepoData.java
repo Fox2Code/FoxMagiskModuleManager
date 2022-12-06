@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -81,11 +82,11 @@ public class RepoData extends XRepo {
         }
     }
 
-    protected boolean prepare() {
+    protected boolean prepare() throws NoSuchAlgorithmException {
         return true;
     }
 
-    protected List<RepoModule> populate(JSONObject jsonObject) throws JSONException {
+    protected List<RepoModule> populate(JSONObject jsonObject) throws JSONException, NoSuchAlgorithmException {
         List<RepoModule> newModules = new ArrayList<>();
         synchronized (this.populateLock) {
             String name = jsonObject.getString("name").trim();
@@ -215,7 +216,7 @@ public class RepoData extends XRepo {
                 .getBoolean("pref_" + this.getPreferenceId() + "_enabled", this.isEnabledByDefault());
     }
 
-    public String getUrl() {
+    public String getUrl() throws NoSuchAlgorithmException {
         return this.url;
     }
 

@@ -1,6 +1,5 @@
 package com.fox2code.mmm.androidacy;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Looper;
 import android.util.Log;
@@ -8,11 +7,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.fingerprintjs.android.fingerprint.Fingerprinter;
-import com.fingerprintjs.android.fingerprint.FingerprinterFactory;
-import com.fingerprintjs.android.fpjs_pro.Configuration;
-import com.fingerprintjs.android.fpjs_pro.FingerprintJS;
-import com.fingerprintjs.android.fpjs_pro.FingerprintJSFactory;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
@@ -24,6 +18,7 @@ import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.HttpException;
 import com.fox2code.mmm.utils.PropUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.topjohnwu.superuser.Shell;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,6 +26,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -47,6 +44,9 @@ public final class AndroidacyRepoData extends RepoData {
         OK_HTTP_URL_BUILDER.setHost$okhttp(".androidacy.com");
         OK_HTTP_URL_BUILDER.build();
     }
+
+    @SuppressWarnings("unused")
+    public final String ClientID = BuildConfig.ANDROIDACY_CLIENT_ID;
 
     private final boolean testMode;
     private final String host;
@@ -84,42 +84,57 @@ public final class AndroidacyRepoData extends RepoData {
 
     // Generates a unique device ID. This is used to identify the device in the API for rate
     // limiting and fraud detection.
-    public static String generateDeviceId() {
+    public static String generateDeviceId() throws NoSuchAlgorithmException {
         // Try to get the device ID from the shared preferences
         SharedPreferences sharedPreferences = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0);
         String deviceIdPref = sharedPreferences.getString("device_id", null);
         if (deviceIdPref != null) {
             return deviceIdPref;
         } else {
-            Context context = MainApplication.getINSTANCE().getApplicationContext();
-            FingerprintJSFactory factory = new FingerprintJSFactory(context);
-            Configuration.Region region = Configuration.Region.US;
-            Configuration configuration = new Configuration(
-                    "NiZiHi266YaTLreOIOzc",
-                    region,
-                    region.getEndpointUrl(),
-                    true
-            );
-
-            FingerprintJS fpjsClient = factory.createInstance(
-                    configuration
-            );
-
-            fpjsClient.getVisitorId(visitorIdResponse -> {
-                // Use the ID
-                String visitorId = visitorIdResponse.getVisitorId();
-                // Save the ID in the shared preferences
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("device_id", visitorId);
-                editor.apply();
-                return null;
-            });
-            // return the id
-            return sharedPreferences.getString("device_id", null);
+            // AAAA we're fingerprintiiiiing
+            // Really not that scary - just hashes some device info. We can't even get the info
+            // we originally hashed, so it's not like we can use it to track you.
+            String deviceId = null;
+            // Get ro.serialno if it exists
+            // First, we need to get an su shell
+            Shell.Result result = Shell.cmd("getprop ro.serialno").exec();
+            // Check if the command was successful
+            if (result.isSuccess()) {
+                // Get the output
+                String output = result.getOut().get(0);
+                // Check if the output is valid
+                if (output != null && !output.isEmpty()) {
+                    deviceId = output;
+                }
+            }
+            // Now, get device model, manufacturer, and Android version
+            String deviceModel = android.os.Build.MODEL;
+            String deviceManufacturer = android.os.Build.MANUFACTURER;
+            String androidVersion = android.os.Build.VERSION.RELEASE;
+            // Append it all together
+            deviceId += deviceModel + deviceManufacturer + androidVersion;
+            // Hash it
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(deviceId.getBytes());
+            // Convert it to a hex string
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+            // Save it to shared preferences
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("device_id", hexString.toString());
+            editor.apply();
+            // Return it
+            return hexString.toString();
         }
     }
 
-    public boolean isValidToken(String token) throws IOException {
+    public boolean isValidToken(String token) throws IOException, NoSuchAlgorithmException {
         String deviceId = generateDeviceId();
         try {
             Http.doHttpGet("https://" + this.host + "/auth/me?token=" + token + "&device_id=" + deviceId, false);
@@ -139,23 +154,8 @@ public final class AndroidacyRepoData extends RepoData {
     }
 
     @Override
-    protected boolean prepare() {
+    protected boolean prepare() throws NoSuchAlgorithmException {
         if (Http.needCaptchaAndroidacy()) return false;
-        // Check if we have a device ID yet
-        SharedPreferences sharedPreferences = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0);
-        String deviceIdPref = sharedPreferences.getString("device_id", null);
-        if (deviceIdPref == null) {
-            // Generate a device ID
-            generateDeviceId();
-            // Loop until we have a device ID
-            while (sharedPreferences.getString("device_id", null) == null) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
         // Implementation details discussed on telegram
         // First, ping the server to check if it's alive
         try {
@@ -240,7 +240,7 @@ public final class AndroidacyRepoData extends RepoData {
     }
 
     @Override
-    protected List<RepoModule> populate(JSONObject jsonObject) throws JSONException {
+    protected List<RepoModule> populate(JSONObject jsonObject) throws JSONException, NoSuchAlgorithmException {
         if (!jsonObject.getString("status").equals("success"))
             throw new JSONException("Response is not a success!");
         String name = jsonObject.optString("name", "Androidacy Modules Repo");
@@ -353,12 +353,12 @@ public final class AndroidacyRepoData extends RepoData {
     }
 
     @Override
-    public String getUrl() {
+    public String getUrl() throws NoSuchAlgorithmException {
         return this.token == null ? this.url :
                 this.url + "?token=" + this.token + "&v=" + BuildConfig.VERSION_CODE + "&c=" + BuildConfig.VERSION_NAME + "&device_id=" + generateDeviceId();
     }
 
-    private String injectToken(String url) {
+    private String injectToken(String url) throws NoSuchAlgorithmException {
         // Do not inject token for non Androidacy urls
         if (!AndroidacyUtil.isAndroidacyLink(url)) return url;
         if (this.testMode) {

@@ -28,6 +28,7 @@ android {
         debug {
             applicationIdSuffix '.debug'
             debuggable true
+
             // ONLY FOR TESTING SENTRY
             // minifyEnabled true
             // shrinkResources true
@@ -44,6 +45,10 @@ android {
             buildConfigField("java.util.List<String>",
                     "ENABLED_REPOS",
                     "java.util.Arrays.asList(\"magisk_alt_repo\", \"androidacy_repo\")",)
+            // Get the androidacy client ID from the androidacy.properties
+            Properties properties = new Properties()
+            properties.load(project.rootProject.file('androidacy.properties').newDataInputStream())
+            buildConfigField("String", "ANDROIDACY_CLIENT_ID", properties.getProperty('client_id'))
         }
 
         fdroid {
@@ -63,6 +68,11 @@ android {
             buildConfigField("java.util.List<String>",
                     "ENABLED_REPOS",
                     "java.util.Arrays.asList(\"magisk_alt_repo\")",)
+
+            // Get the androidacy client ID from the androidacy.properties
+            Properties properties = new Properties()
+            properties.load(project.rootProject.file('androidacy.properties').newDataInputStream())
+            buildConfigField("String", "ANDROIDACY_CLIENT_ID", properties.getProperty('client_id'))
         }
     }
 
@@ -154,14 +164,6 @@ configurations {
 }
 
 dependencies {
-    // Big scary fingerprinting library
-    // Actually, just used to generate device ID for androidacy (they use it for fraud detection)
-    implementation "com.fingerprint.android:pro:2.2.1"
-    implementation "com.github.fingerprintjs:fingerprint-android:2.0.0"
-
-    // If you use Java for you project, add also this line
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
     // UI
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'androidx.emoji2:emoji2:1.2.0'

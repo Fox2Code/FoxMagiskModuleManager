@@ -67,6 +67,7 @@ import com.topjohnwu.superuser.internal.UiThreadHandler;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Random;
@@ -615,7 +616,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                             boolean valid = false;
                             try {
                                 valid = AndroidacyRepoData.getInstance().isValidToken(apiKey);
-                            } catch (IOException ignored) {}
+                            } catch (IOException | NoSuchAlgorithmException ignored) {}
                             // If the key is valid, save it
                             if (valid) {
                                 originalApiKeyRef[0] = apiKey;
@@ -715,7 +716,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                 public void run() {
                                     try {
                                         customRepoData.quickPrePopulate();
-                                    } catch (IOException | JSONException e) {
+                                    } catch (IOException | JSONException | NoSuchAlgorithmException e) {
                                         Log.e(TAG, "Failed to preload repo values", e);
                                     }
                                     UiThreadHandler.handler.post(() -> updateCustomRepoList(false));

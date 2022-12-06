@@ -41,6 +41,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 /**
@@ -106,7 +107,11 @@ public final class AndroidacyActivity extends FoxActivity {
         String device_id = uri.getQueryParameter("device_id");
         if (device_id == null) {
             // get from shared preferences
-            device_id = AndroidacyRepoData.generateDeviceId();
+            try {
+                device_id = AndroidacyRepoData.generateDeviceId();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
             url = url + "&device_id=" + device_id;
         }
         boolean allowInstall = intent.getBooleanExtra(Constants.EXTRA_ANDROIDACY_ALLOW_INSTALL, false);

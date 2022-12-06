@@ -4,7 +4,6 @@ buildscript {
         google()
         mavenCentral()
         gradlePluginPortal()
-        maven { url 'https://maven.fpregistry.io/releases' }
         maven { url 'https://jitpack.io' }
     }
     project.ext.latestAboutLibsRelease = "10.5.0"
