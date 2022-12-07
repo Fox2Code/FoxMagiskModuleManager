@@ -13,11 +13,13 @@ android {
         release {
             // Everything comes from local.properties
             Properties properties = new Properties()
-            properties.load(project.rootProject.file('local.properties').newDataInputStream())
-            storeFile file(properties.getProperty('keystore.file'))
-            storePassword properties.getProperty('keystore.password')
-            keyAlias 'key0'
-            keyPassword properties.getProperty('keystore.password')
+            if (project.rootProject.file('local.properties').exists()) {
+                properties.load(project.rootProject.file('local.properties').newDataInputStream())
+                storeFile file(properties.getProperty('keystore.file'))
+                storePassword properties.getProperty('keystore.password')
+                keyAlias 'key0'
+                keyPassword properties.getProperty('keystore.password')
+            }
         }
     }
 
