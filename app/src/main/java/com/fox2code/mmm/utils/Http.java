@@ -19,7 +19,7 @@ import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.androidacy.AndroidacyUtil;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.repo.RepoManager;
-import com.google.android.gms.net.CronetProviderInstaller;
+import com.google.net.cronet.okhttptransport.CronetCallFactory;
 import com.google.net.cronet.okhttptransport.CronetInterceptor;
 
 import org.chromium.net.CronetEngine;
@@ -141,14 +141,16 @@ public class Http {
         });
         // Add cronet interceptor
         // install cronet
-        try {
+        /*try {
             // Detect if cronet is installed
             CronetProviderInstaller.installProvider(mainApplication);
         } catch (Exception e) {
             Log.e(TAG, "Failed to install cronet", e);
-        }
+        }*/
         // init cronet
         try {
+            // Load the cronet library
+            System.loadLibrary("cronet.108.0.5359.95");
             CronetEngine.Builder builder = new CronetEngine.Builder(mainApplication);
             builder.enableBrotli(true);
             builder.enableHttp2(true);

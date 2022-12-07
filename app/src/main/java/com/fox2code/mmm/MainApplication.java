@@ -34,6 +34,7 @@ import com.topjohnwu.superuser.Shell;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Random;
 
 import io.noties.markwon.Markwon;
@@ -173,7 +174,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     }
 
     public static boolean isCrashReportingEnabled() {
-        return getSharedPreferences().getBoolean("pref_crash_reporting", BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING && !BuildConfig.DEBUG);
+        return getSharedPreferences().getBoolean("pref_crash_reporting", BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING);
     }
 
     public static SharedPreferences getBootSharedPreferences() {
@@ -316,6 +317,13 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         }
 
         SentryMain.initialize(this);
+        if (Objects.equals(BuildConfig.ANDROIDACY_CLIENT_ID, "")) {
+            Log.w("MainApplication", "Androidacy client id is empty! Please set it in androidacy" +
+                    ".properties. Will not enable Androidacy.");
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("pref_androidacy_repo_enabled", false);
+            editor.apply();
+        }
     }
 
     @Override

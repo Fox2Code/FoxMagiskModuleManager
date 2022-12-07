@@ -158,6 +158,13 @@ If your language is right to left don't forget to set `lang_support_rtl` to `tru
 
 Translators are not expected to have any previous coding experience.
 
+## License
+See [LICENSE](LICENCE). Library licenses can be found in the licenses section of the app.
+
+Cronet is licensed under the Apache License, Version 2.0. Static libraries are licensed under 
+the BSD license. See [LICENSE](https://chromium.googlesource.com/chromium/src/+/master/LICENSE) 
+for more information. Libraries were built using the microg build script which can be found [here](https://github.com/microg/cronet-build).
+
 ## I want to add my own repo
 
 To add you own repo to Fox's mmm it need to follow theses conditions:

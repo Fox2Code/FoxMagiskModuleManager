@@ -44,6 +44,7 @@
             app:icon="@drawable/ic_baseline_vpn_key_24"
             app:key="pref_androidacy_api_token"
             app:singleLineTitle="false"
+            app:dependency="pref_androidacy_repo_enabled"
             app:isPreferenceVisible="false"
             app:title="@string/api_key" />
         <SwitchPreferenceCompat

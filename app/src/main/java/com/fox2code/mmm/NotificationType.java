@@ -68,6 +68,12 @@ public enum NotificationType implements NotificationTypeCst {
                     RepoManager.getINSTANCE().hasConnectivity();
         }
     },
+    REPO_UPDATE_FAILED(R.string.repo_update_failed, R.drawable.ic_baseline_cloud_off_24) {
+        @Override
+        public boolean shouldRemove() {
+            return RepoManager.getINSTANCE().isLastUpdateSuccess();
+        }
+    },
     NEED_CAPTCHA_ANDROIDACY(R.string.androidacy_need_captcha, R.drawable.ic_baseline_refresh_24, v ->
             IntentHelper.openUrlAndroidacy(v.getContext(),
                     "https://" + Http.needCaptchaAndroidacyHost() + "/", false)) {

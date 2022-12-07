@@ -22,7 +22,6 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.NotificationManagerCompat;
@@ -207,6 +206,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
                 if (!NotificationType.NO_INTERNET.shouldRemove()) {
                     moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
+                } else if (!NotificationType.REPO_UPDATE_FAILED.shouldRemove()) {
+                    moduleViewListBuilder.addNotification(NotificationType.REPO_UPDATE_FAILED);
                 } else {
                     // Compatibility data still needs to be updated
                     AppUpdateManager appUpdateManager = AppUpdateManager.getAppUpdateManager();
@@ -406,10 +407,10 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             } else {
                 // Compatibility data still needs to be updated
                 AppUpdateManager appUpdateManager = AppUpdateManager.getAppUpdateManager();
-                noodleDebug.replace("Check App Update");
+                // noodleDebug.replace("Check App Update");
                 if (BuildConfig.ENABLE_AUTO_UPDATER && appUpdateManager.checkUpdate(true))
                     moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
-                noodleDebug.replace("Check Json Update");
+                // noodleDebug.replace("Check Json Update");
                 if (max != 0) {
                     int current = 0;
                     noodleDebug.push("");
@@ -429,7 +430,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     noodleDebug.pop();
                 }
             }
-            noodleDebug.replace("Apply");
+            // noodleDebug.replace("Apply");
             runOnUiThread(() -> {
                 this.progressIndicator.setVisibility(View.GONE);
                 this.swipeRefreshLayout.setRefreshing(false);
@@ -441,8 +442,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             RepoManager.getINSTANCE().updateEnabledStates();
             RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilder::appendRemoteModules);
             this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
-            noodleDebug.pop();
-            noodleDebug.unbind();
+            // noodleDebug.pop();
+            // noodleDebug.unbind();
         }, "Repo update thread").start();
     }
 

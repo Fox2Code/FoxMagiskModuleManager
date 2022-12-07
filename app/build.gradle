@@ -9,6 +9,17 @@ android {
     namespace "com.fox2code.mmm"
     compileSdk 33
     buildToolsVersion '30.0.3'
+    signingConfigs {
+        release {
+            // Everything comes from local.properties
+            Properties properties = new Properties()
+            properties.load(project.rootProject.file('local.properties').newDataInputStream())
+            storeFile file(properties.getProperty('keystore.file'))
+            storePassword properties.getProperty('keystore.password')
+            keyAlias 'key0'
+            keyPassword properties.getProperty('keystore.password')
+        }
+    }
 
     defaultConfig {
         applicationId "com.fox2code.mmm"
@@ -17,13 +28,15 @@ android {
         versionCode 60
         versionName "0.6.8"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.release
     }
 
     buildTypes {
         release {
             minifyEnabled true
             shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
+'proguard-rules.pro'
         }
         debug {
             applicationIdSuffix '.debug'
@@ -42,9 +55,6 @@ android {
             dimension "type"
             buildConfigField "boolean", "ENABLE_AUTO_UPDATER", "true"
             buildConfigField "boolean", "DEFAULT_ENABLE_CRASH_REPORTING", "true"
-            buildConfigField("java.util.List<String>",
-                    "ENABLED_REPOS",
-                    "java.util.Arrays.asList(\"magisk_alt_repo\", \"androidacy_repo\")",)
             // Get the androidacy client ID from the androidacy.properties
             Properties properties = new Properties()
             // If androidacy.properties doesn't exist, use the default client ID (an empty string
@@ -52,9 +62,19 @@ android {
             if (project.rootProject.file('androidacy.properties').exists()) {
                 properties.load(project.rootProject.file('androidacy.properties').newDataInputStream())
             } else {
-                properties.setProperty('client_id', '""')
+                properties.setProperty('client_id', '')
             }
             buildConfigField("String", "ANDROIDACY_CLIENT_ID", properties.getProperty('client_id'))
+            // If client ID is empty, disable androidacy
+            if (properties.getProperty('client_id').isEmpty()) {
+                buildConfigField("java.util.List<String>",
+                        "ENABLED_REPOS", "java.util.Arrays.asList(\"magisk_alt_repo\")")
+            } else {
+                buildConfigField("java.util.List<String>",
+                        "ENABLED_REPOS",
+                        "java.util.Arrays.asList(\"magisk_alt_repo\", \"androidacy_repo\")",)
+            }
+
         }
 
         fdroid {
@@ -82,7 +102,7 @@ android {
             if (project.rootProject.file('androidacy.properties').exists()) {
                 properties.load(project.rootProject.file('androidacy.properties').newDataInputStream())
             } else {
-                properties.setProperty('client_id', '""')
+                properties.setProperty('client_id', '')
             }
             buildConfigField("String", "ANDROIDACY_CLIENT_ID", properties.getProperty('client_id'))
         }
@@ -160,7 +180,7 @@ sentry {
         // as Gradle will resolve it to the latest version.
         //
         // Defaults to the latest published sentry version.
-        sentryVersion = '6.8.0'
+        sentryVersion = '6.9.2'
     }
 }
 
@@ -198,18 +218,20 @@ dependencies {
     implementation 'androidx.work:work-runtime:2.7.1'
     implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:5.0.0-alpha.10'
     implementation 'com.squareup.okhttp3:okhttp-brotli:5.0.0-alpha.10'
-    implementation 'com.google.net.cronet:cronet-okhttp:0.1.0'
+    // Chromium cronet from microG
+    implementation fileTree(dir: 'libs', include: '*.jar')
+    // Force prefer our own version of Cronet
     implementation 'com.github.topjohnwu.libsu:io:5.0.1'
     implementation 'com.github.Fox2Code:RosettaX:1.0.9'
     implementation 'com.github.Fox2Code:AndroidANSI:1.0.1'
 
     if (hasSentryConfig) {
         // Error reporting
-        defaultImplementation 'io.sentry:sentry-android:6.8.0'
-        defaultImplementation 'io.sentry:sentry-android-fragment:6.8.0'
-        defaultImplementation 'io.sentry:sentry-android-okhttp:6.8.0'
-        defaultImplementation 'io.sentry:sentry-android-core:6.8.0'
-        defaultImplementation 'io.sentry:sentry-android-ndk:6.8.0'
+        defaultImplementation 'io.sentry:sentry-android:6.9.2'
+        defaultImplementation 'io.sentry:sentry-android-fragment:6.9.2'
+        defaultImplementation 'io.sentry:sentry-android-okhttp:6.9.2'
+        defaultImplementation 'io.sentry:sentry-android-core:6.9.2'
+        defaultImplementation 'io.sentry:sentry-android-ndk:6.9.2'
     }
 
     // Markdown
@@ -217,7 +239,8 @@ dependencies {
     implementation "io.noties.markwon:html:4.6.2"
     implementation "io.noties.markwon:image:4.6.2"
     implementation "io.noties.markwon:syntax-highlight:4.6.2"
-    implementation 'com.google.android.gms:play-services-cronet:18.0.1'
+    implementation 'com.google.net.cronet:cronet-okhttp:0.1.0'
+    // Ignore all org.chromium.net dependencies
     annotationProcessor "io.noties:prism4j-bundler:2.0.0"
     implementation "com.caverock:androidsvg:1.4"
 

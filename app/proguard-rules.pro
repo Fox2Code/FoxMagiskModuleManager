@@ -187,6 +187,11 @@
     android.graphics.Insets getWaterfallInsets();
 }
 
+# Keep all of Cronet API and google's internal classes
+-keep class org.chromium.net.** { *; }
+-keep class org.chromium.** { *; }
+-keep class com.google.** { *; }
+
 # Silence some warnings
 -dontwarn android.os.SystemProperties
 -dontwarn android.view.ThreadedRenderer
@@ -197,3 +202,21 @@
 -dontwarn org.lsposed.hiddenapibypass.HiddenApiBypass
 -dontwarn rikka.core.res.ResourcesCompatLayoutInflaterListener
 -dontwarn rikka.core.util.ResourceUtils
+-dontwarn com.afollestad.materialdialogs.MaterialDialog
+-dontwarn com.afollestad.materialdialogs.WhichButton
+-dontwarn com.afollestad.materialdialogs.actions.DialogActionExtKt
+-dontwarn com.afollestad.materialdialogs.callbacks.DialogCallbackExtKt
+-dontwarn com.afollestad.materialdialogs.internal.button.DialogActionButton
+-dontwarn com.afollestad.materialdialogs.internal.button.DialogActionButtonLayout
+-dontwarn com.afollestad.materialdialogs.internal.main.DialogLayout
+-dontwarn com.afollestad.materialdialogs.internal.main.DialogTitleLayout
+-dontwarn com.afollestad.materialdialogs.internal.message.DialogContentLayout
+-dontwarn com.oracle.svm.core.annotate.AutomaticFeature
+-dontwarn com.oracle.svm.core.annotate.Delete
+-dontwarn com.oracle.svm.core.annotate.Substitute
+-dontwarn com.oracle.svm.core.annotate.TargetClass
+-dontwarn com.oracle.svm.core.configure.ResourcesRegistry
+-dontwarn javax.lang.model.element.Modifier
+-dontwarn org.graalvm.nativeimage.ImageSingletons
+-dontwarn org.graalvm.nativeimage.hosted.Feature$BeforeAnalysisAccess
+-dontwarn org.graalvm.nativeimage.hosted.Feature

@@ -31,6 +31,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import okhttp3.HttpUrl;
 
@@ -155,6 +156,13 @@ public final class AndroidacyRepoData extends RepoData {
 
     @Override
     protected boolean prepare() throws NoSuchAlgorithmException {
+        // If ANDROIDACY_CLIENT_ID is not set or is empty, disable this repo and return
+        if (Objects.equals(BuildConfig.ANDROIDACY_CLIENT_ID, "")) {
+            SharedPreferences.Editor editor = this.cachedPreferences.edit();
+            editor.putBoolean("pref_androidacy_repo_enabled", false);
+            editor.apply();
+            return false;
+        }
         if (Http.needCaptchaAndroidacy()) return false;
         // Implementation details discussed on telegram
         // First, ping the server to check if it's alive

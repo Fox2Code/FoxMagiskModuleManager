@@ -19,6 +19,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -51,7 +52,7 @@ public class RepoUpdater {
             }
             this.indexRaw = Http.doHttpGet(this.repoData.getUrl(), false);
             // Ensure it's a valid json and response code is 200
-            if (this.indexRaw.hashCode() == 0) {
+            if (Arrays.hashCode(this.indexRaw) == 0) {
                 this.indexRaw = null;
                 this.toUpdate = Collections.emptyList();
                 this.toApply = this.repoData.moduleHashMap.values();
@@ -83,6 +84,10 @@ public class RepoUpdater {
 
     public boolean finish() {
         final boolean success = this.indexRaw != null;
+        // If repo is not enabled we don't need to do anything, just return true
+        if (!this.repoData.isEnabled()) {
+            return true;
+        }
         if (this.indexRaw != null) {
             try {
                 Files.write(this.repoData.metaDataCache, this.indexRaw);

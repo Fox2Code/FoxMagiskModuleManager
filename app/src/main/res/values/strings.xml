@@ -191,4 +191,11 @@
     <string name="force_black_theme_desc">Forces AMOLED black backgrounds when using dark theme.
         Please be aware this may have contrast problems with some color themes.</string>
     <string name="force_black_theme_pref">Force black theme</string>
+    <string name="androidacy_repo_disabled">This repo is currently disabled</string>
+    <string name="androidacy_repo_disabled_message">This build is missing client keys for the
+        Androidacy Repo.
+        Please
+        download the GitHub release if you\'d like to benefit from features like module reviews, automatic security checks, and more.</string>
+    <string name="download_full_app">Download full version</string>
+    <string name="repo_update_failed">Some repos have failed to update</string>
 </resources>

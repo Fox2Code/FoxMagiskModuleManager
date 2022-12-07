@@ -529,10 +529,32 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     return true;
                 });
             }
+            // Disable toggling the pref_androidacy_repo_enabled on builds without an
+            // ANDROIDACY_CLIENT_ID or where the ANDROIDACY_CLIENT_ID is empty
+            Preference androidacyRepoEnabled = Objects.requireNonNull(findPreference("pref_androidacy_repo_enabled"));
+            if (Objects.equals(BuildConfig.ANDROIDACY_CLIENT_ID, "")) {
+                androidacyRepoEnabled.setOnPreferenceClickListener(preference -> {
+                    new MaterialAlertDialogBuilder(this.requireContext())
+                            .setTitle(R.string.androidacy_repo_disabled)
+                            .setMessage(R.string.androidacy_repo_disabled_message)
+                            .setPositiveButton(R.string.download_full_app, (dialog, which) -> {
+                                // User clicked OK button. Open GitHub releases page
+                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(
+                                        "https://github.com/Fox2Code/FoxMagiskModuleManager/releases"));
+                                startActivity(browserIntent);
+                            })
+                            .show();
+                    // Revert the switch to off
+                    SwitchPreferenceCompat switchPreferenceCompat = (SwitchPreferenceCompat) androidacyRepoEnabled;
+                    switchPreferenceCompat.setChecked(false);
+                    // Save the preference
+                    MainApplication.getSharedPreferences().edit().putBoolean("pref_androidacy_repo_enabled", false).apply();
+                    return false;
+                });
+            }
             String[] originalApiKeyRef = new String[]{MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).getString("pref_androidacy_api_token", null)};
             // Get the dummy pref_androidacy_repo_api_token EditTextPreference
             EditTextPreference prefAndroidacyRepoApiKey = Objects.requireNonNull(findPreference("pref_androidacy_api_token"));
-            prefAndroidacyRepoApiKey.setDependency("pref_androidacy_repo_enabled");
             prefAndroidacyRepoApiKey.setTitle(R.string.api_key);
             prefAndroidacyRepoApiKey.setSummary(R.string.api_key_summary);
             prefAndroidacyRepoApiKey.setDialogTitle(R.string.api_key);
