@@ -37,13 +37,11 @@ import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 /**
@@ -74,8 +72,7 @@ public final class AndroidacyActivity extends FoxActivity {
         super.onCreate(savedInstanceState);
         Intent intent = this.getIntent();
         Uri uri;
-        if (!MainApplication.checkSecret(intent) ||
-                (uri = intent.getData()) == null) {
+        if (!MainApplication.checkSecret(intent) || (uri = intent.getData()) == null) {
             Log.w(TAG, "Impersonation detected");
             this.forceBackPressed();
             return;
@@ -99,8 +96,25 @@ public final class AndroidacyActivity extends FoxActivity {
                 url = url + '?' + AndroidacyUtil.REFERRER;
             }
         }
-        boolean allowInstall = intent.getBooleanExtra(
-                Constants.EXTRA_ANDROIDACY_ALLOW_INSTALL, false);
+        // Add token to url if not present
+        String token = uri.getQueryParameter("token");
+        if (token == null) {
+            // get from shared preferences
+            token = MainApplication.getSharedPreferences().getString("pref_androidacy_api_token", null);
+            url = url + "&token=" + token;
+        }
+        // Add device_id to url if not present
+        String device_id = uri.getQueryParameter("device_id");
+        if (device_id == null) {
+            // get from shared preferences
+            try {
+                device_id = AndroidacyRepoData.generateDeviceId();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+            url = url + "&device_id=" + device_id;
+        }
+        boolean allowInstall = intent.getBooleanExtra(Constants.EXTRA_ANDROIDACY_ALLOW_INSTALL, false);
         String title = intent.getStringExtra(Constants.EXTRA_ANDROIDACY_ACTIONBAR_TITLE);
         String config = intent.getStringExtra(Constants.EXTRA_ANDROIDACY_ACTIONBAR_CONFIG);
         int compatLevel = intent.getIntExtra(Constants.EXTRA_ANDROIDACY_COMPAT_LEVEL, 0);
@@ -119,11 +133,10 @@ public final class AndroidacyActivity extends FoxActivity {
                 String configPkg = IntentHelper.getPackageOfConfig(config);
                 try {
                     XHooks.checkConfigTargetExists(this, configPkg, config);
-                    this.setActionBarExtraMenuButton(R.drawable.ic_baseline_app_settings_alt_24,
-                            menu -> {
-                                IntentHelper.openConfig(this, config);
-                                return true;
-                            });
+                    this.setActionBarExtraMenuButton(R.drawable.ic_baseline_app_settings_alt_24, menu -> {
+                        IntentHelper.openConfig(this, config);
+                        return true;
+                    });
                 } catch (PackageManager.NameNotFoundException ignored) {
                 }
             }
@@ -142,8 +155,7 @@ public final class AndroidacyActivity extends FoxActivity {
         webSettings.setAllowContentAccess(false);
         // Attempt at fixing CloudFlare captcha.
         if (WebViewFeature.isFeatureSupported(WebViewFeature.REQUESTED_WITH_HEADER_CONTROL)) {
-            WebSettingsCompat.setRequestedWithHeaderMode(
-                    webSettings, WebSettingsCompat.REQUESTED_WITH_HEADER_MODE_NO_HEADER);
+            WebSettingsCompat.setRequestedWithHeaderMode(webSettings, WebSettingsCompat.REQUESTED_WITH_HEADER_MODE_NO_HEADER);
         }
         // If API level is .= 33, allow setAlgorithmicDarkeningAllowed
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
@@ -153,23 +165,19 @@ public final class AndroidacyActivity extends FoxActivity {
             }
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { // Make website follow app theme
-                webSettings.setForceDark(MainApplication.getINSTANCE().isLightTheme() ?
-                        WebSettings.FORCE_DARK_OFF : WebSettings.FORCE_DARK_ON);
+                webSettings.setForceDark(MainApplication.getINSTANCE().isLightTheme() ? WebSettings.FORCE_DARK_OFF : WebSettings.FORCE_DARK_ON);
             } else if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
                 // If api level is < 32, use force dark
-                WebSettingsCompat.setForceDark(webSettings, MainApplication.getINSTANCE().isLightTheme() ?
-                        WebSettingsCompat.FORCE_DARK_OFF : WebSettingsCompat.FORCE_DARK_ON);
+                WebSettingsCompat.setForceDark(webSettings, MainApplication.getINSTANCE().isLightTheme() ? WebSettingsCompat.FORCE_DARK_OFF : WebSettingsCompat.FORCE_DARK_ON);
             }
         }
         this.webView.setWebViewClient(new WebViewClientCompat() {
             private String pageUrl;
 
             @Override
-            public boolean shouldOverrideUrlLoading(
-                    @NonNull WebView view, @NonNull WebResourceRequest request) {
+            public boolean shouldOverrideUrlLoading(@NonNull WebView view, @NonNull WebResourceRequest request) {
                 // Don't open non Androidacy urls inside WebView
-                if (request.isForMainFrame() &&
-                        !AndroidacyUtil.isAndroidacyLink(request.getUrl())) {
+                if (request.isForMainFrame() && !AndroidacyUtil.isAndroidacyLink(request.getUrl())) {
                     if (downloadMode || backOnResume) return true;
                     Log.i(TAG, "Exiting WebView " + // hideToken in case isAndroidacyLink fail.
                             AndroidacyUtil.hideToken(request.getUrl().toString()));
@@ -181,13 +189,10 @@ public final class AndroidacyActivity extends FoxActivity {
 
             @Nullable
             @Override
-            public WebResourceResponse shouldInterceptRequest(
-                    WebView view, WebResourceRequest request) {
-                if (AndroidacyActivity.this.megaIntercept(
-                        this.pageUrl, request.getUrl().toString())) {
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                if (AndroidacyActivity.this.megaIntercept(this.pageUrl, request.getUrl().toString())) {
                     // Block request as Androidacy doesn't allow duplicate requests
-                    return new WebResourceResponse("text/plain", "UTF-8",
-                            new ByteArrayInputStream(new byte[0]));
+                    return new WebResourceResponse("text/plain", "UTF-8", new ByteArrayInputStream(new byte[0]));
                 }
                 return null;
             }
@@ -205,15 +210,11 @@ public final class AndroidacyActivity extends FoxActivity {
             }
 
             private void onReceivedError(String url, int errorCode) {
-                if ((url.startsWith("https://production-api.androidacy.com/magisk/") ||
-                        url.startsWith("https://staging-api.androidacy.com/magisk/") ||
-                        url.equals(pageUrl)) && (errorCode == 419 || errorCode == 429 || errorCode == 503)) {
-                    Toast.makeText(AndroidacyActivity.this,
-                            "Too many requests!", Toast.LENGTH_LONG).show();
+                if ((url.startsWith("https://production-api.androidacy.com/magisk/") || url.startsWith("https://staging-api.androidacy.com/magisk/") || url.equals(pageUrl)) && (errorCode == 419 || errorCode == 429 || errorCode == 503)) {
+                    Toast.makeText(AndroidacyActivity.this, "Too many requests!", Toast.LENGTH_LONG).show();
                     AndroidacyActivity.this.runOnUiThread(AndroidacyActivity.this::onBackPressed);
                 } else if (url.equals(this.pageUrl)) {
-                    postOnUiThread(() ->
-                            webViewNote.setVisibility(View.VISIBLE));
+                    postOnUiThread(() -> webViewNote.setVisibility(View.VISIBLE));
                 }
             }
 
@@ -223,8 +224,7 @@ public final class AndroidacyActivity extends FoxActivity {
             }
 
             @Override
-            public void onReceivedError(@NonNull WebView view, @NonNull WebResourceRequest request,
-                                        @NonNull WebResourceErrorCompat error) {
+            public void onReceivedError(@NonNull WebView view, @NonNull WebResourceRequest request, @NonNull WebResourceErrorCompat error) {
                 if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_RESOURCE_ERROR_GET_CODE)) {
                     this.onReceivedError(request.getUrl().toString(), error.getErrorCode());
                 }
@@ -232,12 +232,8 @@ public final class AndroidacyActivity extends FoxActivity {
         });
         this.webView.setWebChromeClient(new WebChromeClient() {
             @Override
-            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback,
-                                             FileChooserParams fileChooserParams) {
-                FoxActivity.getFoxActivity(webView).startActivityForResult(
-                        fileChooserParams.createIntent(), (code, data) ->
-                                filePathCallback.onReceiveValue(
-                                        FileChooserParams.parseResult(code, data)));
+            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+                FoxActivity.getFoxActivity(webView).startActivityForResult(fileChooserParams.createIntent(), (code, data) -> filePathCallback.onReceiveValue(FileChooserParams.parseResult(code, data)));
                 return true;
             }
 
@@ -277,62 +273,31 @@ public final class AndroidacyActivity extends FoxActivity {
                     progressIndicator.setVisibility(View.INVISIBLE);
             }
         });
-        this.webView.setDownloadListener((
-                downloadUrl, userAgent, contentDisposition, mimetype, contentLength) -> {
+        this.webView.setDownloadListener((downloadUrl, userAgent, contentDisposition, mimetype, contentLength) -> {
             if (this.downloadMode || this.isDownloadUrl(downloadUrl)) return;
             if (AndroidacyUtil.isAndroidacyLink(downloadUrl) && !this.backOnResume) {
                 AndroidacyWebAPI androidacyWebAPI = this.androidacyWebAPI;
                 if (androidacyWebAPI != null) {
                     if (!androidacyWebAPI.downloadMode) {
                         // Native module popup may cause download after consumed action
-                        if (androidacyWebAPI.consumedAction)
-                            return;
+                        if (androidacyWebAPI.consumedAction) return;
                         // Workaround Androidacy bug
                         final String moduleId = moduleIdOfUrl(downloadUrl);
-                        if (moduleId != null && !this.isFileUrl(downloadUrl)) {
-                            webView.evaluateJavascript("document.querySelector(" +
-                                            "\"#download-form input[name=_token]\").value",
-                                    result -> new Thread("Androidacy popup workaround thread") {
-                                        @Override
-                                        public void run() {
-                                            if (androidacyWebAPI.consumedAction) return;
-                                            try {
-                                                JSONObject jsonObject = new JSONObject();
-                                                jsonObject.put("moduleId", moduleId);
-                                                jsonObject.put("token", AndroidacyRepoData
-                                                        .getInstance().getToken());
-                                                jsonObject.put("_token", result);
-                                                String realUrl = Http.doHttpPostRedirect(downloadUrl,
-                                                        jsonObject.toString(), true);
-                                                if (downloadUrl.equals(realUrl)) {
-                                                    Log.e(TAG, "Failed to resolve URL from " +
-                                                            downloadUrl);
-                                                    AndroidacyActivity.this.megaIntercept(
-                                                            webView.getUrl(), downloadUrl);
-                                                    return;
-                                                }
-                                                Log.i(TAG, "Got url: " + realUrl);
-                                                androidacyWebAPI.openNativeModuleDialogRaw(realUrl,
-                                                        moduleId, "", androidacyWebAPI.canInstall());
-                                            } catch (IOException | JSONException e) {
-                                                Log.e(TAG, "Failed redirect intercept", e);
-                                            }
-                                        }
-                                    }.start());
+                        if (this.megaIntercept(webView.getUrl(), downloadUrl)) {
+                            // Block request as Androidacy doesn't allow duplicate requests
                             return;
-                        } else if (this.megaIntercept(webView.getUrl(), downloadUrl))
-                            return;
+                        } else if (moduleId != null) {
+                            // Download module
+                            Log.i(TAG, "megaIntercept failure. Forcing onBackPress");
+                            this.onBackPressed();
+                        }
                     }
                     androidacyWebAPI.consumedAction = true;
                     androidacyWebAPI.downloadMode = false;
                 }
                 this.backOnResume = true;
-                Log.i(TAG, "Exiting WebView " +
-                        AndroidacyUtil.hideToken(downloadUrl));
-                for (String prefix : new String[]{
-                        "https://production-api.androidacy.com/magisk/download/",
-                        "https://staging-api.androidacy.com/magisk/download/"
-                }) {
+                Log.i(TAG, "Exiting WebView " + AndroidacyUtil.hideToken(downloadUrl));
+                for (String prefix : new String[]{"https://production-api.androidacy.com/downloads/", "https://staging-api.androidacy.com/magisk/downloads/"}) {
                     if (downloadUrl.startsWith(prefix)) {
                         return;
                     }
@@ -345,8 +310,11 @@ public final class AndroidacyActivity extends FoxActivity {
         this.webView.addJavascriptInterface(this.androidacyWebAPI, "mmm");
         if (compatLevel != 0) androidacyWebAPI.notifyCompatModeRaw(compatLevel);
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("Accept-Language", this.getResources()
-                .getConfiguration().locale.toLanguageTag());
+        headers.put("Accept-Language", this.getResources().getConfiguration().locale.toLanguageTag());
+        if (BuildConfig.DEBUG) {
+            headers.put("X-Debug", "true");
+            Log.i(TAG, "Debug mode enabled for webview using URL: " + url + " with headers: " + headers);
+        }
         this.webView.loadUrl(url, headers);
     }
 
@@ -372,14 +340,7 @@ public final class AndroidacyActivity extends FoxActivity {
     }
 
     private String moduleIdOfUrl(String url) {
-        for (String prefix : new String[]{
-                "https://production-api.androidacy.com/magisk/download/",
-                "https://staging-api.androidacy.com/magisk/download/",
-                "https://production-api.androidacy.com/magisk/readme/",
-                "https://staging-api.androidacy.com/magisk/readme/",
-                "https://prodiuction-api.androidacy.com/magisk/info/",
-                "https://staging-api.androidacy.com/magisk/info/"
-        }) { // Make both staging and non staging act the same
+        for (String prefix : new String[]{"https://production-api.androidacy.com/downloads/", "https://staging-api.androidacy.com/downloads/", "https://production-api.androidacy.com/magisk/readme/", "https://staging-api.androidacy.com/magisk/readme/", "https://prodiuction-api.androidacy.com/magisk/info/", "https://staging-api.androidacy.com/magisk/info/"}) { // Make both staging and non staging act the same
             int i = url.indexOf('?', prefix.length());
             if (i == -1) i = url.length();
             if (url.startsWith(prefix)) return url.substring(prefix.length(), i);
@@ -400,20 +361,14 @@ public final class AndroidacyActivity extends FoxActivity {
 
     private boolean isFileUrl(String url) {
         if (url == null) return false;
-        for (String prefix : new String[]{
-                "https://production-api.androidacy.com/magisk/file/",
-                "https://staging-api.androidacy.com/magisk/file/"
-        }) { // Make both staging and non staging act the same
+        for (String prefix : new String[]{"https://production-api.androidacy.com/downloads/", "https://staging-api.androidacy.com/downloads/"}) { // Make both staging and non staging act the same
             if (url.startsWith(prefix)) return true;
         }
         return false;
     }
 
     private boolean isDownloadUrl(String url) {
-        for (String prefix : new String[]{
-                "https://production-api.androidacy.com/magisk/download/",
-                "https://staging-api.androidacy.com/magisk/download/"
-        }) { // Make both staging and non staging act the same
+        for (String prefix : new String[]{"https://production-api.androidacy.com/magisk/downloads/", "https://staging-api.androidacy.com/magisk/downloads/"}) { // Make both staging and non staging act the same
             if (url.startsWith(prefix)) return true;
         }
         return false;
@@ -422,19 +377,18 @@ public final class AndroidacyActivity extends FoxActivity {
     private boolean megaIntercept(String pageUrl, String fileUrl) {
         if (pageUrl == null || fileUrl == null) return false;
         if (this.isFileUrl(fileUrl)) {
-            Log.d(TAG, "megaIntercept(" +
-                    AndroidacyUtil.hideToken(pageUrl) + ", " +
-                    AndroidacyUtil.hideToken(fileUrl) + ")");
+            Log.d(TAG, "megaIntercept(" + AndroidacyUtil.hideToken(pageUrl) + ", " + AndroidacyUtil.hideToken(fileUrl) + ")");
         } else return false;
         final AndroidacyWebAPI androidacyWebAPI = this.androidacyWebAPI;
-        String moduleId = this.moduleIdOfUrl(fileUrl);
-        if (moduleId == null) moduleId = this.moduleIdOfUrl(pageUrl);
+        String moduleId = AndroidacyUtil.getModuleId(fileUrl);
         if (moduleId == null) {
             Log.d(TAG, "No module id?");
-            return false;
+            // Re-open the page
+            this.webView.loadUrl(pageUrl + "&force_refresh=" + System.currentTimeMillis());
         }
-        androidacyWebAPI.openNativeModuleDialogRaw(fileUrl,
-                moduleId, "", androidacyWebAPI.canInstall());
+        String checksum = AndroidacyUtil.getChecksumFromURL(fileUrl);
+        String moduleTitle = AndroidacyUtil.getModuleTitle(fileUrl);
+        androidacyWebAPI.openNativeModuleDialogRaw(fileUrl, moduleId, moduleTitle, checksum, androidacyWebAPI.canInstall());
         return true;
     }
 
@@ -446,21 +400,17 @@ public final class AndroidacyActivity extends FoxActivity {
         });
         byte[] module;
         try {
-            module = Http.doHttpGet(url, (downloaded, total, done) ->
-                    progressIndicator.setProgressCompat((downloaded * 100) / total, true));
+            module = Http.doHttpGet(url, (downloaded, total, done) -> progressIndicator.setProgressCompat((downloaded * 100) / total, true));
             try (FileOutputStream fileOutputStream = new FileOutputStream(this.moduleFile)) {
                 fileOutputStream.write(module);
             }
         } finally {
             //noinspection UnusedAssignment
             module = null;
-            this.runOnUiThread(() ->
-                    progressIndicator.setVisibility(View.INVISIBLE));
+            this.runOnUiThread(() -> progressIndicator.setVisibility(View.INVISIBLE));
         }
         this.backOnResume = true;
         this.downloadMode = false;
-        return FileProvider.getUriForFile(this,
-                this.getPackageName() + ".file-provider",
-                this.moduleFile);
+        return FileProvider.getUriForFile(this, this.getPackageName() + ".file-provider", this.moduleFile);
     }
 }

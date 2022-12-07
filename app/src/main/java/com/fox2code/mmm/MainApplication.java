@@ -2,6 +2,7 @@ package com.fox2code.mmm;
 
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -14,6 +15,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StyleRes;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.emoji2.text.DefaultEmojiCompatConfig;
 import androidx.emoji2.text.EmojiCompat;
 import androidx.emoji2.text.FontRequestEmojiCompatConfig;
@@ -32,6 +34,7 @@ import com.topjohnwu.superuser.Shell;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Random;
 
 import io.noties.markwon.Markwon;
@@ -45,34 +48,32 @@ import io.noties.markwon.syntax.SyntaxHighlightPlugin;
 import io.noties.prism4j.Prism4j;
 import io.noties.prism4j.annotations.PrismBundle;
 
-@PrismBundle(
-        includeAll = true,
-        grammarLocatorClassName = ".Prism4jGrammarLocator"
-)
-public class MainApplication extends FoxApplication
-        implements androidx.work.Configuration.Provider {
+@PrismBundle(includeAll = true, grammarLocatorClassName = ".Prism4jGrammarLocator")
+public class MainApplication extends FoxApplication implements androidx.work.Configuration.Provider {
     private static final String TAG = "MainApplication";
     private static final String timeFormatString = "dd MMM yyyy"; // Example: 13 july 2001
-    private static Locale timeFormatLocale =
-            Resources.getSystem().getConfiguration().locale;
-    private static SimpleDateFormat timeFormat =
-            new SimpleDateFormat(timeFormatString, timeFormatLocale);
     private static final Shell.Builder shellBuilder;
     private static final long secret;
     @SuppressLint("RestrictedApi") // Use FoxProcess wrapper helper.
     private static final boolean wrapped = !FoxProcessExt.isRootLoader();
+    private static Locale timeFormatLocale = Resources.getSystem().getConfiguration().locale;
+    private static SimpleDateFormat timeFormat = new SimpleDateFormat(timeFormatString, timeFormatLocale);
     private static SharedPreferences bootSharedPreferences;
     private static String relPackageName = BuildConfig.APPLICATION_ID;
     private static MainApplication INSTANCE;
     private static boolean firstBoot;
 
     static {
-        Shell.setDefaultBuilder(shellBuilder = Shell.Builder.create()
-                .setFlags(Shell.FLAG_REDIRECT_STDERR)
-                .setTimeout(10).setInitializers(InstallerInitializer.class)
-        );
+        Shell.setDefaultBuilder(shellBuilder = Shell.Builder.create().setFlags(Shell.FLAG_REDIRECT_STDERR).setTimeout(10).setInitializers(InstallerInitializer.class));
         secret = new Random().nextLong();
     }
+
+    // Provides the Context for the base application
+    public Context FoxApplication = this;
+    @StyleRes
+    private int managerThemeResId = R.style.Theme_MagiskModuleManager;
+    private FoxThemeWrapper markwonThemeContext;
+    private Markwon markwon;
 
     public MainApplication() {
         if (INSTANCE != null && INSTANCE != this)
@@ -86,10 +87,8 @@ public class MainApplication extends FoxApplication
 
     public static void addSecret(Intent intent) {
         ComponentName componentName = intent.getComponent();
-        String packageName = componentName != null ?
-                componentName.getPackageName() : intent.getPackage();
-        if (!BuildConfig.APPLICATION_ID.equalsIgnoreCase(packageName) &&
-                !relPackageName.equals(packageName)) {
+        String packageName = componentName != null ? componentName.getPackageName() : intent.getPackage();
+        if (!BuildConfig.APPLICATION_ID.equalsIgnoreCase(packageName) && !relPackageName.equals(packageName)) {
             // Code safeguard, we should never reach here.
             throw new IllegalArgumentException("Can't add secret to outbound Intent");
         }
@@ -135,29 +134,23 @@ public class MainApplication extends FoxApplication
     }
 
     public static boolean isMonetEnabled() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-                getSharedPreferences().getBoolean("pref_enable_monet", true);
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && getSharedPreferences().getBoolean("pref_enable_monet", true);
     }
 
     public static boolean isBlurEnabled() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                getSharedPreferences().getBoolean("pref_enable_blur", false);
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getSharedPreferences().getBoolean("pref_enable_blur", false);
     }
 
     public static boolean isDeveloper() {
-        return BuildConfig.DEBUG ||
-                getSharedPreferences().getBoolean("developer", false);
+        return BuildConfig.DEBUG || getSharedPreferences().getBoolean("developer", false);
     }
 
     public static boolean isDisableLowQualityModuleFilter() {
-        return getSharedPreferences().getBoolean("pref_disable_low_quality_module_filter",
-                false) && isDeveloper();
+        return getSharedPreferences().getBoolean("pref_disable_low_quality_module_filter", false) && isDeveloper();
     }
 
     public static boolean isUsingMagiskCommand() {
-        return InstallerInitializer.peekMagiskVersion() >= Constants.MAGISK_VER_CODE_INSTALL_COMMAND
-                && getSharedPreferences().getBoolean("pref_use_magisk_install_command", false)
-                && isDeveloper();
+        return InstallerInitializer.peekMagiskVersion() >= Constants.MAGISK_VER_CODE_INSTALL_COMMAND && getSharedPreferences().getBoolean("pref_use_magisk_install_command", false) && isDeveloper();
     }
 
     public static boolean isBackgroundUpdateCheckEnabled() {
@@ -165,8 +158,7 @@ public class MainApplication extends FoxApplication
     }
 
     public static boolean isAndroidacyTestMode() {
-        return isDeveloper() &&
-                getSharedPreferences().getBoolean("pref_androidacy_test_mode", false);
+        return isDeveloper() && getSharedPreferences().getBoolean("pref_androidacy_test_mode", false);
     }
 
     public static boolean isFirstBoot() {
@@ -182,8 +174,7 @@ public class MainApplication extends FoxApplication
     }
 
     public static boolean isCrashReportingEnabled() {
-        return getSharedPreferences().getBoolean("pref_crash_reporting",
-                BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING && !BuildConfig.DEBUG);
+        return getSharedPreferences().getBoolean("pref_crash_reporting", BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING);
     }
 
     public static SharedPreferences getBootSharedPreferences() {
@@ -199,24 +190,17 @@ public class MainApplication extends FoxApplication
         return timeFormat.format(new Date(timeStamp));
     }
 
-    @StyleRes
-    private int managerThemeResId = R.style.Theme_MagiskModuleManager;
-    private FoxThemeWrapper markwonThemeContext;
-    private Markwon markwon;
+    public static boolean isNotificationPermissionGranted() {
+        return NotificationManagerCompat.from(INSTANCE).areNotificationsEnabled();
+    }
 
     public Markwon getMarkwon() {
-        if (this.markwon != null)
-            return this.markwon;
+        if (this.markwon != null) return this.markwon;
         FoxThemeWrapper contextThemeWrapper = this.markwonThemeContext;
         if (contextThemeWrapper == null) {
-            contextThemeWrapper = this.markwonThemeContext =
-                    new FoxThemeWrapper(this, this.managerThemeResId);
+            contextThemeWrapper = this.markwonThemeContext = new FoxThemeWrapper(this, this.managerThemeResId);
         }
-        Markwon markwon = Markwon.builder(contextThemeWrapper).usePlugin(HtmlPlugin.create())
-                .usePlugin(SyntaxHighlightPlugin.create(
-                        new Prism4j(new Prism4jGrammarLocator()), new Prism4jSwitchTheme()))
-                .usePlugin(ImagesPlugin.create().addSchemeHandler(
-                        OkHttpNetworkSchemeHandler.create(Http.getHttpClientWithCache()))).build();
+        Markwon markwon = Markwon.builder(contextThemeWrapper).usePlugin(HtmlPlugin.create()).usePlugin(SyntaxHighlightPlugin.create(new Prism4j(new Prism4jGrammarLocator()), new Prism4jSwitchTheme())).usePlugin(ImagesPlugin.create().addSchemeHandler(OkHttpNetworkSchemeHandler.create(Http.getHttpClientWithCache()))).build();
         return this.markwon = markwon;
     }
 
@@ -230,40 +214,6 @@ public class MainApplication extends FoxApplication
         return new androidx.work.Configuration.Builder().build();
     }
 
-    private class Prism4jSwitchTheme implements Prism4jTheme {
-        private final Prism4jTheme light = new Prism4jThemeDefault(Color.TRANSPARENT);
-        private final Prism4jTheme dark = new Prism4jThemeDarkula(Color.TRANSPARENT);
-
-        private Prism4jTheme getTheme() {
-            return isLightTheme() ? this.light : this.dark;
-        }
-
-        @Override
-        public int background() {
-            return this.getTheme().background();
-        }
-
-        @Override
-        public int textColor() {
-            return this.getTheme().textColor();
-        }
-
-        @Override
-        public void apply(@NonNull String language, @NonNull Prism4j.Syntax syntax,
-                          @NonNull SpannableStringBuilder builder, int start, int end) {
-            this.getTheme().apply(language, syntax, builder, start, end);
-        }
-    }
-
-    @SuppressLint("NonConstantResourceId")
-    public void setManagerThemeResId(@StyleRes int resId) {
-        this.managerThemeResId = resId;
-        if (this.markwonThemeContext != null) {
-            this.markwonThemeContext.setTheme(resId);
-        }
-        this.markwon = null;
-    }
-
     public void updateTheme() {
         @StyleRes int themeResId;
         String theme;
@@ -272,19 +222,16 @@ public class MainApplication extends FoxApplication
             default:
                 Log.w("MainApplication", "Unknown theme id: " + theme);
             case "system":
-                themeResId = monet ?
-                        R.style.Theme_MagiskModuleManager_Monet :
-                        R.style.Theme_MagiskModuleManager;
+                themeResId = monet ? R.style.Theme_MagiskModuleManager_Monet : R.style.Theme_MagiskModuleManager;
                 break;
             case "dark":
-                themeResId = monet ?
-                        R.style.Theme_MagiskModuleManager_Monet_Dark :
-                        R.style.Theme_MagiskModuleManager_Dark;
+                themeResId = monet ? R.style.Theme_MagiskModuleManager_Monet_Dark : R.style.Theme_MagiskModuleManager_Dark;
+                break;
+            case "black":
+                themeResId = monet ? R.style.Theme_MagiskModuleManager_Monet_Black : R.style.Theme_MagiskModuleManager_Black;
                 break;
             case "light":
-                themeResId = monet ?
-                        R.style.Theme_MagiskModuleManager_Monet_Light :
-                        R.style.Theme_MagiskModuleManager_Light;
+                themeResId = monet ? R.style.Theme_MagiskModuleManager_Monet_Light : R.style.Theme_MagiskModuleManager_Light;
                 break;
         }
         this.setManagerThemeResId(themeResId);
@@ -296,13 +243,20 @@ public class MainApplication extends FoxApplication
     }
 
     @SuppressLint("NonConstantResourceId")
+    public void setManagerThemeResId(@StyleRes int resId) {
+        this.managerThemeResId = resId;
+        if (this.markwonThemeContext != null) {
+            this.markwonThemeContext.setTheme(resId);
+        }
+        this.markwon = null;
+    }
+
+    @SuppressLint("NonConstantResourceId")
     public boolean isLightTheme() {
         switch (this.managerThemeResId) {
             case R.style.Theme_MagiskModuleManager:
             case R.style.Theme_MagiskModuleManager_Monet:
-                return (this.getResources().getConfiguration().uiMode
-                        & Configuration.UI_MODE_NIGHT_MASK)
-                        != Configuration.UI_MODE_NIGHT_YES;
+                return (this.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) != Configuration.UI_MODE_NIGHT_YES;
             case R.style.Theme_MagiskModuleManager_Monet_Light:
             case R.style.Theme_MagiskModuleManager_Light:
                 return true;
@@ -312,6 +266,11 @@ public class MainApplication extends FoxApplication
             default:
                 return super.isLightTheme();
         }
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    public boolean isDarkTheme() {
+        return !this.isLightTheme();
     }
 
     @Override
@@ -326,14 +285,12 @@ public class MainApplication extends FoxApplication
         }*/
         SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
         // We are only one process so it's ok to do this
-        SharedPreferences bootPrefs = MainApplication.bootSharedPreferences =
-                this.getSharedPreferences("mmm_boot", MODE_PRIVATE);
+        SharedPreferences bootPrefs = MainApplication.bootSharedPreferences = this.getSharedPreferences("mmm_boot", MODE_PRIVATE);
         long lastBoot = System.currentTimeMillis() - SystemClock.elapsedRealtime();
         long lastBootPrefs = bootPrefs.getLong("last_boot", 0);
         if (lastBootPrefs == 0 || Math.abs(lastBoot - lastBootPrefs) > 100) {
             boolean firstBoot = sharedPreferences.getBoolean("first_boot", true);
-            bootPrefs.edit().clear().putLong("last_boot", lastBoot)
-                    .putBoolean("first_boot", firstBoot).apply();
+            bootPrefs.edit().clear().putLong("last_boot", lastBoot).putBoolean("first_boot", firstBoot).apply();
             if (firstBoot) {
                 sharedPreferences.edit().putBoolean("first_boot", false).apply();
             }
@@ -347,12 +304,10 @@ public class MainApplication extends FoxApplication
         // Update SSL Ciphers if update is possible
         GMSProviderInstaller.installIfNeeded(this);
         // Update emoji config
-        FontRequestEmojiCompatConfig fontRequestEmojiCompatConfig =
-                DefaultEmojiCompatConfig.create(this);
+        FontRequestEmojiCompatConfig fontRequestEmojiCompatConfig = DefaultEmojiCompatConfig.create(this);
         if (fontRequestEmojiCompatConfig != null) {
             fontRequestEmojiCompatConfig.setReplaceAll(true);
-            fontRequestEmojiCompatConfig
-                    .setMetadataLoadStrategy(EmojiCompat.LOAD_STRATEGY_MANUAL);
+            fontRequestEmojiCompatConfig.setMetadataLoadStrategy(EmojiCompat.LOAD_STRATEGY_MANUAL);
             EmojiCompat emojiCompat = EmojiCompat.init(fontRequestEmojiCompatConfig);
             new Thread(() -> {
                 Log.d("MainApplication", "Loading emoji compat...");
@@ -362,6 +317,13 @@ public class MainApplication extends FoxApplication
         }
 
         SentryMain.initialize(this);
+        if (Objects.equals(BuildConfig.ANDROIDACY_CLIENT_ID, "")) {
+            Log.w("MainApplication", "Androidacy client id is empty! Please set it in androidacy" +
+                    ".properties. Will not enable Androidacy.");
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("pref_androidacy_repo_enabled", false);
+            editor.apply();
+        }
     }
 
     @Override
@@ -381,9 +343,35 @@ public class MainApplication extends FoxApplication
         Locale newTimeFormatLocale = newConfig.locale;
         if (timeFormatLocale != newTimeFormatLocale) {
             timeFormatLocale = newTimeFormatLocale;
-            timeFormat = new SimpleDateFormat(
-                    timeFormatString, timeFormatLocale);
+            timeFormat = new SimpleDateFormat(timeFormatString, timeFormatLocale);
         }
         super.onConfigurationChanged(newConfig);
+    }
+
+    private class Prism4jSwitchTheme implements Prism4jTheme {
+        private final Prism4jTheme light = new Prism4jThemeDefault(Color.TRANSPARENT);
+        private final Prism4jTheme dark = new Prism4jThemeDarkula(Color.TRANSPARENT);
+        // Black theme
+        private final Prism4jTheme black = new Prism4jThemeDefault(Color.BLACK);
+
+        private Prism4jTheme getTheme() {
+            // isLightTheme() means light, isDarkTheme() means dark, and isBlackTheme() means black
+            return isLightTheme() ? light : isDarkTheme() ? dark : black;
+        }
+
+        @Override
+        public int background() {
+            return this.getTheme().background();
+        }
+
+        @Override
+        public int textColor() {
+            return this.getTheme().textColor();
+        }
+
+        @Override
+        public void apply(@NonNull String language, @NonNull Prism4j.Syntax syntax, @NonNull SpannableStringBuilder builder, int start, int end) {
+            this.getTheme().apply(language, syntax, builder, start, end);
+        }
     }
 }

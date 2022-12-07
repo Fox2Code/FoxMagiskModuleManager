@@ -1,6 +1,9 @@
 # Fox's Magisk Module Manager
 
-## Important
+<details>
+<summary>
+  Important news
+</summary>
 
 I have health problems that made me work slow on everything.
 I don't like sharing my health problmes but it has been to much recently for me to keep it for myself.
@@ -50,6 +53,8 @@ at least you won't be hurting peoples with mental/health issues by faking having
 I'll probably delete this section once my health would be gotten better, or at 
 least good enough for me to not be stuck on my bed at least once a day because of pain.
 
+</details>
+
 ## Community
 
 [![Telegram Group](https://img.shields.io/endpoint?color=neon&style=flat&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2FFox2Code_Chat)](https://telegram.dog/Fox2Code_Chat)
@@ -94,9 +99,9 @@ and download and install the latest `.apk` on your device.
 ## Repositories Available
 
 
-The app currently use these three repo as it's module sources, with it's benefits and drawback:  
+The app currently use these two repos as module sources, each with their own benefits and drawback:  
 (Note: Each module repo can be disabled in the settings of the app)  
-(Note²: I do not own or monitor any of the repo, **download at your own risk**)
+(Note²: I do not own or actively monitor any of the repos or modules, **download at your own risk**)
 
 #### [https://github.com/Magisk-Modules-Alt-Repo](https://github.com/Magisk-Modules-Alt-Repo)  
 - Accepting new modules [here](https://github.com/Magisk-Modules-Alt-Repo/submission)
@@ -112,6 +117,7 @@ Support:
 - Modules downloadable easily outside the app
 - Officially supported by Fox's mmm
 - Contains ads to help cover server costs
+- Added features like module reviews, automatic VirusTotal scans, and more
 
 Support:
 
@@ -151,6 +157,13 @@ and [`app/src/main/res/values/arrays.xml`](https://github.com/Fox2Code/FoxMagisk
 If your language is right to left don't forget to set `lang_support_rtl` to `true`.
 
 Translators are not expected to have any previous coding experience.
+
+## License
+See [LICENSE](LICENCE). Library licenses can be found in the licenses section of the app.
+
+Cronet is licensed under the Apache License, Version 2.0. Static libraries are licensed under 
+the BSD license. See [LICENSE](https://chromium.googlesource.com/chromium/src/+/master/LICENSE) 
+for more information. Libraries were built using the microg build script which can be found [here](https://github.com/microg/cronet-build).
 
 ## I want to add my own repo
 

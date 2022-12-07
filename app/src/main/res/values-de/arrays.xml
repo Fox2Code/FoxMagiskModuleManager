@@ -3,6 +3,7 @@
 	<string-array name="theme_values_names">
 		<item>Systemvorgabe</item>
 		<item>Dunkel</item>
+		<item>AMOLED Black</item>
 		<item>Hell</item>
 	</string-array>
 </resources>

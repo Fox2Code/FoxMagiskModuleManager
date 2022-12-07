@@ -2,6 +2,7 @@
     <string-array name="theme_values_names">
         <item>Sistema</item>
         <item>Scuro</item>
+        <item>AMOLED Black</item>
         <item>Chiaro</item>
     </string-array>
 </resources>

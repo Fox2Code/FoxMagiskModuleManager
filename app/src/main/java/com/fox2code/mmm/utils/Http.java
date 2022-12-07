@@ -1,5 +1,6 @@
 package com.fox2code.mmm.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -18,6 +19,10 @@ import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.androidacy.AndroidacyUtil;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.repo.RepoManager;
+import com.google.net.cronet.okhttptransport.CronetCallFactory;
+import com.google.net.cronet.okhttptransport.CronetInterceptor;
+
+import org.chromium.net.CronetEngine;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -48,7 +53,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import okhttp3.brotli.BrotliInterceptor;
 import okhttp3.dnsoverhttps.DnsOverHttps;
 import okio.BufferedSink;
 
@@ -58,10 +62,7 @@ public class Http {
     private static final OkHttpClient httpClientDoH;
     private static final OkHttpClient httpClientWithCache;
     private static final OkHttpClient httpClientWithCacheDoH;
-    private static final OkHttpClient httpClientNoRedirect;
-    private static final OkHttpClient httpClientNoRedirectDoH;
     private static final FallBackDNS fallbackDNS;
-    private static final CDNCookieJar cookieJar;
     private static final String androidacyUA;
     private static final boolean hasWebView;
     private static String needCaptchaAndroidacyHost;
@@ -97,20 +98,10 @@ public class Http {
         httpclientBuilder.connectTimeout(15, TimeUnit.SECONDS);
         httpclientBuilder.writeTimeout(15, TimeUnit.SECONDS);
         httpclientBuilder.readTimeout(15, TimeUnit.SECONDS);
-        httpclientBuilder.addInterceptor(BrotliInterceptor.INSTANCE);
         httpclientBuilder.proxy(Proxy.NO_PROXY); // Do not use system proxy
         Dns dns = Dns.SYSTEM;
         try {
-            InetAddress[] cloudflareBootstrap = new InetAddress[]{
-                    InetAddress.getByName("162.159.36.1"),
-                    InetAddress.getByName("162.159.46.1"),
-                    InetAddress.getByName("1.1.1.1"),
-                    InetAddress.getByName("1.0.0.1"),
-                    InetAddress.getByName("162.159.132.53"),
-                    InetAddress.getByName("2606:4700:4700::1111"),
-                    InetAddress.getByName("2606:4700:4700::1001"),
-                    InetAddress.getByName("2606:4700:4700::0064"),
-                    InetAddress.getByName("2606:4700:4700::6400")};
+            InetAddress[] cloudflareBootstrap = new InetAddress[]{InetAddress.getByName("162.159.36.1"), InetAddress.getByName("162.159.46.1"), InetAddress.getByName("1.1.1.1"), InetAddress.getByName("1.0.0.1"), InetAddress.getByName("162.159.132.53"), InetAddress.getByName("2606:4700:4700::1111"), InetAddress.getByName("2606:4700:4700::1001"), InetAddress.getByName("2606:4700:4700::0064"), InetAddress.getByName("2606:4700:4700::6400")};
             dns = s -> {
                 if ("cloudflare-dns.com".equals(s)) {
                     return Arrays.asList(cloudflareBootstrap);
@@ -119,21 +110,16 @@ public class Http {
             };
             httpclientBuilder.dns(dns);
             httpclientBuilder.cookieJar(new CDNCookieJar());
-            dns = new DnsOverHttps.Builder().client(httpclientBuilder.build()).url(
-                    Objects.requireNonNull(HttpUrl.parse("https://cloudflare-dns.com/dns-query")))
-                    .bootstrapDnsHosts(cloudflareBootstrap).resolvePrivateAddresses(true).build();
+            dns = new DnsOverHttps.Builder().client(httpclientBuilder.build()).url(Objects.requireNonNull(HttpUrl.parse("https://cloudflare-dns.com/dns-query"))).bootstrapDnsHosts(cloudflareBootstrap).resolvePrivateAddresses(true).build();
         } catch (UnknownHostException | RuntimeException e) {
             Log.e(TAG, "Failed to init DoH", e);
         }
         httpclientBuilder.cookieJar(CookieJar.NO_COOKIES);
         // User-Agent format was agreed on telegram
         if (hasWebView) {
-            androidacyUA = WebSettings.getDefaultUserAgent(mainApplication)
-                    .replace("wv", "") + "FoxMmm/" + BuildConfig.VERSION_CODE;
+            androidacyUA = WebSettings.getDefaultUserAgent(mainApplication).replace("wv", "") + " FoxMMM/" + BuildConfig.VERSION_CODE;
         } else {
-            androidacyUA = "Mozilla/5.0 (Linux; Android " + Build.VERSION.RELEASE + "; " + Build.DEVICE + ")" +
-                    " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36" +
-                    " FoxMmm/" + BuildConfig.VERSION_CODE;
+            androidacyUA = "Mozilla/5.0 (Linux; Android " + Build.VERSION.RELEASE + "; " + Build.DEVICE + ")" + " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36" + " FoxMmm/" + BuildConfig.VERSION_CODE;
         }
         httpclientBuilder.addInterceptor(chain -> {
             Request.Builder request = chain.request().newBuilder();
@@ -141,8 +127,7 @@ public class Http {
             String host = chain.request().url().host();
             if (host.endsWith(".androidacy.com")) {
                 request.header("User-Agent", androidacyUA);
-            } else if (!(host.equals("github.com") || host.endsWith(".github.com") ||
-                    host.endsWith(".jsdelivr.net") || host.endsWith(".githubusercontent.com"))) {
+            } else if (!(host.equals("github.com") || host.endsWith(".github.com") || host.endsWith(".jsdelivr.net") || host.endsWith(".githubusercontent.com"))) {
                 if (InstallerInitializer.peekMagiskPath() != null) {
                     request.header("User-Agent", // Declare Magisk version to the server
                             "Magisk/" + InstallerInitializer.peekMagiskVersion());
@@ -154,20 +139,48 @@ public class Http {
             }
             return chain.proceed(request.build());
         });
+        // Add cronet interceptor
+        // install cronet
+        /*try {
+            // Detect if cronet is installed
+            CronetProviderInstaller.installProvider(mainApplication);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to install cronet", e);
+        }*/
+        // init cronet
+        try {
+            // Load the cronet library
+            System.loadLibrary("cronet.108.0.5359.95");
+            CronetEngine.Builder builder = new CronetEngine.Builder(mainApplication);
+            builder.enableBrotli(true);
+            builder.enableHttp2(true);
+            builder.enableQuic(true);
+            // Cache size is 10MB
+            // Make the directory if it does not exist
+            File cacheDir = new File(mainApplication.getCacheDir(), "cronet");
+            if (!cacheDir.exists()) {
+                if (!cacheDir.mkdirs()) {
+                    throw new IOException("Failed to create cronet cache directory");
+                }
+            }
+            builder.setStoragePath(mainApplication.getCacheDir().getAbsolutePath() + "/cronet");
+            builder.enableHttpCache(CronetEngine.Builder.HTTP_CACHE_DISK_NO_HTTP, 10 * 1024 * 1024);
+            CronetEngine engine =
+                    builder.build();
+            httpclientBuilder.addInterceptor(CronetInterceptor.newBuilder(engine).build());
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to init cronet", e);
+            // Gracefully fallback to okhttp
+        }
         // Fallback DNS cache responses in case request fail but already succeeded once in the past
-        fallbackDNS = new FallBackDNS(mainApplication, dns, "github.com", "api.github.com",
-                "raw.githubusercontent.com", "camo.githubusercontent.com",
-                "user-images.githubusercontent.com", "cdn.jsdelivr.net",
-                "img.shields.io", "magisk-modules-repo.github.io",
-                "www.androidacy.com", "api.androidacy.com",
-                "production-api.androidacy.com");
-        httpclientBuilder.cookieJar(cookieJar = new CDNCookieJar(cookieManager));
+        fallbackDNS = new FallBackDNS(mainApplication, dns, "github.com", "api.github.com", "raw.githubusercontent.com", "camo.githubusercontent.com", "user-images.githubusercontent.com", "cdn.jsdelivr.net", "img.shields.io", "magisk-modules-repo.github.io", "www.androidacy.com", "api.androidacy.com", "production-api.androidacy.com");
+        httpclientBuilder.cookieJar(new CDNCookieJar(cookieManager));
         httpclientBuilder.dns(Dns.SYSTEM);
         httpClient = followRedirects(httpclientBuilder, true).build();
-        httpClientNoRedirect = followRedirects(httpclientBuilder, false).build();
+        followRedirects(httpclientBuilder, false).build();
         httpclientBuilder.dns(fallbackDNS);
         httpClientDoH = followRedirects(httpclientBuilder, true).build();
-        httpClientNoRedirectDoH = followRedirects(httpclientBuilder, false).build();
+        followRedirects(httpclientBuilder, false).build();
         httpclientBuilder.cache(new Cache(new File(mainApplication.getCacheDir(), "http_cache"), 16L * 1024L * 1024L)); // 16Mib of cache
         httpclientBuilder.dns(Dns.SYSTEM);
         httpClientWithCache = followRedirects(httpclientBuilder, true).build();
@@ -183,10 +196,6 @@ public class Http {
 
     public static OkHttpClient getHttpClient() {
         return doh ? httpClientDoH : httpClient;
-    }
-
-    public static OkHttpClient getHttpClientNoRedirect() {
-        return doh ? httpClientNoRedirectDoH : httpClientNoRedirect;
     }
 
     public static OkHttpClient getHttpClientWithCache() {
@@ -212,7 +221,7 @@ public class Http {
     public static boolean needCaptchaAndroidacy() {
         return needCaptchaAndroidacyHost != null;
     }
-    
+
     public static String needCaptchaAndroidacyHost() {
         return needCaptchaAndroidacyHost;
     }
@@ -221,15 +230,19 @@ public class Http {
         needCaptchaAndroidacyHost = null;
     }
 
+    @SuppressLint("RestrictedApi")
     @SuppressWarnings("resource")
     public static byte[] doHttpGet(String url, boolean allowCache) throws IOException {
         checkNeedBlockAndroidacyRequest(url);
-        Response response = (allowCache ? getHttpClientWithCache() : getHttpClient())
-                .newCall(new Request.Builder().url(url).get().build()).execute();
+        Response response =
+                (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).get().build()).execute();
         // 200/204 == success, 304 == cache valid
-        if (response.code() != 200 && response.code() != 204 &&
-                (response.code() != 304 || !allowCache)) {
+        if (response.code() != 200 && response.code() != 204 && (response.code() != 304 || !allowCache)) {
             checkNeedCaptchaAndroidacy(url, response.code());
+            // If it's a 401, and an androidacy link, it's probably an invalid token
+            if (response.code() == 401 && AndroidacyUtil.isAndroidacyLink(url)) {
+                throw new HttpException("Androidacy token is invalid", 401);
+            }
             throw new HttpException(response.code());
         }
         ResponseBody responseBody = response.body();
@@ -242,23 +255,18 @@ public class Http {
     }
 
     public static byte[] doHttpPost(String url, String data, boolean allowCache) throws IOException {
-        return (byte[]) doHttpPostRaw(url, data, allowCache, false);
-    }
-
-    public static String doHttpPostRedirect(String url, String data, boolean allowCache) throws IOException {
-        return (String) doHttpPostRaw(url, data, allowCache, true);
+        return (byte[]) doHttpPostRaw(url, data, allowCache);
     }
 
     @SuppressWarnings("resource")
-    private static Object doHttpPostRaw(String url, String data, boolean allowCache, boolean isRedirect) throws IOException {
+    private static Object doHttpPostRaw(String url, String data, boolean allowCache) throws IOException {
         checkNeedBlockAndroidacyRequest(url);
-        Response response = (isRedirect ? getHttpClientNoRedirect() : allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).post(JsonRequestBody.from(data)).header("Content-Type", "application/json").build()).execute();
-        if (isRedirect && response.isRedirect()) {
+        Response response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).post(JsonRequestBody.from(data)).header("Content-Type", "application/json").build()).execute();
+        if (response.isRedirect()) {
             return response.request().url().uri().toString();
         }
         // 200/204 == success, 304 == cache valid
-        if (response.code() != 200 && response.code() != 204 &&
-                (response.code() != 304 || !allowCache)) {
+        if (response.code() != 200 && response.code() != 204 && (response.code() != 304 || !allowCache)) {
             checkNeedCaptchaAndroidacy(url, response.code());
             throw new HttpException(response.code());
         }
@@ -320,59 +328,13 @@ public class Http {
         return androidacyUA;
     }
 
-    public static String getMagiskUA() {
-        return "Magisk/" + InstallerInitializer.peekMagiskVersion();
-    }
-
     public static void setDoh(boolean doh) {
         Log.d(TAG, "DoH: " + Http.doh + " -> " + doh);
         Http.doh = doh;
     }
 
-    public static String getAndroidacyCookies(String url) {
-        if (!AndroidacyUtil.isAndroidacyLink(url)) return "";
-        return cookieJar.getAndroidacyCookies(url);
-    }
-
     public static boolean hasWebView() {
         return hasWebView;
-    }
-
-    /**
-     * Change URL to appropriate url and force Magisk link to use latest version.
-     */
-    public static String updateLink(String string) {
-        if (string.startsWith("https://cdn.jsdelivr.net/gh/Magisk-Modules-Repo/")) {
-            String tmp = string.substring(48);
-            int start = tmp.lastIndexOf('@'), end = tmp.lastIndexOf('/');
-            if ((end - 8) <= start) return string; // Skip if not a commit id
-            return "https://raw.githubusercontent.com/" + tmp.substring(0, start) + "/master" + string.substring(end);
-        }
-        if (string.startsWith("https://github.com/Magisk-Modules-Repo/")) {
-            int i = string.lastIndexOf("/archive/");
-            if (i != -1 && string.indexOf('/', i + 9) == -1)
-                return string.substring(0, i + 9) + "master.zip";
-        }
-        return string;
-    }
-
-    /**
-     * Change GitHub user-content url to jsdelivr url
-     * (Unused but kept as a documentation)
-     */
-    public static String cdnIfyLink(String string) {
-        if (string.startsWith("https://raw.githubusercontent.com/")) {
-            String[] tokens = string.substring(34).split("/", 4);
-            if (tokens.length != 4) return string;
-            return "https://cdn.jsdelivr.net/gh/" + tokens[0] + "/" + tokens[1] + "@" + tokens[2] + "/" + tokens[3];
-        }
-        if (string.startsWith("https://github.com/")) {
-            int i = string.lastIndexOf("/archive/");
-            if (i == -1 || string.indexOf('/', i + 9) != -1) return string; // Not an archive link
-            String[] tokens = string.substring(19).split("/", 4);
-            return "https://cdn.jsdelivr.net/gh/" + tokens[0] + "/" + tokens[1] + "@" + tokens[2] + "/" + tokens[3];
-        }
-        return string;
     }
 
     public interface ProgressListener {
@@ -462,17 +424,6 @@ public class Http {
             }
         }
 
-        String getAndroidacyCookies(String url) {
-            if (this.cookieManager != null) {
-                return this.cookieManager.getCookie(url);
-            }
-            StringBuilder stringBuilder = new StringBuilder();
-            for (Cookie cookie : this.androidacyCookies) {
-                stringBuilder.append(cookie.toString()).append("; ");
-            }
-            stringBuilder.setLength(stringBuilder.length() - 2);
-            return stringBuilder.toString();
-        }
     }
 
     /**

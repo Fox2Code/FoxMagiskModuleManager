@@ -9,10 +9,12 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
@@ -65,6 +67,7 @@ import com.topjohnwu.superuser.internal.UiThreadHandler;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Random;
@@ -262,12 +265,39 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             Preference debugNotification = findPreference("pref_background_update_check_debug");
             debugNotification.setEnabled(MainApplication.isBackgroundUpdateCheckEnabled());
             debugNotification.setVisible(MainApplication.isDeveloper() && !MainApplication.isWrapped());
+            debugNotification.setVisible(MainApplication.isDeveloper() && !MainApplication.isWrapped());
             debugNotification.setOnPreferenceClickListener(preference -> {
                 BackgroundUpdateChecker.postNotification(this.requireContext(), new Random().nextInt(4) + 2);
                 return true;
             });
             Preference backgroundUpdateCheck = findPreference("pref_background_update_check");
             backgroundUpdateCheck.setVisible(!MainApplication.isWrapped());
+            // Make uncheckable if POST_NOTIFICATIONS permission is not granted
+            if (!MainApplication.isNotificationPermissionGranted()) {
+                // Instead of disabling the preference, we make it uncheckable and when the user
+                // clicks on it, we show a dialog explaining why the permission is needed
+                backgroundUpdateCheck.setOnPreferenceClickListener(preference -> {
+                    // set the box to unchecked
+                    ((SwitchPreferenceCompat) backgroundUpdateCheck).setChecked(false);
+                    // ensure that the preference is false
+                    MainApplication.getSharedPreferences().edit().putBoolean("pref_background_update_check", false).apply();
+                    new MaterialAlertDialogBuilder(this.requireContext())
+                            .setTitle(R.string.permission_notification_title)
+                            .setMessage(R.string.permission_notification_message)
+                            .setPositiveButton(R.string.ok, (dialog, which) -> {
+                                // Open the app settings
+                                Intent intent = new Intent();
+                                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                Uri uri = Uri.fromParts("package", this.requireContext().getPackageName(), null);
+                                intent.setData(uri);
+                                this.startActivity(intent);
+                            })
+                            .setNegativeButton(R.string.cancel, (dialog, which) -> {})
+                            .show();
+                    return true;
+                });
+                backgroundUpdateCheck.setSummary(R.string.background_update_check_permission_required);
+            }
             backgroundUpdateCheck.setOnPreferenceChangeListener((preference, newValue) -> {
                 boolean enabled = Boolean.parseBoolean(String.valueOf(newValue));
                 debugNotification.setEnabled(enabled);
@@ -422,6 +452,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
 
         @SuppressLint({"RestrictedApi", "UnspecifiedImmutableFlag"})
         public void onCreatePreferencesAndroidacy() {
+            // Bind the pref_show_captcha_webview to captchaWebview('https://production-api.androidacy.com/')
+            // Also require dev modeowCaptchaWebview.setVisible(false);
             Preference androidacyTestMode = Objects.requireNonNull(findPreference("pref_androidacy_test_mode"));
             if (!MainApplication.isDeveloper()) {
                 androidacyTestMode.setVisible(false);
@@ -497,17 +529,44 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     return true;
                 });
             }
-            String[] originalApiKeyRef = new String[]{
-                    MainApplication.getSharedPreferences().getString("pref_androidacy_api_token", "")};
-            // Create the pref_androidacy_repo_api_key text input with validation
-            EditTextPreference prefAndroidacyRepoApiKey = findPreference("pref_androidacy_repo_api_key");
-            assert prefAndroidacyRepoApiKey != null;
+            // Disable toggling the pref_androidacy_repo_enabled on builds without an
+            // ANDROIDACY_CLIENT_ID or where the ANDROIDACY_CLIENT_ID is empty
+            Preference androidacyRepoEnabled = Objects.requireNonNull(findPreference("pref_androidacy_repo_enabled"));
+            if (Objects.equals(BuildConfig.ANDROIDACY_CLIENT_ID, "")) {
+                androidacyRepoEnabled.setOnPreferenceClickListener(preference -> {
+                    new MaterialAlertDialogBuilder(this.requireContext())
+                            .setTitle(R.string.androidacy_repo_disabled)
+                            .setMessage(R.string.androidacy_repo_disabled_message)
+                            .setPositiveButton(R.string.download_full_app, (dialog, which) -> {
+                                // User clicked OK button. Open GitHub releases page
+                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(
+                                        "https://github.com/Fox2Code/FoxMagiskModuleManager/releases"));
+                                startActivity(browserIntent);
+                            })
+                            .show();
+                    // Revert the switch to off
+                    SwitchPreferenceCompat switchPreferenceCompat = (SwitchPreferenceCompat) androidacyRepoEnabled;
+                    switchPreferenceCompat.setChecked(false);
+                    // Save the preference
+                    MainApplication.getSharedPreferences().edit().putBoolean("pref_androidacy_repo_enabled", false).apply();
+                    return false;
+                });
+            }
+            String[] originalApiKeyRef = new String[]{MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).getString("pref_androidacy_api_token", null)};
+            // Get the dummy pref_androidacy_repo_api_token EditTextPreference
+            EditTextPreference prefAndroidacyRepoApiKey = Objects.requireNonNull(findPreference("pref_androidacy_api_token"));
+            prefAndroidacyRepoApiKey.setTitle(R.string.api_key);
+            prefAndroidacyRepoApiKey.setSummary(R.string.api_key_summary);
+            prefAndroidacyRepoApiKey.setDialogTitle(R.string.api_key);
+            prefAndroidacyRepoApiKey.setDefaultValue(originalApiKeyRef[0]);
+            // Set the value to the current value
+            prefAndroidacyRepoApiKey.setText(originalApiKeyRef[0]);
             prefAndroidacyRepoApiKey.setOnBindEditTextListener(editText -> {
                 editText.setSingleLine();
                 // Make the single line wrap
                 editText.setHorizontallyScrolling(false);
-                // Set the height to the height of 2 lines
-                editText.setHeight(editText.getLineHeight() * 3);
+                // Set the height to the maximum required to fit the text
+                editText.setMaxLines(Integer.MAX_VALUE);
                 // Make ok button say "Save"
                 editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
             });
@@ -528,41 +587,98 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 new Thread(() -> {
                     // If key is empty, just remove it and change the text of the snack bar
                     if (apiKey.isEmpty()) {
-                        MainApplication.getSharedPreferences().edit().remove(
-                                "pref_androidacy_repo_api_key").apply();
-                        new Handler(Looper.getMainLooper()).post(() -> Snackbar.make(requireView(),
-                                R.string.api_key_removed, Snackbar.LENGTH_SHORT).show());
+                        MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit().remove("pref_androidacy_api_token").apply();
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            Snackbar.make(requireView(), R.string.api_key_removed, Snackbar.LENGTH_SHORT).show();
+                            // Show dialog to restart app with ok button
+                            new MaterialAlertDialogBuilder(this.requireContext())
+                                    .setTitle(R.string.restart)
+                                    .setMessage(R.string.api_key_restart)
+                                    .setNeutralButton(android.R.string.ok, (dialog, which) -> {
+                                        // User clicked OK button
+                                        Intent mStartActivity = new Intent(requireContext(), MainActivity.class);
+                                        mStartActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        int mPendingIntentId = 123456;
+                                        // If < 23, FLAG_IMMUTABLE is not available
+                                        PendingIntent mPendingIntent;
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                            mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                                                    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                                        } else {
+                                            mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                                                    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                                        }
+                                        AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+                                        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+                                        if (BuildConfig.DEBUG) {
+                                            Log.d(TAG, "Restarting app to save token preference: " + newValue);
+                                        }
+                                        System.exit(0); // Exit app process
+                                    })
+                                    .show();
+                        });
                     } else {
                         // If key < 64 chars, it's not valid
                         if (apiKey.length() < 64) {
                             new Handler(Looper.getMainLooper()).post(() -> {
                                 Snackbar.make(requireView(), R.string.api_key_invalid, Snackbar.LENGTH_SHORT).show();
                                 // Save the original key
-                                MainApplication.getSharedPreferences().edit().putString(
-                                        "pref_androidacy_api_token", originalApiKeyRef[0]).apply();
+                                MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit().putString("pref_androidacy_api_token", originalApiKeyRef[0]).apply();
                                 // Re-show the dialog with an error
                                 prefAndroidacyRepoApiKey.performClick();
                                 // Show error
                                 prefAndroidacyRepoApiKey.setDialogMessage(getString(R.string.api_key_invalid));
                             });
                         } else {
+                            // If the key is the same as the original, just show a snack bar
+                            if (apiKey.equals(originalApiKeyRef[0])) {
+                                new Handler(Looper.getMainLooper()).post(() -> Snackbar.make(requireView(), R.string.api_key_unchanged, Snackbar.LENGTH_SHORT).show());
+                                return;
+                            }
                             boolean valid = false;
                             try {
                                 valid = AndroidacyRepoData.getInstance().isValidToken(apiKey);
-                            } catch (IOException ignored) {}
+                            } catch (IOException | NoSuchAlgorithmException ignored) {}
                             // If the key is valid, save it
                             if (valid) {
                                 originalApiKeyRef[0] = apiKey;
                                 RepoManager.getINSTANCE().getAndroidacyRepoData().setToken(apiKey);
-                                MainApplication.getSharedPreferences().edit().putString(
-                                        "pref_androidacy_repo_api_key", apiKey).apply();
-                                new Handler(Looper.getMainLooper()).post(() -> Snackbar.make(requireView(),
-                                        R.string.api_key_valid, Snackbar.LENGTH_SHORT).show());
+                                MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit().putString("pref_androidacy_api_token", apiKey).apply();
+                                // Snackbar with success and restart button
+                                new Handler(Looper.getMainLooper()).post(() -> {
+                                    Snackbar.make(requireView(), R.string.api_key_valid, Snackbar.LENGTH_SHORT).show();
+                                    // Show dialog to restart app with ok button
+                                    new MaterialAlertDialogBuilder(this.requireContext())
+                                            .setTitle(R.string.restart)
+                                            .setMessage(R.string.api_key_restart)
+                                            .setNeutralButton(android.R.string.ok, (dialog, which) -> {
+                                                // User clicked OK button
+                                                Intent mStartActivity = new Intent(requireContext(), MainActivity.class);
+                                                mStartActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                int mPendingIntentId = 123456;
+                                                // If < 23, FLAG_IMMUTABLE is not available
+                                                PendingIntent mPendingIntent;
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                                    mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                                                            mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                                                } else {
+                                                    mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                                                            mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                                                }
+                                                AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+                                                mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+                                                if (BuildConfig.DEBUG) {
+                                                    Log.d(TAG, "Restarting app to save token preference: " + newValue);
+                                                }
+                                                System.exit(0); // Exit app process
+                                            })
+                                            .show();
+                                });
                             } else {
                                 new Handler(Looper.getMainLooper()).post(() -> {
                                     Snackbar.make(requireView(), R.string.api_key_invalid, Snackbar.LENGTH_SHORT).show();
                                     // Save the original key
-                                    MainApplication.getSharedPreferences().edit().putString(
+                                    MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit().putString(
                                             "pref_androidacy_api_token", originalApiKeyRef[0]).apply();
                                     // Re-show the dialog with an error
                                     prefAndroidacyRepoApiKey.performClick();
@@ -575,6 +691,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 }).start();
                 return true;
             });
+            // make sure the preference is visible if repo is enabled
+            prefAndroidacyRepoApiKey.setVisible(RepoManager.getINSTANCE().getAndroidacyRepoData().isEnabled());
         }
 
         @SuppressLint("RestrictedApi")
@@ -589,7 +707,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     if (preference == null) continue;
                     final int index = i;
                     preference.setOnPreferenceClickListener(preference1 -> {
-                        sharedPreferences.edit().putBoolean("pref_custom_repo_" + index + "_enabled", false).apply();
+                        sharedPreferences.edit().remove("pref_custom_repo_" + index + "_enabled").apply();
                         customRepoManager.removeRepo(index);
                         updateCustomRepoList(false);
                         return true;
@@ -615,13 +733,12 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         String text = String.valueOf(input.getText());
                         if (customRepoManager.canAddRepo(text)) {
                             final CustomRepoData customRepoData = customRepoManager.addRepo(text);
-                            customRepoData.setEnabled(true);
                             new Thread("Add Custom Repo Thread") {
                                 @Override
                                 public void run() {
                                     try {
                                         customRepoData.quickPrePopulate();
-                                    } catch (IOException | JSONException e) {
+                                    } catch (IOException | JSONException | NoSuchAlgorithmException e) {
                                         Log.e(TAG, "Failed to preload repo values", e);
                                     }
                                     UiThreadHandler.handler.post(() -> updateCustomRepoList(false));

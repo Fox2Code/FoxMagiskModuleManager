@@ -5,6 +5,8 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.fox2code.mmm.BuildConfig;
+
 public class AndroidacyUtil {
     public static final String REFERRER = "utm_source=FoxMMM&utm_medium=app";
 
@@ -49,5 +51,59 @@ public class AndroidacyUtil {
             return url.substring(0, i + 6) +
                     "<token>" + url.substring(i2);
         }
+    }
+
+    public static String getModuleId(String moduleUrl) {
+        // Get the &module= part
+        int i = moduleUrl.indexOf("&module=");
+        String moduleId;
+        // Match until next & or end
+        if (i != -1) {
+            int j = moduleUrl.indexOf('&', i + 1);
+            if (j == -1) {
+                moduleId = moduleUrl.substring(i + 8);
+            } else {
+                moduleId = moduleUrl.substring(i + 8, j);
+            }
+            // URL decode
+            moduleId = Uri.decode(moduleId);
+            // Strip non alphanumeric
+            moduleId = moduleId.replaceAll("[^a-zA-Z0-9]", "");
+            return moduleId;
+        }
+        if (BuildConfig.DEBUG) {
+            throw new IllegalArgumentException("Invalid module url: " + moduleUrl);
+        }
+        return null;
+    }
+
+    public static String getModuleTitle(String moduleUrl) {
+        // Get the &title= part
+        int i = moduleUrl.indexOf("&moduleTitle=");
+        // Match until next & or end
+        if (i != -1) {
+            int j = moduleUrl.indexOf('&', i + 1);
+            if (j == -1) {
+                return Uri.decode(moduleUrl.substring(i + 13));
+            } else {
+                return Uri.decode(moduleUrl.substring(i + 13, j));
+            }
+        }
+        return null;
+    }
+
+    public static String getChecksumFromURL(String moduleUrl) {
+        // Get the &version= part
+        int i = moduleUrl.indexOf("&checksum=");
+        // Match until next & or end
+        if (i != -1) {
+            int j = moduleUrl.indexOf('&', i + 1);
+            if (j == -1) {
+                return moduleUrl.substring(i + 10);
+            } else {
+                return moduleUrl.substring(i + 10, j);
+            }
+        }
+        return null;
     }
 }

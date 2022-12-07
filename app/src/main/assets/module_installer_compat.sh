@@ -1,4 +1,4 @@
-#!/sbin/sh
+# shellcheck shell=ash
 
 #################
 # Initialization
@@ -20,24 +20,24 @@ require_new_magisk() {
 # Load util_functions.sh
 #########################
 
-OUTFD=$2
-ZIPFILE=$3
+export OUTFD=$2
+export ZIPFILE=$3
 
 mount /data 2>/dev/null
 
 [ -f /data/adb/magisk/util_functions.sh ] || require_new_magisk
 . /data/adb/magisk/util_functions.sh
-[ $MAGISK_VER_CODE -lt 19000 ] && require_new_magisk
+[ "$MAGISK_VER_CODE" -lt 19000 ] && require_new_magisk
 
 # Add grep_get_prop implementation if missing
 if ! type grep_get_prop &>/dev/null; then
 grep_get_prop() {
-  local result=$(grep_prop $@)
+  local result=$(grep_prop "$@")
   if [ -z "$result" ]; then
     # Fallback to getprop
     getprop "$1"
   else
-    echo $result
+    echo "$result"
   fi
 }
 fi
@@ -55,7 +55,7 @@ settings() {
   fi
 }
 
-if [ $MAGISK_VER_CODE -ge 20400 ] && [ -z "$MMM_MMT_REBORN" ]; then
+if [ "$MAGISK_VER_CODE" -ge 20400 ] && [ -z "$MMM_MMT_REBORN" ]; then
   # New Magisk have complete installation logic within util_functions.sh
   install_module
   exit 0
@@ -75,9 +75,10 @@ is_legacy_script() {
 
 print_modname() {
   local authlen len namelen pounds
-  namelen=`echo -n $MODNAME | wc -c`
-  authlen=$((`echo -n $MODAUTH | wc -c` + 3))
-  [ $namelen -gt $authlen ] && len=$namelen || len=$authlen
+  # shellcheck disable=SC2006
+  namelen=`echo -n "$MODNAME" | wc -c`
+  authlen=$(($(echo -n "$MODAUTH" | wc -c) + 3))
+  [ "$namelen" -gt $authlen ] && len=$namelen || len=$authlen
   len=$((len + 2))
   pounds=$(printf "%${len}s" | tr ' ' '*')
   ui_print "$pounds"
@@ -93,7 +94,7 @@ print_modname() {
 abort() {
   ui_print "$1"
   $BOOTMODE || recovery_cleanup
-  [ -n $MODPATH ] && rm -rf $MODPATH
+  [ -n "$MODPATH" ] && rm -rf "$MODPATH"
   rm -rf $TMPDIR
   exit 1
 }
@@ -101,7 +102,7 @@ abort() {
 rm -rf $TMPDIR 2>/dev/null
 mkdir -p $TMPDIR
 chcon u:object_r:system_file:s0 $TMPDIR || true
-cd $TMPDIR
+cd $TMPDIR || exit
 
 # Preperation for flashable zips
 setup_flashable
@@ -128,14 +129,15 @@ unzip -o "$ZIPFILE" module.prop -d $TMPDIR >&2
 MODDIRNAME=modules
 $BOOTMODE && MODDIRNAME=modules_update
 MODULEROOT=$NVBASE/$MODDIRNAME
-MODID=`grep_prop id $TMPDIR/module.prop`
-MODNAME=`grep_prop name $TMPDIR/module.prop`
-MODAUTH=`grep_prop author $TMPDIR/module.prop`
+MODID=$(grep_prop id $TMPDIR/module.prop)
+MODNAME=$(grep_prop name $TMPDIR/module.prop)
+MODAUTH=$(grep_prop author $TMPDIR/module.prop)
 MODPATH=$MODULEROOT/$MODID
 
 # Create mod paths
+# shellcheck disable=SC2086
 rm -rf $MODPATH 2>/dev/null
-mkdir -p $MODPATH
+mkdir -p "$MODPATH"
 
 ##########
 # Install
@@ -152,22 +154,22 @@ if is_legacy_script; then
   on_install
 
   # Custom uninstaller
-  [ -f $TMPDIR/uninstall.sh ] && cp -af $TMPDIR/uninstall.sh $MODPATH/uninstall.sh
+  [ -f $TMPDIR/uninstall.sh ] && cp -af $TMPDIR/uninstall.sh "$MODPATH"/uninstall.sh
 
   # Skip mount
-  $SKIPMOUNT && touch $MODPATH/skip_mount
+  $SKIPMOUNT && touch "$MODPATH"/skip_mount
 
   # prop file
-  $PROPFILE && cp -af $TMPDIR/system.prop $MODPATH/system.prop
+  $PROPFILE && cp -af $TMPDIR/system.prop "$MODPATH"/system.prop
 
   # Module info
-  cp -af $TMPDIR/module.prop $MODPATH/module.prop
+  cp -af $TMPDIR/module.prop "$MODPATH"/module.prop
 
   # post-fs-data scripts
-  $POSTFSDATA && cp -af $TMPDIR/post-fs-data.sh $MODPATH/post-fs-data.sh
+  $POSTFSDATA && cp -af $TMPDIR/post-fs-data.sh "$MODPATH"/post-fs-data.sh
 
   # service scripts
-  $LATESTARTSERVICE && cp -af $TMPDIR/service.sh $MODPATH/service.sh
+  $LATESTARTSERVICE && cp -af $TMPDIR/service.sh "$MODPATH"/service.sh
 
   ui_print "- Setting permissions"
   set_permissions
@@ -218,46 +220,46 @@ elif [ -n "$MMM_MMT_REBORN" ]; then
 else
   print_modname
 
-  unzip -o "$ZIPFILE" customize.sh -d $MODPATH >&2
+  unzip -o "$ZIPFILE" customize.sh -d "$MODPATH" >&2
 
-  if ! grep -q '^SKIPUNZIP=1$' $MODPATH/customize.sh 2>/dev/null; then
+  if ! grep -q '^SKIPUNZIP=1$' "$MODPATH"/customize.sh 2>/dev/null; then
     ui_print "- Extracting module files"
-    unzip -o "$ZIPFILE" -x 'META-INF/*' -d $MODPATH >&2
+    unzip -o "$ZIPFILE" -x 'META-INF/*' -d "$MODPATH" >&2
 
     # Default permissions
-    set_perm_recursive $MODPATH 0 0 0755 0644
+    set_perm_recursive "$MODPATH" 0 0 0755 0644
   fi
 
   # Load customization script
-  [ -f $MODPATH/customize.sh ] && . $MODPATH/customize.sh
+  [ -f "$MODPATH"/customize.sh ] && . "$MODPATH"/customize.sh
 fi
 
 # Handle replace folders
 for TARGET in $REPLACE; do
   ui_print "- Replace target: $TARGET"
-  mktouch $MODPATH$TARGET/.replace
+  mktouch "$MODPATH""$TARGET"/.replace
 done
 
 if $BOOTMODE; then
   # Update info for Magisk Manager
-  mktouch $NVBASE/modules/$MODID/update
-  rm -rf $NVBASE/modules/$MODID/remove 2>/dev/null
-  rm -rf $NVBASE/modules/$MODID/disable 2>/dev/null
-  cp -af $MODPATH/module.prop $NVBASE/modules/$MODID/module.prop
+  mktouch $NVBASE/modules/"$MODID"/update
+  rm -rf $NVBASE/modules/"$MODID"/remove 2>/dev/null
+  rm -rf $NVBASE/modules/"$MODID"/disable 2>/dev/null
+  cp -af "$MODPATH"/module.prop $NVBASE/modules/"$MODID"/module.prop
 fi
 
 # Copy over custom sepolicy rules
 if ! type copy_sepolicy_rules &>/dev/null; then
-  if [ -f $MODPATH/sepolicy.rule -a -e $PERSISTDIR ]; then
+  if [ -f "$MODPATH"/sepolicy.rule -a -e $PERSISTDIR ]; then
     ui_print "- Installing custom sepolicy patch"
     # Remove old recovery logs (which may be filling partition) to make room
     rm -f $PERSISTDIR/cache/recovery/*
     PERSISTMOD=$PERSISTDIR/magisk/$MODID
-    mkdir -p $PERSISTMOD
-    cp -af $MODPATH/sepolicy.rule $PERSISTMOD/sepolicy.rule || abort "! Insufficient partition size"
+    mkdir -p "$PERSISTMOD"
+    cp -af "$MODPATH"/sepolicy.rule "$PERSISTMOD"/sepolicy.rule || abort "! Insufficient partition size"
   fi
 else
-  if [ -f $MODPATH/sepolicy.rule ]; then
+  if [ -f "$MODPATH"/sepolicy.rule ]; then
     ui_print "- Installing custom sepolicy rules"
     copy_sepolicy_rules
   fi
@@ -265,9 +267,9 @@ fi
 
 # Remove stuff that doesn't belong to modules and clean up any empty directories
 rm -rf \
-$MODPATH/system/placeholder $MODPATH/customize.sh \
-$MODPATH/README.md $MODPATH/.git* 2>/dev/null
-rmdir -p $MODPATH
+"$MODPATH"/system/placeholder "$MODPATH"/customize.sh \
+"$MODPATH"/README.md "$MODPATH"/.git* 2>/dev/null
+rmdir -p "$MODPATH"
 
 #############
 # Finalizing

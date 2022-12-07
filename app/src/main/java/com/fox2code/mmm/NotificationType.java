@@ -53,9 +53,7 @@ public enum NotificationType implements NotificationTypeCst {
             return InstallerInitializer.getErrorNotification() != this;
         }
     },
-    MAGISK_OUTDATED(R.string.magisk_outdated, R.drawable.ic_baseline_update_24, v -> {
-        IntentHelper.openUrl(v.getContext(), "https://github.com/topjohnwu/Magisk/releases");
-    }) {
+    MAGISK_OUTDATED(R.string.magisk_outdated, R.drawable.ic_baseline_update_24, v -> IntentHelper.openUrl(v.getContext(), "https://github.com/topjohnwu/Magisk/releases")) {
         @Override
         public boolean shouldRemove() {
             return InstallerInitializer.peekMagiskPath() == null ||
@@ -68,6 +66,12 @@ public enum NotificationType implements NotificationTypeCst {
         public boolean shouldRemove() {
             return AppUpdateManager.getAppUpdateManager().isLastCheckSuccess() ||
                     RepoManager.getINSTANCE().hasConnectivity();
+        }
+    },
+    REPO_UPDATE_FAILED(R.string.repo_update_failed, R.drawable.ic_baseline_cloud_off_24) {
+        @Override
+        public boolean shouldRemove() {
+            return RepoManager.getINSTANCE().isLastUpdateSuccess();
         }
     },
     NEED_CAPTCHA_ANDROIDACY(R.string.androidacy_need_captcha, R.drawable.ic_baseline_refresh_24, v ->
@@ -86,10 +90,8 @@ public enum NotificationType implements NotificationTypeCst {
         }
     },
     UPDATE_AVAILABLE(R.string.app_update_available, R.drawable.ic_baseline_system_update_24,
-            R.attr.colorPrimary, R.attr.colorOnPrimary, v -> {
-        IntentHelper.openUrl(v.getContext(),
-                "https://github.com/Fox2Code/FoxMagiskModuleManager/releases");
-    }, false) {
+            R.attr.colorPrimary, R.attr.colorOnPrimary, v -> IntentHelper.openUrl(v.getContext(),
+                    "https://github.com/Fox2Code/FoxMagiskModuleManager/releases"), false) {
         @Override
         public boolean shouldRemove() {
             return !AppUpdateManager.getAppUpdateManager().peekShouldUpdate();

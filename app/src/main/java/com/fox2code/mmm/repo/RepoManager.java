@@ -19,6 +19,9 @@ import com.fox2code.mmm.utils.PropUtils;
 import com.fox2code.mmm.utils.SyncManager;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,37 +30,74 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 public final class RepoManager extends SyncManager {
-    private static final String TAG = "RepoManager";
-
-    private static final String MAGISK_REPO_MANAGER =
-            "https://magisk-modules-repo.github.io/submission/modules.json";
     public static final String MAGISK_REPO =
             "https://raw.githubusercontent.com/Magisk-Modules-Repo/submission/modules/modules.json";
     public static final String MAGISK_REPO_HOMEPAGE = "https://github.com/Magisk-Modules-Repo";
-
     public static final String MAGISK_ALT_REPO =
             "https://raw.githubusercontent.com/Magisk-Modules-Alt-Repo/json/main/modules.json";
     public static final String MAGISK_ALT_REPO_HOMEPAGE =
             "https://github.com/Magisk-Modules-Alt-Repo";
     public static final String MAGISK_ALT_REPO_JSDELIVR =
             "https://cdn.jsdelivr.net/gh/Magisk-Modules-Alt-Repo/json@main/modules.json";
-
     public static final String ANDROIDACY_MAGISK_REPO_ENDPOINT =
             "https://production-api.androidacy.com/magisk/repo";
     public static final String ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT =
             "https://staging-api.androidacy.com/magisk/repo";
     public static final String ANDROIDACY_MAGISK_REPO_HOMEPAGE =
             "https://www.androidacy.com/modules-repo";
-
     public static final String DG_MAGISK_REPO =
             "https://repo.dergoogler.com/modules.json";
     public static final String DG_MAGISK_REPO_GITHUB =
             "https://googlers-magisk-repo.github.io/modules.json";
     public static final String DG_MAGISK_REPO_GITHUB_RAW =
             "https://raw.githubusercontent.com/Googlers-Repo/googlers-repo.github.io/master/modules.json";
-
+    private static final String TAG = "RepoManager";
+    private static final String MAGISK_REPO_MANAGER =
+            "https://magisk-modules-repo.github.io/submission/modules.json";
     private static final Object lock = new Object();
+    private static final double STEP1 = 0.1D;
+    private static final double STEP2 = 0.8D;
+    private static final double STEP3 = 0.1D;
     private static volatile RepoManager INSTANCE;
+    private final MainApplication mainApplication;
+    private final LinkedHashMap<String, RepoData> repoData;
+    private final HashMap<String, RepoModule> modules;
+    private final AndroidacyRepoData androidacyRepoData;
+    private final CustomRepoManager customRepoManager;
+    private boolean hasInternet;
+    private boolean repoLastError = false;
+    private boolean initialized;
+    public String repoLastErrorName = null;
+
+    private RepoManager(MainApplication mainApplication) {
+        INSTANCE = this; // Set early fox XHooks
+        this.initialized = false;
+        this.mainApplication = mainApplication;
+        this.repoData = new LinkedHashMap<>();
+        this.modules = new HashMap<>();
+        // We do not have repo list config yet.
+        RepoData altRepo = this.addRepoData(
+                MAGISK_ALT_REPO, "Magisk Modules Alt Repo");
+        altRepo.defaultWebsite = RepoManager.MAGISK_ALT_REPO_HOMEPAGE;
+        altRepo.defaultSubmitModule =
+                "https://github.com/Magisk-Modules-Alt-Repo/submission/issues";
+        RepoData dgRepo = this.addRepoData(
+                DG_MAGISK_REPO_GITHUB_RAW, "Googlers Magisk Repo");
+        dgRepo.defaultWebsite = "https://dergoogler.com/repo";
+        this.androidacyRepoData = this.addAndroidacyRepoData();
+        this.customRepoManager = new CustomRepoManager(mainApplication, this);
+        XHooks.onRepoManagerInitialize();
+        // Populate default cache
+        boolean x = false;
+        for (RepoData repoData : this.repoData.values()) {
+            if (repoData == this.androidacyRepoData) {
+                if (x) return;
+                x = true;
+            }
+            this.populateDefaultCache(repoData);
+        }
+        this.initialized = true;
+    }
 
     public static RepoManager getINSTANCE() {
         if (INSTANCE == null || !INSTANCE.initialized) {
@@ -93,44 +133,50 @@ public final class RepoManager extends SyncManager {
         return INSTANCE;
     }
 
-    private final MainApplication mainApplication;
-    private final LinkedHashMap<String, RepoData> repoData;
-    private final HashMap<String, RepoModule> modules;
-    private final AndroidacyRepoData androidacyRepoData;
-    private final CustomRepoManager customRepoManager;
-    private boolean initialized;
-
-    private RepoManager(MainApplication mainApplication) {
-        INSTANCE = this; // Set early fox XHooks
-        this.initialized = false;
-        this.mainApplication = mainApplication;
-        this.repoData = new LinkedHashMap<>();
-        this.modules = new HashMap<>();
-        // We do not have repo list config yet.
-        RepoData altRepo = this.addRepoData(
-                MAGISK_ALT_REPO, "Magisk Modules Alt Repo");
-        altRepo.defaultWebsite = RepoManager.MAGISK_ALT_REPO_HOMEPAGE;
-        altRepo.defaultSubmitModule =
-                "https://github.com/Magisk-Modules-Alt-Repo/submission/issues";
-        RepoData dgRepo = this.addRepoData(
-                DG_MAGISK_REPO_GITHUB_RAW, "Googlers Magisk Repo");
-        dgRepo.defaultWebsite = "https://dergoogler.com/repo";
-        this.androidacyRepoData = this.addAndroidacyRepoData();
-        this.customRepoManager = new CustomRepoManager(mainApplication, this);
-        XHooks.onRepoManagerInitialize();
-        // Populate default cache
-        boolean x = false;
-        for (RepoData repoData:this.repoData.values()) {
-            if (repoData == this.androidacyRepoData) {
-                if (x) return; x = true;
-            }
-            this.populateDefaultCache(repoData);
+    public static String internalIdOfUrl(String url) {
+        switch (url) {
+            case MAGISK_ALT_REPO:
+            case MAGISK_ALT_REPO_JSDELIVR:
+                return "magisk_alt_repo";
+            case ANDROIDACY_MAGISK_REPO_ENDPOINT:
+            case ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT:
+                return "androidacy_repo";
+            case DG_MAGISK_REPO:
+            case DG_MAGISK_REPO_GITHUB:
+            case DG_MAGISK_REPO_GITHUB_RAW:
+                return "dg_magisk_repo";
+            default:
+                return "repo_" + Hashes.hashSha1(
+                        url.getBytes(StandardCharsets.UTF_8));
         }
-        this.initialized = true;
+    }
+
+    static boolean isBuiltInRepo(String repo) {
+        switch (repo) {
+            case RepoManager.MAGISK_ALT_REPO:
+            case RepoManager.MAGISK_ALT_REPO_JSDELIVR:
+            case RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT:
+            case RepoManager.ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT:
+            case RepoManager.DG_MAGISK_REPO:
+            case RepoManager.DG_MAGISK_REPO_GITHUB:
+            case RepoManager.DG_MAGISK_REPO_GITHUB_RAW:
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * Safe way to do {@code RepoManager.getInstance().androidacyRepoData.isEnabled()}
+     * without initializing RepoManager
+     */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public static boolean isAndroidacyRepoEnabled() {
+        return INSTANCE != null && INSTANCE.androidacyRepoData != null &&
+                INSTANCE.androidacyRepoData.isEnabled();
     }
 
     private void populateDefaultCache(RepoData repoData) {
-        for (RepoModule repoModule:repoData.moduleHashMap.values()) {
+        for (RepoModule repoModule : repoData.moduleHashMap.values()) {
             if (!repoModule.moduleInfo.hasFlag(ModuleInfo.FLAG_METADATA_INVALID)) {
                 RepoModule registeredRepoModule = this.modules.get(repoModule.id);
                 if (registeredRepoModule == null) {
@@ -181,14 +227,9 @@ public final class RepoManager extends SyncManager {
         return repoData;
     }
 
-    private boolean repoLastResult = true;
-
-    private static final double STEP1 = 0.1D;
-    private static final double STEP2 = 0.8D;
-    private static final double STEP3 = 0.1D;
-
     protected void scanInternal(@NonNull UpdateListener updateListener) {
         NoodleDebug noodleDebug = NoodleDebug.getNoodleDebug();
+        // First, check if we have internet connection
         noodleDebug.push("Downloading indexes");
         this.modules.clear();
         updateListener.update(0D);
@@ -215,7 +256,7 @@ public final class RepoManager extends SyncManager {
             noodleDebug.replace(repoData.getName());
             Log.d(TAG, "Registering " + repoData.getName());
             noodleDebug.push("");
-            for (RepoModule repoModule:repoModules) {
+            for (RepoModule repoModule : repoModules) {
                 noodleDebug.replace(repoModule.id);
                 try {
                     if (repoModule.propUrl != null &&
@@ -243,7 +284,7 @@ public final class RepoManager extends SyncManager {
                 updateListener.update(STEP1 + (STEP2 / moduleToUpdate * updatedModules));
             }
             noodleDebug.pop();
-            for (RepoModule repoModule:repoUpdaters[i].toApply()) {
+            for (RepoModule repoModule : repoUpdaters[i].toApply()) {
                 if ((repoModule.moduleInfo.flags & ModuleInfo.FLAG_METADATA_INVALID) == 0) {
                     RepoModule registeredRepoModule = this.modules.get(repoModule.id);
                     if (registeredRepoModule == null) {
@@ -258,21 +299,45 @@ public final class RepoManager extends SyncManager {
         noodleDebug.pop();
         noodleDebug.replace("Finishing update");
         noodleDebug.push("");
-        boolean hasInternet = false;
-        for (int i = 0; i < repoDatas.length; i++) {
-            noodleDebug.replace(repoUpdaters[i].repoData.getName());
-            hasInternet |= repoUpdaters[i].finish();
-            updateListener.update(STEP1 + STEP2 + (STEP3 / repoDatas.length * (i + 1)));
+        this.hasInternet = false;
+        // Check if we have internet connection
+        // Attempt to contact connectivitycheck.gstatic.com/generate_204
+        // If we can't, we don't have internet connection
+        try {
+            HttpURLConnection urlConnection = (HttpURLConnection) new URL(
+                    "https://connectivitycheck.gstatic.com/generate_204").openConnection();
+            urlConnection.setInstanceFollowRedirects(false);
+            urlConnection.setConnectTimeout(1000);
+            urlConnection.setReadTimeout(1000);
+            urlConnection.setUseCaches(false);
+            urlConnection.getInputStream().close();
+            if (urlConnection.getResponseCode() == 204 &&
+                    urlConnection.getContentLength() == 0) {
+                this.hasInternet = true;
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to check internet connection", e);
+        }
+        noodleDebug.pop();
+        if (hasInternet) {
+            for (int i = 0; i < repoDatas.length; i++) {
+                noodleDebug.replace(repoUpdaters[i].repoData.getName());
+                this.repoLastError = !repoUpdaters[i].finish();
+                if (this.repoLastError) {
+                    Log.e(TAG, "Failed to update " + repoUpdaters[i].repoData.getName());
+                    this.repoLastErrorName = repoUpdaters[i].repoData.getName();
+                }
+                updateListener.update(STEP1 + STEP2 + (STEP3 / repoDatas.length * (i + 1)));
+            }
         }
         noodleDebug.pop();
         Log.i(TAG, "Got " + this.modules.size() + " modules!");
         updateListener.update(1D);
-        this.repoLastResult = hasInternet;
         noodleDebug.pop(); // pop "Finishing update"
     }
 
     public void updateEnabledStates() {
-        for (RepoData repoData:this.repoData.values()) {
+        for (RepoData repoData : this.repoData.values()) {
             boolean wasEnabled = repoData.isEnabled();
             repoData.updateEnabledState();
             if (!wasEnabled && repoData.isEnabled()) {
@@ -287,39 +352,7 @@ public final class RepoManager extends SyncManager {
     }
 
     public boolean hasConnectivity() {
-        return this.repoLastResult;
-    }
-
-    public static String internalIdOfUrl(String url) {
-        switch (url) {
-            case MAGISK_ALT_REPO:
-            case MAGISK_ALT_REPO_JSDELIVR:
-                return "magisk_alt_repo";
-            case ANDROIDACY_MAGISK_REPO_ENDPOINT:
-            case ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT:
-                return "androidacy_repo";
-            case DG_MAGISK_REPO:
-            case DG_MAGISK_REPO_GITHUB:
-            case DG_MAGISK_REPO_GITHUB_RAW:
-                return "dg_magisk_repo";
-            default:
-                return "repo_" + Hashes.hashSha1(
-                        url.getBytes(StandardCharsets.UTF_8));
-        }
-    }
-
-    static boolean isBuiltInRepo(String repo) {
-        switch (repo) {
-            case RepoManager.MAGISK_ALT_REPO:
-            case RepoManager.MAGISK_ALT_REPO_JSDELIVR:
-            case RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT:
-            case RepoManager.ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT:
-            case RepoManager.DG_MAGISK_REPO:
-            case RepoManager.DG_MAGISK_REPO_GITHUB:
-            case RepoManager.DG_MAGISK_REPO_GITHUB_RAW:
-                return true;
-        }
-        return false;
+        return this.hasInternet;
     }
 
     private RepoData addRepoData(String url, String fallBackName) {
@@ -374,12 +407,7 @@ public final class RepoManager extends SyncManager {
         return new LinkedHashSet<>(this.repoData.values());
     }
 
-    /**
-     * Safe way to do {@code RepoManager.getInstance().androidacyRepoData.isEnabled()}
-     * without initializing RepoManager
-     */
-    public static boolean isAndroidacyRepoEnabled() {
-        return INSTANCE != null && INSTANCE.androidacyRepoData != null &&
-                INSTANCE.androidacyRepoData.isEnabled();
+    public boolean isLastUpdateSuccess() {
+        return this.repoLastError;
     }
 }

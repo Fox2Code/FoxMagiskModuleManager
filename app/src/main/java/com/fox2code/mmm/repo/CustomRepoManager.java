@@ -3,6 +3,8 @@ package com.fox2code.mmm.repo;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
+
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.utils.PropUtils;
 
@@ -65,6 +67,8 @@ public class CustomRepoManager {
         CustomRepoData customRepoData = (CustomRepoData)
                 this.repoManager.addOrGet(repo);
         customRepoData.override = "custom_repo_" + i;
+        // Set the enabled state to true
+        customRepoData.setEnabled(true);
         customRepoData.updateEnabledState();
         return customRepoData;
     }

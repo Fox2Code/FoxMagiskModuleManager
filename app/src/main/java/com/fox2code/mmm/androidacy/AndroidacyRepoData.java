@@ -1,11 +1,13 @@
 package com.fox2code.mmm.androidacy;
 
 import android.content.SharedPreferences;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.manager.ModuleInfo;
@@ -15,7 +17,8 @@ import com.fox2code.mmm.repo.RepoModule;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.HttpException;
 import com.fox2code.mmm.utils.PropUtils;
-import com.topjohnwu.superuser.internal.UiThreadHandler;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.topjohnwu.superuser.Shell;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,10 +26,12 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import okhttp3.HttpUrl;
 
@@ -41,11 +46,14 @@ public final class AndroidacyRepoData extends RepoData {
         OK_HTTP_URL_BUILDER.build();
     }
 
+    @SuppressWarnings("unused")
+    public final String ClientID = BuildConfig.ANDROIDACY_CLIENT_ID;
+
     private final boolean testMode;
     private final String host;
+    public String token = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).getString("pref_androidacy_api_token", null);
     // Avoid spamming requests to Androidacy
     private long androidacyBlockade = 0;
-    private String token = this.cachedPreferences.getString("pref_androidacy_api_token", null);
 
     public AndroidacyRepoData(File cacheRoot, SharedPreferences cachedPreferences, boolean testMode) {
         super(testMode ? RepoManager.ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT : RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT, cacheRoot, cachedPreferences);
@@ -75,15 +83,68 @@ public final class AndroidacyRepoData extends RepoData {
         return url;
     }
 
-    public boolean isValidToken(String token) throws IOException {
+    // Generates a unique device ID. This is used to identify the device in the API for rate
+    // limiting and fraud detection.
+    public static String generateDeviceId() throws NoSuchAlgorithmException {
+        // Try to get the device ID from the shared preferences
+        SharedPreferences sharedPreferences = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0);
+        String deviceIdPref = sharedPreferences.getString("device_id", null);
+        if (deviceIdPref != null) {
+            return deviceIdPref;
+        } else {
+            // AAAA we're fingerprintiiiiing
+            // Really not that scary - just hashes some device info. We can't even get the info
+            // we originally hashed, so it's not like we can use it to track you.
+            String deviceId = null;
+            // Get ro.serialno if it exists
+            // First, we need to get an su shell
+            Shell.Result result = Shell.cmd("getprop ro.serialno").exec();
+            // Check if the command was successful
+            if (result.isSuccess()) {
+                // Get the output
+                String output = result.getOut().get(0);
+                // Check if the output is valid
+                if (output != null && !output.isEmpty()) {
+                    deviceId = output;
+                }
+            }
+            // Now, get device model, manufacturer, and Android version
+            String deviceModel = android.os.Build.MODEL;
+            String deviceManufacturer = android.os.Build.MANUFACTURER;
+            String androidVersion = android.os.Build.VERSION.RELEASE;
+            // Append it all together
+            deviceId += deviceModel + deviceManufacturer + androidVersion;
+            // Hash it
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(deviceId.getBytes());
+            // Convert it to a hex string
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+            // Save it to shared preferences
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("device_id", hexString.toString());
+            editor.apply();
+            // Return it
+            return hexString.toString();
+        }
+    }
+
+    public boolean isValidToken(String token) throws IOException, NoSuchAlgorithmException {
+        String deviceId = generateDeviceId();
         try {
-            Http.doHttpGet("https://" + this.host + "/auth/me?token=" + token, false);
+            Http.doHttpGet("https://" + this.host + "/auth/me?token=" + token + "&device_id=" + deviceId, false);
         } catch (HttpException e) {
             if (e.getErrorCode() == 401) {
                 Log.w(TAG, "Invalid token, resetting...");
                 // Remove saved preference
-                SharedPreferences.Editor editor = this.cachedPreferences.edit();
-                editor.remove("androidacy_api_token");
+                SharedPreferences.Editor editor = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit();
+                editor.remove("pref_androidacy_api_token");
                 editor.apply();
                 return false;
             }
@@ -94,7 +155,14 @@ public final class AndroidacyRepoData extends RepoData {
     }
 
     @Override
-    protected boolean prepare() {
+    protected boolean prepare() throws NoSuchAlgorithmException {
+        // If ANDROIDACY_CLIENT_ID is not set or is empty, disable this repo and return
+        if (Objects.equals(BuildConfig.ANDROIDACY_CLIENT_ID, "")) {
+            SharedPreferences.Editor editor = this.cachedPreferences.edit();
+            editor.putBoolean("pref_androidacy_repo_enabled", false);
+            editor.apply();
+            return false;
+        }
         if (Http.needCaptchaAndroidacy()) return false;
         // Implementation details discussed on telegram
         // First, ping the server to check if it's alive
@@ -103,12 +171,18 @@ public final class AndroidacyRepoData extends RepoData {
         } catch (Exception e) {
             Log.e(TAG, "Failed to ping server", e);
             // Inform user
-            /*if (!HttpException.shouldTimeout(e)) {
-                UiThreadHandler.run(() -> Toast.makeText(MainApplication.getINSTANCE(),
-                        R.string.androidacy_server_down, Toast.LENGTH_SHORT).show());
-            }*/
+            Looper.prepare();
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainApplication.getINSTANCE().getBaseContext());
+            builder.setTitle("Androidacy Server Down");
+            builder.setMessage("The Androidacy server is down. Unfortunately, this means that you" +
+                    " will not be able to download or view modules from the Androidacy repository" +
+                    ". Please try again later.");
+            builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+            builder.show();
+            Looper.loop();
             return false;
         }
+        String deviceId = generateDeviceId();
         long time = System.currentTimeMillis();
         if (this.androidacyBlockade > time) return false;
         this.androidacyBlockade = time + 30_000L;
@@ -117,8 +191,13 @@ public final class AndroidacyRepoData extends RepoData {
                 this.token = this.cachedPreferences.getString("pref_androidacy_api_token", null);
                 if (this.token != null && !this.isValidToken(this.token)) {
                     this.token = null;
+                } else {
+                    Log.i(TAG, "Using cached token");
                 }
             } else if (!this.isValidToken(this.token)) {
+                if (BuildConfig.DEBUG) {
+                    throw new IllegalStateException("Invalid token: " + this.token);
+                }
                 this.token = null;
             }
         } catch (IOException e) {
@@ -130,9 +209,9 @@ public final class AndroidacyRepoData extends RepoData {
         }
         if (token == null) {
             try {
-                Log.i(TAG, "Refreshing token...");
-                // POST request to https://production-api.androidacy.com/auth/register
-                token = new String(Http.doHttpPost("https://" + this.host + "/auth/register", "foxmmm=true", false), StandardCharsets.UTF_8);
+                Log.i(TAG, "Requesting new token...");
+                // POST json request to https://production-api.androidacy.com/auth/register
+                token = new String(Http.doHttpPost("https://" + this.host + "/auth/register", "{\"device_id\":\"" + deviceId + "\"}", false));
                 // Parse token
                 try {
                     JSONObject jsonObject = new JSONObject(token);
@@ -151,7 +230,9 @@ public final class AndroidacyRepoData extends RepoData {
                     return false;
                 }
                 // Save token to shared preference
-                MainApplication.getSharedPreferences().edit().putString("pref_androidacy_api_token", token).apply();
+                SharedPreferences.Editor editor = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit();
+                editor.putString("pref_androidacy_api_token", token);
+                editor.apply();
             } catch (Exception e) {
                 if (HttpException.shouldTimeout(e)) {
                     Log.e(TAG, "We are being rate limited!", e);
@@ -167,7 +248,7 @@ public final class AndroidacyRepoData extends RepoData {
     }
 
     @Override
-    protected List<RepoModule> populate(JSONObject jsonObject) throws JSONException {
+    protected List<RepoModule> populate(JSONObject jsonObject) throws JSONException, NoSuchAlgorithmException {
         if (!jsonObject.getString("status").equals("success"))
             throw new JSONException("Response is not a success!");
         String name = jsonObject.optString("name", "Androidacy Modules Repo");
@@ -280,11 +361,12 @@ public final class AndroidacyRepoData extends RepoData {
     }
 
     @Override
-    public String getUrl() {
-        return this.token == null ? this.url : this.url + "?token=" + this.token;
+    public String getUrl() throws NoSuchAlgorithmException {
+        return this.token == null ? this.url :
+                this.url + "?token=" + this.token + "&v=" + BuildConfig.VERSION_CODE + "&c=" + BuildConfig.VERSION_NAME + "&device_id=" + generateDeviceId();
     }
 
-    private String injectToken(String url) {
+    private String injectToken(String url) throws NoSuchAlgorithmException {
         // Do not inject token for non Androidacy urls
         if (!AndroidacyUtil.isAndroidacyLink(url)) return url;
         if (this.testMode) {
@@ -299,11 +381,19 @@ public final class AndroidacyRepoData extends RepoData {
             }
         }
         String token = "token=" + this.token;
+        String deviceId = "device_id=" + generateDeviceId();
         if (!url.contains(token)) {
             if (url.lastIndexOf('/') < url.lastIndexOf('?')) {
                 return url + '&' + token;
             } else {
                 return url + '?' + token;
+            }
+        }
+        if (!url.contains(deviceId)) {
+            if (url.lastIndexOf('/') < url.lastIndexOf('?')) {
+                return url + '&' + deviceId;
+            } else {
+                return url + '?' + deviceId;
             }
         }
         return url;
@@ -313,10 +403,6 @@ public final class AndroidacyRepoData extends RepoData {
     @Override
     public String getName() {
         return this.testMode ? super.getName() + " (Test Mode)" : super.getName();
-    }
-
-    String getToken() {
-        return this.token;
     }
 
     public void setToken(String token) {
