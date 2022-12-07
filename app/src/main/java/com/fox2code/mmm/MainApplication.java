@@ -233,16 +233,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
                 themeResId = monet ? R.style.Theme_MagiskModuleManager_Monet_Light : R.style.Theme_MagiskModuleManager_Light;
                 break;
         }
-        // Handle force black theme
-        if (theme.equals("dark") && isForceBlackThemeEnabled()) {
-            // just black background
-            themeResId = monet ? R.style.Theme_MagiskModuleManager_Monet_Black : R.style.Theme_MagiskModuleManager_Black;
-        }
         this.setManagerThemeResId(themeResId);
-    }
-
-    private boolean isForceBlackThemeEnabled() {
-        return getSharedPreferences().getBoolean("pref_force_black_theme", false);
     }
 
     @StyleRes

@@ -4,6 +4,7 @@
     <string-array name="theme_values_names">
         <item>Sistem</item>
         <item>Întunecată</item>
+        <item>AMOLED Black</item>
         <item>Luminoasă</item>
     </string-array>
 </resources>

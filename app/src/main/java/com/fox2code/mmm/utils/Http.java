@@ -153,6 +153,16 @@ public class Http {
             builder.enableBrotli(true);
             builder.enableHttp2(true);
             builder.enableQuic(true);
+            // Cache size is 10MB
+            // Make the directory if it does not exist
+            File cacheDir = new File(mainApplication.getCacheDir(), "cronet");
+            if (!cacheDir.exists()) {
+                if (!cacheDir.mkdirs()) {
+                    throw new IOException("Failed to create cronet cache directory");
+                }
+            }
+            builder.setStoragePath(mainApplication.getCacheDir().getAbsolutePath() + "/cronet");
+            builder.enableHttpCache(CronetEngine.Builder.HTTP_CACHE_DISK_NO_HTTP, 10 * 1024 * 1024);
             CronetEngine engine =
                     builder.build();
             httpclientBuilder.addInterceptor(CronetInterceptor.newBuilder(engine).build());

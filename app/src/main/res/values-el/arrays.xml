@@ -2,6 +2,7 @@
     <string-array name="theme_values_names">
         <item>Προεπιλογή συστήματως</item>
         <item>Σκωτεινό</item>
+        <item>AMOLED Black</item>
         <item>Ανοιχτό</item>
     </string-array>
 </resources>

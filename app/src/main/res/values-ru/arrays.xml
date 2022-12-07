@@ -2,6 +2,7 @@
     <string-array name="theme_values_names">
         <item>Как в системе</item>
         <item>Тёмная</item>
+        <item>AMOLED Black</item>
         <item>Светлая</item>
     </string-array>
 </resources>

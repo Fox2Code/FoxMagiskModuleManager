@@ -3,6 +3,7 @@
     <string-array name="theme_values_names">
         <item>Hệ thống</item>
         <item>Tối</item>
+        <item>AMOLED Black</item>
         <item>Sáng</item>
     </string-array>
 </resources>
