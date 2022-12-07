@@ -59,12 +59,12 @@ android {
             buildConfigField "boolean", "DEFAULT_ENABLE_CRASH_REPORTING", "true"
             // Get the androidacy client ID from the androidacy.properties
             Properties properties = new Properties()
-            // If androidacy.properties doesn't exist, use the default client ID (an empty string
-            // - won't work, but it's better than failing to build)
+            // If androidacy.properties doesn't exist, use the default client ID which is heavily
+            // rate limited to 30 requests per minute
             if (project.rootProject.file('androidacy.properties').exists()) {
                 properties.load(project.rootProject.file('androidacy.properties').newDataInputStream())
             } else {
-                properties.setProperty('client_id', '')
+                properties.setProperty('client_id', '5KYccdYxWB2RxMq5FTbkWisXi2dS6yFN9R7RVlFCG98FRdz6Mf5ojY2fyJCUlXJZ')
             }
             buildConfigField("String", "ANDROIDACY_CLIENT_ID", properties.getProperty('client_id'))
             // If client ID is empty, disable androidacy
@@ -99,12 +99,12 @@ android {
 
             // Get the androidacy client ID from the androidacy.properties
             Properties properties = new Properties()
-            // If androidacy.properties doesn't exist, use the default client ID (an empty string
-            // - won't work, but it's better than failing to build)
+            // If androidacy.properties doesn't exist, use the default client ID which is limited
+            // to 50 requests per minute
             if (project.rootProject.file('androidacy.properties').exists()) {
                 properties.load(project.rootProject.file('androidacy.properties').newDataInputStream())
             } else {
-                properties.setProperty('client_id', '')
+                properties.setProperty('client_id', 'dQ1p7X8bF14PVJ7wAU6ORVjPB2IeTinsuAZ8Uos6tQiyUdUyIjSyZSmN54QBbaTy')
             }
             buildConfigField("String", "ANDROIDACY_CLIENT_ID", properties.getProperty('client_id'))
         }
