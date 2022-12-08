@@ -161,4 +161,17 @@
     <string name="androidacy_server_down">Nie można skontaktować się z serwerem Androidacy. Sprawdź swoje połączenie i spróbuj ponownie.</string>
     <string name="androidacy_need_captcha">Aktualizacja Androidacy została zablokowana przez Captcha</string>
     <string name="link_copied">Łącze zostało skopiowane</string>
+    <string name="api_key_unchanged">Wprowadzony klucz API jest taki sam jak ten, który jest już używany.</string>
+    <string name="permission_notification_title">Zezwolić na powiadomienia\?</string>
+    <string name="permission_notification_grant">Zezwól</string>
+    <string name="background_update_check_permission_required">Włącz powiadomienia, aby włączyć tę opcję.</string>
+    <string name="dont_ask_again">Nie pytaj ponownie</string>
+    <string name="force_black_theme_desc">Wymusza czarne tło podczas używania ciemnego motywu. Mogą być problemy z kontrastem w połączeniu z niektórymi kolorami.</string>
+    <string name="force_black_theme_pref">Wymuś czarny motyw</string>
+    <string name="androidacy_repo_disabled">To repo jest obecnie wyłączone</string>
+    <string name="download_full_app">Pobierz pełną wersję</string>
+    <string name="repo_update_failed">Niektóre repo nie zaktualizowały się</string>
+    <string name="api_key_restart">Klucz API został zmieniony. Uruchom ponownie aplikację, aby zastosować zmiany.</string>
+    <string name="permission_notification_message">Jeżeli nie udzielisz tego uprawnienia, to nie otrzymasz informacji o nowych wersjach aplikacji i modułów.</string>
+    <string name="androidacy_repo_disabled_message">W tej kompilacji brakuje kluczy klienckich dla repo Androidacy. Pobierz wydanie GitHub, jeżeli chcesz skorzystać z tego repozytorium.</string>
 </resources>
