@@ -1,0 +1,1 @@
+En modul manager for Magisk, fordi Magisk valgte at droppe understøttelse til dette.
