@@ -169,7 +169,7 @@
     <string name="api_key_removed">成功重置 API key</string>
     <string name="save_api_key">验证</string>
     <string name="warning">警告!</string>
-    <string name="androidacy_test_mode_warning">您正在将应用设置为使用 Androidacy 的非生产端点。 这可能会导致应用不稳定和无法加载在线 repo。 如果您打开此开关，请勿报告错误。 更改将在应用重启时生效</string>
+    <string name="androidacy_test_mode_warning">您正在将应用设置为使用 Androidacy 的非生产端点。 这可能会导致应用不稳定和无法加载在线存储库。 如果您打开此开关，请勿报告错误。 更改将在应用重启时生效</string>
     <string name="crash">使应用程序崩溃以进行测试</string>
     <string name="repackaged_as">重新包装为:</string>
     <string name="wrapped_from">包来自:</string>
@@ -181,4 +181,21 @@
     <string name="androidacy_failed_to_validate_token">无法验证 Androidacy 令牌。请稍后再试。</string>
     <string name="androidacy_server_down">无法连接 Androidacy 服务器。检查你的连接并再试一次</string>
     <string name="androidacy_need_captcha">验证码阻止了 Androidacy 更新</string>
+    <string name="api_key_restart">API key 已更改, 重启以应用更改</string>
+    <string name="api_key_unchanged">你输入的 API Key 与已经使用的一样</string>
+    <string name="permission_notification_title">是否允许通知?</string>
+    <string name="permission_notification_message">我们需要通知权限以用于通知您关于此程序及模块的更新, 如果您不同意授权此权限, 后台更新检查将不会运行</string>
+    <string name="permission_notification_grant">授予权限</string>
+    <string name="background_update_check_permission_required">请打开通知以启用此选项</string>
+    <string name="dont_ask_again">不再询问</string>
+    <string name="force_black_theme_desc">当深色模式启用时强制使用纯黑背景.
+        注意, 这可能与某些颜色主题存在对比度问题.</string>
+    <string name="force_black_theme_pref">强制深色主题</string>
+    <string name="androidacy_repo_disabled">此存储库目前已禁用</string>
+    <string name="androidacy_repo_disabled_message">这一个构建缺少
+        对于 Androidacy Repo 的 Client key.
+        如果您想从模块审查, 自动安全检查等功能中受益,
+        请从 GitHub 下载</string>
+    <string name="download_full_app">下载完整版</string>
+    <string name="repo_update_failed">有些存储库未能更新</string>
 </resources>
