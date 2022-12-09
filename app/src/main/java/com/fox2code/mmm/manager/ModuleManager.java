@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.utils.Http;
@@ -70,13 +71,13 @@ public final class ModuleManager extends SyncManager {
         if (!FORCE_NEED_FALLBACK && needFallback) {
             Log.e(TAG, "Failed to detect modules folder, using fallback instead.");
         }
-        noodleDebug.replace("Scan");
+        if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Scan");
         if (modules != null) {
             noodleDebug.push("");
             for (String module : modules) {
                 if (!new SuFile("/data/adb/modules/" + module).isDirectory())
                     continue; // Ignore non directory files inside modules folder
-                noodleDebug.replace(module);
+                if (BuildConfig.DEBUG) Log.d("NoodleDebug", module);
                 LocalModuleInfo moduleInfo = moduleInfos.get(module);
                 if (moduleInfo == null) {
                     moduleInfo = new LocalModuleInfo(module);
@@ -118,16 +119,15 @@ public final class ModuleManager extends SyncManager {
                     moduleInfo.flags |= FLAG_MM_INVALID;
                 }
             }
-            noodleDebug.pop();
         }
-        noodleDebug.replace("Scan update");
+        if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Scan update");
         String[] modules_update = new SuFile("/data/adb/modules_update").list();
         if (modules_update != null) {
             noodleDebug.push("");
             for (String module : modules_update) {
                 if (!new SuFile("/data/adb/modules_update/" + module).isDirectory())
                     continue; // Ignore non directory files inside modules folder
-                noodleDebug.replace(module);
+                if (BuildConfig.DEBUG) Log.d("NoodleDebug", module);
                 LocalModuleInfo moduleInfo = moduleInfos.get(module);
                 if (moduleInfo == null) {
                     moduleInfo = new LocalModuleInfo(module);
@@ -143,16 +143,15 @@ public final class ModuleManager extends SyncManager {
                     moduleInfo.flags |= FLAG_MM_INVALID;
                 }
             }
-            noodleDebug.pop();
         }
-        noodleDebug.replace("Finalize scan");
+        if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Finalize scan");
         this.updatableModuleCount = 0;
         Iterator<LocalModuleInfo> moduleInfoIterator =
                 this.moduleInfos.values().iterator();
         noodleDebug.push("");
         while (moduleInfoIterator.hasNext()) {
             LocalModuleInfo moduleInfo = moduleInfoIterator.next();
-            noodleDebug.replace(moduleInfo.id);
+            if (BuildConfig.DEBUG) Log.d("NoodleDebug", moduleInfo.id);
             if ((moduleInfo.flags & FLAG_MM_UNPROCESSED) != 0) {
                 moduleInfoIterator.remove();
                 continue; // Don't process fallbacks if unreferenced
@@ -174,12 +173,10 @@ public final class ModuleManager extends SyncManager {
             }
             moduleInfo.verify();
         }
-        noodleDebug.pop();
         if (firstScan) {
             editor.putBoolean("mm_first_scan", false);
             editor.apply();
         }
-        noodleDebug.pop();
     }
 
     public HashMap<String, LocalModuleInfo> getModules() {

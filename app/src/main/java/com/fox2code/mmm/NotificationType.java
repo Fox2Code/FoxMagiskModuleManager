@@ -191,6 +191,7 @@ public enum NotificationType implements NotificationTypeCst {
     }
 
     public boolean shouldRemove() {
+        // By default, remove the notification`
         return false;
     }
 

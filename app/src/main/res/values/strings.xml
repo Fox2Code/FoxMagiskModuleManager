@@ -198,4 +198,5 @@
         download the GitHub release if you\'d like to benefit from features like module reviews, automatic security checks, and more.</string>
     <string name="download_full_app">Download full version</string>
     <string name="repo_update_failed">Some repos have failed to update</string>
+    <string name="repo_update_failed_extended">Update of %1$s failed. Please try again later.</string>
 </resources>

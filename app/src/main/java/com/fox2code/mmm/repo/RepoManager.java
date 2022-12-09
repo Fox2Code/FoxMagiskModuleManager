@@ -1,12 +1,18 @@
 package com.fox2code.mmm.repo;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.R;
 import com.fox2code.mmm.XHooks;
 import com.fox2code.mmm.XRepo;
 import com.fox2code.mmm.androidacy.AndroidacyRepoData;
@@ -14,9 +20,9 @@ import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.utils.Files;
 import com.fox2code.mmm.utils.Hashes;
 import com.fox2code.mmm.utils.Http;
-import com.fox2code.mmm.utils.NoodleDebug;
 import com.fox2code.mmm.utils.PropUtils;
 import com.fox2code.mmm.utils.SyncManager;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +34,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 
 public final class RepoManager extends SyncManager {
     public static final String MAGISK_REPO =
@@ -64,10 +71,10 @@ public final class RepoManager extends SyncManager {
     private final HashMap<String, RepoModule> modules;
     private final AndroidacyRepoData androidacyRepoData;
     private final CustomRepoManager customRepoManager;
-    private boolean hasInternet;
-    private boolean repoLastError = false;
-    private boolean initialized;
     public String repoLastErrorName = null;
+    private boolean hasInternet;
+    private boolean initialized;
+    private boolean repoLastSuccess;
 
     private RepoManager(MainApplication mainApplication) {
         INSTANCE = this; // Set early fox XHooks
@@ -227,10 +234,8 @@ public final class RepoManager extends SyncManager {
         return repoData;
     }
 
+    @SuppressLint("StringFormatInvalid")
     protected void scanInternal(@NonNull UpdateListener updateListener) {
-        NoodleDebug noodleDebug = NoodleDebug.getNoodleDebug();
-        // First, check if we have internet connection
-        noodleDebug.push("Downloading indexes");
         this.modules.clear();
         updateListener.update(0D);
         // Using LinkedHashSet to deduplicate Androidacy entry.
@@ -238,26 +243,27 @@ public final class RepoManager extends SyncManager {
                 this.repoData.values()).toArray(new RepoData[0]);
         RepoUpdater[] repoUpdaters = new RepoUpdater[repoDatas.length];
         int moduleToUpdate = 0;
-        noodleDebug.push("");
         for (int i = 0; i < repoDatas.length; i++) {
-            noodleDebug.replace(repoDatas[i].getName());
+            if (BuildConfig.DEBUG) Log.d("NoodleDebug", repoDatas[i].getName());
             moduleToUpdate += (repoUpdaters[i] =
                     new RepoUpdater(repoDatas[i])).fetchIndex();
             updateListener.update(STEP1 / repoDatas.length * (i + 1));
         }
-        noodleDebug.pop();
-        noodleDebug.replace("Updating meta-data");
+        if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Updating meta-data");
         int updatedModules = 0;
         boolean allowLowQualityModules = MainApplication.isDisableLowQualityModuleFilter();
-        noodleDebug.push("");
         for (int i = 0; i < repoUpdaters.length; i++) {
+            // Check if the repo is enabled
+            if (!repoUpdaters[i].repoData.isEnabled()) {
+                if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Skipping disabled repo: " + repoUpdaters[i].repoData.getName());
+                continue;
+            }
             List<RepoModule> repoModules = repoUpdaters[i].toUpdate();
             RepoData repoData = repoDatas[i];
-            noodleDebug.replace(repoData.getName());
-            Log.d(TAG, "Registering " + repoData.getName());
-            noodleDebug.push("");
+            if (BuildConfig.DEBUG) Log.d("NoodleDebug", repoData.getName());
+            if (BuildConfig.DEBUG) Log.d(TAG, "Registering " + repoData.getName());
             for (RepoModule repoModule : repoModules) {
-                noodleDebug.replace(repoModule.id);
+                if (BuildConfig.DEBUG) Log.d("NoodleDebug", repoModule.id);
                 try {
                     if (repoModule.propUrl != null &&
                             !repoModule.propUrl.isEmpty()) {
@@ -283,7 +289,6 @@ public final class RepoManager extends SyncManager {
                 updatedModules++;
                 updateListener.update(STEP1 + (STEP2 / moduleToUpdate * updatedModules));
             }
-            noodleDebug.pop();
             for (RepoModule repoModule : repoUpdaters[i].toApply()) {
                 if ((repoModule.moduleInfo.flags & ModuleInfo.FLAG_METADATA_INVALID) == 0) {
                     RepoModule registeredRepoModule = this.modules.get(repoModule.id);
@@ -296,9 +301,7 @@ public final class RepoManager extends SyncManager {
                 }
             }
         }
-        noodleDebug.pop();
-        noodleDebug.replace("Finishing update");
-        noodleDebug.push("");
+        if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Finishing update");
         this.hasInternet = false;
         // Check if we have internet connection
         // Attempt to contact connectivitycheck.gstatic.com/generate_204
@@ -318,22 +321,36 @@ public final class RepoManager extends SyncManager {
         } catch (IOException e) {
             Log.e(TAG, "Failed to check internet connection", e);
         }
-        noodleDebug.pop();
         if (hasInternet) {
             for (int i = 0; i < repoDatas.length; i++) {
-                noodleDebug.replace(repoUpdaters[i].repoData.getName());
-                this.repoLastError = !repoUpdaters[i].finish();
-                if (this.repoLastError) {
+                // If repo is not enabled, skip
+                if (!repoDatas[i].isEnabled()) {
+                    if (BuildConfig.DEBUG) Log.d("NoodleDebug",
+                            "Skipping " + repoDatas[i].getName() + " because it's disabled");
+                    continue;
+                }
+                if (BuildConfig.DEBUG) Log.d("NoodleDebug", repoUpdaters[i].repoData.getName());
+                this.repoLastSuccess = repoUpdaters[i].finish();
+                if (!this.repoLastSuccess) {
                     Log.e(TAG, "Failed to update " + repoUpdaters[i].repoData.getName());
+                    // Show snackbar on main looper and add some bottom padding
+                    int finalI = i;
+                    Activity context = MainApplication.getINSTANCE().getLastCompatActivity();
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        if (context != null) {
+                            Snackbar.make(context.findViewById(android.R.id.content),
+                                    context.getString(R.string.repo_update_failed_extended,
+                                            repoUpdaters[finalI].repoData.getName()),
+                                    Snackbar.LENGTH_LONG).show();
+                        }
+                    });
                     this.repoLastErrorName = repoUpdaters[i].repoData.getName();
                 }
                 updateListener.update(STEP1 + STEP2 + (STEP3 / repoDatas.length * (i + 1)));
             }
         }
-        noodleDebug.pop();
         Log.i(TAG, "Got " + this.modules.size() + " modules!");
         updateListener.update(1D);
-        noodleDebug.pop(); // pop "Finishing update"
     }
 
     public void updateEnabledStates() {
@@ -408,6 +425,6 @@ public final class RepoManager extends SyncManager {
     }
 
     public boolean isLastUpdateSuccess() {
-        return this.repoLastError;
+        return this.repoLastSuccess;
     }
 }

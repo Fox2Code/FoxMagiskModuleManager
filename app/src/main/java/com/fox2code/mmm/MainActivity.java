@@ -158,11 +158,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     moduleViewListBuilder.addNotification(NotificationType.MAGISK_OUTDATED);
                 if (!MainApplication.isShowcaseMode())
                     moduleViewListBuilder.addNotification(NotificationType.INSTALL_FROM_STORAGE);
-                noodleDebug.setEnabled(noodleDebugState);
-                noodleDebug.bind();
-                noodleDebug.push("Ensure Permissions");
                 ensurePermissions();
-                noodleDebug.pop();
                 ModuleManager.getINSTANCE().scan();
                 ModuleManager.getINSTANCE().runAfterScan(moduleViewListBuilder::appendInstalledModules);
                 this.commonNext();
@@ -171,21 +167,17 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             @Override
             public void onFailure(int error) {
                 Log.i(TAG, "Failed to get magisk path!");
-                noodleDebug.setEnabled(noodleDebugState);
-                noodleDebug.bind();
                 moduleViewListBuilder.addNotification(InstallerInitializer.getErrorNotification());
                 this.commonNext();
             }
 
             public void commonNext() {
-                NoodleDebug noodleDebug = NoodleDebug.getNoodleDebug();
                 swipeRefreshBlocker = System.currentTimeMillis() + 5_000L;
                 updateScreenInsets(); // Fix an edge case
                 if (MainApplication.isShowcaseMode())
                     moduleViewListBuilder.addNotification(NotificationType.SHOWCASE_MODE);
                 if (!Http.hasWebView()) // Check Http for WebView availability
                     moduleViewListBuilder.addNotification(NotificationType.NO_WEB_VIEW);
-                noodleDebug.push("Apply");
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
                 runOnUiThread(() -> {
                     progressIndicator.setIndeterminate(false);
@@ -194,14 +186,14 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     updateScreenInsets(getResources().getConfiguration());
                 });
                 Log.i(TAG, "Scanning for modules!");
-                noodleDebug.replace("Initialize Update");
+                if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Initialize Update");
                 final int max = ModuleManager.getINSTANCE().getUpdatableModuleCount();
                 if (RepoManager.getINSTANCE().getCustomRepoManager().needUpdate()) {
                     Log.w(TAG, "Need update on create?");
                 }
-                noodleDebug.replace("Check Update Compat");
+                if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Check Update Compat");
                 AppUpdateManager.getAppUpdateManager().checkUpdateCompat();
-                noodleDebug.replace("Check Update");
+                if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Check Update");
                 RepoManager.getINSTANCE().update(value -> runOnUiThread(max == 0 ? () -> progressIndicator.setProgressCompat((int) (value * PRECISION), true) : () -> progressIndicator.setProgressCompat((int) (value * PRECISION * 0.75F), true)));
                 NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
                 if (!NotificationType.NO_INTERNET.shouldRemove()) {
@@ -211,16 +203,16 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 } else {
                     // Compatibility data still needs to be updated
                     AppUpdateManager appUpdateManager = AppUpdateManager.getAppUpdateManager();
-                    noodleDebug.replace("Check App Update");
+                    if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Check App Update");
                     if (BuildConfig.ENABLE_AUTO_UPDATER && appUpdateManager.checkUpdate(true))
                         moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
-                    noodleDebug.replace("Check Json Update");
+                    if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Check Json Update");
                     if (max != 0) {
                         int current = 0;
-                        noodleDebug.push("");
+                        // noodleDebug.push("");
                         for (LocalModuleInfo localModuleInfo : ModuleManager.getINSTANCE().getModules().values()) {
                             if (localModuleInfo.updateJson != null) {
-                                noodleDebug.replace(localModuleInfo.id);
+                                if (BuildConfig.DEBUG) Log.d("NoodleDebug", localModuleInfo.id);
                                 try {
                                     localModuleInfo.checkModuleUpdate();
                                 } catch (Exception e) {
@@ -231,7 +223,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                                 runOnUiThread(() -> progressIndicator.setProgressCompat((int) ((1F * currentTmp / max) * PRECISION * 0.25F + (PRECISION * 0.75F)), true));
                             }
                         }
-                        noodleDebug.pop();
                     }
                 }
                 runOnUiThread(() -> {
@@ -241,12 +232,11 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     setActionBarBackground(null);
                     updateScreenInsets(getResources().getConfiguration());
                 });
-                noodleDebug.replace("Apply");
+                if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Apply");
                 RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilder::appendRemoteModules);
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
-                noodleDebug.pop();
                 Log.i(TAG, "Finished app opening state!");
-                noodleDebug.unbind();
+                // noodleDebug.unbind();
             }
         }, true);
         ExternalHelper.INSTANCE.refreshHelper(this);
@@ -328,8 +318,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     moduleViewListBuilder.addNotification(NotificationType.MAGISK_OUTDATED);
                 if (!MainApplication.isShowcaseMode())
                     moduleViewListBuilder.addNotification(NotificationType.INSTALL_FROM_STORAGE);
-                noodleDebug.setEnabled(noodleDebugState);
-                noodleDebug.bind();
                 ModuleManager.getINSTANCE().scan();
                 ModuleManager.getINSTANCE().runAfterScan(moduleViewListBuilder::appendInstalledModules);
                 this.commonNext();
@@ -345,7 +333,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
 
             public void commonNext() {
                 Log.i(TAG, "Common Before");
-                NoodleDebug noodleDebug = NoodleDebug.getNoodleDebug();
                 if (MainApplication.isShowcaseMode())
                     moduleViewListBuilder.addNotification(NotificationType.SHOWCASE_MODE);
                 NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
@@ -354,26 +341,23 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 else if (AppUpdateManager.getAppUpdateManager().checkUpdate(false))
                     moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
                 RepoManager.getINSTANCE().updateEnabledStates();
-                noodleDebug.push("");
                 if (RepoManager.getINSTANCE().getCustomRepoManager().needUpdate()) {
                     runOnUiThread(() -> {
                         progressIndicator.setIndeterminate(false);
                         progressIndicator.setMax(PRECISION);
                     });
-                    noodleDebug.replace("Check Update");
+                    if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Check Update");
                     RepoManager.getINSTANCE().update(value -> runOnUiThread(() -> progressIndicator.setProgressCompat((int) (value * PRECISION), true)));
                     runOnUiThread(() -> {
                         progressIndicator.setProgressCompat(PRECISION, true);
                         progressIndicator.setVisibility(View.GONE);
                     });
                 }
-                noodleDebug.replace("Apply");
+                if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Apply");
                 RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilder::appendRemoteModules);
                 Log.i(TAG, "Common Before applyTo");
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
-                noodleDebug.pop();
                 Log.i(TAG, "Common After");
-                noodleDebug.unbind();
             }
         });
         this.initMode = false;
@@ -390,33 +374,33 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             this.swipeRefreshLayout.setRefreshing(false);
             return; // Do not double scan
         }
+        if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Refresh");
         this.progressIndicator.setVisibility(View.VISIBLE);
         this.progressIndicator.setProgressCompat(0, false);
         this.swipeRefreshBlocker = System.currentTimeMillis() + 5_000L;
         // this.swipeRefreshLayout.setRefreshing(true); ??
         new Thread(() -> {
-            noodleDebug.setEnabled(noodleDebugState);
-            NoodleDebug noodleDebug = this.noodleDebug.bind();
             Http.cleanDnsCache(); // Allow DNS reload from network
-            noodleDebug.push("Check Update");
+            // noodleDebug.push("Check Update");
             final int max = ModuleManager.getINSTANCE().getUpdatableModuleCount();
             RepoManager.getINSTANCE().update(value -> runOnUiThread(max == 0 ? () -> progressIndicator.setProgressCompat((int) (value * PRECISION), true) : () -> progressIndicator.setProgressCompat((int) (value * PRECISION * 0.75F), true)));
             NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
             if (!NotificationType.NO_INTERNET.shouldRemove()) {
                 moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
+            } else if (!NotificationType.REPO_UPDATE_FAILED.shouldRemove()) {
+                moduleViewListBuilder.addNotification(NotificationType.REPO_UPDATE_FAILED);
             } else {
                 // Compatibility data still needs to be updated
                 AppUpdateManager appUpdateManager = AppUpdateManager.getAppUpdateManager();
-                // noodleDebug.replace("Check App Update");
+                if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Check App Update");
                 if (BuildConfig.ENABLE_AUTO_UPDATER && appUpdateManager.checkUpdate(true))
                     moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
-                // noodleDebug.replace("Check Json Update");
+                if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Check Json Update");
                 if (max != 0) {
                     int current = 0;
-                    noodleDebug.push("");
                     for (LocalModuleInfo localModuleInfo : ModuleManager.getINSTANCE().getModules().values()) {
                         if (localModuleInfo.updateJson != null) {
-                            noodleDebug.replace(localModuleInfo.id);
+                            if (BuildConfig.DEBUG) Log.d("NoodleDebug", localModuleInfo.id);
                             try {
                                 localModuleInfo.checkModuleUpdate();
                             } catch (Exception e) {
@@ -427,23 +411,20 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                             runOnUiThread(() -> progressIndicator.setProgressCompat((int) ((1F * currentTmp / max) * PRECISION * 0.25F + (PRECISION * 0.75F)), true));
                         }
                     }
-                    noodleDebug.pop();
                 }
             }
-            // noodleDebug.replace("Apply");
+            if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Apply");
             runOnUiThread(() -> {
                 this.progressIndicator.setVisibility(View.GONE);
                 this.swipeRefreshLayout.setRefreshing(false);
             });
             NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
-            if (!NotificationType.NO_INTERNET.shouldRemove()) {
-                this.moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
-            }
             RepoManager.getINSTANCE().updateEnabledStates();
             RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilder::appendRemoteModules);
             this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
-            // noodleDebug.pop();
-            // noodleDebug.unbind();
+            /*
+             noodleDebug.unbind();
+            */
         }, "Repo update thread").start();
     }
 

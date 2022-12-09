@@ -29,7 +29,6 @@ import com.fox2code.mmm.utils.ExternalHelper;
 import com.fox2code.mmm.utils.Files;
 import com.fox2code.mmm.utils.Hashes;
 import com.fox2code.mmm.utils.IntentHelper;
-import com.fox2code.mmm.utils.PropUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
@@ -44,11 +43,11 @@ public class AndroidacyWebAPI {
     private static final int MAX_COMPAT_MODE = 1;
     private final AndroidacyActivity activity;
     private final boolean allowInstall;
-    private boolean allowHideNote = true;
     boolean consumedAction;
     boolean downloadMode;
     int effectiveCompatMode;
     int notifiedCompatMode;
+    private boolean allowHideNote = true;
 
     public AndroidacyWebAPI(AndroidacyActivity activity, boolean allowInstall) {
         this.activity = activity;
@@ -113,7 +112,7 @@ public class AndroidacyWebAPI {
             final boolean fMMTReborn = mmtReborn;
             builder.setPositiveButton(hasUpdate ?
                     R.string.update_module : R.string.install_module, (x, y) -> IntentHelper.openInstaller(this.activity,
-                            fModuleUrl, fTitle, fConfig, fChecksum, fMMTReborn));
+                    fModuleUrl, fTitle, fConfig, fChecksum, fMMTReborn));
         }
         builder.setOnCancelListener(dialogInterface -> {
             if (!this.activity.backOnResume)
@@ -299,7 +298,7 @@ public class AndroidacyWebAPI {
             return;
         }
         // Get moduleTitle from url
-String moduleTitle = AndroidacyUtil.getModuleTitle(moduleUrl);
+        String moduleTitle = AndroidacyUtil.getModuleTitle(moduleUrl);
         this.openNativeModuleDialogRaw(moduleUrl, moduleId, moduleTitle, checksum, this.canInstall());
     }
 

@@ -6,7 +6,7 @@ buildscript {
         gradlePluginPortal()
         maven { url 'https://jitpack.io' }
     }
-    project.ext.latestAboutLibsRelease = "10.5.0"
+    project.ext.latestAboutLibsRelease = "10.5.2"
     project.ext.sentryConfigFile = new File(rootDir, "sentry.properties").getAbsoluteFile()
     project.ext.hasSentryConfig = sentryConfigFile.exists()
     project.ext.sentryCli = [

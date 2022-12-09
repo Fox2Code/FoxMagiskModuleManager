@@ -60,6 +60,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     private static SimpleDateFormat timeFormat = new SimpleDateFormat(timeFormatString, timeFormatLocale);
     private static SharedPreferences bootSharedPreferences;
     private static String relPackageName = BuildConfig.APPLICATION_ID;
+    @SuppressLint("StaticFieldLeak")
     private static MainApplication INSTANCE;
     private static boolean firstBoot;
 

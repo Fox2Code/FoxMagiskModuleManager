@@ -238,6 +238,7 @@ public class Http {
                 (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).get().build()).execute();
         // 200/204 == success, 304 == cache valid
         if (response.code() != 200 && response.code() != 204 && (response.code() != 304 || !allowCache)) {
+            Log.e(TAG, "Failed to fetch " + url + ", code: " + response.code());
             checkNeedCaptchaAndroidacy(url, response.code());
             // If it's a 401, and an androidacy link, it's probably an invalid token
             if (response.code() == 401 && AndroidacyUtil.isAndroidacyLink(url)) {
@@ -260,6 +261,7 @@ public class Http {
 
     @SuppressWarnings("resource")
     private static Object doHttpPostRaw(String url, String data, boolean allowCache) throws IOException {
+        if (BuildConfig.DEBUG) Log.d(TAG, "POST " + url + " " + data);
         checkNeedBlockAndroidacyRequest(url);
         Response response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).post(JsonRequestBody.from(data)).header("Content-Type", "application/json").build()).execute();
         if (response.isRedirect()) {
@@ -280,10 +282,11 @@ public class Http {
     }
 
     public static byte[] doHttpGet(String url, ProgressListener progressListener) throws IOException {
-        Log.d("Http", "Progress URL: " + url);
+        if (BuildConfig.DEBUG) Log.d("Http", "Progress URL: " + url);
         checkNeedBlockAndroidacyRequest(url);
         Response response = getHttpClient().newCall(new Request.Builder().url(url).get().build()).execute();
         if (response.code() != 200 && response.code() != 204) {
+            Log.e(TAG, "Failed to fetch " + url + ", code: " + response.code());
             checkNeedCaptchaAndroidacy(url, response.code());
             throw new HttpException(response.code());
         }
