@@ -199,6 +199,5 @@
     <string name="download_full_app">Download full version</string>
     <string name="repo_update_failed">Some repos have failed to update</string>
     <string name="repo_update_failed_extended">Update of %1$s failed. Please try again later.</string>
-    <string name="monet_disabled_summary">Monet has been disabled because it causes issues with transparent themes. Please choose another theme to enable monet.</string>
-    <string name="blur_disabled_summary">Blur is not compatible with transparent theme. Please select another theme to enable this.</string>
+    <string name="blur_disabled_summary">Blur is not compatible with the transparent theme.</string>
 </resources>

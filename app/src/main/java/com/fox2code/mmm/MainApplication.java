@@ -235,10 +235,8 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
                 themeResId = monet ? R.style.Theme_MagiskModuleManager_Monet_Light : R.style.Theme_MagiskModuleManager_Light;
                 break;
             case "transparent_light":
-                if (monet) {
-                    Log.w("MainApplication", "Monet is not supported for transparent theme");
-                }
-                themeResId = R.style.Theme_MagiskModuleManager_Transparent_Light;
+                themeResId = monet ? R.style.Theme_MagiskModuleManager_Transparent_Monet_Light :
+                        R.style.Theme_MagiskModuleManager_Transparent_Light;
                 break;
         }
         this.setManagerThemeResId(themeResId);
