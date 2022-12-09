@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">تطبيق Fox\'s مدير وحدات Magisk</string>
+    <string name="fail_root_denied">تم رفض الوصول إلى الروت عبر Magisk</string>
+    <string name="failed_download">فشل في تحميل الملف</string>
+    <string name="fail_root_magisk">تعذر الوصول إلى الروت أو Magisk</string>
+    <string name="fail_magisk_missing">تطبيق Magisk غير مثبت على هذا الجهاز</string>
+    <string name="loading">جاري التحميل…</string>
+    <string name="updatable">قابل للترقية</string>
+    <string name="installed">مثبت</string>
+    <string name="online_repo">الريبو عبر الإنترنت</string>
+    <string name="showcase_mode">التطبيق في وضع القفل</string>
+    <string name="fail_internet">فشل في الإتصال بالإنترنت</string>
+</resources>

@@ -1,0 +1,4 @@
+Denne app er ikke officielt understøttet af Magisk eller dets udviklere.
+
+Modulerne vist i denne app er ikke tilknyttet denne app. Venligst kontakt
+repo-ejere i stedet.
