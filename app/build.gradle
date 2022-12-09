@@ -27,8 +27,8 @@ android {
         applicationId "com.fox2code.mmm"
         minSdk 21
         targetSdk 33
-        versionCode 60
-        versionName "0.6.8"
+        versionCode 61
+        versionName "1.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release
     }

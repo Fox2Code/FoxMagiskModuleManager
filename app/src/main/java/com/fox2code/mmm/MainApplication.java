@@ -234,6 +234,12 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
             case "light":
                 themeResId = monet ? R.style.Theme_MagiskModuleManager_Monet_Light : R.style.Theme_MagiskModuleManager_Light;
                 break;
+            case "transparent_light":
+                if (monet) {
+                    Log.w("MainApplication", "Monet is not supported for transparent theme");
+                }
+                themeResId = R.style.Theme_MagiskModuleManager_Transparent_Light;
+                break;
         }
         this.setManagerThemeResId(themeResId);
     }
@@ -319,8 +325,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
 
         SentryMain.initialize(this);
         if (Objects.equals(BuildConfig.ANDROIDACY_CLIENT_ID, "")) {
-            Log.w("MainApplication", "Androidacy client id is empty! Please set it in androidacy" +
-                    ".properties. Will not enable Androidacy.");
+            Log.w("MainApplication", "Androidacy client id is empty! Please set it in androidacy" + ".properties. Will not enable Androidacy.");
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("pref_androidacy_repo_enabled", false);
             editor.apply();

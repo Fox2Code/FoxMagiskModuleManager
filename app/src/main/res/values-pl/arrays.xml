@@ -3,6 +3,7 @@
         <item comment="theme_values_names">Zgodny z systemem</item>
         <item comment="theme_values_names">Ciemny</item>
         <item>AMOLED Black</item>
+        <item>Transparent (light)</item>
         <item comment="theme_values_names">Jasny</item>
     </string-array>
 </resources>
