@@ -126,12 +126,19 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             // If transparent theme(s) are set, disable monet
             if (themePreference.getValue().equals("transparent_light")) {
                 if (BuildConfig.DEBUG) {
-                    Log.d(TAG, "Transparent theme is set, disabling blur");
+                    Log.d(TAG, "Transparent theme is set, disabling monet");
                 }
+                findPreference("pref_enable_monet").setEnabled(false);
+                // Toggle monet off
+                ((TwoStatePreference) findPreference("pref_enable_monet")).setChecked(false);
+                SharedPreferences.Editor editor =
+                        getPreferenceManager().getSharedPreferences().edit();
+                editor.putBoolean("pref_enable_monet", false).apply();
+                // Set summary
+                findPreference("pref_enable_monet").setSummary(R.string.monet_disabled_summary);
                 // Same for blur
                 findPreference("pref_enable_blur").setEnabled(false);
                 ((TwoStatePreference) findPreference("pref_enable_blur")).setChecked(false);
-                SharedPreferences.Editor editor = getPreferenceManager().getSharedPreferences().edit();
                 editor.putBoolean("pref_enable_blur", false).apply();
                 findPreference("pref_enable_blur").setSummary(R.string.blur_disabled_summary);
             }
@@ -152,8 +159,12 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 // If theme contains "transparent" then disable monet
                 if (newValue.toString().contains("transparent")) {
                     if (BuildConfig.DEBUG) {
-                        Log.d(TAG, "Transparent theme is being set, disabling blur");
+                        Log.d(TAG, "Transparent theme is being set, disabling monet");
                     }
+                    findPreference("pref_enable_monet").setEnabled(false);
+                    ((TwoStatePreference) findPreference("pref_enable_monet")).setChecked(false);
+                    editor.putBoolean("pref_enable_monet", false).apply();
+                    findPreference("pref_enable_monet").setSummary(R.string.monet_disabled_summary);
                     // Same for blur
                     findPreference("pref_enable_blur").setEnabled(false);
                     ((TwoStatePreference) findPreference("pref_enable_blur")).setChecked(false);

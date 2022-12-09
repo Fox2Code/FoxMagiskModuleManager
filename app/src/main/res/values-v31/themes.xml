@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Theme.MagiskModuleManager.Monet.Light" parent="Theme.Material3.DynamicColors.Light">
         <item name="android:statusBarColor">@color/status_bar_color</item>
@@ -13,20 +13,7 @@
         <item name="chipIconTint">?attr/colorControlNormal</item>
     </style>
 
-    <style name="Theme.MagiskModuleManager.Transparent.Monet.Light"
-        parent="Theme.MagiskModuleManager.Monet.Light">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:backgroundDimEnabled">false</item>
-        <item name="android:colorBackgroundCacheHint">@null</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="windowNoTitle">true</item>
-    </style>
+    <style name="Theme.MagiskModuleManager.Transparent.Light" parent="Theme.MagiskModuleManager.Light" />
 
     <style name="Theme.MagiskModuleManager.Monet.Dark" parent="Theme.Material3.DynamicColors.Dark">
         <item name="android:statusBarColor">@color/status_bar_color</item>
