@@ -136,6 +136,11 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 editor.putBoolean("pref_enable_monet", false).apply();
                 // Set summary
                 findPreference("pref_enable_monet").setSummary(R.string.monet_disabled_summary);
+                // Same for blur
+                findPreference("pref_enable_blur").setEnabled(false);
+                ((TwoStatePreference) findPreference("pref_enable_blur")).setChecked(false);
+                editor.putBoolean("pref_enable_blur", false).apply();
+                findPreference("pref_enable_blur").setSummary(R.string.blur_disabled_summary);
             }
             themePreference.setSummaryProvider(p -> themePreference.getEntry());
             themePreference.setOnPreferenceClickListener(p -> {
@@ -160,9 +165,16 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     ((TwoStatePreference) findPreference("pref_enable_monet")).setChecked(false);
                     editor.putBoolean("pref_enable_monet", false).apply();
                     findPreference("pref_enable_monet").setSummary(R.string.monet_disabled_summary);
+                    // Same for blur
+                    findPreference("pref_enable_blur").setEnabled(false);
+                    ((TwoStatePreference) findPreference("pref_enable_blur")).setChecked(false);
+                    editor.putBoolean("pref_enable_blur", false).apply();
+                    findPreference("pref_enable_blur").setSummary(R.string.blur_disabled_summary);
                 } else {
                     findPreference("pref_enable_monet").setEnabled(true);
                     findPreference("pref_enable_monet").setSummary(null);
+                    findPreference("pref_enable_blur").setEnabled(true);
+                    findPreference("pref_enable_blur").setSummary(null);
                 }
                 devModeStep = 0;
                 UiThreadHandler.handler.postDelayed(() -> {
