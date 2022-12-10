@@ -34,8 +34,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Objects;
-
 public final class RepoManager extends SyncManager {
     public static final String MAGISK_REPO =
             "https://raw.githubusercontent.com/Magisk-Modules-Repo/submission/modules/modules.json";
@@ -52,12 +50,6 @@ public final class RepoManager extends SyncManager {
             "https://staging-api.androidacy.com/magisk/repo";
     public static final String ANDROIDACY_MAGISK_REPO_HOMEPAGE =
             "https://www.androidacy.com/modules-repo";
-    public static final String DG_MAGISK_REPO =
-            "https://repo.dergoogler.com/modules.json";
-    public static final String DG_MAGISK_REPO_GITHUB =
-            "https://googlers-magisk-repo.github.io/modules.json";
-    public static final String DG_MAGISK_REPO_GITHUB_RAW =
-            "https://raw.githubusercontent.com/Googlers-Repo/googlers-repo.github.io/master/modules.json";
     private static final String TAG = "RepoManager";
     private static final String MAGISK_REPO_MANAGER =
             "https://magisk-modules-repo.github.io/submission/modules.json";
@@ -88,9 +80,6 @@ public final class RepoManager extends SyncManager {
         altRepo.defaultWebsite = RepoManager.MAGISK_ALT_REPO_HOMEPAGE;
         altRepo.defaultSubmitModule =
                 "https://github.com/Magisk-Modules-Alt-Repo/submission/issues";
-        RepoData dgRepo = this.addRepoData(
-                DG_MAGISK_REPO_GITHUB_RAW, "Googlers Magisk Repo");
-        dgRepo.defaultWebsite = "https://dergoogler.com/repo";
         this.androidacyRepoData = this.addAndroidacyRepoData();
         this.customRepoManager = new CustomRepoManager(mainApplication, this);
         XHooks.onRepoManagerInitialize();
@@ -148,10 +137,6 @@ public final class RepoManager extends SyncManager {
             case ANDROIDACY_MAGISK_REPO_ENDPOINT:
             case ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT:
                 return "androidacy_repo";
-            case DG_MAGISK_REPO:
-            case DG_MAGISK_REPO_GITHUB:
-            case DG_MAGISK_REPO_GITHUB_RAW:
-                return "dg_magisk_repo";
             default:
                 return "repo_" + Hashes.hashSha1(
                         url.getBytes(StandardCharsets.UTF_8));
@@ -164,9 +149,6 @@ public final class RepoManager extends SyncManager {
             case RepoManager.MAGISK_ALT_REPO_JSDELIVR:
             case RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT:
             case RepoManager.ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT:
-            case RepoManager.DG_MAGISK_REPO:
-            case RepoManager.DG_MAGISK_REPO_GITHUB:
-            case RepoManager.DG_MAGISK_REPO_GITHUB_RAW:
                 return true;
         }
         return false;
@@ -214,9 +196,6 @@ public final class RepoManager extends SyncManager {
     public RepoData addOrGet(String url, String fallBackName) {
         if (MAGISK_ALT_REPO_JSDELIVR.equals(url))
             url = MAGISK_ALT_REPO;
-        if (DG_MAGISK_REPO.equals(url) ||
-                DG_MAGISK_REPO_GITHUB.equals(url))
-            url = DG_MAGISK_REPO_GITHUB_RAW;
         RepoData repoData;
         synchronized (this.syncLock) {
             repoData = this.repoData.get(url);

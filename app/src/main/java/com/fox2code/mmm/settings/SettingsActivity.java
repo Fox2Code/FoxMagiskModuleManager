@@ -517,7 +517,6 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             setPreferencesFromResource(R.xml.repo_preferences, rootKey);
             setRepoData(RepoManager.MAGISK_ALT_REPO);
             setRepoData(RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT);
-            setRepoData(RepoManager.DG_MAGISK_REPO_GITHUB);
             updateCustomRepoList(true);
             onCreatePreferencesAndroidacy();
         }
