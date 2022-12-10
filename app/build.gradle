@@ -8,7 +8,7 @@ plugins {
 android {
     namespace "com.fox2code.mmm"
     compileSdk 33
-    buildToolsVersion '30.0.3'
+    buildToolsVersion '33.0.0'
     signingConfigs {
         release {
             // Everything comes from local.properties
@@ -111,8 +111,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     lint {
         disable 'MissingTranslation'
@@ -121,7 +121,7 @@ android {
 }
 
 aboutLibraries {
-    additionalLicenses = ["LGPL_3_0_only"]
+    additionalLicenses = ["LGPL_3_0_only", "Apache_2_0"]
 }
 
 // "true" is not allowed inside this block, use "hasSentryConfig" instead.
@@ -190,10 +190,6 @@ configurations {
     implementation.exclude group: 'org.jetbrains', module: 'annotations'
     if (!hasSentryConfig) {
         implementation.exclude group: 'io.sentry', module: 'sentry-android'
-        implementation.exclude group: 'io.sentry', module: 'sentry-android-fragment'
-        implementation.exclude group: 'io.sentry', module: 'sentry-android-okhttp'
-        implementation.exclude group: 'io.sentry', module: 'sentry-android-core'
-        implementation.exclude group: 'io.sentry', module: 'sentry-android-ndk'
     }
 }
 
@@ -230,11 +226,7 @@ dependencies {
 
     if (hasSentryConfig) {
         // Error reporting
-        defaultImplementation 'io.sentry:sentry-android:6.9.2'
-        defaultImplementation 'io.sentry:sentry-android-fragment:6.9.2'
-        defaultImplementation 'io.sentry:sentry-android-okhttp:6.9.2'
-        defaultImplementation 'io.sentry:sentry-android-core:6.9.2'
-        defaultImplementation 'io.sentry:sentry-android-ndk:6.9.2'
+        implementation 'io.sentry:sentry-android:6.9.2'
     }
 
     // Markdown
@@ -243,7 +235,6 @@ dependencies {
     implementation "io.noties.markwon:image:4.6.2"
     implementation "io.noties.markwon:syntax-highlight:4.6.2"
     implementation 'com.google.net.cronet:cronet-okhttp:0.1.0'
-    // Ignore all org.chromium.net dependencies
     annotationProcessor "io.noties:prism4j-bundler:2.0.0"
     implementation "com.caverock:androidsvg:1.4"
 

@@ -324,6 +324,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             if (!SentryMain.IS_SENTRY_INSTALLED || !BuildConfig.DEBUG ||
                     InstallerInitializer.peekMagiskPath() == null) {
                 // Hide the pref_crash option if not in debug mode - stop users from purposely crashing the app
+                Log.d(TAG, String.format("Sentry installed: %s, debug: %s, magisk path: %s",
+                        SentryMain.IS_SENTRY_INSTALLED, BuildConfig.DEBUG, InstallerInitializer.peekMagiskPath()));
                 Objects.requireNonNull((Preference) findPreference("pref_crash")).setVisible(false);
             } else {
                 findPreference("pref_crash").setOnPreferenceClickListener(preference -> {
@@ -864,12 +866,20 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             preference.setTitle(repoData.getName());
             preference = findPreference(preferenceName + "_enabled");
             if (preference != null) {
-                ((TwoStatePreference) preference).setChecked(repoData.isEnabled());
-                preference.setTitle(repoData.isEnabled() ? R.string.repo_enabled : R.string.repo_disabled);
-                preference.setOnPreferenceChangeListener((p, newValue) -> {
-                    p.setTitle(((Boolean) newValue) ? R.string.repo_enabled : R.string.repo_disabled);
-                    return true;
-                });
+                // Handle custom repo separately
+                if (repoData instanceof CustomRepoData) {
+                    preference.setTitle(R.string.custom_repo_always_on);
+                    // Disable the preference
+                    preference.setEnabled(false);
+                    return;
+                } else {
+                    ((TwoStatePreference) preference).setChecked(repoData.isEnabled());
+                    preference.setTitle(repoData.isEnabled() ? R.string.repo_enabled : R.string.repo_disabled);
+                    preference.setOnPreferenceChangeListener((p, newValue) -> {
+                        p.setTitle(((Boolean) newValue) ? R.string.repo_enabled : R.string.repo_disabled);
+                        return true;
+                    });
+                }
             }
             preference = findPreference(preferenceName + "_website");
             String homepage = repoData.getWebsite();

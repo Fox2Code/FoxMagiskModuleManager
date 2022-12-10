@@ -2,6 +2,7 @@ package com.fox2code.mmm.repo;
 
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -51,7 +52,7 @@ public class RepoData extends XRepo {
         this.defaultName = url; // Set url as default name
         this.forceHide = AppUpdateManager.shouldForceHide(this.id);
         this.enabled = (!this.forceHide) && MainApplication.getSharedPreferences()
-                .getBoolean("pref_" + this.id + "_enabled", this.isEnabledByDefault());
+                .getBoolean("pref_" + this.getPreferenceId() + "_enabled", true);
         this.defaultWebsite = "https://" + Uri.parse(url).getHost() + "/";
         if (!this.cacheRoot.isDirectory()) {
             boolean mkdirs = this.cacheRoot.mkdirs();
@@ -206,14 +207,22 @@ public class RepoData extends XRepo {
     @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled && !this.forceHide;
+        if (BuildConfig.DEBUG) {
+            Log.d("RepoData",
+                    "Repo " + this.id + " enabled: " + this.enabled + " (forced: " + this.forceHide + ") with preferenceID: " + this.getPreferenceId());
+        }
         MainApplication.getSharedPreferences().edit()
                 .putBoolean("pref_" + this.getPreferenceId() + "_enabled", enabled).apply();
     }
 
     public void updateEnabledState() {
         this.forceHide = AppUpdateManager.shouldForceHide(this.id);
+        if (BuildConfig.DEBUG) {
+            Log.d("RepoData",
+                    "Repo " + this.id + " update enabled: " + this.enabled + " (forced: " + this.forceHide + ") with preferenceID: " + this.getPreferenceId());
+        }
         this.enabled = (!this.forceHide) && MainApplication.getSharedPreferences()
-                .getBoolean("pref_" + this.getPreferenceId() + "_enabled", this.isEnabledByDefault());
+                .getBoolean("pref_" + this.getPreferenceId() + "_enabled", true);
     }
 
     public String getUrl() throws NoSuchAlgorithmException {

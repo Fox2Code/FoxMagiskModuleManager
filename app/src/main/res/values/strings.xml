@@ -203,4 +203,5 @@
     <string name="blur_disabled_summary">Blur is not compatible with transparent themes.</string>
     <string name="transparent_theme_dialogue_title">You are setting a transparent theme</string>
     <string name="transparent_theme_dialogue_message">Transparent themes may have some inconsistencies and may not work on all ROMs. In additon, monet and blur will be disabled. You can change back at any time.</string>
+    <string name="custom_repo_always_on">Custom repos are always on until you remove them.</string>
 </resources>

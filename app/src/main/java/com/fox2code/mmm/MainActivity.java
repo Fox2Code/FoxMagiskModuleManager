@@ -309,7 +309,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         this.updateBlurState();
         this.moduleViewListBuilder.setQuery(null);
         Log.i(TAG, "Item After");
-        noodleDebugState = MainApplication.isDeveloper();
         this.moduleViewListBuilder.refreshNotificationsUI(this.moduleViewAdapter);
         InstallerInitializer.tryGetMagiskPathAsync(new InstallerInitializer.Callback() {
             @Override

@@ -90,12 +90,16 @@
     <PreferenceCategory
         app:key="pref_custom_repo_0"
         app:title="@string/loading">
+        <!-- Custom repos can't be enabled/disabled. Instead, they must be deleted. Show a disabled
+             switch to indicate that. -->
         <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:enabled="false"
             app:icon="@drawable/ic_baseline_extension_24"
             app:key="pref_custom_repo_0_enabled"
             app:singleLineTitle="false"
             app:switchTextOff="@string/repo_disabled"
-            app:switchTextOn="@string/repo_enabled" />
+            app:switchTextOn="@string/custom_repo_always_on" />
         <com.fox2code.mmm.settings.LongClickablePreference
             app:icon="@drawable/ic_baseline_language_24"
             app:key="pref_custom_repo_0_website"
@@ -126,11 +130,13 @@
         app:key="pref_custom_repo_1"
         app:title="@string/loading">
         <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:enabled="false"
             app:icon="@drawable/ic_baseline_extension_24"
             app:key="pref_custom_repo_1_enabled"
             app:singleLineTitle="false"
             app:switchTextOff="@string/repo_disabled"
-            app:switchTextOn="@string/repo_enabled" />
+            app:switchTextOn="@string/custom_repo_always_on" />/>
         <com.fox2code.mmm.settings.LongClickablePreference
             app:icon="@drawable/ic_baseline_language_24"
             app:key="pref_custom_repo_1_website"
@@ -161,11 +167,13 @@
         app:key="pref_custom_repo_2"
         app:title="@string/loading">
         <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:enabled="false"
             app:icon="@drawable/ic_baseline_extension_24"
             app:key="pref_custom_repo_2_enabled"
             app:singleLineTitle="false"
             app:switchTextOff="@string/repo_disabled"
-            app:switchTextOn="@string/repo_enabled" />
+            app:switchTextOn="@string/custom_repo_always_on" />
         <com.fox2code.mmm.settings.LongClickablePreference
             app:icon="@drawable/ic_baseline_language_24"
             app:key="pref_custom_repo_2_website"
@@ -196,11 +204,13 @@
         app:key="pref_custom_repo_3"
         app:title="@string/loading">
         <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:enabled="false"
             app:icon="@drawable/ic_baseline_extension_24"
             app:key="pref_custom_repo_3_enabled"
             app:singleLineTitle="false"
             app:switchTextOff="@string/repo_disabled"
-            app:switchTextOn="@string/repo_enabled" />
+            app:switchTextOn="@string/custom_repo_always_on" />
         <com.fox2code.mmm.settings.LongClickablePreference
             app:icon="@drawable/ic_baseline_language_24"
             app:key="pref_custom_repo_3_website"
@@ -231,11 +241,13 @@
         app:key="pref_custom_repo_4"
         app:title="@string/loading">
         <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:enabled="false"
             app:icon="@drawable/ic_baseline_extension_24"
             app:key="pref_custom_repo_4_enabled"
             app:singleLineTitle="false"
             app:switchTextOff="@string/repo_disabled"
-            app:switchTextOn="@string/repo_enabled" />
+            app:switchTextOn="@string/custom_repo_always_on" />
         <com.fox2code.mmm.settings.LongClickablePreference
             app:icon="@drawable/ic_baseline_language_24"
             app:key="pref_custom_repo_4_website"

@@ -138,7 +138,7 @@ public final class RepoManager extends SyncManager {
             case ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT:
                 return "androidacy_repo";
             default:
-                return "repo_" + Hashes.hashSha1(
+                return "repo_" + Hashes.hashSha256(
                         url.getBytes(StandardCharsets.UTF_8));
         }
     }
@@ -223,26 +223,26 @@ public final class RepoManager extends SyncManager {
         RepoUpdater[] repoUpdaters = new RepoUpdater[repoDatas.length];
         int moduleToUpdate = 0;
         for (int i = 0; i < repoDatas.length; i++) {
-            if (BuildConfig.DEBUG) Log.d("NoodleDebug", repoDatas[i].getName());
+            if (BuildConfig.DEBUG) Log.d("RepoManager", "Fetching: " + repoDatas[i].getName());
             moduleToUpdate += (repoUpdaters[i] =
                     new RepoUpdater(repoDatas[i])).fetchIndex();
             updateListener.update(STEP1 / repoDatas.length * (i + 1));
         }
-        if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Updating meta-data");
+        if (BuildConfig.DEBUG) Log.d("RepoManag3er", "Updating meta-data");
         int updatedModules = 0;
         boolean allowLowQualityModules = MainApplication.isDisableLowQualityModuleFilter();
         for (int i = 0; i < repoUpdaters.length; i++) {
             // Check if the repo is enabled
             if (!repoUpdaters[i].repoData.isEnabled()) {
-                if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Skipping disabled repo: " + repoUpdaters[i].repoData.getName());
+                if (BuildConfig.DEBUG) Log.d("RepoManager",
+                        "Skipping disabled repo: " + repoUpdaters[i].repoData.getName());
                 continue;
             }
             List<RepoModule> repoModules = repoUpdaters[i].toUpdate();
             RepoData repoData = repoDatas[i];
-            if (BuildConfig.DEBUG) Log.d("NoodleDebug", repoData.getName());
-            if (BuildConfig.DEBUG) Log.d(TAG, "Registering " + repoData.getName());
+            if (BuildConfig.DEBUG) Log.d("RepoManager", "Registering " + repoData.getName());
             for (RepoModule repoModule : repoModules) {
-                if (BuildConfig.DEBUG) Log.d("NoodleDebug", repoModule.id);
+                if (BuildConfig.DEBUG) Log.d("RepoManager", "Fetching module: " + repoModule.id);
                 try {
                     if (repoModule.propUrl != null &&
                             !repoModule.propUrl.isEmpty()) {
@@ -280,7 +280,7 @@ public final class RepoManager extends SyncManager {
                 }
             }
         }
-        if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Finishing update");
+        if (BuildConfig.DEBUG) Log.d("RepoManager", "Finishing update");
         this.hasInternet = false;
         // Check if we have internet connection
         // Attempt to contact connectivitycheck.gstatic.com/generate_204
@@ -304,11 +304,12 @@ public final class RepoManager extends SyncManager {
             for (int i = 0; i < repoDatas.length; i++) {
                 // If repo is not enabled, skip
                 if (!repoDatas[i].isEnabled()) {
-                    if (BuildConfig.DEBUG) Log.d("NoodleDebug",
+                    if (BuildConfig.DEBUG) Log.d("RepoManager",
                             "Skipping " + repoDatas[i].getName() + " because it's disabled");
                     continue;
                 }
-                if (BuildConfig.DEBUG) Log.d("NoodleDebug", repoUpdaters[i].repoData.getName());
+                if (BuildConfig.DEBUG) Log.d("RepoManager",
+                        "Finishing: " + repoUpdaters[i].repoData.getName());
                 this.repoLastSuccess = repoUpdaters[i].finish();
                 if (!this.repoLastSuccess) {
                     Log.e(TAG, "Failed to update " + repoUpdaters[i].repoData.getName());

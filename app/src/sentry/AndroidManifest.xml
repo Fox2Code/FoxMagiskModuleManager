@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="QueryAllPackagesPermission">
 
+    <uses-sdk tools:overrideLibrary="io.sentry.android" />
+
     <application android:icon="@mipmap/ic_launcher" android:enableOnBackInvokedCallback="true"
         tools:targetApi="tiramisu">
 

@@ -100,7 +100,7 @@ Note²: For `minMagisk`, `XX.Y` is parsed as `XXY00`, so you can just put the Ma
   (For example `- Hello world` will be transformed to `[*] Hello world`, do not apply to modules installed from storage)
 
 Note: Fox's Mmm use fallback 
-[here](app/src/main/java/com/fox2code/mmm/utils/PropUtils.java#L36)
+[here](../app/src/main/java/com/fox2code/mmm/utils/PropUtils.java#L36)
 for some modules  
 Theses values are only used if not defined in the `module.prop` files  
 So the original module maker can still override them
@@ -173,7 +173,7 @@ mmm_exec hideLoading
 mmm_exec setSupportLink https://github.com/Fox2Code/FoxMagiskModuleManager
 ```
 
-[You may look at the examples modules and their codes.](examples)
+[You may look at the examples modules and their codes.](../examples)
 
 ## Developer mode
 
