@@ -204,4 +204,10 @@
     <string name="transparent_theme_dialogue_title">You are setting a transparent theme</string>
     <string name="transparent_theme_dialogue_message">Transparent themes may have some inconsistencies and may not work on all ROMs. In additon, monet and blur will be disabled. You can change back at any time.</string>
     <string name="custom_repo_always_on">Custom repos are always on until you remove them.</string>
+    <string name="sentry_dialogue_message">We encountered an error, please help us improve the app by adding some information about the error.</string>
+    <string name="sentry_dialogue_title">Sentry report</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="additional_info">Tell us what happened</string>
+    <string name="submit">Submit</string>
 </resources>

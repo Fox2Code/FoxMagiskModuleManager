@@ -3,12 +3,18 @@ package com.fox2code.mmm.sentry;
 import static io.sentry.TypeCheckHint.SENTRY_TYPE_CHECK_HINT;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.widget.EditText;
 
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.R;
 import com.fox2code.mmm.androidacy.AndroidacyUtil;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -94,16 +100,46 @@ public class SentryMain {
                         SentryId sentryId = event.getEventId();
                         if (sentryId != null) {
                             UserFeedback userFeedback = new UserFeedback(sentryId);
-                            userFeedback.setName("Anonymous");
-                            userFeedback.setEmail("test@test.com");
-                            userFeedback.setComments("No comments");
-                            Sentry.captureUserFeedback(userFeedback);
+                            // Get the current activity
+                            Activity context = MainApplication.getINSTANCE().getLastCompatActivity();
+                            // Create a material dialog
+                            new Handler(Looper.getMainLooper()).post(() -> {
+                                if (context != null) {
+                                    // Show fields for name, email, and comment, and two buttons: "Submit" and "Cancel"
+                                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+                                    builder.setTitle(R.string.sentry_dialogue_title);
+                                    builder.setMessage(R.string.sentry_dialogue_message);
+                                    // Add the text fields, set the text to the previously entered values
+                                    EditText name = new EditText(context);
+                                    name.setHint(R.string.name);
+                                    builder.setView(name);
+                                    EditText email = new EditText(context);
+                                    email.setHint(R.string.email);
+                                    builder.setView(email);
+                                    EditText comment = new EditText(context);
+                                    comment.setHint(R.string.additional_info);
+                                    builder.setView(comment);
+                                    // Add the buttons
+                                    builder.setPositiveButton(R.string.submit, (dialog, id) -> {
+                                        // User clicked "Submit"
+                                        userFeedback.setName(name.getText().toString());
+                                        userFeedback.setEmail(email.getText().toString());
+                                        userFeedback.setComments(comment.getText().toString());
+                                        // Send the feedback
+                                        Sentry.captureUserFeedback(userFeedback);
+                                    });
+                                    builder.setNegativeButton(R.string.cancel, (dialog, id) -> {
+                                        // User cancelled the dialog
+                                    });
+                                    // Create and show the AlertDialog
+                                    builder.create().show();
+                                }
+                            });
                         }
                         return event;
                     } else {
                         // We need to do this to avoid crash delay on crash when the event is dropped
-                        DiskFlushNotification diskFlushNotification = hint.getAs(
-                                SENTRY_TYPE_CHECK_HINT, DiskFlushNotification.class);
+                        DiskFlushNotification diskFlushNotification = hint.getAs(SENTRY_TYPE_CHECK_HINT, DiskFlushNotification.class);
                         if (diskFlushNotification != null) diskFlushNotification.markFlushed();
                         return null;
                     }
@@ -112,8 +148,7 @@ public class SentryMain {
                 options.setBeforeBreadcrumb((breadcrumb, hint) -> {
                     String url = (String) breadcrumb.getData("url");
                     if (url == null || url.isEmpty()) return breadcrumb;
-                    if ("cloudflare-dns.com".equals(Uri.parse(url).getHost()))
-                        return null;
+                    if ("cloudflare-dns.com".equals(Uri.parse(url).getHost())) return null;
                     if (AndroidacyUtil.isAndroidacyLink(url)) {
                         breadcrumb.setData("url", AndroidacyUtil.hideToken(url));
                     }
