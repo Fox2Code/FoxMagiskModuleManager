@@ -161,27 +161,53 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     if (BuildConfig.DEBUG) {
                         Log.d(TAG, "Transparent theme is being set, disabling monet");
                     }
-                    findPreference("pref_enable_monet").setEnabled(false);
-                    ((TwoStatePreference) findPreference("pref_enable_monet")).setChecked(false);
-                    editor.putBoolean("pref_enable_monet", false).apply();
-                    findPreference("pref_enable_monet").setSummary(R.string.monet_disabled_summary);
-                    // Same for blur
-                    findPreference("pref_enable_blur").setEnabled(false);
-                    ((TwoStatePreference) findPreference("pref_enable_blur")).setChecked(false);
-                    editor.putBoolean("pref_enable_blur", false).apply();
-                    findPreference("pref_enable_blur").setSummary(R.string.blur_disabled_summary);
+                    // Show a dialogue warning the user about issues with transparent themes and
+                    // that blur/monet will be disabled
+                    new MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(R.string.transparent_theme_dialogue_title)
+                            .setMessage(R.string.transparent_theme_dialogue_message)
+                            .setPositiveButton(R.string.ok, (dialog, which) -> {
+                                // Toggle monet off
+                                ((TwoStatePreference) findPreference("pref_enable_monet")).setChecked(false);
+                                editor.putBoolean("pref_enable_monet", false).apply();
+                                // Set summary
+                                findPreference("pref_enable_monet").setSummary(R.string.monet_disabled_summary);
+                                // Same for blur
+                                ((TwoStatePreference) findPreference("pref_enable_blur")).setChecked(false);
+                                editor.putBoolean("pref_enable_blur", false).apply();
+                                findPreference("pref_enable_blur").setSummary(R.string.blur_disabled_summary);
+                                // Refresh activity
+                                devModeStep = 0;
+                                UiThreadHandler.handler.postDelayed(() -> {
+                                    MainApplication.getINSTANCE().updateTheme();
+                                    FoxActivity.getFoxActivity(this).setThemeRecreate(
+                                            MainApplication.getINSTANCE().getManagerThemeResId());
+                                }, 1);
+                            })
+                            .setNegativeButton(R.string.cancel, (dialog, which) -> {
+                                // Revert to system theme
+                                ((ListPreference) findPreference("pref_theme")).setValue("system");
+                                // Refresh activity
+                                devModeStep = 0;
+                                UiThreadHandler.handler.postDelayed(() -> {
+                                    MainApplication.getINSTANCE().updateTheme();
+                                    FoxActivity.getFoxActivity(this).setThemeRecreate(
+                                            MainApplication.getINSTANCE().getManagerThemeResId());
+                                }, 1);
+                            })
+                            .show();
                 } else {
                     findPreference("pref_enable_monet").setEnabled(true);
                     findPreference("pref_enable_monet").setSummary(null);
                     findPreference("pref_enable_blur").setEnabled(true);
                     findPreference("pref_enable_blur").setSummary(null);
+                    devModeStep = 0;
+                    UiThreadHandler.handler.postDelayed(() -> {
+                        MainApplication.getINSTANCE().updateTheme();
+                        FoxActivity.getFoxActivity(this).setThemeRecreate(
+                                MainApplication.getINSTANCE().getManagerThemeResId());
+                    }, 1);
                 }
-                devModeStep = 0;
-                UiThreadHandler.handler.postDelayed(() -> {
-                    MainApplication.getINSTANCE().updateTheme();
-                    FoxActivity.getFoxActivity(this).setThemeRecreate(
-                            MainApplication.getINSTANCE().getManagerThemeResId());
-                }, 1);
                 return true;
             });
             // Crash reporting

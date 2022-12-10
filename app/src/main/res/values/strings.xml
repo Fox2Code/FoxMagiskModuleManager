@@ -201,4 +201,6 @@
     <string name="repo_update_failed_extended">Update of %1$s failed. Please try again later.</string>
     <string name="monet_disabled_summary">Monet is not compatible with transparent themes.</string>
     <string name="blur_disabled_summary">Blur is not compatible with transparent themes.</string>
+    <string name="transparent_theme_dialogue_title">You are setting a transparent theme</string>
+    <string name="transparent_theme_dialogue_message">Transparent themes may have some inconsistencies and may not work on all ROMs. In additon, monet and blur will be disabled. You can change back at any time.</string>
 </resources>

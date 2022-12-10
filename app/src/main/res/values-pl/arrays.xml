@@ -1,9 +1,10 @@
 <resources>
     <string-array name="theme_values_names">
-        <item comment="theme_values_names">Zgodny z systemem</item>
-        <item comment="theme_values_names">Ciemny</item>
-        <item>AMOLED Black</item>
+        <item>Zgodny z systemem</item>
+        <item>Ciemny</item>
+        <item>Czarny</item>
         <item>Transparent (light)</item>
-        <item comment="theme_values_names">Jasny</item>
+        <item>Jasny</item>
     </string-array>
+    <string-array name="permission_notification_dont_ask_again">Nie pytaj ponownie</string-array>
 </resources>
