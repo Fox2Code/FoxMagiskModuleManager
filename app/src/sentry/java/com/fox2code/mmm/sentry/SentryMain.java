@@ -3,26 +3,26 @@ package com.fox2code.mmm.sentry;
 import static io.sentry.TypeCheckHint.SENTRY_TYPE_CHECK_HINT;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
-import android.widget.EditText;
 
 import com.fox2code.mmm.BuildConfig;
+import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
-import com.fox2code.mmm.R;
 import com.fox2code.mmm.androidacy.AndroidacyUtil;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Objects;
 
 import io.sentry.JsonObjectWriter;
 import io.sentry.NoOpLogger;
 import io.sentry.Sentry;
-import io.sentry.UserFeedback;
 import io.sentry.android.core.SentryAndroid;
 import io.sentry.android.fragment.FragmentLifecycleIntegration;
 import io.sentry.hints.DiskFlushNotification;
@@ -36,7 +36,7 @@ public class SentryMain {
      * Initialize Sentry
      * Sentry is used for crash reporting and performance monitoring. The SDK is explcitly configured not to send PII, and server side scrubbing of sensitive data is enabled (which also removes IP addresses)
      */
-    @SuppressLint("RestrictedApi")
+    @SuppressLint({"RestrictedApi", "UnspecifiedImmutableFlag"})
     public static void initialize(final MainApplication mainApplication) {
         SentryAndroid.init(mainApplication, options -> {
             // If crash reporting is disabled, stop here.
@@ -96,46 +96,10 @@ public class SentryMain {
                         Log.i(TAG, stringBuilder.toString());
                     }
                     if (MainApplication.isCrashReportingEnabled()) {
-                        // Get user feedback
-                        SentryId sentryId = event.getEventId();
-                        if (sentryId != null) {
-                            UserFeedback userFeedback = new UserFeedback(sentryId);
-                            // Get the current activity
-                            Activity context = MainApplication.getINSTANCE().getLastCompatActivity();
-                            // Create a material dialog
-                            new Handler(Looper.getMainLooper()).post(() -> {
-                                if (context != null) {
-                                    // Show fields for name, email, and comment, and two buttons: "Submit" and "Cancel"
-                                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-                                    builder.setTitle(R.string.sentry_dialogue_title);
-                                    builder.setMessage(R.string.sentry_dialogue_message);
-                                    // Add the text fields, set the text to the previously entered values
-                                    EditText name = new EditText(context);
-                                    name.setHint(R.string.name);
-                                    builder.setView(name);
-                                    EditText email = new EditText(context);
-                                    email.setHint(R.string.email);
-                                    builder.setView(email);
-                                    EditText comment = new EditText(context);
-                                    comment.setHint(R.string.additional_info);
-                                    builder.setView(comment);
-                                    // Add the buttons
-                                    builder.setPositiveButton(R.string.submit, (dialog, id) -> {
-                                        // User clicked "Submit"
-                                        userFeedback.setName(name.getText().toString());
-                                        userFeedback.setEmail(email.getText().toString());
-                                        userFeedback.setComments(comment.getText().toString());
-                                        // Send the feedback
-                                        Sentry.captureUserFeedback(userFeedback);
-                                    });
-                                    builder.setNegativeButton(R.string.cancel, (dialog, id) -> {
-                                        // User cancelled the dialog
-                                    });
-                                    // Create and show the AlertDialog
-                                    builder.create().show();
-                                }
-                            });
-                        }
+                        // Save lastEventId to private shared preferences
+                        SharedPreferences sharedPreferences = mainApplication.getSharedPreferences("sentry", Context.MODE_PRIVATE);
+                        sharedPreferences.edit().putString("lastEventId",
+                                Objects.requireNonNull(event.getEventId()).toString()).apply();
                         return event;
                     } else {
                         // We need to do this to avoid crash delay on crash when the event is dropped
@@ -153,6 +117,37 @@ public class SentryMain {
                         breadcrumb.setData("url", AndroidacyUtil.hideToken(url));
                     }
                     return breadcrumb;
+                });
+                // On uncaught exception, set the lastEventId in private sentry preferences
+                Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
+                    SentryId lastEventId = Sentry.captureException(throwable);
+                    SharedPreferences.Editor editor = mainApplication.getSharedPreferences("sentry", 0).edit();
+                    editor.putString("lastExitReason", "crash");
+                    editor.apply();
+                    // Start a new instance of the main activity
+                    // The intent flags ensure that the activity is started as a new task
+                    // and that any existing task is cleared before the activity is started
+                    // This ensures that the activity stack is cleared and the app is restarted
+                    // from the root activity
+                    Intent intent = new Intent(mainApplication, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    // Set an alarm to restart the app one second after it is killed
+                    // This is necessary because the app is killed before the intent is started
+                    // and the intent is ignored if the app is not running
+                    PendingIntent pendingIntent;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                        pendingIntent = PendingIntent.getActivity(mainApplication, 0,
+                                intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                    } else {
+                        pendingIntent = PendingIntent.getActivity(mainApplication, 0,
+                                intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                    }
+                    AlarmManager alarmManager = (AlarmManager) mainApplication.getSystemService(Context.ALARM_SERVICE);
+                    if (alarmManager != null) {
+                        alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 1000, pendingIntent);
+                    }
+                    // Kill the app
+                    System.exit(2);
                 });
             }
         });

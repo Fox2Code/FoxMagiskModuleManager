@@ -19,7 +19,6 @@ import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.androidacy.AndroidacyUtil;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.repo.RepoManager;
-import com.google.net.cronet.okhttptransport.CronetCallFactory;
 import com.google.net.cronet.okhttptransport.CronetInterceptor;
 
 import org.chromium.net.CronetEngine;
@@ -54,6 +53,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okhttp3.dnsoverhttps.DnsOverHttps;
+import okhttp3.logging.HttpLoggingInterceptor;
 import okio.BufferedSink;
 
 public class Http {
@@ -140,13 +140,6 @@ public class Http {
             return chain.proceed(request.build());
         });
         // Add cronet interceptor
-        // install cronet
-        /*try {
-            // Detect if cronet is installed
-            CronetProviderInstaller.installProvider(mainApplication);
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to install cronet", e);
-        }*/
         // init cronet
         try {
             // Load the cronet library
@@ -165,8 +158,7 @@ public class Http {
             }
             builder.setStoragePath(mainApplication.getCacheDir().getAbsolutePath() + "/cronet");
             builder.enableHttpCache(CronetEngine.Builder.HTTP_CACHE_DISK_NO_HTTP, 10 * 1024 * 1024);
-            CronetEngine engine =
-                    builder.build();
+            CronetEngine engine = builder.build();
             httpclientBuilder.addInterceptor(CronetInterceptor.newBuilder(engine).build());
         } catch (Exception e) {
             Log.e(TAG, "Failed to init cronet", e);
@@ -179,6 +171,13 @@ public class Http {
         httpClient = followRedirects(httpclientBuilder, true).build();
         followRedirects(httpclientBuilder, false).build();
         httpclientBuilder.dns(fallbackDNS);
+        if (BuildConfig.DEBUG) {
+            // Enable logging
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor(s -> Log.d(TAG, s));
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+            httpclientBuilder.addInterceptor(logging);
+            Log.d(TAG, "OkHttp logging enabled");
+        }
         httpClientDoH = followRedirects(httpclientBuilder, true).build();
         followRedirects(httpclientBuilder, false).build();
         httpclientBuilder.cache(new Cache(new File(mainApplication.getCacheDir(), "http_cache"), 16L * 1024L * 1024L)); // 16Mib of cache
@@ -234,8 +233,7 @@ public class Http {
     @SuppressWarnings("resource")
     public static byte[] doHttpGet(String url, boolean allowCache) throws IOException {
         checkNeedBlockAndroidacyRequest(url);
-        Response response =
-                (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).get().build()).execute();
+        Response response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).get().build()).execute();
         // 200/204 == success, 304 == cache valid
         if (response.code() != 200 && response.code() != 204 && (response.code() != 304 || !allowCache)) {
             Log.e(TAG, "Failed to fetch " + url + ", code: " + response.code());
@@ -263,12 +261,15 @@ public class Http {
     private static Object doHttpPostRaw(String url, String data, boolean allowCache) throws IOException {
         if (BuildConfig.DEBUG) Log.d(TAG, "POST " + url + " " + data);
         checkNeedBlockAndroidacyRequest(url);
-        Response response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).post(JsonRequestBody.from(data)).header("Content-Type", "application/json").build()).execute();
+        Response response;
+        response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).post(JsonRequestBody.from(data)).header("Content-Type", "application/json").build()).execute();
         if (response.isRedirect()) {
             return response.request().url().uri().toString();
         }
         // 200/204 == success, 304 == cache valid
         if (response.code() != 200 && response.code() != 204 && (response.code() != 304 || !allowCache)) {
+            if (BuildConfig.DEBUG)
+                Log.e(TAG, "Failed to fetch " + url + ", code: " + response.code() + ", body: " + response.body().string());
             checkNeedCaptchaAndroidacy(url, response.code());
             throw new HttpException(response.code());
         }

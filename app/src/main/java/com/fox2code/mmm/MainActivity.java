@@ -13,13 +13,17 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.InputType;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
@@ -50,7 +54,19 @@ import com.fox2code.mmm.utils.NoodleDebug;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
+import org.chromium.net.ExperimentalCronetEngine;
+import org.chromium.net.urlconnection.CronetURLStreamHandlerFactory;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import eightbitlab.com.blurview.BlurView;
+import io.sentry.Sentry;
 
 public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, OverScrollManager.OverScrollHelper {
     private static final String TAG = "MainActivity";
@@ -241,6 +257,104 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         }, true);
         ExternalHelper.INSTANCE.refreshHelper(this);
         this.initMode = false;
+        // Show an material alert dialog if lastEventId is not "" or null in the private sentry shared preferences
+        if (MainApplication.isCrashReportingEnabled()) {
+            SharedPreferences preferences = getSharedPreferences("sentry", MODE_PRIVATE);
+            String lastExitReason = preferences.getString("lastExitReason", "");
+            if (lastExitReason.equals("crash")) {
+                String lastEventId = preferences.getString("lastEventId", "");
+                if (!lastEventId.equals("")) {
+                    // Three edit texts for the user to enter their email, name and a description of the issue
+                    EditText email = new EditText(this);
+                    email.setHint(R.string.email);
+                    email.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                    EditText name = new EditText(this);
+                    name.setHint(R.string.name);
+                    name.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+                    EditText description = new EditText(this);
+                    description.setHint(R.string.additional_info);
+                    // Set description to be multiline and auto resize
+                    description.setSingleLine(false);
+                    description.setMaxHeight(1000);
+                    // Make description required-
+                    new MaterialAlertDialogBuilder(this).setCancelable(false).setTitle(R.string.sentry_dialogue_title).setMessage(R.string.sentry_dialogue_message).setView(new LinearLayout(this) {{
+                        setOrientation(LinearLayout.VERTICAL);
+                        setPadding(40, 20, 40, 10);
+                        addView(email);
+                        addView(name);
+                        addView(description);
+                    }}).setPositiveButton(R.string.submit, (dialog, which) -> {
+                        // Make sure the user has entered a description
+                        if (description.getText().toString().equals("")) {
+                            Toast.makeText(this, R.string.sentry_dialogue_no_description, Toast.LENGTH_LONG).show();
+                            dialog.cancel();
+                        }
+                        preferences.edit().remove("lastEventId").apply();
+                        // Prevent strict mode violation
+                        new Thread(() -> {
+                            try {
+                                // Use HTTPConnectionURL to send a post request to the sentry server
+                                ExperimentalCronetEngine cronetEngine = new ExperimentalCronetEngine.Builder(this).build();
+                                CronetURLStreamHandlerFactory cronetURLStreamHandlerFactory = new CronetURLStreamHandlerFactory(cronetEngine);
+                                URL.setURLStreamHandlerFactory(cronetURLStreamHandlerFactory);
+                                HttpURLConnection connection = (HttpURLConnection) new URL("https" + "://sentry.io/api/0/projects/androidacy-i6/foxmmm/user-feedback/").openConnection();
+                                connection.setRequestMethod("POST");
+                                connection.setRequestProperty("Content-Type", "application/json");
+                                connection.setRequestProperty("Authorization", "Bearer " + BuildConfig.SENTRY_TOKEN);
+                                connection.setDoOutput(true);
+                                connection.setDoInput(true);
+                                connection.setChunkedStreamingMode(0);
+                                connection.connect();
+                                // Write the JSON data to the output stream
+                                OutputStream outputStream = connection.getOutputStream();
+                                // Name and email are optional, so if they are empty, set them to
+                                // Anonymous and Anonymous respectively
+                                String nameString = name.getText().toString();
+                                String emailString = email.getText().toString();
+                                if (nameString.equals("")) nameString = "Anonymous";
+                                if (emailString.equals("")) emailString = "Anonymous";
+                                String finalNameString = nameString;
+                                String finalEmailString = emailString;
+                                outputStream.write(new JSONObject() {{
+                                    put("event_id", lastEventId);
+                                    put("name", finalNameString);
+                                    put("email", finalEmailString);
+                                    put("comments", description.getText().toString());
+                                }}.toString().getBytes());
+                                outputStream.flush();
+                                outputStream.close();
+                                // Read the response
+                                InputStream inputStream = connection.getInputStream();
+                                byte[] buffer = new byte[1024];
+                                int length;
+                                StringBuilder stringBuilder = new StringBuilder();
+                                while ((length = inputStream.read(buffer)) != -1) {
+                                    stringBuilder.append(new String(buffer, 0, length));
+                                }
+                                inputStream.close();
+                                connection.disconnect();
+                                if (BuildConfig.DEBUG) Log.d("Sentry", stringBuilder.toString());
+                                // Valid responses will be a json object with a key "id"
+                                JSONObject jsonObject = new JSONObject(stringBuilder.toString());
+                                if (jsonObject.has("id")) {
+                                    // Show a toast to the user to confirm that the feedback has been sent
+                                    runOnUiThread(() -> Toast.makeText(this, R.string.sentry_dialogue_success, Toast.LENGTH_LONG).show());
+                                } else {
+                                    // Show a toast to the user to confirm that the feedback has not been sent
+                                    runOnUiThread(() -> Toast.makeText(this, R.string.sentry_dialogue_failed_toast, Toast.LENGTH_LONG).show());
+                                }
+                            } catch (IOException | JSONException ignored) {
+                                // Show a toast if the user feedback could not be submitted
+                                runOnUiThread(() -> Toast.makeText(this, R.string.sentry_dialogue_failed_toast, Toast.LENGTH_LONG).show());
+                            }
+                        }).start();
+                    }).setNegativeButton(R.string.cancel, (dialog, which) -> {
+                        preferences.edit().remove("lastEventId").apply();
+                        Sentry.captureMessage("User has ignored the crash");
+                    }).show();
+                }
+            }
+        }
     }
 
     private void cardIconifyUpdate() {

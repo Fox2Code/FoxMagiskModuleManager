@@ -330,7 +330,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             } else {
                 findPreference("pref_crash").setOnPreferenceClickListener(preference -> {
                     // Hard crash the app
-                    throw new Error("This is a test crash");
+                    throw new RuntimeException("This is a test crash");
                 });
             }
             if (InstallerInitializer.peekMagiskVersion() < Constants.MAGISK_VER_CODE_INSTALL_COMMAND || !MainApplication.isDeveloper()) {
@@ -645,9 +645,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             });
             prefAndroidacyRepoApiKey.setPositiveButtonText(R.string.save_api_key);
             prefAndroidacyRepoApiKey.setOnPreferenceChangeListener((preference, newValue) -> {
-                if (originalApiKeyRef[0].equals(newValue)) return true; // Skip if nothing changed.
-                // Curious if this actually works - so crash the app on purpose
-                // throw new RuntimeException("This is a test crash");
+                if (originalApiKeyRef[0].equals(newValue)) return true;
                 // get original api key
                 String apiKey = String.valueOf(newValue);
                 // Show snack bar with indeterminate progress
