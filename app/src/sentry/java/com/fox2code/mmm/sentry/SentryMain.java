@@ -3,16 +3,12 @@ package com.fox2code.mmm.sentry;
 import static io.sentry.TypeCheckHint.SENTRY_TYPE_CHECK_HINT;
 
 import android.annotation.SuppressLint;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 
 import com.fox2code.mmm.BuildConfig;
-import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.androidacy.AndroidacyUtil;
 
@@ -121,31 +117,10 @@ public class SentryMain {
                 // On uncaught exception, set the lastEventId in private sentry preferences
                 Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
                     SentryId lastEventId = Sentry.captureException(throwable);
-                    SharedPreferences.Editor editor = mainApplication.getSharedPreferences("sentry", 0).edit();
+                    SharedPreferences.Editor editor = mainApplication.getSharedPreferences(
+                            "sentry", Context.MODE_PRIVATE).edit();
                     editor.putString("lastExitReason", "crash");
                     editor.apply();
-                    // Start a new instance of the main activity
-                    // The intent flags ensure that the activity is started as a new task
-                    // and that any existing task is cleared before the activity is started
-                    // This ensures that the activity stack is cleared and the app is restarted
-                    // from the root activity
-                    Intent intent = new Intent(mainApplication, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    // Set an alarm to restart the app one second after it is killed
-                    // This is necessary because the app is killed before the intent is started
-                    // and the intent is ignored if the app is not running
-                    PendingIntent pendingIntent;
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                        pendingIntent = PendingIntent.getActivity(mainApplication, 0,
-                                intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                    } else {
-                        pendingIntent = PendingIntent.getActivity(mainApplication, 0,
-                                intent, PendingIntent.FLAG_CANCEL_CURRENT);
-                    }
-                    AlarmManager alarmManager = (AlarmManager) mainApplication.getSystemService(Context.ALARM_SERVICE);
-                    if (alarmManager != null) {
-                        alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 1000, pendingIntent);
-                    }
                     // Kill the app
                     System.exit(2);
                 });

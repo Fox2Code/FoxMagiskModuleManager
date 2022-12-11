@@ -537,6 +537,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         // Use MaterialAlertDialogBuilder
                         new MaterialAlertDialogBuilder(this.requireContext())
                                 .setTitle(R.string.warning)
+                                .setCancelable(false)
                                 .setMessage(R.string.androidacy_test_mode_warning)
                                 .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                                     // User clicked OK button
@@ -575,6 +576,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         // Show dialog to restart app with ok button
                         new MaterialAlertDialogBuilder(this.requireContext())
                                 .setTitle(R.string.warning)
+                                .setCancelable(false)
                                 .setMessage(R.string.androidacy_test_mode_disable_warning)
                                 .setNeutralButton(android.R.string.ok, (dialog, which) -> {
                                     // User clicked OK button
@@ -609,6 +611,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 androidacyRepoEnabled.setOnPreferenceClickListener(preference -> {
                     new MaterialAlertDialogBuilder(this.requireContext())
                             .setTitle(R.string.androidacy_repo_disabled)
+                            .setCancelable(false)
                             .setMessage(R.string.androidacy_repo_disabled_message)
                             .setPositiveButton(R.string.download_full_app, (dialog, which) -> {
                                 // User clicked OK button. Open GitHub releases page
@@ -664,6 +667,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                             // Show dialog to restart app with ok button
                             new MaterialAlertDialogBuilder(this.requireContext())
                                     .setTitle(R.string.restart)
+                                    .setCancelable(false)
                                     .setMessage(R.string.api_key_restart)
                                     .setNeutralButton(android.R.string.ok, (dialog, which) -> {
                                         // User clicked OK button
@@ -721,6 +725,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                     // Show dialog to restart app with ok button
                                     new MaterialAlertDialogBuilder(this.requireContext())
                                             .setTitle(R.string.restart)
+                                            .setCancelable(false)
                                             .setMessage(R.string.api_key_restart)
                                             .setNeutralButton(android.R.string.ok, (dialog, which) -> {
                                                 // User clicked OK button

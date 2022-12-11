@@ -50,7 +50,6 @@ import com.fox2code.mmm.utils.BlurUtils;
 import com.fox2code.mmm.utils.ExternalHelper;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
-import com.fox2code.mmm.utils.NoodleDebug;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
@@ -71,7 +70,6 @@ import io.sentry.Sentry;
 public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, OverScrollManager.OverScrollHelper {
     private static final String TAG = "MainActivity";
     private static final int PRECISION = 10000;
-    public static boolean noodleDebugState = BuildConfig.DEBUG;
     public final ModuleViewListBuilder moduleViewListBuilder;
     public LinearProgressIndicator progressIndicator;
     private ModuleViewAdapter moduleViewAdapter;
@@ -87,7 +85,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     private RecyclerView moduleList;
     private CardView searchCard;
     private SearchView searchView;
-    private NoodleDebug noodleDebug;
     private boolean initMode;
 
     public MainActivity() {
@@ -104,7 +101,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.initMode = true;
-        noodleDebugState = MainApplication.isDeveloper();
+        // Ensure HTTP Cache directories are created
+        Http.ensureCacheDirs(this);
         BackgroundUpdateChecker.onMainActivityCreate(this);
         super.onCreate(savedInstanceState);
         this.setActionBarExtraMenuButton(R.drawable.ic_baseline_settings_24, v -> {
@@ -132,7 +130,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         this.moduleList = findViewById(R.id.module_list);
         this.searchCard = findViewById(R.id.search_card);
         this.searchView = findViewById(R.id.search_bar);
-        this.noodleDebug = new NoodleDebug(this, R.id.noodle_debug);
         this.moduleViewAdapter = new ModuleViewAdapter();
         this.moduleList.setAdapter(this.moduleViewAdapter);
         this.moduleList.setLayoutManager(new LinearLayoutManager(this));
@@ -290,6 +287,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                             dialog.cancel();
                         }
                         preferences.edit().remove("lastEventId").apply();
+                        preferences.edit().putString("lastExitReason", "").apply();
                         // Prevent strict mode violation
                         new Thread(() -> {
                             try {
@@ -439,8 +437,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             @Override
             public void onFailure(int error) {
                 moduleViewListBuilder.addNotification(InstallerInitializer.getErrorNotification());
-                noodleDebug.setEnabled(noodleDebugState);
-                noodleDebug.bind();
                 this.commonNext();
             }
 

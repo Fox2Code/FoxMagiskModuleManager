@@ -6,4 +6,22 @@
             <certificates src="@raw/androidacy_root_ca" />
         </trust-anchors>
     </domain-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">github.com</domain>
+        <trust-anchors>
+            <certificates src="@raw/gh_root_ca" />
+        </trust-anchors>
+    </domain-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">githubusercontent.com</domain>
+        <trust-anchors>
+            <certificates src="@raw/gh_root_ca" />
+        </trust-anchors>
+    </domain-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">gstatic.com</domain>
+        <trust-anchors>
+            <certificates src="@raw/gstatic_root_ca" />
+        </trust-anchors>
+    </domain-config>
 </network-security-config>

@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.fox2code.mmm.BuildConfig;
+import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.androidacy.AndroidacyUtil;
 import com.fox2code.mmm.installer.InstallerInitializer;
@@ -339,6 +340,29 @@ public class Http {
 
     public static boolean hasWebView() {
         return hasWebView;
+    }
+
+    public static void ensureCacheDirs(MainActivity mainActivity) {
+        File cacheDir = mainActivity.getCacheDir();
+        File cacheDir2 = new File(cacheDir, "HTTP Cache");
+        if (!cacheDir2.exists()) {
+            if (!cacheDir2.mkdirs()) {
+                Log.e(TAG, "Failed to create cache dir");
+            }
+        }
+        // Ensure js and wasm cache dirs
+        File jsCacheDir = new File(cacheDir2, "js");
+        if (!jsCacheDir.exists()) {
+            if (!jsCacheDir.mkdirs()) {
+                Log.e(TAG, "Failed to create js cache dir");
+            }
+        }
+        File wasmCacheDir = new File(cacheDir2, "wasm");
+        if (!wasmCacheDir.exists()) {
+            if (!wasmCacheDir.mkdirs()) {
+                Log.e(TAG, "Failed to create wasm cache dir");
+            }
+        }
     }
 
     public interface ProgressListener {

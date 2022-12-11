@@ -205,13 +205,16 @@
     <string name="transparent_theme_dialogue_message">Transparent themes may have some inconsistencies and may not work on all ROMs. In additon, monet and blur will be disabled. You can change back at any time.</string>
     <string name="custom_repo_always_on">Custom repos are always on until you remove them.</string>
     <string name="sentry_dialogue_message">We encountered an error! Please help us improve the app
-        by adding some information about the error below. Name and email are optional.</string>
-    <string name="sentry_dialogue_title">Oops! Something went wrong.</string>
+        by adding some information about the error below.\nName and email are optional but will
+        allow us to contact you if needed for more information.</string>
+    <string name="sentry_dialogue_title">Oops! Looks like the app closed unexpectedly.</string>
     <string name="name">Name</string>
     <string name="email">Email</string>
     <string name="additional_info">Tell us what happened</string>
     <string name="submit">Submit</string>
-    <string name="sentry_dialogue_failed_toast">Could not submit feedback</string>
-    <string name="sentry_dialogue_success">Submitted feedback</string>
-    <string name="sentry_dialogue_no_description">Please provide a description/comment for the issue</string>
+    <string name="sentry_dialogue_failed_toast">Could not submit feedback due to an error</string>
+    <string name="sentry_dialogue_success">Submitted feedback successfully. We\'ll review it
+    shortly</string>
+    <string name="sentry_dialogue_no_description">Could not submit feedback as no
+        description was provided</string>
 </resources>

@@ -8,8 +8,6 @@ import androidx.annotation.NonNull;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.installer.InstallerInitializer;
-import com.fox2code.mmm.utils.Http;
-import com.fox2code.mmm.utils.NoodleDebug;
 import com.fox2code.mmm.utils.PropUtils;
 import com.fox2code.mmm.utils.SyncManager;
 import com.topjohnwu.superuser.Shell;
@@ -24,33 +22,34 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public final class ModuleManager extends SyncManager {
-    private static final String TAG = "ModuleManager";
-
     // New method is not really effective, this flag force app to use old method
     public static final boolean FORCE_NEED_FALLBACK = true;
+    private static final String TAG = "ModuleManager";
     private static final int FLAG_MM_INVALID = ModuleInfo.FLAG_METADATA_INVALID;
     private static final int FLAG_MM_UNPROCESSED = ModuleInfo.FLAG_CUSTOM_INTERNAL;
     private static final int FLAGS_KEEP_INIT = FLAG_MM_UNPROCESSED |
             ModuleInfo.FLAGS_MODULE_ACTIVE | ModuleInfo.FLAG_MODULE_UPDATING_ONLY;
     private static final int FLAGS_RESET_UPDATE = FLAG_MM_INVALID | FLAG_MM_UNPROCESSED;
+    private static final ModuleManager INSTANCE = new ModuleManager();
     private final HashMap<String, LocalModuleInfo> moduleInfos;
     private final SharedPreferences bootPrefs;
     private int updatableModuleCount = 0;
-
-    private static final ModuleManager INSTANCE = new ModuleManager();
-
-    public static ModuleManager getINSTANCE() {
-        return INSTANCE;
-    }
 
     private ModuleManager() {
         this.moduleInfos = new HashMap<>();
         this.bootPrefs = MainApplication.getBootSharedPreferences();
     }
 
+    public static ModuleManager getINSTANCE() {
+        return INSTANCE;
+    }
+
+    public static boolean isModuleActive(String moduleId) {
+        ModuleInfo moduleInfo = ModuleManager.getINSTANCE().getModules().get(moduleId);
+        return moduleInfo != null && (moduleInfo.flags & ModuleInfo.FLAGS_MODULE_ACTIVE) != 0;
+    }
+
     protected void scanInternal(@NonNull UpdateListener updateListener) {
-        NoodleDebug noodleDebug = NoodleDebug.getNoodleDebug();
-        noodleDebug.push("Initialize scan");
         boolean firstScan = this.bootPrefs.getBoolean("mm_first_scan", true);
         SharedPreferences.Editor editor = firstScan ? this.bootPrefs.edit() : null;
         for (ModuleInfo v : this.moduleInfos.values()) {
@@ -73,7 +72,6 @@ public final class ModuleManager extends SyncManager {
         }
         if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Scan");
         if (modules != null) {
-            noodleDebug.push("");
             for (String module : modules) {
                 if (!new SuFile("/data/adb/modules/" + module).isDirectory())
                     continue; // Ignore non directory files inside modules folder
@@ -123,7 +121,6 @@ public final class ModuleManager extends SyncManager {
         if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Scan update");
         String[] modules_update = new SuFile("/data/adb/modules_update").list();
         if (modules_update != null) {
-            noodleDebug.push("");
             for (String module : modules_update) {
                 if (!new SuFile("/data/adb/modules_update/" + module).isDirectory())
                     continue; // Ignore non directory files inside modules folder
@@ -148,7 +145,6 @@ public final class ModuleManager extends SyncManager {
         this.updatableModuleCount = 0;
         Iterator<LocalModuleInfo> moduleInfoIterator =
                 this.moduleInfos.values().iterator();
-        noodleDebug.push("");
         while (moduleInfoIterator.hasNext()) {
             LocalModuleInfo moduleInfo = moduleInfoIterator.next();
             if (BuildConfig.DEBUG) Log.d("NoodleDebug", moduleInfo.id);
@@ -232,7 +228,7 @@ public final class ModuleManager extends SyncManager {
         try { // Check for module that declare having file outside their own folder.
             try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
                     SuFileInputStream.open("/data/adb/modules/." + moduleInfo.id + "-files"),
-                            StandardCharsets.UTF_8))) {
+                    StandardCharsets.UTF_8))) {
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
                     line = line.trim().replace(' ', '.');
@@ -245,16 +241,12 @@ public final class ModuleManager extends SyncManager {
                     Shell.cmd("rm -rf \"" + line + "\"").exec();
                 }
             }
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
         Shell.cmd("rm -rf /data/adb/modules/" + escapedId + "/").exec();
         Shell.cmd("rm -f /data/adb/modules/." + escapedId + "-files").exec();
         Shell.cmd("rm -rf /data/adb/modules_update/" + escapedId + "/").exec();
         moduleInfo.flags = ModuleInfo.FLAG_METADATA_INVALID;
         return true;
-    }
-
-    public static boolean isModuleActive(String moduleId) {
-        ModuleInfo moduleInfo = ModuleManager.getINSTANCE().getModules().get(moduleId);
-        return moduleInfo != null && (moduleInfo.flags & ModuleInfo.FLAGS_MODULE_ACTIVE) != 0;
     }
 }

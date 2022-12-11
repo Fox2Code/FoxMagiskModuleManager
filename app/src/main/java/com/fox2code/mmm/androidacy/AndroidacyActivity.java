@@ -258,7 +258,7 @@ public final class AndroidacyActivity extends FoxActivity {
                             break;
                     }
                 }
-                return super.onConsoleMessage(consoleMessage);
+                return true;
             }
 
             @Override
