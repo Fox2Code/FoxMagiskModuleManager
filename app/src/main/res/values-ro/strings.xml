@@ -166,4 +166,17 @@
     <string name="androidacy_failed_to_validate_token">Nu s-a putut valida token-ul pentru Androidacy. Vă rugăm să încercați din nou mai târziu.</string>
     <string name="androidacy_server_down">Nu se poate contacta serverul Androidacy. Verificați conexiunea și încercați din nou.</string>
     <string name="androidacy_need_captcha">Actualizare Androidacy blocată de Captcha</string>
+    <string name="androidacy_repo_disabled_message">În această versiune lipsesc cheile client pentru Androidacy Repo. Descărcați versiunea GitHub dacă doriți să beneficiați de funcții precum recenzii de module, verificări automate de securitate și multe altele.</string>
+    <string name="api_key_restart">Cheia API a fost schimbată. Reporniți aplicația pentru a aplica modificările.</string>
+    <string name="api_key_unchanged">Cheia API pe care ați introdus-o este aceeași cu cea deja utilizată.</string>
+    <string name="permission_notification_title">Permiteți notificări\?</string>
+    <string name="permission_notification_message">Avem nevoie de permisiunea de notificări pentru a vă anunța cu privire la actualizările aplicațiilor și modulelor. Dacă nu acordați această permisiune, verificările actualizării de fundal nu vor rula.</string>
+    <string name="permission_notification_grant">Acordare permisiune</string>
+    <string name="background_update_check_permission_required">Activați notificările pentru a activa această opțiune.</string>
+    <string name="dont_ask_again">Nu mai întreba</string>
+    <string name="force_black_theme_desc">Forțează fundalurile negre AMOLED atunci când utilizați tema întunecată. Vă rugăm să rețineți că acest lucru poate avea probleme de contrast cu unele teme de culoare.</string>
+    <string name="force_black_theme_pref">Forțează tema neagră</string>
+    <string name="androidacy_repo_disabled">Acest depozit este în prezent dezactivat</string>
+    <string name="download_full_app">Descărcați versiunea completă</string>
+    <string name="repo_update_failed">Unele depozite nu au reușit să se actualizeze</string>
 </resources>

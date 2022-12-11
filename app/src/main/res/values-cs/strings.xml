@@ -167,4 +167,7 @@
     <string name="androidacy_test_mode_warning">Nastavujete aplikaci tak, aby nepoužívala produkční endpoint pro Androidacy. To může mít za následek nestabilitu aplikace a selhání načtení údajú z online repo. NEHLAŠTE chyby, pokud máte tento přepínač zapnutý. Aplikace bude restartována, aby se znovunačtení repo.</string>
     <string name="crash">Crashnout aplikaci pro testování</string>
     <string name="repackaged_as">Přebaleno jako:</string>
+    <string name="androidacy_repo_disabled_message">V této sestavě chybí klientské klíče pro Androidacy Repo. Pokud chcete využívat funkce, jako jsou recenze modulů, automatické bezpečnostní kontroly a další, stáhněte si vydání z GitHub-u.</string>
+    <string name="download_full_app">Stáhnout plnou verzi</string>
+    <string name="repo_update_failed">Některá repo se nepovedlo aktualizovat</string>
 </resources>
