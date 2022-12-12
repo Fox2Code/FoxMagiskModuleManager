@@ -330,7 +330,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             } else {
                 findPreference("pref_crash").setOnPreferenceClickListener(preference -> {
                     // Hard crash the app
-                    throw new RuntimeException("This is a test crash");
+                    throw new Error("This is a test crash");
                 });
             }
             if (InstallerInitializer.peekMagiskVersion() < Constants.MAGISK_VER_CODE_INSTALL_COMMAND || !MainApplication.isDeveloper()) {

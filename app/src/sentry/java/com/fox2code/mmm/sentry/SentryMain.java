@@ -1,28 +1,18 @@
 package com.fox2code.mmm.sentry;
 
-import static io.sentry.TypeCheckHint.SENTRY_TYPE_CHECK_HINT;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.util.Log;
 
-import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.androidacy.AndroidacyUtil;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.Objects;
 
-import io.sentry.JsonObjectWriter;
-import io.sentry.NoOpLogger;
 import io.sentry.Sentry;
 import io.sentry.android.core.SentryAndroid;
 import io.sentry.android.fragment.FragmentLifecycleIntegration;
-import io.sentry.hints.DiskFlushNotification;
-import io.sentry.protocol.SentryId;
 
 public class SentryMain {
     public static final boolean IS_SENTRY_INSTALLED = true;
@@ -34,6 +24,16 @@ public class SentryMain {
      */
     @SuppressLint({"RestrictedApi", "UnspecifiedImmutableFlag"})
     public static void initialize(final MainApplication mainApplication) {
+        Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
+            SharedPreferences.Editor editor = mainApplication.getSharedPreferences(
+                    "sentry", Context.MODE_PRIVATE).edit();
+            editor.putString("lastExitReason", "crash");
+            editor.apply();
+            // If we just let the default uncaught exception handler handle the
+            // exception, the app will hang and never close.
+            // So we need to kill the app ourselves.
+            System.exit(1);
+        });
         SentryAndroid.init(mainApplication, options -> {
             // If crash reporting is disabled, stop here.
             if (!MainApplication.isCrashReportingEnabled()) {
@@ -55,54 +55,15 @@ public class SentryMain {
                 // Add a callback that will be used before the event is sent to Sentry.
                 // With this callback, you can modify the event or, when returning null, also discard the event.
                 options.setBeforeSend((event, hint) -> {
-                    if (BuildConfig.DEBUG) { // Debug sentry events for debug.
-                        StringBuilder stringBuilder = new StringBuilder("Sentry report debug: ");
-                        try {
-                            event.serialize(new JsonObjectWriter(new Writer() {
-                                @Override
-                                public void write(char[] cbuf) {
-                                    stringBuilder.append(cbuf);
-                                }
-
-                                @Override
-                                public void write(String str) {
-                                    stringBuilder.append(str);
-                                }
-
-                                @Override
-                                public void write(char[] chars, int i, int i1) {
-                                    stringBuilder.append(chars, i, i1);
-                                }
-
-                                @Override
-                                public void write(String str, int off, int len) {
-                                    stringBuilder.append(str, off, len);
-                                }
-
-                                @Override
-                                public void flush() {
-                                }
-
-                                @Override
-                                public void close() {
-                                }
-                            }, 4), NoOpLogger.getInstance());
-                        } catch (IOException ignored) {
-                        }
-                        Log.i(TAG, stringBuilder.toString());
-                    }
-                    if (MainApplication.isCrashReportingEnabled()) {
-                        // Save lastEventId to private shared preferences
-                        SharedPreferences sharedPreferences = mainApplication.getSharedPreferences("sentry", Context.MODE_PRIVATE);
-                        sharedPreferences.edit().putString("lastEventId",
-                                Objects.requireNonNull(event.getEventId()).toString()).apply();
-                        return event;
-                    } else {
-                        // We need to do this to avoid crash delay on crash when the event is dropped
-                        DiskFlushNotification diskFlushNotification = hint.getAs(SENTRY_TYPE_CHECK_HINT, DiskFlushNotification.class);
-                        if (diskFlushNotification != null) diskFlushNotification.markFlushed();
-                        return null;
-                    }
+                    // Save lastEventId to private shared preferences
+                    SharedPreferences sharedPreferences = MainApplication.getINSTANCE().getSharedPreferences(
+                            "sentry",
+                            Context.MODE_PRIVATE);
+                    String lastEventId = Objects.requireNonNull(event.getEventId()).toString();
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("lastEventId", lastEventId);
+                    editor.apply();
+                    return event;
                 });
                 // Filter breadrcrumb content from crash report.
                 options.setBeforeBreadcrumb((breadcrumb, hint) -> {
@@ -113,16 +74,6 @@ public class SentryMain {
                         breadcrumb.setData("url", AndroidacyUtil.hideToken(url));
                     }
                     return breadcrumb;
-                });
-                // On uncaught exception, set the lastEventId in private sentry preferences
-                Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
-                    SentryId lastEventId = Sentry.captureException(throwable);
-                    SharedPreferences.Editor editor = mainApplication.getSharedPreferences(
-                            "sentry", Context.MODE_PRIVATE).edit();
-                    editor.putString("lastExitReason", "crash");
-                    editor.apply();
-                    // Kill the app
-                    System.exit(2);
                 });
             }
         });
