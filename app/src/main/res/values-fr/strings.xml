@@ -131,6 +131,7 @@
     <string name="add_repo">Ajouter dépôt</string>
     <string name="remove_repo">Supprimer dépôt</string>
     <string name="custom_url">URL personnalisée</string>
+    <string name="link_copied">Lien copié</string>
     <string name="androidacy_repo_info">Ce dépôt pourrait afficher certaines publicitées non intruisives pour pallier aux couts financiers des serveurs et du développement.</string>
     <string name="backup_module_list">Sauvegarder les modules</string>
     <string name="restore_module_list">Restaurer les modules</string>
@@ -179,4 +180,22 @@
     <string name="androidacy_failed_to_parse_token">La clé n\’a pas pu être retrouvée sur Androidacy. Merci de retenter ultérieurement.</string>
     <string name="androidacy_failed_to_validate_token">La clé n\’a pas pu être validée chez Androidacy. Merci de retenter ultérieurement.</string>
     <string name="androidacy_server_down">Impossible de contacter les serveurs d\’Androidacy. Vérifiez votre connexion et réessayer.</string>
+    <string name="androidacy_need_captcha">Mise à jour d\’Androidacy bloquée par Captcha</string>
+    <string name="api_key_restart">La clé d\’API à été changée. Redémarrer l\’application pour appliquer les changements.</string>
+    <string name="api_key_unchanged">La clé d\’API que vous avez entré est la même que celle étant déjà utilisée.</string>
+    <string name="permission_notification_title">Autoriser les notifications?</string>
+    <string name="permission_notification_message">Nous avons de l\’accès aux notifications pour vous avertir des mises à jour de l\’application et des modules. Si vous n\’autorisez cette permission, la vérification des mises à jours en arrière-plan ne fonctionnera pas.</string>
+    <string name="permission_notification_grant">Accorder la permission</string>
+    <string name="background_update_check_permission_required">Merci d\’activer les notifications pour activer cette option.</string>
+    <string name="dont_ask_again">Ne plus demander</string>
+    <string name="force_black_theme_desc">Forcer l\’arrière-plan noir AMOLED black lorsce que le thème sombre est utilisé.
+        SVP, soyez au avertit que celà pourrait engendrer des problèmes de contrastes avec certains thèmes de couleures.</string>
+    <string name="force_black_theme_pref">Forcer le thème noir</string>
+    <string name="androidacy_repo_disabled">Ce dépôt est actuellement désactivé</string>
+    <string name="androidacy_repo_disabled_message">Les clés du client sont manquantes dans cette version pour le
+        Dépôt Androidacy.
+        Merci de
+        télécharger la version Github si vous appréciez bénéficier des fonctionnalités comme les notes de modules, les vérifications automatiques de sécurités, et plus encore.</string>
+    <string name="download_full_app">Télécharger la version complête</string>
+    <string name="repo_update_failed">Certains dépôts n\’ont pas pu être mis à jours</string>
 </resources>

@@ -52,14 +52,14 @@
     <string name="showcase_mode_pref">Защита от изменений</string>
     <string name="showcase_mode_desc">Режим блокировки, не позволяющий менеджеру выполнять действия с модулями</string>
     <string name="prevent_reboot_pref">Без перезагрузки</string>
-    <string name="prevent_reboot_desc">Предотвращает неожиданные перезагрузки системы по завершении установки модулей</string>
+    <string name="prevent_reboot_desc">Предотвращает принудительную перезагрузку после установки модуля</string>
     <string name="pref_category_settings">Настройки</string>
     <string name="enable_monet">Цвета из Monet</string>
     <string name="pref_category_info">Информация</string>
     <string name="show_licenses">Показать лицензии</string>
     <string name="licenses">Лицензии</string>
     <string name="show_incompatible_pref">Несовместимые модули</string>
-    <string name="show_incompatible_desc">Показывать непригодные для вашего устройства (исходя из метаданных) модули</string>
+    <string name="show_incompatible_desc">Показывать модули, несовместимые с вашим устройством (исходя из метаданных)</string>
     <string name="magisk_outdated">Установите новую версию Magisk!</string>
     <string name="pref_category_repos">Репозитории</string>
     <string name="pref_category_security">Безопасность</string>
@@ -98,17 +98,14 @@
     <string name="dns_over_https_pref">DNS поверх HTTPS</string>
     <string name="dns_over_https_desc">Может исправить проблемы с подключением к сети (не распространяется на WebView)</string>
     <string name="disable_extensions_pref">Отключить расширения</string>
-    <string name="disable_extensions_desc">
-        Отключает расширения МмM Fox’а, тем самым не давая модулям
-        использовать встроенный терминал, полезно, если модуль некорректно работает с расширениями МмM Fox’а.
-    </string>
+    <string name="disable_extensions_desc">Отключает расширения МмM Fox’а, тем самым не давая модулям использовать встроенный терминал. Полезно, если модуль некорректно работает с расширениями менеджера.</string>
     <string name="wrap_text_pref">Перенос по словам</string>
     <string name="wrap_text_desc">Переносить текст на другую строку, чтобы не помещать всё на одной во время установки модуля.</string>
     <string name="enable_blur_pref">Включить эффект размытия</string>
     <string name="disable_chips_in_description">Отключить форматирование в описании</string>
     <string name="repo_enabled">Репо включён</string>
     <string name="repo_disabled">Репо отключен</string>
-    <string name="add_repo">Добавить репо</string>
+    <string name="add_repo">Добавить репозиторий</string>
     <string name="remove_repo">Убрать репо</string>
     <string name="custom_url">Свой URL</string>
     <string name="backup_module_list">Рез. копирование модулей</string>
@@ -143,8 +140,8 @@
     <string name="notification_update_pref">Фоновая проверка обновлений модулей</string>
     <string name="notification_update_debug_pref">Тестовое уаедомление</string>
     <string name="language_translated_by">Перевёл Omegaplex</string>
-    <string name="crash_reporting">Автоматически отправлять разработчикам отчёты об ошибках</string>
-    <string name="api_key_summary">Использовать пользовательский API-ключ для Androidacy. Полезен для премиум-подписчиков для удаления рекламы и многого другого.</string>
+    <string name="crash_reporting">Автоотчёты об ошибках</string>
+    <string name="api_key_summary">Пользовательский API-ключ для Androidacy. Удаляет рекламу для Premium-подписчиков.</string>
     <string name="api_key_not_set">API-ключ Androidacy отсутствует</string>
     <string name="api_key_set">Текущий API-ключ Androidacy</string>
     <string name="api_key_invalid">Не удалось подтвердить ключ API. Пожалуйста, проверьте его и повторите попытку.</string>
@@ -159,4 +156,17 @@
     <string name="restart">Перезапустить</string>
     <string name="wrapped_from">Упаковано из:</string>
     <string name="repackaged_as">Переупаковано как:</string>
+    <string name="api_key_restart">API-ключ был изменён. Перезагрузите приложение для применения изменений.</string>
+    <string name="permission_notification_message">Нам необходимо разрешение на отправку уведомлений, чтобы оповещать вас об обновлениях приложения и модулей. Фоновые проверки выполняться не будут, если вы не предоставите это разрешение.</string>
+    <string name="force_black_theme_desc">Применяет чёрный фон при использовании тёмной темы. Пожалуйста, имейте в виду, что это может привести к проблемам с контрастностью в некоторых цветовых темах.</string>
+    <string name="androidacy_repo_disabled_message">В этой сборке отсутствуют клиентские ключи для Androidacy Repo. Пожалуйста, загрузите версию с GitHub, если вы хотите воспользоваться такими возможностями, как обзоры модулей, автоматические проверки безопасности и многое другое.</string>
+    <string name="api_key_unchanged">Введённый API-ключ совпадает с уже используемым.</string>
+    <string name="permission_notification_title">Отправлять уведомления\?</string>
+    <string name="permission_notification_grant">Предоставить разрешение</string>
+    <string name="background_update_check_permission_required">Чтобы включить эту опцию, включите уведомления.</string>
+    <string name="dont_ask_again">Не спрашивать</string>
+    <string name="force_black_theme_pref">Чёрная тема</string>
+    <string name="androidacy_repo_disabled">Репозиторий отключён</string>
+    <string name="download_full_app">Скачать полную версию</string>
+    <string name="repo_update_failed">Некоторые репо не обновлены</string>
 </resources>
