@@ -267,7 +267,11 @@ dependencies {
     implementation 'com.google.net.cronet:cronet-okhttp:0.1.0'
     annotationProcessor "io.noties:prism4j-bundler:2.0.0"
     implementation "com.caverock:androidsvg:1.4"
+    // Icons
+    // implementation "com.mikepenz:iconics-core:3.2.5"
+    //implementation "androidx.appcompat:appcompat:${versions.appCompat}"
 
+    // implementation 'com.mikepenz:community-material-typeface:7.0.96.0-kotlin@aar'
     // Test
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'

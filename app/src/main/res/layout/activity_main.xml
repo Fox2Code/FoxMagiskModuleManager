@@ -77,6 +77,15 @@
         setting high app:cardCornerRadius is not supported on some versions
         so we must use code to get a round appearance.
         -->
+        <!-- Material down arrow icon -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/down_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@color/transparent"
+            android:visibility="invisible" />
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/search_card"
             android:layout_width="wrap_content"

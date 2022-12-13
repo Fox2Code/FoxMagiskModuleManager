@@ -217,4 +217,5 @@
     shortly</string>
     <string name="sentry_dialogue_no_description">Could not submit feedback as no
         description was provided</string>
+    <string name="go_to_online_repo">Scroll to online repo</string>
 </resources>
