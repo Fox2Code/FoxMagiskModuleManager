@@ -85,7 +85,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:background="@color/transparent"
-            android:visibility="invisible" />
+            android:visibility="gone" />
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/search_card"
             android:layout_width="wrap_content"
