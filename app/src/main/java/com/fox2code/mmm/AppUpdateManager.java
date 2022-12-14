@@ -111,9 +111,9 @@ public class AppUpdateManager {
                     this.latestPreRelease = "";
                     this.preReleaseNewer = false;
                 }
-                Log.d(TAG, "Latest release: " + latestRelease);
-                Log.d(TAG, "Latest pre-release: " + latestPreRelease);
-                Log.d(TAG, "Latest pre-release newer: " + preReleaseNewer);
+                if (BuildConfig.DEBUG) Log.d(TAG, "Latest release: " + latestRelease);
+                if (BuildConfig.DEBUG) Log.d(TAG, "Latest pre-release: " + latestPreRelease);
+                if (BuildConfig.DEBUG) Log.d(TAG, "Latest pre-release newer: " + preReleaseNewer);
                 this.lastChecked = System.currentTimeMillis();
                 this.lastCheckSuccess = true;
             } catch (Exception ioe) {

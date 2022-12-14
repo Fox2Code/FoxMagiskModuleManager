@@ -63,7 +63,7 @@ public class AndroidacyWebAPI {
 
     void openNativeModuleDialogRaw(String moduleUrl, String moduleId, String installTitle,
                                    String checksum, boolean canInstall) {
-        Log.d(TAG, "ModuleDialog, downloadUrl: " + AndroidacyUtil.hideToken(moduleUrl) +
+        if (BuildConfig.DEBUG) Log.d(TAG, "ModuleDialog, downloadUrl: " + AndroidacyUtil.hideToken(moduleUrl) +
                 ", moduleId: " + moduleId + ", installTitle: " + installTitle +
                 ", checksum: " + checksum + ", canInstall: " + canInstall);
         this.downloadMode = false;
@@ -145,7 +145,7 @@ public class AndroidacyWebAPI {
 
     void notifyCompatModeRaw(int value) {
         if (this.consumedAction) return;
-        Log.d(TAG, "Androidacy Compat mode: " + value);
+        if (BuildConfig.DEBUG) Log.d(TAG, "Androidacy Compat mode: " + value);
         this.notifiedCompatMode = value;
         if (value < 0) {
             value = 0;
@@ -180,7 +180,7 @@ public class AndroidacyWebAPI {
         if (this.consumedAction) return;
         this.consumedAction = true;
         this.downloadMode = false;
-        Log.d(TAG, "Received openUrl request: " + url);
+        if (BuildConfig.DEBUG) Log.d(TAG, "Received openUrl request: " + url);
         if (Uri.parse(url).getScheme().equals("https")) {
             IntentHelper.openUrl(this.activity, url);
         }
@@ -194,7 +194,7 @@ public class AndroidacyWebAPI {
         if (this.consumedAction) return;
         this.consumedAction = true;
         this.downloadMode = false;
-        Log.d(TAG, "Received openCustomTab request: " + url);
+        if (BuildConfig.DEBUG) Log.d(TAG, "Received openCustomTab request: " + url);
         if (Uri.parse(url).getScheme().equals("https")) {
             IntentHelper.openCustomTab(this.activity, url);
         }
@@ -238,7 +238,7 @@ public class AndroidacyWebAPI {
         }
         this.consumedAction = true;
         this.downloadMode = false;
-        Log.d(TAG, "Received install request: " +
+        if (BuildConfig.DEBUG) Log.d(TAG, "Received install request: " +
                 moduleUrl + " " + installTitle + " " + checksum);
         if (!AndroidacyUtil.isAndroidacyLink(moduleUrl)) {
             this.forceQuitRaw("Non Androidacy module link used on Androidacy");
@@ -375,6 +375,7 @@ public class AndroidacyWebAPI {
     /**
      * Return true if the module is an Andoridacy module.
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     @JavascriptInterface
     public boolean isAndroidacyModule(String moduleId) {
         LocalModuleInfo localModuleInfo = ModuleManager.getINSTANCE().getModules().get(moduleId);
@@ -447,7 +448,7 @@ public class AndroidacyWebAPI {
 
     /**
      * Return current android sdk-int version code, see:
-     * https://source.android.com/setup/start/build-numbers
+     * <a href="https://source.android.com/setup/start/build-numbers">right here</a>
      */
     @JavascriptInterface
     public int getAndroidVersionCode() {

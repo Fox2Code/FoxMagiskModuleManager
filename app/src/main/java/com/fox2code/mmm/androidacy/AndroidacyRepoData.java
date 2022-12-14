@@ -108,7 +108,7 @@ public final class AndroidacyRepoData extends RepoData {
                     deviceId = output;
                 }
             }
-            // Now, get device model, manufacturer, and Android version
+            // Now, get device model, manufacturer, and Android version originally from
             String deviceModel = android.os.Build.MODEL;
             String deviceManufacturer = android.os.Build.MANUFACTURER;
             String androidVersion = android.os.Build.VERSION.RELEASE;

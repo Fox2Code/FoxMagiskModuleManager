@@ -113,7 +113,7 @@ public final class ModuleManager extends SyncManager {
                     PropUtils.readProperties(moduleInfo,
                             "/data/adb/modules/" + module + "/module.prop", true);
                 } catch (Exception e) {
-                    Log.d(TAG, "Failed to parse metadata!", e);
+                    if (BuildConfig.DEBUG) Log.d(TAG, "Failed to parse metadata!", e);
                     moduleInfo.flags |= FLAG_MM_INVALID;
                 }
             }
@@ -136,7 +136,7 @@ public final class ModuleManager extends SyncManager {
                     PropUtils.readProperties(moduleInfo,
                             "/data/adb/modules_update/" + module + "/module.prop", true);
                 } catch (Exception e) {
-                    Log.d(TAG, "Failed to parse metadata!", e);
+                    if (BuildConfig.DEBUG) Log.d(TAG, "Failed to parse metadata!", e);
                     moduleInfo.flags |= FLAG_MM_INVALID;
                 }
             }

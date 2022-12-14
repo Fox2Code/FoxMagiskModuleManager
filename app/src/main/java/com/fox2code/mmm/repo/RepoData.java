@@ -42,7 +42,7 @@ public class RepoData extends XRepo {
     public String name, website, support, donate, submitModule;
     private boolean forceHide, enabled; // Cache for speed
 
-    protected RepoData(String url, File cacheRoot, SharedPreferences cachedPreferences) {
+    public RepoData(String url, File cacheRoot, SharedPreferences cachedPreferences) {
         this.url = url;
         this.id = RepoManager.internalIdOfUrl(url);
         this.cacheRoot = cacheRoot;

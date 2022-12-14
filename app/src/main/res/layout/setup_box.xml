@@ -42,7 +42,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="4dp"
-                android:checked="true"
+                android:checked="false"
                 android:key="pref_androidacy_repo_enabled"
                 android:text="@string/setup_androidacy_repo"
                 android:textSize="14sp" />
@@ -65,7 +65,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="2dp"
-                android:checked="true"
+                android:checked="false"
                 android:text="@string/setup_custom_repos"
                 android:textSize="12sp" />
 
@@ -86,7 +86,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="4dp"
-                android:checked="true"
+                android:checked="false"
                 android:key="pref_crash_reporting_enabled"
                 android:text="@string/setup_crash_reporting"
                 android:textSize="14sp" />
@@ -98,7 +98,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="4dp"
-                android:checked="true"
+                android:checked="false"
                 android:key="pref_background_update_check"
                 android:text="@string/setup_background_update_check"
                 android:textSize="14sp" />

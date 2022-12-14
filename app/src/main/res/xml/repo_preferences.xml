@@ -1,36 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory
-        app:key="pref_magisk_alt_repo"
-        app:title="@string/loading">
-        <SwitchPreferenceCompat
-            app:icon="@drawable/ic_baseline_extension_24"
-            app:key="pref_magisk_alt_repo_enabled"
-            app:singleLineTitle="false"
-            app:switchTextOff="@string/repo_disabled"
-            app:switchTextOn="@string/repo_enabled" />
-        <com.fox2code.mmm.settings.LongClickablePreference
-            app:icon="@drawable/ic_baseline_language_24"
-            app:key="pref_magisk_alt_repo_website"
-            app:singleLineTitle="false"
-            app:title="@string/website" />
-        <com.fox2code.mmm.settings.LongClickablePreference
-            app:icon="@drawable/ic_baseline_support_24"
-            app:key="pref_magisk_alt_repo_support"
-            app:singleLineTitle="false"
-            app:title="@string/support" />
-        <com.fox2code.mmm.settings.LongClickablePreference
-            app:icon="@drawable/ic_baseline_monetization_on_24"
-            app:key="pref_magisk_alt_repo_donate"
-            app:singleLineTitle="false"
-            app:title="@string/donate" />
-        <com.fox2code.mmm.settings.LongClickablePreference
-            app:icon="@drawable/ic_baseline_upload_file_24"
-            app:key="pref_magisk_alt_repo_submit"
-            app:singleLineTitle="false"
-            app:title="@string/submit_modules" />
-    </PreferenceCategory>
-    <PreferenceCategory
         app:key="pref_androidacy_repo"
         app:title="@string/loading">
         <SwitchPreferenceCompat
@@ -86,6 +56,36 @@
             app:key="pref_androidacy_ads_disclaimer"
             app:singleLineTitle="false"
             app:summary="@string/androidacy_repo_info" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:key="pref_magisk_alt_repo"
+        app:title="@string/loading">
+        <SwitchPreferenceCompat
+            app:icon="@drawable/ic_baseline_extension_24"
+            app:key="pref_magisk_alt_repo_enabled"
+            app:singleLineTitle="false"
+            app:switchTextOff="@string/repo_disabled"
+            app:switchTextOn="@string/repo_enabled" />
+        <com.fox2code.mmm.settings.LongClickablePreference
+            app:icon="@drawable/ic_baseline_language_24"
+            app:key="pref_magisk_alt_repo_website"
+            app:singleLineTitle="false"
+            app:title="@string/website" />
+        <com.fox2code.mmm.settings.LongClickablePreference
+            app:icon="@drawable/ic_baseline_support_24"
+            app:key="pref_magisk_alt_repo_support"
+            app:singleLineTitle="false"
+            app:title="@string/support" />
+        <com.fox2code.mmm.settings.LongClickablePreference
+            app:icon="@drawable/ic_baseline_monetization_on_24"
+            app:key="pref_magisk_alt_repo_donate"
+            app:singleLineTitle="false"
+            app:title="@string/donate" />
+        <com.fox2code.mmm.settings.LongClickablePreference
+            app:icon="@drawable/ic_baseline_upload_file_24"
+            app:key="pref_magisk_alt_repo_submit"
+            app:singleLineTitle="false"
+            app:title="@string/submit_modules" />
     </PreferenceCategory>
     <PreferenceCategory
         app:key="pref_custom_repo_0"

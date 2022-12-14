@@ -25,7 +25,7 @@ android {
 
     defaultConfig {
         applicationId "com.fox2code.mmm"
-        minSdk 21
+        minSdk 23
         targetSdk 33
         versionCode 61
         versionName "1.0.1"

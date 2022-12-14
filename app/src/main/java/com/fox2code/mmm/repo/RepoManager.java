@@ -75,12 +75,12 @@ public final class RepoManager extends SyncManager {
         this.repoData = new LinkedHashMap<>();
         this.modules = new HashMap<>();
         // We do not have repo list config yet.
+        this.androidacyRepoData = this.addAndroidacyRepoData();
         RepoData altRepo = this.addRepoData(
                 MAGISK_ALT_REPO, "Magisk Modules Alt Repo");
         altRepo.defaultWebsite = RepoManager.MAGISK_ALT_REPO_HOMEPAGE;
         altRepo.defaultSubmitModule =
                 "https://github.com/Magisk-Modules-Alt-Repo/submission/issues";
-        this.androidacyRepoData = this.addAndroidacyRepoData();
         this.customRepoManager = new CustomRepoManager(mainApplication, this);
         XHooks.onRepoManagerInitialize();
         // Populate default cache
@@ -145,10 +145,10 @@ public final class RepoManager extends SyncManager {
 
     static boolean isBuiltInRepo(String repo) {
         switch (repo) {
-            case RepoManager.MAGISK_ALT_REPO:
-            case RepoManager.MAGISK_ALT_REPO_JSDELIVR:
             case RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT:
             case RepoManager.ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT:
+            case RepoManager.MAGISK_ALT_REPO:
+            case RepoManager.MAGISK_ALT_REPO_JSDELIVR:
                 return true;
         }
         return false;

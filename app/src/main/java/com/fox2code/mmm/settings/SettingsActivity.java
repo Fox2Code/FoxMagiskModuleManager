@@ -1,6 +1,9 @@
 package com.fox2code.mmm.settings;
 
+import static java.lang.Integer.parseInt;
+
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
@@ -70,8 +73,10 @@ import com.topjohnwu.superuser.internal.UiThreadHandler;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
 
@@ -80,6 +85,50 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
     private static final String TAG = "SettingsActivity";
     private static boolean devModeStepFirstBootIgnore = MainApplication.isDeveloper();
     private static int devModeStep = 0;
+
+    // Shamelessly adapted from https://github.com/DrKLO/Telegram/blob/2c71f6c92b45386f0c2b25f1442596462404bb39/TMessagesProj/src/main/java/org/telegram/messenger/SharedConfig.java#L1254
+    public final static int PERFORMANCE_CLASS_LOW = 0;
+    public final static int PERFORMANCE_CLASS_AVERAGE = 1;
+    public final static int PERFORMANCE_CLASS_HIGH = 2;
+
+    @PerformanceClass
+    public static int getDevicePerformanceClass() {
+        int devicePerformanceClass;
+        int androidVersion = Build.VERSION.SDK_INT;
+        int cpuCount = Runtime.getRuntime().availableProcessors();
+        int memoryClass =
+                ((ActivityManager) MainApplication.getINSTANCE().getSystemService(Context.ACTIVITY_SERVICE)).getMemoryClass();
+        int totalCpuFreq = 0;
+        int freqResolved = 0;
+        for (int i = 0; i < cpuCount; i++) {
+            try {
+                RandomAccessFile reader = new RandomAccessFile(String.format(Locale.ENGLISH, "/sys/devices/system/cpu/cpu%d/cpufreq/cpuinfo_max_freq", i), "r");
+                String line = reader.readLine();
+                if (line != null) {
+                    totalCpuFreq += parseInt(line) / 1000;
+                    freqResolved++;
+                }
+                reader.close();
+            } catch (Throwable ignore) {}
+        }
+        int maxCpuFreq = freqResolved == 0 ? -1 : (int) Math.ceil(totalCpuFreq / (float) freqResolved);
+
+        if (androidVersion < 21 || cpuCount <= 2 || memoryClass <= 100 || cpuCount <= 4 && maxCpuFreq != -1 && maxCpuFreq <= 1250 || cpuCount <= 4 && maxCpuFreq <= 1600 && memoryClass <= 128 && androidVersion <= 21 || cpuCount <= 4 && maxCpuFreq <= 1300 && memoryClass <= 128 && androidVersion <= 24) {
+            devicePerformanceClass = PERFORMANCE_CLASS_LOW;
+        } else if (cpuCount < 8 || memoryClass <= 160 || maxCpuFreq != -1 && maxCpuFreq <= 2050 || maxCpuFreq == -1 && cpuCount == 8 && androidVersion <= 23) {
+            devicePerformanceClass = PERFORMANCE_CLASS_AVERAGE;
+        } else {
+            devicePerformanceClass = PERFORMANCE_CLASS_HIGH;
+        }
+
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "getDevicePerformanceClass: androidVersion=" + androidVersion + " cpuCount=" + cpuCount + " memoryClass=" + memoryClass + " maxCpuFreq=" + maxCpuFreq + " devicePerformanceClass=" + devicePerformanceClass);
+        }
+
+        return devicePerformanceClass;
+    }
+
+    public @interface PerformanceClass {}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,13 +281,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     int mPendingIntentId = 123456;
                     // If < 23, FLAG_IMMUTABLE is not available
                     PendingIntent mPendingIntent;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
-                                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                    } else {
-                        mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
-                                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-                    }
+                    mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                            mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                     AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                     mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
                     if (BuildConfig.DEBUG) {
@@ -252,9 +296,36 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 return true;
             });
             Preference enableBlur = findPreference("pref_enable_blur");
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                enableBlur.setSummary(R.string.require_android_6);
-                enableBlur.setEnabled(false);
+            // Disable blur on low performance devices
+            if (getDevicePerformanceClass() < PERFORMANCE_CLASS_AVERAGE) {
+                // Show a warning
+                enableBlur.setOnPreferenceChangeListener((preference, newValue) -> {
+                    if (newValue.equals(true)) {
+                        new MaterialAlertDialogBuilder(requireContext())
+                                .setTitle(R.string.low_performance_device_dialogue_title)
+                                .setMessage(R.string.low_performance_device_dialogue_message)
+                                .setPositiveButton(R.string.ok, (dialog, which) -> {
+                                    // Toggle blur on
+                                    ((TwoStatePreference) findPreference("pref_enable_blur")).setChecked(true);
+                                    SharedPreferences.Editor editor =
+                                            getPreferenceManager().getSharedPreferences().edit();
+                                    editor.putBoolean("pref_enable_blur", true).apply();
+                                    // Set summary
+                                    findPreference("pref_enable_blur").setSummary(R.string.blur_disabled_summary);
+                                })
+                                .setNegativeButton(R.string.cancel, (dialog, which) -> {
+                                    // Revert to blur on
+                                    ((TwoStatePreference) findPreference("pref_enable_blur")).setChecked(false);
+                                    SharedPreferences.Editor editor =
+                                            getPreferenceManager().getSharedPreferences().edit();
+                                    editor.putBoolean("pref_enable_blur", false).apply();
+                                    // Set summary
+                                    findPreference("pref_enable_blur").setSummary(null);
+                                })
+                                .show();
+                    }
+                    return true;
+                });
             }
 
             Preference disableMonet = findPreference("pref_enable_monet");
@@ -566,13 +637,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                     int mPendingIntentId = 123456;
                                     // If < 23, FLAG_IMMUTABLE is not available
                                     PendingIntent mPendingIntent;
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                        mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
-                                                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                                    } else {
-                                        mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
-                                                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-                                    }
+                                    mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                                            mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                                     AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                                     mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
                                     if (BuildConfig.DEBUG) {
@@ -603,13 +669,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                     int mPendingIntentId = 123456;
                                     // If < 23, FLAG_IMMUTABLE is not available
                                     PendingIntent mPendingIntent;
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                        mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
-                                                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                                    } else {
-                                        mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
-                                                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-                                    }
+                                    mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                                            mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                                     AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                                     mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
                                     if (BuildConfig.DEBUG) {
@@ -694,13 +755,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                         int mPendingIntentId = 123456;
                                         // If < 23, FLAG_IMMUTABLE is not available
                                         PendingIntent mPendingIntent;
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                            mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
-                                                    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                                        } else {
-                                            mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
-                                                    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-                                        }
+                                        mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                                                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                                         AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                                         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
                                         if (BuildConfig.DEBUG) {
@@ -752,13 +808,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                                 int mPendingIntentId = 123456;
                                                 // If < 23, FLAG_IMMUTABLE is not available
                                                 PendingIntent mPendingIntent;
-                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                                    mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
-                                                            mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                                                } else {
-                                                    mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
-                                                            mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-                                                }
+                                                mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                                                        mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                                                 AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                                                 mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
                                                 if (BuildConfig.DEBUG) {
