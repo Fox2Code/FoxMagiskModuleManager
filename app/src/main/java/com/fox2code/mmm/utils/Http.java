@@ -54,7 +54,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okhttp3.dnsoverhttps.DnsOverHttps;
-import okhttp3.logging.HttpLoggingInterceptor;
 import okio.BufferedSink;
 
 public class Http {
@@ -159,6 +158,12 @@ public class Http {
             }
             builder.setStoragePath(mainApplication.getCacheDir().getAbsolutePath() + "/cronet");
             builder.enableHttpCache(CronetEngine.Builder.HTTP_CACHE_DISK_NO_HTTP, 10 * 1024 * 1024);
+            // Add quic hint
+            builder.addQuicHint("github.com", 443, 443);
+            builder.addQuicHint("githubusercontent.com", 443, 443);
+            builder.addQuicHint("jsdelivr.net", 443, 443);
+            builder.addQuicHint("androidacy.com", 443, 443);
+            builder.addQuicHint("sentry.io", 443, 443);
             CronetEngine engine = builder.build();
             httpclientBuilder.addInterceptor(CronetInterceptor.newBuilder(engine).build());
         } catch (Exception e) {
@@ -172,13 +177,6 @@ public class Http {
         httpClient = followRedirects(httpclientBuilder, true).build();
         followRedirects(httpclientBuilder, false).build();
         httpclientBuilder.dns(fallbackDNS);
-        if (BuildConfig.DEBUG) {
-            // Enable logging
-            HttpLoggingInterceptor logging = new HttpLoggingInterceptor(s -> Log.d(TAG, s));
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-            httpclientBuilder.addInterceptor(logging);
-            Log.d(TAG, "OkHttp logging enabled");
-        }
         httpClientDoH = followRedirects(httpclientBuilder, true).build();
         followRedirects(httpclientBuilder, false).build();
         httpclientBuilder.cache(new Cache(new File(mainApplication.getCacheDir(), "http_cache"), 16L * 1024L * 1024L)); // 16Mib of cache
@@ -343,24 +341,49 @@ public class Http {
     }
 
     public static void ensureCacheDirs(MainActivity mainActivity) {
+        // Recursively ensure cache dirs for webview exist under our cache dir
         File cacheDir = mainActivity.getCacheDir();
-        File cacheDir2 = new File(cacheDir, "HTTP Cache");
-        if (!cacheDir2.exists()) {
-            if (!cacheDir2.mkdirs()) {
-                Log.e(TAG, "Failed to create cache dir");
+        File webviewCacheDir = new File(cacheDir, "WebView");
+        if (!webviewCacheDir.exists()) {
+            if (!webviewCacheDir.mkdirs()) {
+                Log.e(TAG, "Failed to create webview cache dir");
             }
         }
-        // Ensure js and wasm cache dirs
-        File jsCacheDir = new File(cacheDir2, "js");
-        if (!jsCacheDir.exists()) {
-            if (!jsCacheDir.mkdirs()) {
-                Log.e(TAG, "Failed to create js cache dir");
+        File webviewCacheDirCache = new File(webviewCacheDir, "Default");
+        if (!webviewCacheDirCache.exists()) {
+            if (!webviewCacheDirCache.mkdirs()) {
+                Log.e(TAG, "Failed to create webview cache dir");
             }
         }
-        File wasmCacheDir = new File(cacheDir2, "wasm");
-        if (!wasmCacheDir.exists()) {
-            if (!wasmCacheDir.mkdirs()) {
-                Log.e(TAG, "Failed to create wasm cache dir");
+        File webviewCacheDirCacheCodeCache = new File(webviewCacheDirCache, "HTTP Cache");
+        if (!webviewCacheDirCacheCodeCache.exists()) {
+            if (!webviewCacheDirCacheCodeCache.mkdirs()) {
+                Log.e(TAG, "Failed to create webview cache dir");
+            }
+        }
+        File webviewCacheDirCacheCodeCacheIndex = new File(webviewCacheDirCacheCodeCache, "Code Cache");
+        if (!webviewCacheDirCacheCodeCacheIndex.exists()) {
+            if (!webviewCacheDirCacheCodeCacheIndex.mkdirs()) {
+                Log.e(TAG, "Failed to create webview cache dir");
+            }
+        }
+        File webviewCacheDirCacheCodeCacheIndexIndex = new File(webviewCacheDirCacheCodeCacheIndex, "Index");
+        if (!webviewCacheDirCacheCodeCacheIndexIndex.exists()) {
+            if (!webviewCacheDirCacheCodeCacheIndexIndex.mkdirs()) {
+                Log.e(TAG, "Failed to create webview cache dir");
+            }
+        }
+        // Create the js and wasm dirs
+        File webviewCacheDirCacheCodeCacheIndexIndexJs = new File(webviewCacheDirCacheCodeCache, "js");
+        if (!webviewCacheDirCacheCodeCacheIndexIndexJs.exists()) {
+            if (!webviewCacheDirCacheCodeCacheIndexIndexJs.mkdirs()) {
+                Log.e(TAG, "Failed to create webview cache dir");
+            }
+        }
+        File webviewCacheDirCacheCodeCacheIndexIndexWasm = new File(webviewCacheDirCacheCodeCache, "wasm");
+        if (!webviewCacheDirCacheCodeCacheIndexIndexWasm.exists()) {
+            if (!webviewCacheDirCacheCodeCacheIndexIndexWasm.mkdirs()) {
+                Log.e(TAG, "Failed to create webview cache dir");
             }
         }
     }

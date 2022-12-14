@@ -26,6 +26,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.NotificationManagerCompat;
@@ -51,6 +53,7 @@ import com.fox2code.mmm.utils.ExternalHelper;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import org.chromium.net.ExperimentalCronetEngine;
@@ -61,6 +64,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Objects;
 
 import eightbitlab.com.blurview.BlurView;
 
@@ -168,7 +172,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     moduleViewListBuilder.addNotification(NotificationType.MAGISK_OUTDATED);
                 if (!MainApplication.isShowcaseMode())
                     moduleViewListBuilder.addNotification(NotificationType.INSTALL_FROM_STORAGE);
-                ensurePermissions();
                 ModuleManager.getINSTANCE().scan();
                 ModuleManager.getINSTANCE().runAfterScan(moduleViewListBuilder::appendInstalledModules);
                 this.commonNext();
@@ -195,6 +198,22 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     // Fix insets not being accounted for correctly
                     updateScreenInsets(getResources().getConfiguration());
                 });
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    showSetupBox();
+
+                    // Wait for pref_first_launch to be false
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                    while (prefs.getBoolean("pref_first_launch", true)) {
+                        try {
+                            //noinspection BusyWait
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                ensurePermissions();
                 Log.i(TAG, "Scanning for modules!");
                 if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Initialize Update");
                 final int max = ModuleManager.getINSTANCE().getUpdatableModuleCount();
@@ -260,6 +279,16 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 String lastEventId = preferences.getString("lastEventId", "");
                 if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Last Event ID: " + lastEventId);
                 if (!lastEventId.equals("")) {
+                    try {
+                        ExperimentalCronetEngine cronetEngine = new ExperimentalCronetEngine.Builder(this).build();
+                        CronetURLStreamHandlerFactory cronetURLStreamHandlerFactory = new CronetURLStreamHandlerFactory(cronetEngine);
+                        URL.setURLStreamHandlerFactory(cronetURLStreamHandlerFactory);
+                    } catch (Exception e) {
+                        if (BuildConfig.DEBUG) {
+                            Log.w(TAG, "Failed to setup cronet HTTPURLConnection factory", e);
+                            Log.w(TAG, "This might mean the factory is already set");
+                        }
+                    }
                     // Three edit texts for the user to enter their email, name and a description of the issue
                     EditText email = new EditText(this);
                     email.setHint(R.string.email);
@@ -320,9 +349,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                                 if (connection.getResponseCode() == 200) {
                                     runOnUiThread(() -> Toast.makeText(this, R.string.sentry_dialogue_success, Toast.LENGTH_LONG).show());
                                 } else {
-                                    runOnUiThread(() -> Toast.makeText(this,
-                                            R.string.sentry_dialogue_failed_toast,
-                                            Toast.LENGTH_LONG).show());
+                                    runOnUiThread(() -> Toast.makeText(this, R.string.sentry_dialogue_failed_toast, Toast.LENGTH_LONG).show());
                                 }
                             } catch (IOException | JSONException ignored) {
                                 // Show a toast if the user feedback could not be submitted
@@ -617,6 +644,55 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     builder.show();
                 });
             }
+        }
+    }
+
+    // Method to show a setup box on first launch
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @SuppressLint({"InflateParams", "RestrictedApi", "UnspecifiedImmutableFlag", "ApplySharedPref"})
+    private void showSetupBox() {
+        // Check if this is the first launch
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_first_launch", true)) {
+            MainApplication.getBootSharedPreferences().edit().putBoolean("mm_first_scan", false).commit();
+            // Show setup box
+            runOnUiThread(() -> {
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+                builder.setCancelable(false);
+                builder.setTitle(R.string.setup_title);
+                builder.setView(getLayoutInflater().inflate(R.layout.setup_box, null));
+                // For now, we'll just have the positive button save the preferences and dismiss the dialog
+                builder.setPositiveButton(R.string.setup_button, (dialog, which) -> {
+                    // Set the preferences
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                    prefs.edit().putBoolean("pref_background_update_check",
+                            ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_background_update_check))).isChecked()).commit();
+                    prefs.edit().putBoolean("pref_crash_reporting", ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_crash_reporting))).isChecked()).commit();
+                    prefs.edit().putBoolean("pref_androidacy_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_androidacy_repo))).isChecked()).commit();
+                    prefs.edit().putBoolean("pref_magisk_alt_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_magisk_alt_repo))).isChecked()).commit();
+                    if (BuildConfig.DEBUG) {
+                        Log.d("MainActivity", String.format("Background update check: %s, Crash reporting: %s, Androidacy repo: %s, Magisk alt repo: %s",
+                                prefs.getBoolean("pref_background_update_check", false),
+                                prefs.getBoolean("pref_crash_reporting", false),
+                                prefs.getBoolean("pref_androidacy_repo_enabled", false),
+                                prefs.getBoolean("pref_magisk_alt_repo_enabled", false)));
+                    }
+                    // Set pref_first_launch to false
+                    PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("pref_first_launch",
+                            false).commit();
+                    // Restart the app
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
+                });
+                builder.setNegativeButton(R.string.setup_button_skip, (dialog, which) -> {
+                    // Set pref_first_launch to false
+                    PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("pref_first_launch",
+                            false).commit();
+                    dialog.dismiss();
+                });
+                builder.show();
+            });
         }
     }
 }

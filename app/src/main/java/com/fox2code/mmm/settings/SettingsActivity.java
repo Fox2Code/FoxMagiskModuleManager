@@ -9,6 +9,8 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -61,6 +63,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.internal.TextWatcherAdapter;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.google.common.hash.Hashing;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
@@ -461,9 +464,24 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 openFragment(libsBuilder.supportFragment(), R.string.licenses);
                 return true;
             });
-            findPreference("pref_pkg_info").setSummary(BuildConfig.APPLICATION_ID +
-                    " v" + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")" +
-                    getRepackageState()); // State may not be "I am just running from myself as myself"
+            // Determine if this is an official build based on the signature
+            boolean isOfficial = false;
+            try {
+                // Get the signature of the key used to sign the app
+                @SuppressLint("PackageManagerGetSignatures") Signature[] signatures = requireContext().getPackageManager().getPackageInfo(requireContext().getPackageName(), PackageManager.GET_SIGNATURES).signatures;
+                String officialSignatureHash =
+                "7bec7c4462f4aac616612d9f56a023ee3046e83afa956463b5fab547fd0a0be6";
+                String ourSignatureHash = Hashing.sha256().hashBytes(signatures[0].toByteArray()).toString();
+                isOfficial = ourSignatureHash.equals(officialSignatureHash);
+            } catch (PackageManager.NameNotFoundException ignored) {
+            }
+            String flavor = BuildConfig.FLAVOR;
+            String type = BuildConfig.BUILD_TYPE;
+            // Set the summary of pref_pkg_info to something like Github-debug v1.0 (123) (Official)
+            String pkgInfo = getString(R.string.pref_pkg_info_summary, flavor + "-" + type,
+                    BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, isOfficial ?
+                            getString(R.string.official) : getString(R.string.unofficial));
+            findPreference("pref_pkg_info").setSummary(pkgInfo);
         }
 
         @SuppressLint("RestrictedApi")

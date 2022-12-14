@@ -202,9 +202,12 @@ public final class RepoManager extends SyncManager {
             if (repoData == null) {
                 if (ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT.equals(url) ||
                         ANDROIDACY_MAGISK_REPO_ENDPOINT.equals(url)) {
-                    if (this.androidacyRepoData != null)
+                    //noinspection ReplaceNullCheck
+                    if (this.androidacyRepoData != null) {
                         return this.androidacyRepoData;
-                    return this.addAndroidacyRepoData();
+                    } else {
+                        return this.addAndroidacyRepoData();
+                    }
                 } else {
                     return this.addRepoData(url, fallBackName);
                 }
@@ -289,7 +292,6 @@ public final class RepoManager extends SyncManager {
             HttpURLConnection urlConnection = (HttpURLConnection) new URL(
                     "https://connectivitycheck.gstatic.com/generate_204").openConnection();
             urlConnection.setInstanceFollowRedirects(false);
-            urlConnection.setConnectTimeout(1000);
             urlConnection.setReadTimeout(1000);
             urlConnection.setUseCaches(false);
             urlConnection.getInputStream().close();

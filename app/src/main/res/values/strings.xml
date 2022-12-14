@@ -208,8 +208,8 @@
         by adding some information about the error below.\nName and email are optional but will
         allow us to contact you if needed for more information.</string>
     <string name="sentry_dialogue_title">Oops! Looks like the app closed unexpectedly.</string>
-    <string name="name">Name</string>
-    <string name="email">Email</string>
+    <string name="name">Your name</string>
+    <string name="email">Your email</string>
     <string name="additional_info">Tell us what happened</string>
     <string name="submit">Submit</string>
     <string name="sentry_dialogue_failed_toast">Could not submit feedback due to an error</string>
@@ -218,4 +218,19 @@
     <string name="sentry_dialogue_no_description">Could not submit feedback as no
         description was provided</string>
     <string name="go_to_online_repo">Scroll to online repo</string>
+    <string name="pref_pkg_info_summary">%1$s v%2$s (%3$o) | %4$s Build</string>
+    <string name="official">Official</string>
+    <string name="unofficial">Unofficial</string>
+    <string name="setup_title">First time setup</string>
+    <string name="setup_message">Looks like this is your first time opening the app.\nPick
+        the basic options you desire below. You can change them later in settings.</string>
+    <string name="setup_button">Finish setup</string>
+    <string name="setup_background_update_check">Allow us to check for updates in the background. May use more battery.</string>
+    <string name="setup_androidacy_repo">Enable the Androidacy repo, which features user reviews, automatic virus scans, fast updates, a wide selection, and is backed by Androidacy.</string>
+    <string name="setup_magisk_alt_repo">Enable the Magisk Alternative Repo. Less rules and reviewing than the original. Fully hosted on GitHub.</string>
+    <string name="setup_crash_reporting">Enable automatic crash reporting and performance monitoring. Crash reports are anonymized with all personal info removed, and are onlly accessible to the developers. Uses sentry.io.</string>
+    <string name="setup_custom_repos">You can add custom repos later in settings.</string>
+    <string name="repos">Repos</string>
+    <string name="misc">Misc settings</string>
+    <string name="setup_button_skip">Skip</string>
 </resources>

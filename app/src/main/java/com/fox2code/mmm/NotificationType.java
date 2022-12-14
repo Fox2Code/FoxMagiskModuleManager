@@ -64,8 +64,7 @@ public enum NotificationType implements NotificationTypeCst {
     NO_INTERNET(R.string.fail_internet, R.drawable.ic_baseline_cloud_off_24) {
         @Override
         public boolean shouldRemove() {
-            return AppUpdateManager.getAppUpdateManager().isLastCheckSuccess() ||
-                    RepoManager.getINSTANCE().hasConnectivity();
+            return RepoManager.getINSTANCE().hasConnectivity();
         }
     },
     REPO_UPDATE_FAILED(R.string.repo_update_failed, R.drawable.ic_baseline_cloud_off_24) {

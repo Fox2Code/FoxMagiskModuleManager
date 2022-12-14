@@ -25,9 +25,9 @@ public class SentryMain {
     @SuppressLint({"RestrictedApi", "UnspecifiedImmutableFlag"})
     public static void initialize(final MainApplication mainApplication) {
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
-            SharedPreferences.Editor editor = mainApplication.getSharedPreferences(
-                    "sentry", Context.MODE_PRIVATE).edit();
+            SharedPreferences.Editor editor = mainApplication.getSharedPreferences("sentry", Context.MODE_PRIVATE).edit();
             editor.putString("lastExitReason", "crash");
+            editor.putLong("lastExitTime", System.currentTimeMillis());
             editor.apply();
             // If we just let the default uncaught exception handler handle the
             // exception, the app will hang and never close.
@@ -56,9 +56,7 @@ public class SentryMain {
                 // With this callback, you can modify the event or, when returning null, also discard the event.
                 options.setBeforeSend((event, hint) -> {
                     // Save lastEventId to private shared preferences
-                    SharedPreferences sharedPreferences = MainApplication.getINSTANCE().getSharedPreferences(
-                            "sentry",
-                            Context.MODE_PRIVATE);
+                    SharedPreferences sharedPreferences = MainApplication.getINSTANCE().getSharedPreferences("sentry", Context.MODE_PRIVATE);
                     String lastEventId = Objects.requireNonNull(event.getEventId()).toString();
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("lastEventId", lastEventId);
