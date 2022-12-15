@@ -168,4 +168,20 @@
     <string name="androidacy_failed_to_parse_token">Androidacy\'den jeton alınamadı. Lütfen sonra tekrar deneyin.</string>
     <string name="androidacy_failed_to_validate_token">Androidacy için jeton doğrulanamadı. Lütfen sonra tekrar deneyin.</string>
     <string name="androidacy_server_down">Androidacy sunucusuna ulaşılamadı. Bağlantınızı kontrol edin ve tekrar deneyin.</string>
+    <string name="link_copied">Link kopyalandı</string>
+    <string name="api_key_restart">API anahtarı değiştirildi.
+\nDeğişiklikleri uygulamak için uygulamayı yeniden başlatın.</string>
+    <string name="api_key_unchanged">Girdiğiniz API anahtarı zaten kullanımda olanıyla aynı.</string>
+    <string name="permission_notification_title">Bildirimlere izin ver\?</string>
+    <string name="permission_notification_message">Size uygulama ve modül güncellemelerini bildirmek için bildirim iznine ihtiyacımız vardır. Eğer bu izni vermezseniz, arkaplanda güncelleme kontrolleri çalışmayacaktır.</string>
+    <string name="permission_notification_grant">İzni ver</string>
+    <string name="background_update_check_permission_required">Bu seçeneği etkinleştirmek için lütfen bildirimleri etkinleştirin.</string>
+    <string name="dont_ask_again">Birdaha sorma</string>
+    <string name="force_black_theme_desc">Koyu tema kullanırken AMOLED siyah arkaplanlarını zorlar. Lütfen bunun bazı renk temalarıyla kontrast sorunlarına neden olabileceğini biliniz.</string>
+    <string name="force_black_theme_pref">Siyah temayı zorla</string>
+    <string name="androidacy_repo_disabled">Bu depo şu anda devre dışı</string>
+    <string name="androidacy_repo_disabled_message">Bu sürümde Androidacy Repo için istemci anahtarları kayıptır. Eğer modül incelemeleri, otomatik güvenlik kontrolleri ve daha fazlasından yararlanmak isterseniz lütfen GitHub sürümünü indiriniz.</string>
+    <string name="download_full_app">Tam sürümünü indir</string>
+    <string name="repo_update_failed">Bazı depolar güncellenemedi</string>
+    <string name="androidacy_need_captcha">Androidacy güncellemesi Captcha tarafından engellendi</string>
 </resources>
