@@ -225,10 +225,10 @@
     <string name="setup_message">Welcome! This app will help you install and manage Magisk modules. To get started, please select the options below. These and more can be configured from settings later.</string>
     <string name="setup_button">Finish setup</string>
     <string name="setup_background_update_check">Allow us to check for updates in the background.\nThis feature may use more battery.</string>
-    <string name="setup_androidacy_repo">Enable the Androidacy repo\nIt features user reviews, automatic virus scans, fast updates, a wide selection, and is backed by Androidacy.</string>
+    <string name="setup_androidacy_repo">Enable the Androidacy repo\nFeatures user reviews, automatic virus scans, fast updates, a wide selection, and is backed by Androidacy.</string>
     <!-- Maybe once alt repo fixes their shit and stops allowing crappy modules or outright
     kanged modules, we'll reword this. -->
-    <string name="setup_magisk_alt_repo">Enable the Magisk Alt Repo\nIt is significantly more lax than the original. Has a lot of modules at the cost of some safety.</string>
+    <string name="setup_magisk_alt_repo">Enable the Magisk Alt Repo\nMuch more lax than the original. Has a lot of modules at the cost of some safety.</string>
     <string name="setup_crash_reporting">Enable Sentry crash reporting and performance monitoring.\nAll reports are striclty anonymous and confidential.</string>
     <string name="setup_custom_repos">You can add custom repos later in settings.</string>
     <string name="repos">Repos</string>
