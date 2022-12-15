@@ -85,6 +85,10 @@ android {
                     properties.load(fis)
                 }
                 buildConfigField "String", "SENTRY_TOKEN", '"' + properties.getProperty("auth." + "token") + '"'
+            } else {
+
+                buildConfigField "String", "SENTRY_TOKEN", '""'
+
             }
             // Get the androidacy client ID from the androidacy.properties
             Properties properties = new Properties()
