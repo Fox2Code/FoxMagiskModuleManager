@@ -46,14 +46,66 @@ jobs:
       - name: Build apk fdroid-debug
         run: ./gradlew app:assembleFdroidDebug
 
-      - name: Upload apk debug
+      # UPLOAD ARTIFACT SECTION
+      # Will be shortner, when https://github.com/actions/upload-artifact/pull/354 will be merged
+      # FoxMMM-default-debug
+      - name: Upload FoxMMM-default-arm64-v8a-debug
         uses: actions/upload-artifact@v3
         with:
-          name: FoxMmm-debug
-          path: app/build/outputs/apk/default/debug/app-default-debug.apk
+          name: FoxMMM-default-arm64-v8a-debug
+          path: app/build/outputs/apk/default/debug/app-default-arm64-v8a-debug.apk
+          
+      - name: Upload FoxMMM-default-armeabi-v7a-debug
+        uses: actions/upload-artifact@v3
+        with:
+          name: FoxMMM-default-armeabi-v7a-debug
+          path: app/build/outputs/apk/default/debug/app-default-armeabi-v7a-debug.apk
+      
+      - name: Upload FoxMMM-default-universal-debug
+        uses: actions/upload-artifact@v3
+        with:
+          name: FoxMMM-default-universal-debug
+          path: app/build/outputs/apk/default/debug/app-default-universal-debug.apk
+          
+      - name: Upload FoxMMM-default-x86-debug
+        uses: actions/upload-artifact@v3
+        with:
+          name: FoxMMM-default-x86-debug
+          path: app/build/outputs/apk/default/debug/app-default-x86-debug.apk      
+          
+      - name: Upload FoxMMM-default-x86_64-debug  
+        uses: actions/upload-artifact@v3
+        with:
+          name: FoxMMM-default-x86_64-debug
+          path: app/build/outputs/apk/default/debug/app-default-x86_64-debug.apk
+      
+      # FoxMMM-fdroid-debug
+      - name: Upload FoxMMM-fdroid-arm64-v8a-debug
+        uses: actions/upload-artifact@v3
+        with:
+          name: FoxMMM-fdroid-arm64-v8a-debug
+          path: app/build/outputs/apk/fdroid/debug/app-fdroid-arm64-v8a-debug.apk
+      
+      - name: Upload FoxMMM-fdroid-armeabi-v7a-debug  
+        uses: actions/upload-artifact@v3
+        with:
+          name: FoxMMM-fdroid-armeabi-v7a-debug
+          path: app/build/outputs/apk/fdroid/debug/app-fdroid-armeabi-v7a-debug.apk
+      
+      - name: Upload FoxMMM-fdroid-universal-debug
+        uses: actions/upload-artifact@v3
+        with:
+          name: FoxMMM-fdroid-universal-debug
+          path: app/build/outputs/apk/fdroid/debug/app-fdroid-universal-debug.apk
+         
+      - name: Upload FoxMMM-fdroid-x86-debug   
+        uses: actions/upload-artifact@v3
+        with:
+          name: FoxMMM-fdroid-x86-debug
+          path: app/build/outputs/apk/fdroid/debug/app-fdroid-x86-debug.apk
 
-      - name: Upload apk fdroid-debug
+      - name: Upload FoxMMM-fdroid-x86_64-debug  
         uses: actions/upload-artifact@v3
         with:
-          name: FoxMmm-fdroid-debug
-          path: app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk
+          name: FoxMMM-fdroid-x86_64-debug
+          path: app/build/outputs/apk/fdroid/debug/app-fdroid-x86_64-debug.apk
