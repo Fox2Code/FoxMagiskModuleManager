@@ -1018,11 +1018,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 if (submissionUrl != null && !submissionUrl.isEmpty()) {
                     preference.setVisible(true);
                     preference.setOnPreferenceClickListener(p -> {
-                        if (submissionUrl.startsWith("https://www.androidacy.com/")) {
-                            IntentHelper.openUrlAndroidacy(getFoxActivity(this), submissionUrl, true);
-                        } else {
-                            IntentHelper.openUrl(getFoxActivity(this), submissionUrl);
-                        }
+                        IntentHelper.openUrl(getFoxActivity(this), submissionUrl);
                         return true;
                     });
                     ((LongClickablePreference) preference).setOnPreferenceLongClickListener(p -> {
