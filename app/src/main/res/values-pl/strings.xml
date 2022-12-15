@@ -114,7 +114,7 @@
     <string name="add_repo">Dodaj repozytorium</string>
     <string name="remove_repo">Usuń repozytorium</string>
     <string name="custom_url">Niestandardowy URL</string>
-    <string name="androidacy_repo_info">To repozytorium może wyświetlać nieinwazyjne reklamy, aby pokryć koszty serwera i rozwoju.</string>
+    <string name="androidacy_repo_info">To repozytorium może wyświetlać nieinwazyjne reklamy w celu pokrycia kosztów serwera i rozwoju. Zawiera recenzje, automatyczne skanowanie w poszukiwaniu wirusów i nie tylko.</string>
     <string name="backup_module_list">Kopia zapasowa modułów</string>
     <string name="restore_module_list">Przywracanie modułów</string>
     <string name="require_internet">Ta operacja wymaga połączenia internetowego</string>
@@ -174,4 +174,43 @@
     <string name="api_key_restart">Klucz API został zmieniony. Uruchom ponownie aplikację, aby zastosować zmiany.</string>
     <string name="permission_notification_message">Jeżeli nie udzielisz tego uprawnienia, to nie otrzymasz informacji o nowych wersjach aplikacji i modułów.</string>
     <string name="androidacy_repo_disabled_message">W tej kompilacji brakuje kluczy klienckich dla repo Androidacy. Pobierz wydanie GitHub, jeżeli chcesz skorzystać z tego repozytorium.</string>
+    <string name="repo_update_failed_extended">Aktualizacja %1$s nie powiodła się. Proszę spróbować ponownie później.</string>
+    <string name="monet_disabled_summary">Wygląd Material You nie jest kompatybilny z przezroczystymi motywami.</string>
+    <string name="blur_disabled_summary">Rozmycie nie jest kompatybilne z przezroczystymi motywami.</string>
+    <string name="transparent_theme_dialogue_title">Ustawiasz przezroczysty motyw</string>
+    <string name="custom_repo_always_on">Niestandardowe repozytoria są zawsze włączone, dopóki ich nie usuniesz.</string>
+    <string name="sentry_dialogue_title">Ups! Wygląda na to, że aplikacja została nieoczekiwanie zamknięta.</string>
+    <string name="name">Twoje imię</string>
+    <string name="email">Twój e-mail</string>
+    <string name="additional_info">Powiedz nam, co się stało</string>
+    <string name="submit">Zgłoś</string>
+    <string name="sentry_dialogue_failed_toast">Nie można przesłać opinii z powodu błędu</string>
+    <string name="sentry_dialogue_no_description">Nie można przesłać opinii, ponieważ nie podano opisu</string>
+    <string name="go_to_online_repo">Przewiń do repozytorium online</string>
+    <string name="official">Oficjalna</string>
+    <string name="pref_pkg_info_summary">%1$s v%2$s (%3$o) | %4$s kompilacja</string>
+    <string name="sentry_dialogue_success">Pomyślnie przesłano opinię. Wkrótce to sprawdzimy</string>
+    <string name="setup_title">Powitalna konfiguracja</string>
+    <string name="setup_button">Zastosuj</string>
+    <string name="setup_background_update_check">Pozwól na sprawdzanie aktualizacji w tle.
+\nMoże wzrosnąć użycie baterii.</string>
+    <string name="setup_magisk_alt_repo">Włącz repozytorium Magisk Alt
+\nZnacznie luźniejsze niż oryginalne. Zawiera więcej modułów, które mogą zmniejszać bezpieczeństwo urządzenia.</string>
+    <string name="setup_crash_reporting">Włącz raportowanie awarii Sentry i monitorowanie wydajności.
+\nWszystkie zgłoszenia są ściśle anonimowe i poufne.</string>
+    <string name="setup_custom_repos">Możesz później dodać niestandardowe repozytoria w ustawieniach.</string>
+    <string name="repos">Repozytoria</string>
+    <string name="misc">Różne</string>
+    <string name="setup_button_skip">Pomiń</string>
+    <string name="low_performance_device_dialogue_title">Włączanie rozmycia na słabszych urządzeniach</string>
+    <string name="alt_repo_info">To repo ma mniej ograniczeń i recenzji, co może prowadzić do niższej jakości modułów. Baza modułów jest znacznie większa.</string>
+    <string name="transparent_theme_dialogue_message">Przezroczyste motywy mogą wykazywać pewne niespójności i mogą nie działać na wszystkich ROM-ach. Dodatkowo, wygląd Material You i rozmycie zostaną wyłączone. Możesz je przywrócić w dowolnym momencie.</string>
+    <string name="sentry_dialogue_message">Napotkaliśmy błąd! Prosimy o pomoc w ulepszeniu aplikacji poprzez dodanie informacji o błędzie poniżej.
+\nImię i e-mail są opcjonalne, ale pozwolą nam skontaktować się z Tobą w razie potrzeby uzyskania dodatkowych informacji.</string>
+    <string name="unofficial">Nieoficjalna</string>
+    <string name="setup_message">Witaj! Ta aplikacja pomoże Ci instalować i zarządzać modułami Magisk. Aby rozpocząć, dostosuj poniższe opcje. Można je później zmienić w ustawieniach.</string>
+    <string name="setup_androidacy_repo">Włącz repozytorium Androidacy
+\nZawiera recenzje użytkowników, automatyczne skanowanie antywirusowe, szybkie aktualizacje, szeroki wybór modułów i jest wspierane przez Androidacy.</string>
+    <string name="low_performance_device_dialogue_message">Próbujesz włączyć rozmycie na urządzeniu, które może nie działać dobrze.
+\nMożesz je włączyć, ale prawdopodobnie uzyskasz złe wrażenia użytkownika i zalecamy, aby tego nie robić.</string>
 </resources>
