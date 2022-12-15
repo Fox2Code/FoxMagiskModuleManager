@@ -1,6 +1,9 @@
 package com.fox2code.mmm.settings;
 
+import static java.lang.Integer.parseInt;
+
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
@@ -9,6 +12,8 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -61,14 +66,17 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.internal.TextWatcherAdapter;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.google.common.hash.Hashing;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
 
@@ -77,6 +85,50 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
     private static final String TAG = "SettingsActivity";
     private static boolean devModeStepFirstBootIgnore = MainApplication.isDeveloper();
     private static int devModeStep = 0;
+
+    // Shamelessly adapted from https://github.com/DrKLO/Telegram/blob/2c71f6c92b45386f0c2b25f1442596462404bb39/TMessagesProj/src/main/java/org/telegram/messenger/SharedConfig.java#L1254
+    public final static int PERFORMANCE_CLASS_LOW = 0;
+    public final static int PERFORMANCE_CLASS_AVERAGE = 1;
+    public final static int PERFORMANCE_CLASS_HIGH = 2;
+
+    @PerformanceClass
+    public static int getDevicePerformanceClass() {
+        int devicePerformanceClass;
+        int androidVersion = Build.VERSION.SDK_INT;
+        int cpuCount = Runtime.getRuntime().availableProcessors();
+        int memoryClass =
+                ((ActivityManager) MainApplication.getINSTANCE().getSystemService(Context.ACTIVITY_SERVICE)).getMemoryClass();
+        int totalCpuFreq = 0;
+        int freqResolved = 0;
+        for (int i = 0; i < cpuCount; i++) {
+            try {
+                RandomAccessFile reader = new RandomAccessFile(String.format(Locale.ENGLISH, "/sys/devices/system/cpu/cpu%d/cpufreq/cpuinfo_max_freq", i), "r");
+                String line = reader.readLine();
+                if (line != null) {
+                    totalCpuFreq += parseInt(line) / 1000;
+                    freqResolved++;
+                }
+                reader.close();
+            } catch (Throwable ignore) {}
+        }
+        int maxCpuFreq = freqResolved == 0 ? -1 : (int) Math.ceil(totalCpuFreq / (float) freqResolved);
+
+        if (androidVersion < 21 || cpuCount <= 2 || memoryClass <= 100 || cpuCount <= 4 && maxCpuFreq != -1 && maxCpuFreq <= 1250 || cpuCount <= 4 && maxCpuFreq <= 1600 && memoryClass <= 128 && androidVersion <= 21 || cpuCount <= 4 && maxCpuFreq <= 1300 && memoryClass <= 128 && androidVersion <= 24) {
+            devicePerformanceClass = PERFORMANCE_CLASS_LOW;
+        } else if (cpuCount < 8 || memoryClass <= 160 || maxCpuFreq != -1 && maxCpuFreq <= 2050 || maxCpuFreq == -1 && cpuCount == 8 && androidVersion <= 23) {
+            devicePerformanceClass = PERFORMANCE_CLASS_AVERAGE;
+        } else {
+            devicePerformanceClass = PERFORMANCE_CLASS_HIGH;
+        }
+
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "getDevicePerformanceClass: androidVersion=" + androidVersion + " cpuCount=" + cpuCount + " memoryClass=" + memoryClass + " maxCpuFreq=" + maxCpuFreq + " devicePerformanceClass=" + devicePerformanceClass);
+        }
+
+        return devicePerformanceClass;
+    }
+
+    public @interface PerformanceClass {}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +175,25 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 return true;
             });
             ListPreference themePreference = findPreference("pref_theme");
+            // If transparent theme(s) are set, disable monet
+            if (themePreference.getValue().equals("transparent_light")) {
+                if (BuildConfig.DEBUG) {
+                    Log.d(TAG, "Transparent theme is set, disabling monet");
+                }
+                findPreference("pref_enable_monet").setEnabled(false);
+                // Toggle monet off
+                ((TwoStatePreference) findPreference("pref_enable_monet")).setChecked(false);
+                SharedPreferences.Editor editor =
+                        getPreferenceManager().getSharedPreferences().edit();
+                editor.putBoolean("pref_enable_monet", false).apply();
+                // Set summary
+                findPreference("pref_enable_monet").setSummary(R.string.monet_disabled_summary);
+                // Same for blur
+                findPreference("pref_enable_blur").setEnabled(false);
+                ((TwoStatePreference) findPreference("pref_enable_blur")).setChecked(false);
+                editor.putBoolean("pref_enable_blur", false).apply();
+                findPreference("pref_enable_blur").setSummary(R.string.blur_disabled_summary);
+            }
             themePreference.setSummaryProvider(p -> themePreference.getEntry());
             themePreference.setOnPreferenceClickListener(p -> {
                 // You need to reboot your device at least once to be able to access dev-mode
@@ -130,12 +201,65 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 return false;
             });
             themePreference.setOnPreferenceChangeListener((preference, newValue) -> {
-                devModeStep = 0;
-                UiThreadHandler.handler.postDelayed(() -> {
-                    MainApplication.getINSTANCE().updateTheme();
-                    FoxActivity.getFoxActivity(this).setThemeRecreate(
-                            MainApplication.getINSTANCE().getManagerThemeResId());
-                }, 1);
+                if (BuildConfig.DEBUG) {
+                    Log.d(TAG, "Theme changed, refreshing activity. New value: " + newValue);
+                }
+                // Immediately save
+                SharedPreferences.Editor editor =
+                        getPreferenceManager().getSharedPreferences().edit();
+                editor.putString("pref_theme", (String) newValue).apply();
+                // If theme contains "transparent" then disable monet
+                if (newValue.toString().contains("transparent")) {
+                    if (BuildConfig.DEBUG) {
+                        Log.d(TAG, "Transparent theme is being set, disabling monet");
+                    }
+                    // Show a dialogue warning the user about issues with transparent themes and
+                    // that blur/monet will be disabled
+                    new MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(R.string.transparent_theme_dialogue_title)
+                            .setMessage(R.string.transparent_theme_dialogue_message)
+                            .setPositiveButton(R.string.ok, (dialog, which) -> {
+                                // Toggle monet off
+                                ((TwoStatePreference) findPreference("pref_enable_monet")).setChecked(false);
+                                editor.putBoolean("pref_enable_monet", false).apply();
+                                // Set summary
+                                findPreference("pref_enable_monet").setSummary(R.string.monet_disabled_summary);
+                                // Same for blur
+                                ((TwoStatePreference) findPreference("pref_enable_blur")).setChecked(false);
+                                editor.putBoolean("pref_enable_blur", false).apply();
+                                findPreference("pref_enable_blur").setSummary(R.string.blur_disabled_summary);
+                                // Refresh activity
+                                devModeStep = 0;
+                                UiThreadHandler.handler.postDelayed(() -> {
+                                    MainApplication.getINSTANCE().updateTheme();
+                                    FoxActivity.getFoxActivity(this).setThemeRecreate(
+                                            MainApplication.getINSTANCE().getManagerThemeResId());
+                                }, 1);
+                            })
+                            .setNegativeButton(R.string.cancel, (dialog, which) -> {
+                                // Revert to system theme
+                                ((ListPreference) findPreference("pref_theme")).setValue("system");
+                                // Refresh activity
+                                devModeStep = 0;
+                                UiThreadHandler.handler.postDelayed(() -> {
+                                    MainApplication.getINSTANCE().updateTheme();
+                                    FoxActivity.getFoxActivity(this).setThemeRecreate(
+                                            MainApplication.getINSTANCE().getManagerThemeResId());
+                                }, 1);
+                            })
+                            .show();
+                } else {
+                    findPreference("pref_enable_monet").setEnabled(true);
+                    findPreference("pref_enable_monet").setSummary(null);
+                    findPreference("pref_enable_blur").setEnabled(true);
+                    findPreference("pref_enable_blur").setSummary(null);
+                    devModeStep = 0;
+                    UiThreadHandler.handler.postDelayed(() -> {
+                        MainApplication.getINSTANCE().updateTheme();
+                        FoxActivity.getFoxActivity(this).setThemeRecreate(
+                                MainApplication.getINSTANCE().getManagerThemeResId());
+                    }, 1);
+                }
                 return true;
             });
             // Crash reporting
@@ -157,13 +281,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     int mPendingIntentId = 123456;
                     // If < 23, FLAG_IMMUTABLE is not available
                     PendingIntent mPendingIntent;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
-                                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                    } else {
-                        mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
-                                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-                    }
+                    mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                            mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                     AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                     mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
                     if (BuildConfig.DEBUG) {
@@ -177,9 +296,36 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 return true;
             });
             Preference enableBlur = findPreference("pref_enable_blur");
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                enableBlur.setSummary(R.string.require_android_6);
-                enableBlur.setEnabled(false);
+            // Disable blur on low performance devices
+            if (getDevicePerformanceClass() < PERFORMANCE_CLASS_AVERAGE) {
+                // Show a warning
+                enableBlur.setOnPreferenceChangeListener((preference, newValue) -> {
+                    if (newValue.equals(true)) {
+                        new MaterialAlertDialogBuilder(requireContext())
+                                .setTitle(R.string.low_performance_device_dialogue_title)
+                                .setMessage(R.string.low_performance_device_dialogue_message)
+                                .setPositiveButton(R.string.ok, (dialog, which) -> {
+                                    // Toggle blur on
+                                    ((TwoStatePreference) findPreference("pref_enable_blur")).setChecked(true);
+                                    SharedPreferences.Editor editor =
+                                            getPreferenceManager().getSharedPreferences().edit();
+                                    editor.putBoolean("pref_enable_blur", true).apply();
+                                    // Set summary
+                                    findPreference("pref_enable_blur").setSummary(R.string.blur_disabled_summary);
+                                })
+                                .setNegativeButton(R.string.cancel, (dialog, which) -> {
+                                    // Revert to blur on
+                                    ((TwoStatePreference) findPreference("pref_enable_blur")).setChecked(false);
+                                    SharedPreferences.Editor editor =
+                                            getPreferenceManager().getSharedPreferences().edit();
+                                    editor.putBoolean("pref_enable_blur", false).apply();
+                                    // Set summary
+                                    findPreference("pref_enable_blur").setSummary(null);
+                                })
+                                .show();
+                    }
+                    return true;
+                });
             }
 
             Preference disableMonet = findPreference("pref_enable_monet");
@@ -252,6 +398,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             if (!SentryMain.IS_SENTRY_INSTALLED || !BuildConfig.DEBUG ||
                     InstallerInitializer.peekMagiskPath() == null) {
                 // Hide the pref_crash option if not in debug mode - stop users from purposely crashing the app
+                Log.d(TAG, String.format("Sentry installed: %s, debug: %s, magisk path: %s",
+                        SentryMain.IS_SENTRY_INSTALLED, BuildConfig.DEBUG, InstallerInitializer.peekMagiskPath()));
                 Objects.requireNonNull((Preference) findPreference("pref_crash")).setVisible(false);
             } else {
                 findPreference("pref_crash").setOnPreferenceClickListener(preference -> {
@@ -387,9 +535,24 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 openFragment(libsBuilder.supportFragment(), R.string.licenses);
                 return true;
             });
-            findPreference("pref_pkg_info").setSummary(BuildConfig.APPLICATION_ID +
-                    " v" + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")" +
-                    getRepackageState()); // State may not be "I am just running from myself as myself"
+            // Determine if this is an official build based on the signature
+            boolean isOfficial = false;
+            try {
+                // Get the signature of the key used to sign the app
+                @SuppressLint("PackageManagerGetSignatures") Signature[] signatures = requireContext().getPackageManager().getPackageInfo(requireContext().getPackageName(), PackageManager.GET_SIGNATURES).signatures;
+                String officialSignatureHash =
+                "7bec7c4462f4aac616612d9f56a023ee3046e83afa956463b5fab547fd0a0be6";
+                String ourSignatureHash = Hashing.sha256().hashBytes(signatures[0].toByteArray()).toString();
+                isOfficial = ourSignatureHash.equals(officialSignatureHash);
+            } catch (PackageManager.NameNotFoundException ignored) {
+            }
+            String flavor = BuildConfig.FLAVOR;
+            String type = BuildConfig.BUILD_TYPE;
+            // Set the summary of pref_pkg_info to something like Github-debug v1.0 (123) (Official)
+            String pkgInfo = getString(R.string.pref_pkg_info_summary, flavor + "-" + type,
+                    BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, isOfficial ?
+                            getString(R.string.official) : getString(R.string.unofficial));
+            findPreference("pref_pkg_info").setSummary(pkgInfo);
         }
 
         @SuppressLint("RestrictedApi")
@@ -445,7 +608,6 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             setPreferencesFromResource(R.xml.repo_preferences, rootKey);
             setRepoData(RepoManager.MAGISK_ALT_REPO);
             setRepoData(RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT);
-            setRepoData(RepoManager.DG_MAGISK_REPO_GITHUB);
             updateCustomRepoList(true);
             onCreatePreferencesAndroidacy();
         }
@@ -464,6 +626,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         // Use MaterialAlertDialogBuilder
                         new MaterialAlertDialogBuilder(this.requireContext())
                                 .setTitle(R.string.warning)
+                                .setCancelable(false)
                                 .setMessage(R.string.androidacy_test_mode_warning)
                                 .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                                     // User clicked OK button
@@ -474,13 +637,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                     int mPendingIntentId = 123456;
                                     // If < 23, FLAG_IMMUTABLE is not available
                                     PendingIntent mPendingIntent;
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                        mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
-                                                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                                    } else {
-                                        mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
-                                                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-                                    }
+                                    mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                                            mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                                     AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                                     mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
                                     if (BuildConfig.DEBUG) {
@@ -502,6 +660,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         // Show dialog to restart app with ok button
                         new MaterialAlertDialogBuilder(this.requireContext())
                                 .setTitle(R.string.warning)
+                                .setCancelable(false)
                                 .setMessage(R.string.androidacy_test_mode_disable_warning)
                                 .setNeutralButton(android.R.string.ok, (dialog, which) -> {
                                     // User clicked OK button
@@ -510,13 +669,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                     int mPendingIntentId = 123456;
                                     // If < 23, FLAG_IMMUTABLE is not available
                                     PendingIntent mPendingIntent;
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                        mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
-                                                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                                    } else {
-                                        mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
-                                                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-                                    }
+                                    mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                                            mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                                     AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                                     mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
                                     if (BuildConfig.DEBUG) {
@@ -536,6 +690,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 androidacyRepoEnabled.setOnPreferenceClickListener(preference -> {
                     new MaterialAlertDialogBuilder(this.requireContext())
                             .setTitle(R.string.androidacy_repo_disabled)
+                            .setCancelable(false)
                             .setMessage(R.string.androidacy_repo_disabled_message)
                             .setPositiveButton(R.string.download_full_app, (dialog, which) -> {
                                 // User clicked OK button. Open GitHub releases page
@@ -572,9 +727,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             });
             prefAndroidacyRepoApiKey.setPositiveButtonText(R.string.save_api_key);
             prefAndroidacyRepoApiKey.setOnPreferenceChangeListener((preference, newValue) -> {
-                if (originalApiKeyRef[0].equals(newValue)) return true; // Skip if nothing changed.
-                // Curious if this actually works - so crash the app on purpose
-                // throw new RuntimeException("This is a test crash");
+                if (originalApiKeyRef[0].equals(newValue)) return true;
                 // get original api key
                 String apiKey = String.valueOf(newValue);
                 // Show snack bar with indeterminate progress
@@ -593,6 +746,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                             // Show dialog to restart app with ok button
                             new MaterialAlertDialogBuilder(this.requireContext())
                                     .setTitle(R.string.restart)
+                                    .setCancelable(false)
                                     .setMessage(R.string.api_key_restart)
                                     .setNeutralButton(android.R.string.ok, (dialog, which) -> {
                                         // User clicked OK button
@@ -601,13 +755,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                         int mPendingIntentId = 123456;
                                         // If < 23, FLAG_IMMUTABLE is not available
                                         PendingIntent mPendingIntent;
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                            mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
-                                                    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                                        } else {
-                                            mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
-                                                    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-                                        }
+                                        mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                                                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                                         AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                                         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
                                         if (BuildConfig.DEBUG) {
@@ -650,6 +799,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                     // Show dialog to restart app with ok button
                                     new MaterialAlertDialogBuilder(this.requireContext())
                                             .setTitle(R.string.restart)
+                                            .setCancelable(false)
                                             .setMessage(R.string.api_key_restart)
                                             .setNeutralButton(android.R.string.ok, (dialog, which) -> {
                                                 // User clicked OK button
@@ -658,13 +808,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                                 int mPendingIntentId = 123456;
                                                 // If < 23, FLAG_IMMUTABLE is not available
                                                 PendingIntent mPendingIntent;
-                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                                    mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
-                                                            mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                                                } else {
-                                                    mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
-                                                            mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-                                                }
+                                                mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId,
+                                                        mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                                                 AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                                                 mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
                                                 if (BuildConfig.DEBUG) {
@@ -793,12 +938,20 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             preference.setTitle(repoData.getName());
             preference = findPreference(preferenceName + "_enabled");
             if (preference != null) {
-                ((TwoStatePreference) preference).setChecked(repoData.isEnabled());
-                preference.setTitle(repoData.isEnabled() ? R.string.repo_enabled : R.string.repo_disabled);
-                preference.setOnPreferenceChangeListener((p, newValue) -> {
-                    p.setTitle(((Boolean) newValue) ? R.string.repo_enabled : R.string.repo_disabled);
-                    return true;
-                });
+                // Handle custom repo separately
+                if (repoData instanceof CustomRepoData) {
+                    preference.setTitle(R.string.custom_repo_always_on);
+                    // Disable the preference
+                    preference.setEnabled(false);
+                    return;
+                } else {
+                    ((TwoStatePreference) preference).setChecked(repoData.isEnabled());
+                    preference.setTitle(repoData.isEnabled() ? R.string.repo_enabled : R.string.repo_disabled);
+                    preference.setOnPreferenceChangeListener((p, newValue) -> {
+                        p.setTitle(((Boolean) newValue) ? R.string.repo_enabled : R.string.repo_disabled);
+                        return true;
+                    });
+                }
             }
             preference = findPreference(preferenceName + "_website");
             String homepage = repoData.getWebsite();

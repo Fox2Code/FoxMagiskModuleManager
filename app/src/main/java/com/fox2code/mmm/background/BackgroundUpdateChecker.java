@@ -53,7 +53,7 @@ public class BackgroundUpdateChecker extends Worker {
     }
 
     static void doCheck(Context context) {
-        Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+        Thread.currentThread().setPriority(2);
         ModuleManager.getINSTANCE().scanAsync();
         RepoManager.getINSTANCE().update(null);
         ModuleManager.getINSTANCE().runAfterScan(() -> {

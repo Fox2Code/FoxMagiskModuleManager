@@ -3,6 +3,7 @@
         <item>Zgodny z systemem</item>
         <item>Ciemny</item>
         <item>Czarny</item>
+        <item>Transparent (light)</item>
         <item>Jasny</item>
     </string-array>
     <string-array name="permission_notification_dont_ask_again">Nie pytaj ponownie</string-array>

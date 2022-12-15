@@ -6,4 +6,29 @@
             <certificates src="@raw/androidacy_root_ca" />
         </trust-anchors>
     </domain-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">github.com</domain>
+        <domain includeSubdomains="true">githubusercontent.com</domain>
+        <trust-anchors>
+            <certificates src="@raw/gh_root_ca" />
+        </trust-anchors>
+    </domain-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">gstatic.com</domain>
+        <trust-anchors>
+            <certificates src="@raw/gstatic_root_ca" />
+        </trust-anchors>
+    </domain-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">ingest.sentry.io</domain>
+        <trust-anchors>
+            <certificates src="@raw/sentry_root_ca" />
+        </trust-anchors>
+    </domain-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="false">sentry.io</domain>
+        <trust-anchors>
+            <certificates src="@raw/sentry_io_root_ca" />
+        </trust-anchors>
+    </domain-config>
 </network-security-config>

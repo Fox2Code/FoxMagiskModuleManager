@@ -108,7 +108,7 @@ public final class AndroidacyRepoData extends RepoData {
                     deviceId = output;
                 }
             }
-            // Now, get device model, manufacturer, and Android version
+            // Now, get device model, manufacturer, and Android version originally from
             String deviceModel = android.os.Build.MODEL;
             String deviceManufacturer = android.os.Build.MANUFACTURER;
             String androidVersion = android.os.Build.VERSION.RELEASE;
@@ -184,7 +184,8 @@ public final class AndroidacyRepoData extends RepoData {
         }
         String deviceId = generateDeviceId();
         long time = System.currentTimeMillis();
-        if (this.androidacyBlockade > time) return false;
+        if (this.androidacyBlockade > time) return true; // fake it till you make it. Basically,
+        // don'e fail just becaue we're rate limited. API and web rate limits are different.
         this.androidacyBlockade = time + 30_000L;
         try {
             if (this.token == null) {
@@ -249,6 +250,9 @@ public final class AndroidacyRepoData extends RepoData {
 
     @Override
     protected List<RepoModule> populate(JSONObject jsonObject) throws JSONException, NoSuchAlgorithmException {
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "AndroidacyRepoData populate start");
+        }
         if (!jsonObject.getString("status").equals("success"))
             throw new JSONException("Response is not a success!");
         String name = jsonObject.optString("name", "Androidacy Modules Repo");
@@ -326,7 +330,9 @@ public final class AndroidacyRepoData extends RepoData {
             String config = jsonObject.optString("config", "");
             moduleInfo.config = config.isEmpty() ? null : config;
             PropUtils.applyFallbacks(moduleInfo); // Apply fallbacks
-            Log.d(TAG, "Module " + moduleInfo.name + " " + moduleInfo.id + " " + moduleInfo.version + " " + moduleInfo.versionCode);
+            // Log.d(TAG,
+            //        "Module " + moduleInfo.name + " " + moduleInfo.id + " " + moduleInfo
+            //        .version + " " + moduleInfo.versionCode);
         }
         Iterator<RepoModule> moduleInfoIterator = this.moduleHashMap.values().iterator();
         while (moduleInfoIterator.hasNext()) {

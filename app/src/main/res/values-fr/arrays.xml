@@ -3,6 +3,7 @@
         <item>Système</item>
         <item>Sombre</item>
         <item>AMOLED Black</item>
+        <item>Transparent (light)</item>
         <item>Clair</item>
     </string-array>
 </resources>

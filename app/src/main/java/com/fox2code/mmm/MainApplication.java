@@ -2,7 +2,6 @@ package com.fox2code.mmm;
 
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -50,7 +49,6 @@ import io.noties.prism4j.annotations.PrismBundle;
 
 @PrismBundle(includeAll = true, grammarLocatorClassName = ".Prism4jGrammarLocator")
 public class MainApplication extends FoxApplication implements androidx.work.Configuration.Provider {
-    private static final String TAG = "MainApplication";
     private static final String timeFormatString = "dd MMM yyyy"; // Example: 13 july 2001
     private static final Shell.Builder shellBuilder;
     private static final long secret;
@@ -60,6 +58,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     private static SimpleDateFormat timeFormat = new SimpleDateFormat(timeFormatString, timeFormatLocale);
     private static SharedPreferences bootSharedPreferences;
     private static String relPackageName = BuildConfig.APPLICATION_ID;
+    @SuppressLint("StaticFieldLeak")
     private static MainApplication INSTANCE;
     private static boolean firstBoot;
 
@@ -68,8 +67,6 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         secret = new Random().nextLong();
     }
 
-    // Provides the Context for the base application
-    public Context FoxApplication = this;
     @StyleRes
     private int managerThemeResId = R.style.Theme_MagiskModuleManager;
     private FoxThemeWrapper markwonThemeContext;
@@ -142,7 +139,8 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     }
 
     public static boolean isDeveloper() {
-        return BuildConfig.DEBUG || getSharedPreferences().getBoolean("developer", false);
+        if (BuildConfig.DEBUG) return true;
+        return getSharedPreferences().getBoolean("developer", false);
     }
 
     public static boolean isDisableLowQualityModuleFilter() {
@@ -163,10 +161,6 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
 
     public static boolean isFirstBoot() {
         return firstBoot;
-    }
-
-    public static boolean hasGottenRootAccess() {
-        return getSharedPreferences().getBoolean("has_root_access", false);
     }
 
     public static void setHasGottenRootAccess(boolean bool) {
@@ -204,10 +198,6 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         return this.markwon = markwon;
     }
 
-    public FoxThemeWrapper getMarkwonThemeContext() {
-        return this.markwonThemeContext;
-    }
-
     @NonNull
     @Override
     public androidx.work.Configuration getWorkManagerConfiguration() {
@@ -232,6 +222,12 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
                 break;
             case "light":
                 themeResId = monet ? R.style.Theme_MagiskModuleManager_Monet_Light : R.style.Theme_MagiskModuleManager_Light;
+                break;
+            case "transparent_light":
+                if (monet) {
+                    Log.w("MainApplication", "Monet is not supported for transparent theme");
+                }
+                themeResId = R.style.Theme_MagiskModuleManager_Transparent_Light;
                 break;
         }
         this.setManagerThemeResId(themeResId);
@@ -278,11 +274,6 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         if (INSTANCE == null) INSTANCE = this;
         relPackageName = this.getPackageName();
         super.onCreate();
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            DynamicColors.applyToActivitiesIfAvailable(this,
-                    new DynamicColorsOptions.Builder().setPrecondition(
-                            (activity, theme) -> isMonetEnabled()).build());
-        }*/
         SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
         // We are only one process so it's ok to do this
         SharedPreferences bootPrefs = MainApplication.bootSharedPreferences = this.getSharedPreferences("mmm_boot", MODE_PRIVATE);
@@ -318,12 +309,15 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
 
         SentryMain.initialize(this);
         if (Objects.equals(BuildConfig.ANDROIDACY_CLIENT_ID, "")) {
-            Log.w("MainApplication", "Androidacy client id is empty! Please set it in androidacy" +
-                    ".properties. Will not enable Androidacy.");
+            Log.w("MainApplication", "Androidacy client id is empty! Please set it in androidacy" + ".properties. Will not enable Androidacy.");
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("pref_androidacy_repo_enabled", false);
             editor.apply();
         }
+    }
+
+    private Intent getIntent() {
+        return this.getPackageManager().getLaunchIntentForPackage(this.getPackageName());
     }
 
     @Override

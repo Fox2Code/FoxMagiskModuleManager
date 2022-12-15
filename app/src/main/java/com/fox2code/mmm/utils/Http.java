@@ -15,11 +15,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.fox2code.mmm.BuildConfig;
+import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.androidacy.AndroidacyUtil;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.repo.RepoManager;
-import com.google.net.cronet.okhttptransport.CronetCallFactory;
 import com.google.net.cronet.okhttptransport.CronetInterceptor;
 
 import org.chromium.net.CronetEngine;
@@ -140,13 +140,6 @@ public class Http {
             return chain.proceed(request.build());
         });
         // Add cronet interceptor
-        // install cronet
-        /*try {
-            // Detect if cronet is installed
-            CronetProviderInstaller.installProvider(mainApplication);
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to install cronet", e);
-        }*/
         // init cronet
         try {
             // Load the cronet library
@@ -165,8 +158,13 @@ public class Http {
             }
             builder.setStoragePath(mainApplication.getCacheDir().getAbsolutePath() + "/cronet");
             builder.enableHttpCache(CronetEngine.Builder.HTTP_CACHE_DISK_NO_HTTP, 10 * 1024 * 1024);
-            CronetEngine engine =
-                    builder.build();
+            // Add quic hint
+            builder.addQuicHint("github.com", 443, 443);
+            builder.addQuicHint("githubusercontent.com", 443, 443);
+            builder.addQuicHint("jsdelivr.net", 443, 443);
+            builder.addQuicHint("androidacy.com", 443, 443);
+            builder.addQuicHint("sentry.io", 443, 443);
+            CronetEngine engine = builder.build();
             httpclientBuilder.addInterceptor(CronetInterceptor.newBuilder(engine).build());
         } catch (Exception e) {
             Log.e(TAG, "Failed to init cronet", e);
@@ -234,10 +232,10 @@ public class Http {
     @SuppressWarnings("resource")
     public static byte[] doHttpGet(String url, boolean allowCache) throws IOException {
         checkNeedBlockAndroidacyRequest(url);
-        Response response =
-                (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).get().build()).execute();
+        Response response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).get().build()).execute();
         // 200/204 == success, 304 == cache valid
         if (response.code() != 200 && response.code() != 204 && (response.code() != 304 || !allowCache)) {
+            Log.e(TAG, "Failed to fetch " + url + ", code: " + response.code());
             checkNeedCaptchaAndroidacy(url, response.code());
             // If it's a 401, and an androidacy link, it's probably an invalid token
             if (response.code() == 401 && AndroidacyUtil.isAndroidacyLink(url)) {
@@ -260,13 +258,17 @@ public class Http {
 
     @SuppressWarnings("resource")
     private static Object doHttpPostRaw(String url, String data, boolean allowCache) throws IOException {
+        if (BuildConfig.DEBUG) Log.d(TAG, "POST " + url + " " + data);
         checkNeedBlockAndroidacyRequest(url);
-        Response response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).post(JsonRequestBody.from(data)).header("Content-Type", "application/json").build()).execute();
+        Response response;
+        response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).post(JsonRequestBody.from(data)).header("Content-Type", "application/json").build()).execute();
         if (response.isRedirect()) {
             return response.request().url().uri().toString();
         }
         // 200/204 == success, 304 == cache valid
         if (response.code() != 200 && response.code() != 204 && (response.code() != 304 || !allowCache)) {
+            if (BuildConfig.DEBUG)
+                Log.e(TAG, "Failed to fetch " + url + ", code: " + response.code() + ", body: " + response.body().string());
             checkNeedCaptchaAndroidacy(url, response.code());
             throw new HttpException(response.code());
         }
@@ -280,10 +282,11 @@ public class Http {
     }
 
     public static byte[] doHttpGet(String url, ProgressListener progressListener) throws IOException {
-        Log.d("Http", "Progress URL: " + url);
+        if (BuildConfig.DEBUG) Log.d("Http", "Progress URL: " + url);
         checkNeedBlockAndroidacyRequest(url);
         Response response = getHttpClient().newCall(new Request.Builder().url(url).get().build()).execute();
         if (response.code() != 200 && response.code() != 204) {
+            Log.e(TAG, "Failed to fetch " + url + ", code: " + response.code());
             checkNeedCaptchaAndroidacy(url, response.code());
             throw new HttpException(response.code());
         }
@@ -335,6 +338,54 @@ public class Http {
 
     public static boolean hasWebView() {
         return hasWebView;
+    }
+
+    public static void ensureCacheDirs(MainActivity mainActivity) {
+        // Recursively ensure cache dirs for webview exist under our cache dir
+        File cacheDir = mainActivity.getCacheDir();
+        File webviewCacheDir = new File(cacheDir, "WebView");
+        if (!webviewCacheDir.exists()) {
+            if (!webviewCacheDir.mkdirs()) {
+                Log.e(TAG, "Failed to create webview cache dir");
+            }
+        }
+        File webviewCacheDirCache = new File(webviewCacheDir, "Default");
+        if (!webviewCacheDirCache.exists()) {
+            if (!webviewCacheDirCache.mkdirs()) {
+                Log.e(TAG, "Failed to create webview cache dir");
+            }
+        }
+        File webviewCacheDirCacheCodeCache = new File(webviewCacheDirCache, "HTTP Cache");
+        if (!webviewCacheDirCacheCodeCache.exists()) {
+            if (!webviewCacheDirCacheCodeCache.mkdirs()) {
+                Log.e(TAG, "Failed to create webview cache dir");
+            }
+        }
+        File webviewCacheDirCacheCodeCacheIndex = new File(webviewCacheDirCacheCodeCache, "Code Cache");
+        if (!webviewCacheDirCacheCodeCacheIndex.exists()) {
+            if (!webviewCacheDirCacheCodeCacheIndex.mkdirs()) {
+                Log.e(TAG, "Failed to create webview cache dir");
+            }
+        }
+        File webviewCacheDirCacheCodeCacheIndexIndex = new File(webviewCacheDirCacheCodeCacheIndex, "Index");
+        if (!webviewCacheDirCacheCodeCacheIndexIndex.exists()) {
+            if (!webviewCacheDirCacheCodeCacheIndexIndex.mkdirs()) {
+                Log.e(TAG, "Failed to create webview cache dir");
+            }
+        }
+        // Create the js and wasm dirs
+        File webviewCacheDirCacheCodeCacheIndexIndexJs = new File(webviewCacheDirCacheCodeCache, "js");
+        if (!webviewCacheDirCacheCodeCacheIndexIndexJs.exists()) {
+            if (!webviewCacheDirCacheCodeCacheIndexIndexJs.mkdirs()) {
+                Log.e(TAG, "Failed to create webview cache dir");
+            }
+        }
+        File webviewCacheDirCacheCodeCacheIndexIndexWasm = new File(webviewCacheDirCacheCodeCache, "wasm");
+        if (!webviewCacheDirCacheCodeCacheIndexIndexWasm.exists()) {
+            if (!webviewCacheDirCacheCodeCacheIndexIndexWasm.mkdirs()) {
+                Log.e(TAG, "Failed to create webview cache dir");
+            }
+        }
     }
 
     public interface ProgressListener {

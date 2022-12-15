@@ -179,8 +179,8 @@ public final class AndroidacyActivity extends FoxActivity {
                 // Don't open non Androidacy urls inside WebView
                 if (request.isForMainFrame() && !AndroidacyUtil.isAndroidacyLink(request.getUrl())) {
                     if (downloadMode || backOnResume) return true;
-                    Log.i(TAG, "Exiting WebView " + // hideToken in case isAndroidacyLink fail.
-                            AndroidacyUtil.hideToken(request.getUrl().toString()));
+                    Log.i(TAG,
+                            "Exiting WebView " + AndroidacyUtil.hideToken(request.getUrl().toString()));
                     IntentHelper.openUri(view.getContext(), request.getUrl().toString());
                     return true;
                 }
@@ -258,7 +258,7 @@ public final class AndroidacyActivity extends FoxActivity {
                             break;
                     }
                 }
-                return super.onConsoleMessage(consoleMessage);
+                return true;
             }
 
             @Override

@@ -24,6 +24,7 @@ public class Hashes {
     }
 
     public static String hashMd5(byte[] input) {
+        Log.w(TAG, "hashMd5: This method is insecure, use hashSha256 instead");
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
 

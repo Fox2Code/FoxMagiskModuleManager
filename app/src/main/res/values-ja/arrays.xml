@@ -3,6 +3,7 @@
         <item>システムの設定を使用</item>
         <item>ダーク</item>
         <item>AMOLED Black</item>
+        <item>Transparent (light)</item>
         <item>ライト</item>
     </string-array>
 </resources>

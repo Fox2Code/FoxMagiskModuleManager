@@ -1,9 +1,12 @@
 <resources>
     <!-- If translating, please remove "theme_values" -->
+    <!-- Transparent dark theme has, erm, issues -->
     <string-array name="theme_values" translatable="false">
         <item>system</item>
         <item>dark</item>
         <item>black</item>
+        <item>transparent_light</item>
+        <!-- <item>transparent_dark</item> -->
         <item>light</item>
     </string-array>
 
@@ -11,6 +14,7 @@
         <item>System</item>
         <item>Dark</item>
         <item>AMOLED Black</item>
+        <item>Transparent (light)</item>
         <item>Light</item>
     </string-array>
     <string-array name="permission_notification_dont_ask_again">Don't prompt again</string-array>
