@@ -15,13 +15,11 @@ android {
             Properties properties = new Properties()
             if (project.rootProject.file('local.properties').exists()) {
                 properties.load(project.rootProject.file('local.properties').newDataInputStream())
-                // AndroidStudio generate local.properties, only set values if file is defined.
-                if (properties.hasProperty('keystore.file')) {
-                    storeFile file(properties.getProperty('keystore.file'))
-                    storePassword properties.getProperty('keystore.password')
-                    keyAlias 'key0'
-                    keyPassword properties.getProperty('keystore.password')
-                }
+                // FFS DO NOT CHANGE THIS, IT WILL BREAK THE BUILD
+                storeFile file(properties.getProperty('keystore.file'))
+                storePassword properties.getProperty('keystore.password')
+                keyAlias 'key0'
+                keyPassword properties.getProperty('keystore.password')
             }
         }
     }
@@ -30,8 +28,8 @@ android {
         applicationId "com.fox2code.mmm"
         minSdk 23
         targetSdk 33
-        versionCode 61
-        versionName "1.0.1"
+        versionCode 62
+        versionName "1.0.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release
     }
@@ -89,9 +87,7 @@ android {
                 }
                 buildConfigField "String", "SENTRY_TOKEN", '"' + properties.getProperty("auth." + "token") + '"'
             } else {
-
                 buildConfigField "String", "SENTRY_TOKEN", '""'
-
             }
             // Get the androidacy client ID from the androidacy.properties
             Properties properties = new Properties()
@@ -289,9 +285,6 @@ dependencies {
     // Test
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
-
-    // Add okhttp logging interceptor if debug build
-    debugImplementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.10'
 }
 
 if (hasSentryConfig) {

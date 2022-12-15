@@ -22,8 +22,8 @@ public class AndroidacyUtil {
         int i; // Check both string and Uri to mitigate parse exploit
         return url.startsWith("https://") &&
                 (i = url.indexOf("/", 8)) != -1 &&
-                url.substring(8, i).endsWith(".androidacy.com") &&
-                        uri.getHost().endsWith(".androidacy.com");
+                url.substring(8, i).endsWith("api.androidacy.com") &&
+                        uri.getHost().endsWith("api.androidacy.com");
     }
 
     public static boolean isAndroidacyFileUrl(@Nullable String url) {
@@ -68,7 +68,7 @@ public class AndroidacyUtil {
             // URL decode
             moduleId = Uri.decode(moduleId);
             // Strip non alphanumeric
-            moduleId = moduleId.replaceAll("[^a-zA-Z0-9]", "");
+            moduleId = moduleId.replaceAll("[^a-zA-Z\\d]", "");
             return moduleId;
         }
         if (BuildConfig.DEBUG) {

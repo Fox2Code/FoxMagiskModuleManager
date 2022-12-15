@@ -959,11 +959,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 if (!homepage.isEmpty()) {
                     preference.setVisible(true);
                     preference.setOnPreferenceClickListener(p -> {
-                        if (homepage.startsWith("https://www.androidacy.com/")) {
-                            IntentHelper.openUrlAndroidacy(getFoxActivity(this), homepage, true);
-                        } else {
-                            IntentHelper.openUrl(getFoxActivity(this), homepage);
-                        }
+                        IntentHelper.openUrl(getFoxActivity(this), homepage);
                         return true;
                     });
                     ((LongClickablePreference) preference).setOnPreferenceLongClickListener(p -> {
