@@ -308,7 +308,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         ExternalHelper.INSTANCE.refreshHelper(this);
         this.initMode = false;
         // Show an material alert dialog if lastEventId is not "" or null in the private sentry shared preferences
-        if (MainApplication.isCrashReportingEnabled()) {
+        //noinspection ConstantConditions
+        if (MainApplication.isCrashReportingEnabled() && !BuildConfig.SENTRY_TOKEN.isEmpty()) {
             SharedPreferences preferences = getSharedPreferences("sentry", MODE_PRIVATE);
             String lastExitReason = preferences.getString("lastExitReason", "");
             if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Last Exit Reason: " + lastExitReason);

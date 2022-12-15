@@ -86,6 +86,12 @@
             app:key="pref_magisk_alt_repo_submit"
             app:singleLineTitle="false"
             app:title="@string/submit_modules" />
+        <Preference
+            app:enabled="false"
+            app:icon="@drawable/ic_baseline_info_24"
+            app:key="pref_alt_repo_disclaimer"
+            app:singleLineTitle="false"
+            app:summary="@string/alt_repo_info" />
     </PreferenceCategory>
     <PreferenceCategory
         app:key="pref_custom_repo_0"

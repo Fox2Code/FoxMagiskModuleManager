@@ -126,6 +126,8 @@ android {
                     properties.load(fis)
                 }
                 buildConfigField "String", "SENTRY_TOKEN", '"' + properties.getProperty("auth." + "token") + '"'
+            } else {
+                buildConfigField "String", "SENTRY_TOKEN", '""'
             }
 
             // Repo with ads or tracking feature are disabled by default for the
