@@ -143,4 +143,8 @@
     <string name="language_support_outdated">Alcune traduzioni per la lingua corrente non sono aggiornate, ti preghiamo di considerare di contribuire alle traduzioni dell\'app su GitHub</string>
     <!-- Sostituisci con il tuo nome utente durante la traduzione -->
     <string name="language_translated_by">Traduzione di tugaia56</string>
+    <string name="crash_reporting">Segnala automaticamente problemi e prestazioni agli sviluppatori</string>
+    <string name="crash_reporting_desc">Se lo disabiliti, lo sviluppatore non riceverà segnalazioni di bug automatiche e ciò potrebbe rendere più difficile la risoluzione dei problemi</string>
+    <string name="api_key">Chiave API Androidacy</string>
+    <string name="api_key_summary">Utilizza una chiave API personalizzata per Androidacy. Utile per gli abbonati premium, per rimuovere pubblicità e altro.</string>
 </resources>
