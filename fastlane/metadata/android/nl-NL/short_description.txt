@@ -1,0 +1,1 @@
+Modulebeheerder voor Magisk vermits de officiële app dit niet meer ondersteund.
