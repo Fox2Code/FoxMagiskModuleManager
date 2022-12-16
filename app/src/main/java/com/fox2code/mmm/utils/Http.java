@@ -143,7 +143,6 @@ public class Http {
         // init cronet
         try {
             // Load the cronet library
-            System.loadLibrary("cronet.108.0.5359.95");
             CronetEngine.Builder builder = new CronetEngine.Builder(mainApplication);
             builder.enableBrotli(true);
             builder.enableHttp2(true);

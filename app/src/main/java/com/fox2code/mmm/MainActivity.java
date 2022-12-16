@@ -110,7 +110,11 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             try {
                 ExperimentalCronetEngine cronetEngine = new ExperimentalCronetEngine.Builder(this).build();
                 CronetURLStreamHandlerFactory cronetURLStreamHandlerFactory = new CronetURLStreamHandlerFactory(cronetEngine);
-                URL.setURLStreamHandlerFactory(cronetURLStreamHandlerFactory);
+                try {
+                    URL.setURLStreamHandlerFactory(cronetURLStreamHandlerFactory);
+                } catch (Error e) {
+                    Log.e(TAG, "Failed to install Cronet URLStreamHandlerFactory", e);
+                }
                 urlFactoryInstalled = true;
             } catch (Throwable t) {
                 Log.e(TAG, "Failed to install CronetURLStreamHandlerFactory", t);
@@ -702,7 +706,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Do setup now");
         // Check if this is the first launch
         SharedPreferences prefs = MainApplication.getSharedPreferences();
-        boolean firstLaunch = MainApplication.getBootSharedPreferences().getBoolean("first_launch", true);
+        boolean firstLaunch = MainApplication.getSharedPreferences().getBoolean("first_launch", true);
         if (BuildConfig.DEBUG) Log.d("Noodle", "First launch: " + firstLaunch);
         if (firstLaunch) {
             // Show setup box
@@ -710,12 +714,15 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
                 builder.setCancelable(false);
                 builder.setTitle(R.string.setup_title);
+                // Create a view from R.xml.setup_box
                 View view = getLayoutInflater().inflate(R.layout.setup_box, null);
                 builder.setView(view);
+                // For sdk >= 31, use MaterialSwitch instead of MaterialSwitch
                 // For now, we'll just have the positive button save the preferences and dismiss the dialog
                 builder.setPositiveButton(R.string.setup_button, (dialog, which) -> {
                     // Set the preferences
-                    prefs.edit().putBoolean("pref_background_update_check", ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_background_update_check))).isChecked()).commit();
+                    prefs.edit().putBoolean("pref_background_update_check",
+                            ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_background_update_check))).isChecked()).commit();
                     prefs.edit().putBoolean("pref_crash_reporting", ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_crash_reporting))).isChecked()).commit();
                     prefs.edit().putBoolean("pref_androidacy_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_androidacy_repo))).isChecked()).commit();
                     prefs.edit().putBoolean("pref_magisk_alt_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_magisk_alt_repo))).isChecked()).commit();
@@ -723,7 +730,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                         Log.d("MainActivity", String.format("Background update check: %s, Crash reporting: %s, Androidacy repo: %s, Magisk alt repo: %s", prefs.getBoolean("pref_background_update_check", false), prefs.getBoolean("pref_crash_reporting", false), prefs.getBoolean("pref_androidacy_repo_enabled", false), prefs.getBoolean("pref_magisk_alt_repo_enabled", false)));
                     }
                     // Set pref_first_launch to false
-                    MainApplication.getBootSharedPreferences().edit().putBoolean("first_launch", false).commit();
+                    MainApplication.getSharedPreferences().edit().putBoolean("first_launch", false).commit();
                     // Restart the app
                     Intent intent = new Intent(this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -732,7 +739,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     ensurePermissions();
                 });
                 builder.setNegativeButton(R.string.setup_button_skip, (dialog, which) -> {
-                    MainApplication.getBootSharedPreferences().edit().putBoolean("first_launch", false).commit();
+                    MainApplication.getSharedPreferences().edit().putBoolean("first_launch", false).commit();
                     dialog.dismiss();
                     ensurePermissions();
                 });

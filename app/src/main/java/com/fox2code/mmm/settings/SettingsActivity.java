@@ -1,5 +1,6 @@
 package com.fox2code.mmm.settings;
 
+import static com.fox2code.mmm.settings.SettingsActivity.RepoFragment.applyMaterial3;
 import static java.lang.Integer.parseInt;
 
 import android.annotation.SuppressLint;
@@ -35,6 +36,7 @@ import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceGroup;
 import androidx.preference.SwitchPreferenceCompat;
 import androidx.preference.TwoStatePreference;
 
@@ -169,6 +171,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             getPreferenceManager().setSharedPreferencesName("mmm");
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
+            applyMaterial3(getPreferenceScreen());
             findPreference("pref_manage_repos").setOnPreferenceClickListener(p -> {
                 devModeStep = 0;
                 openFragment(new RepoFragment(), R.string.manage_repos_pref);
@@ -602,14 +605,18 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
     public static class RepoFragment extends PreferenceFragmentCompat {
         private static final int CUSTOM_REPO_ENTRIES = 5;
 
-        @Override
-        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-            getPreferenceManager().setSharedPreferencesName("mmm");
-            setPreferencesFromResource(R.xml.repo_preferences, rootKey);
-            setRepoData(RepoManager.MAGISK_ALT_REPO);
-            setRepoData(RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT);
-            updateCustomRepoList(true);
-            onCreatePreferencesAndroidacy();
+        // *says proudly* I stole it
+        // namely, from https://github.com/NeoApplications/Neo-Wellbeing/blob/9fca4136263780c022f9ec6433c0b43d159166db/app/src/main/java/org/eu/droid_ng/wellbeing/prefs/SettingsActivity.java#L101
+        public static void applyMaterial3(Preference p) {
+            if (p instanceof PreferenceGroup) {
+                PreferenceGroup pg = (PreferenceGroup) p;
+                for (int i = 0; i < pg.getPreferenceCount(); i++) {
+                    applyMaterial3(pg.getPreference(i));
+                }
+            }
+            if (p instanceof SwitchPreferenceCompat) {
+                p.setWidgetLayoutResource(R.layout.preference_material_switch);
+            }
         }
 
         @SuppressLint({"RestrictedApi", "UnspecifiedImmutableFlag"})
@@ -1037,6 +1044,17 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             Preference preference = findPreference(preferenceName);
             if (preference == null) return;
             preference.setVisible(false);
+        }
+
+        @Override
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            getPreferenceManager().setSharedPreferencesName("mmm");
+            setPreferencesFromResource(R.xml.repo_preferences, rootKey);
+            applyMaterial3(getPreferenceScreen());
+            setRepoData(RepoManager.MAGISK_ALT_REPO);
+            setRepoData(RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT);
+            updateCustomRepoList(true);
+            onCreatePreferencesAndroidacy();
         }
     }
 }
