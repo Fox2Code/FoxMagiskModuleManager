@@ -198,4 +198,43 @@
         télécharger la version Github si vous appréciez bénéficier des fonctionnalités comme les notes de modules, les vérifications automatiques de sécurités, et plus encore.</string>
     <string name="download_full_app">Télécharger la version complête</string>
     <string name="repo_update_failed">Certains dépôts n\’ont pas pu être mis à jours</string>
+    <string name="repo_update_failed_extended">Mise à jour de %1$s en échec. Veuillez reéssayer plus tard.</string>
+    <string name="monet_disabled_summary">Monet n\’est pas compatible avec les thèmes transparent.</string>
+    <string name="blur_disabled_summary">Blur n\’est pas compatible avec les thèmes transparents.</string>
+    <string name="transparent_theme_dialogue_title">Vous paramétrez un thème transparent</string>
+    <string name="transparent_theme_dialogue_message">Les thèmes transparents pourraient avoir des incohérences et ne pas fonctionner sur toutes les ROMs. De plus, monet et blur seront désactivés. Vous pouvez revenir en arrière à tout moment.</string>
+    <string name="custom_repo_always_on">Les dépôts personnalisés seront toujours actifs jusqu\’à ce que vous les supprimiez.</string>
+    <string name="sentry_dialogue_message">Nous avons rencontré une erreur! Merci d\’aider à améliorer l\’application
+        en ajoutant certaines informations à propos de l\’erreur ci-dessous.\nLe nom et l\’email sont optionnels mais nous
+        permettrons de vous contacter si nécessaire pour plus d\’informations.</string>
+    <string name="sentry_dialogue_title">Oups! On dirait que l\’application s\’est fermée de manière inattendue.</string>
+    <string name="name">Votre Nom</string>
+    <string name="email">Votre email</string>
+    <string name="additional_info">Dites nous qu\’est ce qui s\’est passé</string>
+    <string name="submit">Envoyer</string>
+    <string name="sentry_dialogue_failed_toast">Le rapport n\’a pas pu être transmis à cause d\’une erreur</string>
+    <string name="sentry_dialogue_success">Retour d\’expérience transmis avec succès. Nous inspecterons ça
+    rapidement</string>
+    <string name="sentry_dialogue_no_description">Il n\’est pas possible d\’envoyer le retour d\’expérience etant donné qu\’aucune
+        description n\’a été fournie</string>
+    <string name="go_to_online_repo">Défiler jusqu\’aux dépôts en ligne</string>
+    <string name="pref_pkg_info_summary">%1$s v%2$s (%3$o) | %4$s Fabrication</string>
+    <string name="official">Officielle</string>
+    <string name="unofficial">Non-officielle</string>
+    <string name="setup_title">Première mise en service</string>
+    <string name="setup_message">Bienvenue! Cette application vous aidera à installer et gérer vos modules Magisk. Pour commencer, merci de sélectionner les options ci-dessous. Celles-ci et d\’autres peuvent êtres configurées ultérieusement dans les paramètres.</string>
+    <string name="setup_button">Terminer la configuration</string>
+    <string name="setup_background_update_check">Nous permettre de vérifier les mises-à-jours en arrière-plan.\nCette fonctionnalité peut utiliser d\’avantage de batterie.</string>
+    <string name="setup_androidacy_repo">Activer le dépôt Androidacy\nRetours des utilisateurs sur les fonctionnalités, analyse antivirales automatiques, Mises-à-jours rapides, un grand choix de sélection, et soutenu par eux-mêmes.</string>
+    <!-- Peut être qu\’une fois que le dépôt Alt aura corrigé ses conneries et cessera d\’autoriser des modules merdiques ou carrément
+    cassés, nous reformullerons ça. -->
+    <string name="setup_magisk_alt_repo">Activer le Dépôt Alt Magisk\nBien plus laxiste que l\’original. Offre de nombreux modules au détriement de la sécurité.</string>
+    <string name="setup_crash_reporting">Activer la Centralisation de la gestion des rapports de crashs et desproblèmes de performances.\nTous les rapports sont strictements anonymes et confidentiels.</string>
+    <string name="setup_custom_repos">Vous pouvez ajouter des dépôts supplémentaires par la suite dans les réglages.</string>
+    <string name="repos">Dépôts</string>
+    <string name="misc">Diver</string>
+    <string name="setup_button_skip">Passer</string>
+    <string name="low_performance_device_dialogue_title">Activer blur sur les périphériques bas de gamme</string>
+    <string name="low_performance_device_dialogue_message">Vous tentez d\’activer blur sur un périphérique qui pourrait ne pas fonctionner complêtement avec ça.\nVous pourriez l\’activer, mais ça vous apportera une mauvaise expérience utilisateur et nous ne vous recommendons pas de l\’utiliser.</string>
+    <string name="alt_repo_info">Ce dépôt a moins de restrictions et d\’examens, pouvant résulter à une qualité de modules inférieurs. Très minimalistes mais qui dispose de beaucoup de modules.</string>
 </resources>
