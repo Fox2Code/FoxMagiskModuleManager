@@ -14,7 +14,7 @@ will be handling the project for me for a while.
 I had theses problems even before I started FoxMMM, the only reason no one noticed is because I can
 work or go to any school because of how much pain and exhaustion I feel everyday.
 
-The only two thing that helped me reduce the pain is making code and playing with firends.
+The only two thing that helped me reduce the pain is making code and playing with friends.
 
 Even tho I'm very slow at doing anything, the only thing that made me look like I was working on
 this project at a normal speed like someone that work is because 75% of my time was on this project.
@@ -27,9 +27,9 @@ Spending time with my friend and working on this project was a sort of pain kill
 
 Even tho I received money from my parent and the governement for my health problems, I didn't know
 what to do with it cause anything I could have bought had no use for me because my extreme pain made
-me unable to use anything. (Even video games)
+me unable to use anything (even play video games).
 
-My health issues also prevented me to do any project of greater complexcity that this, and without
+My health issues also prevented me to do any project of greater complexity that this, and without
 community support I would have been physically unable to continue this project.
 
 There was clues of my health problems, right on this project, and theses are the following:
@@ -38,20 +38,20 @@ There was clues of my health problems, right on this project, and theses are the
 - Me not commiting for entire week, or having only commited one line in a week.
 - Me taking too much time to publish release after I did the relase commit.
 - Me missing obvious bugs and being able to do simple task properly
-  (Well maybe this last one is harder to proove via commit history)
+  (Well maybe this last one is harder to prove via commit history)
 
-But sine many peoples are faking health issues for clout, if any data-scientist want to do an
-analysis to proove what it would make my day, and I would be happy to give money if someone does
+But since many people are faking health issues for clout, if any data-scientist want to do an
+analysis to prove what it would make my day, and I would be happy to give money if someone does
 that because I don't know what do to with my money at this point.
 
 This is really sickening peoples need to give proof for their mental/health issues because some
 peoples fake having thoses issues for clout.
 
-If you want to use my health problems for coult, I don't care as long as you are respectful, at
+If you want to use my health problems for clout, I don't care as long as you are respectful, at
 least you won't be hurting peoples with mental/health issues by faking having thoses issues.
 
 I'll probably delete this section once my health would be gotten better, or at least good enough for
-me to not be stuck on my bed at least once a day because of pain.
+me to not be stuck in my bed at least once a day because of pain.
 
 </details>
 
