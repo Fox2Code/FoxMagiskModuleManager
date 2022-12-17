@@ -28,8 +28,8 @@ android {
         applicationId "com.fox2code.mmm"
         minSdk 23
         targetSdk 33
-        versionCode 62
-        versionName "1.0.2"
+        versionCode 63
+        versionName "1.0.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release
     }
@@ -215,21 +215,8 @@ sentry {
     }
 
     // Enable auto-installation of Sentry components (sentry-android SDK and okhttp, timber and fragment integrations).
-    // Default is enabled.
-    // Only available v3.1.0 and above.
     autoInstallation {
-        enabled = true
-
-        // Specifies a version of the sentry-android SDK and fragment, timber and okhttp integrations.
-        //
-        // This is also useful, when you have the sentry-android SDK already included into a transitive dependency/module and want to
-        // align integration versions with it (if it's a direct dependency, the version will be inferred).
-        //
-        // NOTE: if you have a higher version of the sentry-android SDK or integrations on the classpath, this setting will have no effect
-        // as Gradle will resolve it to the latest version.
-        //
-        // Defaults to the latest published sentry version.
-        sentryVersion = '6.9.2'
+        sentryVersion = '6.10.0'
     }
 }
 
@@ -258,6 +245,7 @@ dependencies {
 
     // Utils
     implementation 'androidx.work:work-runtime:2.7.1'
+    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.10'
     implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:5.0.0-alpha.10'
     implementation 'com.squareup.okhttp3:okhttp-brotli:5.0.0-alpha.10'
     // Chromium cronet from androidacy
@@ -267,7 +255,7 @@ dependencies {
     implementation 'com.github.topjohnwu.libsu:io:5.0.1'
     implementation 'com.github.Fox2Code:RosettaX:1.0.9'
     implementation 'com.github.Fox2Code:AndroidANSI:1.0.1'
-    implementation 'io.sentry:sentry-android:6.9.2'
+    implementation 'io.sentry:sentry-android:6.10.0'
 
     // Markdown
     implementation "io.noties.markwon:core:4.6.2"
@@ -318,6 +306,11 @@ android {
         fdroid {
             manifest.srcFile sentryManifestSrc
         }
+    }
+    ndkVersion '25.1.8937393'
+    dependenciesInfo {
+        includeInApk false
+        includeInBundle false
     }
 }
 
