@@ -32,7 +32,7 @@ android {
         versionName "1.0.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release
-        archivesBaseName = "FoxMMM-v$versionName-$versionCode"
+        archivesBaseName = "FoxMMM-v$versionName"
     }
 
     splits {
