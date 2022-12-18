@@ -47,11 +47,13 @@ import com.fox2code.mmm.manager.ModuleManager;
 import com.fox2code.mmm.module.ModuleViewAdapter;
 import com.fox2code.mmm.module.ModuleViewListBuilder;
 import com.fox2code.mmm.repo.RepoManager;
+import com.fox2code.mmm.sentry.SentryMain;
 import com.fox2code.mmm.settings.SettingsActivity;
 import com.fox2code.mmm.utils.BlurUtils;
 import com.fox2code.mmm.utils.ExternalHelper;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
+import com.fox2code.mmm.utils.ProcessHelper;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
@@ -88,6 +90,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     private SearchView searchView;
     private boolean initMode;
     private boolean doSetupNowRunning;
+    private boolean doSetupRestarting;
     private boolean urlFactoryInstalled = false;
 
     public MainActivity() {
@@ -180,6 +183,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         this.cardIconifyUpdate();
         this.updateScreenInsets(this.getResources().getConfiguration());
 
+        checkShowInitialSetup();
         InstallerInitializer.tryGetMagiskPathAsync(new InstallerInitializer.Callback() {
             @Override
             public void onPathReceived(String path) {
@@ -201,23 +205,15 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             }
 
             public void commonNext() {
-                doSetupNowRunning = true;
-                doSetupNow();
-
-                // Wait for doSetupNow to finish
-                while (doSetupNowRunning) {
-                    try {
-                        //noinspection BusyWait
-                        Thread.sleep(100);
-                    } catch (InterruptedException ignored) {
-                    }
+                updateScreenInsets(); // Fix an edge case
+                if (waitInitialSetupFinished()) {
+                    return;
                 }
                 /*if (BuildConfig.DEBUG) {
                     SharedPreferences prefs = MainApplication.getSharedPreferences();
                     if (BuildConfig.DEBUG) Log.d("MainActivity", String.format("Background update check: %s, Crash reporting: %s, Androidacy repo: %s, Magisk alt repo: %s", prefs.getBoolean("pref_background_update_check", false), prefs.getBoolean("pref_crash_reporting", false), prefs.getBoolean("pref_androidacy_repo_enabled", false), prefs.getBoolean("pref_magisk_alt_repo_enabled", false)));
                 }*/
                 swipeRefreshBlocker = System.currentTimeMillis() + 5_000L;
-                updateScreenInsets(); // Fix an edge case
                 if (MainApplication.isShowcaseMode())
                     moduleViewListBuilder.addNotification(NotificationType.SHOWCASE_MODE);
                 if (!Http.hasWebView()) // Check Http for WebView availability
@@ -518,7 +514,10 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
 
     @Override
     public void onRefresh() {
-        if (this.swipeRefreshBlocker > System.currentTimeMillis() || this.initMode || this.progressIndicator == null || this.progressIndicator.getVisibility() == View.VISIBLE) {
+        if (this.swipeRefreshBlocker > System.currentTimeMillis() ||
+                this.initMode || this.progressIndicator == null ||
+                this.progressIndicator.getVisibility() == View.VISIBLE ||
+                this.doSetupNowRunning) {
             this.swipeRefreshLayout.setRefreshing(false);
             return; // Do not double scan
         }
@@ -702,13 +701,14 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
 
     // Method to show a setup box on first launch
     @SuppressLint({"InflateParams", "RestrictedApi", "UnspecifiedImmutableFlag", "ApplySharedPref"})
-    private void doSetupNow() {
+    private void checkShowInitialSetup() {
         if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Do setup now");
         // Check if this is the first launch
         SharedPreferences prefs = MainApplication.getSharedPreferences();
-        boolean firstLaunch = MainApplication.getSharedPreferences().getBoolean("first_launch", true);
+        boolean firstLaunch = prefs.getBoolean("first_launch", true);
         if (BuildConfig.DEBUG) Log.d("Noodle", "First launch: " + firstLaunch);
         if (firstLaunch) {
+            doSetupNowRunning = true;
             // Show setup box
             runOnUiThread(() -> {
                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
@@ -720,26 +720,30 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 // For sdk >= 31, use MaterialSwitch instead of MaterialSwitch
                 // For now, we'll just have the positive button save the preferences and dismiss the dialog
                 builder.setPositiveButton(R.string.setup_button, (dialog, which) -> {
-                    // Set the preferences
-                    prefs.edit().putBoolean("pref_background_update_check",
-                            ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_background_update_check))).isChecked()).commit();
-                    prefs.edit().putBoolean("pref_crash_reporting", ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_crash_reporting))).isChecked()).commit();
-                    prefs.edit().putBoolean("pref_androidacy_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_androidacy_repo))).isChecked()).commit();
-                    prefs.edit().putBoolean("pref_magisk_alt_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_magisk_alt_repo))).isChecked()).commit();
+                    // Set the preferences and pref_first_launch to false
+                    prefs.edit().putBoolean("first_launch", false)
+                            .putBoolean("pref_background_update_check", ((MaterialSwitch)
+                                    Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_background_update_check))).isChecked())
+                            .putBoolean("pref_crash_reporting",
+                                    ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_crash_reporting))).isChecked())
+                            .putBoolean("pref_androidacy_repo_enabled", ((MaterialSwitch)
+                                    Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_androidacy_repo))).isChecked())
+                            .putBoolean("pref_magisk_alt_repo_enabled", ((MaterialSwitch)
+                                    Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_magisk_alt_repo))).isChecked()).apply();
                     if (BuildConfig.DEBUG) {
-                        Log.d("MainActivity", String.format("Background update check: %s, Crash reporting: %s, Androidacy repo: %s, Magisk alt repo: %s", prefs.getBoolean("pref_background_update_check", false), prefs.getBoolean("pref_crash_reporting", false), prefs.getBoolean("pref_androidacy_repo_enabled", false), prefs.getBoolean("pref_magisk_alt_repo_enabled", false)));
+                        Log.d("MainActivity", String.format("Background update check: %s, Crash reporting: %s, Androidacy repo: %s, Magisk alt repo: %s",
+                                prefs.getBoolean("pref_background_update_check", false), prefs.getBoolean("pref_crash_reporting", false),
+                                prefs.getBoolean("pref_androidacy_repo_enabled", false), prefs.getBoolean("pref_magisk_alt_repo_enabled", false)));
                     }
-                    // Set pref_first_launch to false
-                    MainApplication.getSharedPreferences().edit().putBoolean("first_launch", false).commit();
-                    // Restart the app
-                    Intent intent = new Intent(this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    finish();
-                    startActivity(intent);
+                    // Only for sentry switching we need to restart I think?
+                    if (SentryMain.isSentryEnabled() != MainApplication.isCrashReportingEnabled()) {
+                        doSetupRestarting = true;
+                        ProcessHelper.restartApplicationProcess(this);
+                    }
                     ensurePermissions();
                 });
                 builder.setNegativeButton(R.string.setup_button_skip, (dialog, which) -> {
-                    MainApplication.getSharedPreferences().edit().putBoolean("first_launch", false).commit();
+                    MainApplication.getSharedPreferences().edit().putBoolean("first_launch", false).apply();
                     dialog.dismiss();
                     ensurePermissions();
                 });
@@ -754,5 +758,23 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         } else {
             ensurePermissions();
         }
+    }
+
+    /**
+     * @return true if the load workflow must be stopped.
+     */
+    private boolean waitInitialSetupFinished() {
+        if (BuildConfig.DEBUG) Log.d("NoodleDebug", "waitInitialSetupFinished");
+        if (doSetupNowRunning) updateScreenInsets(); // Fix an edge case
+        try {
+            // Wait for doSetupNow to finish
+            while (doSetupNowRunning) {
+                //noinspection BusyWait
+                Thread.sleep(50);
+            }
+        } catch (InterruptedException e) {
+            return true;
+        }
+        return doSetupRestarting;
     }
 }

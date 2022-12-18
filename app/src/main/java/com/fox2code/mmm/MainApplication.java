@@ -61,6 +61,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     @SuppressLint("StaticFieldLeak")
     private static MainApplication INSTANCE;
     private static boolean firstBoot;
+    private static boolean loadSentryInitialized;
 
     static {
         Shell.setDefaultBuilder(shellBuilder = Shell.Builder.create().setFlags(Shell.FLAG_REDIRECT_STDERR).setTimeout(10).setInitializers(InstallerInitializer.class));
@@ -168,7 +169,9 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     }
 
     public static boolean isCrashReportingEnabled() {
-        return getSharedPreferences().getBoolean("pref_crash_reporting", BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING);
+        return SentryMain.IS_SENTRY_INSTALLED &&
+                getSharedPreferences().getBoolean("pref_crash_reporting",
+                        BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING);
     }
 
     public static SharedPreferences getBootSharedPreferences() {
@@ -306,7 +309,6 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
                 Log.d("MainApplication", "Emoji compat loaded!");
             }, "Emoji compat init.").start();
         }
-
         SentryMain.initialize(this);
         if (Objects.equals(BuildConfig.ANDROIDACY_CLIENT_ID, "")) {
             Log.w("MainApplication", "Androidacy client id is empty! Please set it in androidacy" + ".properties. Will not enable Androidacy.");

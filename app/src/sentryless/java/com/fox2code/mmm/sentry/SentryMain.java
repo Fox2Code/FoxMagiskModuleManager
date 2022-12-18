@@ -8,4 +8,6 @@ public class SentryMain {
     public static void initialize(MainApplication mainApplication) {}
 
     public static void addSentryBreadcrumb(SentryBreadcrumb sentryBreadcrumb) {}
+
+    public static boolean isSentryEnabled() { return false; }
 }

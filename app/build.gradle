@@ -15,11 +15,14 @@ android {
             Properties properties = new Properties()
             if (project.rootProject.file('local.properties').exists()) {
                 properties.load(project.rootProject.file('local.properties').newDataInputStream())
-                // FFS DO NOT CHANGE THIS, IT WILL BREAK THE BUILD
-                storeFile file(properties.getProperty('keystore.file'))
-                storePassword properties.getProperty('keystore.password')
-                keyAlias 'key0'
-                keyPassword properties.getProperty('keystore.password')
+                // java.lang.IllegalArgumentException: path may not be null or empty string. path='null'
+                if (properties.getProperty('keystore.file') != null) {
+                    // FFS DO NOT CHANGE THIS, IT WILL BREAK THE BUILD
+                    storeFile file(properties.getProperty('keystore.file'))
+                    storePassword properties.getProperty('keystore.password')
+                    keyAlias 'key0'
+                    keyPassword properties.getProperty('keystore.password')
+                }
             }
         }
     }

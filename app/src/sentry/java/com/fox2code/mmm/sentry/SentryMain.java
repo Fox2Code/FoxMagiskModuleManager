@@ -17,6 +17,7 @@ import io.sentry.android.fragment.FragmentLifecycleIntegration;
 public class SentryMain {
     public static final boolean IS_SENTRY_INSTALLED = true;
     private static final String TAG = "SentryMain";
+    private static boolean sentryEnabled = false;
 
     /**
      * Initialize Sentry
@@ -39,6 +40,7 @@ public class SentryMain {
             if (!MainApplication.isCrashReportingEnabled()) {
                 options.setDsn("");
             } else {
+                sentryEnabled = true; // Set sentry state to enabled
                 options.addIntegration(new FragmentLifecycleIntegration(mainApplication, true, true));
                 options.setCollectAdditionalContext(true);
                 options.setAttachThreads(true);
@@ -81,5 +83,9 @@ public class SentryMain {
         if (MainApplication.isCrashReportingEnabled()) {
             Sentry.addBreadcrumb(sentryBreadcrumb.breadcrumb);
         }
+    }
+
+    public static boolean isSentryEnabled() {
+        return sentryEnabled;
     }
 }

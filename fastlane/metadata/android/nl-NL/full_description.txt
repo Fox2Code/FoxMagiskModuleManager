@@ -1,0 +1,3 @@
+Deze app wordt niet officieel ondersteund door Magisk en zijn ontwikkelaars.
+
+De modules die in deze app getoond worden zijn onafhankelijk van de app. Contacteer de beheerders van de repo voor ondersteuning.

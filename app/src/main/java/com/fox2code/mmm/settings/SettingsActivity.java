@@ -62,6 +62,7 @@ import com.fox2code.mmm.sentry.SentryMain;
 import com.fox2code.mmm.utils.ExternalHelper;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
+import com.fox2code.mmm.utils.ProcessHelper;
 import com.fox2code.rosettax.LanguageActivity;
 import com.fox2code.rosettax.LanguageSwitcher;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -148,14 +149,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
     @Override
     @SuppressLint("InlinedApi")
     public void refreshRosettaX() {
-        Intent mStartActivity = new Intent(this, MainActivity.class);
-        mStartActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        int mPendingIntentId = 123456;
-        PendingIntent mPendingIntent = PendingIntent.getActivity(this, mPendingIntentId,
-                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        AlarmManager mgr = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-        System.exit(0); // Exit app process
+        ProcessHelper.restartApplicationProcess(this);
     }
 
     @Override
