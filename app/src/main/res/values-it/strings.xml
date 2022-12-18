@@ -7,19 +7,19 @@
     <string name="updatable">Aggiornamento disponibile</string>
     <string name="installed">Installato</string>
     <string name="online_repo">Repository Online</string>
-    <string name="showcase_mode">L\'applicazione è in modalità protetta </string>
-    <string name="failed_download">Scaricamento del file non riuscito</string>
+    <string name="showcase_mode">L\'app è in modalità protetta </string>
+    <string name="failed_download">Scaricamento file non riuscito</string>
     <string name="slow_modules">L\'avvio dei moduli è lento, prova a disabilitarne alcuni</string>
     <string name="fail_internet">Impossibile connettersi a internet</string>
     <string name="no_web_view">Impossibile aprire il WebView di sistema</string>
     <string name="title_activity_settings">Impostazione attività</string>
     <string name="app_update_available">Aggiornamento disponibile</string>
     <string name="app_update">Aggiornamento</string>
-    <string name="no_desc_found">Nessuna descrizione trovata.</string>
+    <string name="no_desc_found">Nessuna descrizione trovata</string>
     <string name="download_module">Scarica modulo</string>
     <string name="install_module">Installa modulo</string>
     <string name="update_module">Aggiorna modulo</string>
-    <string name="changelog">Registri dei cambiamenti</string>
+    <string name="changelog">Registro modifiche</string>
     <string name="website">Sito web</string>
     <string name="support">Supporto</string>
     <string name="donate">Dona</string>
@@ -41,21 +41,23 @@
     <string name="no" translatable="false">@android:string/no</string>
     <string name="ok" translatable="false">@android:string/ok</string>
     <string name="cancel" translatable="false">@android:string/cancel</string>
-    <!-- Traduzione della sezione del modulo -->
+
+    <!-- Traduzione sezione moduli -->
     <string name="module_last_update">Ultimo aggiornamento:</string>
     <string name="module_repo">Repo:</string>
     <string name="module_by">da</string>
     <string name="module_downloads">Scaricamenti:</string>
     <string name="module_stars">Preferiti:</string>
     <string name="module_needs_ramdisk">Necessita ramdisk</string>
-    <string name="module_needs_ramdisk_desc">Questo modulo ha bisogno dell\'avvio ramdisk per essere installato</string>
-    <string name="module_can_change_boot">Può cambiare avvio</string>
-    <string name="module_can_change_boot_desc">Questo modulo può cambiare l\'immagine di avvio</string>
+    <string name="module_needs_ramdisk_desc">Questo modulo deve avviare la ramdisk per essere installato</string>
+    <string name="module_can_change_boot">Può modificare il boot</string>
+    <string name="module_can_change_boot_desc">Questo modulo può modificare l\'immagine del boot</string>
     <string name="module_min_magisk_chip">Min. Magisk "%s"</string>
     <string name="module_min_sdk_chip">Min. Android</string>
     <string name="module_max_sdk_chip">Max. Android</string>
-    <!-- Preferenze Titoli -->
-    <!-- Nota: la modalità di blocco era chiamata modalità vetrina -->
+
+    <!-- Titoli preferenze -->
+    <!-- Nota: la modalità blocco viene chiamata modalità vetrina -->
     <string name="manage_repos_pref">Gestisci repository</string>
     <string name="showcase_mode_pref">Modalità protetta</string>
     <string name="showcase_mode_desc">La modalità protetta impedisce la modifica dei moduli da parte del gestore</string>
@@ -74,15 +76,15 @@
     <string name="pref_category_appearance">Aspetto</string>
     <string name="pref_category_general">Generale</string>
     <string name="repo_main_desc">La repository che fornisce i moduli Magisk</string>
-    <string name="repo_main_alt">Un\'alternativa alla Repository di default con meno restrizioni.</string>
+    <string name="repo_main_alt">Un\'alternativa alla repository predefinita con meno restrizioni</string>
     <string name="master_delete">Rimuovere i dati del modulo?</string>
     <string name="master_delete_no">Mantieni i dati</string>
     <string name="master_delete_yes">Rimuovi i dati</string>
     <string name="master_delete_fail">Impossibile rimuovere i dati del modulo</string>
     <string name="theme_pref">Tema</string>
     <string name="theme_mode_pref">Modalità tema</string>
-    <string name="module_id_prefix">Id del modulo: </string>
-    <string name="install_from_storage">Installa un modulo dal dispositivo</string>
+    <string name="module_id_prefix">ID del modulo: </string>
+    <string name="install_from_storage">Installa modulo dal dispositivo</string>
     <string name="invalid_format">Il modulo selezionato ha un formato non valido</string>
     <string name="low_quality_module">Modulo qualità-bassa</string>
     <string name="local_install_title">Installazione locale</string>
@@ -90,20 +92,20 @@
     <string name="magisk_builtin_module">Modulo di Magisk integrato</string>
     <string name="substratum_builtin_module">Modulo di Substratum integrato</string>
     <string name="force_dark_terminal_title">Forza il terminale in modalità scura</string>
-    <string name="file_picker_failure">Il tuo gestore file non ha potuto accedere ai dati sul dispositivo.</string>
+    <string name="file_picker_failure">Il gestore file non riesce ad accedere ai dati sul dispositivo</string>
     <string name="remote_install_title">Installazione remota</string>
-    <string name="file_picker_wierd">Il tuo gestore file ha fornito una risposta non valida.</string>
-    <string name="use_magisk_install_command_pref">Usa il comando di installazione del modulo magisk</string>
+    <string name="file_picker_wierd">Il gestore file ha fornito una risposta non valida</string>
+    <string name="use_magisk_install_command_pref" tools:ignore="TypographyDashes">Usa il comando \"magisk --install-module\"</string>
     <string name="use_magisk_install_command_desc">
-        Questo ha causato dei problemi durante i test per l\'installazione dei moduli,
-        per questo l\'opzione è disponibile solo in modalità sviluppatore, abilita a tuo rischio e pericolo!
+        Ci sono stati problemi nei test per lo strumento di diagnosi dell\'installazione dei moduli,
+        per questo l\'opzione è disponibile solo in modalità sviluppatore.\nAbilita a tuo rischio e pericolo!
     </string>
     <string name="dev_mode_enabled">Modalità sviluppatore attivata</string>
     <string name="dev_mode_disabled">Modalità sviluppatore disattivata</string>
     <string name="force_english_pref">Forza la lingua inglese</string>
     <string name="disable_low_quality_module_filter_pref">Disabilita il filtro qualità per i moduli</string>
     <string name="disable_low_quality_module_filter_desc">
-        Alcuni moduli non forniscono correttamente i loro metadati,causando errori grafici,
+        Alcuni moduli non forniscono correttamente i metadati causando errori grafici,
         e/o indicando bassa qualità.\nDisabilita a tuo rischio e pericolo!
     </string>
     <string name="dns_over_https_pref">DNS sostituisce HTTPS</string>
@@ -118,7 +120,9 @@
     </string>
     <string name="wrap_text_pref">Testo a capo</string>
     <string name="wrap_text_desc">
-        Mostra il testo su più righe\nEvita di mettere tutto il testo in una sola riga quando si installa un modulo.</string>
+        Visualizza il testo su più righe ed evita di lasciare tutto
+		il testo in una sola riga quando si installa un modulo.
+	</string>
     <string name="enable_blur_pref">Sfocatura</string>
     <string name="disable_chips_in_description">Disabilita i chip nella descrizione</string>
     <string name="repo_enabled">Repository attiva</string>
@@ -126,25 +130,109 @@
     <string name="add_repo">Aggiungi Repository</string>
     <string name="remove_repo">Rimuovi Repository</string>
     <string name="custom_url">Url personalizzato</string>
+    <string name="link_copied">Link copiato</string>
+    <string name="androidacy_repo_info">Questo repository può avere pubblicità non intrusiva per coprire i costi di sviluppo. Presenta recensioni, scansioni antivirus automatiche e altro.</string>
     <string name="backup_module_list">Salva moduli</string>
     <string name="restore_module_list">Ripristina moduli</string>
     <string name="require_internet">Questa operazione richiede una connessione ad internet</string>
-    <!-- Traduzione della notifica in background -->
-    <string name="notification_update_title">Trovato %i aggiornamenti del modulo</string>
+    <string name="androidacy_test_mode_pref">Modalità test Androidacy</string>
+    <string name="androidacy_test_mode_desc">Utilizza l\'endpoint Androidacy di test anziché l\'endpoint rilasciato. (Riavvierà l\'app)</string>
+
+    <!-- Traduzione notifica in background -->
+    <string name="notification_update_title">Trovati aggiornamenti del modulo %i</string>
     <string name="notification_update_title_easter_egg">Aggiornamenti del modulo %i rilevati</string>
-    <string name="notification_update_subtitle">Fare clic per aprire l\'app</string>
-    <string name="notification_update_pref">Controllo aggiornamento moduli in background</string>
+    <string name="notification_update_subtitle">Cliccare per aprire l\'app</string>
+    <string name="notification_update_pref">Controllo aggiornamenti moduli in background</string>
     <string name="notification_update_desc">Può aumentare il consumo della batteria</string>
-    <string name="notification_update_debug_pref">Notifica di prova</string>
+    <string name="notification_update_debug_pref">Notifica di test</string>
+
     <!-- Imposta su true nel file di traduzione se la tua lingua è da destra a sinistra -->
     <bool name="lang_support_rtl">false</bool>
     <!-- Copia sempre language_support_level durante la traduzione -->
     <integer name="language_support_level">1</integer>
-    <string name="language_support_outdated">Alcune traduzioni per la lingua corrente non sono aggiornate, ti preghiamo di considerare di contribuire alle traduzioni dell\'app su GitHub</string>
-    <!-- Sostituisci con il tuo nome utente durante la traduzione -->
-    <string name="language_translated_by">Traduzione di tugaia56</string>
+    <string name="language_support_outdated">Alcune traduzioni per la lingua corrente non sono aggiornate,
+	considera di contribuire alle traduzioni dell\'app su GitHub</string>
+    <!-- Sostituisci con il tuo nome utente nella traduzione -->
+    <string name="language_translated_by">Traduzione di tugaia56 e Vladi69</string>
     <string name="crash_reporting">Segnala automaticamente problemi e prestazioni agli sviluppatori</string>
-    <string name="crash_reporting_desc">Se lo disabiliti, lo sviluppatore non riceverà segnalazioni di bug automatiche e ciò potrebbe rendere più difficile la risoluzione dei problemi</string>
+    <string name="crash_reporting_desc">Se disabiliti, lo sviluppatore non riceverà segnalazioni di bug rendendo più difficile la risoluzione dei problemi</string>
     <string name="api_key">Chiave API Androidacy</string>
-    <string name="api_key_summary">Utilizza una chiave API personalizzata per Androidacy. Utile per gli abbonati premium, per rimuovere pubblicità e altro.</string>
+    <string name="api_key_summary">Utilizza una chiave API personalizzata per Androidacy. Utile agli abbonati premium per rimuovere pubblicità e altro.</string>
+    <string name="api_key_not_set">La chiave API Androidacy è vuota</string>
+    <string name="api_key_set">chiave API Androidacy corrente</string>
+    <string name="api_key_invalid">Impossibile convalidare la chiave API. Controlla e riprova.</string>
+    <string name="api_key_valid">La chiave API è valida</string>
+    <string name="checking_api_key">Convalida della chiave API…</string>
+    <string name="validating_api_key">Convalida della chiave API…</string>
+    <string name="please_wait">Attendere prego</string>
+    <string name="api_key_removed">Chiave API reimpostata correttamente</string>
+    <string name="save_api_key">Convalida</string>
+    <string name="warning">Attenzione!</string>
+    <string name="androidacy_test_mode_warning">Stai impostando l\'app per utilizzare un endpoint non di produzione per Androidacy. Potrebbe comportare l\'instabilità dell\'app e il mancato caricamento dei repository online. NON segnalare bug se hai attivato questa opzione. L\'app sarà riavviata per ricaricare i repository.</string>
+    <string name="crash">Crasha l\'app per testarla</string>
+    <string name="repackaged_as">Ricompilato come:</string>
+    <string name="wrapped_from">Confezionato da:</string>
+    <string name="crash_reporting_restart_title">Riavviare l\'app per applicare le modifiche?</string>
+    <string name="crash_reporting_restart_message">L\'app deve essere riavviata per applicare questa impostazione</string>
+    <string name="restart">Riavvia</string>
+    <string name="androidacy_test_mode_disable_warning">L\'app sarà riavviata per disabilitare l\'endpoint temporaneo</string>
+    <string name="androidacy_failed_to_parse_token">Impossibile recuperare il token da Androidacy. Riprova più tardi.</string>
+    <string name="androidacy_failed_to_validate_token">Impossibile convalidare il token per Androidacy. Riprova più tardi.</string>
+    <string name="androidacy_server_down">Impossibile contattare il server Androidacy. Controlla la connessione e riprova.</string>
+    <string name="androidacy_need_captcha">Aggiornamento Androidacy bloccato da Captcha</string>
+    <string name="api_key_restart">La chiave API è stata modificata. Riavvia l\'app per applicare le modifiche.</string>
+    <string name="api_key_unchanged">La chiave API inserita è la stessa di quella già in uso.</string>
+    <string name="permission_notification_title">Consentire notifiche?</string>
+    <string name="permission_notification_message">Serve l\'autorizzazione alle notifiche per aggiornamenti di app e moduli. Se non concedi questa autorizzazione, il controllo di aggiornamenti in background non verrà eseguito.</string>
+    <string name="permission_notification_grant">Concedi l\'autorizzazione</string>
+    <string name="background_update_check_permission_required">Abilita le notifiche per questa opzione</string>
+    <string name="dont_ask_again">Non chiedere di nuovo</string>
+    <string name="force_black_theme_desc">Forza sfondo nero AMOLED quando si utilizza il tema scuro.
+        Considera che questo potrebbe dare problemi di contrasto con alcuni temi di colore.</string>
+    <string name="force_black_theme_pref">Forza tema nero</string>
+    <string name="androidacy_repo_disabled">Questo repository è disabilitato</string>
+    <string name="androidacy_repo_disabled_message">In questa build mancano le chiavi client per
+        Androidacy Repository.
+        Scarica la versione di GitHub se desideri beneficiare di opzioni come revisioni dei moduli, controlli di sicurezza automatici e altro.</string>
+    <string name="download_full_app">Scarica la versione completa</string>
+    <string name="repo_update_failed">Alcuni repository non sono stati aggiornati</string>
+    <string name="repo_update_failed_extended">L\'aggiornamento di %1$s non è riuscito. Riprova più tardi.</string>
+    <string name="monet_disabled_summary">Monet non è compatibile con i temi trasparenti</string>
+    <string name="blur_disabled_summary">La sfocatura non è compatibile con i temi trasparenti</string>
+    <string name="transparent_theme_dialogue_title">Stai impostando un tema trasparente</string>
+    <string name="transparent_theme_dialogue_message">I temi trasparenti possono avere incoerenze e potrebbero non funzionare su tutte le ROM. Inoltre, monet e sfocatura saranno disabilitati. Puoi tornare indietro in qualsiasi momento.</string>
+    <string name="custom_repo_always_on">I repository personalizzati sono sempre attivi fino a quando non li rimuovi</string>
+    <string name="sentry_dialogue_message">Abbiamo riscontrato un errore! Aiutaci a migliorare l\'app
+        aggiungendo alcune info sull\'errore.\nNome ed email sono facoltativi ma saranno utili
+        per contattarti per ulteriori info.</string>
+    <string name="sentry_dialogue_title">Oops! Sembra che l\'app si sia chiusa inaspettatamente.</string>
+    <string name="name">Nome</string>
+    <string name="email">Email</string>
+    <string name="additional_info">Raccontaci cosa è successo</string>
+    <string name="submit">Invia</string>
+    <string name="sentry_dialogue_failed_toast">Impossibile inviare feedback per un errore</string>
+    <string name="sentry_dialogue_success">Feedback inviato correttamente. Lo esamineremo
+    rapidametne</string>
+    <string name="sentry_dialogue_no_description">Impossibile inviare feedback poiché nessuna
+        descrizione presente</string>
+    <string name="go_to_online_repo">Scorri al repository online</string>
+    <string name="pref_pkg_info_summary">%1$s v%2$s (%3$o) | %4$s build</string>
+    <string name="official">Ufficiale</string>
+    <string name="unofficial">Non ufficiale</string>
+    <string name="setup_title">Configurazione iniziale</string>
+    <string name="setup_message">Benvenuto! Questa app ti aiuterà a installare e gestire i moduli Magisk. Per iniziare, seleziona le opzioni di seguito. Queste e altre possono essere configurate dalle impostazioni in un secondo momento.</string>
+    <string name="setup_button">Completa la configurazione</string>
+    <string name="setup_background_update_check">Consenti di controllare gli aggiornamenti in background.\nPotrebbe consumare più batteria.</string>
+    <string name="setup_androidacy_repo">Abilita il Androidacy repo\nOffre recensioni degli utenti, scansioni antivirus automatiche, aggiornamenti rapidi, un\'ampia selezione ed è supportato da Androidacy.</string>
+    <!-- Maybe once alt repo fixes their shit and stops allowing crappy modules or outright
+    kanged modules, we'll reword this. -->
+    <string name="setup_magisk_alt_repo">Abilita Magisk Alt Repo\nMolto più rilassato dell\'originale. Ha molti moduli a scapito di un po' di sicurezza.</string>
+    <string name="setup_crash_reporting">Abilita la segnalazione dei crash di Sentry e il monitoraggio delle prestazioni.\nTutte le segnalazioni sono anonime e confidenziali.</string>
+    <string name="setup_custom_repos">Puoi aggiungere repository personalizzati in un secondo momento dalle impostazioni</string>
+    <string name="repos">Repos</string>
+    <string name="misc">Varie</string>
+    <string name="setup_button_skip">Salta</string>
+    <string name="low_performance_device_dialogue_title">Abilita sfocatura su dispositivi di fascia bassa</string>
+    <string name="low_performance_device_dialogue_message">Stai abilitando la sfocatura su un dispositivo che potrebbe non funzionare bene.\nPuoi abilitarlo, ma ciò potrebbe portare a un\'esperienza utente scadente e ti consigliamo di non farlo.</string>
+    <string name="alt_repo_info">Questo repository ha meno restrizioni e revisioni, il che può portare a moduli di qualità inferiore. Abbastanza scarno ma ha molti moduli.</string>
 </resources>
