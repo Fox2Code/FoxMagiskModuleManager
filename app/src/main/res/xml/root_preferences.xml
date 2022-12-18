@@ -126,9 +126,15 @@
         <!-- Purposely crash the app -->
         <Preference
             app:icon="@drawable/ic_baseline_bug_report_24"
-            app:key="pref_crash"
+            app:key="pref_test_crash"
             app:singleLineTitle="false"
             app:title="@string/crash" />
+        <!-- Pref to clear the app data -->
+        <Preference
+            app:icon="@drawable/ic_baseline_delete_24"
+            app:key="pref_clear_data"
+            app:singleLineTitle="false"
+            app:title="@string/clear_app_data" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/pref_category_info">

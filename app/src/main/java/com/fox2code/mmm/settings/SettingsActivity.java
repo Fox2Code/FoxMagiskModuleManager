@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -159,6 +160,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat implements FoxActivity.OnBackPressedCallback {
+        @RequiresApi(api = Build.VERSION_CODES.N)
         @SuppressLint("UnspecifiedImmutableFlag")
         @Override
         @SuppressWarnings("ConstantConditions")
@@ -397,12 +399,30 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 // Hide the pref_crash option if not in debug mode - stop users from purposely crashing the app
                 Log.d(TAG, String.format("Sentry installed: %s, debug: %s, magisk path: %s",
                         SentryMain.IS_SENTRY_INSTALLED, BuildConfig.DEBUG, InstallerInitializer.peekMagiskPath()));
-                Objects.requireNonNull((Preference) findPreference("pref_crash")).setVisible(false);
+                Objects.requireNonNull((Preference) findPreference("pref_test_crash")).setVisible(false);
+                // Find pref_clear_data and set it invisible
+                Objects.requireNonNull((Preference) findPreference("pref_clear_data")).setVisible(false);
             } else {
-                findPreference("pref_crash").setOnPreferenceClickListener(preference -> {
-                    // Hard crash the app
-                    throw new Error("This is a test crash");
-                });
+                if (findPreference("pref_test_crash") != null && findPreference("pref_clear_data") != null) {
+                    findPreference("pref_test_crash").setOnPreferenceClickListener(preference -> {
+                        // Hard crash the app
+                        throw new Error("This is a test crash");
+                    });
+                    findPreference("pref_clear_data").setOnPreferenceClickListener(preference -> {
+                        // Clear app data
+                        new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.clear_data_dialogue_title).setMessage(R.string.clear_data_dialogue_message).setPositiveButton(R.string.yes, (dialog, which) -> {
+                            // Clear app data
+                            MainApplication.getINSTANCE().clearAppData();
+                            // Restart app
+                            ProcessHelper.restartApplicationProcess(requireContext());
+                        }).setNegativeButton(R.string.no, (dialog, which) -> {
+                        }).show();
+                        return true;
+                    });
+                } else {
+                    Log.e(TAG, String.format("Something is null: %s, %s",
+                            findPreference("pref_test_crash"), findPreference("pref_clear_data")));
+                }
             }
             if (InstallerInitializer.peekMagiskVersion() < Constants.MAGISK_VER_CODE_INSTALL_COMMAND || !MainApplication.isDeveloper()) {
                 findPreference("pref_use_magisk_install_command").setVisible(false);

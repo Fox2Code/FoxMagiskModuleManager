@@ -202,7 +202,7 @@ public class RepoData extends XRepo {
 
     @Override
     public boolean isEnabled() {
-        return MainApplication.getSharedPreferences().getBoolean("pref_" + this.getPreferenceId() + "_enabled", this.isEnabledByDefault());
+        return this.enabled;
     }
 
     @Override

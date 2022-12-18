@@ -760,7 +760,7 @@ public class InstallerActivity extends FoxActivity {
             this.progressIndicator.setVisibility(View.GONE);
 
             // This should be improved ?
-            String reboot_cmd = "/system/bin/svc power reboot || /system/bin/reboot";
+            String reboot_cmd = "/system/bin/svc power reboot || /system/bin/reboot || setprop sys.powerctl reboot";
             this.rebootFloatingButton.setOnClickListener(_view -> {
                 if (this.warnReboot || MainApplication.shouldPreventReboot()) {
                     MaterialAlertDialogBuilder builder =
@@ -768,9 +768,10 @@ public class InstallerActivity extends FoxActivity {
 
                     builder
                             .setTitle(R.string.install_terminal_reboot_now)
+                            .setMessage(R.string.install_terminal_reboot_now_message)
                             .setCancelable(false)
                             .setIcon(R.drawable.ic_reboot_24)
-                            .setPositiveButton(R.string.yes, (x, y) -> Shell.cmd(reboot_cmd).submit())
+                            .setPositiveButton(R.string.ok, (x, y) -> Shell.cmd(reboot_cmd).submit())
                             .setNegativeButton(R.string.no, (x, y) -> x.dismiss()).show();
                 } else {
                     Shell.cmd(reboot_cmd).submit();
@@ -801,6 +802,9 @@ public class InstallerActivity extends FoxActivity {
                     } catch (PackageManager.NameNotFoundException e) {
                         Log.w(TAG, "Config package \"" +
                                 configPkg + "\" missing for installer view");
+                        this.installerTerminal.addLine(String.format(
+                                this.getString(R.string.install_terminal_config_missing),
+                                configPkg));
                     }
                 }
             }

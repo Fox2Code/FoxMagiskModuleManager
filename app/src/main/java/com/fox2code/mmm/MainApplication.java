@@ -13,6 +13,7 @@ import android.text.SpannableStringBuilder;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.annotation.StyleRes;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.emoji2.text.DefaultEmojiCompatConfig;
@@ -30,6 +31,7 @@ import com.fox2code.mmm.utils.Http;
 import com.fox2code.rosettax.LanguageSwitcher;
 import com.topjohnwu.superuser.Shell;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -342,6 +344,41 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
             timeFormat = new SimpleDateFormat(timeFormatString, timeFormatLocale);
         }
         super.onConfigurationChanged(newConfig);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void clearAppData() {
+        // Clear app data
+        try {
+            // Clearing app data
+            // We have to manually delete the files and directories
+            // because the cache directory is not cleared by the following method
+            File cacheDir = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                cacheDir = this.getDataDir();
+            }
+            if (cacheDir != null && cacheDir.isDirectory()) {
+                String[] children = cacheDir.list();
+                if (children != null) {
+                    for (String s : children) {
+                        if (BuildConfig.DEBUG) Log.w("MainApplication", "Deleting " + s);
+                        if (!s.equals("lib")) {
+                            new File(cacheDir, s).delete();
+                        }
+                    }
+                }
+            }
+            if (BuildConfig.DEBUG) Log.w("MainApplication", "Deleting cache dir");
+            this.deleteSharedPreferences("mmm_boot");
+            this.deleteSharedPreferences("mmm");
+            this.deleteSharedPreferences("sentry");
+            this.deleteSharedPreferences("androidacy");
+            if (BuildConfig.DEBUG) Log.w("MainApplication", "Deleting shared prefs");
+            this.getPackageManager().clearPackagePreferredActivities(this.getPackageName());
+            if (BuildConfig.DEBUG) Log.w("MainApplication", "Done clearing app data");
+        } catch (Exception e) {
+            Log.e("MainApplication", "Failed to clear app data", e);
+        }
     }
 
     private class Prism4jSwitchTheme implements Prism4jTheme {

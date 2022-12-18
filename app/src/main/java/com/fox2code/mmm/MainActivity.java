@@ -721,12 +721,12 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     @SuppressLint({"InflateParams", "RestrictedApi", "UnspecifiedImmutableFlag", "ApplySharedPref"})
     private void checkShowInitialSetup() {
         if (BuildConfig.DEBUG)
-            Log.d("NoodleDebug", "Do setup now");
+            Log.d("SetupWizard", "Do setup now");
         // Check if this is the first launch
         SharedPreferences prefs = MainApplication.getSharedPreferences();
         boolean firstLaunch = prefs.getBoolean("first_launch", true);
         if (BuildConfig.DEBUG)
-            Log.d("NoodleDebug", "First launch: " + firstLaunch);
+            Log.d("SetupWizard", "First launch: " + firstLaunch);
         if (firstLaunch) {
             doSetupNowRunning = true;
             // Show setup box
@@ -742,12 +742,18 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 builder.setPositiveButton(R.string.setup_button, (dialog, which) -> {
                     // Set the preferences and pref_first_launch to false
                     prefs.edit().putBoolean("first_launch", false).putBoolean("pref_background_update_check", ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_background_update_check))).isChecked()).putBoolean("pref_crash_reporting", ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_crash_reporting))).isChecked()).putBoolean("pref_androidacy_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_androidacy_repo))).isChecked()).putBoolean("pref_magisk_alt_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_magisk_alt_repo))).isChecked()).commit();
+                    // For debug builds, log the preferences
                     if (BuildConfig.DEBUG) {
-                        Log.d("NoodleDebug", String.format("Setup: Background Update Check: %s, Crash Reporting: %s, Androidacy Repo: %s, Magisk Alt Repo: %s", prefs.getBoolean("pref_background_update_check", false), prefs.getBoolean("pref_crash_reporting", false), prefs.getBoolean("pref_androidacy_repo_enabled", false), prefs.getBoolean("pref_magisk_alt_repo_enabled", false)));
+                        Log.d("SetupWizard", "First launch: " + prefs.getBoolean("first_launch", true));
+                        Log.d("SetupWizard", "Background update check: " + prefs.getBoolean("pref_background_update_check", false));
+                        Log.d("SetupWizard", "Crash reporting: " + prefs.getBoolean("pref_crash_reporting", false));
+                        Log.d("SetupWizard", "Androidacy repo: " + prefs.getBoolean("pref_androidacy_repo_enabled", false));
+                        Log.d("SetupWizard", "Magisk alt repo: " + prefs.getBoolean("pref_magisk_alt_repo_enabled", false));
                     }
+                    dialog.dismiss();
                     // Sleep for 100ms. Who knows, it might fix it?
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(750);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -781,7 +787,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
      */
     private boolean waitInitialSetupFinished() {
         if (BuildConfig.DEBUG)
-            Log.d("NoodleDebug", "waitInitialSetupFinished");
+            Log.d("SetupWizard", "waitInitialSetupFinished");
         if (doSetupNowRunning)
             updateScreenInsets(); // Fix an edge case
         try {

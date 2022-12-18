@@ -236,5 +236,5 @@
     <string name="setup_button_skip">Skip</string>
     <string name="low_performance_device_dialogue_title">Enabling blur on lower-end device</string>
     <string name="low_performance_device_dialogue_message">You are trying to enable blur on a device that may not perform well with it.\nYou may enable it, but this may lead to a poor user experience and we recommend you don\'t.</string>
-    <string name="alt_repo_info">This repo has less restrictions and reviews, which may lead to lower quality modules. Pretty barebones but has a lot of modules.</string>
+    <string name="alt_repo_info">This repo has less restrictions and reviews, which may lead to lower quality modules. Pretty barebones but has a lot of modules.</string><string name="install_terminal_reboot_now_message">You are about to reboot your device. If you\'ve saved your work, hit ok to continue. Otherwise, hit cancel.</string><string name="install_terminal_config_missing">Package %s is missing for module config, so we cannot launch it.</string><string name="clear_app_data">Clear app data</string><string name="clear_data_dialogue_title">Clear app data?</string><string name="clear_data_dialogue_message">You\'re about to clear the app data. Please confirm this action.</string>
 </resources>
