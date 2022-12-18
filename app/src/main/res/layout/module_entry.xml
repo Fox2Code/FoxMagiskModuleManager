@@ -63,7 +63,7 @@
                         android:textAppearance="?attr/textAppearanceTitleMedium"
                         />
 
-                    <com.google.android.material.switchmaterial.SwitchMaterial
+                    <com.google.android.material.materialswitch.MaterialSwitch
                         android:id="@+id/switch_action"
                         android:layout_width="wrap_content"
                         android:layout_height="35dp" />

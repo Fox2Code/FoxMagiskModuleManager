@@ -30,7 +30,7 @@ import com.fox2code.mmm.manager.ModuleManager;
 import com.fox2code.mmm.repo.RepoModule;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import java.util.ArrayList;
@@ -72,7 +72,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
         private final CardView cardView;
         private final Chip invalidPropsChip;
         private final ImageButton buttonAction;
-        private final SwitchMaterial switchMaterial;
+        private final MaterialSwitch switchMaterial;
         private final TextView titleText;
         private final TextView creditText;
         private final TextView descriptionText;

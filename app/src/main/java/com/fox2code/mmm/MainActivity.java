@@ -47,13 +47,11 @@ import com.fox2code.mmm.manager.ModuleManager;
 import com.fox2code.mmm.module.ModuleViewAdapter;
 import com.fox2code.mmm.module.ModuleViewListBuilder;
 import com.fox2code.mmm.repo.RepoManager;
-import com.fox2code.mmm.sentry.SentryMain;
 import com.fox2code.mmm.settings.SettingsActivity;
 import com.fox2code.mmm.utils.BlurUtils;
 import com.fox2code.mmm.utils.ExternalHelper;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
-import com.fox2code.mmm.utils.ProcessHelper;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
@@ -73,6 +71,7 @@ import eightbitlab.com.blurview.BlurView;
 public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, OverScrollManager.OverScrollHelper {
     private static final String TAG = "MainActivity";
     private static final int PRECISION = 10000;
+    public static boolean doSetupNowRunning = true;
     public final ModuleViewListBuilder moduleViewListBuilder;
     public LinearProgressIndicator progressIndicator;
     private ModuleViewAdapter moduleViewAdapter;
@@ -89,7 +88,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     private CardView searchCard;
     private SearchView searchView;
     private boolean initMode;
-    private boolean doSetupNowRunning;
     private boolean doSetupRestarting;
     private boolean urlFactoryInstalled = false;
 
@@ -115,11 +113,13 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 CronetURLStreamHandlerFactory cronetURLStreamHandlerFactory = new CronetURLStreamHandlerFactory(cronetEngine);
                 try {
                     URL.setURLStreamHandlerFactory(cronetURLStreamHandlerFactory);
-                } catch (Error e) {
+                } catch (
+                        Error e) {
                     Log.e(TAG, "Failed to install Cronet URLStreamHandlerFactory", e);
                 }
                 urlFactoryInstalled = true;
-            } catch (Throwable t) {
+            } catch (
+                    Throwable t) {
                 Log.e(TAG, "Failed to install CronetURLStreamHandlerFactory", t);
             }
         }
@@ -158,6 +158,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         this.actionBarBlur.setBackground(this.actionBarBackground);
         BlurUtils.setupBlur(this.actionBarBlur, this, R.id.blur_frame);
         this.updateBlurState();
+
+        checkShowInitialSetup();
         this.moduleList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -183,7 +185,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         this.cardIconifyUpdate();
         this.updateScreenInsets(this.getResources().getConfiguration());
 
-        checkShowInitialSetup();
         InstallerInitializer.tryGetMagiskPathAsync(new InstallerInitializer.Callback() {
             @Override
             public void onPathReceived(String path) {
@@ -209,10 +210,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 if (waitInitialSetupFinished()) {
                     return;
                 }
-                /*if (BuildConfig.DEBUG) {
-                    SharedPreferences prefs = MainApplication.getSharedPreferences();
-                    if (BuildConfig.DEBUG) Log.d("MainActivity", String.format("Background update check: %s, Crash reporting: %s, Androidacy repo: %s, Magisk alt repo: %s", prefs.getBoolean("pref_background_update_check", false), prefs.getBoolean("pref_crash_reporting", false), prefs.getBoolean("pref_androidacy_repo_enabled", false), prefs.getBoolean("pref_magisk_alt_repo_enabled", false)));
-                }*/
                 swipeRefreshBlocker = System.currentTimeMillis() + 5_000L;
                 if (MainApplication.isShowcaseMode())
                     moduleViewListBuilder.addNotification(NotificationType.SHOWCASE_MODE);
@@ -233,25 +230,20 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     MainApplication.getSharedPreferences().registerOnSharedPreferenceChangeListener((prefs, key) -> Log.i("PrefsListener", "onSharedPreferenceChanged: " + key + " = " + prefs.getAll().get(key)));
                 }
                 Log.i(TAG, "Scanning for modules!");
-                if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Initialize Update");
+                if (BuildConfig.DEBUG)
+                    Log.d("NoodleDebug", "Initialize Update");
                 final int max = ModuleManager.getINSTANCE().getUpdatableModuleCount();
                 if (RepoManager.getINSTANCE().getCustomRepoManager().needUpdate()) {
                     Log.w(TAG, "Need update on create?");
                 }
-                if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Check Update Compat");
+                if (BuildConfig.DEBUG)
+                    Log.d("NoodleDebug", "Check Update Compat");
                 AppUpdateManager.getAppUpdateManager().checkUpdateCompat();
-                /*if (BuildConfig.DEBUG) {
-                    SharedPreferences prefs = MainApplication.getSharedPreferences();
-                    Log.d("MainActivity", String.format("Background update check: %s, Crash reporting: %s, Androidacy repo: %s, Magisk alt repo: %s", prefs.getBoolean("pref_background_update_check", false), prefs.getBoolean("pref_crash_reporting", false), prefs.getBoolean("pref_androidacy_repo_enabled", false), prefs.getBoolean("pref_magisk_alt_repo_enabled", false)));
-                }*/
-                if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Check Update");
+                if (BuildConfig.DEBUG)
+                    Log.d("NoodleDebug", "Check Update");
                 RepoManager.getINSTANCE().update(value -> runOnUiThread(max == 0 ? () -> progressIndicator.setProgressCompat((int) (value * PRECISION), true) : () -> progressIndicator.setProgressCompat((int) (value * PRECISION * 0.75F), true)));
                 NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
 
-                /*if (BuildConfig.DEBUG) {
-                    SharedPreferences prefs = MainApplication.getSharedPreferences();
-                    Log.d("MainActivity", String.format("Background update check: %s, Crash reporting: %s, Androidacy repo: %s, Magisk alt repo: %s", prefs.getBoolean("pref_background_update_check", false), prefs.getBoolean("pref_crash_reporting", false), prefs.getBoolean("pref_androidacy_repo_enabled", false), prefs.getBoolean("pref_magisk_alt_repo_enabled", false)));
-                }*/
                 if (!NotificationType.NO_INTERNET.shouldRemove()) {
                     moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
                 } else if (!NotificationType.REPO_UPDATE_FAILED.shouldRemove()) {
@@ -259,24 +251,24 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 } else {
                     // Compatibility data still needs to be updated
                     AppUpdateManager appUpdateManager = AppUpdateManager.getAppUpdateManager();
-                    if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Check App Update");
+                    if (BuildConfig.DEBUG)
+                        Log.d("NoodleDebug", "Check App Update");
                     if (BuildConfig.ENABLE_AUTO_UPDATER && appUpdateManager.checkUpdate(true))
                         moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
-                    if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Check Json Update");
+                    if (BuildConfig.DEBUG)
+                        Log.d("NoodleDebug", "Check Json Update");
                     if (max != 0) {
 
-                        /*if (BuildConfig.DEBUG) {
-                            SharedPreferences prefs = MainApplication.getSharedPreferences();
-                            Log.d("MainActivity", String.format("Background update check: %s, Crash reporting: %s, Androidacy repo: %s, Magisk alt repo: %s", prefs.getBoolean("pref_background_update_check", false), prefs.getBoolean("pref_crash_reporting", false), prefs.getBoolean("pref_androidacy_repo_enabled", false), prefs.getBoolean("pref_magisk_alt_repo_enabled", false)));
-                        }*/
                         int current = 0;
                         // noodleDebug.push("");
                         for (LocalModuleInfo localModuleInfo : ModuleManager.getINSTANCE().getModules().values()) {
                             if (localModuleInfo.updateJson != null) {
-                                if (BuildConfig.DEBUG) Log.d("NoodleDebug", localModuleInfo.id);
+                                if (BuildConfig.DEBUG)
+                                    Log.d("NoodleDebug", localModuleInfo.id);
                                 try {
                                     localModuleInfo.checkModuleUpdate();
-                                } catch (Exception e) {
+                                } catch (
+                                        Exception e) {
                                     Log.e("MainActivity", "Failed to fetch update of: " + localModuleInfo.id, e);
                                 }
                                 current++;
@@ -293,13 +285,10 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     setActionBarBackground(null);
                     updateScreenInsets(getResources().getConfiguration());
                 });
-                if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Apply");
+                if (BuildConfig.DEBUG)
+                    Log.d("NoodleDebug", "Apply");
                 RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilder::appendRemoteModules);
 
-                /*if (BuildConfig.DEBUG) {
-                    SharedPreferences prefs = MainApplication.getSharedPreferences();
-                    Log.d("MainActivity", String.format("Background update check: %s, Crash reporting: %s, Androidacy repo: %s, Magisk alt repo: %s", prefs.getBoolean("pref_background_update_check", false), prefs.getBoolean("pref_crash_reporting", false), prefs.getBoolean("pref_androidacy_repo_enabled", false), prefs.getBoolean("pref_magisk_alt_repo_enabled", false)));
-                }*/
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
                 Log.i(TAG, "Finished app opening state!");
                 // noodleDebug.unbind();
@@ -312,10 +301,12 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         if (MainApplication.isCrashReportingEnabled() && !BuildConfig.SENTRY_TOKEN.isEmpty()) {
             SharedPreferences preferences = getSharedPreferences("sentry", MODE_PRIVATE);
             String lastExitReason = preferences.getString("lastExitReason", "");
-            if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Last Exit Reason: " + lastExitReason);
+            if (BuildConfig.DEBUG)
+                Log.d("NoodleDebug", "Last Exit Reason: " + lastExitReason);
             if (lastExitReason.equals("crash")) {
                 String lastEventId = preferences.getString("lastEventId", "");
-                if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Last Event ID: " + lastEventId);
+                if (BuildConfig.DEBUG)
+                    Log.d("NoodleDebug", "Last Event ID: " + lastEventId);
                 if (!lastEventId.equals("")) {
                     // Three edit texts for the user to enter their email, name and a description of the issue
                     EditText email = new EditText(this);
@@ -354,8 +345,10 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                                 // Setups the JSON body
                                 String nameString = name.getText().toString();
                                 String emailString = email.getText().toString();
-                                if (nameString.equals("")) nameString = "Anonymous";
-                                if (emailString.equals("")) emailString = "Anonymous";
+                                if (nameString.equals(""))
+                                    nameString = "Anonymous";
+                                if (emailString.equals(""))
+                                    emailString = "Anonymous";
                                 JSONObject body = new JSONObject();
                                 body.put("event_id", lastEventId);
                                 body.put("name", nameString);
@@ -375,7 +368,9 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                                 } else {
                                     runOnUiThread(() -> Toast.makeText(this, R.string.sentry_dialogue_failed_toast, Toast.LENGTH_LONG).show());
                                 }
-                            } catch (IOException | JSONException ignored) {
+                            } catch (
+                                    IOException |
+                                    JSONException ignored) {
                                 // Show a toast if the user feedback could not be submitted
                                 runOnUiThread(() -> Toast.makeText(this, R.string.sentry_dialogue_failed_toast, Toast.LENGTH_LONG).show());
                             }
@@ -428,7 +423,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         int colorBackground;
         try {
             colorBackground = this.getColorCompat(android.R.attr.windowBackground);
-        } catch (Resources.NotFoundException e) {
+        } catch (
+                Resources.NotFoundException e) {
             colorBackground = this.getColorCompat(isLightMode ? R.color.white : R.color.black);
         }
         if (MainApplication.isBlurEnabled()) {
@@ -445,7 +441,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     @Override
     public void refreshUI() {
         super.refreshUI();
-        if (this.initMode) return;
+        if (this.initMode)
+            return;
         this.initMode = true;
         Log.i(TAG, "Item Before");
         this.searchView.setQuery("", false);
@@ -460,6 +457,16 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         InstallerInitializer.tryGetMagiskPathAsync(new InstallerInitializer.Callback() {
             @Override
             public void onPathReceived(String path) {
+                checkShowInitialSetup();
+                // Wait for doSetupNow to finish
+                while (doSetupNowRunning) {
+                    try {
+                        //noinspection BusyWait
+                        Thread.sleep(100);
+                    } catch (
+                            InterruptedException ignored) {
+                    }
+                }
                 if (InstallerInitializer.peekMagiskVersion() < Constants.MAGISK_VER_CODE_INSTALL_COMMAND)
                     moduleViewListBuilder.addNotification(NotificationType.MAGISK_OUTDATED);
                 if (!MainApplication.isShowcaseMode())
@@ -490,14 +497,16 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                         progressIndicator.setIndeterminate(false);
                         progressIndicator.setMax(PRECISION);
                     });
-                    if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Check Update");
+                    if (BuildConfig.DEBUG)
+                        Log.d("NoodleDebug", "Check Update");
                     RepoManager.getINSTANCE().update(value -> runOnUiThread(() -> progressIndicator.setProgressCompat((int) (value * PRECISION), true)));
                     runOnUiThread(() -> {
                         progressIndicator.setProgressCompat(PRECISION, true);
                         progressIndicator.setVisibility(View.GONE);
                     });
                 }
-                if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Apply");
+                if (BuildConfig.DEBUG)
+                    Log.d("NoodleDebug", "Apply");
                 RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilder::appendRemoteModules);
                 Log.i(TAG, "Common Before applyTo");
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
@@ -514,14 +523,12 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
 
     @Override
     public void onRefresh() {
-        if (this.swipeRefreshBlocker > System.currentTimeMillis() ||
-                this.initMode || this.progressIndicator == null ||
-                this.progressIndicator.getVisibility() == View.VISIBLE ||
-                this.doSetupNowRunning) {
+        if (this.swipeRefreshBlocker > System.currentTimeMillis() || this.initMode || this.progressIndicator == null || this.progressIndicator.getVisibility() == View.VISIBLE || doSetupNowRunning) {
             this.swipeRefreshLayout.setRefreshing(false);
             return; // Do not double scan
         }
-        if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Refresh");
+        if (BuildConfig.DEBUG)
+            Log.d("NoodleDebug", "Refresh");
         this.progressIndicator.setVisibility(View.VISIBLE);
         this.progressIndicator.setProgressCompat(0, false);
         this.swipeRefreshBlocker = System.currentTimeMillis() + 5_000L;
@@ -539,18 +546,22 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             } else {
                 // Compatibility data still needs to be updated
                 AppUpdateManager appUpdateManager = AppUpdateManager.getAppUpdateManager();
-                if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Check App Update");
+                if (BuildConfig.DEBUG)
+                    Log.d("NoodleDebug", "Check App Update");
                 if (BuildConfig.ENABLE_AUTO_UPDATER && appUpdateManager.checkUpdate(true))
                     moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
-                if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Check Json Update");
+                if (BuildConfig.DEBUG)
+                    Log.d("NoodleDebug", "Check Json Update");
                 if (max != 0) {
                     int current = 0;
                     for (LocalModuleInfo localModuleInfo : ModuleManager.getINSTANCE().getModules().values()) {
                         if (localModuleInfo.updateJson != null) {
-                            if (BuildConfig.DEBUG) Log.d("NoodleDebug", localModuleInfo.id);
+                            if (BuildConfig.DEBUG)
+                                Log.d("NoodleDebug", localModuleInfo.id);
                             try {
                                 localModuleInfo.checkModuleUpdate();
-                            } catch (Exception e) {
+                            } catch (
+                                    Exception e) {
                                 Log.e("MainActivity", "Failed to fetch update of: " + localModuleInfo.id, e);
                             }
                             current++;
@@ -560,7 +571,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     }
                 }
             }
-            if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Apply");
+            if (BuildConfig.DEBUG)
+                Log.d("NoodleDebug", "Apply");
             runOnUiThread(() -> {
                 this.progressIndicator.setVisibility(View.GONE);
                 this.swipeRefreshLayout.setRefreshing(false);
@@ -578,7 +590,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     @Override
     public boolean onQueryTextSubmit(final String query) {
         this.searchView.clearFocus();
-        if (this.initMode) return false;
+        if (this.initMode)
+            return false;
         if (this.moduleViewListBuilder.setQueryChange(query)) {
             new Thread(() -> this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter), "Query update thread").start();
         }
@@ -587,7 +600,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
 
     @Override
     public boolean onQueryTextChange(String query) {
-        if (this.initMode) return false;
+        if (this.initMode)
+            return false;
         if (this.moduleViewListBuilder.setQueryChange(query)) {
             new Thread(() -> this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter), "Query update thread").start();
         }
@@ -596,7 +610,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
 
     @Override
     public boolean onClose() {
-        if (this.initMode) return false;
+        if (this.initMode)
+            return false;
         if (this.moduleViewListBuilder.setQueryChange(null)) {
             new Thread(() -> this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter), "Query update thread").start();
         }
@@ -615,11 +630,13 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
 
     @SuppressLint("RestrictedApi")
     private void ensurePermissions() {
-        if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Ensure Permissions");
+        if (BuildConfig.DEBUG)
+            Log.d("NoodleDebug", "Ensure Permissions");
         // First, check if user has said don't ask again by checking if pref_dont_ask_again_notification_permission is true
         if (!PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_dont_ask_again_notification_permission", false)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Request Notification Permission");
+                if (BuildConfig.DEBUG)
+                    Log.d("NoodleDebug", "Request Notification Permission");
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS)) {
                     // Show a dialog explaining why we need this permission, which is to show
                     // notifications for updates
@@ -651,7 +668,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     });
                 } else {
                     // Request the permission
-                    if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Request Notification Permission");
+                    if (BuildConfig.DEBUG)
+                        Log.d("NoodleDebug", "Request Notification Permission");
                     this.requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 0);
                     if (BuildConfig.DEBUG) {
                         // Log if granted via onRequestPermissionsResult
@@ -702,11 +720,13 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     // Method to show a setup box on first launch
     @SuppressLint({"InflateParams", "RestrictedApi", "UnspecifiedImmutableFlag", "ApplySharedPref"})
     private void checkShowInitialSetup() {
-        if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Do setup now");
+        if (BuildConfig.DEBUG)
+            Log.d("NoodleDebug", "Do setup now");
         // Check if this is the first launch
         SharedPreferences prefs = MainApplication.getSharedPreferences();
         boolean firstLaunch = prefs.getBoolean("first_launch", true);
-        if (BuildConfig.DEBUG) Log.d("Noodle", "First launch: " + firstLaunch);
+        if (BuildConfig.DEBUG)
+            Log.d("NoodleDebug", "First launch: " + firstLaunch);
         if (firstLaunch) {
             doSetupNowRunning = true;
             // Show setup box
@@ -721,29 +741,25 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 // For now, we'll just have the positive button save the preferences and dismiss the dialog
                 builder.setPositiveButton(R.string.setup_button, (dialog, which) -> {
                     // Set the preferences and pref_first_launch to false
-                    prefs.edit().putBoolean("first_launch", false)
-                            .putBoolean("pref_background_update_check", ((MaterialSwitch)
-                                    Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_background_update_check))).isChecked())
-                            .putBoolean("pref_crash_reporting",
-                                    ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_crash_reporting))).isChecked())
-                            .putBoolean("pref_androidacy_repo_enabled", ((MaterialSwitch)
-                                    Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_androidacy_repo))).isChecked())
-                            .putBoolean("pref_magisk_alt_repo_enabled", ((MaterialSwitch)
-                                    Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_magisk_alt_repo))).isChecked()).apply();
+                    prefs.edit().putBoolean("first_launch", false).putBoolean("pref_background_update_check", ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_background_update_check))).isChecked()).putBoolean("pref_crash_reporting", ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_crash_reporting))).isChecked()).putBoolean("pref_androidacy_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_androidacy_repo))).isChecked()).putBoolean("pref_magisk_alt_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_magisk_alt_repo))).isChecked()).commit();
                     if (BuildConfig.DEBUG) {
-                        Log.d("MainActivity", String.format("Background update check: %s, Crash reporting: %s, Androidacy repo: %s, Magisk alt repo: %s",
-                                prefs.getBoolean("pref_background_update_check", false), prefs.getBoolean("pref_crash_reporting", false),
-                                prefs.getBoolean("pref_androidacy_repo_enabled", false), prefs.getBoolean("pref_magisk_alt_repo_enabled", false)));
+                        Log.d("NoodleDebug", String.format("Setup: Background Update Check: %s, Crash Reporting: %s, Androidacy Repo: %s, Magisk Alt Repo: %s", prefs.getBoolean("pref_background_update_check", false), prefs.getBoolean("pref_crash_reporting", false), prefs.getBoolean("pref_androidacy_repo_enabled", false), prefs.getBoolean("pref_magisk_alt_repo_enabled", false)));
                     }
-                    // Only for sentry switching we need to restart I think?
-                    if (SentryMain.isSentryEnabled() != MainApplication.isCrashReportingEnabled()) {
-                        doSetupRestarting = true;
-                        ProcessHelper.restartApplicationProcess(this);
+                    // Sleep for 100ms. Who knows, it might fix it?
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                    ensurePermissions();
+                    doSetupRestarting = true;
+                    // Restart the app
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    finish();
+                    startActivity(intent);
                 });
                 builder.setNegativeButton(R.string.setup_button_skip, (dialog, which) -> {
-                    MainApplication.getSharedPreferences().edit().putBoolean("first_launch", false).apply();
+                    MainApplication.getSharedPreferences().edit().putBoolean("first_launch", false).commit();
                     dialog.dismiss();
                     ensurePermissions();
                 });
@@ -764,15 +780,18 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
      * @return true if the load workflow must be stopped.
      */
     private boolean waitInitialSetupFinished() {
-        if (BuildConfig.DEBUG) Log.d("NoodleDebug", "waitInitialSetupFinished");
-        if (doSetupNowRunning) updateScreenInsets(); // Fix an edge case
+        if (BuildConfig.DEBUG)
+            Log.d("NoodleDebug", "waitInitialSetupFinished");
+        if (doSetupNowRunning)
+            updateScreenInsets(); // Fix an edge case
         try {
             // Wait for doSetupNow to finish
             while (doSetupNowRunning) {
                 //noinspection BusyWait
                 Thread.sleep(50);
             }
-        } catch (InterruptedException e) {
+        } catch (
+                InterruptedException e) {
             return true;
         }
         return doSetupRestarting;

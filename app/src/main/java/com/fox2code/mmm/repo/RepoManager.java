@@ -11,6 +11,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.fox2code.mmm.BuildConfig;
+import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.XHooks;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -218,6 +220,10 @@ public final class RepoManager extends SyncManager {
 
     @SuppressLint("StringFormatInvalid")
     protected void scanInternal(@NonNull UpdateListener updateListener) {
+        // Refuse to start if first_launch is not false in shared preferences
+        if (MainActivity.doSetupNowRunning) {
+            return;
+        }
         this.modules.clear();
         updateListener.update(0D);
         // Using LinkedHashSet to deduplicate Androidacy entry.
@@ -239,13 +245,19 @@ public final class RepoManager extends SyncManager {
             if (!repoUpdaters[i].repoData.isEnabled()) {
                 if (BuildConfig.DEBUG) Log.d("RepoManager",
                         "Skipping disabled repo: " + repoUpdaters[i].repoData.getName());
+                // Remove the repo from the list
+                try {
+                    this.repoData.remove(repoUpdaters[i].repoData.getUrl());
+                } catch (
+                        NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
                 continue;
             }
             List<RepoModule> repoModules = repoUpdaters[i].toUpdate();
             RepoData repoData = repoDatas[i];
             if (BuildConfig.DEBUG) Log.d("RepoManager", "Registering " + repoData.getName());
             for (RepoModule repoModule : repoModules) {
-                if (BuildConfig.DEBUG) Log.d("RepoManager", "Fetching module: " + repoModule.id);
                 try {
                     if (repoModule.propUrl != null &&
                             !repoModule.propUrl.isEmpty()) {

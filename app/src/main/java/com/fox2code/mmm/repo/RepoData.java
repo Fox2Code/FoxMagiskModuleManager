@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.BuildConfig;
+import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.XRepo;
@@ -201,7 +202,7 @@ public class RepoData extends XRepo {
 
     @Override
     public boolean isEnabled() {
-        return this.enabled;
+        return MainApplication.getSharedPreferences().getBoolean("pref_" + this.getPreferenceId() + "_enabled", this.isEnabledByDefault());
     }
 
     @Override
@@ -216,6 +217,10 @@ public class RepoData extends XRepo {
     }
 
     public void updateEnabledState() {
+        // Make sure first_launch preference is set to false
+        if (MainActivity.doSetupNowRunning) {
+            return;
+        }
         this.forceHide = AppUpdateManager.shouldForceHide(this.id);
         if (BuildConfig.DEBUG) {
             Log.d("RepoData",
