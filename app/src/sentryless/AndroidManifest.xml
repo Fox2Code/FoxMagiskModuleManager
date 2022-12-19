@@ -4,6 +4,7 @@
     tools:ignore="QueryAllPackagesPermission">
 
     <application android:icon="@mipmap/ic_launcher">
+        <meta-data android:name="io.sentry.dsn" android:value="" />
 
     </application>
 </manifest>
