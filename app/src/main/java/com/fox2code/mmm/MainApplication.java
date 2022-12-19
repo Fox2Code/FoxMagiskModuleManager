@@ -25,9 +25,9 @@ import com.fox2code.foxcompat.FoxApplication;
 import com.fox2code.foxcompat.FoxThemeWrapper;
 import com.fox2code.foxcompat.internal.FoxProcessExt;
 import com.fox2code.mmm.installer.InstallerInitializer;
-import com.fox2code.mmm.sentry.SentryMain;
 import com.fox2code.mmm.utils.GMSProviderInstaller;
 import com.fox2code.mmm.utils.Http;
+import com.fox2code.mmm.utils.SentryMain;
 import com.fox2code.rosettax.LanguageSwitcher;
 import com.topjohnwu.superuser.Shell;
 
@@ -138,7 +138,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     }
 
     public static boolean isBlurEnabled() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getSharedPreferences().getBoolean("pref_enable_blur", false);
+        return getSharedPreferences().getBoolean("pref_enable_blur", false);
     }
 
     public static boolean isDeveloper() {
@@ -313,13 +313,14 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         }
         SentryMain.initialize(this);
         if (Objects.equals(BuildConfig.ANDROIDACY_CLIENT_ID, "")) {
-            Log.w("MainApplication", "Androidacy client id is empty! Please set it in androidacy" + ".properties. Will not enable Androidacy.");
+            Log.w("MainApplication", "Androidacy client id is empty! Please set it in androidacy.properties. Will not enable Androidacy.");
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("pref_androidacy_repo_enabled", false);
             editor.apply();
         }
     }
 
+    @SuppressWarnings("unused")
     private Intent getIntent() {
         return this.getPackageManager().getLaunchIntentForPackage(this.getPackageName());
     }
@@ -363,7 +364,9 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
                     for (String s : children) {
                         if (BuildConfig.DEBUG) Log.w("MainApplication", "Deleting " + s);
                         if (!s.equals("lib")) {
-                            new File(cacheDir, s).delete();
+                            if (!new File(cacheDir, s).delete()) {
+                                if (BuildConfig.DEBUG) Log.w("MainApplication", "Failed to delete " + s);
+                            }
                         }
                     }
                 }

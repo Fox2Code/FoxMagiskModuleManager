@@ -69,6 +69,7 @@
         android:layout_marginRight="12dp"
         android:layout_marginBottom="8dp"
         android:gravity="right"
+        android:filterTouchesWhenObscured="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_fitsSystemWindowsInsets="bottom"

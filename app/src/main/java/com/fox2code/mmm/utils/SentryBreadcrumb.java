@@ -1,4 +1,4 @@
-package com.fox2code.mmm.sentry;
+package com.fox2code.mmm.utils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -9,7 +9,7 @@ import io.sentry.Breadcrumb;
 import io.sentry.SentryLevel;
 
 public class SentryBreadcrumb {
-    final Breadcrumb breadcrumb;
+    public final Breadcrumb breadcrumb;
 
     public SentryBreadcrumb() {
         breadcrumb = new Breadcrumb();

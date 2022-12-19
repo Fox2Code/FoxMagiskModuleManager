@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="QueryAllPackagesPermission">
 
+    <uses-sdk tools:overrideLibrary="io.sentry.android" />
+
     <queries>
         <intent>
             <action android:name="com.fox2code.mmm.utils.intent.action.OPEN_EXTERNAL" />
@@ -122,5 +124,36 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/shared_file_paths" />
         </provider>
+
+
+        <meta-data
+            android:name="io.sentry.auto-init"
+            android:value="false" />
+        <meta-data
+            android:name="io.sentry.dsn"
+            android:value="https://198c68516cb0412b9832204631a3fac8@o993586.ingest.sentry.io/4504069942804480" />
+        <!-- Sane value, but feel free to lower it -->
+        <meta-data
+            android:name="io.sentry.traces.sample-rate"
+            android:value="0.5" />
+        <!-- Doesn't actually monitor anything, just used to get the activities the user went through -->
+        <meta-data
+            android:name="io.sentry.traces.user-interaction.enable"
+            android:value="true" />
+        <!-- Just a screenshot of ONLY the current activity at the time of the crash -->
+        <meta-data
+            android:name="io.sentry.attach-screenshot"
+            android:value="true" />
+        <!-- Just the current activity at the time of the crash -->
+        <meta-data
+            android:name="io.sentry.attach-stacktrace"
+            android:value="true" />
+        <!-- Don't send PII, this is actually default but let's be explicit -->
+        <meta-data
+            android:name="io.sentry.sendDefaultPii"
+            android:value="false" />
+        <meta-data
+            android:name="io.sentry.traces.profiling.sample-rate"
+            android:value="0.25" />
     </application>
 </manifest>

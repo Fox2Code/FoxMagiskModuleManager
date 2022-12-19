@@ -31,8 +31,8 @@ android {
         applicationId "com.fox2code.mmm"
         minSdk 23
         targetSdk 33
-        versionCode 63
-        versionName "1.0.3"
+        versionCode 64
+        versionName "1.1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release
         archivesBaseName = "FoxMMM-v$versionName"
@@ -251,7 +251,6 @@ dependencies {
     implementation 'androidx.work:work-runtime:2.7.1'
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.10'
     implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:5.0.0-alpha.10'
-    implementation 'com.squareup.okhttp3:okhttp-brotli:5.0.0-alpha.10'
     // Chromium cronet from androidacy
     implementation 'com.androidacy:cronet-common:108.0.5359.125'
     implementation 'com.androidacy:cronet-native:108.0.5359.125'
@@ -292,25 +291,7 @@ if (hasSentryConfig) {
     }
 }
 
-final String sentrySrc = hasSentryConfig ? 'src/sentry/java' : 'src/sentryless/java'
-final String sentryManifestSrc = hasSentryConfig ? 'src/sentry/AndroidManifest.xml' : 'src/sentryless/AndroidManifest.xml'
-
 android {
-    sourceSets {
-        main {
-            java.srcDirs += sentrySrc
-            // manifest.srcFile += sentryManifestSrc // Not supported
-        }
-
-        // Workaround useless gradle restriction
-        "default" {
-            manifest.srcFile sentryManifestSrc
-        }
-
-        fdroid {
-            manifest.srcFile sentryManifestSrc
-        }
-    }
     ndkVersion '25.1.8937393'
     dependenciesInfo {
         includeInApk false

@@ -1,4 +1,4 @@
-package com.fox2code.mmm.sentry;
+package com.fox2code.mmm.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -25,6 +25,11 @@ public class SentryMain {
      */
     @SuppressLint({"RestrictedApi", "UnspecifiedImmutableFlag"})
     public static void initialize(final MainApplication mainApplication) {
+        // If first_launch pref is not false, refuse to initialize Sentry
+        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
+        if (sharedPreferences.getBoolean("first_launch", true)) {
+            return;
+        }
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
             SharedPreferences.Editor editor = mainApplication.getSharedPreferences("sentry", Context.MODE_PRIVATE).edit();
             editor.putString("lastExitReason", "crash");
@@ -58,9 +63,9 @@ public class SentryMain {
                 // With this callback, you can modify the event or, when returning null, also discard the event.
                 options.setBeforeSend((event, hint) -> {
                     // Save lastEventId to private shared preferences
-                    SharedPreferences sharedPreferences = MainApplication.getINSTANCE().getSharedPreferences("sentry", Context.MODE_PRIVATE);
+                    SharedPreferences sentryPrefs = MainApplication.getINSTANCE().getSharedPreferences("sentry", Context.MODE_PRIVATE);
                     String lastEventId = Objects.requireNonNull(event.getEventId()).toString();
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    SharedPreferences.Editor editor = sentryPrefs.edit();
                     editor.putString("lastEventId", lastEventId);
                     editor.apply();
                     return event;
@@ -79,7 +84,7 @@ public class SentryMain {
         });
     }
 
-    public static void addSentryBreadcrumb(SentryBreadcrumb sentryBreadcrumb) {
+    public static void addSentryBreadcrumb(com.fox2code.mmm.utils.SentryBreadcrumb sentryBreadcrumb) {
         if (MainApplication.isCrashReportingEnabled()) {
             Sentry.addBreadcrumb(sentryBreadcrumb.breadcrumb);
         }
