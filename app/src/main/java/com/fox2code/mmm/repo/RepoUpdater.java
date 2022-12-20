@@ -10,7 +10,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -83,7 +82,7 @@ public class RepoUpdater {
             try {
                 Files.write(this.repoData.metaDataCache, this.indexRaw);
                 if (BuildConfig.DEBUG) {
-                    Log.d(TAG, "Wrote index of " + this.repoData.id);
+                    Log.i(TAG, "Wrote index of " + this.repoData.id);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

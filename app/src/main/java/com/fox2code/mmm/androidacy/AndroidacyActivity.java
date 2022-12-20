@@ -254,7 +254,7 @@ public final class AndroidacyActivity extends FoxActivity {
                             Log.e(TAG, consoleMessage.message());
                             break;
                         case DEBUG:
-                            Log.d(TAG, consoleMessage.message());
+                            Log.i(TAG, consoleMessage.message());
                             break;
                     }
                 }
@@ -377,12 +377,12 @@ public final class AndroidacyActivity extends FoxActivity {
     private boolean megaIntercept(String pageUrl, String fileUrl) {
         if (pageUrl == null || fileUrl == null) return false;
         if (this.isFileUrl(fileUrl)) {
-            Log.d(TAG, "megaIntercept(" + AndroidacyUtil.hideToken(pageUrl) + ", " + AndroidacyUtil.hideToken(fileUrl) + ")");
+            Log.i(TAG, "megaIntercept(" + AndroidacyUtil.hideToken(pageUrl) + ", " + AndroidacyUtil.hideToken(fileUrl) + ")");
         } else return false;
         final AndroidacyWebAPI androidacyWebAPI = this.androidacyWebAPI;
         String moduleId = AndroidacyUtil.getModuleId(fileUrl);
         if (moduleId == null) {
-            Log.d(TAG, "No module id?");
+            Log.i(TAG, "No module id?");
             // Re-open the page
             this.webView.loadUrl(pageUrl + "&force_refresh=" + System.currentTimeMillis());
         }

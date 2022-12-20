@@ -36,7 +36,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 import eightbitlab.com.blurview.BlurView;
-import eightbitlab.com.blurview.RenderScriptBlur;
 
 public class MarkdownActivity extends FoxActivity {
     private static final String TAG = "MarkdownActivity";
@@ -147,11 +146,11 @@ public class MarkdownActivity extends FoxActivity {
 
         new Thread(() -> {
             try {
-                Log.d(TAG, "Downloading");
+                Log.i(TAG, "Downloading");
                 byte[] rawMarkdown = getRawMarkdown(url);
-                Log.d(TAG, "Encoding");
+                Log.i(TAG, "Encoding");
                 String markdown = new String(rawMarkdown, StandardCharsets.UTF_8);
-                Log.d(TAG, "Done!");
+                Log.i(TAG, "Done!");
                 runOnUiThread(() -> {
                     findViewById(R.id.markdownFooter)
                             .setMinimumHeight(this.getNavigationBarHeight());

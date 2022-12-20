@@ -112,7 +112,7 @@ public enum ActionButtonType {
             } else {
                 builder.setMessage(desc);
             }
-            Log.d("Test", "URL: " + updateZipUrl);
+            Log.i("Test", "URL: " + updateZipUrl);
             builder.setNegativeButton(R.string.download_module, (x, y) -> {
                 IntentHelper.openCustomTab(button.getContext(), updateZipUrl);
             });
@@ -164,7 +164,7 @@ public enum ActionButtonType {
                 doActionLong(button, moduleHolder);
                 return;
             }
-            Log.d("ActionButtonType", Integer.toHexString(moduleHolder.moduleInfo.flags));
+            Log.i("ActionButtonType", Integer.toHexString(moduleHolder.moduleInfo.flags));
             if (!ModuleManager.getINSTANCE().setUninstallState(moduleHolder.moduleInfo,
                     !moduleHolder.hasFlag(ModuleInfo.FLAG_MODULE_UNINSTALLING))) {
                 Log.e("ActionButtonType", "Failed to switch uninstalled state!");

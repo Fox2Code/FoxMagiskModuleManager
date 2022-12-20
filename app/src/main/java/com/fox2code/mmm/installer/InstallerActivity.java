@@ -179,7 +179,7 @@ public class InstallerActivity extends FoxActivity {
                 if (this.canceled) return;
                 androidacyBlame = urlMode && AndroidacyUtil.isAndroidacyFileUrl(target);
                 if (checksum != null && !checksum.isEmpty()) {
-                    Log.d(TAG, "Checking for checksum: " + checksum);
+                    Log.i(TAG, "Checking for checksum: " + checksum);
                     this.runOnUiThread(() -> this.installerTerminal.addLine("- Checking file integrity"));
                     if (!Hashes.checkSumMatch(rawModule, checksum)) {
                         this.setInstallStateFinished(false,
@@ -304,7 +304,7 @@ public class InstallerActivity extends FoxActivity {
                     }
                 }
             } catch (Exception e) {
-                Log.d(TAG, "Failed ot extract install script via java code", e);
+                Log.i(TAG, "Failed ot extract install script via java code", e);
             }
             installerMonitor = new InstallerMonitor(installScript);
             installJob = Shell.cmd("export MMM_EXT_SUPPORT=1",
@@ -541,7 +541,7 @@ public class InstallerActivity extends FoxActivity {
         @Override
         public void onAddElement(String s) {
             if (!this.enabled) return;
-            Log.d(TAG, "MSG: " + s);
+            Log.i(TAG, "MSG: " + s);
             if ("#!useExt".equals(s.trim()) && !this.noExtension) {
                 this.useExt = true;
                 return;
@@ -694,7 +694,7 @@ public class InstallerActivity extends FoxActivity {
 
         @Override
         public void onAddElement(String s) {
-            Log.d(TAG, "Monitor: " + s);
+            Log.i(TAG, "Monitor: " + s);
             this.lastCommand = s;
         }
 

@@ -111,9 +111,9 @@ public class AppUpdateManager {
                     this.latestPreRelease = "";
                     this.preReleaseNewer = false;
                 }
-                if (BuildConfig.DEBUG) Log.d(TAG, "Latest release: " + latestRelease);
-                if (BuildConfig.DEBUG) Log.d(TAG, "Latest pre-release: " + latestPreRelease);
-                if (BuildConfig.DEBUG) Log.d(TAG, "Latest pre-release newer: " + preReleaseNewer);
+                if (BuildConfig.DEBUG) Log.i(TAG, "Latest release: " + latestRelease);
+                if (BuildConfig.DEBUG) Log.i(TAG, "Latest pre-release: " + latestPreRelease);
+                if (BuildConfig.DEBUG) Log.i(TAG, "Latest pre-release newer: " + preReleaseNewer);
                 this.lastChecked = System.currentTimeMillis();
                 this.lastCheckSuccess = true;
             } catch (Exception ioe) {
@@ -125,6 +125,7 @@ public class AppUpdateManager {
     }
 
     public void checkUpdateCompat() {
+        if (BuildConfig.DEBUG) Log.i(TAG, "Checking compatibility flags");
         if (this.compatFile.exists()) {
             long lastUpdate = this.compatFile.lastModified();
             if (lastUpdate <= System.currentTimeMillis() && lastUpdate + 600_000L > System.currentTimeMillis()) {
@@ -132,20 +133,26 @@ public class AppUpdateManager {
             }
         }
         try {
+            if (BuildConfig.DEBUG) Log.i(TAG, "Downloading compatibility flags");
             JSONObject object = new JSONObject(new String(Http.doHttpGet(COMPAT_API_URL, false), StandardCharsets.UTF_8));
             if (object.isNull("body")) {
+                if (BuildConfig.DEBUG) Log.i(TAG, "Compatibility flags not found");
                 compatDataId.clear();
                 Files.write(compatFile, new byte[0]);
                 return;
             }
+            if (BuildConfig.DEBUG) Log.i(TAG, "Parsing compatibility flags");
             byte[] rawData = object.getString("body").getBytes(StandardCharsets.UTF_8);
             this.parseCompatibilityFlags(new ByteArrayInputStream(rawData));
             Files.write(compatFile, rawData);
             if (!BuildConfig.ENABLE_AUTO_UPDATER) this.lastCheckSuccess = true;
+            if (BuildConfig.DEBUG) Log.i(TAG, "Compatibility flags update finishing");
+            return;
         } catch (Exception e) {
             if (!BuildConfig.ENABLE_AUTO_UPDATER) this.lastCheckSuccess = false;
             Log.e("AppUpdateManager", "Failed to update compat list", e);
         }
+        if (BuildConfig.DEBUG) Log.i(TAG, "Compatibility flags updated");
     }
 
     public boolean peekShouldUpdate() {

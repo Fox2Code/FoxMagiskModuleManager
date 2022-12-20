@@ -63,7 +63,7 @@ public class AndroidacyWebAPI {
 
     void openNativeModuleDialogRaw(String moduleUrl, String moduleId, String installTitle,
                                    String checksum, boolean canInstall) {
-        if (BuildConfig.DEBUG) Log.d(TAG, "ModuleDialog, downloadUrl: " + AndroidacyUtil.hideToken(moduleUrl) +
+        if (BuildConfig.DEBUG) Log.i(TAG, "ModuleDialog, downloadUrl: " + AndroidacyUtil.hideToken(moduleUrl) +
                 ", moduleId: " + moduleId + ", installTitle: " + installTitle +
                 ", checksum: " + checksum + ", canInstall: " + canInstall);
         this.downloadMode = false;
@@ -145,7 +145,7 @@ public class AndroidacyWebAPI {
 
     void notifyCompatModeRaw(int value) {
         if (this.consumedAction) return;
-        if (BuildConfig.DEBUG) Log.d(TAG, "Androidacy Compat mode: " + value);
+        if (BuildConfig.DEBUG) Log.i(TAG, "Androidacy Compat mode: " + value);
         this.notifiedCompatMode = value;
         if (value < 0) {
             value = 0;
@@ -180,7 +180,7 @@ public class AndroidacyWebAPI {
         if (this.consumedAction) return;
         this.consumedAction = true;
         this.downloadMode = false;
-        if (BuildConfig.DEBUG) Log.d(TAG, "Received openUrl request: " + url);
+        if (BuildConfig.DEBUG) Log.i(TAG, "Received openUrl request: " + url);
         if (Uri.parse(url).getScheme().equals("https")) {
             IntentHelper.openUrl(this.activity, url);
         }
@@ -194,7 +194,7 @@ public class AndroidacyWebAPI {
         if (this.consumedAction) return;
         this.consumedAction = true;
         this.downloadMode = false;
-        if (BuildConfig.DEBUG) Log.d(TAG, "Received openCustomTab request: " + url);
+        if (BuildConfig.DEBUG) Log.i(TAG, "Received openCustomTab request: " + url);
         if (Uri.parse(url).getScheme().equals("https")) {
             IntentHelper.openCustomTab(this.activity, url);
         }
@@ -238,7 +238,7 @@ public class AndroidacyWebAPI {
         }
         this.consumedAction = true;
         this.downloadMode = false;
-        if (BuildConfig.DEBUG) Log.d(TAG, "Received install request: " +
+        if (BuildConfig.DEBUG) Log.i(TAG, "Received install request: " +
                 moduleUrl + " " + installTitle + " " + checksum);
         if (!AndroidacyUtil.isAndroidacyLink(moduleUrl)) {
             this.forceQuitRaw("Non Androidacy module link used on Androidacy");

@@ -251,7 +251,7 @@ public final class AndroidacyRepoData extends RepoData {
     @Override
     protected List<RepoModule> populate(JSONObject jsonObject) throws JSONException, NoSuchAlgorithmException {
         if (BuildConfig.DEBUG) {
-            Log.d(TAG, "AndroidacyRepoData populate start");
+            Log.i(TAG, "AndroidacyRepoData populate start");
         }
         if (!jsonObject.getString("status").equals("success"))
             throw new JSONException("Response is not a success!");
@@ -330,7 +330,7 @@ public final class AndroidacyRepoData extends RepoData {
             String config = jsonObject.optString("config", "");
             moduleInfo.config = config.isEmpty() ? null : config;
             PropUtils.applyFallbacks(moduleInfo); // Apply fallbacks
-            // Log.d(TAG,
+            // Log.i(TAG,
             //        "Module " + moduleInfo.name + " " + moduleInfo.id + " " + moduleInfo
             //        .version + " " + moduleInfo.versionCode);
         }

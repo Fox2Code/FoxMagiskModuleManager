@@ -40,13 +40,13 @@ public final class ExternalHelper {
         List<ResolveInfo> resolveInfos = context.getPackageManager()
                 .queryIntentActivities(intent, PackageManager.GET_RESOLVED_FILTER);
         if (resolveInfos == null || resolveInfos.isEmpty()) {
-            Log.d(TAG, "No external provider installed!");
+            Log.i(TAG, "No external provider installed!");
             label = TEST_MODE ? "External" : null;
             multi = TEST_MODE;
             fallback = null;
         } else {
             ResolveInfo resolveInfo = resolveInfos.get(0);
-            Log.d(TAG, "Found external provider: " + resolveInfo.activityInfo.packageName);
+            Log.i(TAG, "Found external provider: " + resolveInfo.activityInfo.packageName);
             fallback = new ComponentName(
                     resolveInfo.activityInfo.packageName,
                     resolveInfo.activityInfo.name);

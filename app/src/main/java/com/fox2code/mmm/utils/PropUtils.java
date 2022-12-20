@@ -342,7 +342,7 @@ public class PropUtils {
                 }
             }
         } catch (IOException e) {
-            Log.d("PropUtils", "Failed to get moduleId", e);
+            Log.i("PropUtils", "Failed to get moduleId", e);
         }
         return moduleId;
     }

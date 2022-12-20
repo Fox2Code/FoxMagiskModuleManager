@@ -70,12 +70,12 @@ public final class ModuleManager extends SyncManager {
         if (!FORCE_NEED_FALLBACK && needFallback) {
             Log.e(TAG, "Failed to detect modules folder, using fallback instead.");
         }
-        if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Scan");
+        if (BuildConfig.DEBUG) Log.i("NoodleDebug", "Scan");
         if (modules != null) {
             for (String module : modules) {
                 if (!new SuFile("/data/adb/modules/" + module).isDirectory())
                     continue; // Ignore non directory files inside modules folder
-                if (BuildConfig.DEBUG) Log.d("NoodleDebug", module);
+                if (BuildConfig.DEBUG) Log.i("NoodleDebug", module);
                 LocalModuleInfo moduleInfo = moduleInfos.get(module);
                 if (moduleInfo == null) {
                     moduleInfo = new LocalModuleInfo(module);
@@ -113,18 +113,18 @@ public final class ModuleManager extends SyncManager {
                     PropUtils.readProperties(moduleInfo,
                             "/data/adb/modules/" + module + "/module.prop", true);
                 } catch (Exception e) {
-                    if (BuildConfig.DEBUG) Log.d(TAG, "Failed to parse metadata!", e);
+                    if (BuildConfig.DEBUG) Log.i(TAG, "Failed to parse metadata!", e);
                     moduleInfo.flags |= FLAG_MM_INVALID;
                 }
             }
         }
-        if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Scan update");
+        if (BuildConfig.DEBUG) Log.i("NoodleDebug", "Scan update");
         String[] modules_update = new SuFile("/data/adb/modules_update").list();
         if (modules_update != null) {
             for (String module : modules_update) {
                 if (!new SuFile("/data/adb/modules_update/" + module).isDirectory())
                     continue; // Ignore non directory files inside modules folder
-                if (BuildConfig.DEBUG) Log.d("NoodleDebug", module);
+                if (BuildConfig.DEBUG) Log.i("NoodleDebug", module);
                 LocalModuleInfo moduleInfo = moduleInfos.get(module);
                 if (moduleInfo == null) {
                     moduleInfo = new LocalModuleInfo(module);
@@ -136,18 +136,18 @@ public final class ModuleManager extends SyncManager {
                     PropUtils.readProperties(moduleInfo,
                             "/data/adb/modules_update/" + module + "/module.prop", true);
                 } catch (Exception e) {
-                    if (BuildConfig.DEBUG) Log.d(TAG, "Failed to parse metadata!", e);
+                    if (BuildConfig.DEBUG) Log.i(TAG, "Failed to parse metadata!", e);
                     moduleInfo.flags |= FLAG_MM_INVALID;
                 }
             }
         }
-        if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Finalize scan");
+        if (BuildConfig.DEBUG) Log.i("NoodleDebug", "Finalize scan");
         this.updatableModuleCount = 0;
         Iterator<LocalModuleInfo> moduleInfoIterator =
                 this.moduleInfos.values().iterator();
         while (moduleInfoIterator.hasNext()) {
             LocalModuleInfo moduleInfo = moduleInfoIterator.next();
-            if (BuildConfig.DEBUG) Log.d("NoodleDebug", moduleInfo.id);
+            if (BuildConfig.DEBUG) Log.i("NoodleDebug", moduleInfo.id);
             if ((moduleInfo.flags & FLAG_MM_UNPROCESSED) != 0) {
                 moduleInfoIterator.remove();
                 continue; // Don't process fallbacks if unreferenced

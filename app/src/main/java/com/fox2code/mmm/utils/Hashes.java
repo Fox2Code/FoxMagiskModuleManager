@@ -87,7 +87,7 @@ public class Hashes {
                         checksum.length() * 8 + "bit checksums");
                 return false;
         }
-        Log.d(TAG, "Checksum result (data: " + hash+ ",expected: " + checksum + ")");
+        Log.i(TAG, "Checksum result (data: " + hash+ ",expected: " + checksum + ")");
         return hash.equals(checksum.toLowerCase(Locale.ROOT));
     }
 
@@ -116,7 +116,7 @@ public class Hashes {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-        Log.d(TAG, "Checksum result (data: " + hash + ",expected: " + checksum + ")");
+        Log.i(TAG, "Checksum result (data: " + hash + ",expected: " + checksum + ")");
         return hash.equals(checksum.toLowerCase(Locale.ROOT));
     }
 

@@ -155,7 +155,7 @@ public class IntentHelper {
                             .to(new CallbackList<String>() {
                                 @Override
                                 public void onAddElement(String str) {
-                                    Log.d(TAG, "LSPosed: " + str);
+                                    Log.i(TAG, "LSPosed: " + str);
                                 }
                             }).submit();
                     return;
@@ -360,7 +360,7 @@ public class IntentHelper {
                 callback.onReceived(destination, null, RESPONSE_ERROR);
                 return;
             }
-            Log.d(TAG, "FilePicker returned " + uri);
+            Log.i(TAG, "FilePicker returned " + uri);
             if ("http".equals(uri.getScheme()) ||
                     "https".equals(uri.getScheme())) {
                 callback.onReceived(destination, uri, RESPONSE_URL);
@@ -390,7 +390,7 @@ public class IntentHelper {
                 }
                 outputStream = new FileOutputStream(destination);
                 Files.copy(inputStream, outputStream);
-                Log.d(TAG, "File saved at " + destination);
+                Log.i(TAG, "File saved at " + destination);
                 success = true;
             } catch (Exception e) {
                 Log.e(TAG, "failed copy of " + uri, e);

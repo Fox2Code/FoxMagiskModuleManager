@@ -138,9 +138,9 @@ public class InstallerInitializer extends Shell.Initializer {
             return null;
         }
         MAGISK_PATH = output.size() < 3 ? "" : output.get(2);
-        Log.d(TAG, "Magisk runtime path: " + MAGISK_PATH);
+        Log.i(TAG, "Magisk runtime path: " + MAGISK_PATH);
         MAGISK_VERSION_CODE = Integer.parseInt(output.get(1));
-        Log.d(TAG, "Magisk version code: " + MAGISK_VERSION_CODE);
+        Log.i(TAG, "Magisk version code: " + MAGISK_VERSION_CODE);
         if (MAGISK_VERSION_CODE >= Constants.MAGISK_VER_CODE_FLAT_MODULES &&
                 MAGISK_VERSION_CODE < Constants.MAGISK_VER_CODE_PATH_SUPPORT &&
                 (MAGISK_PATH.isEmpty() || !new File(MAGISK_PATH).exists())) {

@@ -29,7 +29,7 @@ public class MarkdownUrlLinker {
                     linkifyTasks.add(new LinkifyTask(index, end));
                     extra += (end - index) + 4;
                     if (BuildConfig.DEBUG) {
-                        Log.d(TAG, "Linkify url: " + url.substring(index, end));
+                        Log.i(TAG, "Linkify url: " + url.substring(index, end));
                     }
                 }
             }
@@ -45,7 +45,7 @@ public class MarkdownUrlLinker {
             prev = linkifyTask;
         }
         if (prev.end != url.length()) stringBuilder.append(url, prev.end, url.length());
-        Log.d(TAG, "Added Markdown link to " + linkifyTasks.size() + " urls");
+        Log.i(TAG, "Added Markdown link to " + linkifyTasks.size() + " urls");
         return stringBuilder.toString();
     }
 

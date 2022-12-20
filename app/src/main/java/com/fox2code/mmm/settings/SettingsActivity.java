@@ -126,7 +126,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         }
 
         if (BuildConfig.DEBUG) {
-            Log.d(TAG, "getDevicePerformanceClass: androidVersion=" + androidVersion + " cpuCount=" + cpuCount + " memoryClass=" + memoryClass + " maxCpuFreq=" + maxCpuFreq + " devicePerformanceClass=" + devicePerformanceClass);
+            Log.i(TAG, "getDevicePerformanceClass: androidVersion=" + androidVersion + " cpuCount=" + cpuCount + " memoryClass=" + memoryClass + " maxCpuFreq=" + maxCpuFreq + " devicePerformanceClass=" + devicePerformanceClass);
         }
 
         return devicePerformanceClass;
@@ -177,7 +177,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             // If transparent theme(s) are set, disable monet
             if (themePreference.getValue().equals("transparent_light")) {
                 if (BuildConfig.DEBUG) {
-                    Log.d(TAG, "Transparent theme is set, disabling monet");
+                    Log.i(TAG, "Transparent theme is set, disabling monet");
                 }
                 findPreference("pref_enable_monet").setEnabled(false);
                 // Toggle monet off
@@ -201,7 +201,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             });
             themePreference.setOnPreferenceChangeListener((preference, newValue) -> {
                 if (BuildConfig.DEBUG) {
-                    Log.d(TAG, "Theme changed, refreshing activity. New value: " + newValue);
+                    Log.i(TAG, "Theme changed, refreshing activity. New value: " + newValue);
                 }
                 // Immediately save
                 SharedPreferences.Editor editor =
@@ -210,7 +210,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 // If theme contains "transparent" then disable monet
                 if (newValue.toString().contains("transparent")) {
                     if (BuildConfig.DEBUG) {
-                        Log.d(TAG, "Transparent theme is being set, disabling monet");
+                        Log.i(TAG, "Transparent theme is being set, disabling monet");
                     }
                     // Show a dialogue warning the user about issues with transparent themes and
                     // that blur/monet will be disabled
@@ -285,7 +285,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                     mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
                     if (BuildConfig.DEBUG) {
-                        Log.d(TAG, "Restarting app to save crash reporting preference: " + newValue);
+                        Log.i(TAG, "Restarting app to save crash reporting preference: " + newValue);
                     }
                     System.exit(0); // Exit app process
                 });
@@ -397,7 +397,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             if (!SentryMain.IS_SENTRY_INSTALLED || !BuildConfig.DEBUG ||
                     InstallerInitializer.peekMagiskPath() == null) {
                 // Hide the pref_crash option if not in debug mode - stop users from purposely crashing the app
-                Log.d(TAG, String.format("Sentry installed: %s, debug: %s, magisk path: %s",
+                Log.i(TAG, String.format("Sentry installed: %s, debug: %s, magisk path: %s",
                         SentryMain.IS_SENTRY_INSTALLED, BuildConfig.DEBUG, InstallerInitializer.peekMagiskPath()));
                 Objects.requireNonNull((Preference) findPreference("pref_test_crash")).setVisible(false);
                 // Find pref_clear_data and set it invisible
@@ -663,7 +663,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                     AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                                     mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
                                     if (BuildConfig.DEBUG) {
-                                        Log.d(TAG, "Restarting app to save staging endpoint preference: " + newValue);
+                                        Log.i(TAG, "Restarting app to save staging endpoint preference: " + newValue);
                                     }
                                     System.exit(0); // Exit app process
                                 })
@@ -695,7 +695,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                     AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                                     mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
                                     if (BuildConfig.DEBUG) {
-                                        Log.d(TAG, "Restarting app to save staging endpoint preference: " + newValue);
+                                        Log.i(TAG, "Restarting app to save staging endpoint preference: " + newValue);
                                     }
                                     System.exit(0); // Exit app process
                                 })
@@ -728,7 +728,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     return false;
                 });
             }
-            String[] originalApiKeyRef = new String[]{MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).getString("pref_androidacy_api_token", null)};
+            String[] originalApiKeyRef = new String[]{MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).getString("pref_androidacy_api_token", "")};
             // Get the dummy pref_androidacy_repo_api_token EditTextPreference
             EditTextPreference prefAndroidacyRepoApiKey = Objects.requireNonNull(findPreference("pref_androidacy_api_token"));
             prefAndroidacyRepoApiKey.setTitle(R.string.api_key);
@@ -748,6 +748,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             });
             prefAndroidacyRepoApiKey.setPositiveButtonText(R.string.save_api_key);
             prefAndroidacyRepoApiKey.setOnPreferenceChangeListener((preference, newValue) -> {
+                // Make sure originalApiKeyRef is not null
                 if (originalApiKeyRef[0].equals(newValue)) return true;
                 // get original api key
                 String apiKey = String.valueOf(newValue);
@@ -781,7 +782,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                         AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                                         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
                                         if (BuildConfig.DEBUG) {
-                                            Log.d(TAG, "Restarting app to save token preference: " + newValue);
+                                            Log.i(TAG, "Restarting app to save token preference: " + newValue);
                                         }
                                         System.exit(0); // Exit app process
                                     })
@@ -834,7 +835,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                                 AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                                                 mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
                                                 if (BuildConfig.DEBUG) {
-                                                    Log.d(TAG, "Restarting app to save token preference: " + newValue);
+                                                    Log.i(TAG, "Restarting app to save token preference: " + newValue);
                                                 }
                                                 System.exit(0); // Exit app process
                                             })

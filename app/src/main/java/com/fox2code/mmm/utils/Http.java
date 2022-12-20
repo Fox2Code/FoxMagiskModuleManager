@@ -230,7 +230,6 @@ public class Http {
     @SuppressLint("RestrictedApi")
     @SuppressWarnings("resource")
     public static byte[] doHttpGet(String url, boolean allowCache) throws IOException {
-        checkNeedBlockAndroidacyRequest(url);
         Response response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).get().build()).execute();
         // 200/204 == success, 304 == cache valid
         if (response.code() != 200 && response.code() != 204 && (response.code() != 304 || !allowCache)) {
@@ -238,6 +237,7 @@ public class Http {
             checkNeedCaptchaAndroidacy(url, response.code());
             // If it's a 401, and an androidacy link, it's probably an invalid token
             if (response.code() == 401 && AndroidacyUtil.isAndroidacyLink(url)) {
+                // Regenerate the token
                 throw new HttpException("Androidacy token is invalid", 401);
             }
             throw new HttpException(response.code());
@@ -257,8 +257,7 @@ public class Http {
 
     @SuppressWarnings("resource")
     private static Object doHttpPostRaw(String url, String data, boolean allowCache) throws IOException {
-        if (BuildConfig.DEBUG) Log.d(TAG, "POST " + url + " " + data);
-        checkNeedBlockAndroidacyRequest(url);
+        if (BuildConfig.DEBUG) Log.i(TAG, "POST " + url + " " + data);
         Response response;
         response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).post(JsonRequestBody.from(data)).header("Content-Type", "application/json").build()).execute();
         if (response.isRedirect()) {
@@ -281,8 +280,7 @@ public class Http {
     }
 
     public static byte[] doHttpGet(String url, ProgressListener progressListener) throws IOException {
-        if (BuildConfig.DEBUG) Log.d("Http", "Progress URL: " + url);
-        checkNeedBlockAndroidacyRequest(url);
+        if (BuildConfig.DEBUG) Log.i("Http", "GET " + url.split("\\?")[0]);
         Response response = getHttpClient().newCall(new Request.Builder().url(url).get().build()).execute();
         if (response.code() != 200 && response.code() != 204) {
             Log.e(TAG, "Failed to fetch " + url + ", code: " + response.code());
@@ -302,7 +300,7 @@ public class Http {
         final long UPDATE_INTERVAL = 100;
         long nextUpdate = System.currentTimeMillis() + UPDATE_INTERVAL;
         long currentUpdate;
-        Log.d("Http", "Target: " + target + " Divider: " + divider);
+        Log.i("Http", "Target: " + target + " Divider: " + divider);
         progressListener.onUpdate(0, (int) (target / divider), false);
         while (true) {
             int read = inputStream.read(buff);
@@ -331,7 +329,7 @@ public class Http {
     }
 
     public static void setDoh(boolean doh) {
-        Log.d(TAG, "DoH: " + Http.doh + " -> " + doh);
+        Log.i(TAG, "DoH: " + Http.doh + " -> " + doh);
         Http.doh = doh;
     }
 

@@ -209,7 +209,7 @@ public class RepoData extends XRepo {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled && !this.forceHide;
         if (BuildConfig.DEBUG) {
-            Log.d("RepoData",
+            Log.i("RepoData",
                     "Repo " + this.id + " enabled: " + this.enabled + " (forced: " + this.forceHide + ") with preferenceID: " + this.getPreferenceId());
         }
         MainApplication.getSharedPreferences().edit()
@@ -223,7 +223,7 @@ public class RepoData extends XRepo {
         }
         this.forceHide = AppUpdateManager.shouldForceHide(this.id);
         if (BuildConfig.DEBUG) {
-            Log.d("RepoData",
+            Log.i("RepoData",
                     "Repo " + this.id + " update enabled: " + this.enabled + " (forced: " + this.forceHide + ") with preferenceID: " + this.getPreferenceId());
         }
         this.enabled = (!this.forceHide) && MainApplication.getSharedPreferences()

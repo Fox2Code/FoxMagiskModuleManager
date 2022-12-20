@@ -306,9 +306,9 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
             fontRequestEmojiCompatConfig.setMetadataLoadStrategy(EmojiCompat.LOAD_STRATEGY_MANUAL);
             EmojiCompat emojiCompat = EmojiCompat.init(fontRequestEmojiCompatConfig);
             new Thread(() -> {
-                Log.d("MainApplication", "Loading emoji compat...");
+                Log.i("MainApplication", "Loading emoji compat...");
                 emojiCompat.load();
-                Log.d("MainApplication", "Emoji compat loaded!");
+                Log.i("MainApplication", "Emoji compat loaded!");
             }, "Emoji compat init.").start();
         }
         SentryMain.initialize(this);
