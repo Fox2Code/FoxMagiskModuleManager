@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -245,13 +244,6 @@ public final class RepoManager extends SyncManager {
             if (!repoUpdaters[i].repoData.isEnabled()) {
                 if (BuildConfig.DEBUG) Log.i("RepoManager",
                         "Skipping disabled repo: " + repoUpdaters[i].repoData.getName());
-                // Remove the repo from the list
-                try {
-                    this.repoData.remove(repoUpdaters[i].repoData.getUrl());
-                } catch (
-                        NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                }
                 continue;
             }
             List<RepoModule> repoModules = repoUpdaters[i].toUpdate();

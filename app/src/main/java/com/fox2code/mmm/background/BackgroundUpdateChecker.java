@@ -1,11 +1,13 @@
 package com.fox2code.mmm.background;
 
+import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
+import android.content.pm.PackageManager;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationChannelCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -31,25 +33,13 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class BackgroundUpdateChecker extends Worker {
-    private static boolean easterEggActive = false;
-    static final Object lock = new Object(); // Avoid concurrency issues
     public static final String NOTIFICATION_CHANNEL_ID = "background_update";
     public static final int NOTIFICATION_ID = 1;
+    static final Object lock = new Object(); // Avoid concurrency issues
+    private static boolean easterEggActive = false;
 
-    public BackgroundUpdateChecker(@NonNull Context context,
-                                   @NonNull WorkerParameters workerParams) {
+    public BackgroundUpdateChecker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
-    }
-
-    @NonNull
-    @Override
-    public Result doWork() {
-        if (!NotificationManagerCompat.from(this.getApplicationContext()).areNotificationsEnabled()
-                || !MainApplication.isBackgroundUpdateCheckEnabled()) return Result.success();
-        synchronized (lock) {
-            doCheck(this.getApplicationContext());
-        }
-        return Result.success();
     }
 
     static void doCheck(Context context) {
@@ -58,19 +48,15 @@ public class BackgroundUpdateChecker extends Worker {
         RepoManager.getINSTANCE().update(null);
         ModuleManager.getINSTANCE().runAfterScan(() -> {
             int moduleUpdateCount = 0;
-            HashMap<String, RepoModule> repoModules =
-                    RepoManager.getINSTANCE().getModules();
-            for (LocalModuleInfo localModuleInfo :
-                    ModuleManager.getINSTANCE().getModules().values()) {
-                if ("twrp-keep".equals(localModuleInfo.id)) continue;
+            HashMap<String, RepoModule> repoModules = RepoManager.getINSTANCE().getModules();
+            for (LocalModuleInfo localModuleInfo : ModuleManager.getINSTANCE().getModules().values()) {
+                if ("twrp-keep".equals(localModuleInfo.id))
+                    continue;
                 RepoModule repoModule = repoModules.get(localModuleInfo.id);
                 localModuleInfo.checkModuleUpdate();
-                if (localModuleInfo.updateVersionCode > localModuleInfo.versionCode &&
-                        !PropUtils.isNullString(localModuleInfo.updateVersion)) {
+                if (localModuleInfo.updateVersionCode > localModuleInfo.versionCode && !PropUtils.isNullString(localModuleInfo.updateVersion)) {
                     moduleUpdateCount++;
-                } else if (repoModule != null &&
-                        repoModule.moduleInfo.versionCode > localModuleInfo.versionCode &&
-                        !PropUtils.isNullString(repoModule.moduleInfo.version)) {
+                } else if (repoModule != null && repoModule.moduleInfo.versionCode > localModuleInfo.versionCode && !PropUtils.isNullString(repoModule.moduleInfo.version)) {
                     moduleUpdateCount++;
                 }
             }
@@ -81,43 +67,39 @@ public class BackgroundUpdateChecker extends Worker {
     }
 
     public static void postNotification(Context context, int updateCount) {
-        if (!easterEggActive) easterEggActive = new Random().nextInt(100) <= updateCount;
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(
-                context, NOTIFICATION_CHANNEL_ID)
-                .setContentTitle(context.getString(easterEggActive ?
-                                R.string.notification_update_title_easter_egg :
-                                R.string.notification_update_title)
-                        .replace("%i", String.valueOf(updateCount)))
-                .setContentText(context.getString(R.string.notification_update_subtitle))
-                .setSmallIcon(R.drawable.ic_baseline_extension_24)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setContentIntent(PendingIntent.getActivity(context, 0,
-                        new Intent(context, MainActivity.class).setFlags(
-                                Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK),
-                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
-                                PendingIntent.FLAG_IMMUTABLE : 0)).setAutoCancel(true);
+        if (!easterEggActive)
+            easterEggActive = new Random().nextInt(100) <= updateCount;
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID).setContentTitle(context.getString(easterEggActive ? R.string.notification_update_title_easter_egg : R.string.notification_update_title).replace("%i", String.valueOf(updateCount))).setContentText(context.getString(R.string.notification_update_subtitle)).setSmallIcon(R.drawable.ic_baseline_extension_24).setPriority(NotificationCompat.PRIORITY_HIGH).setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK), PendingIntent.FLAG_IMMUTABLE)).setAutoCancel(true);
+        if (ActivityCompat.checkSelfPermission(MainApplication.getINSTANCE(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build());
     }
 
     public static void onMainActivityCreate(Context context) {
-        NotificationManagerCompat notificationManagerCompat =
-                NotificationManagerCompat.from(context);
-        notificationManagerCompat.createNotificationChannel(
-                new NotificationChannelCompat.Builder(NOTIFICATION_CHANNEL_ID,
-                        NotificationManagerCompat.IMPORTANCE_HIGH).setShowBadge(true)
-                        .setName(context.getString(R.string.notification_update_pref)).build());
+        // Refuse to run if first_launch pref is not false
+        if (MainApplication.getSharedPreferences().getBoolean("first_launch", true))
+            return;
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
+        notificationManagerCompat.createNotificationChannel(new NotificationChannelCompat.Builder(NOTIFICATION_CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_HIGH).setShowBadge(true).setName(context.getString(R.string.notification_update_pref)).build());
         notificationManagerCompat.cancel(BackgroundUpdateChecker.NOTIFICATION_ID);
         BackgroundUpdateChecker.easterEggActive = false;
-        WorkManager.getInstance(context).enqueueUniquePeriodicWork("background_checker",
-                ExistingPeriodicWorkPolicy.REPLACE, new PeriodicWorkRequest.Builder(
-                        BackgroundUpdateChecker.class, 6, TimeUnit.HOURS)
-                        .setConstraints(new Constraints.Builder().setRequiresBatteryNotLow(true)
-                                .setRequiredNetworkType(NetworkType.UNMETERED).build()).build());
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork("background_checker", ExistingPeriodicWorkPolicy.REPLACE, new PeriodicWorkRequest.Builder(BackgroundUpdateChecker.class, 6, TimeUnit.HOURS).setConstraints(new Constraints.Builder().setRequiresBatteryNotLow(true).setRequiredNetworkType(NetworkType.UNMETERED).build()).build());
     }
 
     public static void onMainActivityResume(Context context) {
-        NotificationManagerCompat.from(context).cancel(
-                BackgroundUpdateChecker.NOTIFICATION_ID);
+        NotificationManagerCompat.from(context).cancel(BackgroundUpdateChecker.NOTIFICATION_ID);
         BackgroundUpdateChecker.easterEggActive = false;
+    }
+
+    @NonNull
+    @Override
+    public Result doWork() {
+        if (!NotificationManagerCompat.from(this.getApplicationContext()).areNotificationsEnabled() || !MainApplication.isBackgroundUpdateCheckEnabled())
+            return Result.success();
+        synchronized (lock) {
+            doCheck(this.getApplicationContext());
+        }
+        return Result.success();
     }
 }

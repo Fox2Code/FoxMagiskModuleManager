@@ -26,7 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
@@ -52,6 +52,7 @@ import com.fox2code.mmm.utils.BlurUtils;
 import com.fox2code.mmm.utils.ExternalHelper;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
@@ -128,10 +129,12 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         }
         BackgroundUpdateChecker.onMainActivityCreate(this);
         super.onCreate(savedInstanceState);
-        this.setActionBarExtraMenuButton(R.drawable.ic_baseline_settings_24, v -> {
-            IntentHelper.startActivity(this, SettingsActivity.class);
-            return true;
-        }, R.string.pref_category_settings);
+        if (!MainApplication.getSharedPreferences().getBoolean("first_run", true)) {
+            this.setActionBarExtraMenuButton(R.drawable.ic_baseline_settings_24, v -> {
+                IntentHelper.startActivity(this, SettingsActivity.class);
+                return true;
+            }, R.string.pref_category_settings);
+        }
         setContentView(R.layout.activity_main);
         this.setTitle(R.string.app_name);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
@@ -740,53 +743,47 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             Log.i("SetupWizard", "First launch: " + firstLaunch);
         if (firstLaunch) {
             doSetupNowRunning = true;
-            // Show setup box
-            runOnUiThread(() -> {
-                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
-                builder.setCancelable(false);
-                builder.setTitle(R.string.setup_title);
-                // Create a view from R.xml.setup_box
-                View view = getLayoutInflater().inflate(R.layout.setup_box, null);
-                builder.setView(view);
-                // For sdk >= 31, use MaterialSwitch instead of MaterialSwitch
-                // For now, we'll just have the positive button save the preferences and dismiss the dialog
-                builder.setPositiveButton(R.string.setup_button, (dialog, which) -> {
-                    // Set the preferences and pref_first_launch to false
-                    prefs.edit().putBoolean("first_launch", false).putBoolean("pref_background_update_check", ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_background_update_check))).isChecked()).putBoolean("pref_crash_reporting", ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_crash_reporting))).isChecked()).putBoolean("pref_androidacy_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_androidacy_repo))).isChecked()).putBoolean("pref_magisk_alt_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(((AlertDialog) dialog).findViewById(R.id.setup_magisk_alt_repo))).isChecked()).commit();
-                    // For debug builds, log the preferences
-                    if (BuildConfig.DEBUG) {
-                        Log.i("SetupWizard", "First launch: " + prefs.getBoolean("first_launch", true));
-                        Log.i("SetupWizard", "Background update check: " + prefs.getBoolean("pref_background_update_check", false));
-                        Log.i("SetupWizard", "Crash reporting: " + prefs.getBoolean("pref_crash_reporting", false));
-                        Log.i("SetupWizard", "Androidacy repo: " + prefs.getBoolean("pref_androidacy_repo_enabled", false));
-                        Log.i("SetupWizard", "Magisk alt repo: " + prefs.getBoolean("pref_magisk_alt_repo_enabled", false));
-                    }
-                    dialog.dismiss();
-                    // Sleep for 100ms. Who knows, it might fix it?
-                    try {
-                        Thread.sleep(750);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    doSetupRestarting = true;
-                    // Restart the app
-                    Intent intent = new Intent(this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    finish();
-                    startActivity(intent);
-                });
-                builder.setNegativeButton(R.string.setup_button_skip, (dialog, which) -> {
-                    MainApplication.getSharedPreferences().edit().putBoolean("first_launch", false).commit();
-                    dialog.dismiss();
-                    ensurePermissions();
-                });
-                builder.show();
-                // Set the switches appropriately
-                ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).setChecked(BuildConfig.ENABLE_AUTO_UPDATER);
-                ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).setChecked(BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING);
-                // Repos are a little harder, as the enabled_repos build config is an arraylist
-                ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_androidacy_repo))).setChecked(BuildConfig.ENABLED_REPOS.contains("androidacy_repo"));
-                ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).setChecked(BuildConfig.ENABLED_REPOS.contains("magisk_alt_repo"));
+            // Show setup box. Put the setup_box in the main activity layout
+            View view = getLayoutInflater().inflate(R.layout.setup_box, null);
+            // Make the setup_box linear layout the sole child of the root_container constraint layout
+            setContentView(view);
+            // Handle action bar. Set it to setup_title and make it visible
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setTitle(R.string.app_name);
+                // Set solid color background
+                actionBar.show();
+            }
+            ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).setChecked(BuildConfig.ENABLE_AUTO_UPDATER);
+            ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).setChecked(BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING);
+            // Repos are a little harder, as the enabled_repos build config is an arraylist
+            ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_androidacy_repo))).setChecked(BuildConfig.ENABLED_REPOS.contains("androidacy_repo"));
+            ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).setChecked(BuildConfig.ENABLED_REPOS.contains("magisk_alt_repo"));
+            // Set up the buttons
+            // Cancel button
+            MaterialButton cancelButton = view.findViewById(R.id.setup_cancel);
+            cancelButton.setText(R.string.cancel);
+            cancelButton.setOnClickListener(v -> {
+                // Set first launch to false and finish the activity
+                prefs.edit().putBoolean("first_launch", false).commit();
+                finish();
+            });
+            // Setup button
+            MaterialButton setupButton = view.findViewById(R.id.setup_continue);
+            setupButton.setText(R.string.setup_button);
+            setupButton.setOnClickListener(v -> {
+                // Set first launch to false
+                prefs.edit().putBoolean("first_launch", false).commit();
+                // Set the background update check pref
+                prefs.edit().putBoolean("pref_background_update_check", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).isChecked()).commit();
+                // Set the crash reporting pref
+                prefs.edit().putBoolean("pref_crash_reporting", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).isChecked()).commit();
+                // Set the repos
+                // first pref_magisk_alt_repo_enabled then pref_androidacy_repo_enabled
+                prefs.edit().putBoolean("pref_magisk_alt_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).isChecked()).commit();
+                prefs.edit().putBoolean("pref_androidacy_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_androidacy_repo))).isChecked()).commit();
+                // Finish the activity
+                finish();
             });
         } else {
             ensurePermissions();

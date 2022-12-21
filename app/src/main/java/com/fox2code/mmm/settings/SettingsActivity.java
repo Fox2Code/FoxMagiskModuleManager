@@ -117,7 +117,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         }
         int maxCpuFreq = freqResolved == 0 ? -1 : (int) Math.ceil(totalCpuFreq / (float) freqResolved);
 
-        if (androidVersion < 21 || cpuCount <= 2 || memoryClass <= 100 || cpuCount <= 4 && maxCpuFreq != -1 && maxCpuFreq <= 1250 || cpuCount <= 4 && maxCpuFreq <= 1600 && memoryClass <= 128 && androidVersion <= 21 || cpuCount <= 4 && maxCpuFreq <= 1300 && memoryClass <= 128 && androidVersion <= 24) {
+        if (androidVersion < 21 || cpuCount <= 2 || memoryClass <= 100 || cpuCount <= 4 && maxCpuFreq != -1 && maxCpuFreq <= 1250 || cpuCount <= 4 && maxCpuFreq <= 1600 && memoryClass <= 128 && androidVersion == 21 || cpuCount <= 4 && maxCpuFreq <= 1300 && memoryClass <= 128 && androidVersion <= 24) {
             devicePerformanceClass = PERFORMANCE_CLASS_LOW;
         } else if (cpuCount < 8 || memoryClass <= 160 || maxCpuFreq != -1 && maxCpuFreq <= 2050 || maxCpuFreq == -1 && cpuCount == 8 && androidVersion <= 23) {
             devicePerformanceClass = PERFORMANCE_CLASS_AVERAGE;
@@ -950,14 +950,19 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         private void setRepoData(final RepoData repoData, String preferenceName) {
             ClipboardManager clipboard = (ClipboardManager)
                     requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
-            if (repoData == null || repoData.isForceHide()) {
-                hideRepoData(preferenceName);
-                return;
-            }
             Preference preference = findPreference(preferenceName);
             if (preference == null) return;
-            preference.setVisible(true);
-            preference.setTitle(repoData.getName());
+            if (!preferenceName.contains("androidacy") && !preferenceName.contains("magisk_alt_repo")) {
+                if (BuildConfig.DEBUG) {
+                    Log.i(TAG, "Setting preference " + preferenceName + " because it is not the Androidacy repo or the Magisk Alt Repo");
+                }
+                if (repoData == null || repoData.isForceHide()) {
+                    hideRepoData(preferenceName);
+                    return;
+                }
+                preference.setTitle(repoData.getName());
+                preference.setVisible(true);
+            }
             preference = findPreference(preferenceName + "_enabled");
             if (preference != null) {
                 // Handle custom repo separately
@@ -971,6 +976,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     preference.setTitle(repoData.isEnabled() ? R.string.repo_enabled : R.string.repo_disabled);
                     preference.setOnPreferenceChangeListener((p, newValue) -> {
                         p.setTitle(((Boolean) newValue) ? R.string.repo_enabled : R.string.repo_disabled);
+                        // Show snackbar telling the user to refresh the modules list or restart the app
+                        Snackbar.make(requireView(), R.string.repo_enabled_changed, Snackbar.LENGTH_LONG).show();
                         return true;
                     });
                 }

@@ -1,24 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:gravity="fill" android:orientation="vertical" android:paddingLeft="20dp" android:paddingRight="20dp" android:scrollbars="vertical">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="fill_vertical"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:scrollbars="vertical" >
+
+    <!-- Placeholder for the app bar -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="64dp" />
+
+    <!-- App name as subheader -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/setup_title"
+        android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall" />
 
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/setup_summary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
         android:text="@string/setup_message" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:fillViewport="true">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <com.google.android.material.textview.MaterialTextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:text="@string/repos"
@@ -26,22 +47,42 @@
 
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/setup_androidacy_repo"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:checked="false"
                 android:key="pref_androidacy_repo_enabled"
                 android:text="@string/setup_androidacy_repo"
+                android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
+
+            <!-- Small summary for above switch -->
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:drawableStart="@drawable/ic_baseline_info_24"
+                android:drawablePadding="8dp"
+                android:text="@string/setup_androidacy_repo_summary"
                 android:textAppearance="@android:style/TextAppearance.Material.Small" />
 
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/setup_magisk_alt_repo"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
-                android:text="@string/setup_magisk_alt_repo"
                 android:checked="false"
                 android:key="pref_magisk_alt_repo_enabled"
+                android:text="@string/setup_magisk_alt_repo"
+                android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
+
+            <!-- Small summary for above switch -->
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:drawableStart="@drawable/ic_baseline_info_24"
+                android:drawablePadding="8dp"
+                android:text="@string/setup_magisk_alt_repo_summary"
                 android:textAppearance="@android:style/TextAppearance.Material.Small" />
 
             <com.google.android.material.textview.MaterialTextView
@@ -60,23 +101,42 @@
 
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/setup_crash_reporting"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:checked="false"
                 android:key="pref_crash_reporting_enabled"
                 android:text="@string/setup_crash_reporting"
+                android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:drawableStart="@drawable/ic_baseline_info_24"
+                android:drawablePadding="8dp"
+                android:text="@string/setup_crash_reporting_summary"
                 android:textAppearance="@android:style/TextAppearance.Material.Small" />
 
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/setup_background_update_check"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:checked="false"
                 android:key="pref_background_update_check"
                 android:text="@string/setup_background_update_check"
-                android:textAppearance="@android:style/TextAppearance.Material.Small" />
+                android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:drawableStart="@drawable/ic_baseline_info_24"
+                android:drawablePadding="8dp"
+                android:text="@string/setup_background_update_check_summary"
+                android:textAppearance="@android:style/TextAppearance.Material.Small"
+                app:icon="@drawable/ic_baseline_info_24" />
 
             <!-- Placeholder for future settings -->
             <!--<com.google.android.material.materialswitch.MaterialSwitch
@@ -88,6 +148,29 @@
                 android:key="pref_app_analytics"
                 android:textAppearance="@android:style/TextAppearance.Material.Small"
                 android:text="@string/setup_app_analytics" />-->
+            <!-- setup_cancel and setup_continue side by side buttons, stuck to bottom right, with a small space in between -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="4dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/setup_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="2dp"
+                    android:layout_weight="1"
+                    android:text="@string/cancel" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/setup_continue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/finish" />
+            </LinearLayout>
         </LinearLayout>
 
     </ScrollView>

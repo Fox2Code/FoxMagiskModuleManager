@@ -224,17 +224,29 @@
     <string name="setup_title">First time setup</string>
     <string name="setup_message">Welcome! This app will help you install and manage Magisk modules. To get started, please select the options below. These and more can be configured from settings later.</string>
     <string name="setup_button">Finish setup</string>
-    <string name="setup_background_update_check">Allow us to check for updates in the background.\nThis feature may use more battery.</string>
-    <string name="setup_androidacy_repo">Enable the Androidacy repo\nFeatures user reviews, automatic virus scans, fast updates, a wide selection, and is backed by Androidacy.</string>
+    <string name="setup_background_update_check">Background update check</string>
+    <string name="setup_background_update_check_summary">Allow us to check for module and app updates in the background. This feature may use more battery, and may use more data.</string>
+    <string name="setup_androidacy_repo">Enable the Androidacy repo</string>
+    <string name="setup_androidacy_repo_summary">Features user reviews, automatic virus scans, fast updates, a wide selection, and is backed by Androidacy.</string>
     <!-- Maybe once alt repo fixes their shit and stops allowing crappy modules or outright
     kanged modules, we'll reword this. -->
-    <string name="setup_magisk_alt_repo">Enable the Magisk Alt Repo\nMuch more lax than the original. Has a lot of modules at the cost of some safety.</string>
-    <string name="setup_crash_reporting">Enable Sentry crash reporting and performance monitoring.\nAll reports are striclty anonymous and confidential.</string>
+    <string name="setup_magisk_alt_repo">Enable the Magisk Alt Repo</string>
+    <string name="setup_magisk_alt_repo_summary">Much more lax than the original. Has a lot of modules at the cost of some safety.</string>
+    <string name="setup_crash_reporting">Enable Sentry</string>
+    <string name="setup_crash_reporting_summary">Crash reporting and performance monitoring. All reports are striclty anonymous and confidential.</string>
     <string name="setup_custom_repos">You can add custom repos later in settings.</string>
     <string name="repos">Repos</string>
     <string name="misc">Miscellaneous</string>
     <string name="setup_button_skip">Skip</string>
     <string name="low_performance_device_dialogue_title">Enabling blur on lower-end device</string>
     <string name="low_performance_device_dialogue_message">You are trying to enable blur on a device that may not perform well with it.\nYou may enable it, but this may lead to a poor user experience and we recommend you don\'t.</string>
-    <string name="alt_repo_info">This repo has less restrictions and reviews, which may lead to lower quality modules. Pretty barebones but has a lot of modules.</string><string name="install_terminal_reboot_now_message">You are about to reboot your device. If you\'ve saved your work, hit ok to continue. Otherwise, hit cancel.</string><string name="install_terminal_config_missing">Package %s is missing for module config, so we cannot launch it.</string><string name="clear_app_data">Clear app data</string><string name="clear_data_dialogue_title">Clear app data?</string><string name="clear_data_dialogue_message">You\'re about to clear the app data. Please confirm this action.</string><string name="debug_build">This is a debug build. Expect some bugs and worse performance.</string>
+    <string name="alt_repo_info">This repo has less restrictions and reviews, which may lead to lower quality modules. Pretty barebones but has a lot of modules.</string>
+    <string name="install_terminal_reboot_now_message">You are about to reboot your device. If you\'ve saved your work, hit OK to continue. Otherwise, hit cancel.</string>
+    <string name="install_terminal_config_missing">Package %s is missing for module config, so we cannot launch it.</string>
+    <string name="clear_app_data">Clear app data</string><string name="clear_data_dialogue_title">Clear app data?</string>
+    <string name="clear_data_dialogue_message">You\'re about to clear the app data. Please confirm this action.</string>
+    <string name="debug_build">This is a debug build. Expect some bugs and worse performance.</string>
+    <string name="androidacy_repo_name">Androidacy Repo</string>
+    <string name="magisk_alt_repo_name">Magisk Alt Repo</string>
+    <string name="repo_enabled_changed">You\'ve enabled or disabled a repo. Please refresh the module list or restart the app.</string><string name="finish">Finish</string>
 </resources>
