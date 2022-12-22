@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+  <!-- Options for system, dark, light, black, transparent_light -->
+    <!-- Only one of these can be selected at a time -->
+    <!-- Radio buttons -->
+    <!-- Themes are taken from theme_values_names string array -->
+    <item
+        android:id="@+id/theme"
+        android:icon="@drawable/ic_baseline_design_services_24"
+        android:title="@string/theme"
+        app:showAsAction="never">
+        <menu>
+            <group android:checkableBehavior="single">
+                <!-- System is default selected -->
+                <item
+                    android:id="@+id/theme_system"
+                    android:title="@string/theme_system"
+                    app:showAsAction="never" />
+                <item
+                    android:id="@+id/theme_dark"
+                    android:title="@string/theme_dark"
+                    app:showAsAction="never" />
+                <item
+                    android:id="@+id/theme_black"
+                    android:title="@string/theme_black"
+                    app:showAsAction="never" />
+                <item
+                    android:id="@+id/theme_transparent_light"
+                    android:title="@string/theme_transparent_light"
+                    app:showAsAction="never" />
+                <item
+                    android:id="@+id/theme_light"
+                    android:title="@string/theme_light"
+                    app:showAsAction="never" />
+            </group>
+        </menu>
+    </item>
+</menu>

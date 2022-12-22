@@ -22,12 +22,12 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
@@ -57,6 +57,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import org.chromium.net.ExperimentalCronetEngine;
 import org.chromium.net.urlconnection.CronetURLStreamHandlerFactory;
@@ -767,12 +768,66 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_androidacy_repo))).setOnCheckedChangeListener((buttonView, isChecked) -> Log.i("SetupWizard", "Androidacy Repo: " + isChecked));
                 ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).setOnCheckedChangeListener((buttonView, isChecked) -> Log.i("SetupWizard", "Magisk Alt Repo: " + isChecked));
             }
+            // Setup popup dialogue for the setup_theme_button
+            MaterialButton themeButton = view.findViewById(R.id.setup_theme_button);
+            themeButton.setOnClickListener(v -> {
+                // Create a new popup menu
+                PopupMenu popupMenu = new PopupMenu(this, themeButton);
+                // Inflate the menu
+                popupMenu.getMenuInflater().inflate(R.menu.theme_menu, popupMenu.getMenu());
+                // if pref_theme is set, check the relevant theme_* menu item, otherwise check the default (theme_system)
+                String prefTheme = prefs.getString("pref_theme", "system");
+                if (BuildConfig.DEBUG)
+                    Log.i("SetupWizard", "pref_theme: " + prefTheme);
+                switch (prefTheme) {
+                    case "light":
+                        popupMenu.getMenu().findItem(R.id.theme_light).setChecked(true);
+                        break;
+                    case "dark":
+                        popupMenu.getMenu().findItem(R.id.theme_dark).setChecked(true);
+                        break;
+                    case "system":
+                        popupMenu.getMenu().findItem(R.id.theme_system).setChecked(true);
+                        break;
+                        // Black and transparent_light
+                    case "black":
+                        popupMenu.getMenu().findItem(R.id.theme_black).setChecked(true);
+                        break;
+                    case "transparent_light":
+                        popupMenu.getMenu().findItem(R.id.theme_transparent_light).setChecked(true);
+                        break;
+                }
+                // Set the on click listener
+                popupMenu.setOnMenuItemClickListener(item -> {
+                    if (item == null) {
+                        return false;
+                    }
+                    // Make sure it.s an actual item, not the overflow menu. Actual items have an id of theme_* (see theme_menu.xml)
+                    // Check if item id contains theme_ and return false if it doesn't
+                    String itemId = getResources().getResourceEntryName(item.getItemId());
+                    if (!itemId.contains("theme_")) {
+                        return false;
+                    }
+                    // Save the theme. ID is theme_* so we need to remove the first 6 characters
+                    // Possible values are light, dark, system, transparent_light, and black
+                    prefs.edit().putString("pref_theme", item.getItemId() == R.id.theme_light ? "light" : item.getItemId() == R.id.theme_dark ? "dark" : item.getItemId() == R.id.theme_system ? "system" : item.getItemId() == R.id.theme_transparent_light ? "transparent_light" : "black").commit();
+                    // Set the theme
+                    UiThreadHandler.handler.postDelayed(() -> {
+                        MainApplication.getINSTANCE().updateTheme();
+                        FoxActivity.getFoxActivity(this).setThemeRecreate(
+                                MainApplication.getINSTANCE().getManagerThemeResId());
+                    }, 1);
+                    return true;
+                });
+                // Show the popup menu
+                popupMenu.show();
+            });
             // Set up the buttons
             // Cancel button
             MaterialButton cancelButton = view.findViewById(R.id.setup_cancel);
             cancelButton.setText(R.string.cancel);
             cancelButton.setOnClickListener(v -> {
-                // Set first launch to false and finish the activity
+                // Set first launch to false and restart the activity
                 prefs.edit().putBoolean("first_time_user", false).commit();
                 finish();
                 startActivity(getIntent());
@@ -792,21 +847,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 // first pref_magisk_alt_repo_enabled then pref_androidacy_repo_enabled
                 editor.putBoolean("pref_magisk_alt_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).isChecked());
                 editor.putBoolean("pref_androidacy_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_androidacy_repo))).isChecked());
-                // Loop through the setup_theme radio group and set the theme pref
-                RadioGroup themeRadioGroup = view.findViewById(R.id.setup_theme);
-                int selectedTheme = themeRadioGroup.getCheckedRadioButtonId();
-                // system, light, dark, black, and transparent_light
-                if (selectedTheme == R.id.setup_theme_light) {
-                    editor.putString("pref_theme", "light");
-                } else if (selectedTheme == R.id.setup_theme_dark) {
-                    editor.putString("pref_theme", "dark");
-                } else if (selectedTheme == R.id.setup_theme_system) {
-                    editor.putString("pref_theme", "system");
-                } else if (selectedTheme == R.id.setup_theme_black) {
-                    editor.putString("pref_theme", "black");
-                } else if (selectedTheme == R.id.setup_theme_transparent_light) {
-                    editor.putString("pref_theme", "transparent_light");
-                }
                 // Commit the changes
                 editor.commit();
                 // Sleep for 1 second to allow the user to see the changes

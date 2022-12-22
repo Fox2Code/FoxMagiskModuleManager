@@ -53,6 +53,9 @@ public class SentryMain {
                 options.setEnableNdk(true);
                 // Intercept okhttp requests to add sentry headers
                 options.addInAppInclude("com.fox2code.mmm");
+                options.addInAppInclude("com.fox2code.mmm.debug");
+                options.addInAppInclude("com.fox2code.mmm.fdroid");
+                options.addInAppExclude("com.fox2code.mmm.utils.SentryMain");
                 // Sentry sends ABSOLUTELY NO Personally Identifiable Information (PII) by default.
                 // Already set to false by default, just set it again to make peoples feel safer.
                 options.setSendDefaultPii(false);

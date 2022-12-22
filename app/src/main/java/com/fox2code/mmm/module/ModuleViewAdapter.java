@@ -368,7 +368,11 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 if (bgColor == Color.WHITE) {
                     bgColor = 0xFFF8F8F8;
                 }
-                if (theme.getResources().getBoolean(R.bool.force_transparency)) {
+                // if force_transparency is true or theme is transparent_light, set diff bgColor
+                // get string value of Theme
+                String themeName = theme.toString();
+                if (theme.getResources().getBoolean(R.bool.force_transparency) ||
+                        themeName.contains("transparent")) {
                     bgColor = ColorUtils.setAlphaComponent(bgColor, 0x80);
                 }
                 this.titleText.setTextColor(fgColor);

@@ -48,43 +48,25 @@
                 android:text="@string/setup_theme_header"
                 android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall" />
 
-            <RadioGroup
-                android:id="@+id/setup_theme"
+            <!-- Button to trigger theme selection -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/setup_theme_button"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.google.android.material.radiobutton.MaterialRadioButton
-                    android:id="@+id/setup_theme_system"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="@string/setup_theme_system" />
-
-                <com.google.android.material.radiobutton.MaterialRadioButton
-                    android:id="@+id/setup_theme_light"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/setup_theme_light" />
-
-                <com.google.android.material.radiobutton.MaterialRadioButton
-                    android:id="@+id/setup_theme_dark"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/setup_theme_dark" />
-
-                <com.google.android.material.radiobutton.MaterialRadioButton
-                    android:id="@+id/setup_theme_black"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/setup_theme_black" />
-
-                <com.google.android.material.radiobutton.MaterialRadioButton
-                    android:id="@+id/setup_theme_transparent_light"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/setup_theme_transparent_light" />
-
-            </RadioGroup>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:backgroundTint="@color/gray_900"
+                android:foreground="?attr/selectableItemBackground"
+                android:padding="8dp"
+                android:text="@string/setup_theme_button"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:cornerRadius="8dp"
+                app:icon="@drawable/ic_baseline_palette_24"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"
+                app:iconTint="@color/white"
+                app:iconTintMode="src_in"
+                app:rippleColor="@color/gray_800" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
