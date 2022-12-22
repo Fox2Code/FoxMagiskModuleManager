@@ -41,14 +41,15 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowAnimationStyle">@android:style/Animation</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="windowNoTitle">true</item>
+        <item name="android:windowShowWallpaper">true</item>
+        <!-- Fix text color in transparent theme -->
+        <item name="android:textColorPrimary">@color/gray_800</item>
+        <item name="colorOnPrimary">@color/gray_800</item>
     </style>
 
     <style name="Theme.MagiskModuleManager.Dark" parent="Theme.Material3.Dark">

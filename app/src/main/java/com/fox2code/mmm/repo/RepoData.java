@@ -30,17 +30,16 @@ import java.util.Iterator;
 import java.util.List;
 
 public class RepoData extends XRepo {
-    private final Object populateLock = new Object();
     public final String url;
     public final String id;
     public final File cacheRoot;
     public final SharedPreferences cachedPreferences;
     public final File metaDataCache;
     public final HashMap<String, RepoModule> moduleHashMap;
+    private final Object populateLock = new Object();
     public long lastUpdate;
-    protected String defaultName, defaultWebsite,
-            defaultSupport, defaultDonate, defaultSubmitModule;
     public String name, website, support, donate, submitModule;
+    protected String defaultName, defaultWebsite, defaultSupport, defaultDonate, defaultSubmitModule;
     private boolean forceHide, enabled; // Cache for speed
 
     public RepoData(String url, File cacheRoot, SharedPreferences cachedPreferences) {
@@ -52,8 +51,7 @@ public class RepoData extends XRepo {
         this.moduleHashMap = new HashMap<>();
         this.defaultName = url; // Set url as default name
         this.forceHide = AppUpdateManager.shouldForceHide(this.id);
-        this.enabled = (!this.forceHide) && MainApplication.getSharedPreferences()
-                .getBoolean("pref_" + this.getPreferenceId() + "_enabled", true);
+        this.enabled = (!this.forceHide) && MainApplication.getSharedPreferences().getBoolean("pref_" + this.getPreferenceId() + "_enabled", true);
         this.defaultWebsite = "https://" + Uri.parse(url).getHost() + "/";
         if (!this.cacheRoot.isDirectory()) {
             boolean mkdirs = this.cacheRoot.mkdirs();
@@ -67,14 +65,14 @@ public class RepoData extends XRepo {
                     this.lastUpdate = 0; // Don't allow time travel
                 }
                 try {
-                    List<RepoModule> modules = this.populate(new JSONObject(
-                            new String(Files.read(this.metaDataCache), StandardCharsets.UTF_8)));
+                    List<RepoModule> modules = this.populate(new JSONObject(new String(Files.read(this.metaDataCache), StandardCharsets.UTF_8)));
                     for (RepoModule repoModule : modules) {
                         if (!this.tryLoadMetadata(repoModule)) {
                             repoModule.moduleInfo.flags &= ~ModuleInfo.FLAG_METADATA_INVALID;
                         }
                     }
-                } catch (Exception e) {
+                } catch (
+                        Exception e) {
                     boolean delete = this.metaDataCache.delete();
                     if (!delete) {
                         throw new RuntimeException("Failed to delete invalid cache file");
@@ -82,6 +80,10 @@ public class RepoData extends XRepo {
                 }
             }
         }
+    }
+
+    private static boolean isNonNull(String str) {
+        return str != null && !str.isEmpty() && !"null".equals(str);
     }
 
     protected boolean prepare() throws NoSuchAlgorithmException {
@@ -92,8 +94,7 @@ public class RepoData extends XRepo {
         List<RepoModule> newModules = new ArrayList<>();
         synchronized (this.populateLock) {
             String name = jsonObject.getString("name").trim();
-            String nameForModules = name.endsWith(" (Official)") ?
-                    name.substring(0, name.length() - 11) : name;
+            String nameForModules = name.endsWith(" (Official)") ? name.substring(0, name.length() - 11) : name;
             long lastUpdate = jsonObject.getLong("last_update");
             for (RepoModule repoModule : this.moduleHashMap.values()) {
                 repoModule.processed = false;
@@ -104,8 +105,8 @@ public class RepoData extends XRepo {
                 JSONObject module = array.getJSONObject(i);
                 String moduleId = module.getString("id");
                 // Deny remote modules ids shorter than 3 chars or containing null char or space
-                if (moduleId.length() < 3 || moduleId.indexOf('\0') != -1 ||
-                        moduleId.indexOf(' ') != -1 || "ak3-helper".equals(moduleId)) continue;
+                if (moduleId.length() < 3 || moduleId.indexOf('\0') != -1 || moduleId.indexOf(' ') != -1 || "ak3-helper".equals(moduleId))
+                    continue;
                 long moduleLastUpdate = module.getLong("last_update");
                 String moduleNotesUrl = module.getString("notes_url");
                 String modulePropsUrl = module.getString("prop_url");
@@ -119,8 +120,7 @@ public class RepoData extends XRepo {
                     this.moduleHashMap.put(moduleId, repoModule);
                     newModules.add(repoModule);
                 } else {
-                    if (repoModule.lastUpdated < moduleLastUpdate ||
-                            repoModule.moduleInfo.hasFlag(ModuleInfo.FLAG_METADATA_INVALID)) {
+                    if (repoModule.lastUpdated < moduleLastUpdate || repoModule.moduleInfo.hasFlag(ModuleInfo.FLAG_METADATA_INVALID)) {
                         newModules.add(repoModule);
                     }
                 }
@@ -135,12 +135,16 @@ public class RepoData extends XRepo {
                     try {
                         repoModule.qualityValue = Integer.parseInt(moduleStars);
                         repoModule.qualityText = R.string.module_stars;
-                    } catch (NumberFormatException ignored) {}
+                    } catch (
+                            NumberFormatException ignored) {
+                    }
                 } else if (!moduleDownloads.isEmpty()) {
                     try {
                         repoModule.qualityValue = Integer.parseInt(moduleDownloads);
                         repoModule.qualityText = R.string.module_downloads;
-                    } catch (NumberFormatException ignored) {}
+                    } catch (
+                            NumberFormatException ignored) {
+                    }
                 }
             }
             // Remove no longer existing modules
@@ -173,7 +177,7 @@ public class RepoData extends XRepo {
         return BuildConfig.ENABLED_REPOS.contains(this.id);
     }
 
-    public void storeMetadata(RepoModule repoModule,byte[] data) throws IOException {
+    public void storeMetadata(RepoModule repoModule, byte[] data) throws IOException {
         Files.write(new File(this.cacheRoot, repoModule.id + ".prop"), data);
     }
 
@@ -182,14 +186,14 @@ public class RepoData extends XRepo {
         if (file.exists()) {
             try {
                 ModuleInfo moduleInfo = repoModule.moduleInfo;
-                PropUtils.readProperties(moduleInfo, file.getAbsolutePath(),
-                        repoModule.repoName + "/" + moduleInfo.name, false);
+                PropUtils.readProperties(moduleInfo, file.getAbsolutePath(), repoModule.repoName + "/" + moduleInfo.name, false);
                 moduleInfo.flags &= ~ModuleInfo.FLAG_METADATA_INVALID;
                 if (moduleInfo.version == null) {
                     moduleInfo.version = "v" + moduleInfo.versionCode;
                 }
                 return true;
-            } catch (Exception ignored) {
+            } catch (
+                    Exception ignored) {
                 boolean delete = file.delete();
                 if (!delete) {
                     throw new RuntimeException("Failed to delete invalid metadata file");
@@ -202,6 +206,14 @@ public class RepoData extends XRepo {
 
     @Override
     public boolean isEnabled() {
+        SharedPreferences preferenceManager = MainApplication.getSharedPreferences();
+        boolean enabled = preferenceManager.getBoolean("pref_" + this.id + "_enabled", this.isEnabledByDefault());
+        if (this.enabled != enabled) {
+            if (BuildConfig.DEBUG) {
+                Log.d("NoodleDebug", "Repo " + this.id + " enable mismatch: " + this.enabled + " vs " + enabled);
+            }
+            this.enabled = enabled;
+        }
         return this.enabled;
     }
 
@@ -209,11 +221,9 @@ public class RepoData extends XRepo {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled && !this.forceHide;
         if (BuildConfig.DEBUG) {
-            Log.i("RepoData",
-                    "Repo " + this.id + " enabled: " + this.enabled + " (forced: " + this.forceHide + ") with preferenceID: " + this.getPreferenceId());
+            Log.i("RepoData", "Repo " + this.id + " enabled: " + this.enabled + " (forced: " + this.forceHide + ") with preferenceID: " + this.getPreferenceId());
         }
-        MainApplication.getSharedPreferences().edit()
-                .putBoolean("pref_" + this.getPreferenceId() + "_enabled", enabled).apply();
+        MainApplication.getSharedPreferences().edit().putBoolean("pref_" + this.getPreferenceId() + "_enabled", enabled).apply();
     }
 
     public void updateEnabledState() {
@@ -223,11 +233,9 @@ public class RepoData extends XRepo {
         }
         this.forceHide = AppUpdateManager.shouldForceHide(this.id);
         if (BuildConfig.DEBUG) {
-            Log.i("RepoData",
-                    "Repo " + this.id + " update enabled: " + this.enabled + " (forced: " + this.forceHide + ") with preferenceID: " + this.getPreferenceId());
+            Log.i("RepoData", "Repo " + this.id + " update enabled: " + this.enabled + " (forced: " + this.forceHide + ") with preferenceID: " + this.getPreferenceId());
         }
-        this.enabled = (!this.forceHide) && MainApplication.getSharedPreferences()
-                .getBoolean("pref_" + this.getPreferenceId() + "_enabled", true);
+        this.enabled = (!this.forceHide) && MainApplication.getSharedPreferences().getBoolean("pref_" + this.getPreferenceId() + "_enabled", true);
     }
 
     public String getUrl() throws NoSuchAlgorithmException {
@@ -236,10 +244,6 @@ public class RepoData extends XRepo {
 
     public String getPreferenceId() {
         return this.id;
-    }
-
-    private static boolean isNonNull(String str) {
-        return str != null && !str.isEmpty() && !"null".equals(str);
     }
 
     // Repo data info getters

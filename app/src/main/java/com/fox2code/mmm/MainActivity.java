@@ -22,6 +22,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -116,12 +117,12 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     URL.setURLStreamHandlerFactory(cronetURLStreamHandlerFactory);
                 } catch (
                         Error e) {
-                    Log.e(TAG, "Failed to install Cronet URLStreamHandlerFactory", e);
+                    Log.e(TAG, "Failed to install Cronet URLStreamHandlerFactory");
                 }
                 urlFactoryInstalled = true;
             } catch (
                     Throwable t) {
-                Log.e(TAG, "Failed to install CronetURLStreamHandlerFactory", t);
+                Log.e(TAG, "Failed to install CronetURLStreamHandlerFactory - other");
             }
         }
         if (doSetupRestarting) {
@@ -129,7 +130,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         }
         BackgroundUpdateChecker.onMainActivityCreate(this);
         super.onCreate(savedInstanceState);
-        if (!MainApplication.getSharedPreferences().getBoolean("first_run", true)) {
+        if (!MainApplication.getSharedPreferences().getBoolean("first_time_user", true)) {
             this.setActionBarExtraMenuButton(R.drawable.ic_baseline_settings_24, v -> {
                 IntentHelper.startActivity(this, SettingsActivity.class);
                 return true;
@@ -735,10 +736,10 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     @SuppressLint({"InflateParams", "RestrictedApi", "UnspecifiedImmutableFlag", "ApplySharedPref"})
     private void checkShowInitialSetup() {
         if (BuildConfig.DEBUG)
-            Log.i("SetupWizard", "Do setup now");
+            Log.i("SetupWizard", "Checking if we need to run setup");
         // Check if this is the first launch
         SharedPreferences prefs = MainApplication.getSharedPreferences();
-        boolean firstLaunch = prefs.getBoolean("first_launch", true);
+        boolean firstLaunch = prefs.getBoolean("first_time_user", true);
         if (BuildConfig.DEBUG)
             Log.i("SetupWizard", "First launch: " + firstLaunch);
         if (firstLaunch) {
@@ -759,31 +760,72 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             // Repos are a little harder, as the enabled_repos build config is an arraylist
             ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_androidacy_repo))).setChecked(BuildConfig.ENABLED_REPOS.contains("androidacy_repo"));
             ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).setChecked(BuildConfig.ENABLED_REPOS.contains("magisk_alt_repo"));
+            // On debug builds, log when a switch is toggled
+            if (BuildConfig.DEBUG) {
+                ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).setOnCheckedChangeListener((buttonView, isChecked) -> Log.i("SetupWizard", "Background Update Check: " + isChecked));
+                ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).setOnCheckedChangeListener((buttonView, isChecked) -> Log.i("SetupWizard", "Crash Reporting: " + isChecked));
+                ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_androidacy_repo))).setOnCheckedChangeListener((buttonView, isChecked) -> Log.i("SetupWizard", "Androidacy Repo: " + isChecked));
+                ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).setOnCheckedChangeListener((buttonView, isChecked) -> Log.i("SetupWizard", "Magisk Alt Repo: " + isChecked));
+            }
             // Set up the buttons
             // Cancel button
             MaterialButton cancelButton = view.findViewById(R.id.setup_cancel);
             cancelButton.setText(R.string.cancel);
             cancelButton.setOnClickListener(v -> {
                 // Set first launch to false and finish the activity
-                prefs.edit().putBoolean("first_launch", false).commit();
+                prefs.edit().putBoolean("first_time_user", false).commit();
                 finish();
+                startActivity(getIntent());
             });
             // Setup button
             MaterialButton setupButton = view.findViewById(R.id.setup_continue);
-            setupButton.setText(R.string.setup_button);
             setupButton.setOnClickListener(v -> {
                 // Set first launch to false
-                prefs.edit().putBoolean("first_launch", false).commit();
+                // get instance of editor
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putBoolean("first_time_user", false);
                 // Set the background update check pref
-                prefs.edit().putBoolean("pref_background_update_check", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).isChecked()).commit();
+                editor.putBoolean("pref_background_update_check", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).isChecked());
                 // Set the crash reporting pref
-                prefs.edit().putBoolean("pref_crash_reporting", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).isChecked()).commit();
+                editor.putBoolean("pref_crash_reporting", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).isChecked());
                 // Set the repos
                 // first pref_magisk_alt_repo_enabled then pref_androidacy_repo_enabled
-                prefs.edit().putBoolean("pref_magisk_alt_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).isChecked()).commit();
-                prefs.edit().putBoolean("pref_androidacy_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_androidacy_repo))).isChecked()).commit();
-                // Finish the activity
+                editor.putBoolean("pref_magisk_alt_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).isChecked());
+                editor.putBoolean("pref_androidacy_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_androidacy_repo))).isChecked());
+                // Loop through the setup_theme radio group and set the theme pref
+                RadioGroup themeRadioGroup = view.findViewById(R.id.setup_theme);
+                int selectedTheme = themeRadioGroup.getCheckedRadioButtonId();
+                // system, light, dark, black, and transparent_light
+                if (selectedTheme == R.id.setup_theme_light) {
+                    editor.putString("pref_theme", "light");
+                } else if (selectedTheme == R.id.setup_theme_dark) {
+                    editor.putString("pref_theme", "dark");
+                } else if (selectedTheme == R.id.setup_theme_system) {
+                    editor.putString("pref_theme", "system");
+                } else if (selectedTheme == R.id.setup_theme_black) {
+                    editor.putString("pref_theme", "black");
+                } else if (selectedTheme == R.id.setup_theme_transparent_light) {
+                    editor.putString("pref_theme", "transparent_light");
+                }
+                // Commit the changes
+                editor.commit();
+                // Sleep for 1 second to allow the user to see the changes
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                // Log the changes if debug
+                if (BuildConfig.DEBUG) {
+                    Log.i("SetupWizard", "Background update check: " + prefs.getBoolean("pref_background_update_check", false));
+                    Log.i("SetupWizard", "Crash reporting: " + prefs.getBoolean("pref_crash_reporting", false));
+                    Log.i("SetupWizard", "Magisk Alt Repo: " + prefs.getBoolean("pref_magisk_alt_repo_enabled", false));
+                    Log.i("SetupWizard", "Androidacy Repo: " + prefs.getBoolean("pref_androidacy_repo_enabled", false));
+                }
+                // Restart the activity
+                doSetupRestarting = true;
                 finish();
+                startActivity(getIntent());
             });
         } else {
             ensurePermissions();

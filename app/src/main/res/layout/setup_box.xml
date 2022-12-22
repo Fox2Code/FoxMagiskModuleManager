@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -7,17 +7,14 @@
     android:gravity="fill_vertical"
     android:orientation="vertical"
     android:padding="16dp"
-    android:scrollbars="vertical" >
-
-    <!-- Placeholder for the app bar -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="64dp" />
+    android:scrollbars="vertical">
 
     <!-- App name as subheader -->
     <TextView
+        android:id="@+id/setup_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
         android:text="@string/setup_title"
         android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall" />
 
@@ -25,18 +22,69 @@
         android:id="@+id/setup_summary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/setup_title"
         android:text="@string/setup_message" />
 
     <ScrollView
+        android:id="@+id/setup_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:fillViewport="true">
+        android:layout_below="@id/setup_summary"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <!-- Theme radio select. Options are system, light, dark, black, transparent_light -->
+            <!-- First, choose theme header -->
+            <TextView
+                android:id="@+id/setup_theme_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/setup_theme_header"
+                android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall" />
+
+            <RadioGroup
+                android:id="@+id/setup_theme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/setup_theme_system"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/setup_theme_system" />
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/setup_theme_light"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/setup_theme_light" />
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/setup_theme_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/setup_theme_dark" />
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/setup_theme_black"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/setup_theme_black" />
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/setup_theme_transparent_light"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/setup_theme_transparent_light" />
+
+            </RadioGroup>
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
@@ -148,30 +196,31 @@
                 android:key="pref_app_analytics"
                 android:textAppearance="@android:style/TextAppearance.Material.Small"
                 android:text="@string/setup_app_analytics" />-->
-            <!-- setup_cancel and setup_continue side by side buttons, stuck to bottom right, with a small space in between -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_margin="4dp"
-                android:orientation="horizontal">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/setup_cancel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="2dp"
-                    android:layout_weight="1"
-                    android:text="@string/cancel" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/setup_continue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/finish" />
-            </LinearLayout>
         </LinearLayout>
-
     </ScrollView>
-</LinearLayout>
+    <!-- setup_cancel and setup_continue side by side buttons, stuck to bottom right, with a small space in between -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/setup_scroll"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="4dp"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/setup_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="2dp"
+            android:layout_weight="1"
+            android:text="@string/cancel" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/setup_continue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/finish" />
+    </LinearLayout>
+</RelativeLayout>

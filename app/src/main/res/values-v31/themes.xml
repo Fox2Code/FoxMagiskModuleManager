@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <style name="Theme.MagiskModuleManager.Monet.Light" parent="Theme.Material3.DynamicColors.Light">
         <item name="android:statusBarColor">@color/status_bar_color</item>
@@ -12,8 +12,6 @@
         <item name="chipStrokeWidth">0dp</item>
         <item name="chipIconTint">?attr/colorControlNormal</item>
     </style>
-
-    <style name="Theme.MagiskModuleManager.Transparent.Light" parent="Theme.MagiskModuleManager.Light" />
 
     <style name="Theme.MagiskModuleManager.Monet.Dark" parent="Theme.Material3.DynamicColors.Dark">
         <item name="android:statusBarColor">@color/status_bar_color</item>

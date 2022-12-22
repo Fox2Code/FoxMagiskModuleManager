@@ -26,4 +26,8 @@
     <color name="light_backgroundColor">#FFFFFFFF</color>
     <color name="light_chipBackgroundColor">#FFDADADA</color>
     <color name="gray_900">#3A3A3A</color>
+    <color name="gray_800">#424242</color>
+    <color name="gray_700">#616161</color>
+    <color name="gray_600">#757575</color>
+    <color name="gray_500">#9E9E9E</color>
 </resources>

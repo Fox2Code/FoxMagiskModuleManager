@@ -225,7 +225,7 @@
     <string name="setup_message">Welcome! This app will help you install and manage Magisk modules. To get started, please select the options below. These and more can be configured from settings later.</string>
     <string name="setup_button">Finish setup</string>
     <string name="setup_background_update_check">Background update check</string>
-    <string name="setup_background_update_check_summary">Allow us to check for module and app updates in the background. This feature may use more battery, and may use more data.</string>
+    <string name="setup_background_update_check_summary">Allow us to check for module and app updates in the background. This feature may use more battery and data.</string>
     <string name="setup_androidacy_repo">Enable the Androidacy repo</string>
     <string name="setup_androidacy_repo_summary">Features user reviews, automatic virus scans, fast updates, a wide selection, and is backed by Androidacy.</string>
     <!-- Maybe once alt repo fixes their shit and stops allowing crappy modules or outright
@@ -248,5 +248,5 @@
     <string name="debug_build">This is a debug build. Expect some bugs and worse performance.</string>
     <string name="androidacy_repo_name">Androidacy Repo</string>
     <string name="magisk_alt_repo_name">Magisk Alt Repo</string>
-    <string name="repo_enabled_changed">You\'ve enabled or disabled a repo. Please refresh the module list or restart the app.</string><string name="finish">Finish</string>
+    <string name="repo_enabled_changed">You\'ve enabled or disabled a repo. Please refresh the module list or restart the app.</string><string name="finish">Finish</string><string name="setup_theme">Choose a theme</string><string name="setup_theme_header">Choose a theme</string><string name="setup_theme_system">System theme</string><string name="setup_theme_light">Light theme</string><string name="setup_theme_dark">Dark theme</string><string name="setup_theme_black">AMOLED Black theme</string><string name="setup_theme_transparent_light">Transparent light theme - will disable monet and blur!</string>
 </resources>
