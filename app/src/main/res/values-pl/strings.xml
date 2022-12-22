@@ -223,4 +223,18 @@
     <string name="repo_enabled_changed">Włączono lub wyłączono repozytorium. Proszę odświeżyć listę modułów lub zrestartować aplikację.</string>
     <string name="finish">Zakończ</string>
     <string name="setup_background_update_check_summary">Pozwól na wyszukiwanie uaktualnień modułów i menedżera w tle . Prawdopodobnie wzrośnie użycie baterii i danych.</string>
+    <string name="setup_theme">Wybierz motyw</string>
+    <string name="setup_theme_dark">Ciemny</string>
+    <string name="setup_theme_button">Wybierz motyw</string>
+    <string name="theme_dark">Ciemny</string>
+    <string name="setup_theme_header">Wybierz motyw</string>
+    <string name="setup_theme_system">Systemowy</string>
+    <string name="setup_theme_light">Jasny</string>
+    <string name="setup_theme_black">Czarny</string>
+    <string name="setup_theme_transparent_light">Przezroczysty (jasny) - Wyłączy Material You i rozmycie!</string>
+    <string name="theme">Motyw</string>
+    <string name="theme_system">Systemowy</string>
+    <string name="theme_black">Czarny</string>
+    <string name="theme_transparent_light">Przezroczysty (jasny)</string>
+    <string name="theme_light">Jasny</string>
 </resources>
