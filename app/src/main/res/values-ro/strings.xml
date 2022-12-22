@@ -119,7 +119,7 @@
     <string name="add_repo">Adăugare depozit</string>
     <string name="remove_repo">Eliminare depozit</string>
     <string name="custom_url">URL personalizat</string>
-    <string name="androidacy_repo_info">Acest depozit poate afișa unele reclame neinvazive pentru a acoperi costurile de dezvoltare și pentru server.</string>
+    <string name="androidacy_repo_info">Acest depozit poate afișa publicitate non-intruzivă pentru a acoperi costurile de server și de dezvoltare. Include recenzii, scanări automate de viruși și multe altele.</string>
     <string name="backup_module_list">Rezervare module</string>
     <string name="restore_module_list">Restabilire module</string>
     <string name="require_internet">Această operațiune necesită o conexiune la Internet</string>
@@ -179,4 +179,48 @@
     <string name="androidacy_repo_disabled">Acest depozit este în prezent dezactivat</string>
     <string name="download_full_app">Descărcați versiunea completă</string>
     <string name="repo_update_failed">Unele depozite nu au reușit să se actualizeze</string>
+    <string name="repo_update_failed_extended">Actualizarea %1$s a eșuat. Încercați din nou mai târziu.</string>
+    <string name="monet_disabled_summary">Monet nu este compatibil cu teme transparente.</string>
+    <string name="blur_disabled_summary">Blur nu este compatibil cu teme transparente.</string>
+    <string name="transparent_theme_dialogue_title">Setați o temă transparentă</string>
+    <string name="custom_repo_always_on">Depozitele personalizate sunt întotdeauna activate până când le eliminați.</string>
+    <string name="sentry_dialogue_title">Hopa! Se pare că aplicația s-a închis pe neașteptate.</string>
+    <string name="name">Numele</string>
+    <string name="email">E-mailul</string>
+    <string name="additional_info">Spune-ne ce sa întâmplat</string>
+    <string name="submit">Trimitere</string>
+    <string name="sentry_dialogue_failed_toast">Nu s-a putut trimite feedback din cauza unei erori</string>
+    <string name="sentry_dialogue_success">Feedback trimis cu succes. Îl vom revizui în curând</string>
+    <string name="sentry_dialogue_no_description">Nu s-a putut trimite feedback deoarece nu a fost furnizată nicio descriere</string>
+    <string name="go_to_online_repo">Derulați la depozitele online</string>
+    <string name="pref_pkg_info_summary">%1$s v%2$s (%3$o) | %4$s</string>
+    <string name="official">Oficial</string>
+    <string name="unofficial">Neoficial</string>
+    <string name="setup_title">Configurare pentru prima dată</string>
+    <string name="setup_message">Bine ați venit! Această aplicație vă va ajuta să instalați și să gestionați modulele Magisk. Pentru a începe, vă rugăm să selectați opțiunile de mai jos. Acestea și altele pot fi configurate ulterior în setări.</string>
+    <string name="setup_button">Finalizare configurare</string>
+    <string name="setup_androidacy_repo">Activați depozitul Androidacy 
+\nInclude recenzii ale utilizatorilor, scanări automate de viruși, actualizări rapide, o selecție largă și este susținut de Androidacy.</string>
+    <string name="setup_crash_reporting">Activați raportarea erorilor Sentry și monitorizarea performanței. 
+\nToate rapoartele sunt strict anonime și confidențiale.</string>
+    <string name="setup_custom_repos">Puteți adăuga depozite personalizate mai târziu în setări.</string>
+    <string name="repos">Depozite</string>
+    <string name="misc">Diverse</string>
+    <string name="setup_button_skip">Omitere</string>
+    <string name="low_performance_device_dialogue_title">Activarea estompării pe dispozitiv de gamă inferioară</string>
+    <string name="alt_repo_info">Acest depozit are mai puține restricții și recenzii, ceea ce poate duce la module de calitate inferioară. Destul de slab, dar are o mulțime de module.</string>
+    <string name="install_terminal_reboot_now_message">Sunteți pe cale să reporniți dispozitivul. Dacă v-ați salvat munca, apăsați ok pentru a continua. În caz contrar, apăsați pe anulare.</string>
+    <string name="install_terminal_config_missing">Pachetul %s lipsește pentru configurarea modulului, așa că nu îl putem lansa.</string>
+    <string name="clear_app_data">Ștergeți datele aplicației</string>
+    <string name="clear_data_dialogue_title">Ștergeți datele aplicației\?</string>
+    <string name="clear_data_dialogue_message">Sunteți pe cale să ștergeți datele aplicației. Vă rugăm să confirmați această acțiune.</string>
+    <string name="transparent_theme_dialogue_message">Temele transparente pot avea unele inconsecvențe și pot să nu funcționeze pe toate ROM-urile. În plus, monet și estompare vor fi dezactivate. Puteți schimba oricând înapoi.</string>
+    <string name="sentry_dialogue_message">Am întâmpinat o eroare! Vă rugăm să ne ajutați să îmbunătățim aplicația adăugând câteva informații despre eroare de mai jos. 
+\nNumele și adresa de e-mail sunt opționale, dar ne vor permite să vă contactăm dacă este necesar pentru mai multe informații.</string>
+    <string name="setup_background_update_check">Ne permite să verificăm actualizările în fundal. 
+\nAceastă funcție poate folosi mai multă baterie.</string>
+    <string name="setup_magisk_alt_repo">Activați Magisk Alt Repo 
+\nMult mai lax decât originalul. Are o mulțime de module cu prețul unei anumite siguranțe.</string>
+    <string name="low_performance_device_dialogue_message">Încercați să activați estomparea pe un dispozitiv care poate să nu funcționeze bine cu acesta. 
+\nPuteți să îl activați, dar acest lucru poate duce la o experiență de utilizator slabă, deci vă recomandăm să nu o faceți.</string>
 </resources>
