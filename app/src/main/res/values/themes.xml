@@ -48,8 +48,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowShowWallpaper">true</item>
         <!-- Fix text color in transparent theme -->
-        <item name="android:textColorPrimary">@color/gray_800</item>
-        <item name="colorOnPrimary">@color/gray_800</item>
+        <item name="alpha">0.8</item>
     </style>
 
     <style name="Theme.MagiskModuleManager.Dark" parent="Theme.Material3.Dark">

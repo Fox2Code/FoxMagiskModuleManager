@@ -1,6 +1,7 @@
 package com.fox2code.mmm.androidacy;
 
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
@@ -57,12 +58,8 @@ public final class AndroidacyRepoData extends RepoData {
 
     public AndroidacyRepoData(File cacheRoot, SharedPreferences cachedPreferences, boolean testMode) {
         super(testMode ? RepoManager.ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT : RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT, cacheRoot, cachedPreferences);
-        if (this.metaDataCache.exists() && !testMode) {
-            this.androidacyBlockade = this.metaDataCache.lastModified() + 30_000L;
-            if (this.androidacyBlockade - 60_000L > System.currentTimeMillis()) {
-                this.androidacyBlockade = 0; // Don't allow time travel. // Well why not???
-            }
-        }
+        // make sure the metadata db exists
+        SQLiteDatabase.openOrCreateDatabase(new File(cacheRoot, "modules.db"), null);
         this.defaultName = "Androidacy Modules Repo";
         this.defaultWebsite = RepoManager.ANDROIDACY_MAGISK_REPO_HOMEPAGE;
         this.defaultSupport = "https://t.me/androidacy_discussions";
@@ -330,9 +327,6 @@ public final class AndroidacyRepoData extends RepoData {
             String config = jsonObject.optString("config", "");
             moduleInfo.config = config.isEmpty() ? null : config;
             PropUtils.applyFallbacks(moduleInfo); // Apply fallbacks
-            // Log.i(TAG,
-            //        "Module " + moduleInfo.name + " " + moduleInfo.id + " " + moduleInfo
-            //        .version + " " + moduleInfo.versionCode);
         }
         Iterator<RepoModule> moduleInfoIterator = this.moduleHashMap.values().iterator();
         while (moduleInfoIterator.hasNext()) {

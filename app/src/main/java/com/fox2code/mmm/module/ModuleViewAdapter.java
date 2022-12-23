@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fox2code.foxcompat.FoxDisplay;
+import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.NotificationType;
 import com.fox2code.mmm.R;
@@ -373,7 +375,10 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 String themeName = theme.toString();
                 if (theme.getResources().getBoolean(R.bool.force_transparency) ||
                         themeName.contains("transparent")) {
-                    bgColor = ColorUtils.setAlphaComponent(bgColor, 0x80);
+                    if (BuildConfig.DEBUG) {
+                        Log.d("NoodleDebug", "Theme is transparent, fixing bgColor");
+                    }
+                    bgColor = ColorUtils.setAlphaComponent(bgColor, 0x70);
                 }
                 this.titleText.setTextColor(fgColor);
                 this.buttonAction.setColorFilter(fgColor);
