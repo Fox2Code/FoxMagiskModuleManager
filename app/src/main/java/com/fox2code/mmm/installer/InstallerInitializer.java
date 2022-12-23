@@ -98,10 +98,10 @@ public class InstallerInitializer extends Shell.Initializer {
                     error = ERROR_NO_PATH;
                 } catch (NoShellException e) {
                     error = ERROR_NO_SU;
-                    Log.w(TAG, "Device don't have root!", e);
+                    Log.w(TAG, "Device doesn't have root!", e);
                 } catch (Throwable e) {
                     error = ERROR_OTHER;
-                    Log.e(TAG, "Something happened", e);
+                    Log.e(TAG, "Something bad happened", e);
                 }
                 if (forceCheck) {
                     InstallerInitializer.MAGISK_PATH = MAGISK_PATH;
