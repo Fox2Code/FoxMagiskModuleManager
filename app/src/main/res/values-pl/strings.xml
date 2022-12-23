@@ -192,12 +192,9 @@
     <string name="sentry_dialogue_success">Pomyślnie przesłano opinię. Wkrótce to sprawdzimy</string>
     <string name="setup_title">Powitalna konfiguracja</string>
     <string name="setup_button">Zastosuj</string>
-    <string name="setup_background_update_check">Pozwól na sprawdzanie aktualizacji w tle.
-\nMoże wzrosnąć użycie baterii.</string>
-    <string name="setup_magisk_alt_repo">Włącz repozytorium Magisk Alt
-\nZnacznie luźniejsze niż oryginalne. Zawiera więcej modułów, które mogą zmniejszać bezpieczeństwo urządzenia.</string>
-    <string name="setup_crash_reporting">Włącz raportowanie awarii Sentry i monitorowanie wydajności.
-\nWszystkie zgłoszenia są ściśle anonimowe i poufne.</string>
+    <string name="setup_background_update_check">Sprawdzanie aktualizacji w tle</string>
+    <string name="setup_magisk_alt_repo">Repozytorium Magisk Alt</string>
+    <string name="setup_crash_reporting">Raportowanie Sentry</string>
     <string name="setup_custom_repos">Możesz później dodać niestandardowe repozytoria w ustawieniach.</string>
     <string name="repos">Repozytoria</string>
     <string name="misc">Różne</string>
@@ -208,9 +205,36 @@
     <string name="sentry_dialogue_message">Napotkaliśmy błąd! Prosimy o pomoc w ulepszeniu aplikacji poprzez dodanie informacji o błędzie poniżej.
 \nImię i e-mail są opcjonalne, ale pozwolą nam skontaktować się z Tobą w razie potrzeby uzyskania dodatkowych informacji.</string>
     <string name="unofficial">Nieoficjalna</string>
-    <string name="setup_message">Witaj! Ta aplikacja pomoże Ci instalować i zarządzać modułami Magisk. Aby rozpocząć, dostosuj poniższe opcje. Można je później zmienić w ustawieniach.</string>
-    <string name="setup_androidacy_repo">Włącz repozytorium Androidacy
-\nZawiera recenzje użytkowników, automatyczne skanowanie antywirusowe, szybkie aktualizacje, szeroki wybór modułów i jest wspierane przez Androidacy.</string>
+    <string name="setup_message">Witaj! Ta aplikacja umożliwia instalację i zarządzanie modułami Magisk. Dostosuj poniższe opcje, aby rozpocząć. Można je później zmienić w ustawieniach.</string>
+    <string name="setup_androidacy_repo">Repozytorium Androidacy</string>
     <string name="low_performance_device_dialogue_message">Próbujesz włączyć rozmycie na urządzeniu, które może nie działać dobrze.
 \nMożesz je włączyć, ale prawdopodobnie uzyskasz złe wrażenia użytkownika i zalecamy, aby tego nie robić.</string>
+    <string name="clear_app_data">Wyczyść dane aplikacji</string>
+    <string name="clear_data_dialogue_title">Wyczyścić dane aplikacji\?</string>
+    <string name="clear_data_dialogue_message">Zamierzasz wyczyścić dane aplikacji. Proszę potwierdzić tę czynność.</string>
+    <string name="install_terminal_reboot_now_message">Za chwilę nastąpi restart urządzenia. Zapisz swoją pracę i naciśnij OK, aby kontynuować. W przeciwnym razie, anuluj.</string>
+    <string name="install_terminal_config_missing">Brakuje pakietu %s w konfiguracji modułu, więc nie można go uruchomić.</string>
+    <string name="setup_androidacy_repo_summary">Oferuje recenzje użytkowników, automatyczne skanowanie wirusów, szybkie aktualizacje, szeroki wybór i jest wspierane przez Androidacy.</string>
+    <string name="setup_magisk_alt_repo_summary">Znacznie luźniejsze niż oryginalne. Posiada wiele modułów kosztem pewnego bezpieczeństwa.</string>
+    <string name="setup_crash_reporting_summary">Monitorowanie wydajności i rejestracja awarii. Wszystkie raporty są ściśle anonimowe i poufne.</string>
+    <string name="debug_build">To jest wersja diagnostyczna. Możliwe błędy i gorsza wydajność.</string>
+    <string name="androidacy_repo_name">Repozytorium Androidacy</string>
+    <string name="magisk_alt_repo_name">Repozytorium Magisk Alt</string>
+    <string name="repo_enabled_changed">Włączono lub wyłączono repozytorium. Proszę odświeżyć listę modułów lub zrestartować aplikację.</string>
+    <string name="finish">Zakończ</string>
+    <string name="setup_background_update_check_summary">Pozwól na wyszukiwanie uaktualnień modułów i menedżera w tle. Prawdopodobnie wzrośnie użycie baterii i danych.</string>
+    <string name="setup_theme">Wygląd aplikacji</string>
+    <string name="setup_theme_dark">Ciemny</string>
+    <string name="setup_theme_button">Wybierz motyw</string>
+    <string name="theme_dark">Ciemny</string>
+    <string name="setup_theme_header">Wybierz motyw</string>
+    <string name="setup_theme_system">Systemowy</string>
+    <string name="setup_theme_light">Jasny</string>
+    <string name="setup_theme_black">Czarny</string>
+    <string name="setup_theme_transparent_light">Przezroczysty (jasny) - Wyłączy Material You i rozmycie!</string>
+    <string name="theme">Motyw</string>
+    <string name="theme_system">Systemowy</string>
+    <string name="theme_black">Czarny</string>
+    <string name="theme_transparent_light">Przezroczysty (jasny)</string>
+    <string name="theme_light">Jasny</string>
 </resources>
