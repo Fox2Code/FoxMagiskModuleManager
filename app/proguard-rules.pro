@@ -14,7 +14,7 @@
 
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
--keepattributes SourceFile,LineNumberTable,Signature
+#-keepattributes SourceFile,LineNumberTable,Signature
 -printmapping mapping.txt
 
 # Optimisations
