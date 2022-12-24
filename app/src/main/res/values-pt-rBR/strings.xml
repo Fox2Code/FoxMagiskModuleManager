@@ -140,4 +140,9 @@
     <string name="language_support_outdated">Algumas traduções para sua lingua atual não esta em dia, por favor considere contribuir para as traduções do app no Github</string>
     <!-- Replace with your own username when translating -->
     <string name="language_translated_by">Traduzido por mi007d e DanGLES3</string>
+    <string name="fail_root_denied">Acesso root foi negado pelo app do Magisk</string>
+    <string name="fail_magisk_missing">Magisk não está instalado nesse dispositivo</string>
+    <string name="link_copied">Link copiado</string>
+    <string name="dev_mode_disabled">Modo de desenvolvedor desativado</string>
+    <string name="dns_over_https_pref">DNS sobre HTTPS</string>
 </resources>

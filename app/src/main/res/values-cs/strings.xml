@@ -118,7 +118,7 @@
     <string name="add_repo">Přidat Repo</string>
     <string name="remove_repo">Smazat Repo</string>
     <string name="custom_url">Vlastní URL</string>
-    <string name="androidacy_repo_info">Tenhle repozitář může zobrazovat nevtíravé reklamy pro pokrytí naákladů za servr a vývoj.</string>
+    <string name="androidacy_repo_info">Tenhle repozitář může zobrazovat nevtíravé reklamy pro pokrytí nákladů za servr a vývoj. Můžou to být recenzie, automatické antivírusové kontroly a iné.</string>
     <string name="crash_reporting_desc">Zakážete-li tohle, vývojář nebude dostávat automatické zprávy o chybách, což může ztížit odstraňování problémů</string>
     <string name="prevent_reboot_desc">Zabránit neočekávaným rebootům</string>
     <string name="restore_module_list">Obnovit moduly</string>
@@ -170,4 +170,29 @@
     <string name="androidacy_repo_disabled_message">V této sestavě chybí klientské klíče pro Androidacy Repo. Pokud chcete využívat funkce, jako jsou recenze modulů, automatické bezpečnostní kontroly a další, stáhněte si vydání z GitHub-u.</string>
     <string name="download_full_app">Stáhnout plnou verzi</string>
     <string name="repo_update_failed">Některá repo se nepovedlo aktualizovat</string>
+    <string name="module_min_magisk_chip">Min. verze Magisk %s</string>
+    <string name="module_min_sdk_chip">Min. Android</string>
+    <string name="module_max_sdk_chip">Max. Android</string>
+    <string name="backup_module_list">Zálohovat moduly</string>
+    <string name="repo_update_failed_extended">"Aktualizace  %1$s selhala. Prosím zkuste později."</string>
+    <string name="monet_disabled_summary">Monet není kompatibilní s průhlednými motivy.</string>
+    <string name="blur_disabled_summary">Blur není kompatibilní s průhlednými motivy.</string>
+    <string name="transparent_theme_dialogue_title">Nastavujete průhledný motiv</string>
+    <string name="transparent_theme_dialogue_message">Průhledné motivy nemusí být plně konzistetní a nemusí fungovat na všech ROM. Monet a Blur budou deaktivovány. Můžete to kdykoliv vrátit.</string>
+    <string name="custom_repo_always_on">Vlastní repozitáře jsou vždy zapnuty dokud je nesmažete.</string>
+    <string name="sentry_dialogue_message">"Vyskytla se chyba! Pomozte nám vylepšit aplikaci sdělením některých informací o chybě.
+\nJméno a email nejsou povinné, ale umožní nám Vás kontaktovat jestli by jsme potřebovali  víc informací."</string>
+    <string name="sentry_dialogue_title">Jejda! Zdá se, že se aplikace neočekávaně ukončila.</string>
+    <string name="name">Vaše jméno</string>
+    <string name="email">Váš email</string>
+    <string name="additional_info">Řekněte nám co se stalo</string>
+    <string name="submit">Odeslat</string>
+    <string name="sentry_dialogue_failed_toast">Feedback nebylo možné odeslat kvůli chybě</string>
+    <string name="sentry_dialogue_success">Feedback úspěšně odeslán. Brzy jej prezřeme</string>
+    <string name="sentry_dialogue_no_description">Jelikož jste neposkytli žádnej popis, feedback se neodeslal</string>
+    <string name="go_to_online_repo">Skrolovat pro online repo</string>
+    <string name="setup_message">Vítejte! Tato aplikace vám pomůže nainstalovat a spravovat moduly Magisk. Chcete-li začít, vyberte níže uvedené možnosti. Tyto a další lze konfigurovat z nastavení později.</string>
+    <string name="setup_button">Dokončit nastavení</string>
+    <string name="api_key">API klíč Androidacy</string>
+    <string name="setup_background_update_check">Kotrola aktualizacií na pozadí</string>
 </resources>
