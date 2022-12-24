@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -157,20 +156,7 @@ public final class AndroidacyActivity extends FoxActivity {
         if (WebViewFeature.isFeatureSupported(WebViewFeature.REQUESTED_WITH_HEADER_CONTROL)) {
             WebSettingsCompat.setRequestedWithHeaderMode(webSettings, WebSettingsCompat.REQUESTED_WITH_HEADER_MODE_NO_HEADER);
         }
-        // If API level is .= 33, allow setAlgorithmicDarkeningAllowed
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
-            try {
-                webSettings.setAlgorithmicDarkeningAllowed(true);
-            } catch (NoSuchMethodError ignored) {
-            }
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { // Make website follow app theme
-                webSettings.setForceDark(MainApplication.getINSTANCE().isLightTheme() ? WebSettings.FORCE_DARK_OFF : WebSettings.FORCE_DARK_ON);
-            } else if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
-                // If api level is < 32, use force dark
-                WebSettingsCompat.setForceDark(webSettings, MainApplication.getINSTANCE().isLightTheme() ? WebSettingsCompat.FORCE_DARK_OFF : WebSettingsCompat.FORCE_DARK_ON);
-            }
-        }
+
         this.webView.setWebViewClient(new WebViewClientCompat() {
             private String pageUrl;
 
