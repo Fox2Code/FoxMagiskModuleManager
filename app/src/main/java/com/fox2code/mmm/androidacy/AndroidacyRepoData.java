@@ -1,7 +1,6 @@
 package com.fox2code.mmm.androidacy;
 
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
@@ -58,8 +57,17 @@ public final class AndroidacyRepoData extends RepoData {
 
     public AndroidacyRepoData(File cacheRoot, SharedPreferences cachedPreferences, boolean testMode) {
         super(testMode ? RepoManager.ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT : RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT, cacheRoot, cachedPreferences);
-        // make sure the metadata db exists
-        SQLiteDatabase.openOrCreateDatabase(new File(cacheRoot, "modules.db"), null);
+        // make sure the modules.json exists
+        File modulesJson = new File(cacheRoot, "modules.json");
+        if (!modulesJson.exists()) {
+            try {
+                if (!modulesJson.createNewFile()) {
+                    throw new IOException("Failed to create modules.json");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         this.defaultName = "Androidacy Modules Repo";
         this.defaultWebsite = RepoManager.ANDROIDACY_MAGISK_REPO_HOMEPAGE;
         this.defaultSupport = "https://t.me/androidacy_discussions";

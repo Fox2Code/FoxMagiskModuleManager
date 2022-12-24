@@ -139,7 +139,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         }
         setContentView(R.layout.activity_main);
         this.setTitle(R.string.app_name);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, 0);
         setActionBarBackground(null);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             WindowManager.LayoutParams layoutParams = this.getWindow().getAttributes();
@@ -749,6 +749,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             View view = getLayoutInflater().inflate(R.layout.setup_box, null);
             // Make the setup_box linear layout the sole child of the root_container constraint layout
             setContentView(view);
+            updateScreenInsets();
             // Handle action bar. Set it to setup_title and make it visible
             ActionBar actionBar = getSupportActionBar();
             if (actionBar != null) {

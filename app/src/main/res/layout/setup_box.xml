@@ -1,42 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+
+<!-- App name as subheader -->
+
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/setup_scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="fill_vertical"
+    android:layout_gravity="fill"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:scrollbars="vertical">
-
-    <!-- App name as subheader -->
-    <TextView
-        android:id="@+id/setup_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="56dp"
-        android:text="@string/setup_title"
-        android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/setup_summary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/setup_title"
-        android:text="@string/setup_message" />
-
-    <ScrollView
-        android:id="@+id/setup_scroll"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/setup_summary"
-        android:fillViewport="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    android:fillViewport="true"
+    android:padding="6dp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/setup_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/setup_title" android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="@+id/setup_scroll" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/setup_summary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/setup_message" />
 
             <!-- Theme radio select. Options are system, light, dark, black, transparent_light -->
             <!-- First, choose theme header -->
@@ -51,7 +50,7 @@
             <!-- Button to trigger theme selection -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/setup_theme_button"
-                android:layout_width="match_parent"
+                android:layout_width="320dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:backgroundTint="@color/gray_900"
@@ -66,18 +65,16 @@
                 app:iconPadding="8dp"
                 app:iconTint="@color/white"
                 app:iconTintMode="src_in"
-                app:rippleColor="@color/gray_800" />
+                app:rippleColor="@color/gray_800" tools:ignore="DuplicateSpeakableTextCheck" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:text="@string/repos"
-                android:textAppearance="@android:style/TextAppearance.Material.Headline" />
-
-            <com.google.android.material.materialswitch.MaterialSwitch
+                android:textAppearance="@android:style/TextAppearance.Material.Headline" /><com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/setup_androidacy_repo"
-                android:layout_width="match_parent"
+                android:layout_width="320dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:checked="false"
@@ -97,7 +94,7 @@
 
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/setup_magisk_alt_repo"
-                android:layout_width="match_parent"
+                android:layout_width="320dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:checked="false"
@@ -131,7 +128,7 @@
 
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/setup_crash_reporting"
-                android:layout_width="match_parent"
+                android:layout_width="320dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:checked="false"
@@ -150,7 +147,7 @@
 
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/setup_background_update_check"
-                android:layout_width="match_parent"
+                android:layout_width="320dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:checked="false"
@@ -178,31 +175,28 @@
                 android:key="pref_app_analytics"
                 android:textAppearance="@android:style/TextAppearance.Material.Small"
                 android:text="@string/setup_app_analytics" />-->
-        </LinearLayout>
-    </ScrollView>
-    <!-- setup_cancel and setup_continue side by side buttons, stuck to bottom right, with a small space in between -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/setup_scroll"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="4dp"
-        android:orientation="horizontal">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/setup_cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="2dp"
-            android:layout_weight="1"
-            android:text="@string/cancel" />
+            <!-- Linear layout for the finish and cancel buttons -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="4dp"
+                android:orientation="horizontal">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/setup_cancel"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="2dp"
+                android:layout_weight="1"
+                android:text="@string/cancel" android:textColor="#5D4037" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/setup_continue"
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/finish" />
-    </LinearLayout>
-</RelativeLayout>
+            android:text="@string/finish" android:textColor="#5D4037" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>

@@ -106,8 +106,7 @@ public class MarkdownActivity extends FoxActivity {
         }
         setActionBarBackground(null);
         this.getWindow().setFlags(
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, 0);
         if (config != null && !config.isEmpty()) {
             String configPkg = IntentHelper.getPackageOfConfig(config);
             try {
