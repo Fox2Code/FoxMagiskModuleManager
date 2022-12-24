@@ -1,7 +1,9 @@
 package com.fox2code.mmm.androidacy;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Looper;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -26,6 +28,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -64,7 +68,8 @@ public final class AndroidacyRepoData extends RepoData {
                 if (!modulesJson.createNewFile()) {
                     throw new IOException("Failed to create modules.json");
                 }
-            } catch (IOException e) {
+            } catch (
+                    IOException e) {
                 e.printStackTrace();
             }
         }
@@ -144,7 +149,8 @@ public final class AndroidacyRepoData extends RepoData {
         String deviceId = generateDeviceId();
         try {
             Http.doHttpGet("https://" + this.host + "/auth/me?token=" + token + "&device_id=" + deviceId, false);
-        } catch (HttpException e) {
+        } catch (
+                HttpException e) {
             if (e.getErrorCode() == 401) {
                 Log.w(TAG, "Invalid token, resetting...");
                 // Remove saved preference
@@ -159,6 +165,7 @@ public final class AndroidacyRepoData extends RepoData {
         return true;
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected boolean prepare() throws NoSuchAlgorithmException {
         // If ANDROIDACY_CLIENT_ID is not set or is empty, disable this repo and return
@@ -168,28 +175,44 @@ public final class AndroidacyRepoData extends RepoData {
             editor.apply();
             return false;
         }
-        if (Http.needCaptchaAndroidacy()) return false;
+        if (Http.needCaptchaAndroidacy())
+            return false;
         // Implementation details discussed on telegram
         // First, ping the server to check if it's alive
         try {
-            Http.doHttpGet("https://" + this.host + "/ping", false);
-        } catch (Exception e) {
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://" + this.host + "/ping").openConnection();
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
+            connection.connect();
+            if (connection.getResponseCode() != 200 && connection.getResponseCode() != 204) {
+                // If it's a 400, the app is probably outdated. Show a snackbar suggesting user update app and webview
+                if (connection.getResponseCode() == 400) {
+                    // Show a dialog using androidacy_update_needed string
+                    new MaterialAlertDialogBuilder(MainApplication.getINSTANCE())
+                            .setTitle(R.string.androidacy_update_needed)
+                            .setMessage(R.string.androidacy_update_needed_message)
+                            .setPositiveButton(R.string.update, (dialog, which) -> {
+                                // Open the app's page on the Play Store
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.setData(Uri.parse("https://github.com/Fox2Code/FoxMagiskModuleManager/releases/latest"));
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                MainApplication.getINSTANCE().startActivity(intent);
+                            })
+                            .setNegativeButton(R.string.cancel, null)
+                            .show();
+                }
+                return false;
+            }
+        } catch (
+                Exception e) {
             Log.e(TAG, "Failed to ping server", e);
-            // Inform user
-            Looper.prepare();
-            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainApplication.getINSTANCE().getBaseContext());
-            builder.setTitle("Androidacy Server Down");
-            builder.setMessage("The Androidacy server is down. Unfortunately, this means that you" +
-                    " will not be able to download or view modules from the Androidacy repository" +
-                    ". Please try again later.");
-            builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
-            builder.show();
-            Looper.loop();
             return false;
         }
         String deviceId = generateDeviceId();
         long time = System.currentTimeMillis();
-        if (this.androidacyBlockade > time) return true; // fake it till you make it. Basically,
+        if (this.androidacyBlockade > time)
+            return true; // fake it till you make it. Basically,
         // don'e fail just becaue we're rate limited. API and web rate limits are different.
         this.androidacyBlockade = time + 30_000L;
         try {
@@ -206,7 +229,8 @@ public final class AndroidacyRepoData extends RepoData {
                 }
                 this.token = null;
             }
-        } catch (IOException e) {
+        } catch (
+                IOException e) {
             if (HttpException.shouldTimeout(e)) {
                 Log.e(TAG, "We are being rate limited!", e);
                 this.androidacyBlockade = time + 3_600_000L;
@@ -222,7 +246,8 @@ public final class AndroidacyRepoData extends RepoData {
                 try {
                     JSONObject jsonObject = new JSONObject(token);
                     token = jsonObject.getString("token");
-                } catch (JSONException e) {
+                } catch (
+                        JSONException e) {
                     Log.e(TAG, "Failed to parse token", e);
                     // Show a toast
                     Toast.makeText(MainApplication.getINSTANCE(), R.string.androidacy_failed_to_parse_token, Toast.LENGTH_LONG).show();
@@ -239,7 +264,8 @@ public final class AndroidacyRepoData extends RepoData {
                 SharedPreferences.Editor editor = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit();
                 editor.putString("pref_androidacy_api_token", token);
                 editor.apply();
-            } catch (Exception e) {
+            } catch (
+                    Exception e) {
                 if (HttpException.shouldTimeout(e)) {
                     Log.e(TAG, "We are being rate limited!", e);
                     this.androidacyBlockade = time + 3_600_000L;
@@ -324,7 +350,8 @@ public final class AndroidacyRepoData extends RepoData {
                     moduleInfo.minMagisk = // Allow 24.1 to mean 24100
                             (Integer.parseInt(minMagisk.substring(0, c)) * 1000) + (Integer.parseInt(minMagisk.substring(c + 1)) * 100);
                 }
-            } catch (Exception e) {
+            } catch (
+                    Exception e) {
                 moduleInfo.minMagisk = 0;
             }
             moduleInfo.needRamdisk = jsonObject.optBoolean("needRamdisk", false);
@@ -370,13 +397,13 @@ public final class AndroidacyRepoData extends RepoData {
 
     @Override
     public String getUrl() throws NoSuchAlgorithmException {
-        return this.token == null ? this.url :
-                this.url + "?token=" + this.token + "&v=" + BuildConfig.VERSION_CODE + "&c=" + BuildConfig.VERSION_NAME + "&device_id=" + generateDeviceId();
+        return this.token == null ? this.url : this.url + "?token=" + this.token + "&v=" + BuildConfig.VERSION_CODE + "&c=" + BuildConfig.VERSION_NAME + "&device_id=" + generateDeviceId();
     }
 
     private String injectToken(String url) throws NoSuchAlgorithmException {
         // Do not inject token for non Androidacy urls
-        if (!AndroidacyUtil.isAndroidacyLink(url)) return url;
+        if (!AndroidacyUtil.isAndroidacyLink(url))
+            return url;
         if (this.testMode) {
             if (url.startsWith("https://production-api.androidacy.com/")) {
                 Log.e(TAG, "Got non test mode url: " + AndroidacyUtil.hideToken(url));

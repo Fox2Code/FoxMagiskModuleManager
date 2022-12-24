@@ -19,7 +19,6 @@ import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.androidacy.AndroidacyUtil;
 import com.fox2code.mmm.installer.InstallerInitializer;
-import com.fox2code.mmm.repo.RepoManager;
 import com.google.net.cronet.okhttptransport.CronetInterceptor;
 
 import org.chromium.net.CronetEngine;
@@ -78,7 +77,8 @@ public class Http {
             System.err.flush();
             try {
                 Os.kill(Os.getpid(), 9);
-            } catch (ErrnoException e) {
+            } catch (
+                    ErrnoException e) {
                 System.exit(9);
             }
             throw error;
@@ -88,7 +88,8 @@ public class Http {
             cookieManager = CookieManager.getInstance();
             cookieManager.setAcceptCookie(true);
             cookieManager.flush(); // Make sure the instance work
-        } catch (Throwable t) {
+        } catch (
+                Throwable t) {
             cookieManager = null;
             Log.e(TAG, "No WebView support!", t);
         }
@@ -111,7 +112,9 @@ public class Http {
             httpclientBuilder.dns(dns);
             httpclientBuilder.cookieJar(new CDNCookieJar());
             dns = new DnsOverHttps.Builder().client(httpclientBuilder.build()).url(Objects.requireNonNull(HttpUrl.parse("https://cloudflare-dns.com/dns-query"))).bootstrapDnsHosts(cloudflareBootstrap).resolvePrivateAddresses(true).build();
-        } catch (UnknownHostException | RuntimeException e) {
+        } catch (
+                UnknownHostException |
+                RuntimeException e) {
             Log.e(TAG, "Failed to init DoH", e);
         }
         httpclientBuilder.cookieJar(CookieJar.NO_COOKIES);
@@ -165,7 +168,8 @@ public class Http {
             builder.addQuicHint("sentry.io", 443, 443);
             CronetEngine engine = builder.build();
             httpclientBuilder.addInterceptor(CronetInterceptor.newBuilder(engine).build());
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             Log.e(TAG, "Failed to init cronet", e);
             // Gracefully fallback to okhttp
         }
@@ -205,16 +209,6 @@ public class Http {
         }
     }
 
-    private static void checkNeedBlockAndroidacyRequest(String url) throws IOException {
-        if (!RepoManager.isAndroidacyRepoEnabled()) {
-            if (AndroidacyUtil.isAndroidacyLink(url)) {
-                throw new IOException("Androidacy repo is disabled, blocking url: " + url);
-            }
-        } else if (needCaptchaAndroidacy() && AndroidacyUtil.isAndroidacyLink(url)) {
-            throw new HttpException("Androidacy require the user to solve a captcha", 403);
-        }
-    }
-
     public static boolean needCaptchaAndroidacy() {
         return needCaptchaAndroidacyHost != null;
     }
@@ -246,7 +240,8 @@ public class Http {
         // Use cache api if used cached response
         if (response.code() == 304) {
             response = response.cacheResponse();
-            if (response != null) responseBody = response.body();
+            if (response != null)
+                responseBody = response.body();
         }
         return responseBody.bytes();
     }
@@ -257,7 +252,8 @@ public class Http {
 
     @SuppressWarnings("resource")
     private static Object doHttpPostRaw(String url, String data, boolean allowCache) throws IOException {
-        if (BuildConfig.DEBUG) Log.i(TAG, "POST " + url + " " + data);
+        if (BuildConfig.DEBUG)
+            Log.i(TAG, "POST " + url + " " + data);
         Response response;
         response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).post(JsonRequestBody.from(data)).header("Content-Type", "application/json").build()).execute();
         if (response.isRedirect()) {
@@ -274,13 +270,15 @@ public class Http {
         // Use cache api if used cached response
         if (response.code() == 304) {
             response = response.cacheResponse();
-            if (response != null) responseBody = response.body();
+            if (response != null)
+                responseBody = response.body();
         }
         return responseBody.bytes();
     }
 
     public static byte[] doHttpGet(String url, ProgressListener progressListener) throws IOException {
-        if (BuildConfig.DEBUG) Log.i("Http", "GET " + url.split("\\?")[0]);
+        if (BuildConfig.DEBUG)
+            Log.i("Http", "GET " + url.split("\\?")[0]);
         Response response = getHttpClient().newCall(new Request.Builder().url(url).get().build()).execute();
         if (response.code() != 200 && response.code() != 204) {
             Log.e(TAG, "Failed to fetch " + url + ", code: " + response.code());
@@ -304,7 +302,8 @@ public class Http {
         progressListener.onUpdate(0, (int) (target / divider), false);
         while (true) {
             int read = inputStream.read(buff);
-            if (read == -1) break;
+            if (read == -1)
+                break;
             byteArrayOutputStream.write(buff, 0, read);
             downloaded += read;
             currentUpdate = System.currentTimeMillis();
@@ -420,11 +419,14 @@ public class Http {
         @NonNull
         @Override
         public List<Cookie> loadForRequest(@NonNull HttpUrl httpUrl) {
-            if (!httpUrl.isHttps()) return Collections.emptyList();
+            if (!httpUrl.isHttps())
+                return Collections.emptyList();
             if (this.androidacySupport && httpUrl.host().endsWith(".androidacy.com")) {
-                if (this.cookieManager == null) return this.androidacyCookies;
+                if (this.cookieManager == null)
+                    return this.androidacyCookies;
                 String cookies = this.cookieManager.getCookie(httpUrl.uri().toString());
-                if (cookies == null || cookies.isEmpty()) return Collections.emptyList();
+                if (cookies == null || cookies.isEmpty())
+                    return Collections.emptyList();
                 String[] splitCookies = cookies.split(";");
                 ArrayList<Cookie> cookieList = new ArrayList<>(splitCookies.length);
                 for (String cookie : splitCookies) {
@@ -438,7 +440,8 @@ public class Http {
 
         @Override
         public void saveFromResponse(@NonNull HttpUrl httpUrl, @NonNull List<Cookie> cookies) {
-            if (!httpUrl.isHttps()) return;
+            if (!httpUrl.isHttps())
+                return;
             if (this.androidacySupport && httpUrl.host().endsWith(".androidacy.com")) {
                 if (this.cookieManager == null) {
                     if (httpUrl.host().equals(".androidacy.com") || !cookies.isEmpty())
@@ -496,19 +499,22 @@ public class Http {
 
         @NonNull
         private static String toString(@NonNull List<InetAddress> inetAddresses) {
-            if (inetAddresses.isEmpty()) return "";
+            if (inetAddresses.isEmpty())
+                return "";
             Iterator<InetAddress> inetAddressIterator = inetAddresses.iterator();
             StringBuilder stringBuilder = new StringBuilder();
             while (true) {
                 stringBuilder.append(inetAddressIterator.next().getHostAddress());
-                if (!inetAddressIterator.hasNext()) return stringBuilder.toString();
+                if (!inetAddressIterator.hasNext())
+                    return stringBuilder.toString();
                 stringBuilder.append("|");
             }
         }
 
         @NonNull
         private static List<InetAddress> fromString(@NonNull String string) throws UnknownHostException {
-            if (string.isEmpty()) return Collections.emptyList();
+            if (string.isEmpty())
+                return Collections.emptyList();
             String[] strings = string.split("\\|");
             ArrayList<InetAddress> inetAddresses = new ArrayList<>(strings.length);
             for (String address : strings) {
@@ -524,20 +530,24 @@ public class Http {
                 List<InetAddress> addresses;
                 synchronized (this.fallbackCache) {
                     addresses = this.fallbackCache.get(s);
-                    if (addresses != null) return addresses;
+                    if (addresses != null)
+                        return addresses;
                     try {
                         addresses = this.parent.lookup(s);
                         if (addresses.isEmpty() || addresses.get(0).isLoopbackAddress())
                             throw new UnknownHostException(s);
                         this.fallbackCache.put(s, addresses);
                         this.sharedPreferences.edit().putString(s.replace('.', '_'), toString(addresses)).apply();
-                    } catch (UnknownHostException e) {
+                    } catch (
+                            UnknownHostException e) {
                         String key = this.sharedPreferences.getString(s.replace('.', '_'), "");
-                        if (key.isEmpty()) throw e;
+                        if (key.isEmpty())
+                            throw e;
                         try {
                             addresses = fromString(key);
                             this.fallbackCache.put(s, addresses);
-                        } catch (UnknownHostException e2) {
+                        } catch (
+                                UnknownHostException e2) {
                             this.sharedPreferences.edit().remove(s.replace('.', '_')).apply();
                             throw e;
                         }

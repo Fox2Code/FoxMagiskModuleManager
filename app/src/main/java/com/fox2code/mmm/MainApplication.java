@@ -54,7 +54,8 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     private static final String timeFormatString = "dd MMM yyyy"; // Example: 13 july 2001
     private static final Shell.Builder shellBuilder;
     private static final long secret;
-    @SuppressLint("RestrictedApi") // Use FoxProcess wrapper helper.
+    @SuppressLint("RestrictedApi")
+    // Use FoxProcess wrapper helper.
     private static final boolean wrapped = !FoxProcessExt.isRootLoader();
     private static Locale timeFormatLocale = Resources.getSystem().getConfiguration().locale;
     private static SimpleDateFormat timeFormat = new SimpleDateFormat(timeFormatString, timeFormatLocale);
@@ -63,7 +64,6 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     @SuppressLint("StaticFieldLeak")
     private static MainApplication INSTANCE;
     private static boolean firstBoot;
-    private static boolean loadSentryInitialized;
 
     static {
         Shell.setDefaultBuilder(shellBuilder = Shell.Builder.create().setFlags(Shell.FLAG_REDIRECT_STDERR).setTimeout(10).setInitializers(InstallerInitializer.class));
@@ -142,7 +142,8 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     }
 
     public static boolean isDeveloper() {
-        if (BuildConfig.DEBUG) return true;
+        if (BuildConfig.DEBUG)
+            return true;
         return getSharedPreferences().getBoolean("developer", false);
     }
 
@@ -171,9 +172,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     }
 
     public static boolean isCrashReportingEnabled() {
-        return SentryMain.IS_SENTRY_INSTALLED &&
-                getSharedPreferences().getBoolean("pref_crash_reporting",
-                        BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING);
+        return SentryMain.IS_SENTRY_INSTALLED && getSharedPreferences().getBoolean("pref_crash_reporting", BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING);
     }
 
     public static SharedPreferences getBootSharedPreferences() {
@@ -194,7 +193,8 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     }
 
     public Markwon getMarkwon() {
-        if (this.markwon != null) return this.markwon;
+        if (this.markwon != null)
+            return this.markwon;
         FoxThemeWrapper contextThemeWrapper = this.markwonThemeContext;
         if (contextThemeWrapper == null) {
             contextThemeWrapper = this.markwonThemeContext = new FoxThemeWrapper(this, this.managerThemeResId);
@@ -276,7 +276,8 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
 
     @Override
     public void onCreate() {
-        if (INSTANCE == null) INSTANCE = this;
+        if (INSTANCE == null)
+            INSTANCE = this;
         relPackageName = this.getPackageName();
         super.onCreate();
         SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
@@ -362,24 +363,30 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
                 String[] children = cacheDir.list();
                 if (children != null) {
                     for (String s : children) {
-                        if (BuildConfig.DEBUG) Log.w("MainApplication", "Deleting " + s);
+                        if (BuildConfig.DEBUG)
+                            Log.w("MainApplication", "Deleting " + s);
                         if (!s.equals("lib")) {
                             if (!new File(cacheDir, s).delete()) {
-                                if (BuildConfig.DEBUG) Log.w("MainApplication", "Failed to delete " + s);
+                                if (BuildConfig.DEBUG)
+                                    Log.w("MainApplication", "Failed to delete " + s);
                             }
                         }
                     }
                 }
             }
-            if (BuildConfig.DEBUG) Log.w("MainApplication", "Deleting cache dir");
+            if (BuildConfig.DEBUG)
+                Log.w("MainApplication", "Deleting cache dir");
             this.deleteSharedPreferences("mmm_boot");
             this.deleteSharedPreferences("mmm");
             this.deleteSharedPreferences("sentry");
             this.deleteSharedPreferences("androidacy");
-            if (BuildConfig.DEBUG) Log.w("MainApplication", "Deleting shared prefs");
+            if (BuildConfig.DEBUG)
+                Log.w("MainApplication", "Deleting shared prefs");
             this.getPackageManager().clearPackagePreferredActivities(this.getPackageName());
-            if (BuildConfig.DEBUG) Log.w("MainApplication", "Done clearing app data");
-        } catch (Exception e) {
+            if (BuildConfig.DEBUG)
+                Log.w("MainApplication", "Done clearing app data");
+        } catch (
+                Exception e) {
             Log.e("MainApplication", "Failed to clear app data", e);
         }
     }
