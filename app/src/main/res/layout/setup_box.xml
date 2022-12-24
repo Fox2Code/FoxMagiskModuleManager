@@ -2,7 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="fill_vertical"
     android:orientation="vertical"
@@ -51,7 +51,7 @@
             <!-- Button to trigger theme selection -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/setup_theme_button"
-                android:layout_width="320dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:backgroundTint="@color/gray_900"
@@ -66,7 +66,7 @@
                 app:iconPadding="8dp"
                 app:iconTint="@color/white"
                 app:iconTintMode="src_in"
-                app:rippleColor="@color/gray_800" tools:ignore="DuplicateSpeakableTextCheck" />
+                app:rippleColor="@color/gray_800" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
@@ -77,7 +77,7 @@
 
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/setup_androidacy_repo"
-                android:layout_width="320dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:checked="false"
@@ -87,7 +87,7 @@
 
             <!-- Small summary for above switch -->
             <com.google.android.material.textview.MaterialTextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:drawableStart="@drawable/ic_baseline_info_24"
@@ -97,7 +97,7 @@
 
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/setup_magisk_alt_repo"
-                android:layout_width="320dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:checked="false"
@@ -131,7 +131,7 @@
 
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/setup_crash_reporting"
-                android:layout_width="320dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:checked="false"
@@ -150,7 +150,7 @@
 
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/setup_background_update_check"
-                android:layout_width="320dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:checked="false"
@@ -178,13 +178,17 @@
                 android:key="pref_app_analytics"
                 android:textAppearance="@android:style/TextAppearance.Material.Small"
                 android:text="@string/setup_app_analytics" />-->
-            <!-- setup_cancel and setup_continue side by side buttons, stuck to bottom right, with a small space in between -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_margin="4dp"
-                android:orientation="horizontal">
+        </LinearLayout>
+    </ScrollView>
+    <!-- setup_cancel and setup_continue side by side buttons, stuck to bottom right, with a small space in between -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/setup_scroll"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="4dp"
+        android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/setup_cancel"
@@ -201,6 +205,4 @@
             android:layout_weight="1"
             android:text="@string/finish" />
     </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
 </RelativeLayout>
