@@ -19,7 +19,7 @@
     <string name="download_module">Baixar módulo</string>
     <string name="install_module">Instalar módulo</string>
     <string name="update_module">Atualizar módulo</string>
-    <string name="changelog">Changelog</string>
+    <string name="changelog">Mudanças</string>
     <string name="website">Website</string>
     <string name="support">Suporte</string>
     <string name="donate">Doar</string>
@@ -51,7 +51,7 @@
     <string name="module_needs_ramdisk_desc">Esse module necessita de ramdisk no boot para ser instalado</string>
     <string name="module_can_change_boot">Pode mudar boot</string>
     <string name="module_can_change_boot_desc">Esse modulo pode mudar a imagem de boot</string>
-    <string name="module_min_magisk_chip">Min. Magisk "%s"</string>
+    <string name="module_min_magisk_chip">Magisk. Minimo %s</string>
     <string name="module_min_sdk_chip">Min. Android</string>
     <string name="module_max_sdk_chip">Max. Android</string>
     <!-- Preference Titles -->
@@ -94,26 +94,20 @@
     <string name="remote_install_title">Instalação remota</string>
     <string name="file_picker_wierd">Seu gerenciador de arquivos retornou uma resposta não esperada.</string>
     <string name="use_magisk_install_command_pref">Usar comando de instalação do Magisk</string>
-    <string name="use_magisk_install_command_desc">
-        Durante testes esta opção causou problemas na ferramenta de diagnósticos de erro do module install,
-        então eu escondi ela no modo de desenvolvedor. Habilite por sua conta e risco!
-    </string>
+    <string name="use_magisk_install_command_desc">Durante testes esta opção causou problemas na ferramenta de diagnósticos de erro de instalação de modulo, então eu escondi ela no modo de desenvolvedor.
+\nHabilite por sua conta e risco!</string>
     <string name="dev_mode_enabled">Modo desenvolvedor habilitado</string>
     <string name="force_english_pref">Forçar uso do inglês</string>
     <string name="disable_low_quality_module_filter_pref">Desabilitar filtro de módulos de baixa qualidade</string>
-    <string name="disable_low_quality_module_filter_desc">
-        Alguns módulos não declaram a metadata corretamente, causando glitchs visuais.
-        Isso indica que o módulo é de baixa qualidade, desabilite por sua conta e risco!
-    </string>
+    <string name="disable_low_quality_module_filter_desc">Alguns módulos não declaram a metadata corretamente, causando defeitos visuais. Isso indica que o módulo é de baixa qualidade.
+\nDesabilite por sua conta e risco!</string>
     <string name="dns_over_https_desc">
         Em alguns casos pode consertar erros de conexão.
         (Não se aplica ao WebView)
     </string>
     <string name="disable_extensions_pref">Desabilitar extensões</string>
-    <string name="disable_extensions_desc">
-        Desabilita as extensões do Fox\'s Mmm, isto previne que os módulos usem
-        extensões do terminal. Útil se algum módulo fazer algum uso indevido de extensões do Fox\'s Mmm.
-    </string>
+    <string name="disable_extensions_desc">Desabilita as extensões do Fox\'s MMM, isto previne que os módulos usem extensões do terminal.
+\nÚtil se algum módulo fazer algum uso indevido de extensões do Fox\'s MMM.</string>
     <string name="wrap_text_pref">Quebrar texto</string>
     <string name="wrap_text_desc">Pula uma linha ao invés de manter todo o texto na mesma linha durante a instalação de um módulo.</string>
     <string name="enable_blur_pref">Habilitar blur</string>
@@ -145,4 +139,112 @@
     <string name="link_copied">Link copiado</string>
     <string name="dev_mode_disabled">Modo de desenvolvedor desativado</string>
     <string name="dns_over_https_pref">DNS sobre HTTPS</string>
+    <string name="androidacy_update_needed_message">Por favor atualize o app para a ultima versão.</string>
+    <string name="disable_chips_in_description">Desativar bolhas na descrição</string>
+    <string name="androidacy_repo_info">Esse repositório pode exibir alguns anúncios não-intrusivos para cobrir os custos de servidor e desenvolvimento. Analise de recursos, scans automáticos de virus e muito mais .</string>
+    <string name="crash_reporting">Reportar bugs e problemas de performance automaticamente aos desenvolvedores</string>
+    <string name="api_key_invalid">Não foi possível validar a chave de API. Por favor verifique e tente novamente.</string>
+    <string name="androidacy_test_mode_warning">Você está configurando o app para usar um servidor de testes da Androidacy. Isso pode resultar em instabilidade no app e falha ao carregar o repositório. NÃO reporte bugs se isto estiver ativado. O app ira reiniciar para recarregar os repositórios.</string>
+    <string name="androidacy_need_captcha">Atualização da Androidacy bloqueado por Captcha</string>
+    <string name="api_key_restart">Chave de API foi mudada. Reinicie o app para aplicar as mudanças.</string>
+    <string name="permission_notification_message">Precisamos da permissão de notificações para te notificar sobre atualização de módulos e do app. Se você não permitir, verificações de atualização em segundo plano serão feitas.</string>
+    <string name="repo_update_failed_extended">Atualização de %1$s falhou. Por favor tente de novo mais tarde.</string>
+    <string name="monet_disabled_summary">Monet não é compatível com temas transparentes.</string>
+    <string name="blur_disabled_summary">Desfoque não é compatível com temas transparentes.</string>
+    <string name="transparent_theme_dialogue_title">Você esta configurando um tema transparente</string>
+    <string name="custom_repo_always_on">Repositórios alternativos então sempre ativos ate que você os remova.</string>
+    <string name="sentry_dialogue_message">Encontramos um erro! Por favor nos ajude a melhorar o app ao adicionar alguma informação sobre o erro abaixo.
+\nNome e email são opcionais mas irá nos permitir te contatar para mais informações.</string>
+    <string name="sentry_dialogue_title">Eita! Parece que o app fechou inesperadamente.</string>
+    <string name="name">Seu name</string>
+    <string name="email">Seu email</string>
+    <string name="additional_info">Nos diga o que aconteceu</string>
+    <string name="submit">Enviar</string>
+    <string name="sentry_dialogue_failed_toast">Incapaz de enviar devido a um erro</string>
+    <string name="sentry_dialogue_success">Relatório enviador com sucesso. Iremos analisar logo em breve</string>
+    <string name="sentry_dialogue_no_description">Incapaz de enviar relatório já que nenhuma descrição foi providenciada</string>
+    <string name="go_to_online_repo">Descer até os repositórios online</string>
+    <string name="pref_pkg_info_summary">Versão %1$s v%2$s (%3$o) | %4$s</string>
+    <string name="official">Oficial</string>
+    <string name="unofficial">Não oficial</string>
+    <string name="setup_title">Configuração inicial</string>
+    <string name="setup_message">Bem vindo! Esse app irá te ajudar a instalar e gerenciar módulos do Magisk. Para começar, selecione as opções abaixo. Essas e outras podem ser ajustadas de novo nas configurações depois.</string>
+    <string name="setup_button">Terminar configuração</string>
+    <string name="setup_background_update_check">Atualizações em segundo plano</string>
+    <string name="setup_androidacy_repo">Ativar o repositório Androidacy</string>
+    <string name="transparent_theme_dialogue_message">Temas transparentes podem ter inconsistências e podem não funcionar em todas as ROMs. E eles irão desativar o Monet e desfoque. Você pode mudar isso a qualquer hora.</string>
+    <string name="androidacy_repo_disabled_message">Essa versão não incluir as chaves do repositório Androidacy. Por favor baixe do Github se você quiser aproveitar os benefícios como pontuação dos módulos, verificações de segurança e mais.</string>
+    <string name="setup_magisk_alt_repo">Ativar o repositório Magisk Alt</string>
+    <string name="setup_crash_reporting">Ativar o Sentry</string>
+    <string name="setup_custom_repos">Você pode adicionar repositórios alterativos nas configurações depois.</string>
+    <string name="repos">Repositórios</string>
+    <string name="misc">Diversos</string>
+    <string name="setup_button_skip">Pular</string>
+    <string name="low_performance_device_dialogue_title">Ativar desfoque em dispositivos fracos</string>
+    <string name="low_performance_device_dialogue_message">Você esta tentando ativar o desfoque em um dispositivo que pode não rodar muito bem com ele.
+\nVocê pode ativa-lo, mas isso pode ocasionar em uma péssima experiencia e recomendamos que não o ative.</string>
+    <string name="alt_repo_info">Esse repositório possui menos restrições, o que pode resultar em módulos de menor qualidade. Bem simples porem com muitos módulos.</string>
+    <string name="androidacy_update_needed">Esse app esta desatualizado.</string>
+    <string name="androidacy_webview_update_required">Seu Webview esta desatualizado! Por favor o atualize.</string>
+    <string name="api_key_unchanged">A chave de API q você inseriu já é mesma que está em uso.</string>
+    <string name="permission_notification_title">Permitir notificações\?</string>
+    <string name="permission_notification_grant">Permitir</string>
+    <string name="background_update_check_permission_required">Por favor, ative as notificações para ativar essa opção.</string>
+    <string name="dont_ask_again">Não perguntar de novo</string>
+    <string name="force_black_theme_desc">Força o fundo AMOLED preto ao usar o tema escuro, Esteja ciente que isso pode causar problemas de contraste com algumas cores.</string>
+    <string name="force_black_theme_pref">Forçar tema preto</string>
+    <string name="androidacy_repo_disabled">Esse repositório esta atualmente desativado</string>
+    <string name="download_full_app">Baixar a versão completa</string>
+    <string name="repo_update_failed">Falha ao atualizar alguns repositórios</string>
+    <string name="crash_reporting_desc">Se desativar isso, o desenvolvedor não ira receber relatos de bugs automáticos, e isso pode tornar a resolução deles mais dificil</string>
+    <string name="androidacy_failed_to_parse_token">Não foi possível obter o token da Androidacy, Por favor tente de novo.</string>
+    <string name="androidacy_failed_to_validate_token">Não foi possível validar token da Androidacy, Por favor tente de novo.</string>
+    <string name="androidacy_server_down">Falha ao contatar o servidor da Androidacy. Verifique sua conexão e tente de novo.</string>
+    <string name="api_key">Chave de API da Androidacy</string>
+    <string name="api_key_summary">Usar uma chave de API alternativa para o Androidacy, util para usuários premium, para remover anúncios e mais.</string>
+    <string name="api_key_not_set">Chave de API Androidacy está vazia</string>
+    <string name="api_key_set">Chave atual de API da Androidacy</string>
+    <string name="api_key_valid">Chave de API é valida.</string>
+    <string name="checking_api_key">Validando chave de API...</string>
+    <string name="validating_api_key">Validando chave de API...</string>
+    <string name="please_wait">Por favor aguarde</string>
+    <string name="api_key_removed">Chave de API restaurado com sucesso</string>
+    <string name="save_api_key">Validar</string>
+    <string name="warning">Aviso!</string>
+    <string name="crash">Travar o app para testes</string>
+    <string name="repackaged_as">Reempacotado como:</string>
+    <string name="wrapped_from">Embrulhado de:</string>
+    <string name="crash_reporting_restart_title">Reiniciar app para aplicar as mudanças\?</string>
+    <string name="crash_reporting_restart_message">O app precisar reiniciar para aplicar essa configuração</string>
+    <string name="restart">Reiniciar</string>
+    <string name="androidacy_test_mode_disable_warning">App sera reiniciado para desativar o servidor de testes</string>
+    <string name="notification_update_title_easter_egg">Cheirado %i atualizações de modulo</string>
+    <string name="install_terminal_reboot_now_message">Você esta prestes a reiniciar seu aparelho. Se você já salvou seu trabalho, clique OK para continuar. Caso contrario, aperte cancelar.</string>
+    <string name="install_terminal_config_missing">Pacote %s esta faltando para configuração do modulo, então não podemos inicia-la.</string>
+    <string name="clear_app_data">Limpar dados do app</string>
+    <string name="clear_data_dialogue_title">Limpar dados do app\?</string>
+    <string name="clear_data_dialogue_message">Você esta prestes a limpar os dados do app. Por favor confirme esta ação.</string>
+    <string name="setup_background_update_check_summary">Nos permite buscar atualizações de app e módulos em segundo plano. Esse recurso pode usar mais bateria e dados.</string>
+    <string name="setup_androidacy_repo_summary">Incluir resenhas de usuário, analises de virus automáticas, atualizações rápidas, grande variedade, e é providenciado pelo Androidacy.</string>
+    <string name="setup_magisk_alt_repo_summary">Mais relaxado que o original. Contem vários módulos em troca de alguma segurança.</string>
+    <string name="setup_crash_reporting_summary">Relatório de erros e analise de performance. Todas relatórios são estritamente anônimos e confidenciais.</string>
+    <string name="debug_build">Esta é uma versão de testes. Pode se esperar alguns bugs ou pior performance.</string>
+    <string name="androidacy_repo_name">Repositório Androidacy</string>
+    <string name="magisk_alt_repo_name">Repositório Magisk Alt</string>
+    <string name="repo_enabled_changed">Você desativou ou ativou um repositório. Por favor atualize a lista de módulos ou reinicie o app.</string>
+    <string name="finish">Terminar</string>
+    <string name="setup_theme">Escolha um tema</string>
+    <string name="setup_theme_header">Escolha um tema</string>
+    <string name="setup_theme_system">Tema do sistema</string>
+    <string name="setup_theme_light">Tema claro</string>
+    <string name="setup_theme_dark">Tema escuro</string>
+    <string name="setup_theme_black">Tema preto AMOLED</string>
+    <string name="setup_theme_transparent_light">Tema claro transparente - ira desativar o Monet e o desfoque!</string>
+    <string name="setup_theme_button">Escolha um tema</string>
+    <string name="theme">Tema</string>
+    <string name="theme_system">Sistema</string>
+    <string name="theme_dark">Escuro</string>
+    <string name="theme_black">Preto AMOLED</string>
+    <string name="theme_transparent_light">Claro (transparente)</string>
+    <string name="theme_light">Claro</string>
 </resources>
