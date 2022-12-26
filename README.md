@@ -80,17 +80,11 @@ Manager to help you download and install Magisk modules.
 
 ## Requirements
 
-Minimum:
+### Minimum / Recommended:
 
-- Android 5.0+
-- Magisk 19.0+
-- An internet connection
-
-Recommended:
-
-- Android 6.0+
-- Magisk 21.2+
-- An internet connection
+- Android 6.0+ / Android 7.0+
+- Magisk 19.0+ / Magisk 21.2+
+- An internet connection / A stable wifi connection
 
 Note: This app may require the use of a VPN in countries with a state wide firewall.
 
@@ -153,18 +147,36 @@ For more information please check the [developer documentation](docs/DEVELOPERS.
 
 ## For translators
 
-We use Weblate for translations: https://translate.nift4.org/engage/foxmmm/
-(Make sure to check your spam folder when registering)
+**We need your help!** The app has started lagging behind in translations, and we need your help to catch up! As a reminder, translations are required to be at 60% or more to be included in the app.
 
-If you do not want to register on the self-hosted Weblate instance, you can do a pull request on
-GitHub:
+### Recommended method
 
-See [`app/src/main/res/values/strings.xml`](https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/app/src/main/res/values/strings.xml)
-and [`app/src/main/res/values/arrays.xml`](https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/app/src/main/res/values/arrays.xml)
+We use Weblate for translations: [https://translate.nift4.org/engage/foxmmm/](https://translate.nift4.org/engage/foxmmm/)
+
+- You can create an account and start translating
+- You may need to check your spam folder for the confirmation email
+
+### GitHub method for advanced users
+
+See [`app/src/main/res/values/strings.xml`](https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/app/src/main/res/values/strings.xml) and [`app/src/main/res/values/arrays.xml`](https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/app/src/main/res/values/arrays.xml)
 
 If your language is right to left don't forget to set `lang_support_rtl` to `true`.
 
-Translators are not expected to have any previous coding experience.
+Translators do not need to have any previous coding experience..
+
+## Add your own repos
+
+See [the documentation](docs/add-repo.md)
+
+## Issues with a repo
+
+If you have a problem with a repo, please contact the repo owner **first**. If you are unable to
+reach them or they are not willing to help, you can contact us as a last resort.
+
+Default repo owners:
+
+- Androidacy: [Telegram](https://telegram.dog/androidacy_discussions)
+- Magisk-Modules-Alt-Repo: [Telegram](https://github.com/Magisk-Modules-Alt-Repo/submission/issues)
 
 ## License
 
@@ -188,18 +200,4 @@ developer reserves the right to make additions, deletions, or modification to th
 app at any time without prior notice.
 
 This app is not affiliated with Magisk or its developers, nor with any of the module repos or
-developers of the modules.
-
-## Add your own repos
-
-See [the documentation](docs/add-repo.md)
-
-## Issues with a repo
-
-If you have a problem with a repo, please contact the repo owner **first**. If you are unable to
-reach them or they are not willing to help, you can contact us as a last resort.
-
-Default repo owners:
-
-- Androidacy: [Telegram](https://telegram.dog/androidacy_discussions)
-- Magisk-Modules-Alt-Repo: [Telegram](https://github.com/Magisk-Modules-Alt-Repo/submission/issues)
+developers of the modules
