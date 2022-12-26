@@ -132,7 +132,7 @@
     <string name="remove_repo">Remove Repo</string>
     <string name="custom_url">Custom url</string>
     <string name="link_copied">Link copied</string>
-    <string name="androidacy_repo_info">This repository may display some non-intrusive dvertising to cover server and development costs. Features reviews, automatic virus scans, and more.</string>
+    <string name="androidacy_repo_info">This repository may display some non-intrusive advertising to cover server and development costs. Features reviews, automatic virus scans, and more.</string>
     <string name="backup_module_list">Backup modules</string>
     <string name="restore_module_list">Restore modules</string>
     <string name="require_internet">This operation require an internet connection</string>
