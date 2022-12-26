@@ -91,4 +91,13 @@
     <string name="enable_blur_pref">Povoliť rozostrenia</string>
     <string name="repo_enabled">Repozitár povolený</string>
     <string name="repo_disabled">Repozitár zakázaný</string>
+    <string name="fail_root_denied">Magisk odmietol udeliť root.</string>
+    <string name="fail_magisk_missing">Na zariadení nie je nainštalovaný Magisk</string>
+    <string name="no_web_view">WebView sa nedá otvoriť</string>
+    <string name="install">Inštalovať</string>
+    <string name="description">Popis</string>
+    <string name="uninstall">Odinštalovať</string>
+    <string name="config">Konfigurácia</string>
+    <string name="favourite">Obľúbené</string>
+    <string name="update">Aktualizovať</string>
 </resources>

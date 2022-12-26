@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Fox Magisk Module Manager</string>
     <string name="app_name_short">Fox Mmm</string>
@@ -141,9 +142,41 @@
     <integer name="language_support_level">1</integer>
     <string name="language_support_outdated">Alcune traduzioni per la lingua corrente non sono aggiornate, ti preghiamo di considerare di contribuire alle traduzioni dell\'app su GitHub</string>
     <!-- Sostituisci con il tuo nome utente durante la traduzione -->
-    <string name="language_translated_by">Traduzione di tugaia56</string>
+    <string name="language_translated_by">Traduzione di CRANKV2</string>
     <string name="crash_reporting">Segnala automaticamente problemi e prestazioni agli sviluppatori</string>
     <string name="crash_reporting_desc">Se lo disabiliti, lo sviluppatore non riceverà segnalazioni di bug automatiche e ciò potrebbe rendere più difficile la risoluzione dei problemi</string>
     <string name="api_key">Chiave API Androidacy</string>
     <string name="api_key_summary">Utilizza una chiave API personalizzata per Androidacy. Utile per gli abbonati premium, per rimuovere pubblicità e altro.</string>
+    <string name="fail_root_denied">Il root è stato negato tramite l\'app Magisk</string>
+    <string name="api_key_unchanged">La chiave API che inserisci è la stessa di quella già in uso.</string>
+    <string name="permission_notification_title">Consentire le notifiche\?</string>
+    <string name="fail_magisk_missing">Magisk non è installato su questo dispositivo</string>
+    <string name="androidacy_repo_info">Questo repository può mostrare pubblicità non intrusiva per coprire i costi del server e di sviluppo. Funzionalità recensioni, scansioni antivirus automatiche e altro ancora.</string>
+    <string name="checking_api_key">Convalida della chiave API...</string>
+    <string name="androidacy_test_mode_warning">Stai impostando l\'app in modo che utilizzi un endpoint non di produzione per Androidacy. Ciò potrebbe comportare l\'instabilità dell\'app e il mancato caricamento del repository online. NON segnalare bug se hai attivato questo interruttore. L\'app verrà riavviata per ricaricare i repository.</string>
+    <string name="api_key_restart">La chiave API è stata modificata. Riavvia l\'app per applicare le modifiche.</string>
+    <string name="permission_notification_message">Abbiamo bisogno dell\'autorizzazione per le notifiche per informarti sugli aggiornamenti di app e moduli. Se non concedi questa autorizzazione, i controlli degli aggiornamenti in background non verranno eseguiti.</string>
+    <string name="androidacy_failed_to_parse_token">Impossibile recuperare il token da Androidacy. Per favore riprova più tardi.</string>
+    <string name="androidacy_failed_to_validate_token">Impossibile convalidare il token per Androidacy. Per favore riprova più tardi.</string>
+    <string name="androidacy_server_down">Impossibile contattare il server Androidacy. Controlla la connessione e riprova.</string>
+    <string name="androidacy_need_captcha">Aggiornamento Androidacy bloccato da Captcha</string>
+    <string name="link_copied">Collegamento copiato</string>
+    <string name="androidacy_test_mode_pref">Modalità di test Androidacy</string>
+    <string name="androidacy_test_mode_desc">Utilizzare l\'endpoint Androidacy di staging anziché l\'endpoint di rilascio. (Riavvierà l\'app)</string>
+    <string name="api_key_not_set">La chiave API Androidacy è vuota</string>
+    <string name="api_key_set">Chiave API Androidacy corrente</string>
+    <string name="api_key_invalid">Impossibile convalidare la chiave API. Si prega di controllare e riprovare.</string>
+    <string name="api_key_valid">La chiave API è valida.</string>
+    <string name="validating_api_key">Convalida della chiave API...</string>
+    <string name="please_wait">attendere prego</string>
+    <string name="api_key_removed">Chiave API reimpostata correttamente</string>
+    <string name="save_api_key">Convalidare</string>
+    <string name="warning">Avvertimento!</string>
+    <string name="crash">Arresta l\'app per il test</string>
+    <string name="repackaged_as">Riconfezionato come:</string>
+    <string name="wrapped_from">Avvolto da:</string>
+    <string name="crash_reporting_restart_title">Riavviare l\'app per applicare le modifiche\?</string>
+    <string name="crash_reporting_restart_message">L\'app deve essere riavviata per applicare questa impostazione</string>
+    <string name="restart">Ricomincia</string>
+    <string name="androidacy_test_mode_disable_warning">L\'app verrà riavviata per disabilitare l\'endpoint di gestione temporanea</string>
 </resources>
