@@ -233,4 +233,7 @@
     <string name="theme_black">AMOLED</string>
     <string name="theme_transparent_light">Transparent Hell</string>
     <string name="theme_light">Hell</string>
+    <string name="androidacy_update_needed_message">Bitte aktualisiere die App auf die neuste Version.</string>
+    <string name="androidacy_update_needed">Diese App-Version ist zu alt.</string>
+    <string name="androidacy_webview_update_required">Deine WebView ist zu alt! Bitte aktualisiere sie.</string>
 </resources>
