@@ -136,8 +136,8 @@
     <string name="api_key_set">API key Androidacy yang digunakan</string>
     <string name="api_key_invalid">Tidak dapat mengesahkan API key. Mohon periksa kembali lalu coba lagi.</string>
     <string name="api_key_valid">API Key sah.</string>
-    <string name="checking_api_key">Memeriksa API Key...</string>
-    <string name="validating_api_key">Memeriksa API key...</string>
+    <string name="checking_api_key">Memeriksa API Key…</string>
+    <string name="validating_api_key">Memeriksa API key…</string>
     <string name="please_wait">Mohon tunggu</string>
     <string name="api_key_removed">API Key berhasil diatur ulang</string>
     <string name="save_api_key">Simpan API Key</string>

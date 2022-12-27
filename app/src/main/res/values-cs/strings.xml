@@ -158,8 +158,8 @@
     <string name="androidacy_need_captcha">Update Androidacy blokuje Captcha</string>
     <string name="api_key_invalid">Klíč Androidacy nelze ověřit. Skontrolujte jej a zkuste opět.</string>
     <string name="api_key_valid">Klíč API je platný.</string>
-    <string name="checking_api_key">Oveřuje se klíč API...</string>
-    <string name="validating_api_key">Oveřuje se klíč API...</string>
+    <string name="checking_api_key">Oveřuje se klíč API…</string>
+    <string name="validating_api_key">Oveřuje se klíč API…</string>
     <string name="please_wait">Čekejte prosím</string>
     <string name="api_key_removed">Klíč API úspěšne resetován</string>
     <string name="save_api_key">Ověřit</string>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="app_name">Fox Magisk Module Manager</string>
     <string name="app_name_short">Fox Mmm</string>
     <string name="fail_root_magisk">Impossibile ottenere l\'accesso al Root o a Magisk</string>
@@ -152,7 +152,7 @@
     <string name="permission_notification_title">Consentire le notifiche\?</string>
     <string name="fail_magisk_missing">Magisk non è installato su questo dispositivo</string>
     <string name="androidacy_repo_info">Questo repository può mostrare pubblicità non intrusiva per coprire i costi del server e di sviluppo. Funzionalità recensioni, scansioni antivirus automatiche e altro ancora.</string>
-    <string name="checking_api_key">Convalida della chiave API...</string>
+    <string name="checking_api_key">Convalida della chiave API…</string>
     <string name="androidacy_test_mode_warning">Stai impostando l\'app in modo che utilizzi un endpoint non di produzione per Androidacy. Ciò potrebbe comportare l\'instabilità dell\'app e il mancato caricamento del repository online. NON segnalare bug se hai attivato questo interruttore. L\'app verrà riavviata per ricaricare i repository.</string>
     <string name="api_key_restart">La chiave API è stata modificata. Riavvia l\'app per applicare le modifiche.</string>
     <string name="permission_notification_message">Abbiamo bisogno dell\'autorizzazione per le notifiche per informarti sugli aggiornamenti di app e moduli. Se non concedi questa autorizzazione, i controlli degli aggiornamenti in background non verranno eseguiti.</string>
@@ -167,7 +167,7 @@
     <string name="api_key_set">Chiave API Androidacy corrente</string>
     <string name="api_key_invalid">Impossibile convalidare la chiave API. Si prega di controllare e riprovare.</string>
     <string name="api_key_valid">La chiave API è valida.</string>
-    <string name="validating_api_key">Convalida della chiave API...</string>
+    <string name="validating_api_key">Convalida della chiave API…</string>
     <string name="please_wait">attendere prego</string>
     <string name="api_key_removed">Chiave API reimpostata correttamente</string>
     <string name="save_api_key">Convalidare</string>

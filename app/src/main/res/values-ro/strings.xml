@@ -145,8 +145,8 @@
     <string name="api_key_set">Cheie API Androidacy actuală</string>
     <string name="api_key_invalid">Nu s-a putut valida cheia API. Vă rugăm verificați-o și încercați din nou.</string>
     <string name="api_key_valid">Cheia API este validă.</string>
-    <string name="checking_api_key">Validare cheie API...</string>
-    <string name="validating_api_key">Validare cheie API...</string>
+    <string name="checking_api_key">Validare cheie API…</string>
+    <string name="validating_api_key">Validare cheie API…</string>
     <string name="please_wait">Așteptați</string>
     <string name="api_key_removed">Resetare cheie API reușită</string>
     <string name="save_api_key">Validare</string>

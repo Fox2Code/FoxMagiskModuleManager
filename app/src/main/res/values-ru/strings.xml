@@ -145,8 +145,8 @@
     <string name="api_key_not_set">API-ключ Androidacy отсутствует</string>
     <string name="api_key_set">Текущий API-ключ Androidacy</string>
     <string name="api_key_invalid">Не удалось подтвердить ключ API. Пожалуйста, проверьте его и повторите попытку.</string>
-    <string name="checking_api_key">Проверка ключа...</string>
-    <string name="validating_api_key">Подтверждение ключа...</string>
+    <string name="checking_api_key">Проверка ключа…</string>
+    <string name="validating_api_key">Подтверждение ключа…</string>
     <string name="please_wait">Пожалуйста, подождите</string>
     <string name="api_key_removed">API-ключ успешно сброшен</string>
     <string name="warning">Внимание!</string>

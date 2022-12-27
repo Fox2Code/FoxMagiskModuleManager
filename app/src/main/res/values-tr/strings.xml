@@ -95,7 +95,7 @@
     <string name="file_picker_failure">Mevcut dosya seçicisi dosyaya erişemedi.</string>
     <string name="remote_install_title">Uzaktan yükleme</string>
     <string name="file_picker_wierd">Dosya seçicisi standart olmayan bir yanıtı geri getirdi.</string>
-    <string name="use_magisk_install_command_pref">\"magisk --install-module\" komutunu kullan</string>
+    <string name="use_magisk_install_command_pref">\"magisk —install-module\" komutunu kullan</string>
     <string name="use_magisk_install_command_desc">Test sırasında modül yükleme hata teşhis aracında sorunlar meydana geldi, bu yüzden o seçenek geliştirici modunun arkasına gizlenmiştir.
 \nBunu etkinleştirmenizde sorumluluk size aittir!</string>
     <string name="dev_mode_enabled">Geliştirici modu açık</string>
@@ -151,8 +151,8 @@
     <string name="api_key_set">Mevcut Androidacy API anahtarı</string>
     <string name="api_key_invalid">API anahtarı doğrulanamadı. Lütfen kontrol edin ve tekrar deneyin.</string>
     <string name="api_key_valid">API anahtarı geçerli.</string>
-    <string name="checking_api_key">API anahtarı doğrulanıyor...</string>
-    <string name="validating_api_key">API anahtarı doğrulanıyor...</string>
+    <string name="checking_api_key">API anahtarı doğrulanıyor…</string>
+    <string name="validating_api_key">API anahtarı doğrulanıyor…</string>
     <string name="please_wait">Lütfen bekleyin</string>
     <string name="api_key_removed">API anahtarı başarıyla sıfırlandı</string>
     <string name="save_api_key">Doğrula</string>

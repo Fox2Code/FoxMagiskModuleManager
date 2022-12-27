@@ -163,8 +163,8 @@
     <string name="api_key_set">当前的 Androidacy API key</string>
     <string name="api_key_invalid">无法验证 API Key。 请检查并重试。</string>
     <string name="api_key_valid">API key有效.</string>
-    <string name="checking_api_key">正在验证 API key...</string>
-    <string name="validating_api_key">正在验证 API key...</string>
+    <string name="checking_api_key">正在验证 API key…</string>
+    <string name="validating_api_key">正在验证 API key…</string>
     <string name="please_wait">请等待</string>
     <string name="api_key_removed">成功重置 API key</string>
     <string name="save_api_key">验证</string>

@@ -142,8 +142,8 @@
     <string name="api_key_set">Bieżący klucz API Androidacy</string>
     <string name="api_key_invalid">Nie można zweryfikować klucza API. Proszę sprawdzić i spróbować ponownie.</string>
     <string name="api_key_valid">Klucz API jest prawidłowy.</string>
-    <string name="checking_api_key">Sprawdzanie klucza API...</string>
-    <string name="validating_api_key">Weryfikacja klucza API...</string>
+    <string name="checking_api_key">Sprawdzanie klucza API…</string>
+    <string name="validating_api_key">Weryfikacja klucza API…</string>
     <string name="please_wait">Proszę czekać</string>
     <string name="api_key_removed">Zresetowano klucz API</string>
     <string name="save_api_key">Weryfikacja</string>

@@ -111,8 +111,8 @@
     <string name="api_key_set">Huidige Androidacy API-sleutel</string>
     <string name="api_key_invalid">Kan de API-sleutel niet valideren. Controleer en probeer het opnieuw.</string>
     <string name="api_key_valid">API-sleutel is geldig.</string>
-    <string name="checking_api_key">API-sleutel wordt gevalideerd...</string>
-    <string name="validating_api_key">API-sleutel wordt gevalideerd...</string>
+    <string name="checking_api_key">API-sleutel wordt gevalideerd…</string>
+    <string name="validating_api_key">API-sleutel wordt gevalideerd…</string>
     <string name="please_wait">Een ogenblik geduld</string>
     <string name="api_key_removed">API-sleutel opnieuw ingesteld</string>
     <string name="warning">Waarschuwing!</string>

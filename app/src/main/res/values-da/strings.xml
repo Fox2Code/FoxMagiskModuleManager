@@ -111,8 +111,8 @@
     <string name="api_key_set">Aktuel Androidacy API-nøgle</string>
     <string name="api_key_invalid">API-nøglen kunne ikke valideres. Tjek det venligst og prøv igen.</string>
     <string name="api_key_valid">API-nøglen er gyldig.</string>
-    <string name="checking_api_key">Validerer API-nøgle...</string>
-    <string name="validating_api_key">Validerer API-nøgle...</string>
+    <string name="checking_api_key">Validerer API-nøgle…</string>
+    <string name="validating_api_key">Validerer API-nøgle…</string>
     <string name="please_wait">Vent venligst</string>
     <string name="api_key_removed">API-nøgle nulstillet</string>
     <string name="save_api_key">Valider</string>

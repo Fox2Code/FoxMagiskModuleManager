@@ -119,8 +119,8 @@
     <string name="api_key_set">Clave actual de la API de Androidacy</string>
     <string name="api_key_invalid">No se ha podido validar la clave API. Por favor, compruébalo e inténtalo de nuevo.</string>
     <string name="api_key_valid">La clave API es válida.</string>
-    <string name="checking_api_key">Validación de la clave API...</string>
-    <string name="validating_api_key">Validación de la clave API...</string>
+    <string name="checking_api_key">Validación de la clave API…</string>
+    <string name="validating_api_key">Validación de la clave API…</string>
     <string name="please_wait">Por favor espera</string>
     <string name="save_api_key">Validar</string>
     <string name="warning">¡Atención!</string>

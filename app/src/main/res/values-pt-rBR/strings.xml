@@ -11,7 +11,7 @@
     <string name="failed_download">Não foi possível baixar o arquivo</string>
     <string name="slow_modules">Os módulos demoraram muito para inicializar, considere remover alguns</string>
     <string name="fail_internet">Não foi possível conectar à internet</string>
-    <string name="no_web_view">Não foi possivel abrir Webview do sistema</string>
+    <string name="no_web_view">Não foi possível abrir Webview do sistema</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="app_update_available">Atualização disponível</string>
     <string name="app_update">Atualizar</string>
@@ -36,7 +36,7 @@
     <string name="require_android_6">Requer Android 6.0+</string>
     <string name="require_android_12">Requer Android 12+</string>
     <string name="install_terminal_reboot_now">Reinciar</string>
-    <string name="language">Lingua</string>
+    <string name="language">Língua</string>
     <string name="yes" translatable="false">@android:string/yes</string>
     <string name="no" translatable="false">@android:string/no</string>
     <string name="ok" translatable="false">@android:string/ok</string>
@@ -51,7 +51,7 @@
     <string name="module_needs_ramdisk_desc">Esse module necessita de ramdisk no boot para ser instalado</string>
     <string name="module_can_change_boot">Pode mudar boot</string>
     <string name="module_can_change_boot_desc">Esse modulo pode mudar a imagem de boot</string>
-    <string name="module_min_magisk_chip">Magisk. Minimo %s</string>
+    <string name="module_min_magisk_chip">Magisk. Mínimo %s</string>
     <string name="module_min_sdk_chip">Min. Android</string>
     <string name="module_max_sdk_chip">Max. Android</string>
     <!-- Preference Titles -->
@@ -71,7 +71,7 @@
     <string name="magisk_outdated">Magisk desatualizado!</string>
     <string name="pref_category_repos">Repositórios</string>
     <string name="pref_category_security">Segurança</string>
-    <string name="pref_category_appearance">Aparencia</string>
+    <string name="pref_category_appearance">Aparência</string>
     <string name="pref_category_general">Geral</string>
     <string name="repo_main_desc">Repositório que hospeda os módulos do Magisk</string>
     <string name="repo_main_alt">Uma alternativa com menos restrições ao Magisk-Modules-Repo.</string>
@@ -120,7 +120,7 @@
     <string name="restore_module_list">Restaurar modulos</string>
     <string name="require_internet">Essa operação requer uma conexão com a internet</string>
     <string name="androidacy_test_mode_pref">Androidacy modo teste</string>
-    <string name="androidacy_test_mode_desc">Use a conexão de teste do Androidacy inves da normal. (Requer reinicialização do app)</string>
+    <string name="androidacy_test_mode_desc">Use a conexão de teste do Androidacy invés da normal. (Requer reinicialização do app)</string>
     <!-- Background Notification translation -->
     <string name="notification_update_title">Encontrado %i atualizações de modulo</string>
     <string name="notification_update_subtitle">Clique para abrir o app</string>
@@ -131,7 +131,7 @@
     <bool name="lang_support_rtl">false</bool>
     <!-- Always copy language_support_level when translating -->
     <integer name="language_support_level">1</integer>
-    <string name="language_support_outdated">Algumas traduções para sua lingua atual não esta em dia, por favor considere contribuir para as traduções do app no Github</string>
+    <string name="language_support_outdated">Algumas traduções para sua língua atual não esta em dia, por favor considere contribuir para as traduções do app no Github</string>
     <!-- Replace with your own username when translating -->
     <string name="language_translated_by">Traduzido por mi007d e DanGLES3</string>
     <string name="fail_root_denied">Acesso root foi negado pelo app do Magisk</string>
@@ -139,9 +139,9 @@
     <string name="link_copied">Link copiado</string>
     <string name="dev_mode_disabled">Modo de desenvolvedor desativado</string>
     <string name="dns_over_https_pref">DNS sobre HTTPS</string>
-    <string name="androidacy_update_needed_message">Por favor atualize o app para a ultima versão.</string>
+    <string name="androidacy_update_needed_message">Por favor atualize o app para a última versão.</string>
     <string name="disable_chips_in_description">Desativar bolhas na descrição</string>
-    <string name="androidacy_repo_info">Esse repositório pode exibir alguns anúncios não-intrusivos para cobrir os custos de servidor e desenvolvimento. Analise de recursos, scans automáticos de virus e muito mais .</string>
+    <string name="androidacy_repo_info">Esse repositório pode exibir alguns anúncios não-intrusivos para cobrir os custos de servidor e desenvolvimento. Analise de recursos, scans automáticos de vírus e muito mais .</string>
     <string name="crash_reporting">Reportar bugs e problemas de performance automaticamente aos desenvolvedores</string>
     <string name="api_key_invalid">Não foi possível validar a chave de API. Por favor verifique e tente novamente.</string>
     <string name="androidacy_test_mode_warning">Você está configurando o app para usar um servidor de testes da Androidacy. Isso pode resultar em instabilidade no app e falha ao carregar o repositório. NÃO reporte bugs se isto estiver ativado. O app ira reiniciar para recarregar os repositórios.</string>
@@ -168,7 +168,7 @@
     <string name="official">Oficial</string>
     <string name="unofficial">Não oficial</string>
     <string name="setup_title">Configuração inicial</string>
-    <string name="setup_message">Bem vindo! Esse app irá te ajudar a instalar e gerenciar módulos do Magisk. Para começar, selecione as opções abaixo. Essas e outras podem ser ajustadas de novo nas configurações depois.</string>
+    <string name="setup_message">Bem-vindo! Esse app irá te ajudar a instalar e gerenciar módulos do Magisk. Para começar, selecione as opções abaixo. Essas e outras podem ser ajustadas de novo nas configurações depois.</string>
     <string name="setup_button">Terminar configuração</string>
     <string name="setup_background_update_check">Atualizações em segundo plano</string>
     <string name="setup_androidacy_repo">Ativar o repositório Androidacy</string>
@@ -196,17 +196,17 @@
     <string name="androidacy_repo_disabled">Esse repositório esta atualmente desativado</string>
     <string name="download_full_app">Baixar a versão completa</string>
     <string name="repo_update_failed">Falha ao atualizar alguns repositórios</string>
-    <string name="crash_reporting_desc">Se desativar isso, o desenvolvedor não ira receber relatos de bugs automáticos, e isso pode tornar a resolução deles mais dificil</string>
+    <string name="crash_reporting_desc">Se desativar isso, o desenvolvedor não ira receber relatos de bugs automáticos, e isso pode tornar a resolução deles mais difícil</string>
     <string name="androidacy_failed_to_parse_token">Não foi possível obter o token da Androidacy, Por favor tente de novo.</string>
     <string name="androidacy_failed_to_validate_token">Não foi possível validar token da Androidacy, Por favor tente de novo.</string>
     <string name="androidacy_server_down">Falha ao contatar o servidor da Androidacy. Verifique sua conexão e tente de novo.</string>
     <string name="api_key">Chave de API da Androidacy</string>
-    <string name="api_key_summary">Usar uma chave de API alternativa para o Androidacy, util para usuários premium, para remover anúncios e mais.</string>
+    <string name="api_key_summary">Usar uma chave de API alternativa para o Androidacy, útil para usuários premium, para remover anúncios e mais.</string>
     <string name="api_key_not_set">Chave de API Androidacy está vazia</string>
     <string name="api_key_set">Chave atual de API da Androidacy</string>
     <string name="api_key_valid">Chave de API é valida.</string>
-    <string name="checking_api_key">Validando chave de API...</string>
-    <string name="validating_api_key">Validando chave de API...</string>
+    <string name="checking_api_key">Validando chave de API…</string>
+    <string name="validating_api_key">Validando chave de API…</string>
     <string name="please_wait">Por favor aguarde</string>
     <string name="api_key_removed">Chave de API restaurado com sucesso</string>
     <string name="save_api_key">Validar</string>
@@ -225,7 +225,7 @@
     <string name="clear_data_dialogue_title">Limpar dados do app\?</string>
     <string name="clear_data_dialogue_message">Você esta prestes a limpar os dados do app. Por favor confirme esta ação.</string>
     <string name="setup_background_update_check_summary">Nos permite buscar atualizações de app e módulos em segundo plano. Esse recurso pode usar mais bateria e dados.</string>
-    <string name="setup_androidacy_repo_summary">Incluir resenhas de usuário, analises de virus automáticas, atualizações rápidas, grande variedade, e é providenciado pelo Androidacy.</string>
+    <string name="setup_androidacy_repo_summary">Incluir resenhas de usuário, analises de vírus automáticas, atualizações rápidas, grande variedade, e é providenciado pelo Androidacy.</string>
     <string name="setup_magisk_alt_repo_summary">Mais relaxado que o original. Contem vários módulos em troca de alguma segurança.</string>
     <string name="setup_crash_reporting_summary">Relatório de erros e analise de performance. Todas relatórios são estritamente anônimos e confidenciais.</string>
     <string name="debug_build">Esta é uma versão de testes. Pode se esperar alguns bugs ou pior performance.</string>

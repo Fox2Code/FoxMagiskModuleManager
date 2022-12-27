@@ -95,7 +95,7 @@
     <string name="file_picker_failure">Su administrador de archivos no pudo dar acceso a los archivos.</string>
     <string name="remote_install_title">Instalación remota</string>
     <string name="file_picker_wierd">Su administrador de archivos retorno una respuesta no esperada.</string>
-    <string name="use_magisk_install_command_pref">Usa el siguiente comando: \"magisk --install-module\"</string>
+    <string name="use_magisk_install_command_pref">Usa el siguiente comando: \"magisk —install-module\"</string>
     <string name="use_magisk_install_command_desc">
         Durante las pruebas causó problemas a la herramienta de diagnóstico de errores de instalación de módulo,
         así que escondí esta opción en el modo desarrollador, activala bajo tu propio riesgo!
@@ -118,7 +118,7 @@
         extensiones de la terminal, útil si un módulo hace mal uso de las extensiones de Fox\'s Mmm.
   </string>
     <string name="wrap_text_pref">Dividir el texto</string>
-    <string name="wrap_text_desc">Divide el texto en una linea nueva en vez de colocar todo el texto en la misma linea durante la instalación de un módulo.</string>
+    <string name="wrap_text_desc">Divide el texto en una línea nueva en vez de colocar todo el texto en la misma línea durante la instalación de un módulo.</string>
     <string name="enable_blur_pref">Activar desenfoque</string>
     <string name="disable_chips_in_description">Deshabilitar chips en la descripción</string>
     <string name="repo_enabled">Repositorio activado</string>
@@ -143,7 +143,7 @@
     <bool name="lang_support_rtl">false</bool>
     <!-- Always copy language_support_level when translating -->
     <integer name="language_support_level">1</integer>
-    <string name="language_support_outdated">Algunas traducciones del lenguaje seleccionado no estan actualizadas, por favor considera contribuir con las traducciones de la aplicación en GitHub</string>
+    <string name="language_support_outdated">Algunas traducciones del lenguaje seleccionado no están actualizadas, por favor considera contribuir con las traducciones de la aplicación en GitHub</string>
     <!-- Replace with your own username when translating // Staging y non-production endpoint = canal de prueba, release endpoint = Canal estable (quizas se cambie la traducción en futuras actualizaciones) -->
     <string name="language_translated_by">Traducido por Leshu7w7</string>
     <string name="crash_reporting">Informa automáticamente de errores y rendimiento a los desarrolladores</string>
@@ -154,8 +154,8 @@
     <string name="api_key_set">Clave API de Androidacy actual</string>
     <string name="api_key_invalid">No se pudo validar la clave API. Por favor revisala e intentalo de nuevo.</string>
     <string name="api_key_valid">La clave API es valida.</string>
-    <string name="checking_api_key">Validando clave API...</string>
-    <string name="validating_api_key">Validando clave API...</string>
+    <string name="checking_api_key">Validando clave API…</string>
+    <string name="validating_api_key">Validando clave API…</string>
     <string name="please_wait">Por favor, espera un momento</string>
     <string name="api_key_removed">Se ha restaurado la clave API satisfactoriamente</string>
     <string name="save_api_key">Validar</string>
