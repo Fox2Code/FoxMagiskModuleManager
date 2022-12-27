@@ -257,7 +257,10 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     Log.i("NoodleDebug", "Check Update");
                 RepoManager.getINSTANCE().update(value -> runOnUiThread(max == 0 ? () -> progressIndicator.setProgressCompat((int) (value * PRECISION), true) : () -> progressIndicator.setProgressCompat((int) (value * PRECISION * 0.75F), true)));
                 NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
-
+                // Add debug notification for debug builds
+                if (!NotificationType.DEBUG.shouldRemove()) {
+                    moduleViewListBuilder.addNotification(NotificationType.DEBUG);
+                }
                 if (!NotificationType.NO_INTERNET.shouldRemove()) {
                     moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
                 } else if (!NotificationType.REPO_UPDATE_FAILED.shouldRemove()) {

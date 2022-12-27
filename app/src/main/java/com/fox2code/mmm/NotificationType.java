@@ -29,7 +29,7 @@ public enum NotificationType implements NotificationTypeCst {
     DEBUG(R.string.debug_build, R.drawable.ic_baseline_bug_report_24) {
         @Override
         public boolean shouldRemove() {
-            return BuildConfig.DEBUG;
+            return !BuildConfig.DEBUG;
         }
     },
     SHOWCASE_MODE(R.string.showcase_mode, R.drawable.ic_baseline_lock_24,

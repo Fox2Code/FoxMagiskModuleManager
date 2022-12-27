@@ -218,7 +218,7 @@
     <string name="sentry_dialogue_no_description">Il n\’est pas possible d\’envoyer le retour d\’expérience etant donné qu\’aucune
         description n\’a été fournie</string>
     <string name="go_to_online_repo">Défiler jusqu\’aux dépôts en ligne</string>
-    <string name="pref_pkg_info_summary">%1$s v%2$s (%3$o) | %4$s Fabrication</string>
+    <string name="pref_pkg_info_summary">%1$s v%2$s (%3$d) | %4$s Fabrication</string>
     <string name="official">Officielle</string>
     <string name="unofficial">Non-officielle</string>
     <string name="setup_title">Première mise en service</string>

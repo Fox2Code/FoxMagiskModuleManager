@@ -81,6 +81,15 @@ android {
     flavorDimensions "type"
     productFlavors {
         "default" {
+            // Latest commit hash as BuildConfig.COMMIT_HASH
+            def gitCommitHash = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
+            buildConfigField "String", "COMMIT_HASH", "\"${gitCommitHash}\""
+            // Get the current branch name as BuildConfig.BRANCH_NAME
+            def gitBranchName = 'git rev-parse --abbrev-ref HEAD'.execute([], project.rootDir).text.trim()
+            buildConfigField "String", "BRANCH_NAME", "\"${gitBranchName}\""
+            // Get remote url as BuildConfig.REMOTE_URL
+            def gitRemoteUrl = 'git config --get remote.origin.url'.execute([], project.rootDir).text.trim()
+            buildConfigField "String", "REMOTE_URL", "\"${gitRemoteUrl}\""
             dimension "type"
             buildConfigField "boolean", "ENABLE_AUTO_UPDATER", "true"
             buildConfigField "boolean", "DEFAULT_ENABLE_CRASH_REPORTING", "true"
@@ -118,6 +127,16 @@ android {
         fdroid {
             dimension "type"
             applicationIdSuffix ".fdroid"
+
+            // Latest commit hash as BuildConfig.COMMIT_HASH
+            def gitCommitHash = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
+            buildConfigField "String", "COMMIT_HASH", "\"${gitCommitHash}\""
+            // Get the current branch name as BuildConfig.BRANCH_NAME
+            def gitBranchName = 'git rev-parse --abbrev-ref HEAD'.execute([], project.rootDir).text.trim()
+            buildConfigField "String", "BRANCH_NAME", "\"${gitBranchName}\""
+            // Get remote url as BuildConfig.REMOTE_URL
+            def gitRemoteUrl = 'git config --get remote.origin.url'.execute([], project.rootDir).text.trim()
+            buildConfigField "String", "REMOTE_URL", "\"${gitRemoteUrl}\""
 
             // Need to disable auto-updater for F-Droid flavor because their inclusion policy
             // forbids downloading blobs from third-party websites (and F-Droid APK isn't signed

@@ -1,4 +1,4 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!-- Custom repos has been announced, check https://github.com/Fox2Code/FoxMagiskModuleManager/issues/131 -->
     <PreferenceCategory app:title="@string/pref_category_repos">
@@ -60,6 +60,17 @@
             app:icon="@drawable/ic_baseline_language_24"
             app:key="pref_language_selector"
             app:title="@string/language" />
+
+        <!-- Call to action for translators -->
+        <com.fox2code.mmm.settings.LongClickablePreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="8sp"
+            app:icon="@drawable/ic_baseline_info_24"
+            app:key="pref_language_selector_cta"
+            app:singleLineTitle="false"
+            app:summary="@string/language_cta_desc"
+            app:title="@string/language_cta" />
 
         <SwitchPreferenceCompat
             app:defaultValue="false"

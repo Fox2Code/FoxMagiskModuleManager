@@ -164,7 +164,7 @@
     <string name="sentry_dialogue_success">Relatório enviador com sucesso. Iremos analisar logo em breve</string>
     <string name="sentry_dialogue_no_description">Incapaz de enviar relatório já que nenhuma descrição foi providenciada</string>
     <string name="go_to_online_repo">Descer até os repositórios online</string>
-    <string name="pref_pkg_info_summary">Versão %1$s v%2$s (%3$o) | %4$s</string>
+    <string name="pref_pkg_info_summary">Versão %1$s v%2$s (%3$d) | %4$s</string>
     <string name="official">Oficial</string>
     <string name="unofficial">Não oficial</string>
     <string name="setup_title">Configuração inicial</string>

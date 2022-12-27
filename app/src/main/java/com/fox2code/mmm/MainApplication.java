@@ -280,6 +280,9 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
             INSTANCE = this;
         relPackageName = this.getPackageName();
         super.onCreate();
+        if (BuildConfig.DEBUG) {
+            Log.d("MainApplication", "Starting FoxMMM version " + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + "), commit " + BuildConfig.COMMIT_HASH);
+        }
         SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
         // We are only one process so it's ok to do this
         SharedPreferences bootPrefs = MainApplication.bootSharedPreferences = this.getSharedPreferences("mmm_boot", MODE_PRIVATE);

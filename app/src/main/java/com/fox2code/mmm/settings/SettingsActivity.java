@@ -333,26 +333,31 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             });
 
             // Warning! Locales that are't exist will crash the app
+            // Anything that is commented out is supported but the translation is not complete to at least 60%
             HashSet<String> supportedLocales = new HashSet<>();
+            // supportedLocales.add("ar");
+            // supportedLocales.add("ar_SA");
             supportedLocales.add("cs");
             supportedLocales.add("de");
-            supportedLocales.add("el");
+            // supportedLocales.add("el");
+            supportedLocales.add("es");
             supportedLocales.add("es-rMX");
-            supportedLocales.add("et");
+            // supportedLocales.add("et");
             supportedLocales.add("fr");
             supportedLocales.add("id");
             supportedLocales.add("it");
-            supportedLocales.add("ja");
-            supportedLocales.add("nb-rNO");
+            // supportedLocales.add("ja");
+            // supportedLocales.add("nb-rNO");
             supportedLocales.add("pl");
             supportedLocales.add("pt-rBR");
             supportedLocales.add("ro");
             supportedLocales.add("ru");
             supportedLocales.add("sk");
             supportedLocales.add("tr");
-            supportedLocales.add("vi");
+            supportedLocales.add("uk");
+            // supportedLocales.add("vi");
             supportedLocales.add("zh-rCH");
-            supportedLocales.add("zh-rTW");
+            // supportedLocales.add("zh-rTW");
             supportedLocales.add("en");
 
             Preference languageSelector = findPreference("pref_language_selector");
@@ -360,6 +365,23 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 LanguageSwitcher ls = new LanguageSwitcher(getActivity());
                 ls.setSupportedStringLocales(supportedLocales);
                 ls.showChangeLanguageDialog(getActivity());
+                return true;
+            });
+
+            // Handle pref_language_selector_cta by taking user to https://translate.nift4.org/engage/foxmmm/
+            LongClickablePreference languageSelectorCta = findPreference("pref_language_selector_cta");
+            languageSelectorCta.setOnPreferenceClickListener(preference -> {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://translate.nift4.org/engage/foxmmm/"));
+                startActivity(browserIntent);
+                return true;
+            });
+
+            // Long click to copy url
+            languageSelectorCta.setOnPreferenceLongClickListener(v -> {
+                ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("URL", "https://translate.nift4.org/engage/foxmmm/");
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(requireContext(), R.string.link_copied, Toast.LENGTH_SHORT).show();
                 return true;
             });
 
@@ -484,6 +506,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 findPreference("pref_report_bug").setVisible(false);
             }
             linkClickable = findPreference("pref_source_code");
+            // Set summary to the last commit this build was built from
+            linkClickable.setSummary(String.format(getString(R.string.source_code_summary), BuildConfig.COMMIT_HASH));
             linkClickable.setOnPreferenceClickListener(p -> {
                 if (devModeStep == 2) {
                     devModeStep = 0;
@@ -499,7 +523,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     ExternalHelper.INSTANCE.refreshHelper(getContext());
                     return true;
                 }
-                IntentHelper.openUrl(p.getContext(), "https://github.com/Fox2Code/FoxMagiskModuleManager");
+                // build url from BuildConfig.REMOTE_URL and BuildConfig.COMMIT_HASH. May have to remove the .git at the end
+                IntentHelper.openUrl(p.getContext(), BuildConfig.REMOTE_URL + "/tree/" + BuildConfig.COMMIT_HASH);
                 return true;
             });
             linkClickable.setOnPreferenceLongClickListener(p -> {

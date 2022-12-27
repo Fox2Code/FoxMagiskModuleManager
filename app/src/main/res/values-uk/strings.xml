@@ -186,7 +186,7 @@
     <string name="sentry_dialogue_success">Відгук успішно надіслано. Невдовзі ми його розглянемо</string>
     <string name="sentry_dialogue_no_description">Не вдалося надіслати відгук, оскільки не було надано опису</string>
     <string name="go_to_online_repo">Перейдіть до онлайн репозиторію</string>
-    <string name="pref_pkg_info_summary">Збірка: %1$s v%2$s (%3$o) | %4$s</string>
+    <string name="pref_pkg_info_summary">Збірка: %1$s v%2$s (%3$d) | %4$s</string>
     <string name="official">Офіційний</string>
     <string name="unofficial">Неофіційний</string>
     <string name="setup_title">Перше налаштування</string>
