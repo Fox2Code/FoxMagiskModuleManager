@@ -214,13 +214,13 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
 
             public void commonNext() {
                 if (BuildConfig.DEBUG) {
-                    Log.i(TAG, "Common next");
+                    Log.d(TAG, "Common next");
                     moduleViewListBuilder.addNotification(NotificationType.DEBUG);
                 }
                 updateScreenInsets(); // Fix an edge case
                 if (waitInitialSetupFinished()) {
                     if (BuildConfig.DEBUG) {
-                        Log.i(TAG, "Initial setup not finished, waiting...");
+                        Log.d(TAG, "Initial setup not finished, waiting...");
                     }
                     return;
                 }
@@ -239,7 +239,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
 
                 // On every preferences change, log the change if debug is enabled
                 if (BuildConfig.DEBUG) {
-                    Log.i("PrefsListener", "onCreate: Preferences: " + MainApplication.getSharedPreferences().getAll());
+                    Log.d("PrefsListener", "onCreate: Preferences: " + MainApplication.getSharedPreferences().getAll());
                     // Log all preferences changes
                     MainApplication.getSharedPreferences().registerOnSharedPreferenceChangeListener((prefs, key) -> Log.i("PrefsListener", "onSharedPreferenceChanged: " + key + " = " + prefs.getAll().get(key)));
                 }
@@ -377,7 +377,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                                 connection.connect();
                                 // For debug builds, log the response code and response body
                                 if (BuildConfig.DEBUG) {
-                                    Log.i("NoodleDebug", "Response Code: " + connection.getResponseCode());
+                                    Log.d("NoodleDebug", "Response Code: " + connection.getResponseCode());
                                 }
                                 // Check if the request was successful
                                 if (connection.getResponseCode() == 200) {
@@ -767,7 +767,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).setChecked(BuildConfig.ENABLED_REPOS.contains("magisk_alt_repo"));
             // On debug builds, log when a switch is toggled
             if (BuildConfig.DEBUG) {
-                ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).setOnCheckedChangeListener((buttonView, isChecked) -> Log.i("SetupWizard", "Background Update Check: " + isChecked));
+                Log.d("SetupWizard", "Background Update Check: " + ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).isChecked());
                 ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).setOnCheckedChangeListener((buttonView, isChecked) -> Log.i("SetupWizard", "Crash Reporting: " + isChecked));
                 ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_androidacy_repo))).setOnCheckedChangeListener((buttonView, isChecked) -> Log.i("SetupWizard", "Androidacy Repo: " + isChecked));
                 ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).setOnCheckedChangeListener((buttonView, isChecked) -> Log.i("SetupWizard", "Magisk Alt Repo: " + isChecked));
@@ -793,7 +793,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     case "system":
                         popupMenu.getMenu().findItem(R.id.theme_system).setChecked(true);
                         break;
-                        // Black and transparent_light
+                    // Black and transparent_light
                     case "black":
                         popupMenu.getMenu().findItem(R.id.theme_black).setChecked(true);
                         break;
@@ -818,8 +818,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     // Set the theme
                     UiThreadHandler.handler.postDelayed(() -> {
                         MainApplication.getINSTANCE().updateTheme();
-                        FoxActivity.getFoxActivity(this).setThemeRecreate(
-                                MainApplication.getINSTANCE().getManagerThemeResId());
+                        FoxActivity.getFoxActivity(this).setThemeRecreate(MainApplication.getINSTANCE().getManagerThemeResId());
                     }, 1);
                     return true;
                 });
@@ -856,12 +855,13 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 // Sleep for 1 second to allow the user to see the changes
                 try {
                     Thread.sleep(500);
-                } catch (InterruptedException e) {
+                } catch (
+                        InterruptedException e) {
                     e.printStackTrace();
                 }
                 // Log the changes if debug
                 if (BuildConfig.DEBUG) {
-                    Log.i("SetupWizard", "Background update check: " + prefs.getBoolean("pref_background_update_check", false));
+                    Log.d("SetupWizard", "Background update check: " + prefs.getBoolean("pref_background_update_check", false));
                     Log.i("SetupWizard", "Crash reporting: " + prefs.getBoolean("pref_crash_reporting", false));
                     Log.i("SetupWizard", "Magisk Alt Repo: " + prefs.getBoolean("pref_magisk_alt_repo_enabled", false));
                     Log.i("SetupWizard", "Androidacy Repo: " + prefs.getBoolean("pref_androidacy_repo_enabled", false));

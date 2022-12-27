@@ -189,18 +189,13 @@ public final class AndroidacyRepoData extends RepoData {
                 // If it's a 400, the app is probably outdated. Show a snackbar suggesting user update app and webview
                 if (connection.getResponseCode() == 400) {
                     // Show a dialog using androidacy_update_needed string
-                    new MaterialAlertDialogBuilder(MainApplication.getINSTANCE())
-                            .setTitle(R.string.androidacy_update_needed)
-                            .setMessage(R.string.androidacy_update_needed_message)
-                            .setPositiveButton(R.string.update, (dialog, which) -> {
-                                // Open the app's page on the Play Store
-                                Intent intent = new Intent(Intent.ACTION_VIEW);
-                                intent.setData(Uri.parse("https://github.com/Fox2Code/FoxMagiskModuleManager/releases/latest"));
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                MainApplication.getINSTANCE().startActivity(intent);
-                            })
-                            .setNegativeButton(R.string.cancel, null)
-                            .show();
+                    new MaterialAlertDialogBuilder(MainApplication.getINSTANCE()).setTitle(R.string.androidacy_update_needed).setMessage(R.string.androidacy_update_needed_message).setPositiveButton(R.string.update, (dialog, which) -> {
+                        // Open the app's page on the Play Store
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse("https://github.com/Fox2Code/FoxMagiskModuleManager/releases/latest"));
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        MainApplication.getINSTANCE().startActivity(intent);
+                    }).setNegativeButton(R.string.cancel, null).show();
                 }
                 return false;
             }
@@ -282,7 +277,7 @@ public final class AndroidacyRepoData extends RepoData {
     @Override
     protected List<RepoModule> populate(JSONObject jsonObject) throws JSONException, NoSuchAlgorithmException {
         if (BuildConfig.DEBUG) {
-            Log.i(TAG, "AndroidacyRepoData populate start");
+            Log.d(TAG, "AndroidacyRepoData populate start");
         }
         if (!jsonObject.getString("status").equals("success"))
             throw new JSONException("Response is not a success!");

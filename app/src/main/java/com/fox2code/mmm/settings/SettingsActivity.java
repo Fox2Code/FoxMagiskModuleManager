@@ -13,8 +13,6 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -70,7 +68,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.internal.TextWatcherAdapter;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
-import com.google.common.hash.Hashing;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
@@ -126,7 +123,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         }
 
         if (BuildConfig.DEBUG) {
-            Log.i(TAG, "getDevicePerformanceClass: androidVersion=" + androidVersion + " cpuCount=" + cpuCount + " memoryClass=" + memoryClass + " maxCpuFreq=" + maxCpuFreq + " devicePerformanceClass=" + devicePerformanceClass);
+            Log.d(TAG, "getDevicePerformanceClass: androidVersion=" + androidVersion + " cpuCount=" + cpuCount + " memoryClass=" + memoryClass + " maxCpuFreq=" + maxCpuFreq + " devicePerformanceClass=" + devicePerformanceClass);
         }
 
         return devicePerformanceClass;
@@ -178,7 +175,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             // If transparent theme(s) are set, disable monet
             if (themePreference.getValue().equals("transparent_light")) {
                 if (BuildConfig.DEBUG) {
-                    Log.i(TAG, "Transparent theme is set, disabling monet");
+                    Log.d(TAG, "Transparent theme is set, disabling monet");
                 }
                 findPreference("pref_enable_monet").setEnabled(false);
                 // Toggle monet off
@@ -202,7 +199,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             });
             themePreference.setOnPreferenceChangeListener((preference, newValue) -> {
                 if (BuildConfig.DEBUG) {
-                    Log.i(TAG, "Theme changed, refreshing activity. New value: " + newValue);
+                    Log.d(TAG, "Theme changed, refreshing activity. New value: " + newValue);
                 }
                 // Immediately save
                 SharedPreferences.Editor editor = getPreferenceManager().getSharedPreferences().edit();
@@ -210,7 +207,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 // If theme contains "transparent" then disable monet
                 if (newValue.toString().contains("transparent")) {
                     if (BuildConfig.DEBUG) {
-                        Log.i(TAG, "Transparent theme is being set, disabling monet");
+                        Log.d(TAG, "Transparent theme is being set, disabling monet");
                     }
                     // Show a dialogue warning the user about issues with transparent themes and
                     // that blur/monet will be disabled
@@ -278,7 +275,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                     mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
                     if (BuildConfig.DEBUG) {
-                        Log.i(TAG, "Restarting app to save crash reporting preference: " + newValue);
+                        Log.d(TAG, "Restarting app to save crash reporting preference: " + newValue);
                     }
                     System.exit(0); // Exit app process
                 });
@@ -506,8 +503,19 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 findPreference("pref_report_bug").setVisible(false);
             }
             linkClickable = findPreference("pref_source_code");
-            // Set summary to the last commit this build was built from
-            linkClickable.setSummary(String.format(getString(R.string.source_code_summary), BuildConfig.COMMIT_HASH));
+            // Set summary to the last commit this build was built from @ User/Repo
+            // Build userRepo by removing all parts of REMOTE_URL that are not the user/repo
+            String userRepo = BuildConfig.REMOTE_URL;
+            // Get the index of the first slash after the protocol (https://)
+            int firstSlash = userRepo.indexOf('/', 8);
+            // Check if it ends with .git
+            if (userRepo.endsWith(".git")) {
+                // Remove the .git
+                userRepo = userRepo.substring(0, userRepo.length() - 4);
+            }
+            // Remove everything before the first slash
+            userRepo = userRepo.substring(firstSlash + 1);
+            linkClickable.setSummary(String.format(getString(R.string.source_code_summary), BuildConfig.COMMIT_HASH, userRepo));
             linkClickable.setOnPreferenceClickListener(p -> {
                 if (devModeStep == 2) {
                     devModeStep = 0;
@@ -529,7 +537,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             });
             linkClickable.setOnPreferenceLongClickListener(p -> {
                 String toastText = requireContext().getString(R.string.link_copied);
-                clipboard.setPrimaryClip(ClipData.newPlainText(toastText, "https://github.com/Fox2Code/FoxMagiskModuleManager"));
+                clipboard.setPrimaryClip(ClipData.newPlainText(toastText, BuildConfig.REMOTE_URL + "/tree/" + BuildConfig.COMMIT_HASH));
                 Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
                 return true;
             });
@@ -552,20 +560,10 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 return true;
             });
             // Determine if this is an official build based on the signature
-            boolean isOfficial = false;
-            try {
-                // Get the signature of the key used to sign the app
-                @SuppressLint("PackageManagerGetSignatures") Signature[] signatures = requireContext().getPackageManager().getPackageInfo(requireContext().getPackageName(), PackageManager.GET_SIGNATURES).signatures;
-                String officialSignatureHash = "7bec7c4462f4aac616612d9f56a023ee3046e83afa956463b5fab547fd0a0be6";
-                String ourSignatureHash = Hashing.sha256().hashBytes(signatures[0].toByteArray()).toString();
-                isOfficial = ourSignatureHash.equals(officialSignatureHash);
-            } catch (
-                    PackageManager.NameNotFoundException ignored) {
-            }
             String flavor = BuildConfig.FLAVOR;
             String type = BuildConfig.BUILD_TYPE;
             // Set the summary of pref_pkg_info to something like Github-debug v1.0 (123) (Official)
-            String pkgInfo = getString(R.string.pref_pkg_info_summary, flavor + "-" + type, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, isOfficial ? getString(R.string.official) : getString(R.string.unofficial));
+            String pkgInfo = getString(R.string.pref_pkg_info_summary, flavor + "-" + type, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, MainApplication.isOfficial ? getString(R.string.official) : getString(R.string.unofficial));
             findPreference("pref_pkg_info").setSummary(pkgInfo);
         }
 
@@ -655,7 +653,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                             AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                             mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
                             if (BuildConfig.DEBUG) {
-                                Log.i(TAG, "Restarting app to save staging endpoint preference: " + newValue);
+                                Log.d(TAG, "Restarting app to save staging endpoint preference: " + newValue);
                             }
                             System.exit(0); // Exit app process
                         }).setNegativeButton(android.R.string.cancel, (dialog, which) -> {
@@ -680,7 +678,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                             AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                             mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
                             if (BuildConfig.DEBUG) {
-                                Log.i(TAG, "Restarting app to save staging endpoint preference: " + newValue);
+                                Log.d(TAG, "Restarting app to save staging endpoint preference: " + newValue);
                             }
                             System.exit(0); // Exit app process
                         }).show();
@@ -755,7 +753,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                 AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                                 mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
                                 if (BuildConfig.DEBUG) {
-                                    Log.i(TAG, "Restarting app to save token preference: " + newValue);
+                                    Log.d(TAG, "Restarting app to save token preference: " + newValue);
                                 }
                                 System.exit(0); // Exit app process
                             }).show();
@@ -805,7 +803,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                         AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                                         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
                                         if (BuildConfig.DEBUG) {
-                                            Log.i(TAG, "Restarting app to save token preference: " + newValue);
+                                            Log.d(TAG, "Restarting app to save token preference: " + newValue);
                                         }
                                         System.exit(0); // Exit app process
                                     }).show();
@@ -926,7 +924,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 return;
             if (!preferenceName.contains("androidacy") && !preferenceName.contains("magisk_alt_repo")) {
                 if (BuildConfig.DEBUG) {
-                    Log.i(TAG, "Setting preference " + preferenceName + " because it is not the Androidacy repo or the Magisk Alt Repo");
+                    Log.d(TAG, "Setting preference " + preferenceName + " because it is not the Androidacy repo or the Magisk Alt Repo");
                 }
                 if (repoData == null || repoData.isForceHide()) {
                     hideRepoData(preferenceName);

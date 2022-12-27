@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -29,6 +31,7 @@ import com.fox2code.mmm.utils.GMSProviderInstaller;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.SentryMain;
 import com.fox2code.rosettax.LanguageSwitcher;
+import com.google.common.hash.Hashing;
 import com.topjohnwu.superuser.Shell;
 
 import java.io.File;
@@ -57,6 +60,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     @SuppressLint("RestrictedApi")
     // Use FoxProcess wrapper helper.
     private static final boolean wrapped = !FoxProcessExt.isRootLoader();
+    public static boolean isOfficial = false;
     private static Locale timeFormatLocale = Resources.getSystem().getConfiguration().locale;
     private static SimpleDateFormat timeFormat = new SimpleDateFormat(timeFormatString, timeFormatLocale);
     private static SharedPreferences bootSharedPreferences;
@@ -282,6 +286,19 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         super.onCreate();
         if (BuildConfig.DEBUG) {
             Log.d("MainApplication", "Starting FoxMMM version " + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + "), commit " + BuildConfig.COMMIT_HASH);
+        }
+        // Determine if this is an official build based on the signature
+        try {
+            // Get the signature of the key used to sign the app
+            @SuppressLint("PackageManagerGetSignatures") Signature[] signatures = this.getPackageManager().getPackageInfo(this.getPackageName(), PackageManager.GET_SIGNATURES).signatures;
+            String officialSignatureHash = "7bec7c4462f4aac616612d9f56a023ee3046e83afa956463b5fab547fd0a0be6";
+            String ourSignatureHash = Hashing.sha256().hashBytes(signatures[0].toByteArray()).toString();
+            isOfficial = ourSignatureHash.equals(officialSignatureHash);
+        } catch (
+                PackageManager.NameNotFoundException ignored) {
+        }
+        if (!isOfficial) {
+            Log.w("MainApplication", "This is not an official build of FoxMMM. This warning can be safely ignored if this is expected, otherwise you may be running an untrusted build.");
         }
         SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
         // We are only one process so it's ok to do this

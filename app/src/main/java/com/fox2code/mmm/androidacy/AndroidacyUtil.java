@@ -18,21 +18,17 @@ public class AndroidacyUtil {
         return url != null && isAndroidacyLink(url, Uri.parse(url));
     }
 
-    static boolean isAndroidacyLink(@NonNull String url,@NonNull Uri uri) {
+    static boolean isAndroidacyLink(@NonNull String url, @NonNull Uri uri) {
         int i; // Check both string and Uri to mitigate parse exploit
-        return url.startsWith("https://") &&
-                (i = url.indexOf("/", 8)) != -1 &&
-                url.substring(8, i).endsWith("api.androidacy.com") &&
-                        uri.getHost().endsWith("api.androidacy.com");
+        return url.startsWith("https://") && (i = url.indexOf("/", 8)) != -1 && url.substring(8, i).endsWith("api.androidacy.com") && uri.getHost().endsWith("api.androidacy.com");
     }
 
     public static boolean isAndroidacyFileUrl(@Nullable String url) {
-        if (url == null) return false;
-        for (String prefix : new String[]{
-                "https://production-api.androidacy.com/magisk/file/",
-                "https://staging-api.androidacy.com/magisk/file/"
-        }) { // Make both staging and non staging act the same
-            if (url.startsWith(prefix)) return true;
+        if (url == null)
+            return false;
+        for (String prefix : new String[]{"https://production-api.androidacy.com/magisk/file/", "https://staging-api.androidacy.com/magisk/file/"}) { // Make both staging and non staging act the same
+            if (url.startsWith(prefix))
+                return true;
         }
         return false;
     }
@@ -40,16 +36,16 @@ public class AndroidacyUtil {
     // Avoid logging token
     public static String hideToken(@NonNull String url) {
         int i = url.lastIndexOf("token=");
-        if (i == -1) return url;
+        if (i == -1)
+            return url;
         int i2 = url.indexOf('&', i);
         int i3 = url.indexOf(' ', i);
-        if (i3 != -1 && i3 < i2) i2 = i3;
+        if (i3 != -1 && i3 < i2)
+            i2 = i3;
         if (i2 == -1) {
-            return url.substring(0, i + 6) +
-                    "<token>";
+            return url.substring(0, i + 6) + "<token>";
         } else {
-            return url.substring(0, i + 6) +
-                    "<token>" + url.substring(i2);
+            return url.substring(0, i + 6) + "<token>" + url.substring(i2);
         }
     }
 

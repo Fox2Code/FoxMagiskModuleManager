@@ -41,7 +41,7 @@ public class AppUpdateManager {
     private String latestPreRelease;
     private long lastChecked;
     private boolean preReleaseNewer;
-    private boolean lastCheckSuccess;
+
     private AppUpdateManager() {
         this.compatFile = new File(MainApplication.getINSTANCE().getFilesDir(), "compat.txt");
         this.latestRelease = MainApplication.getBootSharedPreferences().getString("updater_latest_release", BuildConfig.VERSION_NAME);
@@ -51,7 +51,8 @@ public class AppUpdateManager {
         if (this.compatFile.isFile()) {
             try {
                 this.parseCompatibilityFlags(new FileInputStream(this.compatFile));
-            } catch (IOException e) {
+            } catch (
+                    IOException e) {
                 e.printStackTrace();
             }
         }
@@ -73,15 +74,18 @@ public class AppUpdateManager {
 
     // Return true if should show a notification
     public boolean checkUpdate(boolean force) {
-        if (!BuildConfig.ENABLE_AUTO_UPDATER) return false;
-        if (!force && this.peekShouldUpdate()) return true;
+        if (!BuildConfig.ENABLE_AUTO_UPDATER)
+            return false;
+        if (!force && this.peekShouldUpdate())
+            return true;
         long lastChecked = this.lastChecked;
         if (lastChecked != 0 &&
                 // Avoid spam calls by putting a 60 seconds timer
                 lastChecked < System.currentTimeMillis() - 60000L)
             return force && this.peekShouldUpdate();
         synchronized (this.updateLock) {
-            if (lastChecked != this.lastChecked) return this.peekShouldUpdate();
+            if (lastChecked != this.lastChecked)
+                return this.peekShouldUpdate();
             boolean preReleaseNewer = true;
             try {
                 JSONArray releases = new JSONArray(new String(Http.doHttpGet(RELEASES_API_URL, false), StandardCharsets.UTF_8));
@@ -89,21 +93,26 @@ public class AppUpdateManager {
                 for (int i = 0; i < releases.length(); i++) {
                     JSONObject release = releases.getJSONObject(i);
                     // Skip invalid entries
-                    if (release.getBoolean("draft")) continue;
+                    if (release.getBoolean("draft"))
+                        continue;
                     boolean preRelease = release.getBoolean("prerelease");
                     String version = release.getString("tag_name");
-                    if (version.startsWith("v")) version = version.substring(1);
+                    if (version.startsWith("v"))
+                        version = version.substring(1);
                     if (preRelease) {
-                        if (latestPreRelease == null) latestPreRelease = version;
+                        if (latestPreRelease == null)
+                            latestPreRelease = version;
                     } else if (latestRelease == null) {
                         latestRelease = version;
-                        if (latestPreRelease == null) preReleaseNewer = false;
+                        if (latestPreRelease == null)
+                            preReleaseNewer = false;
                     }
                     if (latestRelease != null && latestPreRelease != null) {
                         break; // We read everything we needed to read.
                     }
                 }
-                if (latestRelease != null) this.latestRelease = latestRelease;
+                if (latestRelease != null)
+                    this.latestRelease = latestRelease;
                 if (latestPreRelease != null) {
                     this.latestPreRelease = latestPreRelease;
                     this.preReleaseNewer = preReleaseNewer;
@@ -111,13 +120,15 @@ public class AppUpdateManager {
                     this.latestPreRelease = "";
                     this.preReleaseNewer = false;
                 }
-                if (BuildConfig.DEBUG) Log.i(TAG, "Latest release: " + latestRelease);
-                if (BuildConfig.DEBUG) Log.i(TAG, "Latest pre-release: " + latestPreRelease);
-                if (BuildConfig.DEBUG) Log.i(TAG, "Latest pre-release newer: " + preReleaseNewer);
+                if (BuildConfig.DEBUG)
+                    Log.d(TAG, "Latest release: " + latestRelease);
+                if (BuildConfig.DEBUG)
+                    Log.d(TAG, "Latest pre-release: " + latestPreRelease);
+                if (BuildConfig.DEBUG)
+                    Log.d(TAG, "Latest pre-release newer: " + preReleaseNewer);
                 this.lastChecked = System.currentTimeMillis();
-                this.lastCheckSuccess = true;
-            } catch (Exception ioe) {
-                this.lastCheckSuccess = false;
+            } catch (
+                    Exception ioe) {
                 Log.e("AppUpdateManager", "Failed to check releases", ioe);
             }
         }
@@ -125,7 +136,8 @@ public class AppUpdateManager {
     }
 
     public void checkUpdateCompat() {
-        if (BuildConfig.DEBUG) Log.i(TAG, "Checking compatibility flags");
+        if (BuildConfig.DEBUG)
+            Log.d(TAG, "Checking compatibility flags");
         if (this.compatFile.exists()) {
             long lastUpdate = this.compatFile.lastModified();
             if (lastUpdate <= System.currentTimeMillis() && lastUpdate + 600_000L > System.currentTimeMillis()) {
@@ -133,47 +145,50 @@ public class AppUpdateManager {
             }
         }
         try {
-            if (BuildConfig.DEBUG) Log.i(TAG, "Downloading compatibility flags");
+            if (BuildConfig.DEBUG)
+                Log.d(TAG, "Downloading compatibility flags");
             JSONObject object = new JSONObject(new String(Http.doHttpGet(COMPAT_API_URL, false), StandardCharsets.UTF_8));
             if (object.isNull("body")) {
-                if (BuildConfig.DEBUG) Log.i(TAG, "Compatibility flags not found");
+                if (BuildConfig.DEBUG)
+                    Log.d(TAG, "Compatibility flags not found");
                 compatDataId.clear();
                 Files.write(compatFile, new byte[0]);
                 return;
             }
-            if (BuildConfig.DEBUG) Log.i(TAG, "Parsing compatibility flags");
+            if (BuildConfig.DEBUG)
+                Log.d(TAG, "Parsing compatibility flags");
             byte[] rawData = object.getString("body").getBytes(StandardCharsets.UTF_8);
             this.parseCompatibilityFlags(new ByteArrayInputStream(rawData));
             Files.write(compatFile, rawData);
-            if (!BuildConfig.ENABLE_AUTO_UPDATER) this.lastCheckSuccess = true;
-            if (BuildConfig.DEBUG) Log.i(TAG, "Compatibility flags update finishing");
+            if (BuildConfig.DEBUG)
+                Log.d(TAG, "Compatibility flags update finishing");
             return;
-        } catch (Exception e) {
-            if (!BuildConfig.ENABLE_AUTO_UPDATER) this.lastCheckSuccess = false;
+        } catch (
+                Exception e) {
             Log.e("AppUpdateManager", "Failed to update compat list", e);
         }
-        if (BuildConfig.DEBUG) Log.i(TAG, "Compatibility flags updated");
+        if (BuildConfig.DEBUG)
+            Log.d(TAG, "Compatibility flags updated");
     }
 
     public boolean peekShouldUpdate() {
-        if (!BuildConfig.ENABLE_AUTO_UPDATER) return false;
+        if (!BuildConfig.ENABLE_AUTO_UPDATER)
+            return false;
         // Convert both BuildConfig.VERSION_NAME and latestRelease to int
         int currentVersion = 0, latestVersion = 0;
         try {
             currentVersion = Integer.parseInt(BuildConfig.VERSION_NAME.replace(".", ""));
             latestVersion = Integer.parseInt(this.latestRelease.replace(".", ""));
-        } catch (NumberFormatException ignored) {
+        } catch (
+                NumberFormatException ignored) {
         }
         return currentVersion < latestVersion || (this.preReleaseNewer && currentVersion < Integer.parseInt(this.latestPreRelease.replace(".", "")));
     }
 
     public boolean peekHasUpdate() {
-        if (!BuildConfig.ENABLE_AUTO_UPDATER) return false;
+        if (!BuildConfig.ENABLE_AUTO_UPDATER)
+            return false;
         return !BuildConfig.VERSION_NAME.equals(this.preReleaseNewer ? this.latestPreRelease : this.latestRelease);
-    }
-
-    public boolean isLastCheckSuccess() {
-        return lastCheckSuccess;
     }
 
     private void parseCompatibilityFlags(InputStream inputStream) throws IOException {
@@ -182,9 +197,11 @@ public class AppUpdateManager {
         String line;
         while ((line = bufferedReader.readLine()) != null) {
             line = line.trim();
-            if (line.isEmpty() || line.startsWith("#")) continue;
+            if (line.isEmpty() || line.startsWith("#"))
+                continue;
             int i = line.indexOf('/');
-            if (i == -1) continue;
+            if (i == -1)
+                continue;
             int value = 0;
             for (String arg : line.substring(i + 1).split(",")) {
                 switch (arg) {

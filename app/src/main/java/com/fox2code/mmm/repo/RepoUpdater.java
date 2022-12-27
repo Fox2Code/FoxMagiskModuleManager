@@ -74,8 +74,7 @@ public class RepoUpdater {
         if (this.indexRaw != null) {
             try {
                 Files.write(this.repoData.metaDataCache, this.indexRaw);
-                if (BuildConfig.DEBUG) {
-                    Log.i(TAG, "Wrote index of " + this.repoData.id);
+                if (BuildConfig.DEBUG) {    Log.d(TAG, "Wrote index of " + this.repoData.id);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

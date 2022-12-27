@@ -28,8 +28,7 @@ public class MarkdownUrlLinker {
                         endCh != '>' && endCh != ')' && endCh != ']') {
                     linkifyTasks.add(new LinkifyTask(index, end));
                     extra += (end - index) + 4;
-                    if (BuildConfig.DEBUG) {
-                        Log.i(TAG, "Linkify url: " + url.substring(index, end));
+                    if (BuildConfig.DEBUG) {    Log.d(TAG, "Linkify url: " + url.substring(index, end));
                     }
                 }
             }

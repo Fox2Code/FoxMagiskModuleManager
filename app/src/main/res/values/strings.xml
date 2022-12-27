@@ -267,5 +267,5 @@
     <string name="androidacy_update_needed">This app is outdated.</string>
     <string name="androidacy_update_needed_message">Please update the app to the latest version.</string>
     <string name="androidacy_webview_update_required">Your webview is outdated! Please update it.</string><string name="language_cta">Don\'t see your language?</string><string name="language_cta_desc">Help us by translating it! Tap here to find out more.</string>
-    <string name="source_code_summary"><b>Commit</b> %1$s</string>
+    <string name="source_code_summary"><b>Commit</b> %1$s @ %2$s</string>
 </resources>
