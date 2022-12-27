@@ -163,8 +163,8 @@
     <string name="api_key_set">Current Androidacy API key</string>
     <string name="api_key_invalid">Could not validate API key. Please check it and try again.</string>
     <string name="api_key_valid">API key is valid.</string>
-    <string name="checking_api_key">Validating API key...</string>
-    <string name="validating_api_key">Validating API key...</string>
+    <string name="checking_api_key">Validating API key…</string>
+    <string name="validating_api_key">Validating API key…</string>
     <string name="please_wait">Please wait</string>
     <string name="api_key_removed">Successfully reset API key</string>
     <string name="save_api_key">Validate</string>
