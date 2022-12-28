@@ -237,4 +237,34 @@
     <string name="low_performance_device_dialogue_title">Activer blur sur les périphériques bas de gamme</string>
     <string name="low_performance_device_dialogue_message">Vous tentez d\’activer blur sur un périphérique qui pourrait ne pas fonctionner complêtement avec ça.\nVous pourriez l\’activer, mais ça vous apportera une mauvaise expérience utilisateur et nous ne vous recommendons pas de l\’utiliser.</string>
     <string name="alt_repo_info">Ce dépôt a moins de restrictions et d\’examens, pouvant résulter à une qualité de modules inférieurs. Très minimalistes mais qui dispose de beaucoup de modules.</string>
+    <string name="setup_button_skip">Passer</string>
+    <string name="install_terminal_reboot_now_message">Vous vous apprêtez à redémarrer votre périphérique. Si vous avez sauvegardé votre travail, appuyez sur OK pour continuer. Ou sinon, pressez annuler.</string>
+    <string name="install_terminal_config_missing">Le paquet %s est introuvable pour la configuration du module, nous ne pouvons donc pas le lancer.</string>
+    <string name="clear_app_data">Éffacer données application</string><string name="clear_data_dialogue_title">Éffacer les données de l\’application ?</string>
+    <string name="clear_data_dialogue_message">Vous vous apprêtez à effacer les données de l\’application. Merci de confirmer cette action.</string>
+    <string name="debug_build">Ceci est une fabrication de débugguage. Des bugs ainsi que des performances négatives peuvent êtres rencontrées.</string>
+    <string name="androidacy_repo_name">Dépôt Androidacy</string>
+    <string name="magisk_alt_repo_name">Magisk Alt Repo</string>
+    <string name="repo_enabled_changed">Vous avez activé ou désactivé un dépôt. Veuillez rafraîchir la liste de module ou de redémarrer l\’application.</string>
+    <string name="finish">Terminer</string>
+    <string name="setup_theme">Choisir un thème</string>
+    <string name="setup_theme_header">Choix du thème</string>
+    <string name="setup_theme_system">Thème du système</string>
+    <string name="setup_theme_light">Thème clair</string>
+    <string name="setup_theme_dark">Thème noirci</string>
+    <string name="setup_theme_black">Thème AMOLED Noir</string>
+    <string name="setup_theme_transparent_light">Thème clair transparent - désactivera monet et blur!</string>
+    <string name="setup_theme_button">DChoisir un thème</string>
+    <string name="theme">Thème</string>
+    <string name="theme_system">Système</string>
+    <string name="theme_dark">Sombre</string>
+    <string name="theme_black">AMOLED Black</string>
+    <string name="theme_transparent_light">Light (transparency)</string>
+    <string name="theme_light">Light</string>
+    <string name="androidacy_update_needed">This app is outdated.</string>
+    <string name="androidacy_update_needed_message">Please update the app to the latest version.</string>
+    <string name="androidacy_webview_update_required">Your webview is outdated! Please update it.</string><string name="language_cta">Don\'t see your language?</string><string name="language_cta_desc">Help us by translating it! Tap here to find out more.</string>
+    <string name="source_code_summary"><b>Commit</b> %1$s @ %2$s</string>
+    <string name="no_file_provided">No file was provided when trying to open zip.</string>
+    <string name="zip_load_failed">Could not load the zip file</string><string name="androidacy_thanks">Developed in part by Androidacy</string><string name="androidacy_thanks_desc">Huge shoutout to Androidacy for their integration and contributions to the app.</string><string name="contributors">And of course, thanks to all of our contributors, whether it\'s translations, code, or just being fun to hang out with! We love you all.</string>
 </resources>
