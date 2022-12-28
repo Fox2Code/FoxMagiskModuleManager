@@ -224,11 +224,14 @@
     <string name="setup_title">Première mise en service</string>
     <string name="setup_message">Bienvenue! Cette application vous aidera à installer et gérer vos modules Magisk. Pour commencer, merci de sélectionner les options ci-dessous. Celles-ci et d\’autres peuvent êtres configurées ultérieusement dans les paramètres.</string>
     <string name="setup_button">Terminer la configuration</string>
-    <string name="setup_background_update_check">Nous permettre de vérifier les mises-à-jours en arrière-plan.\nCette fonctionnalité peut utiliser d\’avantage de batterie.</string>
-    <string name="setup_androidacy_repo">Activer le dépôt Androidacy\nRetours des utilisateurs sur les fonctionnalités, analyse antivirales automatiques, Mises-à-jours rapides, un grand choix de sélection, et soutenu par eux-mêmes.</string>
+    <string name="setup_background_update_check">Vérification des MàJ en arrière-plan</string>
+    <string name="setup_background_update_check_summary">Nous permettre de vérifier les mises-à-jours en arrière-plan.\nCette fonctionnalité peut utiliser d\’avantage de batterie.</string>
+    <string name="setup_androidacy_repo">Activer le dépôt Androidacy</string>
+    <string name="setup_androidacy_repo_summary">Activer le dépôt Androidacy\nRetours des utilisateurs sur les fonctionnalités, analyse antivirales automatiques, Mises-à-jours rapides, un grand choix de sélection, et soutenu par eux-mêmes.</string>
     <!-- Peut être qu\’une fois que le dépôt Alt aura corrigé ses conneries et cessera d\’autoriser des modules merdiques ou carrément
     cassés, nous reformullerons ça. -->
-    <string name="setup_magisk_alt_repo">Activer le Dépôt Alt Magisk\nBien plus laxiste que l\’original. Offre de nombreux modules au détriement de la sécurité.</string>
+    <string name="setup_magisk_alt_repo">Activer le Dépôt Alt Magisk</string>
+    <string name="setup_magisk_alt_repo_summary">Bien plus laxiste que l\’original. Offre de nombreux modules au détriement de la sécurité.</string>
     <string name="setup_crash_reporting">Activer la Centralisation de la gestion des rapports de crashs et desproblèmes de performances.\nTous les rapports sont strictements anonymes et confidentiels.</string>
     <string name="setup_custom_repos">Vous pouvez ajouter des dépôts supplémentaires par la suite dans les réglages.</string>
     <string name="repos">Dépôts</string>
@@ -259,12 +262,13 @@
     <string name="theme_system">Système</string>
     <string name="theme_dark">Sombre</string>
     <string name="theme_black">AMOLED Black</string>
-    <string name="theme_transparent_light">Light (transparency)</string>
-    <string name="theme_light">Light</string>
-    <string name="androidacy_update_needed">This app is outdated.</string>
-    <string name="androidacy_update_needed_message">Please update the app to the latest version.</string>
-    <string name="androidacy_webview_update_required">Your webview is outdated! Please update it.</string><string name="language_cta">Don\'t see your language?</string><string name="language_cta_desc">Help us by translating it! Tap here to find out more.</string>
-    <string name="source_code_summary"><b>Commit</b> %1$s @ %2$s</string>
-    <string name="no_file_provided">No file was provided when trying to open zip.</string>
-    <string name="zip_load_failed">Could not load the zip file</string><string name="androidacy_thanks">Developed in part by Androidacy</string><string name="androidacy_thanks_desc">Huge shoutout to Androidacy for their integration and contributions to the app.</string><string name="contributors">And of course, thanks to all of our contributors, whether it\'s translations, code, or just being fun to hang out with! We love you all.</string>
+    <string name="theme_transparent_light">Clair (transparent)</string>
+    <string name="theme_light">Clair</string>
+    <string name="androidacy_update_needed">Cette application est obselète.</string>
+    <string name="androidacy_update_needed_message">Merci de mettre à jour l\’application vers la dernière version.</string>
+    <string name="androidacy_webview_update_required">Votre webview est obselète! Merci de le mettre à jour.</string><string name="language_cta">Vous ne voyez pas votre language?</string><string name="language_cta_desc">Aidez-nous en la traduisant! Appuyez ici pour en savoir plus.</string>
+    <string name="source_code_summary"><b>Commission</b> %1$s @ %2$s</string>
+    <string name="no_file_provided">Aucun fichier n\’a été fournit lors de la tentative d\’ouverture du fichier zip.</string>
+    <string name="zip_load_failed">Le fichier zip n\’a pas pu être chargé</string><string name="androidacy_thanks">Développé en partie par Androidacy</string><string
+name="androidacy_thanks_desc">Un grand merci à Androidacy pour son intégration et ses contributions à l\’application.</string><string name="contributors">Et bien-sûr, merci à tous les contributeurs, que ce soit des traductions, du code, ou bien juste le fait d\’être agréable à fréquenter! Nous vous adorons tous & toutes.</string>
 </resources>
