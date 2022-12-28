@@ -6,7 +6,7 @@
     <string name="loading">Načítávaní…</string>
     <string name="updatable">Aktualizovatelné</string>
     <string name="installed">Nainstalováno</string>
-    <string name="online_repo">Online Repo</string>
+    <string name="online_repo">Online Repozitář</string>
     <string name="showcase_mode">Aplikace je v omezeném režimu</string>
     <string name="failed_download">Stahování souboru selhalo</string>
     <string name="slow_modules">Načtení modulů trvalo příliš dlouho, zvažte jejich omezení</string>
@@ -26,7 +26,7 @@
     <string name="require_android_6">Android 6.0+ vyžadován</string>
     <!-- Module section translation -->
     <string name="module_last_update">Poslední aktualizace:</string>
-    <string name="module_repo">Repo:</string>
+    <string name="module_repo">Repozitář:</string>
     <string name="module_by">by</string>
     <string name="module_downloads">Stažení:</string>
     <string name="module_stars">Hvězdiček:</string>
@@ -80,9 +80,7 @@
         (Nevztahuje se na WebView)
     </string>
     <string name="disable_extensions_pref">Zakázat rozšíření</string>
-    <string name="disable_extensions_desc">
-        Zakázat rozšíření Fox\'s Mmm zabrání modulům použít terminal extensions, užitečné používa-li modul rozšíření Fox\'s Mmm nesprávně.
-    </string>
+    <string name="disable_extensions_desc">Zakáže-li se rozšíření Fox\'s Mmm, zabrání se modulům použít terminal extensions, užitečné používa-li modul rozšíření Fox\'s Mmm nesprávně.</string>
     <string name="wrap_text_pref">Zalomit text</string>
     <string name="wrap_text_desc">
         Zalomí text do nové řadky, místo toho
@@ -227,7 +225,7 @@
     <string name="setup_background_update_check_summary">Povolit kontrolu aktualizací modulů a aplikací na pozadí. Může zvýšit spotřebu baterie a dat.</string>
     <string name="setup_theme">Vybrat motiv</string>
     <string name="setup_theme_header">Vybrat motiv</string>
-    <string name="setup_theme_system">Systémový motiv</string>
+    <string name="setup_theme_system">Motiv systému</string>
     <string name="setup_theme_light">Světlý motiv</string>
     <string name="setup_theme_dark">Tmavý motiv</string>
     <string name="setup_theme_black">Tmavý AMOLED motiv</string>
@@ -244,4 +242,5 @@
     <string name="disable_chips_in_description">Deaktivovat chipy v popisu</string>
     <string name="setup_title">První instalace</string>
     <string name="notification_update_title_easter_egg">Nalezeno %i aktualizovatelných modulů</string>
+    <string name="pref_pkg_info_summary">%1$s v%2$s (%3$o) | %4$s Build</string>
 </resources>

@@ -145,7 +145,7 @@
     <string name="androidacy_repo_info">Це сховище може відображати деяку ненав’язливу рекламу для покриття витрат на сервер і розробку. Включає огляди, автоматичне сканування на віруси тощо.</string>
     <string name="androidacy_test_mode_desc">Використовуйте проміжну кінцеву точку Androidacy замість кінцевої точки випуску. (Буде перезапущено додаток)</string>
     <string name="language_support_outdated">Деякі переклади для поточної мови не є актуальними, будь ласка, спробуйте зробити внесок у переклади програми на GitHub</string>
-    <string name="language_translated_by">Переклав Uatel</string>
+    <string name="language_translated_by">Переклад: Uatel</string>
     <string name="crash_reporting">Автоматично повідомляти про помилки та продуктивність розробникам</string>
     <string name="crash_reporting_desc">Якщо вимкнути це, розробник не отримуватиме автоматичні звіти про помилки, і це може ускладнити усунення несправностей</string>
     <string name="please_wait">Будь ласка, зачекайте</string>
@@ -186,9 +186,9 @@
     <string name="sentry_dialogue_success">Відгук успішно надіслано. Невдовзі ми його розглянемо</string>
     <string name="sentry_dialogue_no_description">Не вдалося надіслати відгук, оскільки не було надано опису</string>
     <string name="go_to_online_repo">Перейдіть до онлайн репозиторію</string>
-    <string name="pref_pkg_info_summary">Збірка: %1$s v%2$s (%3$d) | %4$s</string>
-    <string name="official">Офіційний</string>
-    <string name="unofficial">Неофіційний</string>
+    <string name="pref_pkg_info_summary">%1$s v%2$s (%3$d) | %4$s збірка</string>
+    <string name="official">Офіційна</string>
+    <string name="unofficial">Неофіційна</string>
     <string name="setup_title">Перше налаштування</string>
     <string name="setup_button">Завершити налаштування</string>
     <string name="setup_background_update_check">Фонова перевірка оновлень</string>

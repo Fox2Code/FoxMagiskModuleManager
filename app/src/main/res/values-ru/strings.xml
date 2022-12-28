@@ -192,11 +192,11 @@
     <string name="sentry_dialogue_success">Отзыв отправлен успешно. Мы рассмотрим его в ближайшее время</string>
     <string name="additional_info">Сообщите нам что случилось</string>
     <string name="go_to_online_repo">Перейдите к онлайн-репозиторию</string>
-    <string name="pref_pkg_info_summary">Сборка %1$s v%2$s (%3$d) | %4$s</string>
-    <string name="official">Официальный</string>
+    <string name="pref_pkg_info_summary">%1$s v%2$s (%3$d) | %4$s сборка</string>
+    <string name="official">Официальная</string>
     <string name="repos">Репозитории</string>
     <string name="misc">Разное</string>
-    <string name="unofficial">Неофициальный</string>
+    <string name="unofficial">Неофициальная</string>
     <string name="setup_title">Начальная настройка</string>
     <string name="setup_button">Завершить настройку</string>
     <string name="setup_background_update_check">Фоновая проверка обновлений</string>
