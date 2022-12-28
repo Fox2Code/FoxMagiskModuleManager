@@ -541,6 +541,42 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
                 return true;
             });
+            // Next, the pref_androidacy_thanks should lead to the androidacy website
+            linkClickable = findPreference("pref_androidacy_thanks");
+            linkClickable.setOnPreferenceClickListener(p -> {
+                IntentHelper.openUrl(p.getContext(), "https://www.androidacy.com?utm_source=FoxMagiskModuleManager&utm_medium=app&utm_campaign=FoxMagiskModuleManager");
+                return true;
+            });
+            linkClickable.setOnPreferenceLongClickListener(p -> {
+                String toastText = requireContext().getString(R.string.link_copied);
+                clipboard.setPrimaryClip(ClipData.newPlainText(toastText, "https://www.androidacy.com?utm_source=FoxMagiskModuleManager&utm_medium=app&utm_campaign=FoxMagiskModuleManager"));
+                Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
+                return true;
+            });
+            // pref_contributors should lead to the contributors page
+            linkClickable = findPreference("pref_contributors");
+            linkClickable.setOnPreferenceClickListener(p -> {
+                // Remove the .git if it exists and add /graphs/contributors
+                String url = BuildConfig.REMOTE_URL;
+                if (url.endsWith(".git")) {
+                    url = url.substring(0, url.length() - 4);
+                }
+                url += "/graphs/contributors";
+                IntentHelper.openUrl(p.getContext(), url);
+                return true;
+            });
+            linkClickable.setOnPreferenceLongClickListener(p -> {
+                String toastText = requireContext().getString(R.string.link_copied);
+                // Remove the .git if it exists and add /graphs/contributors
+                String url = BuildConfig.REMOTE_URL;
+                if (url.endsWith(".git")) {
+                    url = url.substring(0, url.length() - 4);
+                }
+                url += "/graphs/contributors";
+                clipboard.setPrimaryClip(ClipData.newPlainText(toastText, url));
+                Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
+                return true;
+            });
             linkClickable = findPreference("pref_support");
             linkClickable.setOnPreferenceClickListener(p -> {
                 devModeStep = 0;
