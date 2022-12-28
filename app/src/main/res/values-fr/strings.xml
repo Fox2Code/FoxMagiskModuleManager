@@ -269,6 +269,5 @@
     <string name="androidacy_webview_update_required">Votre webview est obselète! Merci de le mettre à jour.</string><string name="language_cta">Vous ne voyez pas votre language?</string><string name="language_cta_desc">Aidez-nous en la traduisant! Appuyez ici pour en savoir plus.</string>
     <string name="source_code_summary"><b>Commission</b> %1$s @ %2$s</string>
     <string name="no_file_provided">Aucun fichier n\’a été fournit lors de la tentative d\’ouverture du fichier zip.</string>
-    <string name="zip_load_failed">Le fichier zip n\’a pas pu être chargé</string><string name="androidacy_thanks">Développé en partie par Androidacy</string><string
-name="androidacy_thanks_desc">Un grand merci à Androidacy pour son intégration et ses contributions à l\’application.</string><string name="contributors">Et bien-sûr, merci à tous les contributeurs, que ce soit des traductions, du code, ou bien juste le fait d\’être agréable à fréquenter! Nous vous adorons tous & toutes.</string>
+    <string name="zip_load_failed">Le fichier zip n\’a pas pu être chargé</string><string name="androidacy_thanks">Développé en partie par Androidacy</string><string name="androidacy_thanks_desc">Un grand merci à Androidacy pour son intégration et ses contributions à l\’application.</string><string name="contributors">Et bien-sûr, merci à tous les contributeurs, que ce soit des traductions, du code, ou bien juste le fait d\’être agréable à fréquenter! Nous vous adorons tous & toutes.</string>
 </resources>
