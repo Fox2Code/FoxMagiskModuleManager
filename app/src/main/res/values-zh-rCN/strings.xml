@@ -225,11 +225,15 @@
     <string name="setup_message">欢迎! 这个程序将帮助您安装和管理 Magisk 模块. 开始前, 请选择以下选项. 这些选项可以稍后在设置中更改.</string>
     <string name="setup_button">完成设定</string>
     <string name="setup_background_update_check">允许我们从后台检查更新.\n此功能可能消耗更多的电量.</string>
+    <string name="setup_androidacy_repo_summary">具有用户评论、自动病毒扫描、快速更新、广泛的选择，并由 Androidacy 提供支持</string>
     <string name="setup_androidacy_repo">启用 Androidacy 仓库\n特征为用户评价, 自动扫描病毒, 快速更新, 广泛的选择, 并由 Androidacy 提供支持.</string>
+    <string name="setup_androidacy_repo_summary">具有用户评论、自动病毒扫描、快速更新、广泛的选择，并由 Androidacy 提供支持</string>
     <!-- Maybe once alt repo fixes their shit and stops allowing crappy modules or outright
     kanged modules, we'll reword this. -->
-    <string name="setup_magisk_alt_repo">启用 Magisk Alt 仓库\n特征为许多比原版宽松的检查. 有一些模块会以牺牲一点安全性作为代价.</string>
+    <string name="setup_magisk_alt_repo">启用 Magisk Alt 仓库\n特征为许多比原版宽松的检查。有一些模块会以牺牲一点安全性作为代价</string>
+    <string name="setup_magisk_alt_repo_summary">宽松的核查。 有一些模块会以牺牲一些安全性为代价</string>
     <string name="setup_crash_reporting">启用Sentry崩溃报告和性能监控.\n所有报告均严格匿名和保密.</string>
+    <string name="setup_crash_reporting_summary">崩溃报告和性能监控. 所有报告都是严格匿名和保密的</string>
     <string name="setup_custom_repos">你可以稍后在设置中添加自定义仓库.</string>
     <string name="repos">仓库</string>
     <string name="misc">各种各样的</string>
@@ -237,4 +241,33 @@
     <string name="low_performance_device_dialogue_title">在低端设备上启用模糊</string>
     <string name="low_performance_device_dialogue_message">您正在尝试在可能无法正常运行的设备上启用模糊.\n你肯启用它, 但这可能会导致糟糕的用户体验，我们建议您不要这样做.</string>
     <string name="alt_repo_info">仓库的限制和审查较少，这可能会导致模块质量较低. 漂亮的准系统，但有很多模块.</string>
+    <string name="install_terminal_reboot_now_message">您即将重启您的设备。如果你保存了你的工作, 点击确定以继续。 否则, 请点击取消。</string>
+    <string name="install_terminal_config_missing">包 %s 缺少模块的配置, 因此我们无法运行它.</string>
+    <string name="clear_app_data">清除应用数据</string><string name="clear_data_dialogue_title">清除应用数据?</string>
+    <string name="clear_data_dialogue_message">You\'re about to clear the app data. Please confirm this action.</string>
+    <string name="debug_build">这是一个调试构建。预计会出现一些错误和更差的性能。</string>
+    <string name="androidacy_repo_name">Androidacy 仓库</string>
+    <string name="magisk_alt_repo_name">Magisk Alt 仓库</string>
+    <string name="repo_enabled_changed">你启用或禁用了一个仓库。请刷新模块列表或重启应用</string>
+    <string name="finish">完成</string>
+    <string name="setup_theme">选择一个主题</string>
+    <string name="setup_theme_header">选择一个主题</string>
+    <string name="setup_theme_system">跟随系统</string>
+    <string name="setup_theme_light">明亮模式</string>
+    <string name="setup_theme_dark">深色模式</string>
+    <string name="setup_theme_black">纯黑模式</string>
+    <string name="setup_theme_transparent_light">透明模式 - 这将禁用Monet和模糊!</string>
+    <string name="setup_theme_button">选择一个主题</string>
+    <string name="theme">主题</string>
+    <string name="theme_system">跟随系统</string>
+    <string name="theme_dark">深色</string>
+    <string name="theme_black">纯黑</string>
+    <string name="theme_transparent_light">明亮 (透明)</string>
+    <string name="theme_light">明亮</string>
+    <string name="androidacy_update_needed">此应用程序已过时</string>
+    <string name="androidacy_update_needed_message">请更新应用至最新版本</string>
+    <string name="androidacy_webview_update_required">您的webview已过时! 请更新它</string><string name="language_cta">没有看见你的语言?</string><string name="language_cta_desc">帮助我们翻译它! 点击这里了解更多</string>
+    <string name="source_code_summary"><b>Commit</b> %1$s @ %2$s</string>
+    <string name="no_file_provided">尝试打开 zip 时未提供文件</string>
+    <string name="zip_load_failed">无法加载 zip 文件</string><string name="androidacy_thanks">部分由 Androidacy 开发</string><string name="androidacy_thanks_desc">对 Androidacy 的集成和对应用程序的贡献大加赞赏</string><string name="contributors">当然，感谢我们所有的贡献者, 无论是翻译, 代码, 或只是为了好玩! 我们爱你们所有人。</string>
 </resources>
