@@ -250,6 +250,7 @@ configurations {
 dependencies {
     // UI
     implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation "androidx.activity:activity:1.7.0-alpha02"
     implementation 'androidx.emoji2:emoji2:1.2.0'
     implementation 'androidx.emoji2:emoji2-views-helper:1.2.0'
     implementation 'androidx.preference:preference:1.2.0'

@@ -149,7 +149,7 @@ public enum NotificationType implements NotificationTypeCst {
         }
     };
 
-    private static boolean needPatch(File target) throws IOException {
+    public static boolean needPatch(File target) throws IOException {
         try (ZipFile zipFile = new ZipFile(target)) {
             return zipFile.getEntry("module.prop") == null &&
                     zipFile.getEntry("anykernel.sh") == null &&

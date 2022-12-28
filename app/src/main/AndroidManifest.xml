@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="QueryAllPackagesPermission">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+          android:enableOnBackInvokedCallback="true"
+          tools:ignore="QueryAllPackagesPermission"
+          tools:targetApi="tiramisu">
 
     <uses-sdk tools:overrideLibrary="io.sentry.android" />
 
@@ -12,7 +13,8 @@
     </queries>
 
     <!-- Wifi is not the only way to get an internet connection -->
-    <uses-feature android:name="android.hardware.wifi" android:required="false" />
+    <uses-feature
+        android:name="android.hardware.wifi" android:required="false" />
 
     <!-- Retrieve online modules -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -23,9 +25,7 @@
     <!-- Open config apps for applications -->
     <uses-permission-sdk-23 android:name="android.permission.QUERY_ALL_PACKAGES" />
     <!-- Supposed to fix bugs with old firmware, only requested on pre Marshmallow -->
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="22" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!-- Post background notifications -->
     <uses-permission-sdk-23 android:name="android.permission.POST_NOTIFICATIONS" />
 
@@ -83,6 +83,19 @@
                 <action android:name="${applicationId}.intent.action.INSTALL_MODULE_INTERNAL" />
             </intent-filter> -->
         </activity>
+        <!-- We can handle zip files -->
+        <activity
+            android:name="com.fox2code.mmm.utils.ZipFileOpener"
+            android:exported="true"
+            android:theme="@style/Theme.MagiskModuleManager">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/zip" />
+                <data android:mimeType="application/x-zip-compressed" />
+                <data android:scheme="content" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".markdown.MarkdownActivity"
             android:exported="false"
@@ -115,8 +128,8 @@
         </provider>
 
         <provider
-            android:authorities="${applicationId}.file-provider"
             android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.file-provider"
             android:exported="false"
             android:grantUriPermissions="true">
 

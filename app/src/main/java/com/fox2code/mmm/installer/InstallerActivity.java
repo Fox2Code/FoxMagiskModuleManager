@@ -1,5 +1,6 @@
 package com.fox2code.mmm.installer;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -21,6 +22,7 @@ import com.fox2code.foxcompat.FoxActivity;
 import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
+import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.XHooks;
@@ -744,6 +746,7 @@ public class InstallerActivity extends FoxActivity {
         return compatInstallScript;
     }
 
+    @SuppressLint("RestrictedApi")
     @SuppressWarnings("SameParameterValue")
     private void setInstallStateFinished(boolean success, String message, String optionalLink) {
         this.installerTerminal.disableAnsi();
@@ -755,7 +758,12 @@ public class InstallerActivity extends FoxActivity {
         } else toDelete = null;
         this.runOnUiThread(() -> {
             this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, 0);
-            this.setOnBackPressedCallback(null);
+            // Set the back press to finish the activity and return to the main activity
+            this.setOnBackPressedCallback(a -> {
+                this.finishAndRemoveTask();
+                startActivity(new Intent(this, MainActivity.class));
+                return true;
+            });
             this.setDisplayHomeAsUpEnabled(true);
             this.progressIndicator.setVisibility(View.GONE);
 

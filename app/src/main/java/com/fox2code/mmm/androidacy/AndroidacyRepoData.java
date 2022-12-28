@@ -182,7 +182,6 @@ public final class AndroidacyRepoData extends RepoData {
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL("https://" + this.host + "/ping").openConnection();
             connection.setRequestMethod("GET");
-            connection.setConnectTimeout(5000);
             connection.setReadTimeout(5000);
             connection.connect();
             if (connection.getResponseCode() != 200 && connection.getResponseCode() != 204) {
