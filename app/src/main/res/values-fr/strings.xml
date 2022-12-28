@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Gestionnaire de modules Magisk de Fox</string>
     <string name="app_name_short">Gestionnaire de Fox</string>
@@ -42,7 +43,6 @@
     <string name="no" translatable="false">Non</string>
     <string name="ok" translatable="false">@android:string/ok</string>
     <string name="cancel" translatable="false">Annuler</string>
-    
     <!-- Module section translation -->
     <string name="module_last_update">Dernière mis-à-jour :</string>
     <string name="module_repo">Dépôt :</string>
@@ -56,7 +56,6 @@
     <string name="module_min_magisk_chip">Magisk min. "%s"</string>
     <string name="module_min_sdk_chip">Android Min.</string>
     <string name="module_max_sdk_chip">Android Max.</string>
-    
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">Gestion des dépôts</string>
@@ -138,7 +137,6 @@
     <string name="require_internet">Cette opération requière une connexion internet</string>
     <string name="androidacy_test_mode_pref">Mode test Androidacy</string>
     <string name="androidacy_test_mode_desc">Utiliser la mise à disposition Androidacy de test au lieu du point de terminaison stable. (Nécessite le redémarrage du processus d\’application)</string>
-    
     <!-- Background Notification translation -->
     <string name="notification_update_title">%i mises à jours de module trouvé</string>
     <string name="notification_update_title_easter_egg">%i mises à jours de module camouflée</string>
@@ -146,7 +144,6 @@
     <string name="notification_update_pref">Vérification de mise à jour pour les modules en arrière-plan</string>
     <string name="notification_update_desc">Peut améliorer l\’usage de la batterie</string>
     <string name="notification_update_debug_pref">Test de notification</string>
-    
     <!-- Set to true in translation file if your language is right to left -->
     <bool name="lang_support_rtl">false</bool>
     <!-- Always copy language_support_level when translating -->
@@ -168,12 +165,12 @@
     <string name="please_wait">Merci de patienter</string>
     <string name="api_key_removed">Réinitialisation de la clé API éffectuée avec succès</string>
     <string name="save_api_key">Validation</string>
-    <string name="warning">Avertissement !</string>
+    <string name="warning">Avertissement !</string>
     <string name="androidacy_test_mode_warning">Vous êtes en train de configurer l\’application pour une utilisation non productivepour Androidacy. Celà pourrait conduire à une instabilité ainsi que des échecs à charger le dépôt en ligne. Ne rapportez PAS  des bugs si vous avez activé ce paramètrage. Les changements seront effectifs après un redémarrage de l\’application.</string>
     <string name="crash">Planter l\’application pour tester</string>
     <string name="repackaged_as">Reconstituer en :</string>
     <string name="wrapped_from">Emballé depuis :</string>
-    <string name="crash_reporting_restart_title">Redémarrer l\’application pour appliquer les changements?</string>
+    <string name="crash_reporting_restart_title">Redémarrer lapplication pour appliquer les changements \?</string>
     <string name="crash_reporting_restart_message">L\’application nécessite un redémarrage pour appliquer les réglages</string>
     <string name="restart">Redémarrer</string>
     <string name="androidacy_test_mode_disable_warning">L\’application sera redémarrée pour dépasser le point de passage de mise à disposition.</string>
@@ -183,7 +180,7 @@
     <string name="androidacy_need_captcha">Mise à jour d\’Androidacy bloquée par Captcha</string>
     <string name="api_key_restart">La clé d\’API à été changée. Redémarrer l\’application pour appliquer les changements.</string>
     <string name="api_key_unchanged">La clé d\’API que vous avez entré est la même que celle étant déjà utilisée.</string>
-    <string name="permission_notification_title">Autoriser les notifications?</string>
+    <string name="permission_notification_title">Autoriser les notifications \?</string>
     <string name="permission_notification_message">Nous avons de l\’accès aux notifications pour vous avertir des mises à jour de l\’application et des modules. Si vous n\’autorisez cette permission, la vérification des mises à jours en arrière-plan ne fonctionnera pas.</string>
     <string name="permission_notification_grant">Accorder la permission</string>
     <string name="background_update_check_permission_required">Merci d\’activer les notifications pour activer cette option.</string>
@@ -207,7 +204,7 @@
     <string name="sentry_dialogue_message">Nous avons rencontré une erreur! Merci d\’aider à améliorer l\’application
         en ajoutant certaines informations à propos de l\’erreur ci-dessous.\nLe nom et l\’email sont optionnels mais nous
         permettrons de vous contacter si nécessaire pour plus d\’informations.</string>
-    <string name="sentry_dialogue_title">Oups! On dirait que l\’application s\’est fermée de manière inattendue.</string>
+    <string name="sentry_dialogue_title">Oups ! On dirait que lapplication sest fermée de manière inattendue.</string>
     <string name="name">Votre Nom</string>
     <string name="email">Votre email</string>
     <string name="additional_info">Dites nous qu\’est ce qui s\’est passé</string>
