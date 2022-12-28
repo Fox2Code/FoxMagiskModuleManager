@@ -240,4 +240,12 @@
     <string name="androidacy_update_needed">Menedżer nie jest aktualny.</string>
     <string name="androidacy_update_needed_message">Zaktualizuj aplikację do najnowszej wersji.</string>
     <string name="androidacy_webview_update_required">Twój webview jest nieaktualny! Zaktualizuj go.</string>
+    <string name="language_cta">Nie ma twojego języka\?</string>
+    <string name="source_code_summary"><b>Commit</b> %1$s @ %2$s</string>
+    <string name="no_file_provided">Przy próbie otwarcia zipa nie podano żadnego pliku.</string>
+    <string name="zip_load_failed">Nie można wczytać pliku zip</string>
+    <string name="androidacy_thanks">Opracowane częściowo przez Androidacy</string>
+    <string name="language_cta_desc">Możesz przetłumaczyć! Naciśnij tutaj, aby uzyskać więcej informacji.</string>
+    <string name="androidacy_thanks_desc">Ogromne podziękowania dla Androidacy za ich integrację i wkład w aplikację.</string>
+    <string name="contributors">I oczywiście dziękujemy wszystkim naszym współtwórcom, czy to za tłumaczenia, czy za kod, czy za to, że po prostu dobrze się bawicie! Kochamy was wszystkich.</string>
 </resources>

@@ -36,9 +36,9 @@
     <!-- Module section translation -->
     <string name="module_last_update">Посл. обновление:</string>
     <string name="module_repo">Репозиторий:</string>
-    <string name="module_by">| автор:</string>
+    <string name="module_by">автора</string>
     <string name="module_downloads">Всего скачали:</string>
-    <string name="module_stars">В избранном у</string>
+    <string name="module_stars">В избранном:</string>
     <string name="module_needs_ramdisk">Требуется ramdisk</string>
     <string name="module_needs_ramdisk_desc">Для работы модулю требуется наличие раздела ramdisk</string>
     <string name="module_can_change_boot">Влияет на boot</string>
@@ -98,10 +98,11 @@
     <string name="dns_over_https_pref">DNS поверх HTTPS</string>
     <string name="dns_over_https_desc">Может исправить проблемы с подключением к сети (не распространяется на WebView)</string>
     <string name="disable_extensions_pref">Отключить расширения</string>
-    <string name="disable_extensions_desc">Отключает расширения МмM Fox’а, тем самым не давая модулям использовать встроенный терминал. Полезно, если модуль некорректно работает с расширениями менеджера.</string>
+    <string name="disable_extensions_desc">Отключает расширения МмM Fox’а, тем самым не давая модулям использовать встроенный терминал.
+\nПолезно, если модуль некорректно работает с расширениями менеджера.</string>
     <string name="wrap_text_pref">Перенос по словам</string>
-    <string name="wrap_text_desc">Переносить текст на другую строку, чтобы не помещать всё на одной во время установки модуля.</string>
-    <string name="enable_blur_pref">Включить эффект размытия</string>
+    <string name="wrap_text_desc">Показывать текст в нескольких строках вместо отображения всего текста в одной строке при установке модуля.</string>
+    <string name="enable_blur_pref">Эффект размытия</string>
     <string name="disable_chips_in_description">Отключить форматирование в описании</string>
     <string name="repo_enabled">Репо включён</string>
     <string name="repo_disabled">Репо отключен</string>
@@ -200,8 +201,8 @@
     <string name="setup_title">Начальная настройка</string>
     <string name="setup_button">Завершить настройку</string>
     <string name="setup_background_update_check">Фоновая проверка обновлений</string>
-    <string name="setup_androidacy_repo">Включить Androidacy repo</string>
-    <string name="setup_magisk_alt_repo">Включить Magisk Alt Repo</string>
+    <string name="setup_androidacy_repo">Репозиторий Androidacy</string>
+    <string name="setup_magisk_alt_repo">Репозиторий Magisk Alt</string>
     <string name="setup_crash_reporting">Включить Sentry</string>
     <string name="setup_custom_repos">Вы можете добавить собственные репозитории позже в настройках.</string>
     <string name="install_terminal_reboot_now_message">Вы собираетесь перезагрузить устройство. Если вы сохранили свою работу, нажмите OK, чтобы продолжить. В противном случае нажмите Отмена.</string>
@@ -211,7 +212,7 @@
     <string name="setup_androidacy_repo_summary">Включает обзоры пользователей, автоматическое сканирование на вирусы, быстрые обновления, широкий выбор и поддерживается Androidacy.</string>
     <string name="setup_magisk_alt_repo_summary">Более опасный оригинала. Имеет много модулей за счет пренебрежения безопасностью.</string>
     <string name="setup_crash_reporting_summary">Отчеты о сбоях и мониторинг производительности. Все отчеты строго анонимны и конфиденциальны.</string>
-    <string name="setup_button_skip">Пропустить</string>
+    <string name="setup_button_skip">Отмена</string>
     <string name="low_performance_device_dialogue_title">Включить размытие фона для слабых устройств</string>
     <string name="low_performance_device_dialogue_message">Вы пытаетесь включить размытие фона на устройстве, которое может плохо с ним работать.
 \nВы можете включить его, но это может привести к плохому пользовательскому опыту, и мы рекомендуем вам этого не делать.</string>
@@ -219,20 +220,28 @@
     <string name="androidacy_repo_name">Репозиторий Androidacy</string>
     <string name="magisk_alt_repo_name">Репозиторий Magisk Alt</string>
     <string name="repo_enabled_changed">Вы включили или отключили репозиторий. Пожалуйста, обновите список модулей или перезапустите приложение.</string>
-    <string name="finish">Завершить</string>
+    <string name="finish">OK</string>
     <string name="setup_background_update_check_summary">Разрешите нам проверять наличие обновлений модулей и приложений в фоновом режиме. Эта функция может увеличить расход заряда батареи и трафика.</string>
     <string name="setup_theme_header">Выбор темы</string>
-    <string name="setup_theme">Выбор темы</string>
+    <string name="setup_theme">Выбрать тему</string>
     <string name="setup_theme_light">Светлая тема</string>
     <string name="setup_theme_system">Тема как в системе</string>
     <string name="setup_theme_dark">Темная тема</string>
     <string name="setup_theme_black">Темная тема AMOLED</string>
     <string name="setup_theme_transparent_light">Прозрачная светлая тема - отключит Monet и размытие фона!</string>
-    <string name="setup_theme_button">Выбор темы</string>
+    <string name="setup_theme_button">Выбрать тему</string>
     <string name="theme">Тема</string>
     <string name="theme_system">Как в ситеме</string>
     <string name="theme_dark">Темная</string>
     <string name="theme_black">Темная AMOLED</string>
     <string name="theme_transparent_light">Светлая (прозрачная)</string>
     <string name="theme_light">Светлая</string>
+    <string name="language_cta">Нет вашего языка\?</string>
+    <string name="language_cta_desc">Помогите нам с переводом на него! Нажмите здесь, чтобы узнать больше.</string>
+    <string name="source_code_summary"><b>Принять</b> %1$s @ %2$s</string>
+    <string name="zip_load_failed">Не удалось загрузить zip архив</string>
+    <string name="androidacy_thanks_desc">Огромное спасибо Androidacy за их интеграцию и вклад в приложение.</string>
+    <string name="androidacy_thanks">Частично разработан Androidacy</string>
+    <string name="no_file_provided">Нет доступа к файлу при попытке открытия zip архива.</string>
+    <string name="contributors">Также конечно же, спасибо всем нашим участникам, будь то переводы, код или просто веселое времяпрепровождение! Мы любим вас всех.</string>
 </resources>

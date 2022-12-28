@@ -221,7 +221,7 @@
     <string name="setup_theme_transparent_light">Transparentný svetlý motív - zakáže sa monet a blur!</string>
     <string name="androidacy_update_needed">Táto aplikácia je zastaraná.</string>
     <string name="androidacy_update_needed_message">Prosím aktualizujte aplikáciu na najnovšiu verziu.</string>
-    <string name="pref_pkg_info_summary">%1$s v%2$s (%3$o) | %4$s Build</string>
+    <string name="pref_pkg_info_summary">%1$s v%2$s (%3$d) | %4$s Build</string>
     <string name="debug_build">Toto je debugovacia verzia. Môžu sa vyskytnúť chyby a zhoršiť výkon.</string>
     <string name="androidacy_repo_name">Repozitár Androidacy</string>
     <string name="magisk_alt_repo_name">Alternatívny Magisk repozitár</string>

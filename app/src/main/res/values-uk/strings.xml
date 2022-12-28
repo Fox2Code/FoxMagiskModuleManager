@@ -77,7 +77,7 @@
     <string name="dns_over_https_pref">DNS через HTTPS</string>
     <string name="dns_over_https_desc">У деяких випадках може вирішити проблеми з підключенням. (Не стосується WebView.)</string>
     <string name="wrap_text_pref">Перенесення за словами</string>
-    <string name="enable_blur_pref">Ефект розмітки фону</string>
+    <string name="enable_blur_pref">Ефект розмиття фону</string>
     <string name="disable_chips_in_description">Вимкнути форматування в описі</string>
     <string name="repo_enabled">Репозиторій увімкнено</string>
     <string name="repo_disabled">Репозиторій вимкнено</string>
@@ -190,11 +190,11 @@
     <string name="official">Офіційна</string>
     <string name="unofficial">Неофіційна</string>
     <string name="setup_title">Перше налаштування</string>
-    <string name="setup_button">Завершити налаштування</string>
+    <string name="setup_button">Пізніше</string>
     <string name="setup_background_update_check">Фонова перевірка оновлень</string>
-    <string name="setup_androidacy_repo">Увімкніть репозиторій Androidacy</string>
+    <string name="setup_androidacy_repo">Репозиторій Androidacy</string>
     <string name="setup_androidacy_repo_summary">Є відгуки користувачів, автоматичне сканування на віруси, швидке оновлення, широкий вибір і підтримується Androidacy.</string>
-    <string name="setup_magisk_alt_repo">Увімкніть репозиторій Magisk Alt</string>
+    <string name="setup_magisk_alt_repo">Репозиторій Magisk Alt</string>
     <string name="setup_crash_reporting">Увімкнути Sentry</string>
     <string name="setup_crash_reporting_summary">Звіти про збої та моніторинг продуктивності. Усі повідомлення є суворо анонімними та конфіденційними.</string>
     <string name="setup_custom_repos">Ви можете додати власний репозиторій пізніше в налаштуваннях.</string>
@@ -210,7 +210,7 @@
     <string name="androidacy_repo_name">Репозиторій Androidacy</string>
     <string name="magisk_alt_repo_name">Репозиторій Magisk Alt</string>
     <string name="repo_enabled_changed">Ви ввімкнули або вимкнули репозиторій. Будь ласка, оновіть список модулів або перезавантажте додаток.</string>
-    <string name="finish">Закінчити</string>
+    <string name="finish">ОК</string>
     <string name="setup_theme">Обрати тему</string>
     <string name="setup_theme_header">Обрати тему</string>
     <string name="setup_theme_system">Тема системи</string>
@@ -231,4 +231,12 @@
     <string name="monet_disabled_summary">Monet несумісний з прозорими темами.</string>
     <string name="transparent_theme_dialogue_title">Ви встановлюєте прозору тему</string>
     <string name="transparent_theme_dialogue_message">Прозорі теми можуть мати деякі невідповідності та працювати не на всіх прошивках. Крім того, Monet і розмиття будуть вимкнені. Ви зможете будь-коли повернути назад.</string>
+    <string name="language_cta">Ваша мова відсутня\?</string>
+    <string name="language_cta_desc">Допоможіть нам з перекладом! Натисніть тут, щоб дізнатися більше.</string>
+    <string name="source_code_summary"><b>Прийняти</b> %1$s @ %2$s</string>
+    <string name="no_file_provided">Нема доступу до файлу при спробі відкриття zip архіву.</string>
+    <string name="zip_load_failed">Неможливо завантажити zip архів</string>
+    <string name="androidacy_thanks">Частково розроблений Androidacy</string>
+    <string name="androidacy_thanks_desc">Величезна вдяка Androidacy за їх інтеграцію та внесок у додаток.</string>
+    <string name="contributors">Також звичайно ж, дякую всім нашим учасникам, будь то переклади, код або просто веселе проведення часу! Ми любимо вас усіх.</string>
 </resources>
