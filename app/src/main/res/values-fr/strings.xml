@@ -232,7 +232,8 @@
     cassés, nous reformullerons ça. -->
     <string name="setup_magisk_alt_repo">Activer le Dépôt Alt Magisk</string>
     <string name="setup_magisk_alt_repo_summary">Bien plus laxiste que l\’original. Offre de nombreux modules au détriement de la sécurité.</string>
-    <string name="setup_crash_reporting">Activer la Centralisation de la gestion des rapports de crashs et desproblèmes de performances.\nTous les rapports sont strictements anonymes et confidentiels.</string>
+    <string name="setup_crash_reporting">Activer Sentry</string>
+    <string name="setup_crash_reporting_summary">Activer la Centralisation de la gestion des rapports de crashs et des problèmes de performances.\nTous les rapports sont strictements anonymisés et confidentiels.</string>
     <string name="setup_custom_repos">Vous pouvez ajouter des dépôts supplémentaires par la suite dans les réglages.</string>
     <string name="repos">Dépôts</string>
     <string name="misc">Diver</string>
@@ -240,7 +241,6 @@
     <string name="low_performance_device_dialogue_title">Activer blur sur les périphériques bas de gamme</string>
     <string name="low_performance_device_dialogue_message">Vous tentez d\’activer blur sur un périphérique qui pourrait ne pas fonctionner complêtement avec ça.\nVous pourriez l\’activer, mais ça vous apportera une mauvaise expérience utilisateur et nous ne vous recommendons pas de l\’utiliser.</string>
     <string name="alt_repo_info">Ce dépôt a moins de restrictions et d\’examens, pouvant résulter à une qualité de modules inférieurs. Très minimalistes mais qui dispose de beaucoup de modules.</string>
-    <string name="setup_button_skip">Passer</string>
     <string name="install_terminal_reboot_now_message">Vous vous apprêtez à redémarrer votre périphérique. Si vous avez sauvegardé votre travail, appuyez sur OK pour continuer. Ou sinon, pressez annuler.</string>
     <string name="install_terminal_config_missing">Le paquet %s est introuvable pour la configuration du module, nous ne pouvons donc pas le lancer.</string>
     <string name="clear_app_data">Éffacer données application</string><string name="clear_data_dialogue_title">Éffacer les données de l\’application ?</string>
