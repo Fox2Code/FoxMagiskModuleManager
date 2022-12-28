@@ -136,4 +136,67 @@
     <string name="language_support_outdated">如果您使用的當前語言沒有及時更新，請考慮在 GitHub 上的為翻譯做出貢獻。</string>
     <!-- Replace with your own username when translating -->
     <string name="language_translated_by">由 OrStudio.tw(@crcky5322) 提供美妙的翻譯</string>
+    
+    <!-- Form ender-zhao replenish, may not be standard. some translate need local Taiwan resident change -->
+    <string name="fail_magisk_missing">此設備上未安裝 Magisk</string>
+    <string name="fail_root_denied">Root 被 Magisk 應用程序被拒絕</string>
+    <string name="setup_button">完成</string>
+    <string name="crash">為測試崩潰此程序</string>
+    <string name="repackaged_as">重新包裝為:</string>
+    <string name="wrapped_from">包裝自:</string>
+    <string name="crash_reporting_restart_title">重新啟動應用程序以應用更改?</string>
+    <string name="crash_reporting_restart_message">該應用需要重新啟動才能應用此設置</string>
+    <string name="restart">重新啓動</string>
+    <string name="androidacy_test_mode_disable_warning">應用程序將重新啟動以禁用暫存端點</string>
+    <string name="androidacy_failed_to_parse_token">無法從 Androidacy 檢索令牌。 請稍後再試。</string>
+    <string name="androidacy_failed_to_validate_token">無法驗證 Androidacy 的令牌。 請稍後再試。</string>
+    <string name="androidacy_server_down">無法聯繫 Androidacy 服務器。 請檢查您的連接並重試。</string>
+    <string name="androidacy_need_captcha">Androidacy 更新被驗證碼阻止</string>
+    <string name="api_key_restart">API 密鑰已更改。 重新啟動應用程序以應用更改。</string>
+    <string name="api_key_unchanged">您輸入的 API 密鑰與已經使用的 API 密鑰相同。</string>
+    <string name="permission_notification_title">允許通知?</string>
+    <string name="permission_notification_message">我們需要通知權限才能通知您應用程序和模塊更新。 如果您不授予此權限，則不會運行後台更新檢查。</string>
+    <string name="permission_notification_grant">授予權限</string>
+    <string name="background_update_check_permission_required">請啟用通知以啟用此選項。</string>
+    <string name="dont_ask_again">不再詢問</string>
+    <string name="force_black_theme_desc">使用深色主題時強制 AMOLED 黑色背景.
+        請注意，這可能與某些顏色主題存在對比度問題.</string>
+    <string name="force_black_theme_pref">強制黑色主題</string>
+    <string name="androidacy_repo_disabled">此倉庫目前已禁用</string>
+    <string name="setup_custom_repos">你可以稍後在設置中添加自定義倉庫.</string>
+    <string name="repos">倉庫</string>
+    <string name="misc">各種各樣的</string>
+    <string name="setup_button_skip">跳過</string>
+    <string name="low_performance_device_dialogue_title">在低端設備上啟用模糊</string>
+    <string name="low_performance_device_dialogue_message">你正在尝试在可能无法正常运行的設備上启用模糊.\n啓用他可能會導致糟糕的用戶體驗，我們建議你不要這樣做。</string>
+    <string name="alt_repo_info">倉庫的限制和審查較少，這可能會導致模塊質量較低. 漂亮的準系統，但有很多模塊</string>
+    <string name="install_terminal_reboot_now_message">您即將重啟您的設備。如果你保存了你的工作, 點擊確定以繼續。否則, 請點擊取消。</string>
+    <string name="install_terminal_config_missing">包 %s 缺少模塊的配置, 因此我們無法運行它.</string>
+    <string name="clear_app_data">清除應用數據</string><string name="clear_data_dialogue_title">清除應用數據?</string>
+    <string name="clear_data_dialogue_message">You\'re about to clear the app data. Please confirm this action.</string>
+    <string name="debug_build">這是一個測試構建。預計會出現一些錯誤和更差的性能。</string>
+    <string name="androidacy_repo_name">Androidacy 倉庫</string>
+    <string name="magisk_alt_repo_name">Magisk Alt 倉庫</string>
+    <string name="repo_enabled_changed">你啟用或禁用了一個倉庫。請刷新模塊列表或重啟應用</string>
+    <string name="finish">完成</string>
+    <string name="setup_theme">選擇一個主題</string>
+    <string name="setup_theme_header">選擇一個主題</string>
+    <string name="setup_theme_system">跟隨系統</string>
+    <string name="setup_theme_light">明亮主題</string>
+    <string name="setup_theme_dark">深色主題</string>
+    <string name="setup_theme_black">AMOLED 純黑主题</string>
+    <string name="setup_theme_transparent_light">透明主題 - 這將禁用Monet和模糊!</string>
+    <string name="setup_theme_button">選擇一個主題</string>
+    <string name="theme">主題</string>
+    <string name="theme_system">跟隨系統</string>
+    <string name="theme_dark">深色</string>
+    <string name="theme_black">純黑</string>
+    <string name="theme_transparent_light">明亮 (透明)</string>
+    <string name="theme_light">明亮</string>
+    <string name="androidacy_update_needed">此應用程序已過時</string>
+    <string name="androidacy_update_needed_message">請更新應用至最新版本</string>
+    <string name="androidacy_webview_update_required">你的webview已過時! 請更新它</string><string name="language_cta">沒有看見你的語言?</string><string name="language_cta_desc">幫助我們翻譯它! 點擊這裡了解更多</string>
+    <string name="source_code_summary"><b>Commit</b> %1$s @ %2$s</string>
+    <string name="no_file_provided">嘗試打開的 zip 文件未提供文件</string>
+    <string name="zip_load_failed">無法加載 zip 文件</string><string name="androidacy_thanks">部分由 Androidacy 開發</string><string name="androidacy_thanks_desc">對 Androidacy 的集成和對應用程序的貢獻大加讚賞</string><string name="contributors">當然，感謝我們所有的貢獻者, 無論是翻譯, 代碼, 或只是為了好玩! 我們愛你們所有人。</string>
 </resources>
