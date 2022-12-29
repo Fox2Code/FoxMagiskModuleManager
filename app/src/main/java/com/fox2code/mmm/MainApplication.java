@@ -22,10 +22,10 @@ import androidx.emoji2.text.DefaultEmojiCompatConfig;
 import androidx.emoji2.text.EmojiCompat;
 import androidx.emoji2.text.FontRequestEmojiCompatConfig;
 
-import com.fox2code.foxcompat.FoxActivity;
-import com.fox2code.foxcompat.FoxApplication;
-import com.fox2code.foxcompat.FoxThemeWrapper;
-import com.fox2code.foxcompat.internal.FoxProcessExt;
+import com.fox2code.foxcompat.app.FoxActivity;
+import com.fox2code.foxcompat.app.FoxApplication;
+import com.fox2code.foxcompat.app.internal.FoxProcessExt;
+import com.fox2code.foxcompat.view.FoxThemeWrapper;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.utils.GMSProviderInstaller;
 import com.fox2code.mmm.utils.Http;

@@ -8,7 +8,7 @@ import androidx.annotation.AttrRes;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.StringRes;
 
-import com.fox2code.foxcompat.FoxActivity;
+import com.fox2code.foxcompat.app.FoxActivity;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.module.ModuleViewListBuilder;
 import com.fox2code.mmm.repo.RepoManager;

@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fox2code.androidansi.AnsiConstants;
 import com.fox2code.androidansi.AnsiParser;
-import com.fox2code.foxcompat.FoxActivity;
+import com.fox2code.foxcompat.app.FoxActivity;
 import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
@@ -393,13 +393,6 @@ public class InstallerActivity extends FoxActivity {
             }
             if (anyKernel3) {
                 installerController.useRecoveryExt();
-            } else if (Build.SUPPORTED_32_BIT_ABIS.length == 0) {
-                if (needs32bit) {
-                    this.setInstallStateFinished(false,
-                            "! This module can't be installed on a 64bit only system",
-                            null);
-                    return;
-                }
             } else if (needs32bit || (compatFlags & AppUpdateManager.FLAG_COMPAT_NO_EXT) == 0) {
                 // Restore Magisk legacy stuff for retro compatibility
                 if (Build.SUPPORTED_32_BIT_ABIS[0].contains("arm"))

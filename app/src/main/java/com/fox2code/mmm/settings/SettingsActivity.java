@@ -39,10 +39,10 @@ import androidx.preference.PreferenceGroup;
 import androidx.preference.SwitchPreferenceCompat;
 import androidx.preference.TwoStatePreference;
 
-import com.fox2code.foxcompat.FoxActivity;
-import com.fox2code.foxcompat.FoxDisplay;
-import com.fox2code.foxcompat.FoxViewCompat;
-import com.fox2code.foxcompat.internal.FoxProcessExt;
+import com.fox2code.foxcompat.app.FoxActivity;
+import com.fox2code.foxcompat.app.internal.FoxProcessExt;
+import com.fox2code.foxcompat.view.FoxDisplay;
+import com.fox2code.foxcompat.view.FoxViewCompat;
 import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;

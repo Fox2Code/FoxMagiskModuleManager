@@ -21,7 +21,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.fox2code.foxcompat.FoxDisplay;
+import com.fox2code.foxcompat.view.FoxDisplay;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.NotificationType;

@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.fox2code.foxcompat.FoxActivity;
+import com.fox2code.foxcompat.app.FoxActivity;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.installer.InstallerInitializer;

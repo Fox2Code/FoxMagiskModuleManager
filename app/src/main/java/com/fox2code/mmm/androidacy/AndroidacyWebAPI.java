@@ -16,7 +16,7 @@ import androidx.annotation.Keep;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
-import com.fox2code.foxcompat.FoxDisplay;
+import com.fox2code.foxcompat.view.FoxDisplay;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;

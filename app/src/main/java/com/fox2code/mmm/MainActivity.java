@@ -39,8 +39,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.fox2code.foxcompat.FoxActivity;
-import com.fox2code.foxcompat.FoxDisplay;
+import com.fox2code.foxcompat.app.FoxActivity;
+import com.fox2code.foxcompat.view.FoxDisplay;
 import com.fox2code.mmm.background.BackgroundUpdateChecker;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.manager.LocalModuleInfo;

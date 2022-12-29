@@ -26,7 +26,7 @@ import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewClientCompat;
 import androidx.webkit.WebViewFeature;
 
-import com.fox2code.foxcompat.FoxActivity;
+import com.fox2code.foxcompat.app.FoxActivity;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
@@ -308,16 +308,6 @@ public final class AndroidacyActivity extends FoxActivity {
             Log.i(TAG, "Debug mode enabled for webview using URL: " + url + " with headers: " + headers);
         }
         this.webView.loadUrl(url, headers);
-    }
-
-    @Override
-    public void onBackPressed() {
-        WebView webView = this.webView;
-        if (webView != null && webView.canGoBack()) {
-            webView.goBack();
-        } else {
-            super.onBackPressed();
-        }
     }
 
     @Override

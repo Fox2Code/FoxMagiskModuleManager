@@ -3,13 +3,11 @@ package com.fox2code.mmm.utils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -19,7 +17,7 @@ import android.widget.Toast;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.app.BundleCompat;
 
-import com.fox2code.foxcompat.FoxActivity;
+import com.fox2code.foxcompat.app.FoxActivity;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
@@ -50,11 +48,7 @@ public class IntentHelper {
             "android.support.customtabs.extra.TOOLBAR_COLOR";
     private static final String EXTRA_TAB_EXIT_ANIMATION_BUNDLE =
             "android.support.customtabs.extra.EXIT_ANIMATION_BUNDLE";
-    static final int FLAG_GRANT_URI_PERMISSION =
-            Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP ?
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION |
-                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION :
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION;
+    static final int FLAG_GRANT_URI_PERMISSION = Intent.FLAG_GRANT_READ_URI_PERMISSION;
 
     public static void openUri(Context context, String uri) {
         if (uri.startsWith("intent://")) {
@@ -152,7 +146,7 @@ public class IntentHelper {
                             "am start -a android.intent.action.MAIN " +
                                     "-c org.lsposed.manager.LAUNCH_MANAGER " +
                                     "com.android.shell/.BugreportWarningActivity")
-                            .to(new CallbackList<String>() {
+                            .to(new CallbackList<>() {
                                 @Override
                                 public void onAddElement(String str) {
                                     Log.i(TAG, "LSPosed: " + str);
@@ -193,11 +187,6 @@ public class IntentHelper {
         }
     }
 
-    public static void openInstaller(Context context, String url, String title,
-                                     String config, String checksum) {
-        openInstaller(context, url, title, config, checksum, false);
-    }
-
     public static void openInstaller(Context context, String url, String title, String config,
                                        String checksum, boolean mmtReborn) {
         openInstaller(context, url, title, config, checksum, mmtReborn, false);
@@ -225,14 +214,6 @@ public class IntentHelper {
                     "Failed to launch markdown activity",  Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
-    }
-
-    public static void startActivity(Context context, Intent intent) {
-        ComponentName componentName = intent.getComponent();
-        String packageName = context.getPackageName();
-        startActivity(context, intent, packageName.equals(intent.getPackage()) ||
-                        (componentName != null &&
-                                packageName.equals(componentName.getPackageName())));
     }
 
     public static void startActivity(Context context, Class<? extends Activity> activityClass) {

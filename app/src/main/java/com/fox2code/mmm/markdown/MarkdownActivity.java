@@ -18,7 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.core.graphics.ColorUtils;
 
-import com.fox2code.foxcompat.FoxActivity;
+import com.fox2code.foxcompat.app.FoxActivity;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
@@ -157,16 +157,12 @@ public class MarkdownActivity extends FoxActivity {
                             textView, MarkdownUrlLinker.urlLinkify(markdown));
                     if (markdownBackground != null) {
                         markdownBackground.setClickable(true);
-                        markdownBackground.setOnClickListener(v -> this.onBackPressed());
                     }
                 });
             } catch (Exception e) {
                 Log.e(TAG, "Failed download", e);
-                runOnUiThread(() -> {
-                    Toast.makeText(this, R.string.failed_download,
-                            Toast.LENGTH_SHORT).show();
-                    this.onBackPressed();
-                });
+                runOnUiThread(() -> Toast.makeText(this, R.string.failed_download,
+                        Toast.LENGTH_SHORT).show());
             }
         }, "Markdown load thread").start();
     }
