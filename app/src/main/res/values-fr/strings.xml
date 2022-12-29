@@ -7,7 +7,7 @@
     <string name="loading">Chargement…</string>
     <string name="updatable">Actualisable</string>
     <string name="installed">Installé</string>
-    <string name="online_repo">Dépôt en ligne</string>
+    <string name="online_repo">Dépôts en ligne</string>
     <string name="showcase_mode">L\’application est en mode verrouillage</string>
     <string name="failed_download">Échec du téléchargement du fichier</string>
     <string name="slow_modules">Les modules mettent trop de temps à démarrer, envisagez de désactiver certains modules</string>
@@ -37,7 +37,7 @@
     <string name="require_android_6">Requière Android 6.0+</string>
     <string name="require_android_12">Requière Android 12+</string>
     <string name="install_terminal_reboot_now">Redémarrer</string>
-    <string name="language">Language</string>
+    <string name="language">Langue</string>
     <string name="yes" translatable="false">Oui</string>
     <string name="no" translatable="false">Non</string>
     <string name="ok" translatable="false">@android:string/ok</string>
@@ -128,8 +128,8 @@
     <string name="disable_chips_in_description">Désactiver chips dans la description</string>
     <string name="repo_enabled">Dépôt activé</string>
     <string name="repo_disabled">Dépôt désactivé</string>
-    <string name="add_repo">Ajouter dépôt</string>
-    <string name="remove_repo">Supprimer dépôt</string>
+    <string name="add_repo">Ajouter un dépôt</string>
+    <string name="remove_repo">Supprimer le dépôt</string>
     <string name="custom_url">URL personnalisée</string>
     <string name="link_copied">Lien copié</string>
     <string name="androidacy_repo_info">Ce dépôt pourrait afficher certaines publicitées non intruisives pour pallier aux couts financiers des serveurs et du développement.</string>
@@ -218,18 +218,22 @@
     <string name="sentry_dialogue_no_description">Il n\’est pas possible d\’envoyer le retour d\’expérience etant donné qu\’aucune
         description n\’a été fournie</string>
     <string name="go_to_online_repo">Défiler jusqu\’aux dépôts en ligne</string>
-    <string name="pref_pkg_info_summary">%1$s v%2$s (%3$d) | %4$s Fabrication</string>
-    <string name="official">Officielle</string>
-    <string name="unofficial">Non-officielle</string>
+    <string name="pref_pkg_info_summary">%1$s v%2$s (%3$d) | Fabrication %4$s</string>
+    <string name="official">officielle</string>
+    <string name="unofficial">non-officielle</string>
     <string name="setup_title">Première mise en service</string>
     <string name="setup_message">Bienvenue! Cette application vous aidera à installer et gérer vos modules Magisk. Pour commencer, merci de sélectionner les options ci-dessous. Celles-ci et d\’autres peuvent êtres configurées ultérieusement dans les paramètres.</string>
     <string name="setup_button">Terminer la configuration</string>
-    <string name="setup_background_update_check">Nous permettre de vérifier les mises-à-jours en arrière-plan.\nCette fonctionnalité peut utiliser d\’avantage de batterie.</string>
-    <string name="setup_androidacy_repo">Activer le dépôt Androidacy\nRetours des utilisateurs sur les fonctionnalités, analyse antivirales automatiques, Mises-à-jours rapides, un grand choix de sélection, et soutenu par eux-mêmes.</string>
+    <string name="setup_background_update_check">Vérification des MàJ en arrière-plan</string>
+    <string name="setup_background_update_check_summary">Nous permettre de vérifier les mises-à-jours en arrière-plan.\nCette fonctionnalité peut utiliser d\’avantage de batterie.</string>
+    <string name="setup_androidacy_repo">Activer le dépôt Androidacy</string>
+    <string name="setup_androidacy_repo_summary">Activer le dépôt Androidacy\nRetours des utilisateurs sur les fonctionnalités, analyse antivirales automatiques, Mises-à-jours rapides, un grand choix de sélection, et soutenu par eux-mêmes.</string>
     <!-- Peut être qu\’une fois que le dépôt Alt aura corrigé ses conneries et cessera d\’autoriser des modules merdiques ou carrément
     cassés, nous reformullerons ça. -->
-    <string name="setup_magisk_alt_repo">Activer le Dépôt Alt Magisk\nBien plus laxiste que l\’original. Offre de nombreux modules au détriement de la sécurité.</string>
-    <string name="setup_crash_reporting">Activer la Centralisation de la gestion des rapports de crashs et desproblèmes de performances.\nTous les rapports sont strictements anonymes et confidentiels.</string>
+    <string name="setup_magisk_alt_repo">Activer le Dépôt Alt Magisk</string>
+    <string name="setup_magisk_alt_repo_summary">Bien plus laxiste que l\’original. Offre de nombreux modules au détriement de la sécurité.</string>
+    <string name="setup_crash_reporting">Activer Sentry</string>
+    <string name="setup_crash_reporting_summary">Activer la Centralisation de la gestion des rapports de crashs et des problèmes de performances.\nTous les rapports sont strictements anonymisés et confidentiels.</string>
     <string name="setup_custom_repos">Vous pouvez ajouter des dépôts supplémentaires par la suite dans les réglages.</string>
     <string name="repos">Dépôts</string>
     <string name="misc">Diver</string>
@@ -237,4 +241,33 @@
     <string name="low_performance_device_dialogue_title">Activer blur sur les périphériques bas de gamme</string>
     <string name="low_performance_device_dialogue_message">Vous tentez d\’activer blur sur un périphérique qui pourrait ne pas fonctionner complêtement avec ça.\nVous pourriez l\’activer, mais ça vous apportera une mauvaise expérience utilisateur et nous ne vous recommendons pas de l\’utiliser.</string>
     <string name="alt_repo_info">Ce dépôt a moins de restrictions et d\’examens, pouvant résulter à une qualité de modules inférieurs. Très minimalistes mais qui dispose de beaucoup de modules.</string>
+    <string name="install_terminal_reboot_now_message">Vous vous apprêtez à redémarrer votre périphérique. Si vous avez sauvegardé votre travail, appuyez sur OK pour continuer. Ou sinon, pressez annuler.</string>
+    <string name="install_terminal_config_missing">Le paquet %s est introuvable pour la configuration du module, nous ne pouvons donc pas le lancer.</string>
+    <string name="clear_app_data">Éffacer données application</string><string name="clear_data_dialogue_title">Éffacer les données de l\’application ?</string>
+    <string name="clear_data_dialogue_message">Vous vous apprêtez à effacer les données de l\’application. Merci de confirmer cette action.</string>
+    <string name="debug_build">Ceci est une fabrication de débugguage. Des bugs ainsi que des performances négatives peuvent êtres rencontrées.</string>
+    <string name="androidacy_repo_name">Dépôt Androidacy</string>
+    <string name="magisk_alt_repo_name">Magisk Alt Repo</string>
+    <string name="repo_enabled_changed">Vous avez activé ou désactivé un dépôt. Veuillez rafraîchir la liste de module ou de redémarrer l\’application.</string>
+    <string name="finish">Terminer</string>
+    <string name="setup_theme">Choisir un thème</string>
+    <string name="setup_theme_header">Choix du thème</string>
+    <string name="setup_theme_system">Thème du système</string>
+    <string name="setup_theme_light">Thème clair</string>
+    <string name="setup_theme_dark">Thème noirci</string>
+    <string name="setup_theme_black">Thème AMOLED Noir</string>
+    <string name="setup_theme_transparent_light">Thème clair transparent - désactivera monet et blur!</string>
+    <string name="setup_theme_button">DChoisir un thème</string>
+    <string name="theme">Thème</string>
+    <string name="theme_system">Identique au système</string>
+    <string name="theme_dark">Sombre</string>
+    <string name="theme_black">AMOLED Noir</string>
+    <string name="theme_transparent_light">Clair (transparent)</string>
+    <string name="theme_light">Clair</string>
+    <string name="androidacy_update_needed">Cette application est obselète.</string>
+    <string name="androidacy_update_needed_message">Merci de mettre à jour l\’application vers la dernière version.</string>
+    <string name="androidacy_webview_update_required">Votre webview est obselète! Merci de le mettre à jour.</string><string name="language_cta">Vous ne voyez pas votre language?</string><string name="language_cta_desc">Aidez-nous en la traduisant! Appuyez ici pour en savoir plus.</string>
+    <string name="source_code_summary"><b>Commission</b> %1$s @ %2$s</string>
+    <string name="no_file_provided">Aucun fichier n\’a été fournit lors de la tentative d\’ouverture du fichier zip.</string>
+    <string name="zip_load_failed">Le fichier zip n\’a pas pu être chargé</string><string name="androidacy_thanks">Développé en partie par Androidacy</string><string name="androidacy_thanks_desc">Un grand merci à Androidacy pour son intégration et ses contributions à l\’application.</string><string name="contributors">Et bien-sûr, merci à tous les contributeurs, que ce soit des traductions, du code, ou bien juste le fait d\’être agréable à fréquenter! Nous vous adorons tous et toutes.</string>
 </resources>
