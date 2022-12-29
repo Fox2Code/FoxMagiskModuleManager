@@ -2,8 +2,8 @@
 <resources>
     <string name="app_name">Fox\'un Magisk Modül Yöneticisi</string>
     <string name="app_name_short">Fox\'un Mmy</string>
-    <string name="fail_root_magisk">Kök ya da Magisk\'e erişim sağlanamadı</string>
-    <string name="fail_root_denied">Kök erişimi, Magisk uygulaması aracılığıyla reddedildi</string>
+    <string name="fail_root_magisk">Root ya da Magisk\'e erişim sağlanamadı</string>
+    <string name="fail_root_denied">Root erişimi, Magisk uygulaması aracılığıyla reddedildi</string>
     <string name="fail_magisk_missing">Magisk, bu cihazda yüklü değil</string>
     <string name="loading">Yükleniyor…</string>
     <string name="updatable">Güncellenebilir</string>
