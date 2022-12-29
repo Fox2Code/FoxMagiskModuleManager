@@ -395,10 +395,12 @@ public class InstallerActivity extends FoxActivity {
                 installerController.useRecoveryExt();
             } else if (needs32bit || (compatFlags & AppUpdateManager.FLAG_COMPAT_NO_EXT) == 0) {
                 // Restore Magisk legacy stuff for retro compatibility
-                if (Build.SUPPORTED_32_BIT_ABIS[0].contains("arm"))
-                    arch32 = "export ARCH32=arm";
-                if (Build.SUPPORTED_32_BIT_ABIS[0].contains("x86"))
-                    arch32 = "export ARCH32=x86";
+                if (Build.SUPPORTED_32_BIT_ABIS.length > 0) {
+                    if (Build.SUPPORTED_32_BIT_ABIS[0].contains("arm"))
+                        arch32 = "export ARCH32=arm";
+                    if (Build.SUPPORTED_32_BIT_ABIS[0].contains("x86"))
+                        arch32 = "export ARCH32=x86";
+                }
             }
             String installCommand;
             File installExecutable;
