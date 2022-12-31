@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Fox\'un Magisk Modül Yöneticisi</string>
     <string name="app_name_short">Fox\'un Mmy</string>
-    <string name="fail_root_magisk">Root ya da Magisk\'e erişim sağlanamadı</string>
+    <string name="fail_root_magisk">Root veya Magisk\'e erişim sağlanamadı</string>
     <string name="fail_root_denied">Root erişimi, Magisk uygulaması aracılığıyla reddedildi</string>
     <string name="fail_magisk_missing">Magisk, bu cihazda yüklü değil</string>
     <string name="loading">Yükleniyor…</string>
@@ -16,7 +16,7 @@
     <string name="no_web_view">Sistem WebView açılamadı</string>
     <string name="title_activity_settings">AyarlarEtkinliği</string>
     <string name="app_update_available">Uygulama güncellemesi mevcut</string>
-    <string name="app_update">Güncelle</string>
+    <string name="app_update">Yükselt</string>
     <string name="no_desc_found">Açıklama bulunamadı.</string>
     <string name="download_module">Modülü indir</string>
     <string name="install_module">Modülü yükle</string>
@@ -189,7 +189,7 @@
     <string name="unofficial">Gayriresmi</string>
     <string name="sentry_dialogue_success">Geribildirim başarıyla iletildi. En kısa zamanda gözden geçireceğiz</string>
     <string name="sentry_dialogue_no_description">Geribildirim açıklama sunulmadığı gibi iletilemedi</string>
-    <string name="pref_pkg_info_summary">%1$s v%2$s (%3$d) | Yapım %4$s</string>
+    <string name="pref_pkg_info_summary">%1$s v%2$s (%3$d) | %4$s Yapımı</string>
     <string name="alt_repo_info">Bu depo, daha düşük kaliteli modüllere götürebilecek daha az kısıtlamalara ve incelemelere sahiptir. Tatlı iskeletler ama birçok modüle sahiptir.</string>
     <string name="no_file_provided">Zip\'i açmaya çalışırken dosya bulunamadı.</string>
     <string name="zip_load_failed">Zip dosyası yüklenemedi</string>
@@ -229,8 +229,8 @@
     <string name="androidacy_repo_name">Androidacy Depo</string>
     <string name="magisk_alt_repo_name">Magisk Alt Depo</string>
     <string name="repo_enabled_changed">Bir depo etkinleştirdiniz veya devre dışı bıraktınız. Lütfen modül listesini yenileyin veya uygulamayı yeniden başlatın.</string>
-    <string name="theme">Theme</string>
-    <string name="theme_system">System</string>
+    <string name="theme">Tema</string>
+    <string name="theme_system">Sistem</string>
     <string name="theme_dark">Koyu</string>
     <string name="theme_black">AMOLED Siyah</string>
     <string name="theme_transparent_light">Aydınlık (şeffaf)</string>
@@ -251,7 +251,7 @@
     <string name="clear_data_dialogue_title">Uygulama verilerini temizle\?</string>
     <string name="clear_data_dialogue_message">Uygulama verilerini temizlemek üzeresiniz. Lütfen bu eylemi onaylayın.</string>
     <string name="setup_background_update_check_summary">Modül ve uygulama güncellemelerini arkaplanda kontrol etmemize izin verir. Bu özellik daha fazla pil ve veri kullanabilir.</string>
-    <string name="setup_theme_system">System theme</string>
+    <string name="setup_theme_system">Sistem teması</string>
     <string name="setup_theme">Bir tema seçin</string>
     <string name="setup_theme_header">Bir tema seçin</string>
     <string name="setup_theme_black">AMOLED Siyah tema</string>
