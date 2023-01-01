@@ -199,7 +199,7 @@
     <string name="misc">Разное</string>
     <string name="unofficial">Неофициальная</string>
     <string name="setup_title">Начальная настройка</string>
-    <string name="setup_button">Завершить настройку</string>
+    <string name="setup_button">Готово</string>
     <string name="setup_background_update_check">Фоновая проверка обновлений</string>
     <string name="setup_androidacy_repo">Репозиторий Androidacy</string>
     <string name="setup_magisk_alt_repo">Репозиторий Magisk Alt</string>
@@ -231,7 +231,7 @@
     <string name="setup_theme_transparent_light">Прозрачная светлая тема - отключит Monet и размытие фона!</string>
     <string name="setup_theme_button">Выбрать тему</string>
     <string name="theme">Тема</string>
-    <string name="theme_system">Как в ситеме</string>
+    <string name="theme_system">Как в системе</string>
     <string name="theme_dark">Темная</string>
     <string name="theme_black">Темная AMOLED</string>
     <string name="theme_transparent_light">Светлая (прозрачная)</string>
