@@ -33,7 +33,6 @@ android {
         targetSdk 33
         versionCode 64
         versionName "1.2.1"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release
         archivesBaseName = "FoxMMM-v$versionName"
     }
