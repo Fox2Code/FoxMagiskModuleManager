@@ -31,7 +31,17 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.setTitle(R.string.app_name);
+        this.setTitle(R.string.setup_title);
+        // set action bar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            // back button is close button
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_USE_LOGO | ActionBar.DISPLAY_SHOW_HOME);
+            actionBar.setLogo(R.drawable.ic_foreground);
+            // set title
+            actionBar.setTitle(R.string.setup_title);
+            actionBar.show();
+        }
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, 0);
         // Set theme
         SharedPreferences prefs = MainApplication.getSharedPreferences();
@@ -59,13 +69,6 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         View view = binding.setupBox;
         // Make the setup_box linear layout the sole child of the root_container constraint layout
         setContentView(view);
-        // Handle action bar. Set it to setup_title and make it visible
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(R.string.app_name);
-            // Set solid color background
-            actionBar.show();
-        }
         ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).setChecked(BuildConfig.ENABLE_AUTO_UPDATER);
         ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).setChecked(BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING);
         // Repos are a little harder, as the enabled_repos build config is an arraylist
@@ -112,14 +115,6 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             builder.setSingleChoiceItems(themeNames, checkedItem, (dialog, which) -> {
                 // Set the theme
                 prefs.edit().putString("pref_theme", themeValues[which]).commit();
-                // Restart the activity
-                UiThreadHandler.run(() -> {
-                    Intent intent = getIntent();
-                    finish();
-                    startActivity(intent);
-                });
-                // Set the theme button text to the selected theme
-                themeButton.setText(themeNames[which]);
                 // Dismiss the dialog
                 dialog.dismiss();
                 // Set the theme
@@ -139,12 +134,12 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                             break;
                         case "transparent_light":
                             setTheme(R.style.Theme_MagiskModuleManager_Transparent_Light);
-                            // restart the activity because switching to transparent pisses the rendering engine off
-                            Intent intent = getIntent();
-                            finish();
-                            startActivity(intent);
                             break;
                     }
+                    // restart the activity because switching to transparent pisses the rendering engine off
+                    Intent intent = getIntent();
+                    finish();
+                    startActivity(intent);
                 }, 100);
             });
             builder.show();

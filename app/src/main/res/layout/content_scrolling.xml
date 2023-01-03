@@ -15,12 +15,6 @@
         android:orientation="vertical"
         android:padding="8dp">
 
-    <TextView
-        android:id="@+id/setup_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/setup_title" android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="@+id/setup_scroll" />
-
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/setup_summary"
         android:layout_width="wrap_content"

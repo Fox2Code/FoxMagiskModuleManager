@@ -42,7 +42,7 @@
             android:name=".SetupActivity"
             android:exported="false"
             android:label="@string/title_activity_setup"
-            android:parentActivityName=".MainActivity"
+            android:hardwareAccelerated="true"
             android:theme="@style/Theme.MagiskModuleManager.NoActionBar"/>
 
         <receiver
@@ -57,6 +57,7 @@
             android:name=".settings.SettingsActivity"
             android:exported="true"
             android:label="@string/title_activity_settings"
+            android:hardwareAccelerated="true"
             android:parentActivityName=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
@@ -64,6 +65,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
+            android:hardwareAccelerated="true"
             android:exported="true"
             android:label="@string/app_name_short"
             android:launchMode="singleTask">
@@ -75,6 +77,7 @@
         </activity>
         <activity
             android:name=".installer.InstallerActivity"
+            android:hardwareAccelerated="true"
             android:exported="false"
             android:launchMode="singleTop"
             android:parentActivityName=".MainActivity"
@@ -89,6 +92,7 @@
         </activity> <!-- We can handle zip files -->
         <activity
             android:name=".utils.ZipFileOpener"
+            android:hardwareAccelerated="true"
             android:exported="true"
             android:theme="@style/Theme.MagiskModuleManager">
             <intent-filter>
@@ -105,11 +109,13 @@
             android:name=".markdown.MarkdownActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity"
+            android:hardwareAccelerated="true"
             android:theme="@style/Theme.MagiskModuleManager" />
         <activity
             android:name=".androidacy.AndroidacyActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity"
+            android:hardwareAccelerated="true"
             android:theme="@style/Theme.MagiskModuleManager">
 
             <!--
