@@ -37,18 +37,23 @@
         <item name="chipIconTint">@color/black</item>
     </style>
 
-    <style name="Theme.MagiskModuleManager.Transparent.Light" parent="Theme.MagiskModuleManager.Light">
+    <style name="Theme.MagiskModuleManager.Transparent.Light" parent="Theme.MagiskModuleManager.Monet.Dark">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:backgroundDimEnabled">true</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowAnimationStyle">@android:style/Animation</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowShowWallpaper">true</item>
         <!-- Fix text color in transparent theme -->
-        <item name="alpha">0.8</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="titleTextColor">@color/white</item>
+        <!-- Fix action bar padding in transparent theme -->
+        <item name="android:actionBarStyle">@style/Widget.Material3.ActionBar.Solid</item>
+        <!-- Action bar -->
+        <item name="actionBarStyle">@style/Widget.Material3.ActionBar.Solid</item>
     </style>
 
     <style name="Theme.MagiskModuleManager.Dark" parent="Theme.Material3.Dark">

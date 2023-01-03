@@ -42,7 +42,8 @@
             android:name=".SetupActivity"
             android:exported="false"
             android:label="@string/title_activity_setup"
-            android:theme="@style/Theme.MagiskModuleManager.NoActionBar" />
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.MagiskModuleManager.NoActionBar"/>
 
         <receiver
             android:name=".background.BackgroundBootListener"
