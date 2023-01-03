@@ -150,7 +150,7 @@ public class ZipFileOpener extends FoxActivity {
             }
             runOnUiThread(() -> {
                 new MaterialAlertDialogBuilder(this)
-                        .setTitle(R.string.zip_security_warning)
+                        .setTitle(getString(R.string.zip_security_warning, moduleInfo))
                         .setMessage(getString(R.string.zip_intent_module_install, moduleInfo, Files.getFileName(this, uri)))
                         .setCancelable(false)
                         .setNegativeButton(R.string.no, (d, i) -> {
