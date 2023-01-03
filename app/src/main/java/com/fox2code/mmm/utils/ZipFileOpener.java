@@ -151,10 +151,11 @@ public class ZipFileOpener extends FoxActivity {
             } catch (IOException exception) {
                 Log.e("ZipFileOpener", Log.getStackTraceString(exception));
             }
+            String finalModuleInfo = moduleInfo;
             runOnUiThread(() -> {
                 new MaterialAlertDialogBuilder(this)
-                        .setTitle(getString(R.string.zip_security_warning, moduleInfo))
-                        .setMessage(getString(R.string.zip_intent_module_install, moduleInfo, Files.getFileName(this, uri)))
+                        .setTitle(getString(R.string.zip_security_warning, finalModuleInfo))
+                        .setMessage(getString(R.string.zip_intent_module_install, finalModuleInfo, Files.getFileName(this, uri)))
                         .setCancelable(false)
                         .setNegativeButton(R.string.no, (d, i) -> {
                             d.dismiss();
