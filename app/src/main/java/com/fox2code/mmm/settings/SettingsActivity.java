@@ -190,13 +190,10 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 findPreference("pref_enable_blur").setSummary(R.string.blur_disabled_summary);
             }
             themePreference.setSummaryProvider(p -> themePreference.getEntry());
-            themePreference.setOnPreferenceClickListener(p -> {
+            themePreference.setOnPreferenceChangeListener((preference, newValue) -> {
                 // You need to reboot your device at least once to be able to access dev-mode
                 if (devModeStepFirstBootIgnore || !MainApplication.isFirstBoot())
                     devModeStep = 1;
-                return false;
-            });
-            themePreference.setOnPreferenceChangeListener((preference, newValue) -> {
                 if (BuildConfig.DEBUG) {
                     Log.d(TAG, "Theme changed, refreshing activity. New value: " + newValue);
                 }
@@ -226,6 +223,9 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                             MainApplication.getINSTANCE().updateTheme();
                             FoxActivity.getFoxActivity(this).setThemeRecreate(MainApplication.getINSTANCE().getManagerThemeResId());
                         }, 1);
+                        Intent intent = new Intent(requireContext(), SettingsActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
                     }).setNegativeButton(R.string.cancel, (dialog, which) -> {
                         // Revert to system theme
                         ((ListPreference) findPreference("pref_theme")).setValue("system");

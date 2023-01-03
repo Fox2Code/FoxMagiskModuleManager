@@ -27,9 +27,6 @@ import java.util.Objects;
 
 public class SetupActivity extends FoxActivity implements LanguageActivity {
 
-    private ActivitySetupBinding binding;
-    private boolean mSupportsDarkText;
-
     @SuppressLint({"ApplySharedPref", "RestrictedApi"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +53,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                 break;
         }
 
-        binding = ActivitySetupBinding.inflate(getLayoutInflater());
+        com.fox2code.mmm.databinding.ActivitySetupBinding binding = ActivitySetupBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         // Show setup box. Put the setup_box in the main activity layout
         View view = binding.setupBox;
@@ -142,6 +139,10 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                             break;
                         case "transparent_light":
                             setTheme(R.style.Theme_MagiskModuleManager_Transparent_Light);
+                            // restart the activity because switching to transparent pisses the rendering engine off
+                            Intent intent = getIntent();
+                            finish();
+                            startActivity(intent);
                             break;
                     }
                 }, 100);
