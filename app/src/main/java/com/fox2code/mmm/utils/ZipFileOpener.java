@@ -127,6 +127,9 @@ public class ZipFileOpener extends FoxActivity {
             try {
                 moduleInfo = PropUtils.readModulePropSimple(zip.getInputStream(entry), "name");
                 if (moduleInfo == null) {
+                    moduleInfo = PropUtils.readModulePropSimple(zip.getInputStream(entry), "id");
+                }
+                if (moduleInfo == null) {
                     throw new NullPointerException("moduleInfo is null, check earlier logs for root cause");
                 }
             } catch (
