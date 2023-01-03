@@ -37,6 +37,7 @@ import com.topjohnwu.superuser.Shell;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
@@ -78,6 +79,10 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     private int managerThemeResId = R.style.Theme_MagiskModuleManager;
     private FoxThemeWrapper markwonThemeContext;
     private Markwon markwon;
+
+    // Warning! Locales that are't exist will crash the app
+    // Anything that is commented out is supported but the translation is not complete to at least 60%
+    public static HashSet<String> supportedLocales = new HashSet<>();
 
     public MainApplication() {
         if (INSTANCE != null && INSTANCE != this)
@@ -280,6 +285,30 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
 
     @Override
     public void onCreate() {
+        // supportedLocales.add("ar");
+        // supportedLocales.add("ar_SA");
+        supportedLocales.add("cs");
+        supportedLocales.add("de");
+        // supportedLocales.add("el");
+        supportedLocales.add("es");
+        supportedLocales.add("es-rMX");
+        // supportedLocales.add("et");
+        supportedLocales.add("fr");
+        supportedLocales.add("id");
+        supportedLocales.add("it");
+        // supportedLocales.add("ja");
+        // supportedLocales.add("nb-rNO");
+        supportedLocales.add("pl");
+        supportedLocales.add("pt-rBR");
+        supportedLocales.add("ro");
+        supportedLocales.add("ru");
+        supportedLocales.add("sk");
+        supportedLocales.add("tr");
+        supportedLocales.add("uk");
+        // supportedLocales.add("vi");
+        supportedLocales.add("zh-rCH");
+        // supportedLocales.add("zh-rTW");
+        supportedLocales.add("en");
         if (INSTANCE == null)
             INSTANCE = this;
         relPackageName = this.getPackageName();

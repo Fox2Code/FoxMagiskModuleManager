@@ -26,7 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
@@ -52,11 +51,8 @@ import com.fox2code.mmm.utils.BlurUtils;
 import com.fox2code.mmm.utils.ExternalHelper;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import org.chromium.net.ExperimentalCronetEngine;
 import org.chromium.net.urlconnection.CronetURLStreamHandlerFactory;
@@ -66,7 +62,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Objects;
 
 import eightbitlab.com.blurview.BlurView;
 
@@ -90,7 +85,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     private CardView searchCard;
     private SearchView searchView;
     private boolean initMode;
-    private boolean doSetupRestarting = false;
+    public static boolean doSetupRestarting = false;
     private boolean urlFactoryInstalled = false;
 
     public MainActivity() {
@@ -747,122 +742,13 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             Log.i("SetupWizard", "First launch: " + firstLaunch);
         if (firstLaunch) {
             doSetupNowRunning = true;
-            // Show setup box. Put the setup_box in the main activity layout
-            View view = getLayoutInflater().inflate(R.layout.setup_box, null);
-            // Make the setup_box linear layout the sole child of the root_container constraint layout
-            setContentView(view);
-            updateScreenInsets();
-            // Handle action bar. Set it to setup_title and make it visible
-            ActionBar actionBar = getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.setTitle(R.string.app_name);
-                // Set solid color background
-                actionBar.show();
-            }
-            ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).setChecked(BuildConfig.ENABLE_AUTO_UPDATER);
-            ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).setChecked(BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING);
-            // Repos are a little harder, as the enabled_repos build config is an arraylist
-            ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_androidacy_repo))).setChecked(BuildConfig.ENABLED_REPOS.contains("androidacy_repo"));
-            ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).setChecked(BuildConfig.ENABLED_REPOS.contains("magisk_alt_repo"));
-            // On debug builds, log when a switch is toggled
-            if (BuildConfig.DEBUG) {
-                ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).setOnCheckedChangeListener((buttonView, isChecked) -> Log.i("SetupWizard", "Background Update Check: " + isChecked));
-                ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).setOnCheckedChangeListener((buttonView, isChecked) -> Log.i("SetupWizard", "Crash Reporting: " + isChecked));
-                ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_androidacy_repo))).setOnCheckedChangeListener((buttonView, isChecked) -> Log.i("SetupWizard", "Androidacy Repo: " + isChecked));
-                ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).setOnCheckedChangeListener((buttonView, isChecked) -> Log.i("SetupWizard", "Magisk Alt Repo: " + isChecked));
-            }
-            // Setup popup dialogue for the setup_theme_button
-            MaterialButton themeButton = view.findViewById(R.id.setup_theme_button);
-            themeButton.setOnClickListener(v -> {
-                // Create a new dialog for the theme picker
-                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
-                builder.setTitle(R.string.setup_theme_title);
-                // Create a new array of theme names (system, light, dark, black, transparent light)
-                String[] themeNames = new String[]{getString(R.string.theme_system), getString(R.string.theme_light), getString(R.string.theme_dark), getString(R.string.theme_black), getString(R.string.theme_transparent_light)};
-                // Create a new array of theme values (system, light, dark, black, transparent_light)
-                String[] themeValues = new String[]{"system", "light", "dark", "black", "transparent_light"};
-                // if pref_theme is set, check the relevant theme_* menu item, otherwise check the default (theme_system)
-                String prefTheme = prefs.getString("pref_theme", "system");
-                int checkedItem = 0;
-                switch (prefTheme) {
-                    case "system":
-                        break;
-                    case "light":
-                        checkedItem = 1;
-                        break;
-                    case "dark":
-                        checkedItem = 2;
-                        break;
-                    case "black":
-                        checkedItem = 3;
-                        break;
-                    case "transparent_light":
-                        checkedItem = 4;
-                        break;
-                }
-                builder.setCancelable(true);
-                // Create the dialog
-                builder.setSingleChoiceItems(themeNames, checkedItem, (dialog, which) -> {
-                    // Set the theme
-                    prefs.edit().putString("pref_theme", themeValues[which]).commit();
-                    // Set the theme button text to the selected theme
-                    themeButton.setText(themeNames[which]);
-                    // Dismiss the dialog
-                    dialog.dismiss();
-                    // Set the theme
-                    UiThreadHandler.handler.postDelayed(() -> {
-                        MainApplication.getINSTANCE().updateTheme();
-                        FoxActivity.getFoxActivity(this).setThemeRecreate(MainApplication.getINSTANCE().getManagerThemeResId());
-                    }, 1);
-                });
-                builder.show();
-            });
-            // Set up the buttons
-            // Cancel button
-            MaterialButton cancelButton = view.findViewById(R.id.setup_cancel);
-            cancelButton.setText(R.string.cancel);
-            cancelButton.setOnClickListener(v -> {
-                // Set first launch to false and restart the activity
-                prefs.edit().putBoolean("first_time_user", false).commit();
-                finish();
-                startActivity(getIntent());
-            });
-            // Setup button
-            MaterialButton setupButton = view.findViewById(R.id.setup_continue);
-            setupButton.setOnClickListener(v -> {
-                // Set first launch to false
-                // get instance of editor
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putBoolean("first_time_user", false);
-                // Set the background update check pref
-                editor.putBoolean("pref_background_update_check", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).isChecked());
-                // Set the crash reporting pref
-                editor.putBoolean("pref_crash_reporting", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).isChecked());
-                // Set the repos
-                // first pref_magisk_alt_repo_enabled then pref_androidacy_repo_enabled
-                editor.putBoolean("pref_magisk_alt_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).isChecked());
-                editor.putBoolean("pref_androidacy_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_androidacy_repo))).isChecked());
-                // Commit the changes
-                editor.commit();
-                // Sleep for 1 second to allow the user to see the changes
-                try {
-                    Thread.sleep(500);
-                } catch (
-                        InterruptedException e) {
-                    e.printStackTrace();
-                }
-                // Log the changes if debug
-                if (BuildConfig.DEBUG) {
-                    Log.d("SetupWizard", "Background update check: " + prefs.getBoolean("pref_background_update_check", false));
-                    Log.i("SetupWizard", "Crash reporting: " + prefs.getBoolean("pref_crash_reporting", false));
-                    Log.i("SetupWizard", "Magisk Alt Repo: " + prefs.getBoolean("pref_magisk_alt_repo_enabled", false));
-                    Log.i("SetupWizard", "Androidacy Repo: " + prefs.getBoolean("pref_androidacy_repo_enabled", false));
-                }
-                // Restart the activity
-                doSetupRestarting = true;
-                finish();
-                startActivity(getIntent());
-            });
+            // Launch setup wizard
+            if (BuildConfig.DEBUG)
+                Log.i("SetupWizard", "Launching setup wizard");
+            // Show setup activity
+            Intent intent = new Intent(this, SetupActivity.class);
+            finish();
+            startActivity(intent);
         } else {
             ensurePermissions();
         }

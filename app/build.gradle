@@ -316,6 +316,9 @@ android {
         includeInApk false
         includeInBundle false
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 // Safeguard (Do not remove)

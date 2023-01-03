@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Theme.MagiskModuleManager.Light" parent="Theme.Material3.Light">
         <item name="android:isLightTheme"
-            tools:targetApi="q">true</item>
+              tools:targetApi="q">true</item>
         <item name="isLightTheme">true</item>
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/orange_200</item>
@@ -14,7 +14,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/status_bar_color</item>
         <item name="android:navigationBarColor">@color/transparent</item>
-        <item name="android:windowLightStatusBar" >true</item>
+        <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
         <!-- Customize your theme here. -->
         <item name="android:windowActivityTransitions">true</item>
@@ -53,7 +53,7 @@
 
     <style name="Theme.MagiskModuleManager.Dark" parent="Theme.Material3.Dark">
         <item name="android:isLightTheme"
-            tools:targetApi="q">false</item>
+              tools:targetApi="q">false</item>
         <item name="isLightTheme">false</item>
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/orange_200</item>
@@ -66,7 +66,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/status_bar_color</item>
         <item name="android:navigationBarColor">@color/transparent</item>
-        <item name="android:windowLightStatusBar" >false</item>
+        <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
         <!-- Customize your theme here. -->
         <item name="android:windowActivityTransitions">true</item>
@@ -125,5 +125,11 @@
     </style>
 
     <style name="Theme.MagiskModuleManager"
-        parent="Theme.MagiskModuleManager.Light" />
+           parent="Theme.MagiskModuleManager.Light" />
+  <style name="Theme.MagiskModuleManager.NoActionBar">
+  <item name="windowActionBar">false</item>
+  <item name="windowNoTitle">true</item>
+</style>
+  <style name="Theme.MagiskModuleManager.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+  <style name="Theme.MagiskModuleManager.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

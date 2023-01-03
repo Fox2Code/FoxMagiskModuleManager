@@ -76,7 +76,6 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
@@ -329,38 +328,10 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 return true;
             });
 
-            // Warning! Locales that are't exist will crash the app
-            // Anything that is commented out is supported but the translation is not complete to at least 60%
-            HashSet<String> supportedLocales = new HashSet<>();
-            // supportedLocales.add("ar");
-            // supportedLocales.add("ar_SA");
-            supportedLocales.add("cs");
-            supportedLocales.add("de");
-            // supportedLocales.add("el");
-            supportedLocales.add("es");
-            supportedLocales.add("es-rMX");
-            // supportedLocales.add("et");
-            supportedLocales.add("fr");
-            supportedLocales.add("id");
-            supportedLocales.add("it");
-            // supportedLocales.add("ja");
-            // supportedLocales.add("nb-rNO");
-            supportedLocales.add("pl");
-            supportedLocales.add("pt-rBR");
-            supportedLocales.add("ro");
-            supportedLocales.add("ru");
-            supportedLocales.add("sk");
-            supportedLocales.add("tr");
-            supportedLocales.add("uk");
-            // supportedLocales.add("vi");
-            supportedLocales.add("zh-rCH");
-            // supportedLocales.add("zh-rTW");
-            supportedLocales.add("en");
-
             Preference languageSelector = findPreference("pref_language_selector");
             languageSelector.setOnPreferenceClickListener(preference -> {
                 LanguageSwitcher ls = new LanguageSwitcher(getActivity());
-                ls.setSupportedStringLocales(supportedLocales);
+                ls.setSupportedStringLocales(MainApplication.supportedLocales);
                 ls.showChangeLanguageDialog(getActivity());
                 return true;
             });
