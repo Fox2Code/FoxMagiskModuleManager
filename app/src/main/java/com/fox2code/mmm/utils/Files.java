@@ -1,8 +1,14 @@
 package com.fox2code.mmm.utils;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.OpenableColumns;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.topjohnwu.superuser.io.SuFile;
 import com.topjohnwu.superuser.io.SuFileInputStream;
@@ -23,6 +29,55 @@ import java.util.zip.ZipOutputStream;
 
 public class Files {
     private static final boolean is64bit = Build.SUPPORTED_64_BIT_ABIS.length > 0;
+
+    // stolen from https://stackoverflow.com/a/25005243
+    public static @NonNull String getFileName(Context context, Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            try (Cursor cursor = context.getContentResolver().query(uri, null, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    int index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                    if (index != -1) {
+                        result = cursor.getString(index);
+                    }
+                }
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
+    }
+
+    // based on https://stackoverflow.com/a/63018108
+    public static @Nullable Long getFileSize(Context context, Uri uri) {
+        Long result = null;
+        try {
+            String scheme = uri.getScheme();
+            if (scheme.equals("content")) {
+                Cursor returnCursor = context.getContentResolver().
+                        query(uri, null, null, null, null);
+                int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+                returnCursor.moveToFirst();
+
+                long size = returnCursor.getLong(sizeIndex);
+                returnCursor.close();
+
+                result = size;
+            }
+            if (scheme.equals("file")) {
+                result = new File(uri.getPath()).length();
+            }
+        } catch (Exception e) {
+            Log.e("Files", Log.getStackTraceString(e));
+            return result;
+        }
+        return result;
+    }
 
     public static void write(File file, byte[] bytes) throws IOException {
         try (OutputStream outputStream = new FileOutputStream(file)) {

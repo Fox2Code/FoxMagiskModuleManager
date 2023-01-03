@@ -269,5 +269,12 @@
     <string name="androidacy_webview_update_required">Your webview is outdated! Please update it.</string><string name="language_cta">Don\'t see your language?</string><string name="language_cta_desc">Help us by translating it! Tap here to find out more.</string>
     <string name="source_code_summary"><b>Commit</b> %1$s @ %2$s</string>
     <string name="no_file_provided">No file was provided when trying to open zip.</string>
-    <string name="zip_load_failed">Could not load the zip file</string><string name="androidacy_thanks">Developed in part by Androidacy</string><string name="androidacy_thanks_desc">Huge shoutout to Androidacy for their integration and contributions to the app.</string><string name="contributors">And of course, thanks to all of our contributors, whether it\'s translations, code, or just being fun to hang out with! We love you all.</string>
+    <string name="zip_load_failed">Could not load the zip file</string>
+    <string name="zip_prop_load_failed">Could not load the module properties</string>
+    <string name="zip_security_warning">Security warning</string>
+    <string name="zip_intent_module_install">Do you really want to install the module \"%s\" from the ZIP file \"%s\"? Installing untrusted modules can lead to security risks.</string>
+    <string name="androidacy_thanks">Developed in part by Androidacy</string>
+    <string name="androidacy_thanks_desc">Huge shoutout to Androidacy for their integration and contributions to the app.</string>
+    <string name="contributors">And of course, thanks to all of our contributors, whether it\'s translations, code, or just being fun to hang out with! We love you all.</string>
+	<string name="zip_unpacking">Inspecting module…</string>
 </resources>

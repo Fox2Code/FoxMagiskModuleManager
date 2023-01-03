@@ -328,7 +328,7 @@ public class PropUtils {
         }
     }
 
-    public static String readModuleId(InputStream inputStream) {
+    public static String readModulePropSimple(InputStream inputStream, String what) {
         if (inputStream == null) return null;
         String moduleId = null;
         try (BufferedReader bufferedReader = new BufferedReader(
@@ -337,14 +337,18 @@ public class PropUtils {
             while ((line = bufferedReader.readLine()) != null) {
                 while (line.startsWith("\u0000"))
                     line = line.substring(1);
-                if (line.startsWith("id=")) {
-                    moduleId = line.substring(3).trim();
+                if (line.startsWith(what + "=")) {
+                    moduleId = line.substring(what.length() + 1).trim();
                 }
             }
         } catch (IOException e) {
             Log.i("PropUtils", "Failed to get moduleId", e);
         }
         return moduleId;
+    }
+
+    public static String readModuleId(InputStream inputStream) {
+        return readModulePropSimple(inputStream, "id");
     }
 
     public static void applyFallbacks(ModuleInfo moduleInfo) {
