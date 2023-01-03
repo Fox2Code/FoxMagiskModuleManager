@@ -16,9 +16,12 @@ import com.fox2code.mmm.utils.Files;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 interface NotificationTypeCst {
@@ -151,10 +154,33 @@ public enum NotificationType implements NotificationTypeCst {
 
     public static boolean needPatch(File target) throws IOException {
         try (ZipFile zipFile = new ZipFile(target)) {
-            return zipFile.getEntry("module.prop") == null &&
-                    zipFile.getEntry("anykernel.sh") == null &&
-                    zipFile.getEntry("META-INF/com/google/android/magisk/module.prop") == null;
+            boolean validEntries = zipFile.getEntry("module.prop") == null && zipFile.getEntry("anykernel.sh") == null && zipFile.getEntry("META-INF/com/google/android/magisk/module.prop") == null;
+            if (validEntries) {
+                // Ensure id of module is not empty and matches ^[a-zA-Z][a-zA-Z0-9._-]+$ regex
+                // We need to get the module.prop and parse the id= line
+                ZipEntry moduleProp = zipFile.getEntry("module.prop");
+                // Parse the module.prop
+                if (moduleProp != null) {
+                    // Find the line with id=, and check if it matches the regex
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(zipFile.getInputStream(moduleProp)))) {
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            if (line.startsWith("id=")) {
+                                String id = line.substring(3);
+                                return id.isEmpty() || !id.matches("^[a-zA-Z][a-zA-Z0-9._-]+$");
+                            }
+                        }
+                    }
+                } else {
+                    return true;
+                }
+            } else {
+                return true;
+            }
+        } catch (IOException e) {
+            return true;
         }
+        return false;
     }
 
     @StringRes

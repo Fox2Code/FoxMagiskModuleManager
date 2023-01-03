@@ -104,9 +104,14 @@ public class RepoData extends XRepo {
             for (int i = 0; i < len; i++) {
                 JSONObject module = array.getJSONObject(i);
                 String moduleId = module.getString("id");
-                // Deny remote modules ids shorter than 3 chars or containing null char or space
-                if (moduleId.length() < 3 || moduleId.indexOf('\0') != -1 || moduleId.indexOf(' ') != -1 || "ak3-helper".equals(moduleId))
+                // module IDs must match the regex ^[a-zA-Z][a-zA-Z0-9._-]+$ and cannot be empty or null or equal ak3-helper
+                if (moduleId.isEmpty() || moduleId.equals("ak3-helper") || !moduleId.matches("^[a-zA-Z][a-zA-Z0-9._-]+$")) {
                     continue;
+                }
+                // If module id start with a dot, warn user
+                if (moduleId.charAt(0) == '.') {
+                    Log.w("MMM", "Module ID " + moduleId + " in repo " + this.url + " start with a dot, this is not recommended and may indicate an attempt to hide the module");
+                }
                 long moduleLastUpdate = module.getLong("last_update");
                 String moduleNotesUrl = module.getString("notes_url");
                 String modulePropsUrl = module.getString("prop_url");

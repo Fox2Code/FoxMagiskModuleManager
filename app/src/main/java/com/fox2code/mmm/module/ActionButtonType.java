@@ -199,6 +199,18 @@ public enum ActionButtonType {
         public void doAction(Chip button, ModuleHolder moduleHolder) {
             IntentHelper.openUrl(button.getContext(), moduleHolder.getMainModuleInfo().donate);
         }
+    }, WARNING() {
+        @Override
+        public void update(Chip button, ModuleHolder moduleHolder) {
+            button.setChipIcon(button.getContext().getDrawable(R.drawable.ic_baseline_warning_24));
+            button.setText(R.string.warning);
+        }
+
+        @Override
+        public void doAction(Chip button, ModuleHolder moduleHolder) {
+            new MaterialAlertDialogBuilder(button.getContext()).setTitle(R.string.warning).setMessage(R.string.warning_message).setPositiveButton(R.string.understand, (v, i) -> {
+            }).create().show();
+        }
     };
 
     @DrawableRes

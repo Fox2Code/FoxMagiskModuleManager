@@ -172,6 +172,10 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
     public void getButtons(Context context, List<ActionButtonType> buttonTypeList, boolean showcaseMode) {
         if (!this.isModuleHolder()) return;
         LocalModuleInfo localModuleInfo = this.moduleInfo;
+        // Add warning button if module id begins with a dot - this is a hidden module which could indicate malware
+        if (this.moduleId.startsWith(".") || !this.moduleId.matches("^[a-zA-Z][a-zA-Z0-9._-]+$")) {
+            buttonTypeList.add(ActionButtonType.WARNING);
+        }
         if (localModuleInfo != null && !showcaseMode) {
             buttonTypeList.add(ActionButtonType.UNINSTALL);
         }

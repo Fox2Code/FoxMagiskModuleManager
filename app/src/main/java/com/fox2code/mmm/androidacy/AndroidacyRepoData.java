@@ -292,9 +292,7 @@ public final class AndroidacyRepoData extends RepoData {
         for (int i = 0; i < len; i++) {
             jsonObject = jsonArray.getJSONObject(i);
             String moduleId = jsonObject.getString("codename");
-            // Deny remote modules ids shorter than 3 chars or containing null char or space
-            if (moduleId.length() < 3 || moduleId.indexOf('\0') != -1 || moduleId.indexOf(' ') != -1 || "ak3-helper".equals(moduleId))
-                continue;
+            // Normally, we'd validate the module id here, but we don't need to because the server does it for us
             long lastUpdate = jsonObject.getLong("updated_at") * 1000;
             lastLastUpdate = Math.max(lastLastUpdate, lastUpdate);
             RepoModule repoModule = this.moduleHashMap.get(moduleId);

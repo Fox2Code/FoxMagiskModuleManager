@@ -27,7 +27,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
@@ -775,55 +774,48 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             // Setup popup dialogue for the setup_theme_button
             MaterialButton themeButton = view.findViewById(R.id.setup_theme_button);
             themeButton.setOnClickListener(v -> {
-                // Create a new popup menu
-                PopupMenu popupMenu = new PopupMenu(this, themeButton);
-                // Inflate the menu
-                popupMenu.getMenuInflater().inflate(R.menu.theme_menu, popupMenu.getMenu());
+                // Create a new dialog for the theme picker
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+                builder.setTitle(R.string.setup_theme_title);
+                // Create a new array of theme names (system, light, dark, black, transparent light)
+                String[] themeNames = new String[]{getString(R.string.theme_system), getString(R.string.theme_light), getString(R.string.theme_dark), getString(R.string.theme_black), getString(R.string.theme_transparent_light)};
+                // Create a new array of theme values (system, light, dark, black, transparent_light)
+                String[] themeValues = new String[]{"system", "light", "dark", "black", "transparent_light"};
                 // if pref_theme is set, check the relevant theme_* menu item, otherwise check the default (theme_system)
                 String prefTheme = prefs.getString("pref_theme", "system");
-                if (BuildConfig.DEBUG)
-                    Log.i("SetupWizard", "pref_theme: " + prefTheme);
+                int checkedItem = 0;
                 switch (prefTheme) {
+                    case "system":
+                        break;
                     case "light":
-                        popupMenu.getMenu().findItem(R.id.theme_light).setChecked(true);
+                        checkedItem = 1;
                         break;
                     case "dark":
-                        popupMenu.getMenu().findItem(R.id.theme_dark).setChecked(true);
+                        checkedItem = 2;
                         break;
-                    case "system":
-                        popupMenu.getMenu().findItem(R.id.theme_system).setChecked(true);
-                        break;
-                    // Black and transparent_light
                     case "black":
-                        popupMenu.getMenu().findItem(R.id.theme_black).setChecked(true);
+                        checkedItem = 3;
                         break;
                     case "transparent_light":
-                        popupMenu.getMenu().findItem(R.id.theme_transparent_light).setChecked(true);
+                        checkedItem = 4;
                         break;
                 }
-                // Set the on click listener
-                popupMenu.setOnMenuItemClickListener(item -> {
-                    if (item == null) {
-                        return false;
-                    }
-                    // Make sure it.s an actual item, not the overflow menu. Actual items have an id of theme_* (see theme_menu.xml)
-                    // Check if item id contains theme_ and return false if it doesn't
-                    String itemId = getResources().getResourceEntryName(item.getItemId());
-                    if (!itemId.contains("theme_")) {
-                        return false;
-                    }
-                    // Save the theme. ID is theme_* so we need to remove the first 6 characters
-                    // Possible values are light, dark, system, transparent_light, and black
-                    prefs.edit().putString("pref_theme", item.getItemId() == R.id.theme_light ? "light" : item.getItemId() == R.id.theme_dark ? "dark" : item.getItemId() == R.id.theme_system ? "system" : item.getItemId() == R.id.theme_transparent_light ? "transparent_light" : "black").commit();
+                builder.setCancelable(true);
+                // Create the dialog
+                builder.setSingleChoiceItems(themeNames, checkedItem, (dialog, which) -> {
+                    // Set the theme
+                    prefs.edit().putString("pref_theme", themeValues[which]).commit();
+                    // Set the theme button text to the selected theme
+                    themeButton.setText(themeNames[which]);
+                    // Dismiss the dialog
+                    dialog.dismiss();
                     // Set the theme
                     UiThreadHandler.handler.postDelayed(() -> {
                         MainApplication.getINSTANCE().updateTheme();
                         FoxActivity.getFoxActivity(this).setThemeRecreate(MainApplication.getINSTANCE().getManagerThemeResId());
                     }, 1);
-                    return true;
                 });
-                // Show the popup menu
-                popupMenu.show();
+                builder.show();
             });
             // Set up the buttons
             // Cancel button

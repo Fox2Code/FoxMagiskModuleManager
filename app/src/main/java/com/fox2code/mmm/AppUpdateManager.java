@@ -9,7 +9,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -136,39 +135,14 @@ public class AppUpdateManager {
     }
 
     public void checkUpdateCompat() {
-        if (BuildConfig.DEBUG)
-            Log.d(TAG, "Checking compatibility flags");
-        if (this.compatFile.exists()) {
-            long lastUpdate = this.compatFile.lastModified();
-            if (lastUpdate <= System.currentTimeMillis() && lastUpdate + 600_000L > System.currentTimeMillis()) {
-                return; // Skip update
-            }
-        }
+        compatDataId.clear();
         try {
-            if (BuildConfig.DEBUG)
-                Log.d(TAG, "Downloading compatibility flags");
-            JSONObject object = new JSONObject(new String(Http.doHttpGet(COMPAT_API_URL, false), StandardCharsets.UTF_8));
-            if (object.isNull("body")) {
-                if (BuildConfig.DEBUG)
-                    Log.d(TAG, "Compatibility flags not found");
-                compatDataId.clear();
-                Files.write(compatFile, new byte[0]);
-                return;
-            }
-            if (BuildConfig.DEBUG)
-                Log.d(TAG, "Parsing compatibility flags");
-            byte[] rawData = object.getString("body").getBytes(StandardCharsets.UTF_8);
-            this.parseCompatibilityFlags(new ByteArrayInputStream(rawData));
-            Files.write(compatFile, rawData);
-            if (BuildConfig.DEBUG)
-                Log.d(TAG, "Compatibility flags update finishing");
-            return;
-        } catch (
-                Exception e) {
-            Log.e("AppUpdateManager", "Failed to update compat list", e);
+            Files.write(compatFile, new byte[0]);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        if (BuildConfig.DEBUG)
-            Log.d(TAG, "Compatibility flags updated");
+        // There once lived an implementation that used a GitHub API to get the compatibility flags. It was removed because it was too slow and the API was rate limited.
+        Log.w(TAG, "Remote compatibility data flags are not implemented.");
     }
 
     public boolean peekShouldUpdate() {

@@ -276,5 +276,5 @@
     <string name="androidacy_thanks">Developed in part by Androidacy</string>
     <string name="androidacy_thanks_desc">Huge shoutout to Androidacy for their integration and contributions to the app.</string>
     <string name="contributors">And of course, thanks to all of our contributors, whether it\'s translations, code, or just being fun to hang out with! We love you all.</string>
-	<string name="zip_unpacking">Inspecting module…</string>
+	<string name="zip_unpacking">Inspecting module…</string><string name="warning_message">Warning!This module has indicators it may have been installed without your knowledge, or may be attempting to hide itself. Uninstall is strongly recommended.</string><string name="understand">I understand</string><string name="setup_theme_title">Choose theme</string>
 </resources>

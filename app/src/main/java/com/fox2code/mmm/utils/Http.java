@@ -117,7 +117,9 @@ public class Http {
                 RuntimeException e) {
             Log.e(TAG, "Failed to init DoH", e);
         }
-        httpclientBuilder.cookieJar(CookieJar.NO_COOKIES);
+        // Add cookie support.
+        httpclientBuilder.addInterceptor(new AddCookiesInterceptor(MainApplication.getINSTANCE().getApplicationContext())); // VERY VERY IMPORTANT
+        httpclientBuilder.addInterceptor(new ReceivedCookiesInterceptor(MainApplication.getINSTANCE().getApplicationContext())); // VERY VERY IMPORTANT
         // User-Agent format was agreed on telegram
         if (hasWebView) {
             androidacyUA = WebSettings.getDefaultUserAgent(mainApplication).replace("wv", "") + " FoxMMM/" + BuildConfig.VERSION_CODE;
@@ -224,10 +226,17 @@ public class Http {
     @SuppressLint("RestrictedApi")
     @SuppressWarnings("resource")
     public static byte[] doHttpGet(String url, boolean allowCache) throws IOException {
+        if (BuildConfig.DEBUG) {
+            // Log, but set all query parameters values to "****" while keeping the keys
+            Log.d(TAG, "doHttpGet: " + url.replaceAll("=[^&]*", "=****"));
+        }
         Response response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).get().build()).execute();
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "doHttpGet: request executed");
+        }
         // 200/204 == success, 304 == cache valid
         if (response.code() != 200 && response.code() != 204 && (response.code() != 304 || !allowCache)) {
-            Log.e(TAG, "Failed to fetch " + url + ", code: " + response.code());
+            Log.e(TAG, "Failed to fetch " + url.replaceAll("=[^&]*", "=****") + " with code " + response.code());
             checkNeedCaptchaAndroidacy(url, response.code());
             // If it's a 401, and an androidacy link, it's probably an invalid token
             if (response.code() == 401 && AndroidacyUtil.isAndroidacyLink(url)) {
@@ -236,12 +245,18 @@ public class Http {
             }
             throw new HttpException(response.code());
         }
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "doHttpGet: " + url.replaceAll("=[^&]*", "=****") + " succeeded");
+        }
         ResponseBody responseBody = response.body();
         // Use cache api if used cached response
         if (response.code() == 304) {
             response = response.cacheResponse();
             if (response != null)
                 responseBody = response.body();
+        }
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "doHttpGet: returning " + responseBody.contentLength() + " bytes");
         }
         return responseBody.bytes();
     }
