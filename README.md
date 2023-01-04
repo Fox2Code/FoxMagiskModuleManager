@@ -162,11 +162,11 @@ See [`app/src/main/res/values/strings.xml`](https://github.com/Fox2Code/FoxMagis
 
 If your language is right to left don't forget to set `lang_support_rtl` to `true`.
 
-Translators do not need to have any previous coding experience..
+Translators do not need to have any previous coding experience.
 
 ## Add your own repos
 
-See [the documentation](docs/add-repo.md)
+See [the documentation](docs/add-repo.md).
 
 ## Issues with a repo
 
@@ -176,7 +176,7 @@ reach them or they are not willing to help, you can contact us as a last resort.
 Default repo owners:
 
 - Androidacy: [Telegram](https://telegram.dog/androidacy_discussions)
-- Magisk-Modules-Alt-Repo: [Telegram](https://github.com/Magisk-Modules-Alt-Repo/submission/issues)
+- Magisk-Modules-Alt-Repo: [GitHub](https://github.com/Magisk-Modules-Alt-Repo/submission/issues)
 
 ## License
 
@@ -200,4 +200,4 @@ developer reserves the right to make additions, deletions, or modification to th
 app at any time without prior notice.
 
 This app is not affiliated with Magisk or its developers, nor with any of the module repos or
-developers of the modules
+developers of the modules.
