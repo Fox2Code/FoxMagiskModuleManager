@@ -262,6 +262,7 @@
     <string name="theme_system">System</string>
     <string name="theme_dark">Dark</string>
     <string name="theme_black">AMOLED Black</string>
+    <string name="theme_transparent_dark">Dark (transparency)</string>
     <string name="theme_transparent_light">Light (transparency)</string>
     <string name="theme_light">Light</string>
     <string name="androidacy_update_needed">This app is outdated.</string>

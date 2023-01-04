@@ -1,9 +1,0 @@
-<resources>
-    <string-array name="theme_values_names">
-        <item>Dle systému</item>
-        <item>Tmavá</item>
-        <item>AMOLED Black</item>
-        <item>Transparent</item>
-        <item>Světlá</item>
-    </string-array>
-</resources>

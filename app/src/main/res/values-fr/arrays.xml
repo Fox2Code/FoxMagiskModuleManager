@@ -1,9 +1,0 @@
-<resources>
-    <string-array name="theme_values_names">
-        <item>Système</item>
-        <item>Sombre</item>
-        <item>AMOLED Black</item>
-        <item>Transparent</item>
-        <item>Clair</item>
-    </string-array>
-</resources>

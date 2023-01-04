@@ -1,5 +1,5 @@
 <resources>
-    <!-- If translating, please remove "theme_values" -->
+    <!-- DO NOT TRANSLATE arrays.xml -->
     <!-- Transparent dark theme has, erm, issues -->
     <string-array name="theme_values" translatable="false">
         <item>system</item>
@@ -10,12 +10,12 @@
         <item>light</item>
     </string-array>
 
-    <string-array name="theme_values_names">
-        <item>System</item>
-        <item>Dark</item>
-        <item>AMOLED Black</item>
-        <item>Transparent</item>
-        <item>Light</item>
+    <string-array name="theme_values_names" translatable="false">
+        <item>@string/theme_system</item>
+        <item>@string/theme_dark</item>
+        <item>@string/theme_black</item>
+        <!-- <item>@string/theme_transparent_dark</item> -->
+        <item>@string/theme_transparent_light</item>
+        <item>@string/theme_light</item>
     </string-array>
-    <string-array name="permission_notification_dont_ask_again">Don't prompt again</string-array>
 </resources>

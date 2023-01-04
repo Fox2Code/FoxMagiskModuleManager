@@ -158,7 +158,7 @@ We use Weblate for translations: [https://translate.nift4.org/engage/foxmmm/](ht
 
 ### GitHub method for advanced users
 
-See [`app/src/main/res/values/strings.xml`](https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/app/src/main/res/values/strings.xml) and [`app/src/main/res/values/arrays.xml`](https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/app/src/main/res/values/arrays.xml)
+See [`app/src/main/res/values/strings.xml`](https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/app/src/main/res/values/strings.xml)
 
 If your language is right to left don't forget to set `lang_support_rtl` to `true`.
 
