@@ -236,4 +236,26 @@
     <string name="androidacy_update_needed_message">Bitte aktualisiere die App auf die neuste Version.</string>
     <string name="androidacy_update_needed">Diese App-Version ist zu alt.</string>
     <string name="androidacy_webview_update_required">Deine WebView ist zu alt! Bitte aktualisiere sie.</string>
+    <string name="zip_prop_load_failed">Konnte die Modul-Metadaten nicht laden</string>
+    <string name="zip_security_warning">Installiere %s\?</string>
+    <string name="zip_unpacking">Untersuche Modul…</string>
+    <string name="warning_message">Dieses Modul hat Indikatoren, dass es ohne dein Wissen installiert wurde, oder es sich verstecken will.
+\n
+\nDeinstallation ist stärkstens empfohlen.</string>
+    <string name="understand">Ich verstehe</string>
+    <string name="setup_theme_title">Thema wählen</string>
+    <string name="setup_language_button">Sprache wählen</string>
+    <string name="title_activity_setup">Ersteinrichtung</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="language_cta">Siehst du deine Sprache nicht\?</string>
+    <string name="language_cta_desc">Hilf uns, in dem du sie übersetzt! Tippe hier, um mehr herauszufinden.</string>
+    <string name="source_code_summary"><b>Commit</b> %1$s @ %2$s</string>
+    <string name="no_file_provided">Keine Datei wurde gefunden, als versucht wurde, ein ZIP zu öffnen.</string>
+    <string name="zip_load_failed">Konnte die Datei nicht laden</string>
+    <string name="contributors">Und danke an alle unsere Beitragenden, ob es Übersetzungen, Code oder einfach da sein ist! Wir lieben euch alle.</string>
+    <string name="zip_intent_module_install">Willst du wirklich das Modul \"%1$s\" aus der ZIP-Datei \"%2$s\" installieren\?
+\n
+\nStelle sicher, dass du der Quelle dieses Moduls vertraust, weil Module fast alles machen können.</string>
+    <string name="androidacy_thanks">In Teilen von Androidacy entwickelt</string>
+    <string name="androidacy_thanks_desc">Danke Androidacy für eure Integration und Beiträge zur App.</string>
 </resources>

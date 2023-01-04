@@ -257,4 +257,18 @@
     <string name="setup_theme_black">AMOLED Siyah tema</string>
     <string name="setup_theme_dark">Koyu tema</string>
     <string name="setup_theme_light">Aydınlık tema</string>
+    <string name="zip_prop_load_failed">Modül özellikleri yüklenemedi</string>
+    <string name="zip_security_warning">%s Kur\?</string>
+    <string name="zip_unpacking">Modül inceleniyor…</string>
+    <string name="warning_message">Bu modül, bilginiz olmadan kurmuş olabileceği göstergelere sahip veya kendini gizlemeye çalışıyor olabilir.
+\n
+\nKaldırmanız şiddetle tavsiye edilir.</string>
+    <string name="understand">Anladım</string>
+    <string name="setup_theme_title">Tema seç</string>
+    <string name="setup_language_button">Dil seç</string>
+    <string name="title_activity_setup">Kurulum Sihirbazı</string>
+    <string name="action_settings">Ayarlar</string>
+    <string name="zip_intent_module_install">%2$s ZIP dosyasından \"%1$s\" modülünü kurmak ister misiniz\?
+\n
+\nModüller çok güçlü ve neredeyse her şeyi yapabildiğinden bu modülün kaynağına güvendiğinizden emin olun.</string>
 </resources>
