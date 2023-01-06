@@ -244,4 +244,19 @@
     <string name="androidacy_thanks">Частично разработан Androidacy</string>
     <string name="no_file_provided">Нет доступа к файлу при попытке открытия zip архива.</string>
     <string name="contributors">Также конечно же, спасибо всем нашим участникам, будь то переводы, код или просто веселое времяпрепровождение! Мы любим вас всех.</string>
+    <string name="theme_transparent_dark">Темная (прозрачная)</string>
+    <string name="title_activity_setup">Мастер установки</string>
+    <string name="zip_prop_load_failed">Не удалось загрузить свойства модуля</string>
+    <string name="zip_security_warning">Установить %s\?</string>
+    <string name="zip_intent_module_install">Вы действительно хотите установить модуль \"%1$s\" из ZIP архива \"%2$s\"\?
+\n
+\nУбедитесь, что вы доверяете источнику этого модуля, так как модули очень мощные и могут делать практически все.</string>
+    <string name="zip_unpacking">Проверка модуля…</string>
+    <string name="warning_message">Этот модуль имеет индикатор того, что он мог быть установлен без вашего ведома или возможно пытается скрыть себя.
+\n
+\nУдаление настоятельно рекомендуется.</string>
+    <string name="understand">Я понимаю</string>
+    <string name="setup_theme_title">Выбрать тему</string>
+    <string name="setup_language_button">Выбрать язык</string>
+    <string name="action_settings">Настройки</string>
 </resources>

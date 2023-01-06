@@ -248,4 +248,19 @@
     <string name="language_cta_desc">Możesz przetłumaczyć! Naciśnij tutaj, aby uzyskać więcej informacji.</string>
     <string name="androidacy_thanks_desc">Ogromne podziękowania dla Androidacy za ich integrację i wkład w aplikację.</string>
     <string name="contributors">I oczywiście dziękujemy wszystkim naszym współtwórcom, czy to za tłumaczenia, czy za kod, czy za to, że po prostu dobrze się bawicie! Kochamy was wszystkich.</string>
+    <string name="zip_prop_load_failed">Nie udało się załadować właściwości modułu</string>
+    <string name="zip_security_warning">Zainstalować %s\?</string>
+    <string name="zip_intent_module_install">Czy naprawdę chcesz zainstalować moduł \"%1$s\" z pliku ZIP \"%2$s\"\?
+\n
+\nUpewnij się, że ufasz źródłu tego modułu, ponieważ moduły są bardzo potężne i mogą zrobić prawie wszystko.</string>
+    <string name="zip_unpacking">Sprawdzanie modułu…</string>
+    <string name="warning_message">Ten moduł wskazuje, że mógł zostać zainstalowany bez Twojej wiedzy lub może próbować się ukryć.
+\n
+\nZdecydowanie zalecane jest odinstalowanie.</string>
+    <string name="understand">Rozumiem</string>
+    <string name="setup_theme_title">Wybierz motyw</string>
+    <string name="setup_language_button">Wybierz język</string>
+    <string name="title_activity_setup">Kreator konfiguracji</string>
+    <string name="action_settings">Ustawienia</string>
+    <string name="theme_transparent_dark">Ciemny (przezroczysty)</string>
 </resources>

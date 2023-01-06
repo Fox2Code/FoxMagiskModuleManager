@@ -189,7 +189,7 @@
     <string name="unofficial">Gayriresmi</string>
     <string name="sentry_dialogue_success">Geribildirim başarıyla iletildi. En kısa zamanda gözden geçireceğiz</string>
     <string name="sentry_dialogue_no_description">Geribildirim açıklama sunulmadığı gibi iletilemedi</string>
-    <string name="pref_pkg_info_summary">%1$s v%2$s (%3$d) | %4$s Yapımı</string>
+    <string name="pref_pkg_info_summary">%1$s v%2$s (%3$d) | %4$s Yapım</string>
     <string name="alt_repo_info">Bu depo, daha düşük kaliteli modüllere götürebilecek daha az kısıtlamalara ve incelemelere sahiptir. Tatlı iskeletler ama birçok modüle sahiptir.</string>
     <string name="no_file_provided">Zip\'i açmaya çalışırken dosya bulunamadı.</string>
     <string name="zip_load_failed">Zip dosyası yüklenemedi</string>
@@ -225,7 +225,7 @@
     <string name="low_performance_device_dialogue_title">Alt sınıf cihazda bulanıklık etkinleştirme</string>
     <string name="low_performance_device_dialogue_message">İyi yerine getiremeyebilen bir cihazda bulanıklığı etkinleştirmeye çalışıyorsunuz.
 \nEtkinleştirebilirsiniz fakat bu, zayıf kullanıcı deneyimini beraberinde getirebilir ve yapmamanızı öneriyoruz.</string>
-    <string name="debug_build">Bu bir geliştirici yapımı. Bazı sorunlar ve kötü performans beklenir.</string>
+    <string name="debug_build">Bu bir geliştirici yapımıdır. Bazı sorunlar ve kötü performans beklenir.</string>
     <string name="androidacy_repo_name">Androidacy Depo</string>
     <string name="magisk_alt_repo_name">Magisk Alt Depo</string>
     <string name="repo_enabled_changed">Bir depo etkinleştirdiniz veya devre dışı bıraktınız. Lütfen modül listesini yenileyin veya uygulamayı yeniden başlatın.</string>
@@ -271,4 +271,5 @@
     <string name="zip_intent_module_install">%2$s ZIP dosyasından \"%1$s\" modülünü kurmak ister misiniz\?
 \n
 \nModüller çok güçlü ve neredeyse her şeyi yapabildiğinden bu modülün kaynağına güvendiğinizden emin olun.</string>
+    <string name="theme_transparent_dark">Koyu (şeffaf)</string>
 </resources>

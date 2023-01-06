@@ -239,4 +239,19 @@
     <string name="androidacy_thanks">Частково розроблений Androidacy</string>
     <string name="androidacy_thanks_desc">Величезна вдяка Androidacy за їх інтеграцію та внесок у додаток.</string>
     <string name="contributors">Також звичайно ж, дякую всім нашим учасникам, будь то переклади, код або просто веселе проведення часу! Ми любимо вас усіх.</string>
+    <string name="warning_message">Цей модуль має індикатор що можливо він був встановлений без вашого відома або намагається приховати себе.
+\n
+\nНастійно рекомендується видалити.</string>
+    <string name="zip_prop_load_failed">Не вдалося завантажити властивості модуля</string>
+    <string name="zip_security_warning">Встановити %s\?</string>
+    <string name="zip_intent_module_install">Ви справді бажаєте встановити модуль \"%1$s\" із ZIP архіву \"%2$s\"\?
+\n
+\nПереконайтеся, що ви довіряєте джерелу цього модуля, оскільки є дуже потужні модулі та вони можуть робити майже все.</string>
+    <string name="zip_unpacking">Перевірка модуля…</string>
+    <string name="theme_transparent_dark">Темна (прозора)</string>
+    <string name="understand">Я розумію</string>
+    <string name="setup_theme_title">Обрати тему</string>
+    <string name="setup_language_button">Обрати мову</string>
+    <string name="title_activity_setup">Майстер встановлення</string>
+    <string name="action_settings">Налаштування</string>
 </resources>

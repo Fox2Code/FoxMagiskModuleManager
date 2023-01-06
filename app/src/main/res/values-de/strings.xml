@@ -258,4 +258,5 @@
 \nStelle sicher, dass du der Quelle dieses Moduls vertraust, weil Module fast alles machen können.</string>
     <string name="androidacy_thanks">In Teilen von Androidacy entwickelt</string>
     <string name="androidacy_thanks_desc">Danke Androidacy für eure Integration und Beiträge zur App.</string>
+    <string name="theme_transparent_dark">Dunkel (transparent)</string>
 </resources>
