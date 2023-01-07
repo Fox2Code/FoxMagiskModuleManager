@@ -283,5 +283,5 @@
     <string name="setup_theme_title">Choose theme</string>
     <string name="setup_language_button">Choose language</string>
     <string name="title_activity_setup">Setup Wizard</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Settings</string><string name="repo_update_failed_message">The following repos have failed to update:\\n\\n%s</string><string name="reset_api_key">Reset API keys</string><string name="upgrade_androidacy_promo">Upgrade to premium</string><string name="upgrade_androidacy_promo_desc">Upgrading to premium will remove ads, captchas, and downloads for the Androidacy Repository, and support Androidacy and the module authors.</string>
 </resources>

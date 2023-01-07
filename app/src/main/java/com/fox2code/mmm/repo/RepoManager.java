@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -23,7 +24,7 @@ import com.fox2code.mmm.utils.Hashes;
 import com.fox2code.mmm.utils.Http;
 import com.fox2code.mmm.utils.PropUtils;
 import com.fox2code.mmm.utils.SyncManager;
-import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -165,19 +166,22 @@ public final class RepoManager extends SyncManager {
                 INSTANCE.androidacyRepoData.isEnabled();
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
     private void populateDefaultCache(RepoData repoData) {
         for (RepoModule repoModule : repoData.moduleHashMap.values()) {
             if (!repoModule.moduleInfo.hasFlag(ModuleInfo.FLAG_METADATA_INVALID)) {
                 RepoModule registeredRepoModule = this.modules.get(repoModule.id);
                 if (registeredRepoModule == null) {
                     this.modules.put(repoModule.id, repoModule);
-                } else if (repoModule.moduleInfo.versionCode >
-                        registeredRepoModule.moduleInfo.versionCode) {
+                } else if (AndroidacyRepoData.getInstance().isEnabled() && registeredRepoModule.repoData == this.androidacyRepoData) {
+                    // empty
+                } else if (AndroidacyRepoData.getInstance().isEnabled() && repoModule.repoData == this.androidacyRepoData) {
+                    this.modules.put(repoModule.id, repoModule);
+                } else if (repoModule.moduleInfo.versionCode > registeredRepoModule.moduleInfo.versionCode) {
                     this.modules.put(repoModule.id, repoModule);
                 }
             } else {
-                Log.e(TAG, "Detected module with invalid metadata: " +
-                        repoModule.repoName + "/" + repoModule.id);
+                Log.e(TAG, "Detected module with invalid metadata: " + repoModule.repoName + "/" + repoModule.id);
             }
         }
     }
@@ -217,6 +221,7 @@ public final class RepoManager extends SyncManager {
         return repoData;
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
     @SuppressLint("StringFormatInvalid")
     protected void scanInternal(@NonNull UpdateListener updateListener) {
         // Refuse to start if first_launch is not false in shared preferences
@@ -226,14 +231,12 @@ public final class RepoManager extends SyncManager {
         this.modules.clear();
         updateListener.update(0D);
         // Using LinkedHashSet to deduplicate Androidacy entry.
-        RepoData[] repoDatas = new LinkedHashSet<>(
-                this.repoData.values()).toArray(new RepoData[0]);
+        RepoData[] repoDatas = new LinkedHashSet<>(this.repoData.values()).toArray(new RepoData[0]);
         RepoUpdater[] repoUpdaters = new RepoUpdater[repoDatas.length];
         int moduleToUpdate = 0;
         for (int i = 0; i < repoDatas.length; i++) {
             if (BuildConfig.DEBUG) Log.d("RepoManager", "Fetching: " + repoDatas[i].getName());
-            moduleToUpdate += (repoUpdaters[i] =
-                    new RepoUpdater(repoDatas[i])).fetchIndex();
+            moduleToUpdate += (repoUpdaters[i] = new RepoUpdater(repoDatas[i])).fetchIndex();
             updateListener.update(STEP1 / repoDatas.length * (i + 1));
         }
         if (BuildConfig.DEBUG) Log.d("RepoManag3er", "Updating meta-data");
@@ -242,8 +245,7 @@ public final class RepoManager extends SyncManager {
         for (int i = 0; i < repoUpdaters.length; i++) {
             // Check if the repo is enabled
             if (!repoUpdaters[i].repoData.isEnabled()) {
-                if (BuildConfig.DEBUG) Log.d("RepoManager",
-                        "Skipping disabled repo: " + repoUpdaters[i].repoData.getName());
+                if (BuildConfig.DEBUG) Log.d("RepoManager", "Skipping disabled repo: " + repoUpdaters[i].repoData.getName());
                 continue;
             }
             List<RepoModule> repoModules = repoUpdaters[i].toUpdate();
@@ -251,21 +253,20 @@ public final class RepoManager extends SyncManager {
             if (BuildConfig.DEBUG) Log.d("RepoManager", "Registering " + repoData.getName());
             for (RepoModule repoModule : repoModules) {
                 try {
-                    if (repoModule.propUrl != null &&
-                            !repoModule.propUrl.isEmpty()) {
-                        repoData.storeMetadata(repoModule,
-                                Http.doHttpGet(repoModule.propUrl, false));
-                        Files.write(new File(repoData.cacheRoot, repoModule.id + ".prop"),
-                                Http.doHttpGet(repoModule.propUrl, false));
+                    if (repoModule.propUrl != null && !repoModule.propUrl.isEmpty()) {
+                        repoData.storeMetadata(repoModule, Http.doHttpGet(repoModule.propUrl, false));
+                        Files.write(new File(repoData.cacheRoot, repoModule.id + ".prop"), Http.doHttpGet(repoModule.propUrl, false));
                     }
-                    if (repoData.tryLoadMetadata(repoModule) && (allowLowQualityModules ||
-                            !PropUtils.isLowQualityModule(repoModule.moduleInfo))) {
+                    if (repoData.tryLoadMetadata(repoModule) && (allowLowQualityModules || !PropUtils.isLowQualityModule(repoModule.moduleInfo))) {
                         // Note: registeredRepoModule may not be null if registered by multiple repos
                         RepoModule registeredRepoModule = this.modules.get(repoModule.id);
                         if (registeredRepoModule == null) {
                             this.modules.put(repoModule.id, repoModule);
-                        } else if (repoModule.moduleInfo.versionCode >
-                                registeredRepoModule.moduleInfo.versionCode) {
+                        } else if (AndroidacyRepoData.getInstance().isEnabled() && registeredRepoModule.repoData == this.androidacyRepoData) {
+                            // empty
+                        } else if (AndroidacyRepoData.getInstance().isEnabled() && repoModule.repoData == this.androidacyRepoData) {
+                            this.modules.put(repoModule.id, repoModule);
+                        } else if (repoModule.moduleInfo.versionCode > registeredRepoModule.moduleInfo.versionCode) {
                             this.modules.put(repoModule.id, repoModule);
                         }
                     }
@@ -280,8 +281,11 @@ public final class RepoManager extends SyncManager {
                     RepoModule registeredRepoModule = this.modules.get(repoModule.id);
                     if (registeredRepoModule == null) {
                         this.modules.put(repoModule.id, repoModule);
-                    } else if (repoModule.moduleInfo.versionCode >
-                            registeredRepoModule.moduleInfo.versionCode) {
+                    } else if (AndroidacyRepoData.getInstance().isEnabled() && registeredRepoModule.repoData == this.androidacyRepoData) {
+                        // empty
+                    } else if (AndroidacyRepoData.getInstance().isEnabled() && repoModule.repoData == this.androidacyRepoData) {
+                        this.modules.put(repoModule.id, repoModule);
+                    } else if (repoModule.moduleInfo.versionCode > registeredRepoModule.moduleInfo.versionCode) {
                         this.modules.put(repoModule.id, repoModule);
                     }
                 }
@@ -293,14 +297,12 @@ public final class RepoManager extends SyncManager {
         // Attempt to contact connectivitycheck.gstatic.com/generate_204
         // If we can't, we don't have internet connection
         try {
-            HttpURLConnection urlConnection = (HttpURLConnection) new URL(
-                    "https://connectivitycheck.gstatic.com/generate_204").openConnection();
+            HttpURLConnection urlConnection = (HttpURLConnection) new URL("https://connectivitycheck.gstatic.com/generate_204").openConnection();
             urlConnection.setInstanceFollowRedirects(false);
             urlConnection.setReadTimeout(1000);
             urlConnection.setUseCaches(false);
             urlConnection.getInputStream().close();
-            if (urlConnection.getResponseCode() == 204 &&
-                    urlConnection.getContentLength() == 0) {
+            if (urlConnection.getResponseCode() == 204 && urlConnection.getContentLength() == 0) {
                 this.hasInternet = true;
             }
         } catch (IOException e) {
@@ -310,12 +312,10 @@ public final class RepoManager extends SyncManager {
             for (int i = 0; i < repoDatas.length; i++) {
                 // If repo is not enabled, skip
                 if (!repoDatas[i].isEnabled()) {
-                    if (BuildConfig.DEBUG) Log.d("RepoManager",
-                            "Skipping " + repoDatas[i].getName() + " because it's disabled");
+                    if (BuildConfig.DEBUG) Log.d("RepoManager", "Skipping " + repoDatas[i].getName() + " because it's disabled");
                     continue;
                 }
-                if (BuildConfig.DEBUG) Log.d("RepoManager",
-                        "Finishing: " + repoUpdaters[i].repoData.getName());
+                if (BuildConfig.DEBUG) Log.d("RepoManager", "Finishing: " + repoUpdaters[i].repoData.getName());
                 this.repoLastSuccess = repoUpdaters[i].finish();
                 if (!this.repoLastSuccess) {
                     Log.e(TAG, "Failed to update " + repoUpdaters[i].repoData.getName());
@@ -324,10 +324,20 @@ public final class RepoManager extends SyncManager {
                     Activity context = MainApplication.getINSTANCE().getLastCompatActivity();
                     new Handler(Looper.getMainLooper()).post(() -> {
                         if (context != null) {
-                            Snackbar.make(context.findViewById(android.R.id.content),
-                                    context.getString(R.string.repo_update_failed_extended,
-                                            repoUpdaters[finalI].repoData.getName()),
-                                    Snackbar.LENGTH_LONG).show();
+                            // Show material dialogue with the repo name. for androidacy repo, show an option to reset the api key. show a message then a list of errors
+                            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+                            builder.setTitle(R.string.repo_update_failed);
+                            builder.setMessage(context.getString(R.string.repo_update_failed_message, "- " + repoUpdaters[finalI].repoData.getName()));
+                            builder.setPositiveButton(android.R.string.ok, null);
+                            if (repoUpdaters[finalI].repoData.getName().equals("Androidacy")) {
+                                builder.setNeutralButton(R.string.reset_api_key, (dialog, which) -> {
+                                    SharedPreferences.Editor editor = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit();
+                                    editor.putString("androidacy_api_key", "");
+                                    editor.apply();
+                                    Toast.makeText(context, R.string.api_key_removed, Toast.LENGTH_SHORT).show();
+                                });
+                            }
+                            builder.show();
                         }
                     });
                     this.repoLastErrorName = repoUpdaters[i].repoData.getName();

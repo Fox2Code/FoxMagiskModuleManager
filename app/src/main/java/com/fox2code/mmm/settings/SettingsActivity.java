@@ -711,111 +711,68 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     return false;
                 });
             }
-            String[] originalApiKeyRef = new String[]{MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).getString("pref_androidacy_api_token", "")};
-            // Get the dummy pref_androidacy_repo_api_token EditTextPreference
-            EditTextPreference prefAndroidacyRepoApiKey = Objects.requireNonNull(findPreference("pref_androidacy_api_token"));
-            prefAndroidacyRepoApiKey.setTitle(R.string.api_key);
-            prefAndroidacyRepoApiKey.setSummary(R.string.api_key_summary);
-            prefAndroidacyRepoApiKey.setDialogTitle(R.string.api_key);
-            prefAndroidacyRepoApiKey.setDefaultValue(originalApiKeyRef[0]);
-            // Set the value to the current value
-            prefAndroidacyRepoApiKey.setText(originalApiKeyRef[0]);
-            prefAndroidacyRepoApiKey.setOnBindEditTextListener(editText -> {
-                editText.setSingleLine();
-                // Make the single line wrap
-                editText.setHorizontallyScrolling(false);
-                // Set the height to the maximum required to fit the text
-                editText.setMaxLines(Integer.MAX_VALUE);
-                // Make ok button say "Save"
-                editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
-            });
-            prefAndroidacyRepoApiKey.setPositiveButtonText(R.string.save_api_key);
-            prefAndroidacyRepoApiKey.setOnPreferenceChangeListener((preference, newValue) -> {
-                // Make sure originalApiKeyRef is not null
-                if (originalApiKeyRef[0].equals(newValue))
-                    return true;
-                // get original api key
-                String apiKey = String.valueOf(newValue);
-                // Show snack bar with indeterminate progress
-                Snackbar.make(requireView(), R.string.checking_api_key, Snackbar.LENGTH_INDEFINITE).setAction(R.string.cancel, v -> {
-                    // Restore the original api key
-                    prefAndroidacyRepoApiKey.setText(originalApiKeyRef[0]);
-                }).show();
-                // Check the API key on a background thread
-                new Thread(() -> {
-                    // If key is empty, just remove it and change the text of the snack bar
-                    if (apiKey.isEmpty()) {
-                        MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit().remove("pref_androidacy_api_token").apply();
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            Snackbar.make(requireView(), R.string.api_key_removed, Snackbar.LENGTH_SHORT).show();
-                            // Show dialog to restart app with ok button
-                            new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.restart).setCancelable(false).setMessage(R.string.api_key_restart).setNeutralButton(android.R.string.ok, (dialog, which) -> {
-                                // User clicked OK button
-                                Intent mStartActivity = new Intent(requireContext(), MainActivity.class);
-                                mStartActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                int mPendingIntentId = 123456;
-                                // If < 23, FLAG_IMMUTABLE is not available
-                                PendingIntent mPendingIntent;
-                                mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                                AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
-                                mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-                                if (BuildConfig.DEBUG) {
-                                    Log.d(TAG, "Restarting app to save token preference: " + newValue);
-                                }
-                                System.exit(0); // Exit app process
-                            }).show();
-                        });
-                    } else {
-                        // If key < 64 chars, it's not valid
-                        if (apiKey.length() < 64) {
+            // get if androidacy repo is enabled
+            boolean androidacyRepoEnabledPref = MainApplication.getSharedPreferences().getBoolean("pref_androidacy_repo_enabled", false);
+            if (androidacyRepoEnabledPref) {
+                String[] originalApiKeyRef = new String[]{MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).getString("pref_androidacy_api_token", "")};
+                // Get the dummy pref_androidacy_repo_api_token preference with id pref_androidacy_repo_api_token
+                // we have to use the id because the key is different
+                EditTextPreference prefAndroidacyRepoApiKey = Objects.requireNonNull(findPreference("pref_androidacy_repo_api_token"));
+                prefAndroidacyRepoApiKey.setTitle(R.string.api_key);
+                prefAndroidacyRepoApiKey.setSummary(R.string.api_key_summary);
+                prefAndroidacyRepoApiKey.setDialogTitle(R.string.api_key);
+                prefAndroidacyRepoApiKey.setDefaultValue(originalApiKeyRef[0]);
+                // Set the value to the current value
+                prefAndroidacyRepoApiKey.setText(originalApiKeyRef[0]);
+                prefAndroidacyRepoApiKey.setVisible(true);
+                prefAndroidacyRepoApiKey.setOnBindEditTextListener(editText -> {
+                    editText.setSingleLine();
+                    // Make the single line wrap
+                    editText.setHorizontallyScrolling(false);
+                    // Set the height to the maximum required to fit the text
+                    editText.setMaxLines(Integer.MAX_VALUE);
+                    // Make ok button say "Save"
+                    editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                });
+                prefAndroidacyRepoApiKey.setPositiveButtonText(R.string.save_api_key);
+                prefAndroidacyRepoApiKey.setOnPreferenceChangeListener((preference, newValue) -> {
+                    // Make sure originalApiKeyRef is not null
+                    if (originalApiKeyRef[0].equals(newValue))
+                        return true;
+                    // get original api key
+                    String apiKey = String.valueOf(newValue);
+                    // Show snack bar with indeterminate progress
+                    Snackbar.make(requireView(), R.string.checking_api_key, Snackbar.LENGTH_INDEFINITE).setAction(R.string.cancel, v -> {
+                        // Restore the original api key
+                        prefAndroidacyRepoApiKey.setText(originalApiKeyRef[0]);
+                    }).show();
+                    // Check the API key on a background thread
+                    new Thread(() -> {
+                        // If key is empty, just remove it and change the text of the snack bar
+                        if (apiKey.isEmpty()) {
+                            MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit().remove("pref_androidacy_api_token").apply();
                             new Handler(Looper.getMainLooper()).post(() -> {
-                                Snackbar.make(requireView(), R.string.api_key_invalid, Snackbar.LENGTH_SHORT).show();
-                                // Save the original key
-                                MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit().putString("pref_androidacy_api_token", originalApiKeyRef[0]).apply();
-                                // Re-show the dialog with an error
-                                prefAndroidacyRepoApiKey.performClick();
-                                // Show error
-                                prefAndroidacyRepoApiKey.setDialogMessage(getString(R.string.api_key_invalid));
+                                Snackbar.make(requireView(), R.string.api_key_removed, Snackbar.LENGTH_SHORT).show();
+                                // Show dialog to restart app with ok button
+                                new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.restart).setCancelable(false).setMessage(R.string.api_key_restart).setNeutralButton(android.R.string.ok, (dialog, which) -> {
+                                    // User clicked OK button
+                                    Intent mStartActivity = new Intent(requireContext(), MainActivity.class);
+                                    mStartActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    int mPendingIntentId = 123456;
+                                    // If < 23, FLAG_IMMUTABLE is not available
+                                    PendingIntent mPendingIntent;
+                                    mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                                    AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+                                    mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+                                    if (BuildConfig.DEBUG) {
+                                        Log.d(TAG, "Restarting app to save token preference: " + newValue);
+                                    }
+                                    System.exit(0); // Exit app process
+                                }).show();
                             });
                         } else {
-                            // If the key is the same as the original, just show a snack bar
-                            if (apiKey.equals(originalApiKeyRef[0])) {
-                                new Handler(Looper.getMainLooper()).post(() -> Snackbar.make(requireView(), R.string.api_key_unchanged, Snackbar.LENGTH_SHORT).show());
-                                return;
-                            }
-                            boolean valid = false;
-                            try {
-                                valid = AndroidacyRepoData.getInstance().isValidToken(apiKey);
-                            } catch (
-                                    IOException |
-                                    NoSuchAlgorithmException ignored) {
-                            }
-                            // If the key is valid, save it
-                            if (valid) {
-                                originalApiKeyRef[0] = apiKey;
-                                RepoManager.getINSTANCE().getAndroidacyRepoData().setToken(apiKey);
-                                MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit().putString("pref_androidacy_api_token", apiKey).apply();
-                                // Snackbar with success and restart button
-                                new Handler(Looper.getMainLooper()).post(() -> {
-                                    Snackbar.make(requireView(), R.string.api_key_valid, Snackbar.LENGTH_SHORT).show();
-                                    // Show dialog to restart app with ok button
-                                    new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.restart).setCancelable(false).setMessage(R.string.api_key_restart).setNeutralButton(android.R.string.ok, (dialog, which) -> {
-                                        // User clicked OK button
-                                        Intent mStartActivity = new Intent(requireContext(), MainActivity.class);
-                                        mStartActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        int mPendingIntentId = 123456;
-                                        // If < 23, FLAG_IMMUTABLE is not available
-                                        PendingIntent mPendingIntent;
-                                        mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                                        AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
-                                        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-                                        if (BuildConfig.DEBUG) {
-                                            Log.d(TAG, "Restarting app to save token preference: " + newValue);
-                                        }
-                                        System.exit(0); // Exit app process
-                                    }).show();
-                                });
-                            } else {
+                            // If key < 64 chars, it's not valid
+                            if (apiKey.length() < 64) {
                                 new Handler(Looper.getMainLooper()).post(() -> {
                                     Snackbar.make(requireView(), R.string.api_key_invalid, Snackbar.LENGTH_SHORT).show();
                                     // Save the original key
@@ -825,14 +782,61 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                     // Show error
                                     prefAndroidacyRepoApiKey.setDialogMessage(getString(R.string.api_key_invalid));
                                 });
+                            } else {
+                                // If the key is the same as the original, just show a snack bar
+                                if (apiKey.equals(originalApiKeyRef[0])) {
+                                    new Handler(Looper.getMainLooper()).post(() -> Snackbar.make(requireView(), R.string.api_key_unchanged, Snackbar.LENGTH_SHORT).show());
+                                    return;
+                                }
+                                boolean valid = false;
+                                try {
+                                    valid = AndroidacyRepoData.getInstance().isValidToken(apiKey);
+                                } catch (
+                                        IOException |
+                                        NoSuchAlgorithmException ignored) {
+                                }
+                                // If the key is valid, save it
+                                if (valid) {
+                                    originalApiKeyRef[0] = apiKey;
+                                    RepoManager.getINSTANCE().getAndroidacyRepoData().setToken(apiKey);
+                                    MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit().putString("pref_androidacy_api_token", apiKey).apply();
+                                    // Snackbar with success and restart button
+                                    new Handler(Looper.getMainLooper()).post(() -> {
+                                        Snackbar.make(requireView(), R.string.api_key_valid, Snackbar.LENGTH_SHORT).show();
+                                        // Show dialog to restart app with ok button
+                                        new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.restart).setCancelable(false).setMessage(R.string.api_key_restart).setNeutralButton(android.R.string.ok, (dialog, which) -> {
+                                            // User clicked OK button
+                                            Intent mStartActivity = new Intent(requireContext(), MainActivity.class);
+                                            mStartActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            int mPendingIntentId = 123456;
+                                            // If < 23, FLAG_IMMUTABLE is not available
+                                            PendingIntent mPendingIntent;
+                                            mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                                            AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+                                            mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+                                            if (BuildConfig.DEBUG) {
+                                                Log.d(TAG, "Restarting app to save token preference: " + newValue);
+                                            }
+                                            System.exit(0); // Exit app process
+                                        }).show();
+                                    });
+                                } else {
+                                    new Handler(Looper.getMainLooper()).post(() -> {
+                                        Snackbar.make(requireView(), R.string.api_key_invalid, Snackbar.LENGTH_SHORT).show();
+                                        // Save the original key
+                                        MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit().putString("pref_androidacy_api_token", originalApiKeyRef[0]).apply();
+                                        // Re-show the dialog with an error
+                                        prefAndroidacyRepoApiKey.performClick();
+                                        // Show error
+                                        prefAndroidacyRepoApiKey.setDialogMessage(getString(R.string.api_key_invalid));
+                                    });
+                                }
                             }
                         }
-                    }
-                }).start();
-                return true;
-            });
-            // make sure the preference is visible if repo is enabled
-            prefAndroidacyRepoApiKey.setVisible(RepoManager.getINSTANCE().getAndroidacyRepoData().isEnabled());
+                    }).start();
+                    return true;
+                });
+            }
         }
 
         @SuppressLint("RestrictedApi")

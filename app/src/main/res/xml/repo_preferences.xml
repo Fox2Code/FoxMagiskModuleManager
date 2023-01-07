@@ -12,7 +12,7 @@
         <!-- Initially hidden edittextpreference for pref_androidacy_api_token -->
         <EditTextPreference
             app:icon="@drawable/ic_baseline_vpn_key_24"
-            app:key="pref_androidacy_api_token"
+            app:key="pref_androidacy_repo_api_token"
             app:singleLineTitle="false"
             app:dependency="pref_androidacy_repo_enabled"
             app:isPreferenceVisible="false"
@@ -26,6 +26,12 @@
             app:summary="@string/androidacy_test_mode_desc"
             app:title="@string/androidacy_test_mode_pref" />
         <com.fox2code.mmm.settings.LongClickablePreference
+            app:icon="@drawable/baseline_monetization_on_24"
+            app:key="pref_androidacy_repo_donate"
+            app:singleLineTitle="false"
+            app:summary="@string/upgrade_androidacy_promo_desc"
+            app:title="@string/upgrade_androidacy_promo" />
+        <com.fox2code.mmm.settings.LongClickablePreference
             app:icon="@drawable/ic_baseline_language_24"
             app:key="pref_androidacy_repo_website"
             app:singleLineTitle="false"
@@ -35,11 +41,6 @@
             app:key="pref_androidacy_repo_support"
             app:singleLineTitle="false"
             app:title="@string/support" />
-        <com.fox2code.mmm.settings.LongClickablePreference
-            app:icon="@drawable/ic_patreon"
-            app:key="pref_androidacy_repo_donate"
-            app:singleLineTitle="false"
-            app:title="@string/donate" />
         <com.fox2code.mmm.settings.LongClickablePreference
             app:icon="@drawable/ic_baseline_upload_file_24"
             app:key="pref_androidacy_repo_submit"

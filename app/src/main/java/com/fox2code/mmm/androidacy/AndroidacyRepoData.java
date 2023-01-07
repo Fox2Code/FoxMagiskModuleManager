@@ -41,6 +41,10 @@ import okhttp3.HttpUrl;
 
 @SuppressWarnings("KotlinInternalInJava")
 public final class AndroidacyRepoData extends RepoData {
+
+    public static String token = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).getString("pref_androidacy_api_token", null);
+    public SharedPreferences cachedPreferences = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0);
+
     private static final String TAG = "AndroidacyRepoData";
 
     static {
@@ -55,7 +59,7 @@ public final class AndroidacyRepoData extends RepoData {
 
     private final boolean testMode;
     private final String host;
-    public String token = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).getString("pref_androidacy_api_token", null);
+    public String memberLevel;
     // Avoid spamming requests to Androidacy
     private long androidacyBlockade = 0;
 
@@ -76,7 +80,7 @@ public final class AndroidacyRepoData extends RepoData {
         this.defaultName = "Androidacy Modules Repo";
         this.defaultWebsite = RepoManager.ANDROIDACY_MAGISK_REPO_HOMEPAGE;
         this.defaultSupport = "https://t.me/androidacy_discussions";
-        this.defaultDonate = "https://www.androidacy.com/membership-join/?utm_source=foxmmm&utm-medium=app&utm_campaign=fox-inapp";
+        this.defaultDonate = "https://www.androidacy.com/membership-account/membership-checkout/?level=2&discount_code=FOXWINTER2&utm_souce=foxmmm&utm_medium=android-app&utm_campaign=fox-upgrade-promo";
         this.defaultSubmitModule = "https://www.androidacy.com/module-repository-applications/";
         this.host = testMode ? "staging-api.androidacy.com" : "production-api.androidacy.com";
         this.testMode = testMode;
@@ -148,7 +152,20 @@ public final class AndroidacyRepoData extends RepoData {
     public boolean isValidToken(String token) throws IOException, NoSuchAlgorithmException {
         String deviceId = generateDeviceId();
         try {
-            Http.doHttpGet("https://" + this.host + "/auth/me?token=" + token + "&device_id=" + deviceId, false);
+            byte[] resp = Http.doHttpGet("https://" + this.host + "/auth/me?token=" + token + "&device_id=" + deviceId, false);
+            JSONObject jsonObject = new JSONObject(new String(resp));
+            memberLevel = jsonObject.getString("role");
+            String status = jsonObject.getString("status");
+            if (status.equals("success")) {
+                return true;
+            } else {
+                Log.w(TAG, "Invalid token, resetting...");
+                // Remove saved preference
+                SharedPreferences.Editor editor = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit();
+                editor.remove("pref_androidacy_api_token");
+                editor.apply();
+                return false;
+            }
         } catch (
                 HttpException e) {
             if (e.getErrorCode() == 401) {
@@ -160,9 +177,11 @@ public final class AndroidacyRepoData extends RepoData {
                 return false;
             }
             throw e;
+        } catch (
+                JSONException e) {
+            // response is not JSON
+            throw new IOException(e);
         }
-        // If status code is 200, we are good
-        return true;
     }
 
     @SuppressLint("RestrictedApi")
@@ -170,7 +189,7 @@ public final class AndroidacyRepoData extends RepoData {
     protected boolean prepare() throws NoSuchAlgorithmException {
         // If ANDROIDACY_CLIENT_ID is not set or is empty, disable this repo and return
         if (Objects.equals(BuildConfig.ANDROIDACY_CLIENT_ID, "")) {
-            SharedPreferences.Editor editor = this.cachedPreferences.edit();
+            SharedPreferences.Editor editor = MainApplication.getSharedPreferences().edit();
             editor.putBoolean("pref_androidacy_repo_enabled", false);
             editor.apply();
             return false;
@@ -210,18 +229,18 @@ public final class AndroidacyRepoData extends RepoData {
         // don'e fail just becaue we're rate limited. API and web rate limits are different.
         this.androidacyBlockade = time + 30_000L;
         try {
-            if (this.token == null) {
-                this.token = this.cachedPreferences.getString("pref_androidacy_api_token", null);
-                if (this.token != null && !this.isValidToken(this.token)) {
-                    this.token = null;
+            if (token == null) {
+                token = this.cachedPreferences.getString("pref_androidacy_api_token", null);
+                if (token != null && !this.isValidToken(token)) {
+                    token = null;
                 } else {
                     Log.i(TAG, "Using cached token");
                 }
-            } else if (!this.isValidToken(this.token)) {
+            } else if (!this.isValidToken(token)) {
                 if (BuildConfig.DEBUG) {
-                    throw new IllegalStateException("Invalid token: " + this.token);
+                    throw new IllegalStateException("Invalid token: " + token);
                 }
-                this.token = null;
+                token = null;
             }
         } catch (
                 IOException e) {
@@ -234,12 +253,13 @@ public final class AndroidacyRepoData extends RepoData {
         if (token == null) {
             try {
                 Log.i(TAG, "Requesting new token...");
-                // POST json request to https://production-api.androidacy.com/auth/register
+                // POST json request to https://produc/tion-api.androidacy.com/auth/register
                 token = new String(Http.doHttpPost("https://" + this.host + "/auth/register", "{\"device_id\":\"" + deviceId + "\"}", false));
                 // Parse token
                 try {
                     JSONObject jsonObject = new JSONObject(token);
                     token = jsonObject.getString("token");
+                    memberLevel = jsonObject.getString("role");
                 } catch (
                         JSONException e) {
                     Log.e(TAG, "Failed to parse token", e);
@@ -269,7 +289,7 @@ public final class AndroidacyRepoData extends RepoData {
             }
         }
         //noinspection SillyAssignment // who are you calling silly?
-        this.token = token;
+        token = token;
         return true;
     }
 
@@ -389,7 +409,7 @@ public final class AndroidacyRepoData extends RepoData {
 
     @Override
     public String getUrl() throws NoSuchAlgorithmException {
-        return this.token == null ? this.url : this.url + "?token=" + this.token + "&v=" + BuildConfig.VERSION_CODE + "&c=" + BuildConfig.VERSION_NAME + "&device_id=" + generateDeviceId();
+        return token == null ? this.url : this.url + "?token=" + token + "&v=" + BuildConfig.VERSION_CODE + "&c=" + BuildConfig.VERSION_NAME + "&device_id=" + generateDeviceId() + "&client_id=" + BuildConfig.ANDROIDACY_CLIENT_ID;
     }
 
     private String injectToken(String url) throws NoSuchAlgorithmException {
@@ -407,7 +427,7 @@ public final class AndroidacyRepoData extends RepoData {
                 url = "https://production-api.androidacy.com/" + url.substring(35);
             }
         }
-        String token = "token=" + this.token;
+        String token = "token=" + AndroidacyRepoData.token;
         String deviceId = "device_id=" + generateDeviceId();
         if (!url.contains(token)) {
             if (url.lastIndexOf('/') < url.lastIndexOf('?')) {
@@ -434,7 +454,7 @@ public final class AndroidacyRepoData extends RepoData {
 
     public void setToken(String token) {
         if (Http.hasWebView()) {
-            this.token = token;
+            AndroidacyRepoData.token = token;
         }
     }
 }

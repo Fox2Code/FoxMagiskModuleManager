@@ -99,8 +99,7 @@ public final class AndroidacyActivity extends FoxActivity {
         String token = uri.getQueryParameter("token");
         if (token == null) {
             // get from shared preferences
-            token = MainApplication.getSharedPreferences().getString("pref_androidacy_api_token", null);
-            url = url + "&token=" + token;
+            url = url + "&token=" + AndroidacyRepoData.token;
         }
         // Add device_id to url if not present
         String device_id = uri.getQueryParameter("device_id");
