@@ -263,4 +263,8 @@
     <string name="title_activity_setup">Kreator konfiguracji</string>
     <string name="action_settings">Ustawienia</string>
     <string name="theme_transparent_dark">Ciemny (przezroczysty)</string>
+    <string name="repo_update_failed_message">Niepowodzenie aktualizacji repozytoriów:\\n\\n%s</string>
+    <string name="reset_api_key">Zresetuj klucze API</string>
+    <string name="upgrade_androidacy_promo">Ulepsz do wersji premium</string>
+    <string name="upgrade_androidacy_promo_desc">Uaktualnienie do wersji premium usunie reklamy, captcha i pobieranie z repozytorium Androidacy, a także wesprze Androidacy i autorów modułów.</string>
 </resources>

@@ -272,4 +272,8 @@
 \n
 \nModüller çok güçlü ve neredeyse her şeyi yapabildiğinden bu modülün kaynağına güvendiğinizden emin olun.</string>
     <string name="theme_transparent_dark">Koyu (şeffaf)</string>
+    <string name="repo_update_failed_message">Aşağıdaki depolar güncellenemedi:\\n\\n%s</string>
+    <string name="reset_api_key">API anahtarlarını sıfırla</string>
+    <string name="upgrade_androidacy_promo">Premium\'a yükselt</string>
+    <string name="upgrade_androidacy_promo_desc">Premium\'a yükseltmek Androidacy Deposu için reklamları, captchaları ve indirmeleri kaldıracak ayrıca Androidacy ve modül geliştiricilerini destekleyecektir.</string>
 </resources>
