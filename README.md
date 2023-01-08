@@ -65,8 +65,8 @@ me to not be stuck in my bed at least once a day because of pain.
 ## Screenshots
 
 Main activity:  
-[<img src="screenshot-dark.jpg" width="250"/>](docs/screenshot-dark.jpg)
-[<img src="screenshot-light.jpg" width="250"/>](docs/screenshot-light.jpg)
+[<img src="docs/screenshot-dark.jpg" width="250"/>](docs/screenshot-dark.jpg)
+[<img src="docs/screenshot-light.jpg" width="250"/>](docs/screenshot-light.jpg)
 
 ## What is this?
 
