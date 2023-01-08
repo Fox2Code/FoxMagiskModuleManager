@@ -13,8 +13,8 @@ import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.XRepo;
 import com.fox2code.mmm.manager.ModuleInfo;
-import com.fox2code.mmm.utils.Files;
-import com.fox2code.mmm.utils.PropUtils;
+import com.fox2code.mmm.utils.io.Files;
+import com.fox2code.mmm.utils.io.PropUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -26,8 +26,8 @@ import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
 import com.fox2code.mmm.repo.RepoModule;
 import com.fox2code.mmm.utils.ExternalHelper;
-import com.fox2code.mmm.utils.Files;
-import com.fox2code.mmm.utils.Hashes;
+import com.fox2code.mmm.utils.io.Files;
+import com.fox2code.mmm.utils.io.Hashes;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 

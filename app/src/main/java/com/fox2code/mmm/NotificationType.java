@@ -12,8 +12,8 @@ import com.fox2code.foxcompat.app.FoxActivity;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.module.ModuleViewListBuilder;
 import com.fox2code.mmm.repo.RepoManager;
-import com.fox2code.mmm.utils.Files;
-import com.fox2code.mmm.utils.Http;
+import com.fox2code.mmm.utils.io.Files;
+import com.fox2code.mmm.utils.io.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 
 import java.io.BufferedReader;

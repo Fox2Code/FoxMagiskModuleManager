@@ -2,7 +2,7 @@ package com.fox2code.mmm.repo;
 
 import android.content.SharedPreferences;
 
-import com.fox2code.mmm.utils.Http;
+import com.fox2code.mmm.utils.io.Http;
 
 import org.json.JSONException;
 import org.json.JSONObject;

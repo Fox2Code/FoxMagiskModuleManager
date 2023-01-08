@@ -1,4 +1,4 @@
-package com.fox2code.mmm.utils;
+package com.fox2code.mmm.utils.sentry;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -55,7 +55,7 @@ public class SentryMain {
                 options.addInAppInclude("com.fox2code.mmm");
                 options.addInAppInclude("com.fox2code.mmm.debug");
                 options.addInAppInclude("com.fox2code.mmm.fdroid");
-                options.addInAppExclude("com.fox2code.mmm.utils.SentryMain");
+                options.addInAppExclude("com.fox2code.mmm.utils.sentry.SentryMain");
                 // Sentry sends ABSOLUTELY NO Personally Identifiable Information (PII) by default.
                 // Already set to false by default, just set it again to make peoples feel safer.
                 options.setSendDefaultPii(false);
@@ -87,7 +87,7 @@ public class SentryMain {
         });
     }
 
-    public static void addSentryBreadcrumb(com.fox2code.mmm.utils.SentryBreadcrumb sentryBreadcrumb) {
+    public static void addSentryBreadcrumb(SentryBreadcrumb sentryBreadcrumb) {
         if (MainApplication.isCrashReportingEnabled()) {
             Sentry.addBreadcrumb(sentryBreadcrumb.breadcrumb);
         }

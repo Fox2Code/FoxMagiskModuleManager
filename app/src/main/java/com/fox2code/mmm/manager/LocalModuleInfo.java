@@ -4,8 +4,8 @@ import android.util.Log;
 
 import com.fox2code.mmm.markdown.MarkdownUrlLinker;
 import com.fox2code.mmm.utils.FastException;
-import com.fox2code.mmm.utils.Http;
-import com.fox2code.mmm.utils.PropUtils;
+import com.fox2code.mmm.utils.io.Http;
+import com.fox2code.mmm.utils.io.PropUtils;
 
 import org.json.JSONObject;
 

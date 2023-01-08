@@ -29,10 +29,6 @@ public abstract class SyncManager {
 
     // MultiThread friendly method
     public final void update(@Nullable UpdateListener updateListener) {
-        // fail fast on no internet
-        if (!RepoManager.getINSTANCE().hasConnectivity()) {
-            return;
-        }
         if (updateListener == null) updateListener = NO_OP;
         if (!this.syncing) {
             // Do scan

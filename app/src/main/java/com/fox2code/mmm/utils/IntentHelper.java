@@ -26,6 +26,8 @@ import com.fox2code.mmm.XHooks;
 import com.fox2code.mmm.androidacy.AndroidacyActivity;
 import com.fox2code.mmm.installer.InstallerActivity;
 import com.fox2code.mmm.markdown.MarkdownActivity;
+import com.fox2code.mmm.utils.io.Files;
+import com.fox2code.mmm.utils.io.Http;
 import com.topjohnwu.superuser.CallbackList;
 import com.topjohnwu.superuser.Shell;
 import com.topjohnwu.superuser.io.SuFileInputStream;

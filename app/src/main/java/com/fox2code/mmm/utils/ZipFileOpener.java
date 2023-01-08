@@ -11,6 +11,8 @@ import com.fox2code.foxcompat.app.FoxActivity;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.installer.InstallerInitializer;
+import com.fox2code.mmm.utils.io.Files;
+import com.fox2code.mmm.utils.io.PropUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;

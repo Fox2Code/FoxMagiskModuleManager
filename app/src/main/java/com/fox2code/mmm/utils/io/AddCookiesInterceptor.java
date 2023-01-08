@@ -1,4 +1,4 @@
-package com.fox2code.mmm.utils;
+package com.fox2code.mmm.utils.io;
 
 // Original written by tsuharesu
 // Adapted to create a "drop it in and watch it work" approach by Nikhil Jha.

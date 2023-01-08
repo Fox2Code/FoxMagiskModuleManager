@@ -22,7 +22,7 @@
  *
  * */
 
-package com.fox2code.mmm.utils;
+package com.fox2code.mmm.utils.io;
 
 import android.content.Context;
 import android.content.pm.PackageManager;

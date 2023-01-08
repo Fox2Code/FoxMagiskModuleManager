@@ -2,8 +2,8 @@ package com.fox2code.mmm;
 
 import android.util.Log;
 
-import com.fox2code.mmm.utils.Files;
-import com.fox2code.mmm.utils.Http;
+import com.fox2code.mmm.utils.io.Files;
+import com.fox2code.mmm.utils.io.Http;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

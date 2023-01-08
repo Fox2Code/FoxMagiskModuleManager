@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.NotificationType;
-import com.fox2code.mmm.utils.Files;
+import com.fox2code.mmm.utils.io.Files;
 import com.topjohnwu.superuser.NoShellException;
 import com.topjohnwu.superuser.Shell;
 

@@ -3,8 +3,8 @@ package com.fox2code.mmm.repo;
 import android.util.Log;
 
 import com.fox2code.mmm.BuildConfig;
-import com.fox2code.mmm.utils.Files;
-import com.fox2code.mmm.utils.Http;
+import com.fox2code.mmm.utils.io.Files;
+import com.fox2code.mmm.utils.io.Http;
 
 import org.json.JSONObject;
 

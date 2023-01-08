@@ -16,9 +16,9 @@ import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.repo.RepoData;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.repo.RepoModule;
-import com.fox2code.mmm.utils.Http;
-import com.fox2code.mmm.utils.HttpException;
-import com.fox2code.mmm.utils.PropUtils;
+import com.fox2code.mmm.utils.io.Http;
+import com.fox2code.mmm.utils.io.HttpException;
+import com.fox2code.mmm.utils.io.PropUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.topjohnwu.superuser.Shell;
 

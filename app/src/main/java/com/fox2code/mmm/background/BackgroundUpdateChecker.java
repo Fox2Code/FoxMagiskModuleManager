@@ -26,7 +26,7 @@ import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.repo.RepoModule;
-import com.fox2code.mmm.utils.PropUtils;
+import com.fox2code.mmm.utils.io.PropUtils;
 
 import java.util.HashMap;
 import java.util.Random;

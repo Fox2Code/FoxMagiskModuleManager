@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.installer.InstallerInitializer;
-import com.fox2code.mmm.utils.PropUtils;
+import com.fox2code.mmm.utils.io.PropUtils;
 import com.fox2code.mmm.utils.SyncManager;
 import com.topjohnwu.superuser.Shell;
 import com.topjohnwu.superuser.io.SuFile;

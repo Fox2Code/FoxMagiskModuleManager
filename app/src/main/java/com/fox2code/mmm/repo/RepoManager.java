@@ -19,10 +19,10 @@ import com.fox2code.mmm.XHooks;
 import com.fox2code.mmm.XRepo;
 import com.fox2code.mmm.androidacy.AndroidacyRepoData;
 import com.fox2code.mmm.manager.ModuleInfo;
-import com.fox2code.mmm.utils.Files;
-import com.fox2code.mmm.utils.Hashes;
-import com.fox2code.mmm.utils.Http;
-import com.fox2code.mmm.utils.PropUtils;
+import com.fox2code.mmm.utils.io.Files;
+import com.fox2code.mmm.utils.io.Hashes;
+import com.fox2code.mmm.utils.io.Http;
+import com.fox2code.mmm.utils.io.PropUtils;
 import com.fox2code.mmm.utils.SyncManager;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -221,11 +221,14 @@ public final class RepoManager extends SyncManager {
         return repoData;
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @SuppressLint("StringFormatInvalid")
     protected void scanInternal(@NonNull UpdateListener updateListener) {
         // Refuse to start if first_launch is not false in shared preferences
         if (MainActivity.doSetupNowRunning) {
+            return;
+        }
+        // fail fast on no internet
+        if (!RepoManager.getINSTANCE().hasConnectivity()) {
             return;
         }
         this.modules.clear();
@@ -297,7 +300,8 @@ public final class RepoManager extends SyncManager {
         // Attempt to contact connectivitycheck.gstatic.com/generate_204
         // If we can't, we don't have internet connection
         try {
-            HttpURLConnection urlConnection = (HttpURLConnection) new URL("https://connectivitycheck.gstatic.com/generate_204").openConnection();
+            HttpURLConnection urlConnection = (HttpURLConnection) new URL(
+                    "https://connectivitycheck.gstatic.com/generate_204").openConnection();
             urlConnection.setInstanceFollowRedirects(false);
             urlConnection.setReadTimeout(1000);
             urlConnection.setUseCaches(false);

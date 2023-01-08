@@ -1,4 +1,4 @@
-package com.fox2code.mmm.utils;
+package com.fox2code.mmm.utils.io;
 
 import static com.fox2code.mmm.AppUpdateManager.FLAG_COMPAT_LOW_QUALITY;
 import static com.fox2code.mmm.AppUpdateManager.getFlagsForModule;

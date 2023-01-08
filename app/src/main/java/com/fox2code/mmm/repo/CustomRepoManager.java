@@ -3,10 +3,8 @@ package com.fox2code.mmm.repo;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import androidx.annotation.NonNull;
-
 import com.fox2code.mmm.MainApplication;
-import com.fox2code.mmm.utils.PropUtils;
+import com.fox2code.mmm.utils.io.PropUtils;
 
 public class CustomRepoManager {
     private static final boolean AUTO_RECOMPILE = true;

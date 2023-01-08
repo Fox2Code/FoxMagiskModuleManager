@@ -1,4 +1,4 @@
-package com.fox2code.mmm.utils;
+package com.fox2code.mmm.utils.sentry;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

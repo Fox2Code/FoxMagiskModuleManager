@@ -1,7 +1,7 @@
 package com.fox2code.mmm.manager;
 
 import com.fox2code.mmm.BuildConfig;
-import com.fox2code.mmm.utils.PropUtils;
+import com.fox2code.mmm.utils.io.PropUtils;
 
 /**
  * Representation of the module.prop
