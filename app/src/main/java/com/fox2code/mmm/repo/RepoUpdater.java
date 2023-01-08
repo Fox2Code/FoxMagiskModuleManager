@@ -41,14 +41,14 @@ public class RepoUpdater {
                 return 0;
             }
             this.indexRaw = Http.doHttpGet(this.repoData.getUrl(), false);
-            this.toUpdate = this.repoData.populate(new JSONObject(
-                    new String(this.indexRaw, StandardCharsets.UTF_8)));
+            this.toUpdate = this.repoData.populate(new JSONObject(new String(this.indexRaw, StandardCharsets.UTF_8)));
             // Since we reuse instances this should work
             this.toApply = new HashSet<>(this.repoData.moduleHashMap.values());
             this.toApply.removeAll(this.toUpdate);
             // Return repo to update
             return this.toUpdate.size();
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             Log.e(TAG, "Failed to get manifest of " + this.repoData.id, e);
             this.indexRaw = null;
             this.toUpdate = Collections.emptyList();
@@ -74,9 +74,11 @@ public class RepoUpdater {
         if (this.indexRaw != null) {
             try {
                 Files.write(this.repoData.metaDataCache, this.indexRaw);
-                if (BuildConfig.DEBUG) {    Log.d(TAG, "Wrote index of " + this.repoData.id);
+                if (BuildConfig.DEBUG) {
+                    Log.d(TAG, "Wrote index of " + this.repoData.id);
                 }
-            } catch (IOException e) {
+            } catch (
+                    IOException e) {
                 e.printStackTrace();
             }
             this.indexRaw = null;

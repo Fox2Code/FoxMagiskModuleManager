@@ -3,6 +3,8 @@ package com.fox2code.mmm.utils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.fox2code.mmm.repo.RepoManager;
+
 /**
  * Manager that want both to be thread safe and not to worry about thread safety
  * {@link #scan()} and {@link #update(UpdateListener)} can be called from multiple
@@ -27,6 +29,10 @@ public abstract class SyncManager {
 
     // MultiThread friendly method
     public final void update(@Nullable UpdateListener updateListener) {
+        // fail fast on no internet
+        if (!RepoManager.getINSTANCE().hasConnectivity()) {
+            return;
+        }
         if (updateListener == null) updateListener = NO_OP;
         if (!this.syncing) {
             // Do scan
@@ -58,10 +64,6 @@ public abstract class SyncManager {
         synchronized (this.syncLock) {
             runnable.run();
         }
-    }
-
-    public final boolean isRepoUpdating() {
-        return this.syncing;
     }
 
     public final void afterUpdate() {

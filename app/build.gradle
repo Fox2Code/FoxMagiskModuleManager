@@ -1,6 +1,6 @@
 plugins {
     // Gradle doesn't allow conditionally enabling/disabling plugins
-    id "io.sentry.android.gradle" version "3.3.0"
+    id "io.sentry.android.gradle" version "3.4.0"
     id 'com.android.application'
     id 'com.mikepenz.aboutlibraries.plugin'
 }
@@ -238,7 +238,7 @@ sentry {
 
     // Enable auto-installation of Sentry components (sentry-android SDK and okhttp, timber and fragment integrations).
     autoInstallation {
-        sentryVersion = '6.10.0'
+        sentryVersion = '6.11.0'
     }
 }
 
@@ -277,7 +277,7 @@ dependencies {
     implementation 'com.github.topjohnwu.libsu:io:5.0.1'
     implementation 'com.github.Fox2Code:RosettaX:1.0.9'
     implementation 'com.github.Fox2Code:AndroidANSI:1.0.1'
-    implementation 'io.sentry:sentry-android:6.10.0'
+    implementation 'io.sentry:sentry-android:6.11.0'
 
     // Markdown
     implementation "io.noties.markwon:core:4.6.2"
