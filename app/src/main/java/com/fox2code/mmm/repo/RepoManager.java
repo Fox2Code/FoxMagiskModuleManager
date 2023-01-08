@@ -227,10 +227,6 @@ public final class RepoManager extends SyncManager {
         if (MainActivity.doSetupNowRunning) {
             return;
         }
-        // fail fast on no internet
-        if (!RepoManager.getINSTANCE().hasConnectivity()) {
-            return;
-        }
         this.modules.clear();
         updateListener.update(0D);
         // Using LinkedHashSet to deduplicate Androidacy entry.
@@ -333,7 +329,7 @@ public final class RepoManager extends SyncManager {
                             builder.setTitle(R.string.repo_update_failed);
                             builder.setMessage(context.getString(R.string.repo_update_failed_message, "- " + repoUpdaters[finalI].repoData.getName()));
                             builder.setPositiveButton(android.R.string.ok, null);
-                            if (repoUpdaters[finalI].repoData.getName().equals("Androidacy")) {
+                            if (repoUpdaters[finalI].repoData instanceof AndroidacyRepoData) {
                                 builder.setNeutralButton(R.string.reset_api_key, (dialog, which) -> {
                                     SharedPreferences.Editor editor = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit();
                                     editor.putString("androidacy_api_key", "");
