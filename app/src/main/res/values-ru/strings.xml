@@ -259,4 +259,8 @@
     <string name="setup_theme_title">Выбрать тему</string>
     <string name="setup_language_button">Выбрать язык</string>
     <string name="action_settings">Настройки</string>
+    <string name="repo_update_failed_message">Не удалось обновить следующие репозитории:\\n\\n%s</string>
+    <string name="reset_api_key">Сбросить API ключи</string>
+    <string name="upgrade_androidacy_promo">Обновить до премиум</string>
+    <string name="upgrade_androidacy_promo_desc">Обновление до премиум удалит рекламу, капчи и загрузки для репозитория Androidacy, а также поддержит Androidacy и авторов модулей.</string>
 </resources>
