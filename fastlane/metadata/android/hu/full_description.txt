@@ -1,0 +1,4 @@
+Ez az app hivatalosan nem támogatott a Magisk fejlesztői által.
+
+Az itt megjelenített modulok nem kapcsolódnak ehhez az apphoz. Kérdés esetén
+lépj kapcsolatba a repo üzemeltetővel.

@@ -1,0 +1,1 @@
+Egy modulkezező a Magisk-hez, mert az alkalmazás már nem támogatja azokat.
