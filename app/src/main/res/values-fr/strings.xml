@@ -257,11 +257,12 @@
     <string name="setup_theme_dark">Thème noirci</string>
     <string name="setup_theme_black">Thème AMOLED Noir</string>
     <string name="setup_theme_transparent_light">Thème clair transparent - désactivera monet et blur!</string>
-    <string name="setup_theme_button">DChoisir un thème</string>
+    <string name="setup_theme_button">Choisir un thème</string>
     <string name="theme">Thème</string>
     <string name="theme_system">Identique au système</string>
     <string name="theme_dark">Sombre</string>
     <string name="theme_black">AMOLED Noir</string>
+    <string name="theme_transparent_dark">Sombre (transparent)</string>
     <string name="theme_transparent_light">Clair (transparent)</string>
     <string name="theme_light">Clair</string>
     <string name="androidacy_update_needed">Cette application est obselète.</string>
@@ -269,5 +270,18 @@
     <string name="androidacy_webview_update_required">Votre webview est obselète! Merci de le mettre à jour.</string><string name="language_cta">Vous ne voyez pas votre language?</string><string name="language_cta_desc">Aidez-nous en la traduisant! Appuyez ici pour en savoir plus.</string>
     <string name="source_code_summary"><b>Commission</b> %1$s @ %2$s</string>
     <string name="no_file_provided">Aucun fichier n\’a été fournit lors de la tentative d\’ouverture du fichier zip.</string>
-    <string name="zip_load_failed">Le fichier zip n\’a pas pu être chargé</string><string name="androidacy_thanks">Développé en partie par Androidacy</string><string name="androidacy_thanks_desc">Un grand merci à Androidacy pour son intégration et ses contributions à l\’application.</string><string name="contributors">Et bien-sûr, merci à tous les contributeurs, que ce soit des traductions, du code, ou bien juste le fait d\’être agréable à fréquenter! Nous vous adorons tous et toutes.</string>
+    <string name="zip_load_failed">Le fichier zip n\’a pas pu être chargé</string>
+    <string name="zip_prop_load_failed">Le module des propriétés n\’a pas pu être chargé</string>
+    <string name="zip_security_warning">Installer %s?</string>
+    <string name="zip_intent_module_install">Voulez-vous vraiment installer le module \"%1$s\" depuis le fichier ZIP \"%2$s\"?\n\nSoyez sûr de faire confiance à la source de ce module, comme ils peuvent êtres très polyvalents et qu\’ils peuvent à peu près tout faire.</string>
+    <string name="androidacy_thanks">Développé en partit par Androidacy</string>
+    <string name="androidacy_thanks_desc">Un grand merci à Androidacy pour son intégration et ses contributions à l\’application.</string>
+    <string name="contributors">Et bien-sûr, merci à tous les contributeurs, que ce soit des traductions, du code, ou bien juste le fait d\’être agréable à fréquenter! Nous vous adorons tous et toutes.</string>
+	<string name="zip_unpacking">Inspection du module…</string>
+    <string name="warning_message">Ce module a des indicateurs qui peuvent avoir été installés à votre insu, ou qu'il peut tenter de cacher.\n\nSa désinstallation est hautement recommandée.</string>
+    <string name="understand">Je comprends</string>
+    <string name="setup_theme_title">Choisir un thème</string>
+    <string name="setup_language_button">Choisir un language</string>
+    <string name="title_activity_setup">Assistant de configuration</string>
+    <string name="action_settings">Réglages</string><string name="repo_update_failed_message">Échec de MàJ pour les dépôts suivants:\\n\\n%s</string><string name="reset_api_key">Réinitialiser les clés d\’API</string><string name="upgrade_androidacy_promo">MàJ vers l\’offre payante</string><string name="upgrade_androidacy_promo_desc">MàJ vers l\’offre supprimera les pubs, les captchas, les téléchargements pour le dépôt Androidacy, leur support et les autheurs des modules.</string>
 </resources>
