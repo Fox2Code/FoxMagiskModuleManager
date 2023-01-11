@@ -278,7 +278,7 @@
     <string name="androidacy_thanks_desc">Un grand merci à Androidacy pour son intégration et ses contributions à l\’application.</string>
     <string name="contributors">Et bien-sûr, merci à tous les contributeurs, que ce soit des traductions, du code, ou bien juste le fait d\’être agréable à fréquenter! Nous vous adorons tous et toutes.</string>
 	<string name="zip_unpacking">Inspection du module…</string>
-    <string name="warning_message">Ce module a des indicateurs qui peuvent avoir été installés à votre insu, ou qu'il peut tenter de cacher.\n\nSa désinstallation est hautement recommandée.</string>
+    <string name="warning_message">Ce module a des indicateurs qui peuvent avoir été installés à votre insu, ou qu\’il peut tenter de cacher.\n\nSa désinstallation est hautement recommandée.</string>
     <string name="understand">Je comprends</string>
     <string name="setup_theme_title">Choisir un thème</string>
     <string name="setup_language_button">Choisir un language</string>
