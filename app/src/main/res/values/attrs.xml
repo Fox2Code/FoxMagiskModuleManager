@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="colorSecondaryContainer" format="color" />
+    <attr name="colorSecondary" format="color" />
+    <attr name="colorPrimarySurface" format="color" />
+</resources>
