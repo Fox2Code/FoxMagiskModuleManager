@@ -1,6 +1,4 @@
 plugins {
-    id 'kotlin-android'
-    id 'kotlin-kapt'
     // Gradle doesn't allow conditionally enabling/disabling plugins
     id "io.sentry.android.gradle" version "3.4.0"
     id 'com.android.application'
@@ -295,16 +293,17 @@ dependencies {
     implementation "io.noties.markwon:image:4.6.2"
     implementation "io.noties.markwon:syntax-highlight:4.6.2"
     implementation 'com.google.net.cronet:cronet-okhttp:0.1.0'
-    kapt "io.noties:prism4j-bundler:2.0.0"
+    annotationProcessor "io.noties:prism4j-bundler:2.0.0"
     implementation "com.caverock:androidsvg:1.4"
+    // Icons
+    // implementation "com.mikepenz:iconics-core:3.2.5"
+    //implementation "androidx.appcompat:appcompat:${versions.appCompat}"
 
     // db
     def room_version = "2.4.3"
 
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
-    implementation "androidx.room:room-ktx:$room_version"
-    kapt "androidx.room:room-ktx:$room_version"
 }
 
 if (hasSentryConfig) {

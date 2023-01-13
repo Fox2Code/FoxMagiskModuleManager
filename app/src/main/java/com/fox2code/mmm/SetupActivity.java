@@ -13,12 +13,9 @@ import android.view.WindowManager;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.FragmentActivity;
-import androidx.room.Room;
 
 import com.fox2code.foxcompat.app.FoxActivity;
 import com.fox2code.mmm.databinding.ActivitySetupBinding;
-import com.fox2code.mmm.utils.db.ModuleCache;
-import com.fox2code.mmm.utils.db.RepoList;
 import com.fox2code.rosettax.LanguageActivity;
 import com.fox2code.rosettax.LanguageSwitcher;
 import com.google.android.material.button.MaterialButton;
@@ -72,8 +69,6 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         View view = binding.setupBox;
         // Make the setup_box linear layout the sole child of the root_container constraint layout
         setContentView(view);
-        // create the database
-        createDatabases();
         ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).setChecked(BuildConfig.ENABLE_AUTO_UPDATER);
         ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).setChecked(BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING);
         // Repos are a little harder, as the enabled_repos build config is an arraylist
@@ -242,23 +237,5 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             finish();
             startActivity(intent);
         });
-    }
-
-    // creates the database for the modules and repos
-    private void createDatabases() {
-        // create the database
-        RepoList db = Room.databaseBuilder(getApplicationContext(), RepoList.class, "RepoList").build();
-        // create the repo list
-        db.getOpenHelper().getWritableDatabase();
-        // close the database
-        db.close();
-
-        // module cache for each repo, each repo gets its own table in the modules_cache database
-        // create the database
-        ModuleCache db2 = Room.databaseBuilder(getApplicationContext(), ModuleCache.class, "ModuleCache").build();
-        // create the repo list
-        db2.getOpenHelper().getWritableDatabase();
-        // close the database
-        db2.close();
     }
 }
