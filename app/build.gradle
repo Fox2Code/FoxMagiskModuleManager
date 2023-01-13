@@ -37,6 +37,11 @@ android {
         versionName "1.2.1"
         signingConfig signingConfigs.release
         archivesBaseName = "FoxMMM-v$versionName"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     splits {
@@ -242,6 +247,9 @@ sentry {
     autoInstallation {
         sentryVersion = '6.11.0'
     }
+
+    // temp fix for gradle bug
+    includeDependenciesReport = false
 }
 
 configurations {
@@ -250,11 +258,11 @@ configurations {
 
 dependencies {
     // UI
-    implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation "androidx.activity:activity:1.7.0-alpha02"
+    implementation 'androidx.appcompat:appcompat:1.6.0'
+    implementation "androidx.activity:activity-ktx:1.7.0-alpha03"
     implementation 'androidx.emoji2:emoji2:1.2.0'
     implementation 'androidx.emoji2:emoji2-views-helper:1.2.0'
-    implementation 'androidx.preference:preference:1.2.0'
+    implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
@@ -295,6 +303,8 @@ dependencies {
 
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+    kapt "androidx.room:room-ktx:$room_version"
 }
 
 if (hasSentryConfig) {
@@ -326,13 +336,11 @@ final File res = new File(projectDir, "src/main/res")
 for (String name : res.list()) {
     // Character.isDigit is required to make sure
     // we don't confuse "values-vi" as "values-v69"
-    if (name.startsWith("values-v") &&
-            Character.isDigit(name.charAt(8))) {
+    if (name.startsWith("values-v") && Character.isDigit(name.charAt(8))) {
         final String ext = name + "/strings.xml"
         if (new File(res, ext).exists()) {
             final String errMessage =
-                    "String should not be defined in " + ext +
-                            " use values/strings.xml instead"
+                    "String should not be defined in " + ext + " use values/strings.xml instead"
             println(errMessage)
             throw new GradleException(errMessage)
         }
