@@ -12,9 +12,9 @@ import com.fox2code.foxcompat.app.FoxActivity;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.module.ModuleViewListBuilder;
 import com.fox2code.mmm.repo.RepoManager;
+import com.fox2code.mmm.utils.IntentHelper;
 import com.fox2code.mmm.utils.io.Files;
 import com.fox2code.mmm.utils.io.Http;
-import com.fox2code.mmm.utils.IntentHelper;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -29,7 +29,7 @@ interface NotificationTypeCst {
 }
 
 public enum NotificationType implements NotificationTypeCst {
-    DEBUG(R.string.debug_build, R.drawable.ic_baseline_bug_report_24) {
+    DEBUG(R.string.debug_build, R.drawable.ic_baseline_bug_report_24, R.attr.colorSecondary, R.attr.colorOnSecondary) {
         @Override
         public boolean shouldRemove() {
             return !BuildConfig.DEBUG;
@@ -154,7 +154,9 @@ public enum NotificationType implements NotificationTypeCst {
 
     public static boolean needPatch(File target) throws IOException {
         try (ZipFile zipFile = new ZipFile(target)) {
-            boolean validEntries = zipFile.getEntry("module.prop") == null && zipFile.getEntry("anykernel.sh") == null && zipFile.getEntry("META-INF/com/google/android/magisk/module.prop") == null;
+            boolean validEntries = zipFile.getEntry("module.prop") != null;
+            // ensure there's no anykernel.sh
+            validEntries &= zipFile.getEntry("anykernel.sh") == null;
             if (validEntries) {
                 // Ensure id of module is not empty and matches ^[a-zA-Z][a-zA-Z0-9._-]+$ regex
                 // We need to get the module.prop and parse the id= line

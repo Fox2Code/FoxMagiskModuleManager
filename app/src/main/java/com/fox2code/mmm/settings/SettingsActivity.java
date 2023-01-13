@@ -29,6 +29,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.EditTextPreference;
@@ -58,9 +59,9 @@ import com.fox2code.mmm.repo.CustomRepoManager;
 import com.fox2code.mmm.repo.RepoData;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.utils.ExternalHelper;
-import com.fox2code.mmm.utils.io.Http;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.fox2code.mmm.utils.ProcessHelper;
+import com.fox2code.mmm.utils.io.Http;
 import com.fox2code.mmm.utils.sentry.SentryMain;
 import com.fox2code.rosettax.LanguageActivity;
 import com.fox2code.rosettax.LanguageSwitcher;
@@ -73,7 +74,11 @@ import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import org.json.JSONException;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.security.NoSuchAlgorithmException;
 import java.util.Locale;
@@ -522,6 +527,54 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 String toastText = requireContext().getString(R.string.link_copied);
                 clipboard.setPrimaryClip(ClipData.newPlainText(toastText, "https://www.androidacy.com?utm_source=FoxMagiskModuleManager&utm_medium=app&utm_campaign=FoxMagiskModuleManager"));
                 Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
+                return true;
+            });
+            // pref_fox2code_thanks should lead to https://github.com/Fox2Code
+            linkClickable = findPreference("pref_fox2code_thanks");
+            linkClickable.setOnPreferenceClickListener(p -> {
+                IntentHelper.openUrl(p.getContext(), "https://github.com/Fox2Code");
+                return true;
+            });
+            linkClickable.setOnPreferenceLongClickListener(p -> {
+                String toastText = requireContext().getString(R.string.link_copied);
+                clipboard.setPrimaryClip(ClipData.newPlainText(toastText, "https://github.com/Fox2Code"));
+                Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
+                return true;
+            });
+            // handle pref_save_logs which saves logs to our external storage and shares them
+            Preference saveLogs = findPreference("pref_save_logs");
+            saveLogs.setOnPreferenceClickListener(p -> {
+                // Save logs to external storage
+                File logsFile = new File(requireContext().getExternalFilesDir(null), "logs.txt");
+                try {
+                    //noinspection ResultOfMethodCallIgnored
+                    logsFile.createNewFile();
+                    FileOutputStream fileOutputStream = new FileOutputStream(logsFile);
+                    // first, write some info about the device
+                    fileOutputStream.write(("FoxMagiskModuleManager version: " + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")\n").getBytes());
+                    fileOutputStream.write(("Android version: " + Build.VERSION.RELEASE + " (" + Build.VERSION.SDK_INT + ")\n").getBytes());
+                    fileOutputStream.write(("Device: " + Build.MANUFACTURER + " " + Build.MODEL + " (" + Build.DEVICE + ")\n").getBytes());
+                    fileOutputStream.write(("Magisk version: " + InstallerInitializer.peekMagiskVersion() + "\n").getBytes());
+                    fileOutputStream.write(("Has internet: " + (RepoManager.getINSTANCE().hasConnectivity() ? "Yes" : "No") + "\n").getBytes());
+                    // read our logcat but format the output to be more readable
+                    Process process = Runtime.getRuntime().exec("logcat -d -v tag");
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        fileOutputStream.write((line + "\n").getBytes());
+                    }
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(requireContext(), R.string.error_saving_logs, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                // Share logs
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID + ".file-provider", logsFile));
+                shareIntent.setType("text/plain");
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_logs)));
                 return true;
             });
             // pref_contributors should lead to the contributors page

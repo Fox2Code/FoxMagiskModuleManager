@@ -154,6 +154,12 @@
             app:key="pref_update"
             app:singleLineTitle="false"
             app:title="@string/app_update" />
+        <!-- Save logs -->
+        <Preference
+            app:icon="@drawable/baseline_save_24"
+            app:key="pref_save_logs"
+            app:singleLineTitle="false"
+            app:title="@string/save_logs" />
         <com.fox2code.mmm.settings.LongClickablePreference
             app:icon="@drawable/ic_baseline_bug_report_24"
             app:key="pref_report_bug"
@@ -174,6 +180,8 @@
             app:key="pref_show_licenses"
             app:singleLineTitle="false"
             app:title="@string/show_licenses" />
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/pref_category_contributors">
         <!-- Small lil thanks to Androidacy -->
         <com.fox2code.mmm.settings.LongClickablePreference
             app:icon="@drawable/baseline_favorite_24"
@@ -181,6 +189,13 @@
             app:singleLineTitle="false"
             app:summary="@string/androidacy_thanks_desc"
             app:title="@string/androidacy_thanks" />
+        <!-- Small lil thanks to Fox2Code -->
+        <com.fox2code.mmm.settings.LongClickablePreference
+            app:icon="@drawable/baseline_favorite_24"
+            app:key="pref_fox2code_thanks"
+            app:singleLineTitle="false"
+            app:summary="@string/fox2code_thanks_desc"
+            app:title="@string/fox2code_thanks" />
         <!-- OKay, so we'll thank all the other contributors too -->
         <com.fox2code.mmm.settings.LongClickablePreference
             android:textAppearance="?android:attr/textAppearanceSmall"

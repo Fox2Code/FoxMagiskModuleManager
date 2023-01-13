@@ -1,6 +1,7 @@
 package com.fox2code.mmm.utils;
 
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -100,6 +101,13 @@ public class ZipFileOpener extends FoxActivity {
                 zip = new ZipFile(zipFile);
                 if ((entry = zip.getEntry("module.prop")) == null) {
                     Log.e("ZipFileOpener", "onCreate: Zip file is not a valid magisk module");
+                    if (BuildConfig.DEBUG) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            Log.d("ZipFileOpener", "onCreate: Zip file contents: " + zip.stream().map(ZipEntry::getName).reduce((a, b) -> a + ", " + b).orElse("empty"));
+                        } else {
+                            Log.d("ZipFileOpener", "onCreate: Zip file contents cannot be listed on this version of android");
+                        }
+                    }
                     runOnUiThread(() -> {
                         Toast.makeText(this, R.string.invalid_format, Toast.LENGTH_LONG).show();
                         finishAndRemoveTask();

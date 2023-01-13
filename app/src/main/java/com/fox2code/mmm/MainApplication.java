@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.SystemClock;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -328,6 +329,8 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         }
         if (!isOfficial) {
             Log.w("MainApplication", "This is not an official build of FoxMMM. This warning can be safely ignored if this is expected, otherwise you may be running an untrusted build.");
+            // Show a toast to warn the user
+            Toast.makeText(this, R.string.not_official_build, Toast.LENGTH_LONG).show();
         }
         SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
         // We are only one process so it's ok to do this

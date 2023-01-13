@@ -19,11 +19,11 @@ import com.fox2code.mmm.XHooks;
 import com.fox2code.mmm.XRepo;
 import com.fox2code.mmm.androidacy.AndroidacyRepoData;
 import com.fox2code.mmm.manager.ModuleInfo;
+import com.fox2code.mmm.utils.SyncManager;
 import com.fox2code.mmm.utils.io.Files;
 import com.fox2code.mmm.utils.io.Hashes;
 import com.fox2code.mmm.utils.io.Http;
 import com.fox2code.mmm.utils.io.PropUtils;
-import com.fox2code.mmm.utils.SyncManager;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
@@ -36,25 +36,18 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+
 public final class RepoManager extends SyncManager {
-    public static final String MAGISK_REPO =
-            "https://raw.githubusercontent.com/Magisk-Modules-Repo/submission/modules/modules.json";
+    public static final String MAGISK_REPO = "https://raw.githubusercontent.com/Magisk-Modules-Repo/submission/modules/modules.json";
     public static final String MAGISK_REPO_HOMEPAGE = "https://github.com/Magisk-Modules-Repo";
-    public static final String MAGISK_ALT_REPO =
-            "https://raw.githubusercontent.com/Magisk-Modules-Alt-Repo/json/main/modules.json";
-    public static final String MAGISK_ALT_REPO_HOMEPAGE =
-            "https://github.com/Magisk-Modules-Alt-Repo";
-    public static final String MAGISK_ALT_REPO_JSDELIVR =
-            "https://cdn.jsdelivr.net/gh/Magisk-Modules-Alt-Repo/json@main/modules.json";
-    public static final String ANDROIDACY_MAGISK_REPO_ENDPOINT =
-            "https://production-api.androidacy.com/magisk/repo";
-    public static final String ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT =
-            "https://staging-api.androidacy.com/magisk/repo";
-    public static final String ANDROIDACY_MAGISK_REPO_HOMEPAGE =
-            "https://www.androidacy.com/modules-repo";
+    public static final String MAGISK_ALT_REPO = "https://raw.githubusercontent.com/Magisk-Modules-Alt-Repo/json/main/modules.json";
+    public static final String MAGISK_ALT_REPO_HOMEPAGE = "https://github.com/Magisk-Modules-Alt-Repo";
+    public static final String MAGISK_ALT_REPO_JSDELIVR = "https://cdn.jsdelivr.net/gh/Magisk-Modules-Alt-Repo/json@main/modules.json";
+    public static final String ANDROIDACY_MAGISK_REPO_ENDPOINT = "https://production-api.androidacy.com/magisk/repo";
+    public static final String ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT = "https://staging-api.androidacy.com/magisk/repo";
+    public static final String ANDROIDACY_MAGISK_REPO_HOMEPAGE = "https://www.androidacy.com/modules-repo";
     private static final String TAG = "RepoManager";
-    private static final String MAGISK_REPO_MANAGER =
-            "https://magisk-modules-repo.github.io/submission/modules.json";
+    private static final String MAGISK_REPO_MANAGER = "https://magisk-modules-repo.github.io/submission/modules.json";
     private static final Object lock = new Object();
     private static final double STEP1 = 0.1D;
     private static final double STEP2 = 0.8D;
@@ -78,18 +71,17 @@ public final class RepoManager extends SyncManager {
         this.modules = new HashMap<>();
         // We do not have repo list config yet.
         this.androidacyRepoData = this.addAndroidacyRepoData();
-        RepoData altRepo = this.addRepoData(
-                MAGISK_ALT_REPO, "Magisk Modules Alt Repo");
+        RepoData altRepo = this.addRepoData(MAGISK_ALT_REPO, "Magisk Modules Alt Repo");
         altRepo.defaultWebsite = RepoManager.MAGISK_ALT_REPO_HOMEPAGE;
-        altRepo.defaultSubmitModule =
-                "https://github.com/Magisk-Modules-Alt-Repo/submission/issues";
+        altRepo.defaultSubmitModule = "https://github.com/Magisk-Modules-Alt-Repo/submission/issues";
         this.customRepoManager = new CustomRepoManager(mainApplication, this);
         XHooks.onRepoManagerInitialize();
         // Populate default cache
         boolean x = false;
         for (RepoData repoData : this.repoData.values()) {
             if (repoData == this.androidacyRepoData) {
-                if (x) return;
+                if (x)
+                    return;
                 x = true;
             }
             this.populateDefaultCache(repoData);
@@ -140,8 +132,7 @@ public final class RepoManager extends SyncManager {
             case ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT:
                 return "androidacy_repo";
             default:
-                return "repo_" + Hashes.hashSha256(
-                        url.getBytes(StandardCharsets.UTF_8));
+                return "repo_" + Hashes.hashSha256(url.getBytes(StandardCharsets.UTF_8));
         }
     }
 
@@ -162,8 +153,7 @@ public final class RepoManager extends SyncManager {
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isAndroidacyRepoEnabled() {
-        return INSTANCE != null && INSTANCE.androidacyRepoData != null &&
-                INSTANCE.androidacyRepoData.isEnabled();
+        return INSTANCE != null && INSTANCE.androidacyRepoData != null && INSTANCE.androidacyRepoData.isEnabled();
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -187,7 +177,8 @@ public final class RepoManager extends SyncManager {
     }
 
     public RepoData get(String url) {
-        if (url == null) return null;
+        if (url == null)
+            return null;
         if (MAGISK_ALT_REPO_JSDELIVR.equals(url)) {
             url = MAGISK_ALT_REPO;
         }
@@ -205,8 +196,7 @@ public final class RepoManager extends SyncManager {
         synchronized (this.syncLock) {
             repoData = this.repoData.get(url);
             if (repoData == null) {
-                if (ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT.equals(url) ||
-                        ANDROIDACY_MAGISK_REPO_ENDPOINT.equals(url)) {
+                if (ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT.equals(url) || ANDROIDACY_MAGISK_REPO_ENDPOINT.equals(url)) {
                     //noinspection ReplaceNullCheck
                     if (this.androidacyRepoData != null) {
                         return this.androidacyRepoData;
@@ -233,23 +223,56 @@ public final class RepoManager extends SyncManager {
         RepoData[] repoDatas = new LinkedHashSet<>(this.repoData.values()).toArray(new RepoData[0]);
         RepoUpdater[] repoUpdaters = new RepoUpdater[repoDatas.length];
         int moduleToUpdate = 0;
+        this.hasInternet = false;
+        // Check if we have internet connection
+        // Attempt to contact connectivitycheck.gstatic.com/generate_204
+        // If we can't, we don't have internet connection
+        try {
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, "Checking internet connection...");
+            }
+            HttpURLConnection urlConnection = (HttpURLConnection) new URL("https://networkcheck.kde.org").openConnection();
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, "Opened connection to " + urlConnection.getURL());
+            }
+            urlConnection.setInstanceFollowRedirects(false);
+            urlConnection.setReadTimeout(1000);
+            urlConnection.setUseCaches(false);
+            urlConnection.getInputStream().close();
+            // should return a 200 and the content should be "OK"
+            if (urlConnection.getResponseCode() == 200 && urlConnection.getContentLength() == 3) {
+                if (BuildConfig.DEBUG)
+                    Log.i("RepoManager", "Internet connection detected");
+                this.hasInternet = true;
+            } else {
+                if (BuildConfig.DEBUG)
+                    Log.w("RepoManager", "Internet connection not detected");
+            }
+        } catch (
+                IOException e) {
+            Log.e(TAG, "Failed to check internet connection", e);
+        }
         for (int i = 0; i < repoDatas.length; i++) {
-            if (BuildConfig.DEBUG) Log.d("RepoManager", "Fetching: " + repoDatas[i].getName());
+            if (BuildConfig.DEBUG)
+                Log.d("RepoManager", "Preparing to fetch: " + repoDatas[i].getName());
             moduleToUpdate += (repoUpdaters[i] = new RepoUpdater(repoDatas[i])).fetchIndex();
             updateListener.update(STEP1 / repoDatas.length * (i + 1));
         }
-        if (BuildConfig.DEBUG) Log.d("RepoManag3er", "Updating meta-data");
+        if (BuildConfig.DEBUG)
+            Log.d("RepoManager", "Updating meta-data");
         int updatedModules = 0;
         boolean allowLowQualityModules = MainApplication.isDisableLowQualityModuleFilter();
         for (int i = 0; i < repoUpdaters.length; i++) {
             // Check if the repo is enabled
             if (!repoUpdaters[i].repoData.isEnabled()) {
-                if (BuildConfig.DEBUG) Log.d("RepoManager", "Skipping disabled repo: " + repoUpdaters[i].repoData.getName());
+                if (BuildConfig.DEBUG)
+                    Log.d("RepoManager", "Skipping disabled repo: " + repoUpdaters[i].repoData.getName());
                 continue;
             }
             List<RepoModule> repoModules = repoUpdaters[i].toUpdate();
             RepoData repoData = repoDatas[i];
-            if (BuildConfig.DEBUG) Log.d("RepoManager", "Registering " + repoData.getName());
+            if (BuildConfig.DEBUG)
+                Log.d("RepoManager", "Registering " + repoData.getName());
             for (RepoModule repoModule : repoModules) {
                 try {
                     if (repoModule.propUrl != null && !repoModule.propUrl.isEmpty()) {
@@ -269,7 +292,8 @@ public final class RepoManager extends SyncManager {
                             this.modules.put(repoModule.id, repoModule);
                         }
                     }
-                } catch (Exception e) {
+                } catch (
+                        Exception e) {
                     Log.e(TAG, "Failed to get \"" + repoModule.id + "\" metadata", e);
                 }
                 updatedModules++;
@@ -290,32 +314,18 @@ public final class RepoManager extends SyncManager {
                 }
             }
         }
-        if (BuildConfig.DEBUG) Log.d("RepoManager", "Finishing update");
-        this.hasInternet = false;
-        // Check if we have internet connection
-        // Attempt to contact connectivitycheck.gstatic.com/generate_204
-        // If we can't, we don't have internet connection
-        try {
-            HttpURLConnection urlConnection = (HttpURLConnection) new URL(
-                    "https://connectivitycheck.gstatic.com/generate_204").openConnection();
-            urlConnection.setInstanceFollowRedirects(false);
-            urlConnection.setReadTimeout(1000);
-            urlConnection.setUseCaches(false);
-            urlConnection.getInputStream().close();
-            if (urlConnection.getResponseCode() == 204 && urlConnection.getContentLength() == 0) {
-                this.hasInternet = true;
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to check internet connection", e);
-        }
+        if (BuildConfig.DEBUG)
+            Log.d("RepoManager", "Finishing update");
         if (hasInternet) {
             for (int i = 0; i < repoDatas.length; i++) {
                 // If repo is not enabled, skip
                 if (!repoDatas[i].isEnabled()) {
-                    if (BuildConfig.DEBUG) Log.d("RepoManager", "Skipping " + repoDatas[i].getName() + " because it's disabled");
+                    if (BuildConfig.DEBUG)
+                        Log.d("RepoManager", "Skipping " + repoDatas[i].getName() + " because it's disabled");
                     continue;
                 }
-                if (BuildConfig.DEBUG) Log.d("RepoManager", "Finishing: " + repoUpdaters[i].repoData.getName());
+                if (BuildConfig.DEBUG)
+                    Log.d("RepoManager", "Finishing: " + repoUpdaters[i].repoData.getName());
                 this.repoLastSuccess = repoUpdaters[i].finish();
                 if (!this.repoLastSuccess) {
                     Log.e(TAG, "Failed to update " + repoUpdaters[i].repoData.getName());
@@ -371,11 +381,8 @@ public final class RepoManager extends SyncManager {
     private RepoData addRepoData(String url, String fallBackName) {
         String id = internalIdOfUrl(url);
         File cacheRoot = new File(this.mainApplication.getCacheDir(), id);
-        SharedPreferences sharedPreferences = this.mainApplication
-                .getSharedPreferences("mmm_" + id, Context.MODE_PRIVATE);
-        RepoData repoData = id.startsWith("repo_") ?
-                new CustomRepoData(url, cacheRoot, sharedPreferences) :
-                new RepoData(url, cacheRoot, sharedPreferences);
+        SharedPreferences sharedPreferences = this.mainApplication.getSharedPreferences("mmm_" + id, Context.MODE_PRIVATE);
+        RepoData repoData = id.startsWith("repo_") ? new CustomRepoData(url, cacheRoot, sharedPreferences) : new RepoData(url, cacheRoot, sharedPreferences);
         if (fallBackName != null && !fallBackName.isEmpty()) {
             repoData.defaultName = fallBackName;
             if (repoData instanceof CustomRepoData) {
@@ -399,10 +406,8 @@ public final class RepoManager extends SyncManager {
 
     private AndroidacyRepoData addAndroidacyRepoData() {
         File cacheRoot = new File(this.mainApplication.getCacheDir(), "androidacy_repo");
-        SharedPreferences sharedPreferences = this.mainApplication
-                .getSharedPreferences("mmm_androidacy_repo", Context.MODE_PRIVATE);
-        AndroidacyRepoData repoData = new AndroidacyRepoData(cacheRoot,
-                sharedPreferences, MainApplication.isAndroidacyTestMode());
+        SharedPreferences sharedPreferences = this.mainApplication.getSharedPreferences("mmm_androidacy_repo", Context.MODE_PRIVATE);
+        AndroidacyRepoData repoData = new AndroidacyRepoData(cacheRoot, sharedPreferences, MainApplication.isAndroidacyTestMode());
         this.repoData.put(ANDROIDACY_MAGISK_REPO_ENDPOINT, repoData);
         this.repoData.put(ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT, repoData);
         return repoData;

@@ -298,12 +298,6 @@ dependencies {
     // Icons
     // implementation "com.mikepenz:iconics-core:3.2.5"
     //implementation "androidx.appcompat:appcompat:${versions.appCompat}"
-
-    // db
-    def room_version = "2.4.3"
-
-    implementation "androidx.room:room-runtime:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
 }
 
 if (hasSentryConfig) {
