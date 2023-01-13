@@ -254,4 +254,8 @@
     <string name="setup_language_button">Обрати мову</string>
     <string name="title_activity_setup">Майстер встановлення</string>
     <string name="action_settings">Налаштування</string>
+    <string name="repo_update_failed_message">Наступні репозиторії мають помилки при оновлені:\\n\\n%s</string>
+    <string name="reset_api_key">Скинути API ключі</string>
+    <string name="upgrade_androidacy_promo">Оновлення до преміум</string>
+    <string name="upgrade_androidacy_promo_desc">Оновлення до преміум призведе до видалення реклами, капчі та завантажень для репозиторію Androidacy, а також підтримує Androidacy та авторів модулів.</string>
 </resources>

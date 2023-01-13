@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name_short">Fox\'s Mmm</string>
+    <string name="fail_root_denied">Root hozzáférés megtagadva a Magisk app által</string>
+    <string name="fail_magisk_missing">A Magisk nincs telepítve az eszközre</string>
+    <string name="loading">Betöltés…</string>
+    <string name="updatable">Frissíthető</string>
+    <string name="installed">Telepítve</string>
+    <string name="online_repo">Online Repo</string>
+    <string name="fail_internet">Nincs internet hozzáférés</string>
+    <string name="no_web_view">Nem sikerült megnyitni a WebView-t</string>
+    <string name="app_update_available">Új alkalmazásverzió érhető el</string>
+    <string name="app_update">Frissítés</string>
+    <string name="no_desc_found">Nincs leírás.</string>
+    <string name="download_module">Modul letöltése</string>
+    <string name="install_module">Modul telepítése</string>
+    <string name="update_module">Modul frissítése</string>
+    <string name="app_name">Fox\'s Magisk Module Manager</string>
+    <string name="fail_root_magisk">Nem található root vagy Magisk hozzáférés</string>
+    <string name="failed_download">Nem sikerült letölteni a fájlt</string>
+    <string name="slow_modules">A modulok betöltése sokáig tart, érdemes megfontolni néhány letiltását</string>
+</resources>

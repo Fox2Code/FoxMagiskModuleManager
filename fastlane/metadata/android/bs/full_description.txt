@@ -1,0 +1,2 @@
+Magisk ili njegovi programeri službeno ne podržavaju ovu aplikaciju.
+Moduli prikazani u ovoj aplikaciji nisu povezani s ovom aplikacijom. Molimo kontaktirajte vlasnike repozitorija.
