@@ -13,7 +13,6 @@ import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.XRepo;
 import com.fox2code.mmm.manager.ModuleInfo;
-import com.fox2code.mmm.utils.db.ModuleCache;
 import com.fox2code.mmm.utils.io.Files;
 import com.fox2code.mmm.utils.io.PropUtils;
 
@@ -48,8 +47,7 @@ public class RepoData extends XRepo {
         this.id = RepoManager.internalIdOfUrl(url);
         this.cacheRoot = cacheRoot;
         this.cachedPreferences = cachedPreferences;
-        assert ModuleCache.getInstance() != null;
-        this.metaDataCache = ModuleCache.getInstance().moduleDao();
+        this.metaDataCache = new File(cacheRoot, "modules.json");
         this.moduleHashMap = new HashMap<>();
         this.defaultName = url; // Set url as default name
         this.forceHide = AppUpdateManager.shouldForceHide(this.id);
@@ -61,11 +59,6 @@ public class RepoData extends XRepo {
                 throw new RuntimeException("Failed to create cache directory");
             }
         } else {
-            // ensure module cache db is created
-            ModuleCache.getInstance().moduleDao();
-            // get all modules from the db as a json object
-            //JSONObject modules = new JSONObject();
-            // TODO: migrate this to db format. Storing the cache in a json file is a bad idea
             if (this.metaDataCache.exists()) {
                 this.lastUpdate = metaDataCache.lastModified();
                 if (this.lastUpdate > System.currentTimeMillis()) {

@@ -28,9 +28,4 @@ public abstract class ModuleCache extends RoomDatabase {
     // db structure is: internal name, pretty name, repo url, enabled
     // create the database
     public abstract <ModuleDao> ModuleDao moduleDao();
-
-    // returns the instance
-    public static ModuleCache getInstance() {
-        return null;
-    }
 }
