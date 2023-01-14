@@ -245,6 +245,9 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
 
     // creates the realm database
     private void createRealmDatabase() {
+        if (BuildConfig.DEBUG) {
+            Log.d("Realm", "Creating Realm databases");
+        }
         // create the realm database for ModuleListCache
         RealmConfiguration config = new RealmConfiguration.Builder().name("ModuleListCache.realm").schemaVersion(1).allowWritesOnUiThread(true).allowQueriesOnUiThread(true).build();
         Realm.setDefaultConfiguration(config);
@@ -253,5 +256,16 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         realm.executeTransaction(r -> {
         });
         realm.close();
+        // next, create the realm database for ReposList
+        config = new RealmConfiguration.Builder().name("ReposList.realm").schemaVersion(1).allowWritesOnUiThread(true).allowQueriesOnUiThread(true).build();
+        Realm.setDefaultConfiguration(config);
+        // do a dummy write to create the database
+        realm = Realm.getDefaultInstance();
+        realm.executeTransaction(r -> {
+        });
+        realm.close();
+        if (BuildConfig.DEBUG) {
+            Log.d("Realm", "Realm databases created");
+        }
     }
 }

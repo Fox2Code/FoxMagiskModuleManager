@@ -8,10 +8,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.SystemClock;
-import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -47,15 +45,8 @@ import io.noties.markwon.Markwon;
 import io.noties.markwon.html.HtmlPlugin;
 import io.noties.markwon.image.ImagesPlugin;
 import io.noties.markwon.image.network.OkHttpNetworkSchemeHandler;
-import io.noties.markwon.syntax.Prism4jTheme;
-import io.noties.markwon.syntax.Prism4jThemeDarkula;
-import io.noties.markwon.syntax.Prism4jThemeDefault;
-import io.noties.markwon.syntax.SyntaxHighlightPlugin;
-import io.noties.prism4j.Prism4j;
-import io.noties.prism4j.annotations.PrismBundle;
 import io.realm.Realm;
 
-@PrismBundle(includeAll = true, grammarLocatorClassName = ".Prism4jGrammarLocator")
 public class MainApplication extends FoxApplication implements androidx.work.Configuration.Provider {
     private static final String timeFormatString = "dd MMM yyyy"; // Example: 13 july 2001
     private static final Shell.Builder shellBuilder;
@@ -64,6 +55,9 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     // Use FoxProcess wrapper helper.
     private static final boolean wrapped = !FoxProcessExt.isRootLoader();
     public static boolean isOfficial = false;
+    // Warning! Locales that are't exist will crash the app
+    // Anything that is commented out is supported but the translation is not complete to at least 60%
+    public static HashSet<String> supportedLocales = new HashSet<>();
     private static Locale timeFormatLocale = Resources.getSystem().getConfiguration().locale;
     private static SimpleDateFormat timeFormat = new SimpleDateFormat(timeFormatString, timeFormatLocale);
     private static SharedPreferences bootSharedPreferences;
@@ -81,10 +75,6 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     private int managerThemeResId = R.style.Theme_MagiskModuleManager;
     private FoxThemeWrapper markwonThemeContext;
     private Markwon markwon;
-
-    // Warning! Locales that are't exist will crash the app
-    // Anything that is commented out is supported but the translation is not complete to at least 60%
-    public static HashSet<String> supportedLocales = new HashSet<>();
 
     public MainApplication() {
         if (INSTANCE != null && INSTANCE != this)
@@ -210,7 +200,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         if (contextThemeWrapper == null) {
             contextThemeWrapper = this.markwonThemeContext = new FoxThemeWrapper(this, this.managerThemeResId);
         }
-        Markwon markwon = Markwon.builder(contextThemeWrapper).usePlugin(HtmlPlugin.create()).usePlugin(SyntaxHighlightPlugin.create(new Prism4j(new Prism4jGrammarLocator()), new Prism4jSwitchTheme())).usePlugin(ImagesPlugin.create().addSchemeHandler(OkHttpNetworkSchemeHandler.create(Http.getHttpClientWithCache()))).build();
+        Markwon markwon = Markwon.builder(contextThemeWrapper).usePlugin(HtmlPlugin.create()).usePlugin(ImagesPlugin.create().addSchemeHandler(OkHttpNetworkSchemeHandler.create(Http.getHttpClientWithCache()))).build();
         return this.markwon = markwon;
     }
 
@@ -451,30 +441,4 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         }
     }
 
-    private class Prism4jSwitchTheme implements Prism4jTheme {
-        private final Prism4jTheme light = new Prism4jThemeDefault(Color.TRANSPARENT);
-        private final Prism4jTheme dark = new Prism4jThemeDarkula(Color.TRANSPARENT);
-        // Black theme
-        private final Prism4jTheme black = new Prism4jThemeDefault(Color.BLACK);
-
-        private Prism4jTheme getTheme() {
-            // isLightTheme() means light, isDarkTheme() means dark, and isBlackTheme() means black
-            return isLightTheme() ? light : isDarkTheme() ? dark : black;
-        }
-
-        @Override
-        public int background() {
-            return this.getTheme().background();
-        }
-
-        @Override
-        public int textColor() {
-            return this.getTheme().textColor();
-        }
-
-        @Override
-        public void apply(@NonNull String language, @NonNull Prism4j.Syntax syntax, @NonNull SpannableStringBuilder builder, int start, int end) {
-            this.getTheme().apply(language, syntax, builder, start, end);
-        }
-    }
 }

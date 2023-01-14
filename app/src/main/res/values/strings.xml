@@ -297,5 +297,5 @@
     <string name="save_logs">Save logs to storage and share</string>
     <string name="error_saving_logs">Could not save logs</string>
     <string name="share_logs">Share FoxMMM logs</string>
-    <string name="not_official_build">Caution: You are running an unofficial and therefore unsupported FoxMMM build.</string>
+    <string name="not_official_build">This app is an unofficial FoxMMM build.</string>
 </resources>
