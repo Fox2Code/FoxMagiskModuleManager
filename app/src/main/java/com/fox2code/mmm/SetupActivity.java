@@ -25,6 +25,9 @@ import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import java.util.Objects;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+
 public class SetupActivity extends FoxActivity implements LanguageActivity {
 
     @SuppressLint({"ApplySharedPref", "RestrictedApi"})
@@ -43,6 +46,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             actionBar.show();
         }
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, 0);
+        createRealmDatabase();
         // Set theme
         SharedPreferences prefs = MainApplication.getSharedPreferences();
         switch (prefs.getString("theme", "system")) {
@@ -237,5 +241,17 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             finish();
             startActivity(intent);
         });
+    }
+
+    // creates the realm database
+    private void createRealmDatabase() {
+        // create the realm database for ModuleListCache
+        RealmConfiguration config = new RealmConfiguration.Builder().name("ModuleListCache.realm").schemaVersion(1).allowWritesOnUiThread(true).allowQueriesOnUiThread(true).build();
+        Realm.setDefaultConfiguration(config);
+        // do a dummy write to create the database
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(r -> {
+        });
+        realm.close();
     }
 }

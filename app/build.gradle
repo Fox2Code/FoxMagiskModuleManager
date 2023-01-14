@@ -3,7 +3,11 @@ plugins {
     id "io.sentry.android.gradle" version "3.4.0"
     id 'com.android.application'
     id 'com.mikepenz.aboutlibraries.plugin'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.kapt'
 }
+
+apply plugin: "realm-android"
 
 android {
     namespace "com.fox2code.mmm"
@@ -35,11 +39,6 @@ android {
         versionName "1.2.1"
         signingConfig signingConfigs.release
         archivesBaseName = "FoxMMM-v$versionName"
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
-            }
-        }
     }
 
     splits {
@@ -293,7 +292,7 @@ dependencies {
     implementation "io.noties.markwon:image:4.6.2"
     implementation "io.noties.markwon:syntax-highlight:4.6.2"
     implementation 'com.google.net.cronet:cronet-okhttp:0.1.0'
-    annotationProcessor "io.noties:prism4j-bundler:2.0.0"
+    kapt "io.noties:prism4j-bundler:2.0.0"
     implementation "com.caverock:androidsvg:1.4"
     // Icons
     // implementation "com.mikepenz:iconics-core:3.2.5"

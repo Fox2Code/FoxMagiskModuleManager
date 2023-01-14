@@ -53,6 +53,7 @@ import io.noties.markwon.syntax.Prism4jThemeDefault;
 import io.noties.markwon.syntax.SyntaxHighlightPlugin;
 import io.noties.prism4j.Prism4j;
 import io.noties.prism4j.annotations.PrismBundle;
+import io.realm.Realm;
 
 @PrismBundle(includeAll = true, grammarLocatorClassName = ".Prism4jGrammarLocator")
 public class MainApplication extends FoxApplication implements androidx.work.Configuration.Provider {
@@ -313,10 +314,17 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         if (INSTANCE == null)
             INSTANCE = this;
         relPackageName = this.getPackageName();
-        super.onCreate();
         if (BuildConfig.DEBUG) {
             Log.d("MainApplication", "Starting FoxMMM version " + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + "), commit " + BuildConfig.COMMIT_HASH);
         }
+        super.onCreate();
+        if (BuildConfig.DEBUG) {
+            Log.d("MainApplication", "FoxMMM is running in debug mode");
+        }
+        if (BuildConfig.DEBUG) {
+            Log.d("MainApplication", "Initializing Realm");
+        }
+        Realm.init(this);
         // Determine if this is an official build based on the signature
         try {
             // Get the signature of the key used to sign the app

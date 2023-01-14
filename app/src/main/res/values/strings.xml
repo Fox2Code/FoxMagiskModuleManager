@@ -243,7 +243,8 @@
     <string name="alt_repo_info">This repo has less restrictions and reviews, which may lead to lower quality modules. Pretty barebones but has a lot of modules.</string>
     <string name="install_terminal_reboot_now_message">You are about to reboot your device. If you\'ve saved your work, hit OK to continue. Otherwise, hit cancel.</string>
     <string name="install_terminal_config_missing">Package %s is missing for module config, so we cannot launch it.</string>
-    <string name="clear_app_data">Clear app data</string><string name="clear_data_dialogue_title">Clear app data?</string>
+    <string name="clear_app_data">Clear app data</string>
+    <string name="clear_data_dialogue_title">Clear app data?</string>
     <string name="clear_data_dialogue_message">You\'re about to clear the app data. Please confirm this action.</string>
     <string name="debug_build">This is a debug build. Expect some bugs and worse performance.</string>
     <string name="androidacy_repo_name">Androidacy Repo</string>
@@ -267,7 +268,9 @@
     <string name="theme_light">Light</string>
     <string name="androidacy_update_needed">This app is outdated.</string>
     <string name="androidacy_update_needed_message">Please update the app to the latest version.</string>
-    <string name="androidacy_webview_update_required">Your webview is outdated! Please update it.</string><string name="language_cta">Don\'t see your language?</string><string name="language_cta_desc">Help us by translating it! Tap here to find out more.</string>
+    <string name="androidacy_webview_update_required">Your webview is outdated! Please update it.</string>
+    <string name="language_cta">Don\'t see your language?</string>
+    <string name="language_cta_desc">Help us by translating it! Tap here to find out more.</string>
     <string name="source_code_summary"><b>Commit</b> %1$s @ %2$s</string>
     <string name="no_file_provided">No file was provided when trying to open zip.</string>
     <string name="zip_load_failed">Could not load the zip file</string>
@@ -283,5 +286,16 @@
     <string name="setup_theme_title">Choose theme</string>
     <string name="setup_language_button">Choose language</string>
     <string name="title_activity_setup">Setup Wizard</string>
-    <string name="action_settings">Settings</string><string name="repo_update_failed_message">The following repos have failed to update:\\n\\n%s</string><string name="reset_api_key">Reset API keys</string><string name="upgrade_androidacy_promo">Upgrade to premium</string><string name="upgrade_androidacy_promo_desc">Upgrading to premium will remove ads, captchas, and downloads for the Androidacy Repository, and support Androidacy and the module authors.</string><string name="pref_category_contributors">Contributors</string><string name="fox2code_thanks_desc">Fox2Code is the original creator of the app. Without him, this would have never been possible.</string><string name="fox2code_thanks">Created by Fox2Code</string><string name="save_logs">Save logs to storage and share</string><string name="error_saving_logs">Could not save logs</string><string name="share_logs">Share FoxMMM logs</string><string name="not_official_build">Caution: You are running an unofficial and unsupported FoxMMM build.</string>
+    <string name="action_settings">Settings</string>
+    <string name="repo_update_failed_message">The following repos have failed to update:\\n\\n%s</string>
+    <string name="reset_api_key">Reset API keys</string>
+    <string name="upgrade_androidacy_promo">Upgrade to premium</string>
+    <string name="upgrade_androidacy_promo_desc">Upgrading to premium will remove ads, captchas, and downloads for the Androidacy Repository, and support Androidacy and the module authors.</string>
+    <string name="pref_category_contributors">Contributors</string>
+    <string name="fox2code_thanks_desc">Fox2Code is the original creator of the app. Without him, this would have never been possible.</string>
+    <string name="fox2code_thanks">Created by Fox2Code</string>
+    <string name="save_logs">Save logs to storage and share</string>
+    <string name="error_saving_logs">Could not save logs</string>
+    <string name="share_logs">Share FoxMMM logs</string>
+    <string name="not_official_build">Caution: You are running an unofficial and therefore unsupported FoxMMM build.</string>
 </resources>
