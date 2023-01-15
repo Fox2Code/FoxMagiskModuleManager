@@ -243,7 +243,8 @@
     <string name="alt_repo_info">Ce dépôt a moins de restrictions et d\’examens, pouvant résulter à une qualité de modules inférieurs. Très minimalistes mais qui dispose de beaucoup de modules.</string>
     <string name="install_terminal_reboot_now_message">Vous vous apprêtez à redémarrer votre périphérique. Si vous avez sauvegardé votre travail, appuyez sur OK pour continuer. Ou sinon, pressez annuler.</string>
     <string name="install_terminal_config_missing">Le paquet %s est introuvable pour la configuration du module, nous ne pouvons donc pas le lancer.</string>
-    <string name="clear_app_data">Éffacer données application</string><string name="clear_data_dialogue_title">Éffacer les données de l\’application ?</string>
+    <string name="clear_app_data">Éffacer données application</string>
+    <string name="clear_data_dialogue_title">Éffacer les données de l\’application ?</string>
     <string name="clear_data_dialogue_message">Vous vous apprêtez à effacer les données de l\’application. Merci de confirmer cette action.</string>
     <string name="debug_build">Ceci est une fabrication de débugguage. Des bugs ainsi que des performances négatives peuvent êtres rencontrées.</string>
     <string name="androidacy_repo_name">Dépôt Androidacy</string>
@@ -267,7 +268,9 @@
     <string name="theme_light">Clair</string>
     <string name="androidacy_update_needed">Cette application est obselète.</string>
     <string name="androidacy_update_needed_message">Merci de mettre à jour l\’application vers la dernière version.</string>
-    <string name="androidacy_webview_update_required">Votre webview est obselète! Merci de le mettre à jour.</string><string name="language_cta">Vous ne voyez pas votre language?</string><string name="language_cta_desc">Aidez-nous en la traduisant! Appuyez ici pour en savoir plus.</string>
+    <string name="androidacy_webview_update_required">Votre webview est obselète! Merci de le mettre à jour.</string>
+    <string name="language_cta">Vous ne voyez pas votre language?</string>
+    <string name="language_cta_desc">Aidez-nous en la traduisant! Appuyez ici pour en savoir plus.</string>
     <string name="source_code_summary"><b>Commission</b> %1$s @ %2$s</string>
     <string name="no_file_provided">Aucun fichier n\’a été fournit lors de la tentative d\’ouverture du fichier zip.</string>
     <string name="zip_load_failed">Le fichier zip n\’a pas pu être chargé</string>
@@ -277,11 +280,22 @@
     <string name="androidacy_thanks">Développé en partit par Androidacy</string>
     <string name="androidacy_thanks_desc">Un grand merci à Androidacy pour son intégration et ses contributions à l\’application.</string>
     <string name="contributors">Et bien-sûr, merci à tous les contributeurs, que ce soit des traductions, du code, ou bien juste le fait d\’être agréable à fréquenter! Nous vous adorons tous et toutes.</string>
-	<string name="zip_unpacking">Inspection du module…</string>
+    <string name="zip_unpacking">Inspection du module…</string>
     <string name="warning_message">Ce module a des indicateurs qui peuvent avoir été installés à votre insu, ou qu\’il peut tenter de cacher.\n\nSa désinstallation est hautement recommandée.</string>
     <string name="understand">Je comprends</string>
     <string name="setup_theme_title">Choisir un thème</string>
     <string name="setup_language_button">Choisir un language</string>
     <string name="title_activity_setup">Assistant de configuration</string>
-    <string name="action_settings">Réglages</string><string name="repo_update_failed_message">Échec de MàJ pour les dépôts suivants:\\n\\n%s</string><string name="reset_api_key">Réinitialiser les clés d\’API</string><string name="upgrade_androidacy_promo">MàJ vers l\’offre payante</string><string name="upgrade_androidacy_promo_desc">MàJ vers l\’offre supprimera les pubs, les captchas, les téléchargements pour le dépôt Androidacy, leur support et les autheurs des modules.</string>
+    <string name="action_settings">Réglages</string>
+    <string name="repo_update_failed_message">Échec de MàJ pour les dépôts suivants:\\n\\n%s</string>
+    <string name="reset_api_key">Réinitialiser les clés d\’API</string>
+    <string name="upgrade_androidacy_promo">MàJ vers l\’offre payante</string>
+    <string name="upgrade_androidacy_promo_desc">MàJ vers l\’offre supprimera les pubs, les captchas, les téléchargements pour le dépôt Androidacy, leur support et les autheurs des modules.</string>
+    <string name="pref_category_contributors">Contributeurs</string>
+    <string name="fox2code_thanks_desc">Fox2Code est le créateur originel de cette application. Sans lui, celà n\’aurait pas été possible.</string>
+    <string name="fox2code_thanks">Créée par Fox2Code</string>
+    <string name="save_logs">Sauvegarder les journeaux dans le stockage et les partager</string>
+    <string name="error_saving_logs">Les journeaux n\’ont pas pu être sauvegardés</string>
+    <string name="share_logs">Partager les journeaux FoxMMM</string>
+    <string name="not_official_build">Avertissement: Vous êtes en train de faire fonctionner une fabrication non officielle et donc non supportée de FoxMMM.</string>
 </resources>
