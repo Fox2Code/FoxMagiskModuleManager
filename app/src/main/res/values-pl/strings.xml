@@ -267,4 +267,11 @@
     <string name="reset_api_key">Zresetuj klucze API</string>
     <string name="upgrade_androidacy_promo">Ulepsz do wersji premium</string>
     <string name="upgrade_androidacy_promo_desc">Uaktualnienie do wersji premium usunie reklamy, captcha i pobieranie z repozytorium Androidacy, a także wesprze Androidacy i autorów modułów.</string>
+    <string name="share_logs">Udostępnij logi</string>
+    <string name="not_official_build">Uwaga: Używasz nieoficjalnej i niewspieranej kompilacji FoxMMM.</string>
+    <string name="pref_category_contributors">Współtwórcy</string>
+    <string name="fox2code_thanks_desc">Fox2Code jest oryginalnym twórcą aplikacji. Bez niego nigdy nie byłoby to możliwe.</string>
+    <string name="fox2code_thanks">Stworzone przez Fox2Code</string>
+    <string name="save_logs">Zapisz logi do pamięci wewnętrznej i udostępnij</string>
+    <string name="error_saving_logs">Nie można zapisać logów</string>
 </resources>
