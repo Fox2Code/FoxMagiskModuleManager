@@ -263,4 +263,11 @@
     <string name="reset_api_key">Сбросить API ключи</string>
     <string name="upgrade_androidacy_promo">Обновить до премиум</string>
     <string name="upgrade_androidacy_promo_desc">Обновление до премиум удалит рекламу, капчи и загрузки для репозитория Androidacy, а также поддержит Androidacy и авторов модулей.</string>
+    <string name="fox2code_thanks_desc">Fox2Code является первоначальным автором приложения. Без него это не было бы возможно.</string>
+    <string name="pref_category_contributors">Авторы</string>
+    <string name="fox2code_thanks">Создано Fox2Code</string>
+    <string name="save_logs">Сохранить журнал логов в хранилище и поделиться</string>
+    <string name="error_saving_logs">Не удалось сохранить журнал логов</string>
+    <string name="share_logs">Поделиться журналом логов FoxMMM</string>
+    <string name="not_official_build">Внимание: вы используете неофициальную и, следовательно, неподдерживаемую сборку FoxMMM.</string>
 </resources>
