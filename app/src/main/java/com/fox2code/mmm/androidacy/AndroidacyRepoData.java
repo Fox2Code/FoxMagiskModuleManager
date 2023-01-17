@@ -4,10 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
@@ -19,6 +21,7 @@ import com.fox2code.mmm.repo.RepoModule;
 import com.fox2code.mmm.utils.io.Http;
 import com.fox2code.mmm.utils.io.HttpException;
 import com.fox2code.mmm.utils.io.PropUtils;
+import com.fox2code.mmm.utils.realm.ReposList;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.topjohnwu.superuser.Shell;
 
@@ -37,15 +40,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import okhttp3.HttpUrl;
 
 @SuppressWarnings("KotlinInternalInJava")
 public final class AndroidacyRepoData extends RepoData {
 
-    public static String token = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).getString("pref_androidacy_api_token", null);
-    public SharedPreferences cachedPreferences = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0);
-
     private static final String TAG = "AndroidacyRepoData";
+    public static String token = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).getString("pref_androidacy_api_token", null);
 
     static {
         HttpUrl.Builder OK_HTTP_URL_BUILDER = new HttpUrl.Builder().scheme("https");
@@ -56,27 +59,18 @@ public final class AndroidacyRepoData extends RepoData {
 
     @SuppressWarnings("unused")
     public final String ClientID = BuildConfig.ANDROIDACY_CLIENT_ID;
-
     private final boolean testMode;
     private final String host;
+    public SharedPreferences cachedPreferences = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0);
     public String memberLevel;
     // Avoid spamming requests to Androidacy
     private long androidacyBlockade = 0;
 
     public AndroidacyRepoData(File cacheRoot, SharedPreferences cachedPreferences, boolean testMode) {
         super(testMode ? RepoManager.ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT : RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT, cacheRoot, cachedPreferences);
-        // make sure the modules.json exists
-        File modulesJson = new File(cacheRoot, "modules.json");
-        if (!modulesJson.exists()) {
-            try {
-                if (!modulesJson.createNewFile()) {
-                    throw new IOException("Failed to create modules.json");
-                }
-            } catch (
-                    IOException e) {
-                e.printStackTrace();
-            }
-        }
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ModuleListCache.realm").allowWritesOnUiThread(true).allowWritesOnUiThread(true).directory(cacheRoot).build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm.getInstance(realmConfiguration);
         this.defaultName = "Androidacy Modules Repo";
         this.defaultWebsite = RepoManager.ANDROIDACY_MAGISK_REPO_HOMEPAGE;
         this.defaultSupport = "https://t.me/androidacy_discussions";
@@ -86,6 +80,7 @@ public final class AndroidacyRepoData extends RepoData {
         this.testMode = testMode;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public static AndroidacyRepoData getInstance() {
         return RepoManager.getINSTANCE().getAndroidacyRepoData();
     }
@@ -187,6 +182,23 @@ public final class AndroidacyRepoData extends RepoData {
     @SuppressLint("RestrictedApi")
     @Override
     protected boolean prepare() throws NoSuchAlgorithmException {
+        // insert metadata into database
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposListCache.realm").allowWritesOnUiThread(true).allowWritesOnUiThread(true).directory(cacheRoot).build();
+        Realm realm = Realm.getInstance(realmConfiguration);
+        realm.beginTransaction();
+        ReposList repo = realm.where(ReposList.class).equalTo("id", this.id).findFirst();
+        if (repo == null) {
+            repo = realm.createObject(ReposList.class, this.id);
+        }
+        repo.setName(this.defaultName);
+        repo.setWebsite(this.defaultWebsite);
+        repo.setSupport(this.defaultSupport);
+        repo.setDonate(this.defaultDonate);
+        repo.setSubmitModule(this.defaultSubmitModule);
+        repo.setLastUpdate(0);
+        // close realm
+        realm.commitTransaction();
+        realm.close();
         // If ANDROIDACY_CLIENT_ID is not set or is empty, disable this repo and return
         if (Objects.equals(BuildConfig.ANDROIDACY_CLIENT_ID, "")) {
             SharedPreferences.Editor editor = MainApplication.getSharedPreferences().edit();

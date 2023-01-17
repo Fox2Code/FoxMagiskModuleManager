@@ -1,5 +1,6 @@
 package com.fox2code.mmm.utils.realm;
 
+import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.annotations.Required;
 
@@ -15,6 +16,10 @@ public class ReposList extends RealmObject {
     private boolean enabled;
     private String donate;
     private String support;
+    private String submitModule;
+    private int lastUpdate;
+    private String website;
+    private String name;
 
     public ReposList(String id, String url, boolean enabled, String donate, String support) {
         this.id = id;
@@ -22,6 +27,8 @@ public class ReposList extends RealmObject {
         this.enabled = enabled;
         this.donate = donate;
         this.support = support;
+        this.submitModule = null;
+        this.lastUpdate = 0;
     }
 
     public ReposList() {
@@ -65,5 +72,45 @@ public class ReposList extends RealmObject {
 
     public void setSupport(String support) {
         this.support = support;
+    }
+
+    // get metadata for a repo
+    public static ReposList getRepo(String id) {
+        Realm realm = Realm.getDefaultInstance();
+        ReposList repo = realm.where(ReposList.class).equalTo("id", id).findFirst();
+        realm.close();
+        return repo;
+    }
+
+    public String getSubmitModule() {
+        return submitModule;
+    }
+
+    public void setSubmitModule(String submitModule) {
+        this.submitModule = submitModule;
+    }
+
+    public int getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(int lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
     }
 }

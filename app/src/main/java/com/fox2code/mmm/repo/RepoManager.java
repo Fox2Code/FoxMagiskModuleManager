@@ -4,12 +4,14 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainActivity;
@@ -63,6 +65,7 @@ public final class RepoManager extends SyncManager {
     private boolean initialized;
     private boolean repoLastSuccess;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private RepoManager(MainApplication mainApplication) {
         INSTANCE = this; // Set early fox XHooks
         this.initialized = false;
@@ -89,6 +92,7 @@ public final class RepoManager extends SyncManager {
         this.initialized = true;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public static RepoManager getINSTANCE() {
         if (INSTANCE == null || !INSTANCE.initialized) {
             synchronized (lock) {
@@ -106,6 +110,7 @@ public final class RepoManager extends SyncManager {
         return INSTANCE;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public static RepoManager getINSTANCE_UNSAFE() {
         if (INSTANCE == null) {
             synchronized (lock) {
@@ -156,6 +161,7 @@ public final class RepoManager extends SyncManager {
         return INSTANCE != null && INSTANCE.androidacyRepoData != null && INSTANCE.androidacyRepoData.isEnabled();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @SuppressWarnings("StatementWithEmptyBody")
     private void populateDefaultCache(RepoData repoData) {
         for (RepoModule repoModule : repoData.moduleHashMap.values()) {
@@ -185,10 +191,12 @@ public final class RepoManager extends SyncManager {
         return this.repoData.get(url);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public RepoData addOrGet(String url) {
         return this.addOrGet(url, null);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public RepoData addOrGet(String url, String fallBackName) {
         if (MAGISK_ALT_REPO_JSDELIVR.equals(url))
             url = MAGISK_ALT_REPO;
@@ -211,6 +219,8 @@ public final class RepoManager extends SyncManager {
         return repoData;
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @SuppressLint("StringFormatInvalid")
     protected void scanInternal(@NonNull UpdateListener updateListener) {
         // Refuse to start if first_launch is not false in shared preferences
@@ -378,9 +388,10 @@ public final class RepoManager extends SyncManager {
         return this.hasInternet;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private RepoData addRepoData(String url, String fallBackName) {
         String id = internalIdOfUrl(url);
-        File cacheRoot = new File(this.mainApplication.getCacheDir(), id);
+        File cacheRoot = new File(this.mainApplication.getDataDir(), id);
         SharedPreferences sharedPreferences = this.mainApplication.getSharedPreferences("mmm_" + id, Context.MODE_PRIVATE);
         RepoData repoData = id.startsWith("repo_") ? new CustomRepoData(url, cacheRoot, sharedPreferences) : new RepoData(url, cacheRoot, sharedPreferences);
         if (fallBackName != null && !fallBackName.isEmpty()) {
@@ -404,8 +415,10 @@ public final class RepoManager extends SyncManager {
         return repoData;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private AndroidacyRepoData addAndroidacyRepoData() {
-        File cacheRoot = new File(this.mainApplication.getCacheDir(), "androidacy_repo");
+        // cache dir is actually under app data
+        File cacheRoot = new File(this.mainApplication.getDataDir(), "androidacy_repo");
         SharedPreferences sharedPreferences = this.mainApplication.getSharedPreferences("mmm_androidacy_repo", Context.MODE_PRIVATE);
         AndroidacyRepoData repoData = new AndroidacyRepoData(cacheRoot, sharedPreferences, MainApplication.isAndroidacyTestMode());
         this.repoData.put(ANDROIDACY_MAGISK_REPO_ENDPOINT, repoData);

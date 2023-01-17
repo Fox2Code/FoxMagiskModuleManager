@@ -15,6 +15,8 @@ import com.fox2code.mmm.XRepo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.utils.io.Files;
 import com.fox2code.mmm.utils.io.PropUtils;
+import com.fox2code.mmm.utils.realm.ModuleListCache;
+import com.fox2code.mmm.utils.realm.ReposList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,62 +24,111 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+
 public class RepoData extends XRepo {
     public final String url;
     public final String id;
     public final File cacheRoot;
     public final SharedPreferences cachedPreferences;
-    public final File metaDataCache;
+    public JSONObject metaDataCache;
     public final HashMap<String, RepoModule> moduleHashMap;
     private final Object populateLock = new Object();
     public long lastUpdate;
     public String name, website, support, donate, submitModule;
+    public JSONObject supportedProperties = new JSONObject();
+
     protected String defaultName, defaultWebsite, defaultSupport, defaultDonate, defaultSubmitModule;
+
+    // array with module info default values
+    // supported properties for a module
+    //id=<string>
+    //name=<string>
+    //version=<string>
+    //versionCode=<int>
+    //author=<string>
+    //description=<string>
+    //minApi=<int>
+    //maxApi=<int>
+    //minMagisk=<int>
+    //needRamdisk=<boolean>
+    //support=<url>
+    //donate=<url>
+    //config=<package>
+    //changeBoot=<boolean>
+    //mmtReborn=<boolean>
+    // extra properties only useful for the database
+    //repoId=<string>
+    //installed=<boolean>
+    //installedVersionCode=<int> (only if installed)
     private boolean forceHide, enabled; // Cache for speed
 
     public RepoData(String url, File cacheRoot, SharedPreferences cachedPreferences) {
+        // setup supportedProperties
+        try {
+            supportedProperties.put("id", "");
+            supportedProperties.put("name", "");
+            supportedProperties.put("version", "");
+            supportedProperties.put("versionCode", "");
+            supportedProperties.put("author", "");
+            supportedProperties.put("description", "");
+            supportedProperties.put("minApi", "");
+            supportedProperties.put("maxApi", "");
+            supportedProperties.put("minMagisk", "");
+            supportedProperties.put("needRamdisk", "");
+            supportedProperties.put("support", "");
+            supportedProperties.put("donate", "");
+            supportedProperties.put("config", "");
+            supportedProperties.put("changeBoot", "");
+            supportedProperties.put("mmtReborn", "");
+            supportedProperties.put("repoId", "");
+            supportedProperties.put("installed", "");
+            supportedProperties.put("installedVersionCode", "");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         this.url = url;
         this.id = RepoManager.internalIdOfUrl(url);
         this.cacheRoot = cacheRoot;
         this.cachedPreferences = cachedPreferences;
-        this.metaDataCache = new File(cacheRoot, "modules.json");
+        // metadata cache is a realm database from ModuleListCache
+        this.metaDataCache = null;
         this.moduleHashMap = new HashMap<>();
         this.defaultName = url; // Set url as default name
         this.forceHide = AppUpdateManager.shouldForceHide(this.id);
         this.enabled = (!this.forceHide) && MainApplication.getSharedPreferences().getBoolean("pref_" + this.getPreferenceId() + "_enabled", true);
         this.defaultWebsite = "https://" + Uri.parse(url).getHost() + "/";
-        if (!this.cacheRoot.isDirectory()) {
-            boolean mkdirs = this.cacheRoot.mkdirs();
-            if (!mkdirs) {
-                throw new RuntimeException("Failed to create cache directory");
-            }
-        } else {
-            if (this.metaDataCache.exists()) {
-                this.lastUpdate = metaDataCache.lastModified();
-                if (this.lastUpdate > System.currentTimeMillis()) {
-                    this.lastUpdate = 0; // Don't allow time travel
-                }
-                try {
-                    List<RepoModule> modules = this.populate(new JSONObject(new String(Files.read(this.metaDataCache), StandardCharsets.UTF_8)));
-                    for (RepoModule repoModule : modules) {
-                        if (!this.tryLoadMetadata(repoModule)) {
-                            repoModule.moduleInfo.flags &= ~ModuleInfo.FLAG_METADATA_INVALID;
-                        }
-                    }
-                } catch (
-                        Exception e) {
-                    boolean delete = this.metaDataCache.delete();
-                    if (!delete) {
-                        throw new RuntimeException("Failed to delete invalid cache file");
-                    }
-                }
+        // open realm database
+        // load metadata from realm database
+        if (this.enabled) {
+            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ModuleListCache.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(cacheRoot).build();
+            // load metadata from realm database
+            Realm.getInstance(realmConfiguration);
+            this.metaDataCache = ModuleListCache.getRepoModulesAsJson(this.id);
+            // load repo metadata from ReposList unless it's a built-in repo
+            if (RepoManager.isBuiltInRepo(this.id)) {
+                this.name = this.defaultName;
+                this.website = this.defaultWebsite;
+                this.support = this.defaultSupport;
+                this.donate = this.defaultDonate;
+                this.submitModule = this.defaultSubmitModule;
+            } else {
+                // get everything from ReposList realm database
+                RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(cacheRoot).build();
+                // load metadata from realm database
+                Realm.getInstance(realmConfiguration2);
+                this.name = ReposList.getRepo(this.id).getName();
+                this.website = ReposList.getRepo(this.id).getWebsite();
+                this.support = ReposList.getRepo(this.id).getSupport();
+                this.donate = ReposList.getRepo(this.id).getDonate();
+                this.submitModule = ReposList.getRepo(this.id).getSubmitModule();
             }
         }
     }
@@ -225,7 +276,8 @@ public class RepoData extends XRepo {
     @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled && !this.forceHide;
-        if (BuildConfig.DEBUG) {    Log.d("RepoData", "Repo " + this.id + " enabled: " + this.enabled + " (forced: " + this.forceHide + ") with preferenceID: " + this.getPreferenceId());
+        if (BuildConfig.DEBUG) {
+            Log.d("RepoData", "Repo " + this.id + " enabled: " + this.enabled + " (forced: " + this.forceHide + ") with preferenceID: " + this.getPreferenceId());
         }
         MainApplication.getSharedPreferences().edit().putBoolean("pref_" + this.getPreferenceId() + "_enabled", enabled).apply();
     }
@@ -236,7 +288,8 @@ public class RepoData extends XRepo {
             return;
         }
         this.forceHide = AppUpdateManager.shouldForceHide(this.id);
-        if (BuildConfig.DEBUG) {    Log.d("RepoData", "Repo " + this.id + " update enabled: " + this.enabled + " (forced: " + this.forceHide + ") with preferenceID: " + this.getPreferenceId());
+        if (BuildConfig.DEBUG) {
+            Log.d("RepoData", "Repo " + this.id + " update enabled: " + this.enabled + " (forced: " + this.forceHide + ") with preferenceID: " + this.getPreferenceId());
         }
         this.enabled = (!this.forceHide) && MainApplication.getSharedPreferences().getBoolean("pref_" + this.getPreferenceId() + "_enabled", true);
     }

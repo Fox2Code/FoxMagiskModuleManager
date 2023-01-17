@@ -11,27 +11,6 @@ import io.realm.annotations.Required;
 
 @SuppressWarnings("unused")
 public class ModuleListCache extends RealmObject {
-    // supported properties for a module
-    //id=<string>
-    //name=<string>
-    //version=<string>
-    //versionCode=<int>
-    //author=<string>
-    //description=<string>
-    //minApi=<int>
-    //maxApi=<int>
-    //minMagisk=<int>
-    //needRamdisk=<boolean>
-    //support=<url>
-    //donate=<url>
-    //config=<package>
-    //changeBoot=<boolean>
-    //mmtReborn=<boolean>
-    // extra properties only useful for the database
-    //repoId=<string>
-    //installed=<boolean>
-    //installedVersionCode=<int> (only if installed)
-
     // for compatibility, only id is required
     @PrimaryKey
     @Required
@@ -53,8 +32,9 @@ public class ModuleListCache extends RealmObject {
     private String repoId;
     private boolean installed;
     private int installedVersionCode;
+    private int lastUpdate;
 
-    public ModuleListCache(String id, String name, String version, int versionCode, String author, String description, int minApi, int maxApi, int minMagisk, boolean needRamdisk, String support, String donate, String config, boolean changeBoot, boolean mmtReborn, String repoId, boolean installed, int installedVersionCode) {
+    public ModuleListCache(String id, String name, String version, int versionCode, String author, String description, int minApi, int maxApi, int minMagisk, boolean needRamdisk, String support, String donate, String config, boolean changeBoot, boolean mmtReborn, String repoId, boolean installed, int installedVersionCode, int lastUpdate) {
         this.id = id;
         this.name = name;
         this.version = version;
@@ -73,6 +53,7 @@ public class ModuleListCache extends RealmObject {
         this.repoId = repoId;
         this.installed = installed;
         this.installedVersionCode = installedVersionCode;
+        this.lastUpdate = lastUpdate;
     }
 
     public ModuleListCache() {
@@ -239,6 +220,14 @@ public class ModuleListCache extends RealmObject {
         this.id = id;
     }
 
+    public int getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(int lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
+
     private JSONObject toJson() {
         JSONObject jsonObject = new JSONObject();
         try {
@@ -263,5 +252,13 @@ public class ModuleListCache extends RealmObject {
             e.printStackTrace();
         }
         return jsonObject;
+    }
+
+    public RealmResults<ModuleListCache> getModules() {
+        // return all modules matching the repo id
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<ModuleListCache> modules = realm.where(ModuleListCache.class).equalTo("repoId", repoId).findAll();
+        realm.close();
+        return modules;
     }
 }
