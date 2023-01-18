@@ -217,7 +217,7 @@
     <string name="setup_androidacy_repo_summary">Oferuje recenzje użytkowników, automatyczne skanowanie wirusów, szybkie aktualizacje, szeroki wybór i jest wspierane przez Androidacy.</string>
     <string name="setup_magisk_alt_repo_summary">Znacznie luźniejsze niż oryginalne. Posiada wiele modułów kosztem pewnego bezpieczeństwa.</string>
     <string name="setup_crash_reporting_summary">Monitorowanie wydajności i rejestracja awarii. Wszystkie raporty są ściśle anonimowe i poufne.</string>
-    <string name="debug_build">To jest wersja diagnostyczna. Możliwe błędy i gorsza wydajność.</string>
+    <string name="debug_build">Wersja testowa (debug).</string>
     <string name="androidacy_repo_name">Repozytorium Androidacy</string>
     <string name="magisk_alt_repo_name">Repozytorium Magisk Alt</string>
     <string name="repo_enabled_changed">Włączono lub wyłączono repozytorium. Proszę odświeżyć listę modułów lub zrestartować aplikację.</string>
@@ -268,7 +268,7 @@
     <string name="upgrade_androidacy_promo">Ulepsz do wersji premium</string>
     <string name="upgrade_androidacy_promo_desc">Uaktualnienie do wersji premium usunie reklamy, captcha i pobieranie z repozytorium Androidacy, a także wesprze Androidacy i autorów modułów.</string>
     <string name="share_logs">Udostępnij logi</string>
-    <string name="not_official_build">Uwaga: Używasz nieoficjalnej i niewspieranej kompilacji FoxMMM.</string>
+    <string name="not_official_build">Używasz nieoficjalną wersję FoxMMM.</string>
     <string name="pref_category_contributors">Współtwórcy</string>
     <string name="fox2code_thanks_desc">Fox2Code jest oryginalnym twórcą aplikacji. Bez niego nigdy nie byłoby to możliwe.</string>
     <string name="fox2code_thanks">Stworzone przez Fox2Code</string>
