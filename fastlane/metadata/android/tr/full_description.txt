@@ -1,0 +1,4 @@
+Bu uygulama Magisk veya geliştiricileri tarafından resmi olarak desteklenmiyor.
+
+Bu uygulamada gösterilen modüller bu uygulamayla ilişkili değildir.
+Onun yerine lütfen depo sahipleriyle iletişime geçin.

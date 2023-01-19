@@ -1,0 +1,1 @@
+Magisk için bir modül yöneticisidir çünkü resmi uygulama bunun desteğini kesti.

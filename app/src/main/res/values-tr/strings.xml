@@ -276,4 +276,11 @@
     <string name="reset_api_key">API anahtarlarını sıfırla</string>
     <string name="upgrade_androidacy_promo">Premium\'a yükselt</string>
     <string name="upgrade_androidacy_promo_desc">Premium\'a yükseltmek Androidacy Deposu için reklamları, captchaları ve indirmeleri kaldıracak ayrıca Androidacy ve modül geliştiricilerini destekleyecektir.</string>
+    <string name="pref_category_contributors">Katkıda bulunanlar</string>
+    <string name="fox2code_thanks_desc">Fox2Code, bu uygulamanın asıl yaratıcısıdır. O olmadan asla mümkün olamazdı.</string>
+    <string name="fox2code_thanks">Fox2Code tarafından oluşturuldu</string>
+    <string name="save_logs">Günlükleri depolamaya kaydet ve paylaş</string>
+    <string name="error_saving_logs">Günlükler kaydedilemedi</string>
+    <string name="share_logs">FoxMMM günlüklerini paylaş</string>
+    <string name="not_official_build">Bu uygulama resmi olmayan FoxMMM yapımıdır.</string>
 </resources>
