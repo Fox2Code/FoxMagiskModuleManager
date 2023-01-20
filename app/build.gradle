@@ -12,7 +12,6 @@ apply plugin: "realm-android"
 android {
     namespace "com.fox2code.mmm"
     compileSdk 33
-    buildToolsVersion '33.0.0'
     signingConfigs {
         release {
             // Everything comes from local.properties
@@ -81,6 +80,7 @@ android {
         }
     }
 
+    //noinspection GrDeprecatedAPIUsage
     flavorDimensions "type"
     productFlavors {
         "default" {
@@ -175,6 +175,7 @@ android {
                 properties.setProperty('client_id', '"dQ1p7X8bF14PVJ7wAU6ORVjPB2IeTinsuAZ8Uos6tQiyUdUyIjSyZSmN54QBbaTy"')
             }
             buildConfigField("String", "ANDROIDACY_CLIENT_ID", properties.getProperty('client_id'))
+            versionNameSuffix '-froid'
         }
     }
 
@@ -237,12 +238,12 @@ sentry {
     // Does auto instrumentation for specified features through bytecode manipulation.
     // Default is enabled.
     tracingInstrumentation {
-        enabled = true
+        enabled = hasSentryConfig
     }
 
     // Enable auto-installation of Sentry components (sentry-android SDK and okhttp, timber and fragment integrations).
     autoInstallation {
-        sentryVersion = '6.11.0'
+        sentryVersion = '6.12.1'
     }
 
     // temp fix for gradle bug
@@ -284,7 +285,7 @@ dependencies {
     implementation 'com.github.topjohnwu.libsu:io:5.0.1'
     implementation 'com.github.Fox2Code:RosettaX:1.0.9'
     implementation 'com.github.Fox2Code:AndroidANSI:1.0.1'
-    implementation 'io.sentry:sentry-android:6.11.0'
+    implementation 'io.sentry:sentry-android:6.12.1'
 
     // Markdown
     implementation "io.noties.markwon:core:4.6.2"
@@ -296,6 +297,8 @@ dependencies {
     // Icons
     // implementation "com.mikepenz:iconics-core:3.2.5"
     //implementation "androidx.appcompat:appcompat:${versions.appCompat}"
+
+    implementation 'androidx.core:core-ktx:1.9.0'
 }
 
 if (hasSentryConfig) {
@@ -303,7 +306,7 @@ if (hasSentryConfig) {
     try (FileInputStream fis = new FileInputStream(sentryConfigFile)) {
         properties.load(fis)
     }
-    tasks.withType(Exec) {
+    tasks.withType(Exec).configureEach {
         environment "SENTRY_PROJECT", properties.getProperty("defaults.project")
         environment "SENTRY_ORG", properties.getProperty("defaults.org")
         environment "SENTRY_URL", properties.getProperty("defaults.url")
@@ -314,8 +317,8 @@ if (hasSentryConfig) {
 android {
     ndkVersion '25.1.8937393'
     dependenciesInfo {
-        includeInApk false
-        includeInBundle false
+        includeInApk true
+        includeInBundle true
     }
     buildFeatures {
         viewBinding true
@@ -324,6 +327,8 @@ android {
     kotlinOptions {
         jvmTarget=JavaVersion.VERSION_11
     }
+    //noinspection GrDeprecatedAPIUsage
+    buildToolsVersion '33.0.1'
 }
 
 

@@ -6,16 +6,23 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.FragmentActivity;
 
 import com.fox2code.foxcompat.app.FoxActivity;
+import com.fox2code.mmm.androidacy.AndroidacyRepoData;
 import com.fox2code.mmm.databinding.ActivitySetupBinding;
+import com.fox2code.mmm.repo.RepoManager;
+import com.fox2code.mmm.utils.realm.ModuleListCache;
+import com.fox2code.mmm.utils.realm.ReposList;
 import com.fox2code.rosettax.LanguageActivity;
 import com.fox2code.rosettax.LanguageSwitcher;
 import com.google.android.material.button.MaterialButton;
@@ -27,6 +34,7 @@ import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 
 public class SetupActivity extends FoxActivity implements LanguageActivity {
 
@@ -46,7 +54,9 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             actionBar.show();
         }
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, 0);
-        createRealmDatabase();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            createRealmDatabase();
+        }
         // Set theme
         SharedPreferences prefs = MainApplication.getSharedPreferences();
         switch (prefs.getString("theme", "system")) {
@@ -67,7 +77,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                 break;
         }
 
-        com.fox2code.mmm.databinding.ActivitySetupBinding binding = ActivitySetupBinding.inflate(getLayoutInflater());
+        ActivitySetupBinding binding = ActivitySetupBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         // Show setup box. Put the setup_box in the main activity layout
         View view = binding.setupBox;
@@ -167,10 +177,38 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             editor.putBoolean("pref_background_update_check", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).isChecked());
             // Set the crash reporting pref
             editor.putBoolean("pref_crash_reporting", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).isChecked());
-            // Set the repos
-            // first pref_magisk_alt_repo_enabled then pref_androidacy_repo_enabled
-            editor.putBoolean("pref_magisk_alt_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).isChecked());
-            editor.putBoolean("pref_androidacy_repo_enabled", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_androidacy_repo))).isChecked());
+            // Set the repos in the ReposList realm db
+            RealmConfiguration realmConfig = new RealmConfiguration.Builder().name("ReposList.realm").schemaVersion(1).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).build();
+            boolean androidacyRepo = ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_androidacy_repo))).isChecked();
+            boolean magiskAltRepo = ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).isChecked();
+            Realm.getInstanceAsync(realmConfig, new Realm.Callback() {
+                @Override
+                public void onSuccess(@NonNull Realm realm) {
+                    realm.executeTransaction(realm1 -> {
+                        ReposList androidacyRepoDB = realm1.where(ReposList.class).equalTo("id", "androidacy_repo").findFirst();
+                        if (androidacyRepoDB != null) {
+                            androidacyRepoDB.setEnabled(androidacyRepo);
+                            // set remaining fields from the existing db entry
+                            androidacyRepoDB.setName(androidacyRepoDB.getName());
+                            androidacyRepoDB.setUrl(androidacyRepoDB.getUrl());
+                            androidacyRepoDB.setLastUpdate(androidacyRepoDB.getLastUpdate());
+                            androidacyRepoDB.setDonate(androidacyRepoDB.getDonate());
+                            androidacyRepoDB.setSupport(androidacyRepoDB.getSupport());
+                        }
+                        ReposList magiskAltRepoDB = realm1.where(ReposList.class).equalTo("id", "magisk_alt_repo").findFirst();
+                        if (magiskAltRepoDB != null) {
+                            magiskAltRepoDB.setEnabled(magiskAltRepo);
+                            // set remaining fields from the existing db entry
+                            magiskAltRepoDB.setName(magiskAltRepoDB.getName());
+                            magiskAltRepoDB.setUrl(magiskAltRepoDB.getUrl());
+                            magiskAltRepoDB.setLastUpdate(magiskAltRepoDB.getLastUpdate());
+                            magiskAltRepoDB.setDonate(magiskAltRepoDB.getDonate());
+                            magiskAltRepoDB.setSupport(magiskAltRepoDB.getSupport());
+                        }
+                    });
+                    realm.close();
+                }
+            });
             // Commit the changes
             editor.commit();
             // Sleep for 1 second to allow the user to see the changes
@@ -184,8 +222,6 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             if (BuildConfig.DEBUG) {
                 Log.d("SetupWizard", "Background update check: " + prefs.getBoolean("pref_background_update_check", false));
                 Log.i("SetupWizard", "Crash reporting: " + prefs.getBoolean("pref_crash_reporting", false));
-                Log.i("SetupWizard", "Magisk Alt Repo: " + prefs.getBoolean("pref_magisk_alt_repo_enabled", false));
-                Log.i("SetupWizard", "Androidacy Repo: " + prefs.getBoolean("pref_androidacy_repo_enabled", false));
             }
             // Restart the activity
             MainActivity.doSetupRestarting = true;
@@ -244,28 +280,79 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
     }
 
     // creates the realm database
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void createRealmDatabase() {
         if (BuildConfig.DEBUG) {
             Log.d("Realm", "Creating Realm databases");
         }
         // create the realm database for ModuleListCache
-        RealmConfiguration config = new RealmConfiguration.Builder().name("ModuleListCache.realm").schemaVersion(1).allowWritesOnUiThread(true).allowQueriesOnUiThread(true).build();
-        Realm.setDefaultConfiguration(config);
+        RealmConfiguration config = new RealmConfiguration.Builder().name("ModuleListCache.realm").schemaVersion(1).build();
         // do a dummy write to create the database
-        Realm realm = Realm.getDefaultInstance();
-        realm.executeTransaction(r -> {
+        Realm.getInstanceAsync(config, new Realm.Callback() {
+            @Override
+            public void onSuccess(@NonNull Realm realm) {
+                realm.executeTransactionAsync(realm1 -> {
+                    // do nothing
+                });
+            }
         });
-        realm.close();
+        // create the realm database for ReposList
         // next, create the realm database for ReposList
-        config = new RealmConfiguration.Builder().name("ReposList.realm").schemaVersion(1).allowWritesOnUiThread(true).allowQueriesOnUiThread(true).build();
-        Realm.setDefaultConfiguration(config);
-        // do a dummy write to create the database
-        realm = Realm.getDefaultInstance();
-        realm.executeTransaction(r -> {
+        RealmConfiguration config2 = new RealmConfiguration.Builder().name("ReposList.realm").schemaVersion(1).build();
+        // get the instance
+        Realm.getInstanceAsync(config2, new Realm.Callback() {
+            @Override
+            public void onSuccess(@NonNull Realm realm1) {
+                // drop the database if it exists
+                realm1.executeTransactionAsync(realm2 -> realm2.delete(ReposList.class));
+                // create androidacy_repo and magisk_alt_repo if they don't exist under ReposList
+                // each has id, name, donate, website, support, enabled, and lastUpdate and name
+                // create androidacy_repo
+                realm1.beginTransaction();
+                if (realm1.where(ReposList.class).equalTo("id", "androidacy_repo").findFirst() == null) {
+                    ReposList androidacy_repo = realm1.createObject(ReposList.class, "androidacy_repo");
+                    String name = getString(R.string.androidacy_repo_name);
+                    String website = AndroidacyRepoData.getInstance().website;
+                    String donate = AndroidacyRepoData.getInstance().donate;
+                    String support = AndroidacyRepoData.getInstance().support;
+                    androidacy_repo.setName(name);
+                    androidacy_repo.setDonate(donate);
+                    androidacy_repo.setWebsite(website);
+                    androidacy_repo.setSupport(support);
+                    androidacy_repo.setEnabled(true);
+                    androidacy_repo.setLastUpdate(0);
+                }
+                // create magisk_alt_repo
+                if (realm1.where(ReposList.class).equalTo("id", "magisk_alt_repo").findFirst() == null) {
+                    ReposList magisk_alt_repo = realm1.createObject(ReposList.class, "magisk_alt_repo");
+                    magisk_alt_repo.setName("Magisk Alt Repo");
+                    magisk_alt_repo.setDonate(null);
+                    magisk_alt_repo.setWebsite(RepoManager.MAGISK_ALT_REPO_HOMEPAGE);
+                    magisk_alt_repo.setSupport(null);
+                    magisk_alt_repo.setEnabled(true);
+                    magisk_alt_repo.setLastUpdate(0);
+                }
+                realm1.commitTransaction();
+                realm1.close();
+                if (BuildConfig.DEBUG) {
+                    Log.d("Realm", "Realm databases created");
+                    // log each database
+                    Realm realm2 = Realm.getInstance(config);
+                    RealmResults<ModuleListCache> moduleListCaches = realm2.where(ModuleListCache.class).findAll();
+                    Log.d("Realm", "ModuleListCache.realm");
+                    for (ModuleListCache moduleListCache : moduleListCaches) {
+                        Log.d("Realm", moduleListCache.toString());
+                    }
+                    realm2.close();
+                    Realm realm3 = Realm.getInstance(config2);
+                    RealmResults<ReposList> reposLists = realm3.where(ReposList.class).findAll();
+                    Log.d("Realm", "ReposList.realm");
+                    for (ReposList reposList : reposLists) {
+                        Log.d("Realm", reposList.toString());
+                    }
+                    realm3.close();
+                }
+            }
         });
-        realm.close();
-        if (BuildConfig.DEBUG) {
-            Log.d("Realm", "Realm databases created");
-        }
     }
 }

@@ -2,6 +2,7 @@ package com.fox2code.mmm.utils.realm;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
 @SuppressWarnings("unused")
@@ -10,6 +11,7 @@ public class ReposList extends RealmObject {
     // there's also an optional donate and support field
 
     @Required
+    @PrimaryKey
     private String id;
     @Required
     private String url;

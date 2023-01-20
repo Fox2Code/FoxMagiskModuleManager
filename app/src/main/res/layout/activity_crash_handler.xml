@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical" tools:context=".CrashHandler">
+
+    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent">
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+  <!-- layout with crash_text header and crash_details body -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+        <!-- crash_text header -->
+                <TextView
+                    android:id="@+id/crash_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:gravity="center"
+                    android:text="@string/crash_text"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/crash_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="monospace"
+            android:gravity="center"
+            android:text="@string/crash_details"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+            <!-- feedback form -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+        <!-- feedback form header -->
+                <TextView
+                    android:id="@+id/feedback_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:gravity="center"
+                    android:text="@string/sentry_dialogue_message"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- feedback form name -->
+            <EditText
+                android:id="@+id/feedback_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:hint="@string/name"
+                android:inputType="text" />
+
+            <!-- feedback form email -->
+            <EditText
+                android:id="@+id/feedback_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress" />
+
+            <!-- feedback form message -->
+            <EditText
+                android:id="@+id/feedback_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:hint="@string/feedback_message"
+                android:inputType="textMultiLine" />
+
+            <!-- feedback form submit button -->
+            <Button
+                android:id="@+id/feedback_submit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/feedback_submit" />
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+            <!-- restart button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/restart_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/restart" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

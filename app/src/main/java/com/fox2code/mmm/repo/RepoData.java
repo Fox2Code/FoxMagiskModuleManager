@@ -103,32 +103,50 @@ public class RepoData extends XRepo {
         this.moduleHashMap = new HashMap<>();
         this.defaultName = url; // Set url as default name
         this.forceHide = AppUpdateManager.shouldForceHide(this.id);
+        // this.enable is set from the database
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
+                .name("ReposList.realm")
+                .schemaVersion(1)
+                .allowQueriesOnUiThread(true)
+                .allowWritesOnUiThread(true)
+                .build();
+        Realm realm = Realm.getInstance(realmConfiguration);
+        ReposList reposList = realm.where(ReposList.class).equalTo("id", this.id).findFirst();
+        if (BuildConfig.DEBUG) {
+            Log.d("RepoData", "RepoData: " + this.id + ". record in database: " + (reposList != null ? reposList.toString() : null));
+        }
+        this.enabled = (!this.forceHide && reposList != null && reposList.isEnabled());
         this.enabled = (!this.forceHide) && MainApplication.getSharedPreferences().getBoolean("pref_" + this.getPreferenceId() + "_enabled", true);
         this.defaultWebsite = "https://" + Uri.parse(url).getHost() + "/";
         // open realm database
         // load metadata from realm database
         if (this.enabled) {
-            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ModuleListCache.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(cacheRoot).build();
-            // load metadata from realm database
-            Realm.getInstance(realmConfiguration);
-            this.metaDataCache = ModuleListCache.getRepoModulesAsJson(this.id);
-            // load repo metadata from ReposList unless it's a built-in repo
-            if (RepoManager.isBuiltInRepo(this.id)) {
-                this.name = this.defaultName;
-                this.website = this.defaultWebsite;
-                this.support = this.defaultSupport;
-                this.donate = this.defaultDonate;
-                this.submitModule = this.defaultSubmitModule;
-            } else {
-                // get everything from ReposList realm database
+            try {
                 RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(cacheRoot).build();
                 // load metadata from realm database
                 Realm.getInstance(realmConfiguration2);
-                this.name = ReposList.getRepo(this.id).getName();
-                this.website = ReposList.getRepo(this.id).getWebsite();
-                this.support = ReposList.getRepo(this.id).getSupport();
-                this.donate = ReposList.getRepo(this.id).getDonate();
-                this.submitModule = ReposList.getRepo(this.id).getSubmitModule();
+                this.metaDataCache = ModuleListCache.getRepoModulesAsJson(this.id);
+                // load repo metadata from ReposList unless it's a built-in repo
+                if (RepoManager.isBuiltInRepo(this.id)) {
+                    this.name = this.defaultName;
+                    this.website = this.defaultWebsite;
+                    this.support = this.defaultSupport;
+                    this.donate = this.defaultDonate;
+                    this.submitModule = this.defaultSubmitModule;
+                } else {
+                    // get everything from ReposList realm database
+                    RealmConfiguration realmConfiguration3 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(cacheRoot).build();
+                    // load metadata from realm database
+                    Realm.getInstance(realmConfiguration3);
+                    this.name = ReposList.getRepo(this.id).getName();
+                    this.website = ReposList.getRepo(this.id).getWebsite();
+                    this.support = ReposList.getRepo(this.id).getSupport();
+                    this.donate = ReposList.getRepo(this.id).getDonate();
+                    this.submitModule = ReposList.getRepo(this.id).getSubmitModule();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.w("RepoData", "Failed to load repo metadata from realm database. If this is a first time install, this is normal.");
             }
         }
     }

@@ -241,7 +241,8 @@ public final class RepoManager extends SyncManager {
             if (BuildConfig.DEBUG) {
                 Log.d(TAG, "Checking internet connection...");
             }
-            HttpURLConnection urlConnection = (HttpURLConnection) new URL("https://networkcheck.kde.org").openConnection();
+            // this url is actually hosted by Cloudflare and is not dependent on Androidacy servers being up
+            HttpURLConnection urlConnection = (HttpURLConnection) new URL("https://production-api.androidacy.com/cdn-cgi/trace").openConnection();
             if (BuildConfig.DEBUG) {
                 Log.d(TAG, "Opened connection to " + urlConnection.getURL());
             }
