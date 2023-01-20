@@ -1,43 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical" tools:context=".CrashHandler">
-
-    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent">
 
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
   <!-- layout with crash_text header and crash_details body -->
-            <LinearLayout
+
+            <!-- crash_text header -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/crash_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_margin="10dp"
+                android:gravity="fill"
+                android:text="@string/crash_text"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-        <!-- crash_text header -->
-                <TextView
-                    android:id="@+id/crash_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:gravity="center"
-                    android:text="@string/crash_text"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/crash_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:fontFamily="monospace"
-            android:gravity="center"
+            android:gravity="fill"
             android:text="@string/crash_details"
             android:textSize="16sp" />
-    </LinearLayout>
 
             <!-- feedback form -->
-            <com.google.android.material.card.MaterialCardView
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -48,8 +37,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:gravity="center"
-                    android:text="@string/sentry_dialogue_message"
+                    android:gravity="fill"
+                    android:text="@string/please_feedback"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -61,8 +50,8 @@
             <!-- feedback form name -->
             <EditText
                 android:id="@+id/feedback_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="320dp"
+                android:layout_height="48dp"
                 android:layout_margin="10dp"
                 android:hint="@string/name"
                 android:inputType="text" />
@@ -70,8 +59,8 @@
             <!-- feedback form email -->
             <EditText
                 android:id="@+id/feedback_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="320dp"
+                android:layout_height="48dp"
                 android:layout_margin="10dp"
                 android:hint="@string/email"
                 android:inputType="textEmailAddress" />
@@ -79,30 +68,34 @@
             <!-- feedback form message -->
             <EditText
                 android:id="@+id/feedback_message"
-                android:layout_width="match_parent"
+                android:layout_width="320dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:hint="@string/feedback_message"
                 android:inputType="textMultiLine" />
 
-            <!-- feedback form submit button -->
-            <Button
-                android:id="@+id/feedback_submit"
+            <!-- button group for submit feedback & restart / restart only -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="@string/feedback_submit" />
+                android:orientation="horizontal">
 
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+                <!-- submit feedback button -->
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="@string/feedback_submit" />
 
-            <!-- restart button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/restart_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="@string/restart" />
+                <!-- restart button -->
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="@string/restart" />
+
+            </LinearLayout>
         </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </LinearLayout>
+</ScrollView>

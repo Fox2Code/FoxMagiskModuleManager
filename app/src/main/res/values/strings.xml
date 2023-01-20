@@ -299,5 +299,5 @@
     <string name="share_logs">Share FoxMMM logs</string>
     <string name="not_official_build">This app is an unofficial FoxMMM build.</string>
     <string name="crash_text">Oops! We ran into a problem.</string>
-    <string name="crash_details">Exception: %s</string><string name="feedback_message">Give us more details about what you were doing when this happened.</string><string name="feedback_submit">Submit feedback</string>
+    <string name="crash_details">Exception: %s</string><string name="feedback_message">Give us more details about what you were doing when this happened.</string><string name="feedback_submit">Submit and restart</string><string name="please_feedback">Please help us out by telling us what you were trying to do when this happened.</string>
 </resources>
