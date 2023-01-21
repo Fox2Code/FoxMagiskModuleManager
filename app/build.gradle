@@ -35,7 +35,7 @@ android {
         minSdk 24
         targetSdk 33
         versionCode 64
-        versionName "1.2.1"
+        versionName "2.0.0-beta.1"
         signingConfig signingConfigs.release
         archivesBaseName = "FoxMMM-v$versionName"
     }
@@ -84,6 +84,8 @@ android {
     flavorDimensions "type"
     productFlavors {
         "default" {
+            // debug http requests. do not set this to true if you care about performance!!!!!
+            buildConfigField "boolean", "DEBUG_HTTP", "false"
             // Latest commit hash as BuildConfig.COMMIT_HASH
             def gitCommitHash = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
             buildConfigField "String", "COMMIT_HASH", "\"${gitCommitHash}\""
@@ -122,7 +124,7 @@ android {
             } else {
                 buildConfigField("java.util.List<String>",
                         "ENABLED_REPOS",
-                        "java.util.Arrays.asList(\"magisk_alt_repo\", \"androidacy_repo\")",)
+                        "java.util.Arrays.asList(\"androidacy_repo\")",)
             }
 
         }
@@ -130,7 +132,8 @@ android {
         fdroid {
             dimension "type"
             applicationIdSuffix ".fdroid"
-
+            // debug http requests. do not set this to true if you care about performance!!!!!
+            buildConfigField "boolean", "DEBUG_HTTP", "false"
             // Latest commit hash as BuildConfig.COMMIT_HASH
             def gitCommitHash = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
             buildConfigField "String", "COMMIT_HASH", "\"${gitCommitHash}\""
@@ -160,10 +163,10 @@ android {
             }
 
             // Repo with ads or tracking feature are disabled by default for the
-            // F-Droid flavor.
+            // F-Droid flavor. at the same time, the alt repo isn't particularly trustworthy
             buildConfigField("java.util.List<String>",
                     "ENABLED_REPOS",
-                    "java.util.Arrays.asList(\"magisk_alt_repo\")",)
+                    "java.util.Arrays.asList(\"\")",)
 
             // Get the androidacy client ID from the androidacy.properties
             Properties properties = new Properties()

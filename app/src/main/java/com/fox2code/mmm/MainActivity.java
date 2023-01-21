@@ -13,17 +13,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.text.InputType;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
@@ -49,18 +45,14 @@ import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.settings.SettingsActivity;
 import com.fox2code.mmm.utils.BlurUtils;
 import com.fox2code.mmm.utils.ExternalHelper;
-import com.fox2code.mmm.utils.io.Http;
 import com.fox2code.mmm.utils.IntentHelper;
+import com.fox2code.mmm.utils.io.Http;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import org.chromium.net.ExperimentalCronetEngine;
 import org.chromium.net.urlconnection.CronetURLStreamHandlerFactory;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.URL;
 
 import eightbitlab.com.blurview.BlurView;
@@ -307,93 +299,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         }, true);
         ExternalHelper.INSTANCE.refreshHelper(this);
         this.initMode = false;
-        // Show an material alert dialog if lastEventId is not "" or null in the private sentry shared preferences
-        //noinspection ConstantConditions
-        if (MainApplication.isCrashReportingEnabled() && !BuildConfig.SENTRY_TOKEN.isEmpty()) {
-            SharedPreferences preferences = getSharedPreferences("sentry", MODE_PRIVATE);
-            String lastExitReason = preferences.getString("lastExitReason", "");
-            if (BuildConfig.DEBUG)
-                Log.i("NoodleDebug", "Last Exit Reason: " + lastExitReason);
-            if (lastExitReason.equals("crash")) {
-                String lastEventId = preferences.getString("lastEventId", "");
-                if (BuildConfig.DEBUG)
-                    Log.i("NoodleDebug", "Last Event ID: " + lastEventId);
-                if (!lastEventId.equals("")) {
-                    // Three edit texts for the user to enter their email, name and a description of the issue
-                    EditText email = new EditText(this);
-                    email.setHint(R.string.email);
-                    email.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-                    EditText name = new EditText(this);
-                    name.setHint(R.string.name);
-                    name.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-                    EditText description = new EditText(this);
-                    description.setHint(R.string.additional_info);
-                    // Set description to be multiline and auto resize
-                    description.setSingleLine(false);
-                    description.setMaxHeight(1000);
-                    // Make description required-
-                    new MaterialAlertDialogBuilder(this).setCancelable(false).setTitle(R.string.sentry_dialogue_title).setMessage(R.string.sentry_dialogue_message).setView(new LinearLayout(this) {{
-                        setOrientation(LinearLayout.VERTICAL);
-                        setPadding(40, 20, 40, 10);
-                        addView(email);
-                        addView(name);
-                        addView(description);
-                    }}).setPositiveButton(R.string.submit, (dialog, which) -> {
-                        // Make sure the user has entered a description
-                        if (description.getText().toString().equals("")) {
-                            Toast.makeText(this, R.string.sentry_dialogue_no_description, Toast.LENGTH_LONG).show();
-                            dialog.cancel();
-                        }
-                        preferences.edit().remove("lastEventId").apply();
-                        preferences.edit().putString("lastExitReason", "").apply();
-                        // Prevent strict mode violation
-                        new Thread(() -> {
-                            try {
-                                HttpURLConnection connection = (HttpURLConnection) new URL("https" + "://sentry.io/api/0/projects/androidacy-i6/foxmmm/user-feedback/").openConnection();
-                                connection.setRequestMethod("POST");
-                                connection.setRequestProperty("Content-Type", "application/json");
-                                connection.setRequestProperty("Authorization", "Bearer " + BuildConfig.SENTRY_TOKEN);
-                                // Setups the JSON body
-                                String nameString = name.getText().toString();
-                                String emailString = email.getText().toString();
-                                if (nameString.equals(""))
-                                    nameString = "Anonymous";
-                                if (emailString.equals(""))
-                                    emailString = "Anonymous";
-                                JSONObject body = new JSONObject();
-                                body.put("event_id", lastEventId);
-                                body.put("name", nameString);
-                                body.put("email", emailString);
-                                body.put("comments", description.getText().toString());
-                                // Send the request
-                                connection.setDoOutput(true);
-                                connection.getOutputStream().write(body.toString().getBytes());
-                                connection.connect();
-                                // For debug builds, log the response code and response body
-                                if (BuildConfig.DEBUG) {
-                                    Log.d("NoodleDebug", "Response Code: " + connection.getResponseCode());
-                                }
-                                // Check if the request was successful
-                                if (connection.getResponseCode() == 200) {
-                                    runOnUiThread(() -> Toast.makeText(this, R.string.sentry_dialogue_success, Toast.LENGTH_LONG).show());
-                                } else {
-                                    runOnUiThread(() -> Toast.makeText(this, R.string.sentry_dialogue_failed_toast, Toast.LENGTH_LONG).show());
-                                }
-                            } catch (
-                                    IOException |
-                                    JSONException ignored) {
-                                // Show a toast if the user feedback could not be submitted
-                                runOnUiThread(() -> Toast.makeText(this, R.string.sentry_dialogue_failed_toast, Toast.LENGTH_LONG).show());
-                            }
-                        }).start();
-                    }).setNegativeButton(R.string.cancel, (dialog, which) -> {
-                        preferences.edit().remove("lastEventId").apply();
-                        preferences.edit().putString("lastExitReason", "").apply();
-                        Log.w(TAG, "User cancelled sentry dialog");
-                    }).show();
-                }
-            }
-        }
     }
 
     private void cardIconifyUpdate() {

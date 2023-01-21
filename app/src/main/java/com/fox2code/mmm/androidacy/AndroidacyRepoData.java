@@ -4,12 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
@@ -21,7 +19,6 @@ import com.fox2code.mmm.repo.RepoModule;
 import com.fox2code.mmm.utils.io.Http;
 import com.fox2code.mmm.utils.io.HttpException;
 import com.fox2code.mmm.utils.io.PropUtils;
-import com.fox2code.mmm.utils.realm.ReposList;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.topjohnwu.superuser.Shell;
 
@@ -80,7 +77,6 @@ public final class AndroidacyRepoData extends RepoData {
         this.testMode = testMode;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public static AndroidacyRepoData getInstance() {
         return RepoManager.getINSTANCE().getAndroidacyRepoData();
     }
@@ -182,23 +178,6 @@ public final class AndroidacyRepoData extends RepoData {
     @SuppressLint("RestrictedApi")
     @Override
     protected boolean prepare() throws NoSuchAlgorithmException {
-        // insert metadata into database
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposListCache.realm").allowWritesOnUiThread(true).allowWritesOnUiThread(true).directory(cacheRoot).build();
-        Realm realm = Realm.getInstance(realmConfiguration);
-        realm.beginTransaction();
-        ReposList repo = realm.where(ReposList.class).equalTo("id", this.id).findFirst();
-        if (repo == null) {
-            repo = realm.createObject(ReposList.class, this.id);
-        }
-        repo.setName(this.defaultName);
-        repo.setWebsite(this.defaultWebsite);
-        repo.setSupport(this.defaultSupport);
-        repo.setDonate(this.defaultDonate);
-        repo.setSubmitModule(this.defaultSubmitModule);
-        repo.setLastUpdate(0);
-        // close realm
-        realm.commitTransaction();
-        realm.close();
         // If ANDROIDACY_CLIENT_ID is not set or is empty, disable this repo and return
         if (Objects.equals(BuildConfig.ANDROIDACY_CLIENT_ID, "")) {
             SharedPreferences.Editor editor = MainApplication.getSharedPreferences().edit();
@@ -222,7 +201,7 @@ public final class AndroidacyRepoData extends RepoData {
                     new MaterialAlertDialogBuilder(MainApplication.getINSTANCE()).setTitle(R.string.androidacy_update_needed).setMessage(R.string.androidacy_update_needed_message).setPositiveButton(R.string.update, (dialog, which) -> {
                         // Open the app's page on the Play Store
                         Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setData(Uri.parse("https://github.com/Fox2Code/FoxMagiskModuleManager/releases/latest"));
+                        intent.setData(Uri.parse("https://www.androidacy.com/downloads/?view=FoxMMM&utm_source=foxmnm&utm_medium=app&utm_campaign=android-app"));
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         MainApplication.getINSTANCE().startActivity(intent);
                     }).setNegativeButton(R.string.cancel, null).show();
@@ -238,7 +217,7 @@ public final class AndroidacyRepoData extends RepoData {
         long time = System.currentTimeMillis();
         if (this.androidacyBlockade > time)
             return true; // fake it till you make it. Basically,
-        // don'e fail just becaue we're rate limited. API and web rate limits are different.
+        // don't fail just becaue we're rate limited. API and web rate limits are different.
         this.androidacyBlockade = time + 30_000L;
         try {
             if (token == null) {

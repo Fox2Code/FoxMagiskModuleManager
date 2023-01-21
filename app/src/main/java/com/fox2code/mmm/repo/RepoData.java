@@ -113,7 +113,7 @@ public class RepoData extends XRepo {
         Realm realm = Realm.getInstance(realmConfiguration);
         ReposList reposList = realm.where(ReposList.class).equalTo("id", this.id).findFirst();
         if (BuildConfig.DEBUG) {
-            Log.d("RepoData", "RepoData: " + this.id + ". record in database: " + (reposList != null ? reposList.toString() : null));
+            Log.d("RepoData", "RepoData: " + this.id + ". record in database: " + (reposList != null ? reposList.toString() : "none"));
         }
         this.enabled = (!this.forceHide && reposList != null && reposList.isEnabled());
         this.enabled = (!this.forceHide) && MainApplication.getSharedPreferences().getBoolean("pref_" + this.getPreferenceId() + "_enabled", true);
@@ -122,7 +122,7 @@ public class RepoData extends XRepo {
         // load metadata from realm database
         if (this.enabled) {
             try {
-                RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(cacheRoot).build();
+                RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).build();
                 // load metadata from realm database
                 Realm.getInstance(realmConfiguration2);
                 this.metaDataCache = ModuleListCache.getRepoModulesAsJson(this.id);
@@ -135,7 +135,7 @@ public class RepoData extends XRepo {
                     this.submitModule = this.defaultSubmitModule;
                 } else {
                     // get everything from ReposList realm database
-                    RealmConfiguration realmConfiguration3 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(cacheRoot).build();
+                    RealmConfiguration realmConfiguration3 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).build();
                     // load metadata from realm database
                     Realm.getInstance(realmConfiguration3);
                     this.name = ReposList.getRepo(this.id).getName();

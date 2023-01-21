@@ -26,7 +26,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
@@ -162,7 +161,6 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat implements FoxActivity.OnBackPressedCallback {
-        @RequiresApi(api = Build.VERSION_CODES.N)
         @SuppressLint("UnspecifiedImmutableFlag")
         @Override
         @SuppressWarnings("ConstantConditions")
@@ -385,7 +383,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 if (findPreference("pref_test_crash") != null && findPreference("pref_clear_data") != null) {
                     findPreference("pref_test_crash").setOnPreferenceClickListener(preference -> {
                         // Hard crash the app
-                        throw new Error("This is a test crash");
+                        // we need a stacktrace to see if the crash is from the app or from the system
+                        throw new RuntimeException("This is a test crash with a stupidly long description to show off the crash handler. Are we having fun yet?");
                     });
                     findPreference("pref_clear_data").setOnPreferenceClickListener(preference -> {
                         // Clear app data
@@ -664,7 +663,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             int declaredLanguageLevel = this.getResources().getInteger(R.integer.language_support_level);
             if (declaredLanguageLevel != LANGUAGE_SUPPORT_LEVEL)
                 return declaredLanguageLevel;
-            if (!this.getResources().getConfiguration().locale.getLanguage().equals("en") && this.getResources().getString(R.string.notification_update_pref).equals("Background modules update check") && this.getResources().getString(R.string.notification_update_desc).equals("May increase battery usage")) {
+            if (!this.getResources().getConfiguration().getLocales().get(0).getLanguage().equals("en") && this.getResources().getString(R.string.notification_update_pref).equals("Background modules update check") && this.getResources().getString(R.string.notification_update_desc).equals("May increase battery usage")) {
                 return 0;
             }
             return LANGUAGE_SUPPORT_LEVEL;

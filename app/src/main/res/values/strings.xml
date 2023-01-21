@@ -298,6 +298,19 @@
     <string name="error_saving_logs">Could not save logs</string>
     <string name="share_logs">Share FoxMMM logs</string>
     <string name="not_official_build">This app is an unofficial FoxMMM build.</string>
-    <string name="crash_text">Oops! We ran into a problem.</string>
-    <string name="crash_details">Exception: %s</string><string name="feedback_message">Give us more details about what you were doing when this happened.</string><string name="feedback_submit">Submit and restart</string><string name="please_feedback">Please help us out by telling us what you were trying to do when this happened.</string>
+    <string name="crash_text">Uh-oh, we hit a snag!</string>=
+    <string name="feedback_message">Give us more details about what you were doing when this happened. The more, the merrier!</string>
+    <string name="feedback_submit">Submit and restart</string>
+    <string name="please_feedback">Please help us out by telling us what you were trying to do when this happened.</string>
+    <string name="sentry_dialogue_disabled">Crash reporting is disabled. Enable it to submit feedback.</string>
+    <string name="feedback_name">Name (optional)</string>
+    <string name="feedback_email">Email (optional)</string>
+    <string name="sentry_dialogue_empty_message">You didn\'t specify additional feedback.</string>
+    <string name="crash_icon">Crash icon</string>
+    <string name="copy_button">Copy text</string>
+    <string name="crash_details">Unknown cause</string>
+    <string name="more_details">More details may be found below.</string>
+    <string name="crash_details_copied">Copied stacktrace to clipboard!</string>
+    <string name="crash_full_stacktrace">Stacktrace:\n%1$s</string>
+    <string name="sentry_enable_nag">It looks like crash reporting is disabled. Please enable it to submit feedback.</string>
 </resources>

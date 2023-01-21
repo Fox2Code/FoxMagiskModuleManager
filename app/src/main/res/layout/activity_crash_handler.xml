@@ -1,48 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+        <!-- layout with crash_text header and crash_details body -->
 
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-  <!-- layout with crash_text header and crash_details body -->
+        <!-- first, crash icon -->
+        <ImageView
+            android:id="@+id/crash_icon"
+            android:layout_width="101dp"
+            android:layout_height="93dp"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:contentDescription="@string/crash_icon"
+            android:src="@drawable/ic_baseline_bug_report_24" />
 
-            <!-- crash_text header -->
+        <!-- crash_text header -->
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/crash_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:text="@string/crash_text"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+        <!-- smaller details may be found below header -->
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:text="@string/more_details"
+            android:textSize="16sp" />
+
+        <!-- copyable crash_details body with copy button in top right corner -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <HorizontalScrollView android:layout_width="match_parent" android:layout_height="wrap_content">
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/crash_text"
+                android:id="@+id/crash_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:fontFamily="monospace"
+                android:gravity="start"
+                android:minHeight="48dp"
+                android:padding="12dp"
+                android:scrollbars="vertical|horizontal"
+                android:scrollHorizontally="true"
+                android:text="@string/crash_details"
+                android:textIsSelectable="false"
+                android:textSize="16sp" />
+            </HorizontalScrollView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/copy_button"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="top|end"
+                android:layout_margin="10dp"
+                android:background="@drawable/baseline_copy_all_24"
+                android:contentDescription="@string/copy_button"
+                android:onClick="copyCrashDetails"
+                android:padding="4dp" />
+        </FrameLayout>
+
+        <!-- feedback form -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <!-- feedback form header -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/feedback_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:gravity="fill"
-                android:text="@string/crash_text"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/crash_details"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:fontFamily="monospace"
-            android:gravity="fill"
-            android:text="@string/crash_details"
-            android:textSize="16sp" />
-
-            <!-- feedback form -->
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-        <!-- feedback form header -->
-                <TextView
-                    android:id="@+id/feedback_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:gravity="fill"
-                    android:text="@string/please_feedback"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                android:text="@string/please_feedback"
+                android:textSize="18sp" />
 
         <LinearLayout
+            android:id="@+id/feedback"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -53,7 +94,7 @@
                 android:layout_width="320dp"
                 android:layout_height="48dp"
                 android:layout_margin="10dp"
-                android:hint="@string/name"
+                android:hint="@string/feedback_name"
                 android:inputType="text" />
 
             <!-- feedback form email -->
@@ -62,7 +103,7 @@
                 android:layout_width="320dp"
                 android:layout_height="48dp"
                 android:layout_margin="10dp"
-                android:hint="@string/email"
+                android:hint="@string/feedback_email"
                 android:inputType="textEmailAddress" />
 
             <!-- feedback form message -->
@@ -82,6 +123,7 @@
 
                 <!-- submit feedback button -->
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/feedback_submit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
@@ -89,6 +131,7 @@
 
                 <!-- restart button -->
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/restart"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
@@ -96,6 +139,6 @@
 
             </LinearLayout>
         </LinearLayout>
-            </androidx.appcompat.widget.LinearLayoutCompat>
+            </LinearLayout>
         </LinearLayout>
 </ScrollView>

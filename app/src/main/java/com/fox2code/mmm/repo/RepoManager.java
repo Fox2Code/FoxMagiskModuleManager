@@ -4,14 +4,12 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainActivity;
@@ -28,8 +26,10 @@ import com.fox2code.mmm.utils.io.Http;
 import com.fox2code.mmm.utils.io.PropUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class RepoManager extends SyncManager {
     public static final String MAGISK_REPO = "https://raw.githubusercontent.com/Magisk-Modules-Repo/submission/modules/modules.json";
@@ -65,7 +66,6 @@ public final class RepoManager extends SyncManager {
     private boolean initialized;
     private boolean repoLastSuccess;
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private RepoManager(MainApplication mainApplication) {
         INSTANCE = this; // Set early fox XHooks
         this.initialized = false;
@@ -92,7 +92,6 @@ public final class RepoManager extends SyncManager {
         this.initialized = true;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public static RepoManager getINSTANCE() {
         if (INSTANCE == null || !INSTANCE.initialized) {
             synchronized (lock) {
@@ -110,7 +109,6 @@ public final class RepoManager extends SyncManager {
         return INSTANCE;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public static RepoManager getINSTANCE_UNSAFE() {
         if (INSTANCE == null) {
             synchronized (lock) {
@@ -161,7 +159,6 @@ public final class RepoManager extends SyncManager {
         return INSTANCE != null && INSTANCE.androidacyRepoData != null && INSTANCE.androidacyRepoData.isEnabled();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @SuppressWarnings("StatementWithEmptyBody")
     private void populateDefaultCache(RepoData repoData) {
         for (RepoModule repoModule : repoData.moduleHashMap.values()) {
@@ -191,12 +188,10 @@ public final class RepoManager extends SyncManager {
         return this.repoData.get(url);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public RepoData addOrGet(String url) {
         return this.addOrGet(url, null);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public RepoData addOrGet(String url, String fallBackName) {
         if (MAGISK_ALT_REPO_JSDELIVR.equals(url))
             url = MAGISK_ALT_REPO;
@@ -220,7 +215,6 @@ public final class RepoManager extends SyncManager {
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @SuppressLint("StringFormatInvalid")
     protected void scanInternal(@NonNull UpdateListener updateListener) {
         // Refuse to start if first_launch is not false in shared preferences
@@ -250,14 +244,20 @@ public final class RepoManager extends SyncManager {
             urlConnection.setReadTimeout(1000);
             urlConnection.setUseCaches(false);
             urlConnection.getInputStream().close();
-            // should return a 200 and the content should be "OK"
-            if (urlConnection.getResponseCode() == 200 && urlConnection.getContentLength() == 3) {
-                if (BuildConfig.DEBUG)
-                    Log.i("RepoManager", "Internet connection detected");
+            // should return a 200 and the content should contain "visit_scheme=https" and ip=<some ip>
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, "Response code: " + urlConnection.getResponseCode());
+            }
+            // get the response body
+            String responseBody = new BufferedReader(new InputStreamReader(urlConnection.getInputStream())).lines().collect(Collectors.joining("\n"));
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, "Response body: " + responseBody);
+            }
+            // check if the response body contains the expected content
+            if (urlConnection.getResponseCode() == 200 && responseBody.contains("visit_scheme=https") && responseBody.contains("ip=")) {
                 this.hasInternet = true;
             } else {
-                if (BuildConfig.DEBUG)
-                    Log.w("RepoManager", "Internet connection not detected");
+                Log.e(TAG, "Failed to check internet connection");
             }
         } catch (
                 IOException e) {
@@ -389,7 +389,6 @@ public final class RepoManager extends SyncManager {
         return this.hasInternet;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private RepoData addRepoData(String url, String fallBackName) {
         String id = internalIdOfUrl(url);
         File cacheRoot = new File(this.mainApplication.getDataDir(), id);
@@ -416,7 +415,6 @@ public final class RepoManager extends SyncManager {
         return repoData;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private AndroidacyRepoData addAndroidacyRepoData() {
         // cache dir is actually under app data
         File cacheRoot = new File(this.mainApplication.getDataDir(), "androidacy_repo");

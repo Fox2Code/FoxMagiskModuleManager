@@ -39,7 +39,11 @@ public class SentryMain {
             editor.apply();
             // open crash handler and exit
             Intent intent = new Intent(mainApplication, CrashHandler.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            // pass the entire exception to the crash handler
+            intent.putExtra("exception", throwable);
+            // add stacktrace as string
+            intent.putExtra("stacktrace", throwable.getStackTrace());
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             mainApplication.startActivity(intent);
             android.os.Process.killProcess(android.os.Process.myPid());
             System.exit(10);

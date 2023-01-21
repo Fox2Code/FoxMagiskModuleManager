@@ -398,6 +398,22 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         super.onConfigurationChanged(newConfig);
     }
 
+    // getDataDir wrapper with optional path parameter
+    public File getDataDirWithPath(String path) {
+        File dataDir = this.getDataDir();
+        if (path != null) {
+            dataDir = new File(dataDir, path);
+        }
+        // create the directory if it doesn't exist
+        if (!dataDir.exists()) {
+            if (!dataDir.mkdirs()) {
+                if (BuildConfig.DEBUG)
+                    Log.w("MainApplication", "Failed to create directory " + dataDir);
+            }
+        }
+        return dataDir;
+    }
+
     public void clearAppData() {
         // Clear app data
         try {

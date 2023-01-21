@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-          android:enableOnBackInvokedCallback="true"
           tools:ignore="QueryAllPackagesPermission"
           tools:targetApi="tiramisu">
 
@@ -24,6 +23,7 @@
 
     <application
         android:name=".MainApplication"
+        android:enableOnBackInvokedCallback="true"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/full_backup_content"
@@ -37,9 +37,10 @@
         android:usesCleartextTraffic="false"
         tools:ignore="ManifestResource"
         tools:replace="android:supportsRtl"
-        tools:targetApi="s">
+        tools:targetApi="tiramisu">
         <activity
             android:name=".CrashHandler"
+            android:process=":crash"
             android:exported="false" />
         <activity
             android:name=".SetupActivity"

@@ -140,7 +140,7 @@ public class Http {
             }
             if (chain.request().header("Accept-Language") == null) {
                 request.header("Accept-Language", // Send system language to the server
-                        mainApplication.getResources().getConfiguration().locale.toLanguageTag());
+                        mainApplication.getResources().getConfiguration().getLocales().get(0).toLanguageTag());
             }
             return chain.proceed(request.build());
         });
@@ -226,12 +226,12 @@ public class Http {
     @SuppressLint("RestrictedApi")
     @SuppressWarnings("resource")
     public static byte[] doHttpGet(String url, boolean allowCache) throws IOException {
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG_HTTP) {
             // Log, but set all query parameters values to "****" while keeping the keys
             Log.d(TAG, "doHttpGet: " + url.replaceAll("=[^&]*", "=****"));
         }
         Response response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).get().build()).execute();
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG_HTTP) {
             Log.d(TAG, "doHttpGet: request executed");
         }
         // 200/204 == success, 304 == cache valid
@@ -245,7 +245,7 @@ public class Http {
             }
             throw new HttpException(response.code());
         }
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG_HTTP) {
             Log.d(TAG, "doHttpGet: " + url.replaceAll("=[^&]*", "=****") + " succeeded");
         }
         ResponseBody responseBody = response.body();
@@ -255,7 +255,7 @@ public class Http {
             if (response != null)
                 responseBody = response.body();
         }
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG_HTTP) {
             Log.d(TAG, "doHttpGet: returning " + responseBody.contentLength() + " bytes");
         }
         return responseBody.bytes();
