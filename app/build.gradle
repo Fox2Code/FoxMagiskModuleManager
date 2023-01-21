@@ -32,7 +32,7 @@ android {
 
     defaultConfig {
         applicationId "com.fox2code.mmm"
-        minSdk 23
+        minSdk 24
         targetSdk 33
         versionCode 64
         versionName "1.2.1"

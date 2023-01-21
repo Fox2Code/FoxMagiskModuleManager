@@ -2,9 +2,11 @@ package com.fox2code.mmm.utils.sentry;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
+import com.fox2code.mmm.CrashHandler;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.androidacy.AndroidacyUtil;
 
@@ -35,10 +37,12 @@ public class SentryMain {
             editor.putString("lastExitReason", "crash");
             editor.putLong("lastExitTime", System.currentTimeMillis());
             editor.apply();
-            // If we just let the default uncaught exception handler handle the
-            // exception, the app will hang and never close.
-            // So we need to kill the app ourselves.
-            System.exit(1);
+            // open crash handler and exit
+            Intent intent = new Intent(mainApplication, CrashHandler.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mainApplication.startActivity(intent);
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(10);
         });
         SentryAndroid.init(mainApplication, options -> {
             // If crash reporting is disabled, stop here.

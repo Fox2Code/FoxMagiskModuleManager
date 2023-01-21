@@ -14,7 +14,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.annotation.StyleRes;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.emoji2.text.DefaultEmojiCompatConfig;
@@ -58,7 +57,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     // Warning! Locales that are't exist will crash the app
     // Anything that is commented out is supported but the translation is not complete to at least 60%
     public static HashSet<String> supportedLocales = new HashSet<>();
-    private static Locale timeFormatLocale = Resources.getSystem().getConfiguration().locale;
+    private static Locale timeFormatLocale = Resources.getSystem().getConfiguration().getLocales().get(0);
     private static SimpleDateFormat timeFormat = new SimpleDateFormat(timeFormatString, timeFormatLocale);
     private static SharedPreferences bootSharedPreferences;
     private static String relPackageName = BuildConfig.APPLICATION_ID;
@@ -308,6 +307,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
             Log.d("MainApplication", "Starting FoxMMM version " + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + "), commit " + BuildConfig.COMMIT_HASH);
         }
         super.onCreate();
+
         if (BuildConfig.DEBUG) {
             Log.d("MainApplication", "FoxMMM is running in debug mode");
         }
@@ -390,7 +390,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
 
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        Locale newTimeFormatLocale = newConfig.locale;
+        Locale newTimeFormatLocale = newConfig.getLocales().get(0);
         if (timeFormatLocale != newTimeFormatLocale) {
             timeFormatLocale = newTimeFormatLocale;
             timeFormat = new SimpleDateFormat(timeFormatString, timeFormatLocale);
@@ -398,17 +398,14 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         super.onConfigurationChanged(newConfig);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void clearAppData() {
         // Clear app data
         try {
             // Clearing app data
             // We have to manually delete the files and directories
             // because the cache directory is not cleared by the following method
-            File cacheDir = null;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                cacheDir = this.getDataDir();
-            }
+            File cacheDir;
+            cacheDir = this.getDataDir();
             if (cacheDir != null && cacheDir.isDirectory()) {
                 String[] children = cacheDir.list();
                 if (children != null) {
