@@ -297,5 +297,20 @@
     <string name="save_logs">Sauvegarder les journeaux dans le stockage et les partager</string>
     <string name="error_saving_logs">Les journeaux n\’ont pas pu être sauvegardés</string>
     <string name="share_logs">Partager les journeaux FoxMMM</string>
-    <string name="not_official_build">Avertissement: Vous êtes en train de faire fonctionner une fabrication non officielle et donc non supportée de FoxMMM.</string>
+    <string name="not_official_build">Cette application n\’est pas une fabrication officielle FoxMMM.</string>
+    <string name="crash_text">Uh-oh, on a un problème!</string>
+    <string name="feedback_message">Donnez nous plus de détails à propos de ce qui s\’est passé quand c\’est arrivé. Plus on est foue, plus on rit!</string>
+    <string name="feedback_submit">Envoyer et redémarrer</string>
+    <string name="please_feedback">Merci de nous aider en nous disant qu\’est ce que vous avez essayé de faire quand c\’est arrivé.</string>
+    <string name="sentry_dialogue_disabled">Le rapport de plantage est désactivé. Activez le pour envoyer le rapport.</string>
+    <string name="feedback_name">Nom (optionel)</string>
+    <string name="feedback_email">Email (optionel)</string>
+    <string name="sentry_dialogue_empty_message">Vous n\’avez pas indiqué d\’avis complémentaires.</string>
+    <string name="crash_icon">Icône de du plantage</string>
+    <string name="copy_button">Copier le texte</string>
+    <string name="crash_details">Cause inconnue</string>
+    <string name="more_details">Plus de détails peuvent êtres trouvés en dessous.</string>
+    <string name="crash_details_copied">Copier la pile dans le presse-papier!</string>
+    <string name="crash_full_stacktrace">Pile:\n%1$s</string>
+    <string name="sentry_enable_nag">On dirait que le rapport de plantage est désactivé. Merci de l\’activer pour l\’envoyer.</string>
 </resources>
