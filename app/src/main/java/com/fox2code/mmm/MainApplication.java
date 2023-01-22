@@ -1,7 +1,9 @@
 package com.fox2code.mmm;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -11,7 +13,6 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.os.SystemClock;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StyleRes;
@@ -36,6 +37,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
@@ -45,6 +47,9 @@ import io.noties.markwon.html.HtmlPlugin;
 import io.noties.markwon.image.ImagesPlugin;
 import io.noties.markwon.image.network.OkHttpNetworkSchemeHandler;
 import io.realm.Realm;
+import io.sentry.Sentry;
+import io.sentry.SentryLevel;
+import timber.log.Timber;
 
 public class MainApplication extends FoxApplication implements androidx.work.Configuration.Provider {
     private static final String timeFormatString = "dd MMM yyyy"; // Example: 13 july 2001
@@ -56,7 +61,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     public static boolean isOfficial = false;
     // Warning! Locales that are't exist will crash the app
     // Anything that is commented out is supported but the translation is not complete to at least 60%
-    public static HashSet<String> supportedLocales = new HashSet<>();
+    public static final HashSet<String> supportedLocales = new HashSet<>();
     private static Locale timeFormatLocale = Resources.getSystem().getConfiguration().getLocales().get(0);
     private static SimpleDateFormat timeFormat = new SimpleDateFormat(timeFormatString, timeFormatLocale);
     private static SharedPreferences bootSharedPreferences;
@@ -215,7 +220,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         boolean monet = isMonetEnabled();
         switch (theme = getSharedPreferences().getString("pref_theme", "system")) {
             default:
-                Log.w("MainApplication", "Unknown theme id: " + theme);
+                Timber.w("Unknown theme id: %s", theme);
             case "system":
                 themeResId = monet ? R.style.Theme_MagiskModuleManager_Monet : R.style.Theme_MagiskModuleManager;
                 break;
@@ -230,7 +235,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
                 break;
             case "transparent_light":
                 if (monet) {
-                    Log.w("MainApplication", "Monet is not supported for transparent theme");
+                    Timber.tag("MainApplication").w("Monet is not supported for transparent theme");
                 }
                 themeResId = R.style.Theme_MagiskModuleManager_Transparent_Light;
                 break;
@@ -276,6 +281,9 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
 
     @Override
     public void onCreate() {
+        // init timber
+        if (BuildConfig.DEBUG) Timber.plant(new Timber.DebugTree());
+        else Timber.plant(new ReleaseTree());
         // supportedLocales.add("ar");
         // supportedLocales.add("ar_SA");
         supportedLocales.add("cs");
@@ -303,18 +311,16 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         if (INSTANCE == null)
             INSTANCE = this;
         relPackageName = this.getPackageName();
-        if (BuildConfig.DEBUG) {
-            Log.d("MainApplication", "Starting FoxMMM version " + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + "), commit " + BuildConfig.COMMIT_HASH);
-        }
+        Timber.d("Starting FoxMMM version " + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + "), commit " + BuildConfig.COMMIT_HASH);
         super.onCreate();
-
         if (BuildConfig.DEBUG) {
-            Log.d("MainApplication", "FoxMMM is running in debug mode");
-        }
-        if (BuildConfig.DEBUG) {
-            Log.d("MainApplication", "Initializing Realm");
+            Timber.d("Initializing FoxMMM");
+            Timber.d("Started from background: %s", !isInForeground());
+            Timber.d("FoxMMM is running in debug mode");
+            Timber.d("Initializing Realm");
         }
         Realm.init(this);
+        Timber.d("Initialized Realm");
         // Determine if this is an official build based on the signature
         try {
             // Get the signature of the key used to sign the app
@@ -324,11 +330,6 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
             isOfficial = ourSignatureHash.equals(officialSignatureHash);
         } catch (
                 PackageManager.NameNotFoundException ignored) {
-        }
-        if (!isOfficial) {
-            Log.w("MainApplication", "This is not an official build of FoxMMM. This warning can be safely ignored if this is expected, otherwise you may be running an untrusted build.");
-            // Show a toast to warn the user
-            Toast.makeText(this, R.string.not_official_build, Toast.LENGTH_LONG).show();
         }
         SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
         // We are only one process so it's ok to do this
@@ -357,14 +358,14 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
             fontRequestEmojiCompatConfig.setMetadataLoadStrategy(EmojiCompat.LOAD_STRATEGY_MANUAL);
             EmojiCompat emojiCompat = EmojiCompat.init(fontRequestEmojiCompatConfig);
             new Thread(() -> {
-                Log.i("MainApplication", "Loading emoji compat...");
+                Timber.i("Loading emoji compat...");
                 emojiCompat.load();
-                Log.i("MainApplication", "Emoji compat loaded!");
+                Timber.i("Emoji compat loaded!");
             }, "Emoji compat init.").start();
         }
         SentryMain.initialize(this);
         if (Objects.equals(BuildConfig.ANDROIDACY_CLIENT_ID, "")) {
-            Log.w("MainApplication", "Androidacy client id is empty! Please set it in androidacy.properties. Will not enable Androidacy.");
+            Timber.w("Androidacy client id is empty! Please set it in androidacy.properties. Will not enable Androidacy.");
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("pref_androidacy_repo_enabled", false);
             editor.apply();
@@ -408,7 +409,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         if (!dataDir.exists()) {
             if (!dataDir.mkdirs()) {
                 if (BuildConfig.DEBUG)
-                    Log.w("MainApplication", "Failed to create directory " + dataDir);
+                    Timber.w("Failed to create directory %s", dataDir);
             }
         }
         return dataDir;
@@ -427,31 +428,69 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
                 if (children != null) {
                     for (String s : children) {
                         if (BuildConfig.DEBUG)
-                            Log.w("MainApplication", "Deleting " + s);
+                            Timber.w("Deleting %s", s);
                         if (!s.equals("lib")) {
                             if (!new File(cacheDir, s).delete()) {
                                 if (BuildConfig.DEBUG)
-                                    Log.w("MainApplication", "Failed to delete " + s);
+                                    Timber.w("Failed to delete %s", s);
                             }
                         }
                     }
                 }
             }
             if (BuildConfig.DEBUG)
-                Log.w("MainApplication", "Deleting cache dir");
+                Timber.w("Deleting cache dir");
             this.deleteSharedPreferences("mmm_boot");
             this.deleteSharedPreferences("mmm");
             this.deleteSharedPreferences("sentry");
             this.deleteSharedPreferences("androidacy");
             if (BuildConfig.DEBUG)
-                Log.w("MainApplication", "Deleting shared prefs");
+                Timber.w("Deleting shared prefs");
             this.getPackageManager().clearPackagePreferredActivities(this.getPackageName());
             if (BuildConfig.DEBUG)
-                Log.w("MainApplication", "Done clearing app data");
+                Timber.w("Done clearing app data");
         } catch (
                 Exception e) {
-            Log.e("MainApplication", "Failed to clear app data", e);
+            Timber.e(e);
         }
     }
 
+    public boolean isInForeground() {
+        // determine if the app is in the foreground
+        ActivityManager activityManager = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+        if (activityManager != null) {
+            List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+            if (appProcesses != null) {
+                for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+                    if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                        for (String activeProcess : appProcess.pkgList) {
+                            if (activeProcess.equals(this.getPackageName())) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                }
+            }
+        } else {
+            Timber.e("Failed to get activity manager");
+        }
+        return false;
+    }
+
+    private static class ReleaseTree extends Timber.Tree {
+        @SuppressWarnings("StatementWithEmptyBody")
+        @Override
+        protected void log(int priority, String tag, @NonNull String message, Throwable t) {
+            if (priority == Log.VERBOSE || priority == Log.DEBUG) {
+                // silently ignore
+            } else if (priority == Log.INFO) {
+                Sentry.captureMessage(message, SentryLevel.INFO);
+            } else if (priority == Log.WARN) {
+                Sentry.captureMessage(message, SentryLevel.WARNING);
+            } else if (priority == Log.ERROR) {
+                Sentry.captureException(t);
+            }
+        }
+    }
 }

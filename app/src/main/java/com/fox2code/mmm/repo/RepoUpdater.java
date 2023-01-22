@@ -1,7 +1,5 @@
 package com.fox2code.mmm.repo;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.fox2code.mmm.utils.io.Http;
@@ -18,9 +16,9 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import timber.log.Timber;
 
 public class RepoUpdater {
-    private static final String TAG = "RepoUpdater";
     public final RepoData repoData;
     public byte[] indexRaw;
     private List<RepoModule> toUpdate;
@@ -59,7 +57,7 @@ public class RepoUpdater {
             return this.toUpdate.size();
         } catch (
                 Exception e) {
-            Log.e(TAG, "Failed to get manifest of " + this.repoData.id, e);
+            Timber.e(e);
             this.indexRaw = null;
             this.toUpdate = Collections.emptyList();
             this.toApply = Collections.emptySet();
@@ -115,12 +113,26 @@ public class RepoUpdater {
                 // both are arrays of modules
                 // try to get modules from "modules" key
                 JSONObject modules = new JSONObject(new String(this.indexRaw, StandardCharsets.UTF_8));
+                // check if modules has key "modules" or "data"
                 try {
-                    // get modules
-                    modules = modules.getJSONObject("modules");
+                    if (modules.has("modules")) {
+                        // get modules from "modules" key
+                        modules = modules.getJSONObject("modules");
+                    } else if (modules.has("data")) {
+                        // get modules from "data" key
+                        modules = modules.getJSONObject("data");
+                    }
                 } catch (JSONException e) {
-                    // if it fails, try to get modules from "data" key
-                    modules = modules.getJSONObject("data");
+                    // there's a possibility that the modules key is an array, so we need to convert it to a json object
+                    // get modules array
+                    JSONObject[] modulesArray = new JSONObject[]{modules};
+                    // create new json object
+                    modules = new JSONObject();
+                    // iterate over modules array
+                    for (int i = 0; i < modulesArray.length; i++) {
+                        // put module in json object
+                        modules.put(String.valueOf(i), modulesArray[i]);
+                    }
                 }
                 for (JSONObject module : new JSONObject[]{modules}) {
                     try {
@@ -209,12 +221,12 @@ public class RepoUpdater {
                                     moduleListCache.setInstalledVersionCode(installedVersionCode);
                                 }, () -> {
                                     // Transaction was a success.
-                                    Log.d(TAG, "onSuccess: Transaction was a success.");
+                                    Timber.d("onSuccess: Transaction was a success.");
                                     // close realm
                                     realm.close();
                                 }, error -> {
                                     // Transaction failed and was automatically canceled.
-                                    Log.e(TAG, "onError: Transaction failed and was automatically canceled.", error);
+                                    Timber.e(error);
                                     // close realm
                                     realm.close();
                                 });
@@ -223,7 +235,7 @@ public class RepoUpdater {
                     } catch (
                             JSONException e) {
                         e.printStackTrace();
-                        Log.w(TAG, "Failed to get module info from module " + module + " in repo " + this.repoData.id + " with error " + e.getMessage());
+                        Timber.w("Failed to get module info from module " + module + " in repo " + this.repoData.id + " with error " + e.getMessage());
                     }
                 }
             } catch (

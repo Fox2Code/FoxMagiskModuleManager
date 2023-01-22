@@ -1,5 +1,7 @@
 package com.fox2code.mmm;
 
+import static com.fox2code.mmm.MainApplication.isOfficial;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -13,13 +15,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
@@ -56,9 +58,9 @@ import org.chromium.net.urlconnection.CronetURLStreamHandlerFactory;
 import java.net.URL;
 
 import eightbitlab.com.blurview.BlurView;
+import timber.log.Timber;
 
 public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, OverScrollManager.OverScrollHelper {
-    private static final String TAG = "MainActivity";
     private static final int PRECISION = 10000;
     public static boolean doSetupNowRunning = true;
     public final ModuleViewListBuilder moduleViewListBuilder;
@@ -104,12 +106,12 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     URL.setURLStreamHandlerFactory(cronetURLStreamHandlerFactory);
                 } catch (
                         Error e) {
-                    Log.e(TAG, "Failed to install Cronet URLStreamHandlerFactory");
+                    Timber.e("Failed to install Cronet URLStreamHandlerFactory");
                 }
                 urlFactoryInstalled = true;
             } catch (
                     Throwable t) {
-                Log.e(TAG, "Failed to install CronetURLStreamHandlerFactory - other");
+                Timber.e("Failed to install CronetURLStreamHandlerFactory - other");
             }
         }
         if (doSetupRestarting) {
@@ -117,6 +119,11 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         }
         BackgroundUpdateChecker.onMainActivityCreate(this);
         super.onCreate(savedInstanceState);
+        if (!isOfficial) {
+            Timber.w("You may be running an untrusted build.");
+            // Show a toast to warn the user
+            Toast.makeText(this, R.string.not_official_build, Toast.LENGTH_LONG).show();
+        }
         if (!MainApplication.getSharedPreferences().getBoolean("first_time_user", true)) {
             this.setActionBarExtraMenuButton(R.drawable.ic_baseline_settings_24, v -> {
                 IntentHelper.startActivity(this, SettingsActivity.class);
@@ -181,7 +188,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         InstallerInitializer.tryGetMagiskPathAsync(new InstallerInitializer.Callback() {
             @Override
             public void onPathReceived(String path) {
-                Log.i(TAG, "Got magisk path: " + path);
+                Timber.i("Got magisk path: %s", path);
                 if (InstallerInitializer.peekMagiskVersion() < Constants.MAGISK_VER_CODE_INSTALL_COMMAND)
                     moduleViewListBuilder.addNotification(NotificationType.MAGISK_OUTDATED);
                 if (!MainApplication.isShowcaseMode())
@@ -193,21 +200,19 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
 
             @Override
             public void onFailure(int error) {
-                Log.i(TAG, "Failed to get magisk path!");
+                Timber.i("Failed to get magisk path!");
                 moduleViewListBuilder.addNotification(InstallerInitializer.getErrorNotification());
                 this.commonNext();
             }
 
             public void commonNext() {
                 if (BuildConfig.DEBUG) {
-                    Log.d(TAG, "Common next");
+                    Timber.d("Common next");
                     moduleViewListBuilder.addNotification(NotificationType.DEBUG);
                 }
                 updateScreenInsets(); // Fix an edge case
                 if (waitInitialSetupFinished()) {
-                    if (BuildConfig.DEBUG) {
-                        Log.d(TAG, "Initial setup not finished, waiting...");
-                    }
+                    Timber.d("waiting...");
                     return;
                 }
                 swipeRefreshBlocker = System.currentTimeMillis() + 5_000L;
@@ -225,22 +230,22 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
 
                 // On every preferences change, log the change if debug is enabled
                 if (BuildConfig.DEBUG) {
-                    Log.d("PrefsListener", "onCreate: Preferences: " + MainApplication.getSharedPreferences().getAll());
+                    Timber.d("onCreate: Preferences: %s", MainApplication.getSharedPreferences().getAll());
                     // Log all preferences changes
-                    MainApplication.getSharedPreferences().registerOnSharedPreferenceChangeListener((prefs, key) -> Log.i("PrefsListener", "onSharedPreferenceChanged: " + key + " = " + prefs.getAll().get(key)));
+                    MainApplication.getSharedPreferences().registerOnSharedPreferenceChangeListener((prefs, key) -> Timber.i("onSharedPreferenceChanged: " + key + " = " + prefs.getAll().get(key)));
                 }
-                Log.i(TAG, "Scanning for modules!");
+                Timber.i("Scanning for modules!");
                 if (BuildConfig.DEBUG)
-                    Log.i("NoodleDebug", "Initialize Update");
+                    Timber.i("Initialize Update");
                 final int max = ModuleManager.getINSTANCE().getUpdatableModuleCount();
                 if (RepoManager.getINSTANCE().getCustomRepoManager().needUpdate()) {
-                    Log.w(TAG, "Need update on create?");
+                    Timber.w("Need update on create?");
                 }
                 if (BuildConfig.DEBUG)
-                    Log.i("NoodleDebug", "Check Update Compat");
+                    Timber.i("Check Update Compat");
                 AppUpdateManager.getAppUpdateManager().checkUpdateCompat();
                 if (BuildConfig.DEBUG)
-                    Log.i("NoodleDebug", "Check Update");
+                    Timber.i("Check Update");
                 RepoManager.getINSTANCE().update(value -> runOnUiThread(max == 0 ? () -> progressIndicator.setProgressCompat((int) (value * PRECISION), true) : () -> progressIndicator.setProgressCompat((int) (value * PRECISION * 0.75F), true)));
                 NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
                 // Add debug notification for debug builds
@@ -255,11 +260,11 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     // Compatibility data still needs to be updated
                     AppUpdateManager appUpdateManager = AppUpdateManager.getAppUpdateManager();
                     if (BuildConfig.DEBUG)
-                        Log.i("NoodleDebug", "Check App Update");
+                        Timber.i("Check App Update");
                     if (BuildConfig.ENABLE_AUTO_UPDATER && appUpdateManager.checkUpdate(true))
                         moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
                     if (BuildConfig.DEBUG)
-                        Log.i("NoodleDebug", "Check Json Update");
+                        Timber.i("Check Json Update");
                     if (max != 0) {
 
                         int current = 0;
@@ -267,12 +272,12 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                         for (LocalModuleInfo localModuleInfo : ModuleManager.getINSTANCE().getModules().values()) {
                             if (localModuleInfo.updateJson != null) {
                                 if (BuildConfig.DEBUG)
-                                    Log.i("NoodleDebug", localModuleInfo.id);
+                                    Timber.i(localModuleInfo.id);
                                 try {
                                     localModuleInfo.checkModuleUpdate();
                                 } catch (
                                         Exception e) {
-                                    Log.e("MainActivity", "Failed to fetch update of: " + localModuleInfo.id, e);
+                                    Timber.e(e);
                                 }
                                 current++;
                                 final int currentTmp = current;
@@ -289,11 +294,11 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     updateScreenInsets(getResources().getConfiguration());
                 });
                 if (BuildConfig.DEBUG)
-                    Log.i("NoodleDebug", "Apply");
+                    Timber.i("Apply");
                 RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilder::appendRemoteModules);
 
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
-                Log.i(TAG, "Finished app opening state!");
+                Timber.i("Finished app opening state!");
                 // noodleDebug.unbind();
             }
         }, true);
@@ -331,7 +336,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         //this.actionBarBlur.invalidate();
         this.overScrollInsetTop = combinedBarsHeight;
         this.overScrollInsetBottom = bottomInset;
-        Log.i(TAG, "( " + bottomInset + ", " + this.searchCard.getHeight() + ")");
+        Timber.i("(" + this.searchCard.getHeight() + ")");
     }
 
     private void updateBlurState() {
@@ -360,7 +365,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         if (this.initMode)
             return;
         this.initMode = true;
-        Log.i(TAG, "Item Before");
+        Timber.i("Item Before");
         this.searchView.setQuery("", false);
         this.searchView.clearFocus();
         this.searchView.setIconified(true);
@@ -368,7 +373,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         this.updateScreenInsets();
         this.updateBlurState();
         this.moduleViewListBuilder.setQuery(null);
-        Log.i(TAG, "Item After");
+        Timber.i("Item After");
         this.moduleViewListBuilder.refreshNotificationsUI(this.moduleViewAdapter);
         InstallerInitializer.tryGetMagiskPathAsync(new InstallerInitializer.Callback() {
             @Override
@@ -399,7 +404,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             }
 
             public void commonNext() {
-                Log.i(TAG, "Common Before");
+                Timber.i("Common Before");
                 if (MainApplication.isShowcaseMode())
                     moduleViewListBuilder.addNotification(NotificationType.SHOWCASE_MODE);
                 NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
@@ -414,7 +419,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                         progressIndicator.setMax(PRECISION);
                     });
                     if (BuildConfig.DEBUG)
-                        Log.i("NoodleDebug", "Check Update");
+                        Timber.i("Check Update");
                     RepoManager.getINSTANCE().update(value -> runOnUiThread(() -> progressIndicator.setProgressCompat((int) (value * PRECISION), true)));
                     runOnUiThread(() -> {
                         progressIndicator.setProgressCompat(PRECISION, true);
@@ -422,11 +427,11 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     });
                 }
                 if (BuildConfig.DEBUG)
-                    Log.i("NoodleDebug", "Apply");
+                    Timber.i("Apply");
                 RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilder::appendRemoteModules);
-                Log.i(TAG, "Common Before applyTo");
+                Timber.i("Common Before applyTo");
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
-                Log.i(TAG, "Common After");
+                Timber.i("Common After");
             }
         });
         this.initMode = false;
@@ -444,7 +449,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             return; // Do not double scan
         }
         if (BuildConfig.DEBUG)
-            Log.i("NoodleDebug", "Refresh");
+            Timber.i("Refresh");
         this.progressIndicator.setVisibility(View.VISIBLE);
         this.progressIndicator.setProgressCompat(0, false);
         this.swipeRefreshBlocker = System.currentTimeMillis() + 5_000L;
@@ -463,22 +468,22 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 // Compatibility data still needs to be updated
                 AppUpdateManager appUpdateManager = AppUpdateManager.getAppUpdateManager();
                 if (BuildConfig.DEBUG)
-                    Log.i("NoodleDebug", "Check App Update");
+                    Timber.i("Check App Update");
                 if (BuildConfig.ENABLE_AUTO_UPDATER && appUpdateManager.checkUpdate(true))
                     moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
                 if (BuildConfig.DEBUG)
-                    Log.i("NoodleDebug", "Check Json Update");
+                    Timber.i("Check Json Update");
                 if (max != 0) {
                     int current = 0;
                     for (LocalModuleInfo localModuleInfo : ModuleManager.getINSTANCE().getModules().values()) {
                         if (localModuleInfo.updateJson != null) {
                             if (BuildConfig.DEBUG)
-                                Log.i("NoodleDebug", localModuleInfo.id);
+                                Timber.i(localModuleInfo.id);
                             try {
                                 localModuleInfo.checkModuleUpdate();
                             } catch (
                                     Exception e) {
-                                Log.e("MainActivity", "Failed to fetch update of: " + localModuleInfo.id, e);
+                                Timber.e(e);
                             }
                             current++;
                             final int currentTmp = current;
@@ -488,7 +493,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 }
             }
             if (BuildConfig.DEBUG)
-                Log.i("NoodleDebug", "Apply");
+                Timber.i("Apply");
             runOnUiThread(() -> {
                 this.progressIndicator.setVisibility(View.GONE);
                 this.swipeRefreshLayout.setRefreshing(false);
@@ -547,18 +552,18 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     @SuppressLint("RestrictedApi")
     private void ensurePermissions() {
         if (BuildConfig.DEBUG)
-            Log.i("NoodleDebug", "Ensure Permissions");
+            Timber.i("Ensure Permissions");
         // First, check if user has said don't ask again by checking if pref_dont_ask_again_notification_permission is true
         if (!PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_dont_ask_again_notification_permission", false)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 if (BuildConfig.DEBUG)
-                    Log.i("NoodleDebug", "Request Notification Permission");
+                    Timber.i("Request Notification Permission");
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS)) {
                     // Show a dialog explaining why we need this permission, which is to show
                     // notifications for updates
                     runOnUiThread(() -> {
                         if (BuildConfig.DEBUG)
-                            Log.i("NoodleDebug", "Show Notification Permission Dialog");
+                            Timber.i("Show Notification Permission Dialog");
                         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
                         builder.setTitle(R.string.permission_notification_title);
                         builder.setMessage(R.string.permission_notification_message);
@@ -582,16 +587,17 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                         });
                         builder.show();
                         if (BuildConfig.DEBUG)
-                            Log.i("NoodleDebug", "Show Notification Permission Dialog Done");
+                            Timber.i("Show Notification Permission Dialog Done");
                     });
                 } else {
                     // Request the permission
                     if (BuildConfig.DEBUG)
-                        Log.i("NoodleDebug", "Request Notification Permission");
+                        Timber.i("Request Notification Permission");
                     this.requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 0);
                     if (BuildConfig.DEBUG) {
                         // Log if granted via onRequestPermissionsResult
-                        Log.i("NoodleDebug", "Request Notification Permission Done. Result: " + (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED));
+                        boolean granted = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
+                        Timber.i( "Request Notification Permission Done. Result: %s", granted);
                     }
                     doSetupNowRunning = false;
                 }
@@ -630,7 +636,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             }
         } else {
             if (BuildConfig.DEBUG)
-                Log.i("NoodleDebug", "Notification Permission Already Granted or Don't Ask Again");
+                Timber.i("Notification Permission Already Granted or Don't Ask Again");
             doSetupNowRunning = false;
         }
     }
@@ -639,17 +645,17 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     @SuppressLint({"InflateParams", "RestrictedApi", "UnspecifiedImmutableFlag", "ApplySharedPref"})
     private void checkShowInitialSetup() {
         if (BuildConfig.DEBUG)
-            Log.i("SetupWizard", "Checking if we need to run setup");
+            Timber.i("Checking if we need to run setup");
         // Check if this is the first launch
         SharedPreferences prefs = MainApplication.getSharedPreferences();
         boolean firstLaunch = prefs.getBoolean("first_time_user", true);
         if (BuildConfig.DEBUG)
-            Log.i("SetupWizard", "First launch: " + firstLaunch);
+            Timber.i("First launch: %s", firstLaunch);
         if (firstLaunch) {
             doSetupNowRunning = true;
             // Launch setup wizard
             if (BuildConfig.DEBUG)
-                Log.i("SetupWizard", "Launching setup wizard");
+                Timber.i("Launching setup wizard");
             // Show setup activity
             Intent intent = new Intent(this, SetupActivity.class);
             finish();
@@ -664,7 +670,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
      */
     private boolean waitInitialSetupFinished() {
         if (BuildConfig.DEBUG)
-            Log.i("SetupWizard", "waitInitialSetupFinished");
+            Timber.i("waitInitialSetupFinished");
         if (doSetupNowRunning)
             updateScreenInsets(); // Fix an edge case
         try {

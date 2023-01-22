@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.webkit.ConsoleMessage;
 import android.webkit.ValueCallback;
@@ -32,8 +31,8 @@ import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.XHooks;
-import com.fox2code.mmm.utils.io.Http;
 import com.fox2code.mmm.utils.IntentHelper;
+import com.fox2code.mmm.utils.io.Http;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import java.io.ByteArrayInputStream;
@@ -43,11 +42,12 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
+import timber.log.Timber;
+
 /**
  * Per Androidacy repo implementation agreement, no request of this WebView shall be modified.
  */
 public final class AndroidacyActivity extends FoxActivity {
-    private static final String TAG = "AndroidacyActivity";
 
     static {
         if (BuildConfig.DEBUG) {
@@ -72,18 +72,18 @@ public final class AndroidacyActivity extends FoxActivity {
         Intent intent = this.getIntent();
         Uri uri;
         if (!MainApplication.checkSecret(intent) || (uri = intent.getData()) == null) {
-            Log.w(TAG, "Impersonation detected");
+            Timber.w("Impersonation detected");
             this.forceBackPressed();
             return;
         }
         String url = uri.toString();
         if (!AndroidacyUtil.isAndroidacyLink(url, uri)) {
-            Log.w(TAG, "Calling non androidacy link in secure WebView: " + url);
+            Timber.w("Calling non androidacy link in secure WebView: %s", url);
             this.forceBackPressed();
             return;
         }
         if (!Http.hasWebView()) {
-            Log.w(TAG, "No WebView found to load url: " + url);
+            Timber.w("No WebView found to load url: %s", url);
             this.forceBackPressed();
             return;
         }
@@ -167,7 +167,7 @@ public final class AndroidacyActivity extends FoxActivity {
                 if (request.isForMainFrame() && !AndroidacyUtil.isAndroidacyLink(request.getUrl())) {
                     if (downloadMode || backOnResume)
                         return true;
-                    Log.i(TAG, "Exiting WebView " + AndroidacyUtil.hideToken(request.getUrl().toString()));
+                    Timber.i("Exiting WebView %s", AndroidacyUtil.hideToken(request.getUrl().toString()));
                     IntentHelper.openUri(view.getContext(), request.getUrl().toString());
                     return true;
                 }
@@ -229,19 +229,19 @@ public final class AndroidacyActivity extends FoxActivity {
                 if (BuildConfig.DEBUG) {
                     switch (consoleMessage.messageLevel()) {
                         case TIP:
-                            Log.v(TAG, consoleMessage.message());
+                            Timber.v(consoleMessage.message());
                             break;
                         case LOG:
-                            Log.i(TAG, consoleMessage.message());
+                            Timber.i(consoleMessage.message());
                             break;
                         case WARNING:
-                            Log.w(TAG, consoleMessage.message());
+                            Timber.w(consoleMessage.message());
                             break;
                         case ERROR:
-                            Log.e(TAG, consoleMessage.message());
+                            Timber.e(consoleMessage.message());
                             break;
                         case DEBUG:
-                            Log.d(TAG, consoleMessage.message());
+                            Timber.d(consoleMessage.message());
                             break;
                     }
                 }
@@ -278,7 +278,7 @@ public final class AndroidacyActivity extends FoxActivity {
                             return;
                         } else if (moduleId != null) {
                             // Download module
-                            Log.i(TAG, "megaIntercept failure. Forcing onBackPress");
+                            Timber.i("megaIntercept failure. Forcing onBackPress");
                             this.onBackPressed();
                         }
                     }
@@ -286,7 +286,7 @@ public final class AndroidacyActivity extends FoxActivity {
                     androidacyWebAPI.downloadMode = false;
                 }
                 this.backOnResume = true;
-                Log.i(TAG, "Exiting WebView " + AndroidacyUtil.hideToken(downloadUrl));
+                Timber.i("Exiting WebView %s", AndroidacyUtil.hideToken(downloadUrl));
                 for (String prefix : new String[]{"https://production-api.androidacy.com/downloads/", "https://staging-api.androidacy.com/magisk/downloads/"}) {
                     if (downloadUrl.startsWith(prefix)) {
                         return;
@@ -304,7 +304,7 @@ public final class AndroidacyActivity extends FoxActivity {
         headers.put("Accept-Language", this.getResources().getConfiguration().locale.toLanguageTag());
         if (BuildConfig.DEBUG) {
             headers.put("X-Debug", "true");
-            Log.i(TAG, "Debug mode enabled for webview using URL: " + url + " with headers: " + headers);
+            Timber.i("Debug mode enabled for webview using URL: " + url + " with headers: " + headers);
         }
         this.webView.loadUrl(url, headers);
     }
@@ -364,13 +364,13 @@ public final class AndroidacyActivity extends FoxActivity {
         if (pageUrl == null || fileUrl == null)
             return false;
         if (this.isFileUrl(fileUrl)) {
-            Log.i(TAG, "megaIntercept(" + AndroidacyUtil.hideToken(pageUrl) + ", " + AndroidacyUtil.hideToken(fileUrl) + ")");
+            Timber.i("megaIntercept(%s", AndroidacyUtil.hideToken(AndroidacyUtil.hideToken(fileUrl) ));
         } else
             return false;
         final AndroidacyWebAPI androidacyWebAPI = this.androidacyWebAPI;
         String moduleId = AndroidacyUtil.getModuleId(fileUrl);
         if (moduleId == null) {
-            Log.i(TAG, "No module id?");
+            Timber.i("No module id?");
             // Re-open the page
             this.webView.loadUrl(pageUrl + "&force_refresh=" + System.currentTimeMillis());
         }

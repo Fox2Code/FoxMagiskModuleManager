@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -24,8 +23,8 @@ import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.XHooks;
 import com.fox2code.mmm.utils.BlurUtils;
-import com.fox2code.mmm.utils.io.Http;
 import com.fox2code.mmm.utils.IntentHelper;
+import com.fox2code.mmm.utils.io.Http;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -36,9 +35,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 import eightbitlab.com.blurview.BlurView;
+import timber.log.Timber;
 
 public class MarkdownActivity extends FoxActivity {
-    private static final String TAG = "MarkdownActivity";
     private static final HashMap<String, String> redirects = new HashMap<>(4);
     private static final String[] variants = new String[]{
             "readme.md", "README.MD", ".github/README.md"
@@ -81,7 +80,7 @@ public class MarkdownActivity extends FoxActivity {
         this.setDisplayHomeAsUpEnabled(true);
         Intent intent = this.getIntent();
         if (!MainApplication.checkSecret(intent)) {
-            Log.e(TAG, "Impersonation detected!");
+            Timber.e("Impersonation detected!");
             this.forceBackPressed();
             return;
         }
@@ -116,11 +115,11 @@ public class MarkdownActivity extends FoxActivity {
                     return true;
                 });
             } catch (PackageManager.NameNotFoundException e) {
-                Log.w(TAG, "Config package \"" +
+                Timber.w("Config package \"" +
                         configPkg + "\" missing for markdown view");
             }
         }
-        Log.i(TAG, "Url for markdown " + url);
+        Timber.i("Url for markdown %s", url);
         setContentView(R.layout.markdown_view);
         final ViewGroup markdownBackground = findViewById(R.id.markdownBackground);
         final TextView textView = findViewById(R.id.markdownView);
@@ -145,11 +144,11 @@ public class MarkdownActivity extends FoxActivity {
 
         new Thread(() -> {
             try {
-                Log.i(TAG, "Downloading");
+                Timber.i("Downloading");
                 byte[] rawMarkdown = getRawMarkdown(url);
-                Log.i(TAG, "Encoding");
+                Timber.i("Encoding");
                 String markdown = new String(rawMarkdown, StandardCharsets.UTF_8);
-                Log.i(TAG, "Done!");
+                Timber.i("Done!");
                 runOnUiThread(() -> {
                     findViewById(R.id.markdownFooter)
                             .setMinimumHeight(this.getNavigationBarHeight());
@@ -160,7 +159,7 @@ public class MarkdownActivity extends FoxActivity {
                     }
                 });
             } catch (Exception e) {
-                Log.e(TAG, "Failed download", e);
+                Timber.e(e);
                 runOnUiThread(() -> Toast.makeText(this, R.string.failed_download,
                         Toast.LENGTH_SHORT).show());
             }

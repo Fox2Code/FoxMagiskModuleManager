@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.util.TypedValue;
 import android.widget.Toast;
 
@@ -38,8 +37,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 
+import timber.log.Timber;
+
 public class IntentHelper {
-    private static final String TAG = "IntentHelper";
     private static final String EXTRA_TAB_SESSION =
             "android.support.customtabs.extra.SESSION";
     private static final String EXTRA_TAB_COLOR_SCHEME =
@@ -57,7 +57,7 @@ public class IntentHelper {
             try {
                 startActivity(context, Intent.parseUri(uri, Intent.URI_INTENT_SCHEME), false);
             } catch (URISyntaxException | ActivityNotFoundException e) {
-                Log.e(TAG, "Failed launch of " + uri, e);
+                Timber.e(e);
             }
         } else openUrl(context, uri);
     }
@@ -103,7 +103,7 @@ public class IntentHelper {
     public static void openUrlAndroidacy(Context context, String url, boolean allowInstall,
                                          String title,String config) {
         if (!Http.hasWebView()) {
-            Log.w(TAG, "Using custom tab for: " + url);
+            Timber.w("Using custom tab for: %s", url);
             openCustomTab(context, url);
             return;
         }
@@ -151,7 +151,7 @@ public class IntentHelper {
                             .to(new CallbackList<>() {
                                 @Override
                                 public void onAddElement(String str) {
-                                    Log.i(TAG, "LSPosed: " + str);
+                                    Timber.i("LSPosed: %s", str);
                                 }
                             }).submit();
                     return;
@@ -343,7 +343,7 @@ public class IntentHelper {
                 callback.onReceived(destination, null, RESPONSE_ERROR);
                 return;
             }
-            Log.i(TAG, "FilePicker returned " + uri);
+            Timber.i("FilePicker returned %s", uri);
             if ("http".equals(uri.getScheme()) ||
                     "https".equals(uri.getScheme())) {
                 callback.onReceived(destination, uri, RESPONSE_URL);
@@ -373,10 +373,10 @@ public class IntentHelper {
                 }
                 outputStream = new FileOutputStream(destination);
                 Files.copy(inputStream, outputStream);
-                Log.i(TAG, "File saved at " + destination);
+                Timber.i("File saved at %s", destination);
                 success = true;
             } catch (Exception e) {
-                Log.e(TAG, "failed copy of " + uri, e);
+                Timber.e(e);
                 Toast.makeText(compatActivity,
                         R.string.file_picker_failure,
                         Toast.LENGTH_SHORT).show();
@@ -384,7 +384,7 @@ public class IntentHelper {
                 Files.closeSilently(inputStream);
                 Files.closeSilently(outputStream);
                 if (!success && destination.exists() && !destination.delete())
-                    Log.e(TAG, "Failed to delete artefact!");
+                    Timber.e("Failed to delete artefact!");
             }
             callback.onReceived(destination, uri, success ? RESPONSE_FILE : RESPONSE_ERROR);
         });

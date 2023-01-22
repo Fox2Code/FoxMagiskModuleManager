@@ -23,6 +23,8 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import timber.log.Timber;
+
 public class ZipFileOpener extends FoxActivity {
     AlertDialog loading = null;
 
@@ -33,13 +35,11 @@ public class ZipFileOpener extends FoxActivity {
         super.onCreate(savedInstanceState);
         loading = BudgetProgressDialog.build(this, R.string.loading, R.string.zip_unpacking);
         new Thread(() -> {
-            if (BuildConfig.DEBUG) {
-                Log.d("ZipFileOpener", "onCreate: " + getIntent());
-            }
+            Timber.d("onCreate: %s", getIntent());
             File zipFile;
             Uri uri = getIntent().getData();
             if (uri == null) {
-                Log.e("ZipFileOpener", "onCreate: No data provided");
+                Timber.e("onCreate: No data provided");
                 runOnUiThread(() -> {
                     Toast.makeText(this, R.string.zip_load_failed, Toast.LENGTH_LONG).show();
                     finishAndRemoveTask();
@@ -57,7 +57,7 @@ public class ZipFileOpener extends FoxActivity {
                 zipFile = File.createTempFile("module", ".zip", getCacheDir());
                 try (InputStream inputStream = getContentResolver().openInputStream(uri); FileOutputStream outputStream = new FileOutputStream(zipFile)) {
                     if (inputStream == null) {
-                        Log.e("ZipFileOpener", "onCreate: Failed to open input stream");
+                        Timber.e("onCreate: Failed to open input stream");
                         runOnUiThread(() -> {
                             Toast.makeText(this, R.string.zip_load_failed, Toast.LENGTH_LONG).show();
                             finishAndRemoveTask();
@@ -72,7 +72,7 @@ public class ZipFileOpener extends FoxActivity {
                 }
             } catch (
                     Exception e) {
-                Log.e("ZipFileOpener", "onCreate: Failed to copy zip file", e);
+                Timber.e(e, "onCreate: Failed to copy zip file");
                 runOnUiThread(() -> {
                     Toast.makeText(this, R.string.zip_load_failed, Toast.LENGTH_LONG).show();
                     finishAndRemoveTask();
@@ -81,16 +81,14 @@ public class ZipFileOpener extends FoxActivity {
             }
             // Ensure zip is not empty
             if (zipFile.length() == 0) {
-                Log.e("ZipFileOpener", "onCreate: Zip file is empty");
+                Timber.e("onCreate: Zip file is empty");
                 runOnUiThread(() -> {
                     Toast.makeText(this, R.string.zip_load_failed, Toast.LENGTH_LONG).show();
                     finishAndRemoveTask();
                 });
                 return;
             } else {
-                if (BuildConfig.DEBUG) {
-                    Log.d("ZipFileOpener", "onCreate: Zip file is " + zipFile.length() + " bytes");
-                }
+                Timber.d("onCreate: Zip file is " + zipFile.length() + " bytes");
             }
             ZipEntry entry;
             ZipFile zip = null;
@@ -100,12 +98,12 @@ public class ZipFileOpener extends FoxActivity {
             try {
                 zip = new ZipFile(zipFile);
                 if ((entry = zip.getEntry("module.prop")) == null) {
-                    Log.e("ZipFileOpener", "onCreate: Zip file is not a valid magisk module");
+                    Timber.e("onCreate: Zip file is not a valid magisk module");
                     if (BuildConfig.DEBUG) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            Log.d("ZipFileOpener", "onCreate: Zip file contents: " + zip.stream().map(ZipEntry::getName).reduce((a, b) -> a + ", " + b).orElse("empty"));
+                            Timber.d("onCreate: Zip file contents: %s", zip.stream().map(ZipEntry::getName).reduce((a, b) -> a + ", " + b).orElse("empty"));
                         } else {
-                            Log.d("ZipFileOpener", "onCreate: Zip file contents cannot be listed on this version of android");
+                            Timber.d("onCreate: Zip file contents cannot be listed on this version of android");
                         }
                     }
                     runOnUiThread(() -> {
@@ -116,7 +114,7 @@ public class ZipFileOpener extends FoxActivity {
                 }
             } catch (
                     Exception e) {
-                Log.e("ZipFileOpener", "onCreate: Failed to open zip file", e);
+                Timber.e(e, "onCreate: Failed to open zip file");
                 runOnUiThread(() -> {
                     Toast.makeText(this, R.string.zip_load_failed, Toast.LENGTH_LONG).show();
                     finishAndRemoveTask();
@@ -125,14 +123,12 @@ public class ZipFileOpener extends FoxActivity {
                     try {
                         zip.close();
                     } catch (IOException exception) {
-                        Log.e("ZipFileOpener", Log.getStackTraceString(exception));
+                        Timber.e(Log.getStackTraceString(exception));
                     }
                 }
                 return;
             }
-            if (BuildConfig.DEBUG) {
-                Log.d("ZipFileOpener", "onCreate: Zip file is valid");
-            }
+            Timber.d("onCreate: Zip file is valid");
             String moduleInfo;
             try {
                 moduleInfo = PropUtils.readModulePropSimple(zip.getInputStream(entry), "name");
@@ -144,7 +140,7 @@ public class ZipFileOpener extends FoxActivity {
                 }
             } catch (
                     Exception e) {
-                Log.e("ZipFileOpener", "onCreate: Failed to load module id", e);
+                Timber.e(e, "onCreate: Failed to load module id");
                 runOnUiThread(() -> {
                     Toast.makeText(this, R.string.zip_prop_load_failed, Toast.LENGTH_LONG).show();
                     finishAndRemoveTask();
@@ -152,14 +148,14 @@ public class ZipFileOpener extends FoxActivity {
                 try {
                     zip.close();
                 } catch (IOException exception) {
-                    Log.e("ZipFileOpener", Log.getStackTraceString(exception));
+                    Timber.e(Log.getStackTraceString(exception));
                 }
                 return;
             }
             try {
                 zip.close();
             } catch (IOException exception) {
-                Log.e("ZipFileOpener", Log.getStackTraceString(exception));
+                Timber.e(Log.getStackTraceString(exception));
             }
             String finalModuleInfo = moduleInfo;
             runOnUiThread(() -> {

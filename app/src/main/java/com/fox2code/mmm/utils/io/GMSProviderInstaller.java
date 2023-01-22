@@ -26,35 +26,37 @@ package com.fox2code.mmm.utils.io;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.util.Log;
 
-/** Open implementation of ProviderInstaller.installIfNeeded
+import timber.log.Timber;
+
+/**
+ * Open implementation of ProviderInstaller.installIfNeeded
  * (Compatible with MicroG even without signature spoofing)
  */
 // Note: This code is MIT because I took it from another unpublished project I had
 // I might upstream this to MicroG at some point
 public class GMSProviderInstaller {
-    private static final String TAG = "GMSProviderInstaller";
     private static boolean called = false;
 
     public static void installIfNeeded(final Context context) {
         if (context == null) {
             throw new NullPointerException("Context must not be null");
         }
-        if (called) return;
+        if (called)
+            return;
         called = true;
         try {
             // Trust default GMS implementation
-            Context remote = context.createPackageContext("com.google.android.gms",
-                    Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY);
-            Class<?> cl = remote.getClassLoader().loadClass(
-                    "com.google.android.gms.common.security.ProviderInstallerImpl");
+            Context remote = context.createPackageContext("com.google.android.gms", Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY);
+            Class<?> cl = remote.getClassLoader().loadClass("com.google.android.gms.common.security.ProviderInstallerImpl");
             cl.getDeclaredMethod("insertProvider", Context.class).invoke(null, remote);
-            Log.i(TAG, "Installed GMS security providers!");
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.w(TAG, "No GMS Implementation are installed on this device");
-        } catch (Exception e) {
-            Log.w(TAG, "Failed to install the provider of the current GMS Implementation", e);
+            Timber.i("Installed GMS security providers!");
+        } catch (
+                PackageManager.NameNotFoundException e) {
+            Timber.w("No GMS Implementation are installed on this device");
+        } catch (
+                Exception e) {
+            Timber.w(e);
         }
     }
 }

@@ -1,18 +1,16 @@
 package com.fox2code.mmm.utils.io;
 
-import android.util.Log;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import timber.log.Timber;
+
 public class Hashes {
-    private static final String TAG = "Hashes";
     private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
     private static final Pattern nonAlphaNum = Pattern.compile("[^a-zA-Z0-9]");
+
     public static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++) {
@@ -24,12 +22,13 @@ public class Hashes {
     }
 
     public static String hashMd5(byte[] input) {
-        Log.w(TAG, "hashMd5: This method is insecure, use hashSha256 instead");
+        Timber.w("hashMd5: This method is insecure, use hashSha256 instead");
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
 
             return bytesToHex(md.digest(input));
-        } catch (NoSuchAlgorithmException e) {
+        } catch (
+                NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }
@@ -39,7 +38,8 @@ public class Hashes {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
 
             return bytesToHex(md.digest(input));
-        } catch (NoSuchAlgorithmException e) {
+        } catch (
+                NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }
@@ -49,7 +49,8 @@ public class Hashes {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
 
             return bytesToHex(md.digest(input));
-        } catch (NoSuchAlgorithmException e) {
+        } catch (
+                NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }
@@ -59,7 +60,8 @@ public class Hashes {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
 
             return bytesToHex(md.digest(input));
-        } catch (NoSuchAlgorithmException e) {
+        } catch (
+                NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }
@@ -70,58 +72,35 @@ public class Hashes {
      */
     public static boolean checkSumMatch(byte[] data, String checksum) {
         String hash;
-        if (checksum == null) return false;
+        if (checksum == null)
+            return false;
         switch (checksum.length()) {
             case 0:
                 return true; // No checksum
             case 32:
-                hash = Hashes.hashMd5(data); break;
+                hash = Hashes.hashMd5(data);
+                break;
             case 40:
-                hash = Hashes.hashSha1(data); break;
+                hash = Hashes.hashSha1(data);
+                break;
             case 64:
-                hash = Hashes.hashSha256(data); break;
+                hash = Hashes.hashSha256(data);
+                break;
             case 128:
-                hash = Hashes.hashSha512(data); break;
+                hash = Hashes.hashSha512(data);
+                break;
             default:
-                Log.e(TAG, "No hash algorithm for " +
-                        checksum.length() * 8 + "bit checksums");
+                Timber.e("No hash algorithm for " + checksum.length() * 8 + "bit checksums");
                 return false;
         }
-        Log.i(TAG, "Checksum result (data: " + hash+ ",expected: " + checksum + ")");
+        Timber.i("Checksum result (data: " + hash + ",expected: " + checksum + ")");
         return hash.equals(checksum.toLowerCase(Locale.ROOT));
     }
 
-    /**
-     * Check if the checksum match a file by picking the correct
-     * hashing algorithm depending on the length of the checksum
-     */
-    public static boolean checkSumMatch(InputStream data, String checksum) throws IOException {
-        String hash;
-        if (checksum == null) return false;
-        String checksumAlgorithm = checkSumName(checksum);
-        if (checksumAlgorithm == null) {
-            Log.e(TAG, "No hash algorithm for " +
-                    checksum.length() * 8 + "bit checksums");
-            return false;
-        }
-        try {
-            MessageDigest md = MessageDigest.getInstance(checksumAlgorithm);
-
-            byte[] bytes = new byte[2048];
-            int nRead;
-            while ((nRead = data.read(bytes)) > 0) {
-                md.update(bytes, 0, nRead);
-            }
-            hash = bytesToHex(md.digest());
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-        Log.i(TAG, "Checksum result (data: " + hash + ",expected: " + checksum + ")");
-        return hash.equals(checksum.toLowerCase(Locale.ROOT));
-    }
-
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean checkSumValid(String checksum) {
-        if (checksum == null) return false;
+        if (checksum == null)
+            return false;
         switch (checksum.length()) {
             case 0:
             default:
@@ -133,16 +112,19 @@ public class Hashes {
                 final int len = checksum.length();
                 for (int i = 0; i < len; i++) {
                     char c = checksum.charAt(i);
-                    if (c < '0' || c > 'f') return false;
+                    if (c < '0' || c > 'f')
+                        return false;
                     if (c > '9' && // Easier working with bits
-                            (c & 0b01011111) < 'A') return false;
+                            (c & 0b01011111) < 'A')
+                        return false;
                 }
                 return true;
         }
     }
 
     public static String checkSumName(String checksum) {
-        if (checksum == null) return null;
+        if (checksum == null)
+            return null;
         switch (checksum.length()) {
             case 0:
             default:
@@ -159,7 +141,8 @@ public class Hashes {
     }
 
     public static String checkSumFormat(String checksum) {
-        if (checksum == null) return null;
+        if (checksum == null)
+            return null;
         // Remove all non-alphanumeric characters
         return nonAlphaNum.matcher(checksum.trim()).replaceAll("");
     }

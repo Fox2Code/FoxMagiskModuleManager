@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -40,11 +39,11 @@ import java.util.Objects;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import okhttp3.HttpUrl;
+import timber.log.Timber;
 
 @SuppressWarnings("KotlinInternalInJava")
 public final class AndroidacyRepoData extends RepoData {
 
-    private static final String TAG = "AndroidacyRepoData";
     public static String token = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).getString("pref_androidacy_api_token", null);
 
     static {
@@ -150,7 +149,7 @@ public final class AndroidacyRepoData extends RepoData {
             if (status.equals("success")) {
                 return true;
             } else {
-                Log.w(TAG, "Invalid token, resetting...");
+                Timber.w("Invalid token, resetting...");
                 // Remove saved preference
                 SharedPreferences.Editor editor = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit();
                 editor.remove("pref_androidacy_api_token");
@@ -160,7 +159,7 @@ public final class AndroidacyRepoData extends RepoData {
         } catch (
                 HttpException e) {
             if (e.getErrorCode() == 401) {
-                Log.w(TAG, "Invalid token, resetting...");
+                Timber.w("Invalid token, resetting...");
                 // Remove saved preference
                 SharedPreferences.Editor editor = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit();
                 editor.remove("pref_androidacy_api_token");
@@ -210,7 +209,7 @@ public final class AndroidacyRepoData extends RepoData {
             }
         } catch (
                 Exception e) {
-            Log.e(TAG, "Failed to ping server", e);
+            Timber.e(e, "Failed to ping server");
             return false;
         }
         String deviceId = generateDeviceId();
@@ -225,7 +224,7 @@ public final class AndroidacyRepoData extends RepoData {
                 if (token != null && !this.isValidToken(token)) {
                     token = null;
                 } else {
-                    Log.i(TAG, "Using cached token");
+                    Timber.i("Using cached token");
                 }
             } else if (!this.isValidToken(token)) {
                 if (BuildConfig.DEBUG) {
@@ -236,14 +235,14 @@ public final class AndroidacyRepoData extends RepoData {
         } catch (
                 IOException e) {
             if (HttpException.shouldTimeout(e)) {
-                Log.e(TAG, "We are being rate limited!", e);
+                Timber.e(e, "We are being rate limited!");
                 this.androidacyBlockade = time + 3_600_000L;
             }
             return false;
         }
         if (token == null) {
             try {
-                Log.i(TAG, "Requesting new token...");
+                Timber.i("Requesting new token...");
                 // POST json request to https://produc/tion-api.androidacy.com/auth/register
                 token = new String(Http.doHttpPost("https://" + this.host + "/auth/register", "{\"device_id\":\"" + deviceId + "\"}", false));
                 // Parse token
@@ -253,14 +252,14 @@ public final class AndroidacyRepoData extends RepoData {
                     memberLevel = jsonObject.getString("role");
                 } catch (
                         JSONException e) {
-                    Log.e(TAG, "Failed to parse token", e);
+                    Timber.e(e, "Failed to parse token");
                     // Show a toast
                     Toast.makeText(MainApplication.getINSTANCE(), R.string.androidacy_failed_to_parse_token, Toast.LENGTH_LONG).show();
                     return false;
                 }
                 // Ensure token is valid
                 if (!isValidToken(token)) {
-                    Log.e(TAG, "Failed to validate token");
+                    Timber.e("Failed to validate token");
                     // Show a toast
                     Toast.makeText(MainApplication.getINSTANCE(), R.string.androidacy_failed_to_validate_token, Toast.LENGTH_LONG).show();
                     return false;
@@ -272,10 +271,10 @@ public final class AndroidacyRepoData extends RepoData {
             } catch (
                     Exception e) {
                 if (HttpException.shouldTimeout(e)) {
-                    Log.e(TAG, "We are being rate limited!", e);
+                    Timber.e(e, "We are being rate limited!");
                     this.androidacyBlockade = time + 3_600_000L;
                 }
-                Log.e(TAG, "Failed to get a new token", e);
+                Timber.e(e, "Failed to get a new token");
                 return false;
             }
         }
@@ -286,9 +285,7 @@ public final class AndroidacyRepoData extends RepoData {
 
     @Override
     protected List<RepoModule> populate(JSONObject jsonObject) throws JSONException, NoSuchAlgorithmException {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "AndroidacyRepoData populate start");
-        }
+        Timber.d("AndroidacyRepoData populate start");
         if (!jsonObject.getString("status").equals("success"))
             throw new JSONException("Response is not a success!");
         String name = jsonObject.optString("name", "Androidacy Modules Repo");
@@ -409,12 +406,12 @@ public final class AndroidacyRepoData extends RepoData {
             return url;
         if (this.testMode) {
             if (url.startsWith("https://production-api.androidacy.com/")) {
-                Log.e(TAG, "Got non test mode url: " + AndroidacyUtil.hideToken(url));
+                Timber.e("Got non test mode url: %s", AndroidacyUtil.hideToken(url));
                 url = "https://staging-api.androidacy.com/" + url.substring(38);
             }
         } else {
             if (url.startsWith("https://staging-api.androidacy.com/")) {
-                Log.e(TAG, "Got test mode url: " + AndroidacyUtil.hideToken(url));
+                Timber.e("Got test mode url: %s", AndroidacyUtil.hideToken(url));
                 url = "https://production-api.androidacy.com/" + url.substring(35);
             }
         }

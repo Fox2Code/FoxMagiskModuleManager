@@ -1,7 +1,6 @@
 package com.fox2code.mmm.installer;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,8 +15,9 @@ import com.topjohnwu.superuser.Shell;
 import java.io.File;
 import java.util.ArrayList;
 
+import timber.log.Timber;
+
 public class InstallerInitializer extends Shell.Initializer {
-    private static final String TAG = "InstallerInitializer";
     private static final File MAGISK_SBIN =
             new File("/sbin/magisk");
     private static final File MAGISK_SYSTEM =
@@ -30,7 +30,6 @@ public class InstallerInitializer extends Shell.Initializer {
     private static int MAGISK_VERSION_CODE;
     private static boolean HAS_RAMDISK;
 
-    public static final int ERROR_OK = 0;
     public static final int ERROR_NO_PATH = 1;
     public static final int ERROR_NO_SU = 2;
     public static final int ERROR_OTHER = 3;
@@ -98,10 +97,10 @@ public class InstallerInitializer extends Shell.Initializer {
                     error = ERROR_NO_PATH;
                 } catch (NoShellException e) {
                     error = ERROR_NO_SU;
-                    Log.w(TAG, "Device doesn't have root!", e);
+                    Timber.w(e);
                 } catch (Throwable e) {
                     error = ERROR_OTHER;
-                    Log.e(TAG, "Something bad happened", e);
+                    Timber.e(e);
                 }
                 if (forceCheck) {
                     InstallerInitializer.MAGISK_PATH = MAGISK_PATH;
@@ -138,9 +137,9 @@ public class InstallerInitializer extends Shell.Initializer {
             return null;
         }
         MAGISK_PATH = output.size() < 3 ? "" : output.get(2);
-        Log.i(TAG, "Magisk runtime path: " + MAGISK_PATH);
+        Timber.i("Magisk runtime path: %s", MAGISK_PATH);
         MAGISK_VERSION_CODE = Integer.parseInt(output.get(1));
-        Log.i(TAG, "Magisk version code: " + MAGISK_VERSION_CODE);
+        Timber.i("Magisk version code: %s", MAGISK_VERSION_CODE);
         if (MAGISK_VERSION_CODE >= Constants.MAGISK_VER_CODE_FLAT_MODULES &&
                 MAGISK_VERSION_CODE < Constants.MAGISK_VER_CODE_PATH_SUPPORT &&
                 (MAGISK_PATH.isEmpty() || !new File(MAGISK_PATH).exists())) {
@@ -149,7 +148,7 @@ public class InstallerInitializer extends Shell.Initializer {
         if (MAGISK_PATH.length() != 0 && Files.existsSU(new File(MAGISK_PATH))) {
             InstallerInitializer.MAGISK_PATH = MAGISK_PATH;
         } else {
-            Log.e(TAG, "Failed to get Magisk path (Got " + MAGISK_PATH + ")");
+            Timber.e("Failed to get Magisk path (Got " + MAGISK_PATH + ")");
             MAGISK_PATH = null;
         }
         InstallerInitializer.MAGISK_VERSION_CODE = MAGISK_VERSION_CODE;

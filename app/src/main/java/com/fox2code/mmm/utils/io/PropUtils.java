@@ -5,7 +5,6 @@ import static com.fox2code.mmm.AppUpdateManager.getFlagsForModule;
 
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.manager.ModuleInfo;
@@ -20,6 +19,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
+
+import timber.log.Timber;
 
 public class PropUtils {
     private static final HashMap<String, String> moduleSupportsFallbacks = new HashMap<>();
@@ -342,7 +343,7 @@ public class PropUtils {
                 }
             }
         } catch (IOException e) {
-            Log.i("PropUtils", "Failed to get moduleId", e);
+            Timber.i(e);
         }
         return moduleId;
     }

@@ -2,7 +2,6 @@ package com.fox2code.mmm.repo;
 
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -32,6 +31,7 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import timber.log.Timber;
 
 public class RepoData extends XRepo {
     public final String url;
@@ -43,7 +43,7 @@ public class RepoData extends XRepo {
     private final Object populateLock = new Object();
     public long lastUpdate;
     public String name, website, support, donate, submitModule;
-    public JSONObject supportedProperties = new JSONObject();
+    public final JSONObject supportedProperties = new JSONObject();
 
     protected String defaultName, defaultWebsite, defaultSupport, defaultDonate, defaultSubmitModule;
 
@@ -112,9 +112,7 @@ public class RepoData extends XRepo {
                 .build();
         Realm realm = Realm.getInstance(realmConfiguration);
         ReposList reposList = realm.where(ReposList.class).equalTo("id", this.id).findFirst();
-        if (BuildConfig.DEBUG) {
-            Log.d("RepoData", "RepoData: " + this.id + ". record in database: " + (reposList != null ? reposList.toString() : "none"));
-        }
+        Timber.d("RepoData: " + this.id + ". record in database: " + (reposList != null ? reposList.toString() : "none"));
         this.enabled = (!this.forceHide && reposList != null && reposList.isEnabled());
         this.enabled = (!this.forceHide) && MainApplication.getSharedPreferences().getBoolean("pref_" + this.getPreferenceId() + "_enabled", true);
         this.defaultWebsite = "https://" + Uri.parse(url).getHost() + "/";
@@ -122,7 +120,7 @@ public class RepoData extends XRepo {
         // load metadata from realm database
         if (this.enabled) {
             try {
-                RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).build();
+                RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
                 // load metadata from realm database
                 Realm.getInstance(realmConfiguration2);
                 this.metaDataCache = ModuleListCache.getRepoModulesAsJson(this.id);
@@ -135,7 +133,7 @@ public class RepoData extends XRepo {
                     this.submitModule = this.defaultSubmitModule;
                 } else {
                     // get everything from ReposList realm database
-                    RealmConfiguration realmConfiguration3 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).build();
+                    RealmConfiguration realmConfiguration3 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
                     // load metadata from realm database
                     Realm.getInstance(realmConfiguration3);
                     this.name = ReposList.getRepo(this.id).getName();
@@ -146,7 +144,7 @@ public class RepoData extends XRepo {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.w("RepoData", "Failed to load repo metadata from realm database. If this is a first time install, this is normal.");
+                Timber.w("If this is a first install, this is normal.");
             }
         }
     }
@@ -179,7 +177,7 @@ public class RepoData extends XRepo {
                 }
                 // If module id start with a dot, warn user
                 if (moduleId.charAt(0) == '.') {
-                    Log.w("MMM", "Module ID " + moduleId + " in repo " + this.url + " start with a dot, this is not recommended and may indicate an attempt to hide the module");
+                    Timber.w("This is not recommended and may indicate an attempt to hide the module");
                 }
                 long moduleLastUpdate = module.getLong("last_update");
                 String moduleNotesUrl = module.getString("notes_url");
@@ -283,9 +281,7 @@ public class RepoData extends XRepo {
         SharedPreferences preferenceManager = MainApplication.getSharedPreferences();
         boolean enabled = preferenceManager.getBoolean("pref_" + this.id + "_enabled", this.isEnabledByDefault());
         if (this.enabled != enabled) {
-            if (BuildConfig.DEBUG) {
-                Log.d("NoodleDebug", "Repo " + this.id + " enable mismatch: " + this.enabled + " vs " + enabled);
-            }
+            Timber.d("Repo " + this.id + " enable mismatch: " + this.enabled + " vs " + enabled);
             this.enabled = enabled;
         }
         return this.enabled;
@@ -294,9 +290,7 @@ public class RepoData extends XRepo {
     @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled && !this.forceHide;
-        if (BuildConfig.DEBUG) {
-            Log.d("RepoData", "Repo " + this.id + " enabled: " + this.enabled + " (forced: " + this.forceHide + ") with preferenceID: " + this.getPreferenceId());
-        }
+        Timber.d("Repo " + this.id + " enabled: " + this.enabled + " (forced: " + this.forceHide + ") with preferenceID: " + this.getPreferenceId());
         MainApplication.getSharedPreferences().edit().putBoolean("pref_" + this.getPreferenceId() + "_enabled", enabled).apply();
     }
 
@@ -306,9 +300,7 @@ public class RepoData extends XRepo {
             return;
         }
         this.forceHide = AppUpdateManager.shouldForceHide(this.id);
-        if (BuildConfig.DEBUG) {
-            Log.d("RepoData", "Repo " + this.id + " update enabled: " + this.enabled + " (forced: " + this.forceHide + ") with preferenceID: " + this.getPreferenceId());
-        }
+        Timber.d("Repo " + this.id + " update enabled: " + this.enabled + " (forced: " + this.forceHide + ") with preferenceID: " + this.getPreferenceId());
         this.enabled = (!this.forceHide) && MainApplication.getSharedPreferences().getBoolean("pref_" + this.getPreferenceId() + "_enabled", true);
     }
 

@@ -19,7 +19,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -61,6 +60,7 @@ import com.fox2code.mmm.utils.ExternalHelper;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.fox2code.mmm.utils.ProcessHelper;
 import com.fox2code.mmm.utils.io.Http;
+import com.fox2code.mmm.utils.realm.ReposList;
 import com.fox2code.mmm.utils.sentry.SentryMain;
 import com.fox2code.rosettax.LanguageActivity;
 import com.fox2code.rosettax.LanguageSwitcher;
@@ -84,13 +84,16 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import timber.log.Timber;
+
 public class SettingsActivity extends FoxActivity implements LanguageActivity {
     // Shamelessly adapted from https://github.com/DrKLO/Telegram/blob/2c71f6c92b45386f0c2b25f1442596462404bb39/TMessagesProj/src/main/java/org/telegram/messenger/SharedConfig.java#L1254
     public final static int PERFORMANCE_CLASS_LOW = 0;
     public final static int PERFORMANCE_CLASS_AVERAGE = 1;
     public final static int PERFORMANCE_CLASS_HIGH = 2;
     private static final int LANGUAGE_SUPPORT_LEVEL = 1;
-    private static final String TAG = "SettingsActivity";
     private static boolean devModeStepFirstBootIgnore = MainApplication.isDeveloper();
     private static int devModeStep = 0;
 
@@ -125,9 +128,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             devicePerformanceClass = PERFORMANCE_CLASS_HIGH;
         }
 
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "getDevicePerformanceClass: androidVersion=" + androidVersion + " cpuCount=" + cpuCount + " memoryClass=" + memoryClass + " maxCpuFreq=" + maxCpuFreq + " devicePerformanceClass=" + devicePerformanceClass);
-        }
+        Timber.d("getDevicePerformanceClass: androidVersion=" + androidVersion + " cpuCount=" + cpuCount + " memoryClass=" + memoryClass + " maxCpuFreq=" + maxCpuFreq + " devicePerformanceClass=" + devicePerformanceClass);
 
         return devicePerformanceClass;
     }
@@ -176,9 +177,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             ListPreference themePreference = findPreference("pref_theme");
             // If transparent theme(s) are set, disable monet
             if (themePreference.getValue().equals("transparent_light")) {
-                if (BuildConfig.DEBUG) {
-                    Log.d(TAG, "Transparent theme is set, disabling monet");
-                }
+                Timber.d("disabling monet");
                 findPreference("pref_enable_monet").setEnabled(false);
                 // Toggle monet off
                 ((TwoStatePreference) findPreference("pref_enable_monet")).setChecked(false);
@@ -197,17 +196,13 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 // You need to reboot your device at least once to be able to access dev-mode
                 if (devModeStepFirstBootIgnore || !MainApplication.isFirstBoot())
                     devModeStep = 1;
-                if (BuildConfig.DEBUG) {
-                    Log.d(TAG, "Theme changed, refreshing activity. New value: " + newValue);
-                }
+                Timber.d("refreshing activity. New value: %s", newValue);
                 // Immediately save
                 SharedPreferences.Editor editor = getPreferenceManager().getSharedPreferences().edit();
                 editor.putString("pref_theme", (String) newValue).apply();
                 // If theme contains "transparent" then disable monet
                 if (newValue.toString().contains("transparent")) {
-                    if (BuildConfig.DEBUG) {
-                        Log.d(TAG, "Transparent theme is being set, disabling monet");
-                    }
+                    Timber.d("disabling monet");
                     // Show a dialogue warning the user about issues with transparent themes and
                     // that blur/monet will be disabled
                     new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.transparent_theme_dialogue_title).setMessage(R.string.transparent_theme_dialogue_message).setPositiveButton(R.string.ok, (dialog, which) -> {
@@ -276,9 +271,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                     AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                     mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-                    if (BuildConfig.DEBUG) {
-                        Log.d(TAG, "Restarting app to save crash reporting preference: " + newValue);
-                    }
+                    Timber.d("Restarting app to save crash reporting preference: %s", newValue);
                     System.exit(0); // Exit app process
                 });
                 // Do not reverse the change if the user cancels the dialog
@@ -358,7 +351,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
 
             int level = this.currentLanguageLevel();
             if (level != LANGUAGE_SUPPORT_LEVEL) {
-                Log.e(TAG, "Detected language level " + level + ", latest is " + LANGUAGE_SUPPORT_LEVEL);
+                Timber.e("latest is %s", LANGUAGE_SUPPORT_LEVEL);
                 languageSelector.setSummary(R.string.language_support_outdated);
             } else {
                 String translatedBy = this.getString(R.string.language_translated_by);
@@ -375,7 +368,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             }
             if (!SentryMain.IS_SENTRY_INSTALLED || !BuildConfig.DEBUG || InstallerInitializer.peekMagiskPath() == null) {
                 // Hide the pref_crash option if not in debug mode - stop users from purposely crashing the app
-                Log.i(TAG, String.format("Sentry installed: %s, debug: %s, magisk path: %s", SentryMain.IS_SENTRY_INSTALLED, BuildConfig.DEBUG, InstallerInitializer.peekMagiskPath()));
+                Timber.i(InstallerInitializer.peekMagiskPath());
                 Objects.requireNonNull((Preference) findPreference("pref_test_crash")).setVisible(false);
                 // Find pref_clear_data and set it invisible
                 Objects.requireNonNull((Preference) findPreference("pref_clear_data")).setVisible(false);
@@ -398,7 +391,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         return true;
                     });
                 } else {
-                    Log.e(TAG, String.format("Something is null: %s, %s", findPreference("pref_test_crash"), findPreference("pref_clear_data")));
+                    Timber.e("Something is null: %s, %s", findPreference("pref_clear_data"), findPreference("pref_test_crash"));
                 }
             }
             if (InstallerInitializer.peekMagiskVersion() < Constants.MAGISK_VER_CODE_INSTALL_COMMAND || !MainApplication.isDeveloper()) {
@@ -563,7 +556,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         fileOutputStream.write((line + "\n").getBytes());
                     }
                     fileOutputStream.close();
-                } catch (IOException e) {
+                } catch (
+                        IOException e) {
                     e.printStackTrace();
                     Toast.makeText(requireContext(), R.string.error_saving_logs, Toast.LENGTH_SHORT).show();
                     return true;
@@ -711,9 +705,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                             mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                             AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                             mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-                            if (BuildConfig.DEBUG) {
-                                Log.d(TAG, "Restarting app to save staging endpoint preference: " + newValue);
-                            }
+                            Timber.d("Restarting app to save staging endpoint preference: %s", newValue);
                             System.exit(0); // Exit app process
                         }).setNegativeButton(android.R.string.cancel, (dialog, which) -> {
                             // User cancelled the dialog
@@ -736,15 +728,35 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                             mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                             AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                             mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-                            if (BuildConfig.DEBUG) {
-                                Log.d(TAG, "Restarting app to save staging endpoint preference: " + newValue);
-                            }
+                            Timber.d("Restarting app to save staging endpoint preference: %s", newValue);
                             System.exit(0); // Exit app process
                         }).show();
                     }
                     return true;
                 });
             }
+            // Get magisk_alt_repo enabled state from realm db
+            RealmConfiguration realmConfig = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+            Realm realm1 = Realm.getInstance(realmConfig);
+            ReposList reposList = realm1.where(ReposList.class).equalTo("id", "magisk_alt_repo").findFirst();
+            if (reposList != null) {
+                // Set the switch to the current state
+                SwitchPreferenceCompat magiskAltRepoEnabled = Objects.requireNonNull(findPreference("pref_magisk_alt_repo_enabled"));
+                magiskAltRepoEnabled.setChecked(reposList.isEnabled());
+            }
+            // add listener to magisk_alt_repo_enabled switch to update realm db
+            Preference magiskAltRepoEnabled = Objects.requireNonNull(findPreference("pref_magisk_alt_repo_enabled"));
+            magiskAltRepoEnabled.setOnPreferenceChangeListener((preference, newValue) -> {
+                // Update realm db
+                Realm realm = Realm.getInstance(realmConfig);
+                realm.executeTransaction(realm2 -> {
+                    ReposList reposList1 = realm2.where(ReposList.class).equalTo("id", "magisk_alt_repo").findFirst();
+                    if (reposList1 != null) {
+                        reposList1.setEnabled(Boolean.parseBoolean(String.valueOf(newValue)));
+                    }
+                });
+                return true;
+            });
             // Disable toggling the pref_androidacy_repo_enabled on builds without an
             // ANDROIDACY_CLIENT_ID or where the ANDROIDACY_CLIENT_ID is empty
             Preference androidacyRepoEnabled = Objects.requireNonNull(findPreference("pref_androidacy_repo_enabled"));
@@ -758,13 +770,25 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     // Revert the switch to off
                     SwitchPreferenceCompat switchPreferenceCompat = (SwitchPreferenceCompat) androidacyRepoEnabled;
                     switchPreferenceCompat.setChecked(false);
-                    // Save the preference
-                    MainApplication.getSharedPreferences().edit().putBoolean("pref_androidacy_repo_enabled", false).apply();
+                    // Disable in realm db
+                    RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+                    Realm realm = Realm.getInstance(realmConfiguration);
+                    realm.executeTransaction(realm2 -> {
+                        ReposList repoRealmResults = realm2.where(ReposList.class).equalTo("id", "androidacy_repo").findFirst();
+                        assert repoRealmResults != null;
+                        repoRealmResults.setEnabled(false);
+                        realm2.insertOrUpdate(repoRealmResults);
+                        realm2.close();
+                    });
                     return false;
                 });
             }
-            // get if androidacy repo is enabled
-            boolean androidacyRepoEnabledPref = MainApplication.getSharedPreferences().getBoolean("pref_androidacy_repo_enabled", false);
+            // get if androidacy repo is enabled from realm db
+            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+            Realm realm = Realm.getInstance(realmConfiguration);
+            ReposList repoRealmResults = realm.where(ReposList.class).equalTo("id", "androidacy_repo").findFirst();
+            assert repoRealmResults != null;
+            boolean androidacyRepoEnabledPref = repoRealmResults.isEnabled();
             if (androidacyRepoEnabledPref) {
                 String[] originalApiKeyRef = new String[]{MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).getString("pref_androidacy_api_token", "")};
                 // Get the dummy pref_androidacy_repo_api_token preference with id pref_androidacy_repo_api_token
@@ -816,9 +840,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                     mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                                     AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                                     mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-                                    if (BuildConfig.DEBUG) {
-                                        Log.d(TAG, "Restarting app to save token preference: " + newValue);
-                                    }
+                                    Timber.d("Restarting app to save token preference: %s", newValue);
                                     System.exit(0); // Exit app process
                                 }).show();
                             });
@@ -866,9 +888,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                             mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                                             AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                                             mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-                                            if (BuildConfig.DEBUG) {
-                                                Log.d(TAG, "Restarting app to save token preference: " + newValue);
-                                            }
+                                            Timber.d("Restarting app to save token preference: %s", newValue);
                                             System.exit(0); // Exit app process
                                         }).show();
                                     });
@@ -940,7 +960,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                             IOException |
                                             JSONException |
                                             NoSuchAlgorithmException e) {
-                                        Log.e(TAG, "Failed to preload repo values", e);
+                                        Timber.e(e);
                                     }
                                     UiThreadHandler.handler.post(() -> updateCustomRepoList(false));
                                 }
@@ -986,9 +1006,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             if (preference == null)
                 return;
             if (!preferenceName.contains("androidacy") && !preferenceName.contains("magisk_alt_repo")) {
-                if (BuildConfig.DEBUG) {
-                    Log.d(TAG, "Setting preference " + preferenceName + " because it is not the Androidacy repo or the Magisk Alt Repo");
-                }
+                Timber.d("Setting preference " + preferenceName + " because it is not the Androidacy repo or the Magisk Alt Repo");
                 if (repoData == null || repoData.isForceHide()) {
                     hideRepoData(preferenceName);
                     return;

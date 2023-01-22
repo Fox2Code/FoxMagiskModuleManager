@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.system.ErrnoException;
 import android.system.Os;
-import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.WebSettings;
 
@@ -54,9 +53,9 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okhttp3.dnsoverhttps.DnsOverHttps;
 import okio.BufferedSink;
+import timber.log.Timber;
 
 public class Http {
-    private static final String TAG = "Http";
     private static final OkHttpClient httpClient;
     private static final OkHttpClient httpClientDoH;
     private static final OkHttpClient httpClientWithCache;
@@ -72,7 +71,7 @@ public class Http {
         if (mainApplication == null) {
             Error error = new Error("Initialized Http too soon!");
             error.fillInStackTrace();
-            Log.e(TAG, "Initialized Http too soon!", error);
+            Timber.e(error, "Initialized Http too soon!");
             System.out.flush();
             System.err.flush();
             try {
@@ -91,7 +90,7 @@ public class Http {
         } catch (
                 Throwable t) {
             cookieManager = null;
-            Log.e(TAG, "No WebView support!", t);
+            Timber.e(t, "No WebView support!");
         }
         hasWebView = cookieManager != null;
         OkHttpClient.Builder httpclientBuilder = new OkHttpClient.Builder();
@@ -115,7 +114,7 @@ public class Http {
         } catch (
                 UnknownHostException |
                 RuntimeException e) {
-            Log.e(TAG, "Failed to init DoH", e);
+            Timber.e(e, "Failed to init DoH");
         }
         // Add cookie support.
         httpclientBuilder.addInterceptor(new AddCookiesInterceptor(MainApplication.getINSTANCE().getApplicationContext())); // VERY VERY IMPORTANT
@@ -172,7 +171,7 @@ public class Http {
             httpclientBuilder.addInterceptor(CronetInterceptor.newBuilder(engine).build());
         } catch (
                 Exception e) {
-            Log.e(TAG, "Failed to init cronet", e);
+            Timber.e(e, "Failed to init cronet");
             // Gracefully fallback to okhttp
         }
         // Fallback DNS cache responses in case request fail but already succeeded once in the past
@@ -189,7 +188,7 @@ public class Http {
         httpClientWithCache = followRedirects(httpclientBuilder, true).build();
         httpclientBuilder.dns(fallbackDNS);
         httpClientWithCacheDoH = followRedirects(httpclientBuilder, true).build();
-        Log.i(TAG, "Initialized Http successfully!");
+        Timber.i("Initialized Http successfully!");
         doh = MainApplication.isDohEnabled();
     }
 
@@ -228,15 +227,15 @@ public class Http {
     public static byte[] doHttpGet(String url, boolean allowCache) throws IOException {
         if (BuildConfig.DEBUG_HTTP) {
             // Log, but set all query parameters values to "****" while keeping the keys
-            Log.d(TAG, "doHttpGet: " + url.replaceAll("=[^&]*", "=****"));
+            Timber.d("doHttpGet: %s", url.replaceAll("=[^&]*", "=****"));
         }
         Response response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).get().build()).execute();
         if (BuildConfig.DEBUG_HTTP) {
-            Log.d(TAG, "doHttpGet: request executed");
+            Timber.d("doHttpGet: request executed");
         }
         // 200/204 == success, 304 == cache valid
         if (response.code() != 200 && response.code() != 204 && (response.code() != 304 || !allowCache)) {
-            Log.e(TAG, "Failed to fetch " + url.replaceAll("=[^&]*", "=****") + " with code " + response.code());
+            Timber.e("Failed to fetch " + url.replaceAll("=[^&]*", "=****") + " with code " + response.code());
             checkNeedCaptchaAndroidacy(url, response.code());
             // If it's a 401, and an androidacy link, it's probably an invalid token
             if (response.code() == 401 && AndroidacyUtil.isAndroidacyLink(url)) {
@@ -246,7 +245,7 @@ public class Http {
             throw new HttpException(response.code());
         }
         if (BuildConfig.DEBUG_HTTP) {
-            Log.d(TAG, "doHttpGet: " + url.replaceAll("=[^&]*", "=****") + " succeeded");
+            Timber.d("doHttpGet: " + url.replaceAll("=[^&]*", "=****") + " succeeded");
         }
         ResponseBody responseBody = response.body();
         // Use cache api if used cached response
@@ -256,7 +255,7 @@ public class Http {
                 responseBody = response.body();
         }
         if (BuildConfig.DEBUG_HTTP) {
-            Log.d(TAG, "doHttpGet: returning " + responseBody.contentLength() + " bytes");
+            Timber.d("doHttpGet: returning " + responseBody.contentLength() + " bytes");
         }
         return responseBody.bytes();
     }
@@ -268,7 +267,7 @@ public class Http {
     @SuppressWarnings("resource")
     private static Object doHttpPostRaw(String url, String data, boolean allowCache) throws IOException {
         if (BuildConfig.DEBUG)
-            Log.i(TAG, "POST " + url + " " + data);
+            Timber.i("POST " + url + " " + data);
         Response response;
         response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).post(JsonRequestBody.from(data)).header("Content-Type", "application/json").build()).execute();
         if (response.isRedirect()) {
@@ -277,7 +276,7 @@ public class Http {
         // 200/204 == success, 304 == cache valid
         if (response.code() != 200 && response.code() != 204 && (response.code() != 304 || !allowCache)) {
             if (BuildConfig.DEBUG)
-                Log.e(TAG, "Failed to fetch " + url + ", code: " + response.code() + ", body: " + response.body().string());
+                Timber.e("Failed to fetch " + url + ", code: " + response.code() + ", body: " + response.body().string());
             checkNeedCaptchaAndroidacy(url, response.code());
             throw new HttpException(response.code());
         }
@@ -293,10 +292,10 @@ public class Http {
 
     public static byte[] doHttpGet(String url, ProgressListener progressListener) throws IOException {
         if (BuildConfig.DEBUG)
-            Log.i("Http", "GET " + url.split("\\?")[0]);
+            Timber.i("GET %s", url.split("\\?")[0]);
         Response response = getHttpClient().newCall(new Request.Builder().url(url).get().build()).execute();
         if (response.code() != 200 && response.code() != 204) {
-            Log.e(TAG, "Failed to fetch " + url + ", code: " + response.code());
+            Timber.e("Failed to fetch " + url + ", code: " + response.code());
             checkNeedCaptchaAndroidacy(url, response.code());
             throw new HttpException(response.code());
         }
@@ -313,7 +312,7 @@ public class Http {
         final long UPDATE_INTERVAL = 100;
         long nextUpdate = System.currentTimeMillis() + UPDATE_INTERVAL;
         long currentUpdate;
-        Log.i("Http", "Target: " + target + " Divider: " + divider);
+        Timber.i("Target: " + target + " Divider: " + divider);
         progressListener.onUpdate(0, (int) (target / divider), false);
         while (true) {
             int read = inputStream.read(buff);
@@ -343,7 +342,7 @@ public class Http {
     }
 
     public static void setDoh(boolean doh) {
-        Log.i(TAG, "DoH: " + Http.doh + " -> " + doh);
+        Timber.i("DoH: " + Http.doh + " -> " + doh);
         Http.doh = doh;
     }
 
@@ -357,44 +356,44 @@ public class Http {
         File webviewCacheDir = new File(cacheDir, "WebView");
         if (!webviewCacheDir.exists()) {
             if (!webviewCacheDir.mkdirs()) {
-                Log.e(TAG, "Failed to create webview cache dir");
+                Timber.e("Failed to create webview cache dir");
             }
         }
         File webviewCacheDirCache = new File(webviewCacheDir, "Default");
         if (!webviewCacheDirCache.exists()) {
             if (!webviewCacheDirCache.mkdirs()) {
-                Log.e(TAG, "Failed to create webview cache dir");
+                Timber.e("Failed to create webview cache dir");
             }
         }
         File webviewCacheDirCacheCodeCache = new File(webviewCacheDirCache, "HTTP Cache");
         if (!webviewCacheDirCacheCodeCache.exists()) {
             if (!webviewCacheDirCacheCodeCache.mkdirs()) {
-                Log.e(TAG, "Failed to create webview cache dir");
+                Timber.e("Failed to create webview cache dir");
             }
         }
         File webviewCacheDirCacheCodeCacheIndex = new File(webviewCacheDirCacheCodeCache, "Code Cache");
         if (!webviewCacheDirCacheCodeCacheIndex.exists()) {
             if (!webviewCacheDirCacheCodeCacheIndex.mkdirs()) {
-                Log.e(TAG, "Failed to create webview cache dir");
+                Timber.e("Failed to create webview cache dir");
             }
         }
         File webviewCacheDirCacheCodeCacheIndexIndex = new File(webviewCacheDirCacheCodeCacheIndex, "Index");
         if (!webviewCacheDirCacheCodeCacheIndexIndex.exists()) {
             if (!webviewCacheDirCacheCodeCacheIndexIndex.mkdirs()) {
-                Log.e(TAG, "Failed to create webview cache dir");
+                Timber.e("Failed to create webview cache dir");
             }
         }
         // Create the js and wasm dirs
         File webviewCacheDirCacheCodeCacheIndexIndexJs = new File(webviewCacheDirCacheCodeCache, "js");
         if (!webviewCacheDirCacheCodeCacheIndexIndexJs.exists()) {
             if (!webviewCacheDirCacheCodeCacheIndexIndexJs.mkdirs()) {
-                Log.e(TAG, "Failed to create webview cache dir");
+                Timber.e("Failed to create webview cache dir");
             }
         }
         File webviewCacheDirCacheCodeCacheIndexIndexWasm = new File(webviewCacheDirCacheCodeCache, "wasm");
         if (!webviewCacheDirCacheCodeCacheIndexIndexWasm.exists()) {
             if (!webviewCacheDirCacheCodeCacheIndexIndexWasm.mkdirs()) {
-                Log.e(TAG, "Failed to create webview cache dir");
+                Timber.e("Failed to create webview cache dir");
             }
         }
     }

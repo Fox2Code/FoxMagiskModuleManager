@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.text.Spanned;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +26,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import io.noties.markwon.Markwon;
+import timber.log.Timber;
 
 @SuppressLint("UseCompatLoadingForDrawables")
 public enum ActionButtonType {
@@ -95,7 +95,7 @@ public enum ActionButtonType {
             } else {
                 builder.setMessage(desc);
             }
-            Log.i("Test", "URL: " + updateZipUrl);
+            Timber.i("URL: %s", updateZipUrl);
             builder.setNegativeButton(R.string.download_module, (x, y) -> IntentHelper.openCustomTab(button.getContext(), updateZipUrl));
             if (hasRoot) {
                 builder.setPositiveButton(moduleHolder.hasUpdate() ? R.string.update_module : R.string.install_module, (x, y) -> {
@@ -132,9 +132,9 @@ public enum ActionButtonType {
                 doActionLong(button, moduleHolder);
                 return;
             }
-            Log.i("ActionButtonType", Integer.toHexString(moduleHolder.moduleInfo.flags));
+            Timber.i(Integer.toHexString(moduleHolder.moduleInfo.flags));
             if (!ModuleManager.getINSTANCE().setUninstallState(moduleHolder.moduleInfo, !moduleHolder.hasFlag(ModuleInfo.FLAG_MODULE_UNINSTALLING))) {
-                Log.e("ActionButtonType", "Failed to switch uninstalled state!");
+                Timber.e("Failed to switch uninstalled state!");
             }
             update(button, moduleHolder);
         }
@@ -144,17 +144,22 @@ public enum ActionButtonType {
             // Actually a module having mount is the only issue when deleting module
             if (moduleHolder.moduleInfo.hasFlag(ModuleInfo.FLAG_MODULE_HAS_ACTIVE_MOUNT))
                 return false; // We can't trust active flag on first boot
-            new AlertDialog.Builder(button.getContext()).setTitle(R.string.master_delete).setPositiveButton(R.string.master_delete_yes, (v, i) -> {
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(button.getContext());
+            builder.setTitle(R.string.master_delete);
+            builder.setPositiveButton(R.string.master_delete_yes, (dialog, which) -> {
                 String moduleId = moduleHolder.moduleInfo.id;
                 if (!ModuleManager.getINSTANCE().masterClear(moduleHolder.moduleInfo)) {
                     Toast.makeText(button.getContext(), R.string.master_delete_fail, Toast.LENGTH_SHORT).show();
                 } else {
                     moduleHolder.moduleInfo = null;
                     FoxActivity.getFoxActivity(button).refreshUI();
-                    Log.e("ActionButtonType", "Cleared: " + moduleId);
+                    Timber.e("Cleared: %s", moduleId);
                 }
-            }).setNegativeButton(R.string.master_delete_no, (v, i) -> {
-            }).create().show();
+            });
+            builder.setNegativeButton(R.string.master_delete_no, (v, i) -> {
+            });
+            builder.create();
+            builder.show();
             return true;
         }
     }, CONFIG() {

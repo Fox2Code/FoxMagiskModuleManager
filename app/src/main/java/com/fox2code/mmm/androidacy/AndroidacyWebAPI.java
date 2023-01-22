@@ -5,7 +5,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.webkit.JavascriptInterface;
@@ -26,20 +25,21 @@ import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
 import com.fox2code.mmm.repo.RepoModule;
 import com.fox2code.mmm.utils.ExternalHelper;
+import com.fox2code.mmm.utils.IntentHelper;
 import com.fox2code.mmm.utils.io.Files;
 import com.fox2code.mmm.utils.io.Hashes;
-import com.fox2code.mmm.utils.IntentHelper;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import timber.log.Timber;
+
 @Keep
 public class AndroidacyWebAPI {
     public static final int COMPAT_UNSUPPORTED = 0;
     public static final int COMPAT_DOWNLOAD = 1;
-    private static final String TAG = "AndroidacyWebAPI";
     private static final int MAX_COMPAT_MODE = 1;
     private final AndroidacyActivity activity;
     private final boolean allowInstall;
@@ -63,7 +63,7 @@ public class AndroidacyWebAPI {
 
     void openNativeModuleDialogRaw(String moduleUrl, String moduleId, String installTitle, String checksum, boolean canInstall) {
         if (BuildConfig.DEBUG)
-            Log.d(TAG, "ModuleDialog, downloadUrl: " + AndroidacyUtil.hideToken(moduleUrl) + ", moduleId: " + moduleId + ", installTitle: " + installTitle + ", checksum: " + checksum + ", canInstall: " + canInstall);
+            Timber.d("ModuleDialog, downloadUrl: " + AndroidacyUtil.hideToken(moduleUrl) + ", moduleId: " + moduleId + ", installTitle: " + installTitle + ", checksum: " + checksum + ", canInstall: " + canInstall);
         this.downloadMode = false;
         RepoModule repoModule = AndroidacyRepoData.getInstance().moduleHashMap.get(installTitle);
         String title, description;
@@ -113,7 +113,7 @@ public class AndroidacyWebAPI {
                 return this.activity.downloadFileAsync(moduleUrl);
             } catch (
                     IOException e) {
-                Log.e(TAG, "Failed to download module", e);
+                Timber.e(e, "Failed to download module");
                 AndroidacyWebAPI.this.activity.runOnUiThread(() -> Toast.makeText(AndroidacyWebAPI.this.activity, R.string.failed_download, Toast.LENGTH_SHORT).show());
                 return null;
             }
@@ -135,7 +135,7 @@ public class AndroidacyWebAPI {
         if (this.consumedAction)
             return;
         if (BuildConfig.DEBUG)
-            Log.d(TAG, "Androidacy Compat mode: " + value);
+            Timber.d("Androidacy Compat mode: %s", value);
         this.notifiedCompatMode = value;
         if (value < 0) {
             value = 0;
@@ -173,7 +173,7 @@ public class AndroidacyWebAPI {
         this.consumedAction = true;
         this.downloadMode = false;
         if (BuildConfig.DEBUG)
-            Log.d(TAG, "Received openUrl request: " + url);
+            Timber.d("Received openUrl request: %s", url);
         if (Uri.parse(url).getScheme().equals("https")) {
             IntentHelper.openUrl(this.activity, url);
         }
@@ -189,7 +189,7 @@ public class AndroidacyWebAPI {
         this.consumedAction = true;
         this.downloadMode = false;
         if (BuildConfig.DEBUG)
-            Log.d(TAG, "Received openCustomTab request: " + url);
+            Timber.d("Received openCustomTab request: %s", url);
         if (Uri.parse(url).getScheme().equals("https")) {
             IntentHelper.openCustomTab(this.activity, url);
         }
@@ -233,14 +233,14 @@ public class AndroidacyWebAPI {
         this.consumedAction = true;
         this.downloadMode = false;
         if (BuildConfig.DEBUG)
-            Log.d(TAG, "Received install request: " + moduleUrl + " " + installTitle + " " + checksum);
+            Timber.d("Received install request: " + moduleUrl + " " + installTitle + " " + checksum);
         if (!AndroidacyUtil.isAndroidacyLink(moduleUrl)) {
             this.forceQuitRaw("Non Androidacy module link used on Androidacy");
             return;
         }
         checksum = Hashes.checkSumFormat(checksum);
         if (checksum == null || checksum.isEmpty()) {
-            Log.w(TAG, "Androidacy WebView didn't provided a checksum!");
+            Timber.w("Androidacy WebView didn't provided a checksum!");
         } else if (!Hashes.checkSumValid(checksum)) {
             this.forceQuitRaw("Androidacy didn't provided a valid checksum");
             return;
@@ -284,7 +284,7 @@ public class AndroidacyWebAPI {
         }
         checksum = Hashes.checkSumFormat(checksum);
         if (checksum == null || checksum.isEmpty()) {
-            Log.w(TAG, "Androidacy WebView didn't provided a checksum!");
+            Timber.w("Androidacy WebView didn't provided a checksum!");
         } else if (!Hashes.checkSumValid(checksum)) {
             this.forceQuitRaw("Androidacy didn't provided a valid checksum");
             return;

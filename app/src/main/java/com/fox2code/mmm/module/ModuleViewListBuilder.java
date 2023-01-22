@@ -2,7 +2,6 @@ package com.fox2code.mmm.module;
 
 import android.app.Activity;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,14 +17,14 @@ import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.repo.RepoModule;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 
+import timber.log.Timber;
+
 public class ModuleViewListBuilder {
-    private static final String TAG = "ModuleViewListBuilder";
     private static final Runnable RUNNABLE = () -> {};
     private final EnumSet<NotificationType> notifications = EnumSet.noneOf(NotificationType.class);
     private final HashMap<String, ModuleHolder> mappedModuleHolders = new HashMap<>();
@@ -44,9 +43,28 @@ public class ModuleViewListBuilder {
         this.activity = activity;
     }
 
+    private static void notifySizeChanged(ModuleViewAdapter moduleViewAdapter,
+                                          int index, int oldLen, int newLen) {
+        // Timber.i("A: " + index + " " + oldLen + " " + newLen);
+        if (oldLen == newLen) {
+            if (newLen != 0)
+                moduleViewAdapter.notifyItemRangeChanged(index, newLen);
+        } else if (oldLen < newLen) {
+            if (oldLen != 0)
+                moduleViewAdapter.notifyItemRangeChanged(index, oldLen);
+            moduleViewAdapter.notifyItemRangeInserted(
+                    index + oldLen, newLen - oldLen);
+        } else {
+            if (newLen != 0)
+                moduleViewAdapter.notifyItemRangeChanged(index, newLen);
+            moduleViewAdapter.notifyItemRangeRemoved(
+                    index + newLen, oldLen - newLen);
+        }
+    }
+
     public void addNotification(NotificationType notificationType) {
         if (notificationType == null) {
-            Log.w(TAG, "addNotification(null) called!");
+            Timber.w("addNotification(null) called!");
             return;
         }
         synchronized (this.updateLock) {
@@ -61,7 +79,7 @@ public class ModuleViewListBuilder {
             }
             ModuleManager moduleManager = ModuleManager.getINSTANCE();
             moduleManager.runAfterScan(() -> {
-                Log.i(TAG, "A1: " + moduleManager.getModules().size());
+                Timber.i("A1: %s", moduleManager.getModules().size());
                 for (LocalModuleInfo moduleInfo : moduleManager.getModules().values()) {
                     ModuleHolder moduleHolder = this.mappedModuleHolders.get(moduleInfo.id);
                     if (moduleHolder == null) {
@@ -82,7 +100,7 @@ public class ModuleViewListBuilder {
             }
             RepoManager repoManager = RepoManager.getINSTANCE();
             repoManager.runAfterUpdate(() -> {
-                Log.i(TAG, "A2: " + repoManager.getModules().size());
+                Timber.i("A2: %s", repoManager.getModules().size());
                 boolean no32bitSupport = Build.SUPPORTED_32_BIT_ABIS.length == 0;
                 for (RepoModule repoModule : repoManager.getModules().values()) {
                     if (!repoModule.repoData.isEnabled()) continue;
@@ -109,6 +127,37 @@ public class ModuleViewListBuilder {
                 }
             });
         }
+    }
+
+    public void refreshNotificationsUI(ModuleViewAdapter moduleViewAdapter) {
+        final int notificationCount = this.notifications.size();
+        notifySizeChanged(moduleViewAdapter, 0,
+                notificationCount, notificationCount);
+    }
+
+    private boolean matchFilter(ModuleHolder moduleHolder) {
+        ModuleInfo moduleInfo = moduleHolder.getMainModuleInfo();
+        String query = this.query;
+        String idLw = moduleInfo.id.toLowerCase(Locale.ROOT);
+        String nameLw = moduleInfo.name.toLowerCase(Locale.ROOT);
+        String authorLw = moduleInfo.author == null ? "" :
+                moduleInfo.author.toLowerCase(Locale.ROOT);
+        if (query.isEmpty() || query.equals(idLw) ||
+                query.equals(nameLw) || query.equals(authorLw)) {
+            moduleHolder.filterLevel = 0; // Lower = better
+            return true;
+        }
+        if (idLw.contains(query) || nameLw.contains(query)) {
+            moduleHolder.filterLevel = 1;
+            return true;
+        }
+        if (authorLw.contains(query) || (moduleInfo.description != null &&
+                moduleInfo.description.toLowerCase(Locale.ROOT).contains(query))) {
+            moduleHolder.filterLevel = 2;
+            return true;
+        }
+        moduleHolder.filterLevel = 3;
+        return false;
     }
 
     public void applyTo(final RecyclerView moduleList,final ModuleViewAdapter moduleViewAdapter) {
@@ -170,14 +219,14 @@ public class ModuleViewListBuilder {
                         }
                     }
                 }
-                Collections.sort(moduleHolders, this.moduleSorter);
+                moduleHolders.sort(this.moduleSorter);
                 // Header is always first
                 moduleHolders.add(0, headerFooter[0] =
                         new ModuleHolder(this.headerPx, true));
                 // Footer is always last
                 moduleHolders.add(headerFooter[1] =
                         new ModuleHolder(this.footerPx, false));
-                Log.i(TAG, "Got " + moduleHolders.size() + " entries!");
+                Timber.i("Got " + moduleHolders.size() + " entries!");
                 // Build end
             }
         } finally {
@@ -251,59 +300,9 @@ public class ModuleViewListBuilder {
         });
     }
 
-    public void refreshNotificationsUI(ModuleViewAdapter moduleViewAdapter) {
-        final int notificationCount = this.notifications.size();
-        notifySizeChanged(moduleViewAdapter, 0,
-                notificationCount, notificationCount);
-    }
-
-    private boolean matchFilter(ModuleHolder moduleHolder) {
-        ModuleInfo moduleInfo = moduleHolder.getMainModuleInfo();
-        String query = this.query;
-        String idLw = moduleInfo.id.toLowerCase(Locale.ROOT);
-        String nameLw = moduleInfo.name.toLowerCase(Locale.ROOT);
-        String authorLw = moduleInfo.author == null ? "" :
-                moduleInfo.author.toLowerCase(Locale.ROOT);
-        if (query.isEmpty() || query.equals(idLw) ||
-                query.equals(nameLw) || query.equals(authorLw)) {
-            moduleHolder.filterLevel = 0; // Lower = better
-            return true;
-        }
-        if (idLw.contains(query) || nameLw.contains(query)) {
-            moduleHolder.filterLevel = 1;
-            return true;
-        }
-        if (authorLw.contains(query) || (moduleInfo.description != null &&
-                moduleInfo.description.toLowerCase(Locale.ROOT).contains(query))) {
-            moduleHolder.filterLevel = 2;
-            return true;
-        }
-        moduleHolder.filterLevel = 3;
-        return false;
-    }
-
-    private static void notifySizeChanged(ModuleViewAdapter moduleViewAdapter,
-                                          int index, int oldLen, int newLen) {
-        // Log.i(TAG, "A: " + index + " " + oldLen + " " + newLen);
-        if (oldLen == newLen) {
-            if (newLen != 0)
-                moduleViewAdapter.notifyItemRangeChanged(index, newLen);
-        } else if (oldLen < newLen) {
-            if (oldLen != 0)
-                moduleViewAdapter.notifyItemRangeChanged(index, oldLen);
-            moduleViewAdapter.notifyItemRangeInserted(
-                    index + oldLen, newLen - oldLen);
-        } else {
-            if (newLen != 0)
-                moduleViewAdapter.notifyItemRangeChanged(index, newLen);
-            moduleViewAdapter.notifyItemRangeRemoved(
-                    index + newLen, oldLen - newLen);
-        }
-    }
-
     public void setQuery(String query) {
         synchronized (this.queryLock) {
-            Log.i(TAG, "Query " + this.query + " -> " + query);
+            Timber.i("Query " + this.query + " -> " + query);
             this.query = query == null ? "" :
                     query.trim().toLowerCase(Locale.ROOT);
         }
@@ -313,7 +312,7 @@ public class ModuleViewListBuilder {
         synchronized (this.queryLock) {
             String newQuery = query == null ? "" :
                     query.trim().toLowerCase(Locale.ROOT);
-            Log.i(TAG, "Query change " + this.query + " -> " + newQuery);
+            Timber.i("Query change " + this.query + " -> " + newQuery);
             if (this.query.equals(newQuery))
                 return false;
             this.query = newQuery;

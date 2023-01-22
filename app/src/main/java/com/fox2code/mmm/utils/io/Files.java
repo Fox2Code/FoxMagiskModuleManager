@@ -27,6 +27,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import timber.log.Timber;
+
 public class Files {
     private static final boolean is64bit = Build.SUPPORTED_64_BIT_ABIS.length > 0;
 
@@ -73,7 +75,7 @@ public class Files {
                 result = new File(uri.getPath()).length();
             }
         } catch (Exception e) {
-            Log.e("Files", Log.getStackTraceString(e));
+            Timber.e(Log.getStackTraceString(e));
             return result;
         }
         return result;

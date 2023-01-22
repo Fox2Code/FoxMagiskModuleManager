@@ -2,7 +2,6 @@ package com.fox2code.mmm.module;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -15,8 +14,8 @@ import com.fox2code.mmm.XHooks;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.repo.RepoModule;
-import com.fox2code.mmm.utils.io.Http;
 import com.fox2code.mmm.utils.IntentHelper;
+import com.fox2code.mmm.utils.io.Http;
 import com.fox2code.mmm.utils.io.PropUtils;
 
 import java.util.Comparator;
@@ -24,8 +23,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import timber.log.Timber;
+
 public final class ModuleHolder implements Comparable<ModuleHolder> {
-    private static final String TAG = "ModuleHolder";
 
     public final String moduleId;
     public final NotificationType notificationType;
@@ -196,7 +196,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
                     XHooks.checkConfigTargetExists(context, pkg, config);
                     buttonTypeList.add(ActionButtonType.CONFIG);
                 } catch (PackageManager.NameNotFoundException e) {
-                    Log.w(TAG, "Config package \"" + pkg +
+                    Timber.w("Config package \"" + pkg +
                             "\" missing for module \"" + this.moduleId + "\"");
                 }
             }

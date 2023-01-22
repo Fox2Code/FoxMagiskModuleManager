@@ -1,7 +1,5 @@
 package com.fox2code.mmm;
 
-import android.util.Log;
-
 import com.fox2code.mmm.utils.io.Files;
 import com.fox2code.mmm.utils.io.Http;
 
@@ -17,6 +15,8 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
+import timber.log.Timber;
+
 // See https://docs.github.com/en/rest/reference/repos#releases
 public class AppUpdateManager {
     public static final int FLAG_COMPAT_LOW_QUALITY = 0x0001;
@@ -29,10 +29,8 @@ public class AppUpdateManager {
     public static final int FLAG_COMPAT_FORCE_HIDE = 0x0080;
     public static final int FLAG_COMPAT_MMT_REBORN = 0x0100;
     public static final int FLAG_COMPAT_ZIP_WRAPPER = 0x0200;
-    private static final String TAG = "AppUpdateManager";
     private static final AppUpdateManager INSTANCE = new AppUpdateManager();
     private static final String RELEASES_API_URL = "https://api.github.com/repos/Fox2Code/FoxMagiskModuleManager/releases";
-    private static final String COMPAT_API_URL = "https://api.github.com/repos/Fox2Code/FoxMagiskModuleManager/issues/4";
     private final HashMap<String, Integer> compatDataId = new HashMap<>();
     private final Object updateLock = new Object();
     private final File compatFile;
@@ -120,15 +118,15 @@ public class AppUpdateManager {
                     this.preReleaseNewer = false;
                 }
                 if (BuildConfig.DEBUG)
-                    Log.d(TAG, "Latest release: " + latestRelease);
+                    Timber.d("Latest release: %s", latestRelease);
                 if (BuildConfig.DEBUG)
-                    Log.d(TAG, "Latest pre-release: " + latestPreRelease);
+                    Timber.d("Latest pre-release: %s", latestPreRelease);
                 if (BuildConfig.DEBUG)
-                    Log.d(TAG, "Latest pre-release newer: " + preReleaseNewer);
+                    Timber.d("Latest pre-release newer: %s", preReleaseNewer);
                 this.lastChecked = System.currentTimeMillis();
             } catch (
                     Exception ioe) {
-                Log.e("AppUpdateManager", "Failed to check releases", ioe);
+                Timber.e(ioe);
             }
         }
         return this.peekShouldUpdate();
@@ -138,11 +136,12 @@ public class AppUpdateManager {
         compatDataId.clear();
         try {
             Files.write(compatFile, new byte[0]);
-        } catch (IOException e) {
+        } catch (
+                IOException e) {
             e.printStackTrace();
         }
         // There once lived an implementation that used a GitHub API to get the compatibility flags. It was removed because it was too slow and the API was rate limited.
-        Log.w(TAG, "Remote compatibility data flags are not implemented.");
+        Timber.w("Remote compatibility data flags are not implemented.");
     }
 
     public boolean peekShouldUpdate() {

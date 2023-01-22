@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -40,6 +39,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import timber.log.Timber;
+
 public final class RepoManager extends SyncManager {
     public static final String MAGISK_REPO = "https://raw.githubusercontent.com/Magisk-Modules-Repo/submission/modules/modules.json";
     public static final String MAGISK_REPO_HOMEPAGE = "https://github.com/Magisk-Modules-Repo";
@@ -49,7 +50,6 @@ public final class RepoManager extends SyncManager {
     public static final String ANDROIDACY_MAGISK_REPO_ENDPOINT = "https://production-api.androidacy.com/magisk/repo";
     public static final String ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT = "https://staging-api.androidacy.com/magisk/repo";
     public static final String ANDROIDACY_MAGISK_REPO_HOMEPAGE = "https://www.androidacy.com/modules-repo";
-    private static final String TAG = "RepoManager";
     private static final String MAGISK_REPO_MANAGER = "https://magisk-modules-repo.github.io/submission/modules.json";
     private static final Object lock = new Object();
     private static final double STEP1 = 0.1D;
@@ -174,7 +174,7 @@ public final class RepoManager extends SyncManager {
                     this.modules.put(repoModule.id, repoModule);
                 }
             } else {
-                Log.e(TAG, "Detected module with invalid metadata: " + repoModule.repoName + "/" + repoModule.id);
+                Timber.e("Detected module with invalid metadata: " + repoModule.repoName + "/" + repoModule.id);
             }
         }
     }
@@ -232,58 +232,50 @@ public final class RepoManager extends SyncManager {
         // Attempt to contact connectivitycheck.gstatic.com/generate_204
         // If we can't, we don't have internet connection
         try {
-            if (BuildConfig.DEBUG) {
-                Log.d(TAG, "Checking internet connection...");
-            }
+            Timber.d("Checking internet connection...");
             // this url is actually hosted by Cloudflare and is not dependent on Androidacy servers being up
             HttpURLConnection urlConnection = (HttpURLConnection) new URL("https://production-api.androidacy.com/cdn-cgi/trace").openConnection();
-            if (BuildConfig.DEBUG) {
-                Log.d(TAG, "Opened connection to " + urlConnection.getURL());
-            }
+            Timber.d("Opened connection to %s", urlConnection.getURL());
             urlConnection.setInstanceFollowRedirects(false);
             urlConnection.setReadTimeout(1000);
             urlConnection.setUseCaches(false);
             urlConnection.getInputStream().close();
             // should return a 200 and the content should contain "visit_scheme=https" and ip=<some ip>
-            if (BuildConfig.DEBUG) {
-                Log.d(TAG, "Response code: " + urlConnection.getResponseCode());
-            }
+            Timber.d("Response code: %s", urlConnection.getResponseCode());
             // get the response body
             String responseBody = new BufferedReader(new InputStreamReader(urlConnection.getInputStream())).lines().collect(Collectors.joining("\n"));
-            if (BuildConfig.DEBUG) {
-                Log.d(TAG, "Response body: " + responseBody);
-            }
+            Timber.d("Response body: %s", responseBody);
             // check if the response body contains the expected content
             if (urlConnection.getResponseCode() == 200 && responseBody.contains("visit_scheme=https") && responseBody.contains("ip=")) {
                 this.hasInternet = true;
             } else {
-                Log.e(TAG, "Failed to check internet connection");
+                Timber.e("Failed to check internet connection");
             }
         } catch (
                 IOException e) {
-            Log.e(TAG, "Failed to check internet connection", e);
+            Timber.e(e);
         }
         for (int i = 0; i < repoDatas.length; i++) {
             if (BuildConfig.DEBUG)
-                Log.d("RepoManager", "Preparing to fetch: " + repoDatas[i].getName());
+                Timber.d("Preparing to fetch: %s", repoDatas[i].getName());
             moduleToUpdate += (repoUpdaters[i] = new RepoUpdater(repoDatas[i])).fetchIndex();
             updateListener.update(STEP1 / repoDatas.length * (i + 1));
         }
         if (BuildConfig.DEBUG)
-            Log.d("RepoManager", "Updating meta-data");
+            Timber.d("Updating meta-data");
         int updatedModules = 0;
         boolean allowLowQualityModules = MainApplication.isDisableLowQualityModuleFilter();
         for (int i = 0; i < repoUpdaters.length; i++) {
             // Check if the repo is enabled
             if (!repoUpdaters[i].repoData.isEnabled()) {
                 if (BuildConfig.DEBUG)
-                    Log.d("RepoManager", "Skipping disabled repo: " + repoUpdaters[i].repoData.getName());
+                    Timber.d("Skipping disabled repo: %s", repoUpdaters[i].repoData.getName());
                 continue;
             }
             List<RepoModule> repoModules = repoUpdaters[i].toUpdate();
             RepoData repoData = repoDatas[i];
             if (BuildConfig.DEBUG)
-                Log.d("RepoManager", "Registering " + repoData.getName());
+                Timber.d("Registering %s", repoData.getName());
             for (RepoModule repoModule : repoModules) {
                 try {
                     if (repoModule.propUrl != null && !repoModule.propUrl.isEmpty()) {
@@ -305,7 +297,7 @@ public final class RepoManager extends SyncManager {
                     }
                 } catch (
                         Exception e) {
-                    Log.e(TAG, "Failed to get \"" + repoModule.id + "\" metadata", e);
+                    Timber.e(e);
                 }
                 updatedModules++;
                 updateListener.update(STEP1 + (STEP2 / moduleToUpdate * updatedModules));
@@ -326,20 +318,20 @@ public final class RepoManager extends SyncManager {
             }
         }
         if (BuildConfig.DEBUG)
-            Log.d("RepoManager", "Finishing update");
+            Timber.d("Finishing update");
         if (hasInternet) {
             for (int i = 0; i < repoDatas.length; i++) {
                 // If repo is not enabled, skip
                 if (!repoDatas[i].isEnabled()) {
                     if (BuildConfig.DEBUG)
-                        Log.d("RepoManager", "Skipping " + repoDatas[i].getName() + " because it's disabled");
+                        Timber.d("Skipping " + repoDatas[i].getName() + " because it's disabled");
                     continue;
                 }
                 if (BuildConfig.DEBUG)
-                    Log.d("RepoManager", "Finishing: " + repoUpdaters[i].repoData.getName());
+                    Timber.d("Finishing: %s", repoUpdaters[i].repoData.getName());
                 this.repoLastSuccess = repoUpdaters[i].finish();
                 if (!this.repoLastSuccess) {
-                    Log.e(TAG, "Failed to update " + repoUpdaters[i].repoData.getName());
+                    Timber.e("Failed to update %s", repoUpdaters[i].repoData.getName());
                     // Show snackbar on main looper and add some bottom padding
                     int finalI = i;
                     Activity context = MainApplication.getINSTANCE().getLastCompatActivity();
@@ -366,7 +358,7 @@ public final class RepoManager extends SyncManager {
                 updateListener.update(STEP1 + STEP2 + (STEP3 / repoDatas.length * (i + 1)));
             }
         }
-        Log.i(TAG, "Got " + this.modules.size() + " modules!");
+        Timber.i("Got " + this.modules.size() + " modules!");
         updateListener.update(1D);
     }
 

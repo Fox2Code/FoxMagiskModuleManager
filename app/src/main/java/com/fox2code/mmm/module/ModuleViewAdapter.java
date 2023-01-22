@@ -5,7 +5,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +21,6 @@ import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fox2code.foxcompat.view.FoxDisplay;
-import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.NotificationType;
 import com.fox2code.mmm.R;
@@ -38,16 +36,21 @@ import com.topjohnwu.superuser.internal.UiThreadHandler;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import timber.log.Timber;
+
 
 public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdapter.ViewHolder> {
     private static final boolean DEBUG = false;
     public final ArrayList<ModuleHolder> moduleHolders = new ArrayList<>();
 
+    private static String formatType(ModuleHolder.Type type) {
+        return type.name().substring(0, 3) + "_" + type.ordinal();
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.module_entry, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.module_entry, parent, false);
 
         return new ViewHolder(view);
     }
@@ -83,9 +86,9 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
         private final TextView updateText;
         private final Chip[] actionsButtons;
         private final ArrayList<ActionButtonType> actionButtonsTypes;
-        private boolean initState;
         public ModuleHolder moduleHolder;
         public Drawable background;
+        private boolean initState;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -117,14 +120,16 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                         onClickListener.onClick(v);
                     } else if (moduleHolder.notificationType != null) {
                         onClickListener = moduleHolder.notificationType.onClickListener;
-                        if (onClickListener != null) onClickListener.onClick(v);
+                        if (onClickListener != null)
+                            onClickListener.onClick(v);
                     }
                 }
             });
             this.buttonAction.setClickable(false);
             this.switchMaterial.setEnabled(false);
             this.switchMaterial.setOnCheckedChangeListener((v, checked) -> {
-                if (this.initState) return; // Skip if non user
+                if (this.initState)
+                    return; // Skip if non user
                 ModuleHolder moduleHolder = this.moduleHolder;
                 if (moduleHolder != null && moduleHolder.moduleInfo != null) {
                     ModuleInfo moduleInfo = moduleHolder.moduleInfo;
@@ -138,23 +143,23 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
             for (int i = 0; i < this.actionsButtons.length; i++) {
                 final int index = i;
                 this.actionsButtons[i].setOnClickListener(v -> {
-                    if (this.initState) return; // Skip if non user
+                    if (this.initState)
+                        return; // Skip if non user
                     ModuleHolder moduleHolder = this.moduleHolder;
                     if (index < this.actionButtonsTypes.size() && moduleHolder != null) {
-                        this.actionButtonsTypes.get(index)
-                                .doAction((Chip) v, moduleHolder);
+                        this.actionButtonsTypes.get(index).doAction((Chip) v, moduleHolder);
                         if (moduleHolder.shouldRemove()) {
                             this.cardView.setVisibility(View.GONE);
                         }
                     }
                 });
                 this.actionsButtons[i].setOnLongClickListener(v -> {
-                    if (this.initState) return false; // Skip if non user
+                    if (this.initState)
+                        return false; // Skip if non user
                     ModuleHolder moduleHolder = this.moduleHolder;
                     boolean didSomething = false;
                     if (index < this.actionButtonsTypes.size() && moduleHolder != null) {
-                        didSomething = this.actionButtonsTypes.get(index)
-                                .doActionLong((Chip) v, moduleHolder);
+                        didSomething = this.actionButtonsTypes.get(index).doActionLong((Chip) v, moduleHolder);
                         if (moduleHolder.shouldRemove()) {
                             this.cardView.setVisibility(View.GONE);
                         }
@@ -190,8 +195,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 if (localModuleInfo != null) {
                     localModuleInfo.verify();
                     this.switchMaterial.setVisibility(View.VISIBLE);
-                    this.switchMaterial.setChecked((localModuleInfo.flags &
-                            ModuleInfo.FLAG_MODULE_DISABLED) == 0);
+                    this.switchMaterial.setChecked((localModuleInfo.flags & ModuleInfo.FLAG_MODULE_DISABLED) == 0);
                 } else {
                     this.switchMaterial.setVisibility(View.GONE);
                 }
@@ -203,24 +207,10 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 ModuleInfo moduleInfo = moduleHolder.getMainModuleInfo();
                 moduleInfo.verify();
                 this.titleText.setText(moduleInfo.name);
-                if (localModuleInfo == null || moduleInfo.versionCode >
-                        localModuleInfo.updateVersionCode) {
-                    this.creditText.setText((localModuleInfo == null ||
-                            Objects.equals(moduleInfo.version, localModuleInfo.version) ?
-                            moduleInfo.version : localModuleInfo.version + " (" +
-                            this.getString(R.string.module_last_update) + " " +
-                            moduleInfo.version + ")") + " " +
-                            this.getString(R.string.module_by) + " " + moduleInfo.author);
+                if (localModuleInfo == null || moduleInfo.versionCode > localModuleInfo.updateVersionCode) {
+                    this.creditText.setText((localModuleInfo == null || Objects.equals(moduleInfo.version, localModuleInfo.version) ? moduleInfo.version : localModuleInfo.version + " (" + this.getString(R.string.module_last_update) + " " + moduleInfo.version + ")") + " " + this.getString(R.string.module_by) + " " + moduleInfo.author);
                 } else {
-                    this.creditText.setText(localModuleInfo.version + (
-                            (localModuleInfo.updateVersion != null && (Objects.equals(
-                                    localModuleInfo.version, localModuleInfo.updateVersion) ||
-                                    Objects.equals(localModuleInfo.version,
-                                            localModuleInfo.updateVersion + " (" +
-                                                    localModuleInfo.updateVersionCode + ")"))) ?
-                                    "" : " (" + this.getString(R.string.module_last_update) +
-                                    " " + localModuleInfo.updateVersion + ")") + " " +
-                            this.getString(R.string.module_by) + " " + localModuleInfo.author);
+                    this.creditText.setText(localModuleInfo.version + ((localModuleInfo.updateVersion != null && (Objects.equals(localModuleInfo.version, localModuleInfo.updateVersion) || Objects.equals(localModuleInfo.version, localModuleInfo.updateVersion + " (" + localModuleInfo.updateVersionCode + ")"))) ? "" : " (" + this.getString(R.string.module_last_update) + " " + localModuleInfo.updateVersion + ")") + " " + this.getString(R.string.module_by) + " " + localModuleInfo.author);
                 }
                 if (moduleInfo.description == null || moduleInfo.description.isEmpty()) {
                     this.descriptionText.setText(R.string.no_desc_found);
@@ -232,12 +222,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 if (!updateText.isEmpty()) {
                     RepoModule repoModule = moduleHolder.repoModule;
                     this.updateText.setVisibility(View.VISIBLE);
-                    this.updateText.setText(
-                            this.getString(R.string.module_last_update) + " " + updateText + "\n" +
-                                    this.getString(R.string.module_repo) + " " + moduleHolder.getRepoName() +
-                                    (repoModule.qualityText == 0 ? "" : (
-                                            "\n" + this.getString(repoModule.qualityText) +
-                                                    " " + repoModule.qualityValue)));
+                    this.updateText.setText(this.getString(R.string.module_last_update) + " " + updateText + "\n" + this.getString(R.string.module_repo) + " " + moduleHolder.getRepoName() + (repoModule.qualityText == 0 ? "" : ("\n" + this.getString(repoModule.qualityText) + " " + repoModule.qualityValue)));
                 } else if (moduleHolder.moduleId.equals("hosts")) {
                     this.updateText.setVisibility(View.VISIBLE);
                     this.updateText.setText(R.string.magisk_builtin_module);
@@ -250,21 +235,18 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 }
                 this.actionButtonsTypes.clear();
                 moduleHolder.getButtons(itemView.getContext(), this.actionButtonsTypes, showCaseMode);
-                this.switchMaterial.setEnabled(!showCaseMode &&
-                        !moduleHolder.hasFlag(ModuleInfo.FLAG_MODULE_UPDATING));
+                this.switchMaterial.setEnabled(!showCaseMode && !moduleHolder.hasFlag(ModuleInfo.FLAG_MODULE_UPDATING));
                 for (int i = 0; i < this.actionsButtons.length; i++) {
                     Chip imageButton = this.actionsButtons[i];
                     if (i < this.actionButtonsTypes.size()) {
                         imageButton.setVisibility(View.VISIBLE);
-                        imageButton.setImportantForAccessibility(
-                                View.IMPORTANT_FOR_ACCESSIBILITY_AUTO);
+                        imageButton.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_AUTO);
                         ActionButtonType button = this.actionButtonsTypes.get(i);
                         button.update(imageButton, moduleHolder);
                         imageButton.setContentDescription(button.name());
                     } else {
                         imageButton.setVisibility(View.GONE);
-                        imageButton.setImportantForAccessibility(
-                                View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+                        imageButton.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
                         imageButton.setContentDescription(null);
                     }
                 }
@@ -272,14 +254,12 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     this.moduleOptionsHolder.setVisibility(View.GONE);
                     this.moduleLayoutHelper.setVisibility(View.GONE);
                 } else if (this.actionButtonsTypes.size() > 2 || !hasUpdateText) {
-                    this.moduleLayoutHelper.setMinHeight(Math.max(FoxDisplay.dpToPixel(36F),
-                            this.moduleOptionsHolder.getHeight() - FoxDisplay.dpToPixel(14F)));
+                    this.moduleLayoutHelper.setMinHeight(Math.max(FoxDisplay.dpToPixel(36F), this.moduleOptionsHolder.getHeight() - FoxDisplay.dpToPixel(14F)));
                 } else {
                     this.moduleLayoutHelper.setMinHeight(FoxDisplay.dpToPixel(4F));
                 }
                 this.cardView.setClickable(false);
-                if (moduleHolder.isModuleHolder() &&
-                        moduleHolder.hasFlag(ModuleInfo.FLAG_MODULE_ACTIVE)) {
+                if (moduleHolder.isModuleHolder() && moduleHolder.hasFlag(ModuleInfo.FLAG_MODULE_ACTIVE)) {
                     this.titleText.setTypeface(Typeface.DEFAULT_BOLD);
                 } else {
                     this.titleText.setTypeface(Typeface.DEFAULT);
@@ -290,9 +270,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                     this.buttonAction.setImageResource(moduleHolder.filterLevel);
                     this.buttonAction.setBackgroundResource(R.drawable.bg_baseline_circle_24);
                 } else {
-                    this.buttonAction.setVisibility(
-                            type == ModuleHolder.Type.NOTIFICATION ?
-                                    View.VISIBLE : View.GONE);
+                    this.buttonAction.setVisibility(type == ModuleHolder.Type.NOTIFICATION ? View.VISIBLE : View.GONE);
                     this.buttonAction.setBackground(null);
                 }
                 this.switchMaterial.setVisibility(View.GONE);
@@ -308,19 +286,15 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 this.actionButtonsTypes.clear();
                 for (Chip button : this.actionsButtons) {
                     button.setVisibility(View.GONE);
-                    button.setImportantForAccessibility(
-                            View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+                    button.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
                     button.setContentDescription(null);
                 }
                 if (type == ModuleHolder.Type.NOTIFICATION) {
                     NotificationType notificationType = moduleHolder.notificationType;
                     this.titleText.setText(notificationType.textId);
                     this.buttonAction.setImageResource(notificationType.iconId);
-                    this.cardView.setClickable(
-                            notificationType.onClickListener != null ||
-                                    moduleHolder.onClickListener != null);
-                    this.titleText.setTypeface(notificationType.special ?
-                            Typeface.DEFAULT_BOLD : Typeface.DEFAULT);
+                    this.cardView.setClickable(notificationType.onClickListener != null || moduleHolder.onClickListener != null);
+                    this.titleText.setTypeface(notificationType.special ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT);
                 } else {
                     this.cardView.setClickable(moduleHolder.onClickListener != null);
                     this.titleText.setTypeface(Typeface.DEFAULT);
@@ -330,12 +304,12 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 this.titleText.setText(moduleHolder.separator.title);
             }
             if (DEBUG) {
-                this.titleText.setText(this.titleText.getText() + " " +
-                        formatType(type) + " " + formatType(vType));
+                this.titleText.setText(this.titleText.getText() + " " + formatType(type) + " " + formatType(vType));
             }
             // Coloration system
             Drawable drawable = this.cardView.getBackground();
-            if (drawable != null) this.background = drawable;
+            if (drawable != null)
+                this.background = drawable;
             this.invalidPropsChip.setVisibility(View.GONE);
             if (type.hasBackground) {
                 if (drawable == null) {
@@ -346,15 +320,10 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 if (type == ModuleHolder.Type.NOTIFICATION) {
                     foregroundAttr = moduleHolder.notificationType.foregroundAttr;
                     backgroundAttr = moduleHolder.notificationType.backgroundAttr;
-                } else if (type == ModuleHolder.Type.INSTALLED &&
-                        moduleHolder.hasFlag(ModuleInfo.FLAG_METADATA_INVALID)) {
+                } else if (type == ModuleHolder.Type.INSTALLED && moduleHolder.hasFlag(ModuleInfo.FLAG_METADATA_INVALID)) {
                     this.invalidPropsChip.setOnClickListener(_view -> {
-                        MaterialAlertDialogBuilder builder =
-                                new MaterialAlertDialogBuilder(_view.getContext());
-                        builder.setTitle(R.string.low_quality_module)
-                                .setMessage("Actual description for Low-quality module")
-                                .setCancelable(true)
-                                .setPositiveButton(R.string.ok, (x, y) -> x.dismiss()).show();
+                        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(_view.getContext());
+                        builder.setTitle(R.string.low_quality_module).setMessage("Actual description for Low-quality module").setCancelable(true).setPositiveButton(R.string.ok, (x, y) -> x.dismiss()).show();
                     });
                     // Backup restore
                     // foregroundAttr = R.attr.colorOnError;
@@ -373,11 +342,8 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 // if force_transparency is true or theme is transparent_light, set diff bgColor
                 // get string value of Theme
                 String themeName = theme.toString();
-                if (theme.getResources().getBoolean(R.bool.force_transparency) ||
-                        themeName.contains("transparent")) {
-                    if (BuildConfig.DEBUG) {
-                        Log.d("NoodleDebug", "Theme is transparent, fixing bgColor");
-                    }
+                if (theme.getResources().getBoolean(R.bool.force_transparency) || themeName.contains("transparent")) {
+                    Timber.d("Theme is transparent, fixing bgColor");
                     bgColor = ColorUtils.setAlphaComponent(bgColor, 0x70);
                 }
                 this.titleText.setTextColor(fgColor);
@@ -400,9 +366,5 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
             this.initState = false;
             return false;
         }
-    }
-
-    private static String formatType(ModuleHolder.Type type) {
-        return type.name().substring(0, 3) + "_" + type.ordinal();
     }
 }

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -33,6 +32,7 @@ import java.util.Objects;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
+import timber.log.Timber;
 
 public class SetupActivity extends FoxActivity implements LanguageActivity {
 
@@ -91,10 +91,10 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).setChecked(BuildConfig.ENABLED_REPOS.contains("magisk_alt_repo"));
         // On debug builds, log when a switch is toggled
         if (BuildConfig.DEBUG) {
-            ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).setOnCheckedChangeListener((buttonView, isChecked) -> Log.i("SetupWizard", "Background Update Check: " + isChecked));
-            ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).setOnCheckedChangeListener((buttonView, isChecked) -> Log.i("SetupWizard", "Crash Reporting: " + isChecked));
-            ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_androidacy_repo))).setOnCheckedChangeListener((buttonView, isChecked) -> Log.i("SetupWizard", "Androidacy Repo: " + isChecked));
-            ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).setOnCheckedChangeListener((buttonView, isChecked) -> Log.i("SetupWizard", "Magisk Alt Repo: " + isChecked));
+            ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).setOnCheckedChangeListener((buttonView, isChecked) -> Timber.i("Background Update Check: %s", isChecked));
+            ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).setOnCheckedChangeListener((buttonView, isChecked) -> Timber.i("Crash Reporting: %s", isChecked));
+            ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_androidacy_repo))).setOnCheckedChangeListener((buttonView, isChecked) -> Timber.i("Androidacy Repo: %s", isChecked));
+            ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).setOnCheckedChangeListener((buttonView, isChecked) -> Timber.i("Magisk Alt Repo: %s", isChecked));
         }
         // Setup popup dialogue for the setup_theme_button
         MaterialButton themeButton = view.findViewById(R.id.setup_theme_button);
@@ -213,8 +213,8 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             }
             // Log the changes if debug
             if (BuildConfig.DEBUG) {
-                Log.d("SetupWizard", "Background update check: " + prefs.getBoolean("pref_background_update_check", false));
-                Log.i("SetupWizard", "Crash reporting: " + prefs.getBoolean("pref_crash_reporting", false));
+                Timber.d("Background update check: %s", prefs.getBoolean("pref_background_update_check", false));
+                Timber.i("Crash reporting: %s", prefs.getBoolean("pref_crash_reporting", false));
             }
             // Restart the activity
             MainActivity.doSetupRestarting = true;
@@ -274,9 +274,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
 
     // creates the realm database
     private void createRealmDatabase() {
-        if (BuildConfig.DEBUG) {
-            Log.d("Realm", "Creating Realm databases");
-        }
+        Timber.d("Creating Realm databases");
         // create the realm database for ModuleListCache
         RealmConfiguration config = new RealmConfiguration.Builder().name("ModuleListCache.realm").schemaVersion(1).build();
         // do a dummy write to create the database
@@ -333,20 +331,20 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                 realm1.commitTransaction();
                 realm1.close();
                 if (BuildConfig.DEBUG) {
-                    Log.d("Realm", "Realm databases created");
+                    Timber.d("Realm databases created");
                     // log each database
                     Realm realm2 = Realm.getInstance(config);
                     RealmResults<ModuleListCache> moduleListCaches = realm2.where(ModuleListCache.class).findAll();
-                    Log.d("Realm", "ModuleListCache.realm");
+                    Timber.d("ModuleListCache.realm");
                     for (ModuleListCache moduleListCache : moduleListCaches) {
-                        Log.d("Realm", moduleListCache.toString());
+                        Timber.d(moduleListCache.toString());
                     }
                     realm2.close();
                     Realm realm3 = Realm.getInstance(config2);
                     RealmResults<ReposList> reposLists = realm3.where(ReposList.class).findAll();
-                    Log.d("Realm", "ReposList.realm");
+                    Timber.d("ReposList.realm");
                     for (ReposList reposList : reposLists) {
-                        Log.d("Realm", reposList.toString());
+                        Timber.d(reposList.toString());
                     }
                     realm3.close();
                 }

@@ -1,15 +1,14 @@
 package com.fox2code.mmm.manager;
 
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.installer.InstallerInitializer;
-import com.fox2code.mmm.utils.io.PropUtils;
 import com.fox2code.mmm.utils.SyncManager;
+import com.fox2code.mmm.utils.io.PropUtils;
 import com.topjohnwu.superuser.Shell;
 import com.topjohnwu.superuser.io.SuFile;
 import com.topjohnwu.superuser.io.SuFileInputStream;
@@ -21,14 +20,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import timber.log.Timber;
+
 public final class ModuleManager extends SyncManager {
     // New method is not really effective, this flag force app to use old method
     public static final boolean FORCE_NEED_FALLBACK = true;
-    private static final String TAG = "ModuleManager";
     private static final int FLAG_MM_INVALID = ModuleInfo.FLAG_METADATA_INVALID;
     private static final int FLAG_MM_UNPROCESSED = ModuleInfo.FLAG_CUSTOM_INTERNAL;
-    private static final int FLAGS_KEEP_INIT = FLAG_MM_UNPROCESSED |
-            ModuleInfo.FLAGS_MODULE_ACTIVE | ModuleInfo.FLAG_MODULE_UPDATING_ONLY;
+    private static final int FLAGS_KEEP_INIT = FLAG_MM_UNPROCESSED | ModuleInfo.FLAGS_MODULE_ACTIVE | ModuleInfo.FLAG_MODULE_UPDATING_ONLY;
     private static final int FLAGS_RESET_UPDATE = FLAG_MM_INVALID | FLAG_MM_UNPROCESSED;
     private static final ModuleManager INSTANCE = new ModuleManager();
     private final HashMap<String, LocalModuleInfo> moduleInfos;
@@ -65,17 +64,18 @@ public final class ModuleManager extends SyncManager {
         }
         String modulesPath = InstallerInitializer.peekModulesPath();
         String[] modules = new SuFile("/data/adb/modules").list();
-        boolean needFallback = FORCE_NEED_FALLBACK ||
-                modulesPath == null || !new SuFile(modulesPath).exists();
+        boolean needFallback = FORCE_NEED_FALLBACK || modulesPath == null || !new SuFile(modulesPath).exists();
         if (!FORCE_NEED_FALLBACK && needFallback) {
-            Log.e(TAG, "Failed to detect modules folder, using fallback instead.");
+            Timber.e("using fallback instead.");
         }
-        if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Scan");
+        if (BuildConfig.DEBUG)
+            Timber.d("Scan");
         if (modules != null) {
             for (String module : modules) {
                 if (!new SuFile("/data/adb/modules/" + module).isDirectory())
                     continue; // Ignore non directory files inside modules folder
-                if (BuildConfig.DEBUG) Log.d("NoodleDebug", module);
+                if (BuildConfig.DEBUG)
+                    Timber.d(module);
                 LocalModuleInfo moduleInfo = moduleInfos.get(module);
                 if (moduleInfo == null) {
                     moduleInfo = new LocalModuleInfo(module);
@@ -93,8 +93,7 @@ public final class ModuleManager extends SyncManager {
                 if (new SuFile("/data/adb/modules/" + module + "/remove").exists()) {
                     moduleInfo.flags |= ModuleInfo.FLAG_MODULE_UNINSTALLING;
                 }
-                if ((firstScan && !needFallback && new SuFile(modulesPath, module).exists()) ||
-                        bootPrefs.getBoolean("module_" + moduleInfo.id + "_active", false)) {
+                if ((firstScan && !needFallback && new SuFile(modulesPath, module).exists()) || bootPrefs.getBoolean("module_" + moduleInfo.id + "_active", false)) {
                     moduleInfo.flags |= ModuleInfo.FLAG_MODULE_ACTIVE;
                     if (firstScan) {
                         editor.putBoolean("module_" + moduleInfo.id + "_active", true);
@@ -102,29 +101,28 @@ public final class ModuleManager extends SyncManager {
                 } else if (!needFallback) {
                     moduleInfo.flags &= ~ModuleInfo.FLAG_MODULE_ACTIVE;
                 }
-                if ((moduleInfo.flags & ModuleInfo.FLAGS_MODULE_ACTIVE) != 0
-                        && (new SuFile("/data/adb/modules/" + module + "/system").exists() ||
-                        new SuFile("/data/adb/modules/" + module + "/vendor").exists() ||
-                        new SuFile("/data/adb/modules/" + module + "/zygisk").exists() ||
-                        new SuFile("/data/adb/modules/" + module + "/riru").exists())) {
+                if ((moduleInfo.flags & ModuleInfo.FLAGS_MODULE_ACTIVE) != 0 && (new SuFile("/data/adb/modules/" + module + "/system").exists() || new SuFile("/data/adb/modules/" + module + "/vendor").exists() || new SuFile("/data/adb/modules/" + module + "/zygisk").exists() || new SuFile("/data/adb/modules/" + module + "/riru").exists())) {
                     moduleInfo.flags |= ModuleInfo.FLAG_MODULE_HAS_ACTIVE_MOUNT;
                 }
                 try {
-                    PropUtils.readProperties(moduleInfo,
-                            "/data/adb/modules/" + module + "/module.prop", true);
-                } catch (Exception e) {
-                    if (BuildConfig.DEBUG) Log.d(TAG, "Failed to parse metadata!", e);
+                    PropUtils.readProperties(moduleInfo, "/data/adb/modules/" + module + "/module.prop", true);
+                } catch (
+                        Exception e) {
+                    if (BuildConfig.DEBUG)
+                        Timber.d(e);
                     moduleInfo.flags |= FLAG_MM_INVALID;
                 }
             }
         }
-        if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Scan update");
+        if (BuildConfig.DEBUG)
+            Timber.d("Scan update");
         String[] modules_update = new SuFile("/data/adb/modules_update").list();
         if (modules_update != null) {
             for (String module : modules_update) {
                 if (!new SuFile("/data/adb/modules_update/" + module).isDirectory())
                     continue; // Ignore non directory files inside modules folder
-                if (BuildConfig.DEBUG) Log.d("NoodleDebug", module);
+                if (BuildConfig.DEBUG)
+                    Timber.d(module);
                 LocalModuleInfo moduleInfo = moduleInfos.get(module);
                 if (moduleInfo == null) {
                     moduleInfo = new LocalModuleInfo(module);
@@ -133,21 +131,23 @@ public final class ModuleManager extends SyncManager {
                 moduleInfo.flags &= ~FLAGS_RESET_UPDATE;
                 moduleInfo.flags |= ModuleInfo.FLAG_MODULE_UPDATING;
                 try {
-                    PropUtils.readProperties(moduleInfo,
-                            "/data/adb/modules_update/" + module + "/module.prop", true);
-                } catch (Exception e) {
-                    if (BuildConfig.DEBUG) Log.d(TAG, "Failed to parse metadata!", e);
+                    PropUtils.readProperties(moduleInfo, "/data/adb/modules_update/" + module + "/module.prop", true);
+                } catch (
+                        Exception e) {
+                    if (BuildConfig.DEBUG)
+                        Timber.d(e);
                     moduleInfo.flags |= FLAG_MM_INVALID;
                 }
             }
         }
-        if (BuildConfig.DEBUG) Log.d("NoodleDebug", "Finalize scan");
+        if (BuildConfig.DEBUG)
+            Timber.d("Finalize scan");
         this.updatableModuleCount = 0;
-        Iterator<LocalModuleInfo> moduleInfoIterator =
-                this.moduleInfos.values().iterator();
+        Iterator<LocalModuleInfo> moduleInfoIterator = this.moduleInfos.values().iterator();
         while (moduleInfoIterator.hasNext()) {
             LocalModuleInfo moduleInfo = moduleInfoIterator.next();
-            if (BuildConfig.DEBUG) Log.d("NoodleDebug", moduleInfo.id);
+            if (BuildConfig.DEBUG)
+                Timber.d(moduleInfo.id);
             if ((moduleInfo.flags & FLAG_MM_UNPROCESSED) != 0) {
                 moduleInfoIterator.remove();
                 continue; // Don't process fallbacks if unreferenced
@@ -161,8 +161,7 @@ public final class ModuleManager extends SyncManager {
                 moduleInfo.updateChangeLog = "";
             }
             if (moduleInfo.name == null || (moduleInfo.name.equals(moduleInfo.id))) {
-                moduleInfo.name = Character.toUpperCase(moduleInfo.id.charAt(0)) +
-                        moduleInfo.id.substring(1).replace('_', ' ');
+                moduleInfo.name = Character.toUpperCase(moduleInfo.id.charAt(0)) + moduleInfo.id.substring(1).replace('_', ' ');
             }
             if (moduleInfo.version == null || moduleInfo.version.trim().isEmpty()) {
                 moduleInfo.version = "v" + moduleInfo.versionCode;
@@ -186,7 +185,8 @@ public final class ModuleManager extends SyncManager {
     }
 
     public boolean setEnabledState(ModuleInfo moduleInfo, boolean checked) {
-        if (moduleInfo.hasFlag(ModuleInfo.FLAG_MODULE_UPDATING) && !checked) return false;
+        if (moduleInfo.hasFlag(ModuleInfo.FLAG_MODULE_UPDATING) && !checked)
+            return false;
         SuFile disable = new SuFile("/data/adb/modules/" + moduleInfo.id + "/disable");
         if (checked) {
             if (disable.exists() && !disable.delete()) {
@@ -204,7 +204,8 @@ public final class ModuleManager extends SyncManager {
     }
 
     public boolean setUninstallState(ModuleInfo moduleInfo, boolean checked) {
-        if (checked && moduleInfo.hasFlag(ModuleInfo.FLAG_MODULE_UPDATING)) return false;
+        if (checked && moduleInfo.hasFlag(ModuleInfo.FLAG_MODULE_UPDATING))
+            return false;
         SuFile disable = new SuFile("/data/adb/modules/" + moduleInfo.id + "/remove");
         if (checked) {
             if (!disable.exists() && !disable.createNewFile()) {
@@ -222,26 +223,22 @@ public final class ModuleManager extends SyncManager {
     }
 
     public boolean masterClear(ModuleInfo moduleInfo) {
-        if (moduleInfo.hasFlag(ModuleInfo.FLAG_MODULE_HAS_ACTIVE_MOUNT)) return false;
-        String escapedId = moduleInfo.id.replace("\\", "\\\\")
-                .replace("\"", "\\\"").replace(" ", "\\ ");
+        if (moduleInfo.hasFlag(ModuleInfo.FLAG_MODULE_HAS_ACTIVE_MOUNT))
+            return false;
+        String escapedId = moduleInfo.id.replace("\\", "\\\\").replace("\"", "\\\"").replace(" ", "\\ ");
         try { // Check for module that declare having file outside their own folder.
-            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
-                    SuFileInputStream.open("/data/adb/modules/." + moduleInfo.id + "-files"),
-                    StandardCharsets.UTF_8))) {
+            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(SuFileInputStream.open("/data/adb/modules/." + moduleInfo.id + "-files"), StandardCharsets.UTF_8))) {
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
                     line = line.trim().replace(' ', '.');
-                    if (!line.startsWith("/data/adb/") || line.contains("*") ||
-                            line.contains("/../") || line.endsWith("/..") ||
-                            line.startsWith("/data/adb/modules") ||
-                            line.equals("/data/adb/magisk.db")) continue;
-                    line = line.replace("\\", "\\\\")
-                            .replace("\"", "\\\"");
+                    if (!line.startsWith("/data/adb/") || line.contains("*") || line.contains("/../") || line.endsWith("/..") || line.startsWith("/data/adb/modules") || line.equals("/data/adb/magisk.db"))
+                        continue;
+                    line = line.replace("\\", "\\\\").replace("\"", "\\\"");
                     Shell.cmd("rm -rf \"" + line + "\"").exec();
                 }
             }
-        } catch (IOException ignored) {
+        } catch (
+                IOException ignored) {
         }
         Shell.cmd("rm -rf /data/adb/modules/" + escapedId + "/").exec();
         Shell.cmd("rm -f /data/adb/modules/." + escapedId + "-files").exec();

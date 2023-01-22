@@ -73,6 +73,9 @@ public class BackgroundUpdateChecker extends Worker {
         if (ActivityCompat.checkSelfPermission(MainApplication.getINSTANCE(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+        // check if app is in foreground. if so, don't show notification
+        if (MainApplication.getINSTANCE().isInForeground())
+            return;
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build());
     }
 

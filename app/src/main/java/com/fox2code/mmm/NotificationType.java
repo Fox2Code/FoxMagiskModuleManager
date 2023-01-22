@@ -1,6 +1,5 @@
 package com.fox2code.mmm;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -24,8 +23,9 @@ import java.io.InputStreamReader;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import timber.log.Timber;
+
 interface NotificationTypeCst {
-    String TAG = "NotificationType";
 }
 
 public enum NotificationType implements NotificationTypeCst {
@@ -119,7 +119,7 @@ public enum NotificationType implements NotificationTypeCst {
                     }
                     if (needPatch(d)) {
                         if (d.exists() && !d.delete())
-                            Log.w(TAG, "Failed to delete non module zip");
+                            Timber.w("Failed to delete non module zip");
                         Toast.makeText(compatActivity,
                                 R.string.invalid_format, Toast.LENGTH_SHORT).show();
                     } else {
@@ -131,7 +131,7 @@ public enum NotificationType implements NotificationTypeCst {
                     }
                 } catch (IOException ignored) {
                     if (d.exists() && !d.delete())
-                        Log.w(TAG, "Failed to delete invalid module");
+                        Timber.w("Failed to delete invalid module");
                     Toast.makeText(compatActivity,
                             R.string.invalid_format, Toast.LENGTH_SHORT).show();
                 }
@@ -152,7 +152,7 @@ public enum NotificationType implements NotificationTypeCst {
         }
     };
 
-    public static boolean needPatch(File target) throws IOException {
+    public static boolean needPatch(File target) {
         try (ZipFile zipFile = new ZipFile(target)) {
             boolean validEntries = zipFile.getEntry("module.prop") != null;
             // ensure there's no anykernel.sh
