@@ -223,4 +223,64 @@
 \nMult mai lax decât originalul. Are o mulțime de module cu prețul unei anumite siguranțe.</string>
     <string name="low_performance_device_dialogue_message">Încercați să activați estomparea pe un dispozitiv care poate să nu funcționeze bine cu acesta. 
 \nPuteți să îl activați, dar acest lucru poate duce la o experiență de utilizator slabă, deci vă recomandăm să nu o faceți.</string>
+    <string name="androidacy_webview_update_required">Webview-ul dvs. este depășit! Vă rugăm să îl actualizați.</string>
+    <string name="zip_unpacking">Se inspectează modulul…</string>
+    <string name="setup_language_button">Alege o limbă</string>
+    <string name="title_activity_setup">Expertul de configurare</string>
+    <string name="action_settings">Setări</string>
+    <string name="setup_background_update_check_summary">Permiteți-ne să verificăm actualizările modulelor și aplicațiilor în fundal. Această funcție poate utiliza mai multă baterie și date.</string>
+    <string name="language_cta_desc">Ajutați-ne să o traducem! Apăsați aici pentru a afla mai multe.</string>
+    <string name="setup_crash_reporting_summary">Raportarea accidentelor și monitorizarea performanțelor. Toate rapoartele sunt strict anonime și confidențiale.</string>
+    <string name="zip_load_failed">Nu s-a putut încărca fișierul zip</string>
+    <string name="androidacy_thanks">Dezvoltat în parte de Androidacy</string>
+    <string name="setup_theme_header">Alege o temă</string>
+    <string name="no_file_provided">Nu a fost furnizat niciun fișier la încercarea de a deschide zip.</string>
+    <string name="setup_theme_transparent_light">Tema luminos-transparentă - va dezactiva monet și blur!</string>
+    <string name="androidacy_update_needed">Această aplicație este învechită.</string>
+    <string name="androidacy_update_needed_message">Vă rugăm să actualizați aplicația la cea mai recentă versiune.</string>
+    <string name="language_cta">Nu vezi limba ta\?</string>
+    <string name="zip_prop_load_failed">Nu s-a putut încărca proprietățile modulului</string>
+    <string name="zip_intent_module_install">Chiar doriți să instalați modulul \"%1$s\" din fișierul ZIP \"%2$s\"\?
+\n
+\nAsigurați-vă că aveți încredere în sursa acestui modul, deoarece modulele sunt foarte puternice și pot face aproape orice.</string>
+    <string name="contributors">Și, bineînțeles, mulțumiri tuturor colaboratorilor noștri, fie că este vorba de traduceri, coduri sau pur și simplu pentru că este distractiv să stai cu ei! Vă iubim pe toți.</string>
+    <string name="understand">Am înțeles</string>
+    <string name="setup_theme_title">Alege o temă</string>
+    <string name="repo_update_failed_message">Următoarele repouri nu au reușit să se actualizeze:\\n\\n%s</string>
+    <string name="upgrade_androidacy_promo_desc">Trecerea la Premium va elimina reclamele, captchas și descărcările pentru Androidacy Repository și va sprijini Androidacy și autorii modulelor.</string>
+    <string name="crash_text">Uh-oh, am dat peste o piedică!</string>=
+    <string name="feedback_message">Dați-ne mai multe detalii despre ceea ce făceați când s-a întâmplat. Cu cât mai multe, cu atât mai bine!</string>
+    <string name="setup_androidacy_repo_summary">Oferă recenzii ale utilizatorilor, scanări automate de viruși, actualizări rapide, o selecție largă și este susținut de Androidacy.</string>
+    <string name="setup_magisk_alt_repo_summary">Mult mai permisiv decât originalul. Dispune de o mulțime de module, la prețul unor măsuri de siguranță.</string>
+    <string name="debug_build">Aceasta este o versiune de depanare. Așteptați-vă la unele erori și la performanțe mai slabe.</string>
+    <string name="androidacy_repo_name">Repoul Androidacy</string>
+    <string name="magisk_alt_repo_name">Repoul alternativ Magisk</string>
+    <string name="repo_enabled_changed">Ați activat sau dezactivat un repo. Vă rugăm să reîmprospătați lista de module sau să reporniți aplicația.</string>
+    <string name="finish">Finalizează</string>
+    <string name="pref_category_contributors">Contribuitori</string>
+    <string name="fox2code_thanks_desc">Fox2Code este creatorul original al aplicației. Fără el, acest lucru nu ar fi fost posibil.</string>
+    <string name="fox2code_thanks">Creat de Fox2Code</string>
+    <string name="save_logs">Salvați jurnalele în memoria de stocare și partajați</string>
+    <string name="error_saving_logs">Nu s-au putut salva jurnalele</string>
+    <string name="share_logs">Share FoxMMM logs</string>
+    <string name="not_official_build">Această aplicație este o versiune neoficială a FoxMMM.</string>
+    <string name="setup_theme">Alege o temă</string>
+    <string name="setup_theme_system">Tema de sistem</string>
+    <string name="setup_theme_light">Tema luminoasă</string>
+    <string name="setup_theme_dark">Tema întunecată</string>
+    <string name="setup_theme_black">Tema AMOLED neagră</string>
+    <string name="setup_theme_button">Alege o temă</string>
+    <string name="theme">Temă</string>
+    <string name="theme_system">Sistem</string>
+    <string name="theme_dark">Întunecat</string>
+    <string name="theme_black">Negru AMOLED</string>
+    <string name="reset_api_key">Resetarea cheilor API</string>
+    <string name="upgrade_androidacy_promo">Treceți la premium</string>
+    <string name="theme_transparent_dark">Întunecat (transparent)</string>
+    <string name="theme_transparent_light">Luminos (transparent)</string>
+    <string name="theme_light">Luminos</string>
+    <string name="androidacy_thanks_desc">O mare felicitare pentru Androidacy pentru integrarea și contribuția lor la aplicație.</string>
+    <string name="warning_message">Acest modul are indicatori care indică faptul că este posibil să fi fost instalat fără știrea dumneavoastră sau că încearcă să se ascundă.
+\n
+\nSe recomandă cu tărie dezinstalarea.</string>
 </resources>

@@ -274,4 +274,20 @@
     <string name="fox2code_thanks">Stworzone przez Fox2Code</string>
     <string name="save_logs">Zapisz logi do pamięci wewnętrznej i udostępnij</string>
     <string name="error_saving_logs">Nie można zapisać logów</string>
+    <string name="feedback_submit">Prześlij i restartuj</string>
+    <string name="please_feedback">Pomóż nam, informując o wykonywanych czynnościach, gdy to się stało.</string>
+    <string name="sentry_dialogue_disabled">Raportowanie błędów jest wyłączone. Włącz, aby przesłać informacje zwrotne.</string>
+    <string name="feedback_name">Nazwa (opcjonalnie)</string>
+    <string name="feedback_email">Email (opcjonalnie)</string>
+    <string name="sentry_dialogue_empty_message">Nie określono dodatkowych informacji zwrotnych.</string>
+    <string name="crash_icon">Ikona awarii</string>
+    <string name="copy_button">Kopiuj tekst</string>
+    <string name="more_details">Więcej szczegółów można znaleźć poniżej.</string>
+    <string name="crash_full_stacktrace">Zapis stosu:
+\n%1$s</string>
+    <string name="crash_details_copied">Skopiowano zapis stosu do schowka!</string>
+    <string name="crash_text">Mamy problem!</string>=
+    <string name="feedback_message">Podaj nam więcej szczegółów, co się działo. Im więcej, tym weselej!</string>
+    <string name="crash_details">Nieznana przyczyna</string>
+    <string name="sentry_enable_nag">Wygląda na to, że raportowanie o błędach jest wyłączone. Proszę włącz, aby przesłać informację zwrotną.</string>
 </resources>
