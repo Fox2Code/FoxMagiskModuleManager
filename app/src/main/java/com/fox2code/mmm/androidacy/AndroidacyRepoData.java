@@ -36,8 +36,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import okhttp3.HttpUrl;
 import timber.log.Timber;
 
@@ -64,9 +62,6 @@ public final class AndroidacyRepoData extends RepoData {
 
     public AndroidacyRepoData(File cacheRoot, SharedPreferences cachedPreferences, boolean testMode) {
         super(testMode ? RepoManager.ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT : RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT, cacheRoot, cachedPreferences);
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ModuleListCache.realm").allowWritesOnUiThread(true).allowWritesOnUiThread(true).directory(cacheRoot).build();
-        Realm.setDefaultConfiguration(realmConfiguration);
-        Realm.getInstance(realmConfiguration);
         this.defaultName = "Androidacy Modules Repo";
         this.defaultWebsite = RepoManager.ANDROIDACY_MAGISK_REPO_HOMEPAGE;
         this.defaultSupport = "https://t.me/androidacy_discussions";

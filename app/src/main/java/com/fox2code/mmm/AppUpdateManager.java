@@ -150,12 +150,19 @@ public class AppUpdateManager {
         // Convert both BuildConfig.VERSION_NAME and latestRelease to int
         int currentVersion = 0, latestVersion = 0;
         try {
-            currentVersion = Integer.parseInt(BuildConfig.VERSION_NAME.replace(".", ""));
-            latestVersion = Integer.parseInt(this.latestRelease.replace(".", ""));
+            currentVersion = Integer.parseInt(BuildConfig.VERSION_NAME.replaceAll("\\D", ""));
+            latestVersion = Integer.parseInt(this.latestRelease.replace("v", "").replaceAll("\\D", ""));
         } catch (
                 NumberFormatException ignored) {
         }
-        return currentVersion < latestVersion || (this.preReleaseNewer && currentVersion < Integer.parseInt(this.latestPreRelease.replace(".", "")));
+        int latestPreReleaseVersion = 0;
+        // replace all non-numeric characters with empty string
+        try {
+            latestPreReleaseVersion = Integer.parseInt(this.latestPreRelease.replaceAll("\\D", ""));
+        } catch (
+                NumberFormatException ignored) {
+        }
+        return currentVersion < latestVersion || (this.preReleaseNewer && currentVersion < latestPreReleaseVersion);
     }
 
     public boolean peekHasUpdate() {

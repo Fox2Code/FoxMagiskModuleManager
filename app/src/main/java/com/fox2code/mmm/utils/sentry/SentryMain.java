@@ -15,6 +15,7 @@ import java.util.Objects;
 import io.sentry.Sentry;
 import io.sentry.android.core.SentryAndroid;
 import io.sentry.android.fragment.FragmentLifecycleIntegration;
+import io.sentry.android.timber.SentryTimberIntegration;
 
 public class SentryMain {
     public static final boolean IS_SENTRY_INSTALLED = true;
@@ -43,6 +44,8 @@ public class SentryMain {
             intent.putExtra("exception", throwable);
             // add stacktrace as string
             intent.putExtra("stacktrace", throwable.getStackTrace());
+            // put lastEventId in intent (get from preferences)
+            intent.putExtra("lastEventId", String.valueOf(Sentry.getLastEventId()));
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             mainApplication.startActivity(intent);
             android.os.Process.killProcess(android.os.Process.myPid());
@@ -55,6 +58,10 @@ public class SentryMain {
             } else {
                 sentryEnabled = true; // Set sentry state to enabled
                 options.addIntegration(new FragmentLifecycleIntegration(mainApplication, true, true));
+                // Enable automatic activity lifecycle breadcrumbs
+                options.setEnableActivityLifecycleBreadcrumbs(true);
+                // Enable automatic fragment lifecycle breadcrumbs
+                options.addIntegration(new SentryTimberIntegration());
                 options.setCollectAdditionalContext(true);
                 options.setAttachThreads(true);
                 options.setAttachStacktrace(true);
@@ -84,8 +91,10 @@ public class SentryMain {
                 // Filter breadrcrumb content from crash report.
                 options.setBeforeBreadcrumb((breadcrumb, hint) -> {
                     String url = (String) breadcrumb.getData("url");
-                    if (url == null || url.isEmpty()) return breadcrumb;
-                    if ("cloudflare-dns.com".equals(Uri.parse(url).getHost())) return null;
+                    if (url == null || url.isEmpty())
+                        return breadcrumb;
+                    if ("cloudflare-dns.com".equals(Uri.parse(url).getHost()))
+                        return null;
                     if (AndroidacyUtil.isAndroidacyLink(url)) {
                         breadcrumb.setData("url", AndroidacyUtil.hideToken(url));
                     }

@@ -47,11 +47,16 @@ import io.noties.markwon.html.HtmlPlugin;
 import io.noties.markwon.image.ImagesPlugin;
 import io.noties.markwon.image.network.OkHttpNetworkSchemeHandler;
 import io.realm.Realm;
+import io.sentry.IHub;
 import io.sentry.Sentry;
 import io.sentry.SentryLevel;
+import io.sentry.android.timber.SentryTimberTree;
 import timber.log.Timber;
 
 public class MainApplication extends FoxApplication implements androidx.work.Configuration.Provider {
+    // Warning! Locales that are't exist will crash the app
+    // Anything that is commented out is supported but the translation is not complete to at least 60%
+    public static final HashSet<String> supportedLocales = new HashSet<>();
     private static final String timeFormatString = "dd MMM yyyy"; // Example: 13 july 2001
     private static final Shell.Builder shellBuilder;
     private static final long secret;
@@ -59,9 +64,6 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     // Use FoxProcess wrapper helper.
     private static final boolean wrapped = !FoxProcessExt.isRootLoader();
     public static boolean isOfficial = false;
-    // Warning! Locales that are't exist will crash the app
-    // Anything that is commented out is supported but the translation is not complete to at least 60%
-    public static final HashSet<String> supportedLocales = new HashSet<>();
     private static Locale timeFormatLocale = Resources.getSystem().getConfiguration().getLocales().get(0);
     private static SimpleDateFormat timeFormat = new SimpleDateFormat(timeFormatString, timeFormatLocale);
     private static SharedPreferences bootSharedPreferences;
@@ -282,8 +284,16 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     @Override
     public void onCreate() {
         // init timber
-        if (BuildConfig.DEBUG) Timber.plant(new Timber.DebugTree());
-        else Timber.plant(new ReleaseTree());
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        } else {
+            if (isCrashReportingEnabled()) {
+                @SuppressWarnings("UnstableApiUsage") IHub hub = Sentry.getCurrentHub();
+                Timber.plant(new SentryTimberTree(hub, SentryLevel.ERROR, SentryLevel.ERROR));
+            } else {
+                Timber.plant(new ReleaseTree());
+            }
+        }
         // supportedLocales.add("ar");
         // supportedLocales.add("ar_SA");
         supportedLocales.add("cs");
@@ -479,17 +489,16 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     }
 
     private static class ReleaseTree extends Timber.Tree {
-        @SuppressWarnings("StatementWithEmptyBody")
         @Override
         protected void log(int priority, String tag, @NonNull String message, Throwable t) {
-            if (priority == Log.VERBOSE || priority == Log.DEBUG) {
-                // silently ignore
-            } else if (priority == Log.INFO) {
-                Sentry.captureMessage(message, SentryLevel.INFO);
-            } else if (priority == Log.WARN) {
-                Sentry.captureMessage(message, SentryLevel.WARNING);
-            } else if (priority == Log.ERROR) {
-                Sentry.captureException(t);
+            // basically silently drop all logs below error, and write the rest to logcat
+            if (priority >= Log.ERROR) {
+                if (t != null) {
+                    Log.println(priority, tag, message);
+                    t.printStackTrace();
+                } else {
+                    Log.println(priority, tag, message);
+                }
             }
         }
     }

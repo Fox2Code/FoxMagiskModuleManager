@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import io.sentry.android.okhttp.SentryOkHttpInterceptor;
 import okhttp3.Cache;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
@@ -173,6 +174,10 @@ public class Http {
                 Exception e) {
             Timber.e(e, "Failed to init cronet");
             // Gracefully fallback to okhttp
+        }
+        // add sentry interceptor
+        if (MainApplication.isCrashReportingEnabled()) {
+            httpclientBuilder.addInterceptor(new SentryOkHttpInterceptor());
         }
         // Fallback DNS cache responses in case request fail but already succeeded once in the past
         fallbackDNS = new FallBackDNS(mainApplication, dns, "github.com", "api.github.com", "raw.githubusercontent.com", "camo.githubusercontent.com", "user-images.githubusercontent.com", "cdn.jsdelivr.net", "img.shields.io", "magisk-modules-repo.github.io", "www.androidacy.com", "api.androidacy.com", "production-api.androidacy.com");

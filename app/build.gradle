@@ -12,6 +12,7 @@ apply plugin: "realm-android"
 android {
     namespace "com.fox2code.mmm"
     compileSdk 33
+    ndkVersion "25.1.8937393"
     signingConfigs {
         release {
             // Everything comes from local.properties
@@ -288,7 +289,12 @@ dependencies {
     implementation 'com.github.topjohnwu.libsu:io:5.0.1'
     implementation 'com.github.Fox2Code:RosettaX:1.0.9'
     implementation 'com.github.Fox2Code:AndroidANSI:1.0.1'
+
+    // sentry
     implementation "io.sentry:sentry-android:$sentry_version"
+    implementation "io.sentry:sentry-android-timber:$sentry_version"
+    implementation "io.sentry:sentry-android-fragment:$sentry_version"
+    implementation "io.sentry:sentry-android-okhttp:$sentry_version"
 
     // Markdown
     implementation "io.noties.markwon:core:4.6.2"
@@ -307,7 +313,9 @@ dependencies {
 
     // timber
     implementation 'com.jakewharton.timber:timber:5.0.1'
-    implementation "io.sentry:sentry-android-timber:$sentry_version"
+
+    // ksp
+    implementation "com.google.devtools.ksp:symbol-processing-api:1.8.0-1.0.8"
 }
 
 if (hasSentryConfig) {

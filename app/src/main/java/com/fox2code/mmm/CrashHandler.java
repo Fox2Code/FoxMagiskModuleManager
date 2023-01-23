@@ -11,17 +11,28 @@ import android.widget.Toast;
 import com.fox2code.foxcompat.app.FoxActivity;
 import com.google.android.material.textview.MaterialTextView;
 
-import java.io.StringWriter;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import io.sentry.Sentry;
-import io.sentry.UserFeedback;
-import io.sentry.protocol.SentryId;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import timber.log.Timber;
 
 public class CrashHandler extends FoxActivity {
 
     @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Timber.i("CrashHandler.onCreate(%s)", savedInstanceState);
+        // log intent with extras
+        Timber.d("CrashHandler.onCreate: intent=%s", getIntent());
+        // get exception, stacktrace, and lastEventId from intent and log them
+        Timber.d("CrashHandler.onCreate: exception=%s", getIntent().getSerializableExtra("exception"));
+        Timber.d("CrashHandler.onCreate: stacktrace=%s", getIntent().getSerializableExtra("stacktrace"));
+        Timber.d("CrashHandler.onCreate: lastEventId=%s", getIntent().getStringExtra("lastEventId"));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crash_handler);
         // set crash_details MaterialTextView to the exception passed in the intent or unknown if null
@@ -43,11 +54,12 @@ public class CrashHandler extends FoxActivity {
             stacktrace = stacktrace.replace(",", "\n     ");
             crashDetails.setText(getString(R.string.crash_full_stacktrace, stacktrace));
         }
+        SharedPreferences preferences = getSharedPreferences("sentry", MODE_PRIVATE);
+        // get lastEventId from intent
+        String lastEventId = getIntent().getStringExtra("lastEventId");
         // disable feedback if sentry is disabled
-        if (MainApplication.isCrashReportingEnabled()) {
-            SharedPreferences preferences = getSharedPreferences("sentry", MODE_PRIVATE);
-            // get lastEventId from intent
-            SentryId lastEventId = Sentry.captureException((Throwable) getIntent().getSerializableExtra("exception"));
+        //noinspection ConstantConditions
+        if (MainApplication.isCrashReportingEnabled() && !BuildConfig.SENTRY_TOKEN.equals("") && lastEventId != null) {
             // get name, email, and message fields
             EditText name = findViewById(R.id.feedback_name);
             EditText email = findViewById(R.id.feedback_email);
@@ -60,17 +72,48 @@ public class CrashHandler extends FoxActivity {
                     return;
                 }
                 // if email or name is empty, use "Anonymous"
-                String nameString = name.getText().toString().equals("") ? "Anonymous" : name.getText().toString();
-                String emailString = email.getText().toString().equals("") ? "Anonymous" : email.getText().toString();
+                final String[] nameString = {name.getText().toString().equals("") ? "Anonymous" : name.getText().toString()};
+                final String[] emailString = {email.getText().toString().equals("") ? "Anonymous" : email.getText().toString()};
                 // Prevent strict mode violation
+                // create sentry userFeedback request
                 new Thread(() -> {
-                    // create sentry userFeedback request
-                    UserFeedback userFeedback = new UserFeedback(lastEventId);
-                    userFeedback.setName(nameString);
-                    userFeedback.setEmail(emailString);
-                    userFeedback.setComments(description.getText().toString());
-                    // send the request
-                    Sentry.captureUserFeedback(userFeedback);
+                    try {
+                        HttpURLConnection connection = (HttpURLConnection) new URL("https" + "://sentry.io/api/0/projects/androidacy-i6/foxmmm/user-feedback/").openConnection();
+                        connection.setRequestMethod("POST");
+                        connection.setRequestProperty("Content-Type", "application/json");
+                        connection.setRequestProperty("Authorization", "Bearer " + BuildConfig.SENTRY_TOKEN);
+                        // Setups the JSON body
+                        if (nameString[0].equals(""))
+                            nameString[0] = "Anonymous";
+                        if (emailString[0].equals(""))
+                            emailString[0] = "Anonymous";
+                        JSONObject body = new JSONObject();
+                        body.put("event_id", lastEventId);
+                        body.put("name", nameString[0]);
+                        body.put("email", emailString[0]);
+                        body.put("comments", description.getText().toString());
+                        // Send the request
+                        connection.setDoOutput(true);
+                        connection.getOutputStream().write(body.toString().getBytes());
+                        connection.connect();
+                        // For debug builds, log the response code and response body
+                        if (BuildConfig.DEBUG) {
+                            Timber.d("Response Code: %s", connection.getResponseCode());
+                        }
+                        // Check if the request was successful
+                        if (connection.getResponseCode() == 200) {
+                            runOnUiThread(() -> Toast.makeText(this, R.string.sentry_dialogue_success, Toast.LENGTH_LONG).show());
+                        } else {
+                            runOnUiThread(() -> Toast.makeText(this, R.string.sentry_dialogue_failed_toast, Toast.LENGTH_LONG).show());
+                        }
+                        // close and disconnect the connection
+                        connection.disconnect();
+                    } catch (
+                            JSONException |
+                            IOException ignored) {
+                        // Show a toast if the user feedback could not be submitted
+                        runOnUiThread(() -> Toast.makeText(this, R.string.sentry_dialogue_failed_toast, Toast.LENGTH_LONG).show());
+                    }
                 }).start();
                 // Close the activity
                 finish();
@@ -123,7 +166,8 @@ public class CrashHandler extends FoxActivity {
         new Thread(() -> {
             try {
                 Thread.sleep(1000);
-            } catch (InterruptedException e) {
+            } catch (
+                    InterruptedException e) {
                 e.printStackTrace();
             }
             runOnUiThread(() -> view.setBackgroundResource(R.drawable.baseline_copy_all_24));

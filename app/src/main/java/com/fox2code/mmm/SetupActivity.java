@@ -18,7 +18,6 @@ import com.fox2code.foxcompat.app.FoxActivity;
 import com.fox2code.mmm.androidacy.AndroidacyRepoData;
 import com.fox2code.mmm.databinding.ActivitySetupBinding;
 import com.fox2code.mmm.repo.RepoManager;
-import com.fox2code.mmm.utils.realm.ModuleListCache;
 import com.fox2code.mmm.utils.realm.ReposList;
 import com.fox2code.rosettax.LanguageActivity;
 import com.fox2code.rosettax.LanguageSwitcher;
@@ -275,17 +274,6 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
     // creates the realm database
     private void createRealmDatabase() {
         Timber.d("Creating Realm databases");
-        // create the realm database for ModuleListCache
-        RealmConfiguration config = new RealmConfiguration.Builder().name("ModuleListCache.realm").schemaVersion(1).build();
-        // do a dummy write to create the database
-        Realm.getInstanceAsync(config, new Realm.Callback() {
-            @Override
-            public void onSuccess(@NonNull Realm realm) {
-                realm.executeTransactionAsync(realm1 -> {
-                    // do nothing
-                });
-            }
-        });
         // create the realm database for ReposList
         // next, create the realm database for ReposList
         RealmConfiguration config2 = new RealmConfiguration.Builder().name("ReposList.realm").directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
@@ -332,16 +320,9 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                 realm1.close();
                 if (BuildConfig.DEBUG) {
                     Timber.d("Realm databases created");
-                    // log each database
-                    Realm realm2 = Realm.getInstance(config);
-                    RealmResults<ModuleListCache> moduleListCaches = realm2.where(ModuleListCache.class).findAll();
-                    Timber.d("ModuleListCache.realm");
-                    for (ModuleListCache moduleListCache : moduleListCaches) {
-                        Timber.d(moduleListCache.toString());
-                    }
-                    realm2.close();
                     Realm realm3 = Realm.getInstance(config2);
                     RealmResults<ReposList> reposLists = realm3.where(ReposList.class).findAll();
+                    assert reposLists != null;
                     Timber.d("ReposList.realm");
                     for (ReposList reposList : reposLists) {
                         Timber.d(reposList.toString());
