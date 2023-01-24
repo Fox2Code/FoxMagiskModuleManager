@@ -353,4 +353,27 @@ public class RepoData extends XRepo {
     public final boolean isForceHide() {
         return this.forceHide;
     }
+
+    // should update (lastUpdate > 15 minutes)
+    public boolean shouldUpdate() {
+        RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+        Realm realm2 = Realm.getInstance(realmConfiguration2);
+        ReposList repo = realm2.where(ReposList.class).equalTo("id", this.id).findFirst();
+        // Make sure ModuleListCache for repoId is not null
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ModuleListCache.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms/" + this.id)).schemaVersion(1).build();
+        Realm realm = Realm.getInstance(realmConfiguration);
+        ModuleListCache moduleListCache = realm.where(ModuleListCache.class).equalTo("repoId", this.id).findFirst();
+        if (repo != null) {
+            if (repo.getLastUpdate() != 0 && moduleListCache != null) {
+                long lastUpdate = repo.getLastUpdate();
+                long currentTime = System.currentTimeMillis();
+                long diff = currentTime - lastUpdate;
+                long diffMinutes = diff / (60 * 1000) % 60;
+                return diffMinutes > 15;
+            } else {
+                return true;
+            }
+        }
+        return true;
+    }
 }

@@ -1,7 +1,9 @@
 package com.fox2code.mmm.repo;
 
+import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.utils.io.Http;
 import com.fox2code.mmm.utils.realm.ModuleListCache;
+import com.fox2code.mmm.utils.realm.ReposList;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -12,9 +14,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class RepoUpdater {
@@ -39,6 +43,32 @@ public class RepoUpdater {
             this.toUpdate = Collections.emptyList();
             this.toApply = Collections.emptySet();
             return 0;
+        }
+        // if we shouldn't update, get the values from the ModuleListCache realm
+        if (!this.repoData.shouldUpdate()) {
+            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
+                    .name("ModuleListCache.realm")
+                    .schemaVersion(1)
+                    .modules(new ModuleListCache())
+                    .build();
+            Realm realm = Realm.getInstance(realmConfiguration);
+            RealmResults<ModuleListCache> results = realm.where(ModuleListCache.class).equalTo("repoId", this.repoData.id).findAll();
+            // reposlist realm
+            RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder()
+                    .name("ReposList.realm")
+                    .schemaVersion(1)
+                    .modules(new ReposList())
+                    .build();
+            Realm realm2 = Realm.getInstance(realmConfiguration2);
+            ReposList reposList = realm2.where(ReposList.class).equalTo("id", this.repoData.id).findFirst();
+            this.toUpdate = Collections.emptyList();
+            this.toApply = new HashSet<>();
+            for (ModuleListCache moduleListCache : results) {
+                RepoData repoData = RepoManager.getINSTANCE().get(Objects.requireNonNull(reposList).getUrl());
+                this.toApply.add(new RepoModule(repoData, moduleListCache.getId()));
+            }
+            this.toApply = new HashSet<>(this.toUpdate);
+            return this.toUpdate.size();
         }
         try {
             if (!this.repoData.prepare()) {
@@ -83,7 +113,7 @@ public class RepoUpdater {
                 // iterate over modules, using this.supportedProperties as a template to attempt to get each property from the module. everything that is not null is added to the module
                 // use realm to insert to
                 // props avail:
-                File cacheRoot = this.repoData.cacheRoot;
+                File cacheRoot = MainApplication.getINSTANCE().getDataDirWithPath("realms/repos" + this.repoData.id);
                 RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ModuleListCache.realm").schemaVersion(1).deleteRealmIfMigrationNeeded().allowWritesOnUiThread(true).allowQueriesOnUiThread(true).directory(cacheRoot).build();
                 // array with module info default values
                 // supported properties for a module
@@ -119,13 +149,24 @@ public class RepoUpdater {
                     // get modules from "modules" key. This is a JSONArray so we need to convert it to a JSONObject
                     modulesArray = modules.getJSONArray("modules");
                 }
+                Realm realm = Realm.getInstance(realmConfiguration);
+                // drop old data
+                realm.beginTransaction();
+                realm.where(ModuleListCache.class).equalTo("repoId", this.repoData.id).findAll().deleteAllFromRealm();
+                realm.commitTransaction();
                 // iterate over modules. pls dont hate me for this, its ugly but it works
                 for (int n = 0; n < modulesArray.length(); n++) {
                     // get module
                     JSONObject module = modulesArray.getJSONObject(n);
                     try {
                         // get module id
-                        String id = module.getString("id");
+                        // if codename is present, prefer that over id
+                        String id;
+                        if (module.has("codename") && !module.getString("codename").equals("")) {
+                            id = module.getString("codename");
+                        } else {
+                            id = module.getString("id");
+                        }
                         // get module name
                         String name = module.getString("name");
                         // get module version
@@ -216,62 +257,56 @@ public class RepoUpdater {
                         // then insert to realm
                         // then commit
                         // then close
-                        Realm realm = Realm.getInstance(realmConfiguration);
                         if (realm.isInTransaction()) {
                             realm.cancelTransaction();
                         }
-                        realm.executeTransaction(r -> {
-                            // create the object
-                            // if it already exists, it will be updated
-                            // create a new module
-                            ModuleListCache moduleListCache = r.createObject(ModuleListCache.class, id);
-                            // set module name
-                            moduleListCache.setName(name);
-                            // set module version
-                            moduleListCache.setVersion(version);
-                            // set module version code
-                            moduleListCache.setVersionCode(versionCode);
-                            // set module author
-                            moduleListCache.setAuthor(author);
-                            // set module description
-                            moduleListCache.setDescription(description);
-                            // set module min api
-                            moduleListCache.setMinApi(minApiInt);
-                            // set module max api
-                            moduleListCache.setMaxApi(maxApiInt);
-                            // set module min magisk
-                            moduleListCache.setMinMagisk(minMagiskInt);
-                            // set module need ramdisk
-                            moduleListCache.setNeedRamdisk(needRamdisk);
-                            // set module support
-                            moduleListCache.setSupport(support);
-                            // set module donate
-                            moduleListCache.setDonate(donate);
-                            // set module config
-                            moduleListCache.setConfig(config);
-                            // set module change boot
-                            moduleListCache.setChangeBoot(changeBoot);
-                            // set module mmt reborn
-                            moduleListCache.setMmtReborn(mmtReborn);
-                            // set module repo id
-                            moduleListCache.setRepoId(repoId);
-                            // set module installed
-                            moduleListCache.setInstalled(installed);
-                            // set module installed version code
-                            moduleListCache.setInstalledVersionCode(installedVersionCode);
-                        });
-                        realm.close();
+                        // create a realm object and insert or update it
+                        // add everything to the realm object
+                        realm.beginTransaction();
+                        ModuleListCache moduleListCache = realm.createObject(ModuleListCache.class, id);
+                        moduleListCache.setName(name);
+                        moduleListCache.setVersion(version);
+                        moduleListCache.setVersionCode(versionCode);
+                        moduleListCache.setAuthor(author);
+                        moduleListCache.setDescription(description);
+                        moduleListCache.setMinApi(minApiInt);
+                        moduleListCache.setMaxApi(maxApiInt);
+                        moduleListCache.setMinMagisk(minMagiskInt);
+                        moduleListCache.setNeedRamdisk(needRamdisk);
+                        moduleListCache.setSupport(support);
+                        moduleListCache.setDonate(donate);
+                        moduleListCache.setConfig(config);
+                        moduleListCache.setChangeBoot(changeBoot);
+                        moduleListCache.setMmtReborn(mmtReborn);
+                        moduleListCache.setRepoId(repoId);
+                        moduleListCache.setInstalled(installed);
+                        moduleListCache.setInstalledVersionCode(installedVersionCode);
+                        realm.copyToRealmOrUpdate(moduleListCache);
+                        realm.commitTransaction();
                     } catch (
                             Exception e) {
                         e.printStackTrace();
                         Timber.w("Failed to get module info from module " + module + " in repo " + this.repoData.id + " with error " + e.getMessage());
                     }
                 }
+                realm.close();
             } catch (
                     Exception e) {
                 e.printStackTrace();
             }
             this.indexRaw = null;
+            RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+            Realm realm2 = Realm.getInstance(realmConfiguration2);
+            if (realm2.isInTransaction()) {
+                realm2.cancelTransaction();
+            }
+            // set lastUpdate
+            realm2.executeTransaction(r -> {
+                ReposList repoListCache = r.where(ReposList.class).equalTo("id", this.repoData.id).findFirst();
+                if (repoListCache != null) {
+                    repoListCache.setLastUpdate((int) System.currentTimeMillis());
+                }
+            });
         }
         this.toUpdate = null;
         this.toApply = null;

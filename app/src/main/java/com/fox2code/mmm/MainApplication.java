@@ -412,17 +412,38 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     // getDataDir wrapper with optional path parameter
     public File getDataDirWithPath(String path) {
         File dataDir = this.getDataDir();
+        // for path with / somewhere in the middle, its a subdirectory
         if (path != null) {
-            dataDir = new File(dataDir, path);
-        }
-        // create the directory if it doesn't exist
-        if (!dataDir.exists()) {
-            if (!dataDir.mkdirs()) {
-                if (BuildConfig.DEBUG)
-                    Timber.w("Failed to create directory %s", dataDir);
+            if (path.startsWith("/"))
+                path = path.substring(1);
+            if (path.endsWith("/"))
+                path = path.substring(0, path.length() - 1);
+            if (path.contains("/")) {
+                String[] dirs = path.split("/");
+                for (String dir : dirs) {
+                    dataDir = new File(dataDir, dir);
+                    // make sure the directory exists
+                    if (!dataDir.exists()) {
+                        if (!dataDir.mkdirs()) {
+                            if (BuildConfig.DEBUG)
+                                Timber.w("Failed to create directory %s", dataDir);
+                        }
+                    }
+                }
+            } else {
+                dataDir = new File(dataDir, path);
+                // create the directory if it doesn't exist
+                if (!dataDir.exists()) {
+                    if (!dataDir.mkdirs()) {
+                        if (BuildConfig.DEBUG)
+                            Timber.w("Failed to create directory %s", dataDir);
+                    }
+                }
             }
+            return dataDir;
+        } else {
+            throw new IllegalArgumentException("Path cannot be null");
         }
-        return dataDir;
     }
 
     public void clearAppData() {
