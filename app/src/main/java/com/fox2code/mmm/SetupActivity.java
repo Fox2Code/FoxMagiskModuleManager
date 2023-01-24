@@ -300,7 +300,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                     androidacy_repo.setLastUpdate(0);
                     androidacy_repo.setWebsite(RepoManager.ANDROIDACY_MAGISK_REPO_HOMEPAGE);
                     // now copy the data from the data class to the realm object using copyToRealmOrUpdate
-                    realm1.copyToRealmOrUpdate(androidacy_repo);
+                    realm1.insertOrUpdate(androidacy_repo);
                 }
                 // create magisk_alt_repo
                 if (realm1.where(ReposList.class).equalTo("id", "magisk_alt_repo").findFirst() == null) {
@@ -314,7 +314,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                     magisk_alt_repo.setSubmitModule(RepoManager.MAGISK_ALT_REPO_HOMEPAGE + "/submission");
                     magisk_alt_repo.setLastUpdate(0);
                     // commit the changes
-                    realm1.copyToRealmOrUpdate(magisk_alt_repo);
+                    realm1.insertOrUpdate(magisk_alt_repo);
                 }
                 realm1.commitTransaction();
                 realm1.close();
@@ -325,7 +325,9 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                     assert reposLists != null;
                     Timber.d("ReposList.realm");
                     for (ReposList reposList : reposLists) {
-                        Timber.d(reposList.toString());
+                        Timber.d("Record: %s", reposList.getId());
+                        // log the data
+                        Timber.d("Name: %s, Donate: %s, Support: %s, Submit Module: %s, Website: %s, Enabled: %s, Last Update: %s", reposList.getName(), reposList.getDonate(), reposList.getSupport(), reposList.getSubmitModule(), reposList.getWebsite(), reposList.isEnabled(), reposList.getLastUpdate());
                     }
                     realm3.close();
                 }

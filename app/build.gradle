@@ -28,6 +28,25 @@ android {
                     keyPassword properties.getProperty('keystore.password')
                 }
             }
+            enableV3Signing = true
+            enableV4Signing = true
+        }
+        debug {
+            // Everything comes from local.properties
+            Properties properties = new Properties()
+            if (project.rootProject.file('local.properties').exists()) {
+                properties.load(project.rootProject.file('local.properties').newDataInputStream())
+                // java.lang.IllegalArgumentException: path may not be null or empty string. path='null'
+                if (properties.getProperty('keystore.file') != null) {
+                    // FFS DO NOT CHANGE THIS, IT WILL BREAK THE BUILD
+                    storeFile file(properties.getProperty('keystore.file'))
+                    storePassword properties.getProperty('keystore.password')
+                    keyAlias 'key0'
+                    keyPassword properties.getProperty('keystore.password')
+                }
+            }
+            enableV3Signing = true
+            enableV4Signing = true
         }
     }
 
@@ -37,7 +56,6 @@ android {
         targetSdk 33
         versionCode 64
         versionName "2.0.0-beta.1"
-        signingConfig signingConfigs.release
         archivesBaseName = "FoxMMM-v$versionName"
     }
 
@@ -69,10 +87,12 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
                     'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
         debug {
             applicationIdSuffix '.debug'
             debuggable true
+            signingConfig signingConfigs.debug
 
             // ONLY FOR TESTING SENTRY
             // minifyEnabled true

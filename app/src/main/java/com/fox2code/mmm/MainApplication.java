@@ -35,6 +35,7 @@ import com.topjohnwu.superuser.Shell;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -47,12 +48,12 @@ import io.noties.markwon.html.HtmlPlugin;
 import io.noties.markwon.image.ImagesPlugin;
 import io.noties.markwon.image.network.OkHttpNetworkSchemeHandler;
 import io.realm.Realm;
-import io.sentry.IHub;
 import io.sentry.Sentry;
 import io.sentry.SentryLevel;
 import io.sentry.android.timber.SentryTimberTree;
 import timber.log.Timber;
 
+@SuppressWarnings("CommentedOutCode")
 public class MainApplication extends FoxApplication implements androidx.work.Configuration.Provider {
     // Warning! Locales that are't exist will crash the app
     // Anything that is commented out is supported but the translation is not complete to at least 60%
@@ -288,8 +289,8 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
             Timber.plant(new Timber.DebugTree());
         } else {
             if (isCrashReportingEnabled()) {
-                @SuppressWarnings("UnstableApiUsage") IHub hub = Sentry.getCurrentHub();
-                Timber.plant(new SentryTimberTree(hub, SentryLevel.ERROR, SentryLevel.ERROR));
+                //noinspection UnstableApiUsage
+                Timber.plant(new SentryTimberTree(Sentry.getCurrentHub(), SentryLevel.ERROR, SentryLevel.ERROR));
             } else {
                 Timber.plant(new ReleaseTree());
             }
@@ -335,9 +336,9 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         try {
             // Get the signature of the key used to sign the app
             @SuppressLint("PackageManagerGetSignatures") Signature[] signatures = this.getPackageManager().getPackageInfo(this.getPackageName(), PackageManager.GET_SIGNATURES).signatures;
-            String officialSignatureHash = "7bec7c4462f4aac616612d9f56a023ee3046e83afa956463b5fab547fd0a0be6";
+            String[] officialSignatureHashArray = new String[]{"7bec7c4462f4aac616612d9f56a023ee3046e83afa956463b5fab547fd0a0be6", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"};
             String ourSignatureHash = Hashing.sha256().hashBytes(signatures[0].toByteArray()).toString();
-            isOfficial = ourSignatureHash.equals(officialSignatureHash);
+            isOfficial = Arrays.asList(officialSignatureHashArray).contains(ourSignatureHash);
         } catch (
                 PackageManager.NameNotFoundException ignored) {
         }

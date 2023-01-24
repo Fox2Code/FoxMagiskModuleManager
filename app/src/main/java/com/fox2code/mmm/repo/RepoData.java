@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -114,15 +115,11 @@ public class RepoData extends XRepo {
         ReposList reposList = realm.where(ReposList.class).equalTo("id", this.id).findFirst();
         Timber.d("RepoData: " + this.id + ". record in database: " + (reposList != null ? reposList.toString() : "none"));
         this.enabled = (!this.forceHide && reposList != null && reposList.isEnabled());
-        this.enabled = (!this.forceHide) && MainApplication.getSharedPreferences().getBoolean("pref_" + this.getPreferenceId() + "_enabled", true);
         this.defaultWebsite = "https://" + Uri.parse(url).getHost() + "/";
         // open realm database
         // load metadata from realm database
         if (this.enabled) {
             try {
-                RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
-                // load metadata from realm database
-                Realm.getInstance(realmConfiguration2);
                 this.metaDataCache = ModuleListCache.getRepoModulesAsJson(this.id);
                 // load repo metadata from ReposList unless it's a built-in repo
                 if (RepoManager.isBuiltInRepo(this.id)) {
@@ -133,18 +130,14 @@ public class RepoData extends XRepo {
                     this.submitModule = this.defaultSubmitModule;
                 } else {
                     // get everything from ReposList realm database
-                    RealmConfiguration realmConfiguration3 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
-                    // load metadata from realm database
-                    Realm.getInstance(realmConfiguration3);
-                    this.name = ReposList.getRepo(this.id).getName();
-                    this.website = ReposList.getRepo(this.id).getWebsite();
-                    this.support = ReposList.getRepo(this.id).getSupport();
-                    this.donate = ReposList.getRepo(this.id).getDonate();
-                    this.submitModule = ReposList.getRepo(this.id).getSubmitModule();
+                    this.name = Objects.requireNonNull(realm.where(ReposList.class).equalTo("id", this.id).findFirst()).getName();
+                    this.website = Objects.requireNonNull(realm.where(ReposList.class).equalTo("id", this.id).findFirst()).getWebsite();
+                    this.support = Objects.requireNonNull(realm.where(ReposList.class).equalTo("id", this.id).findFirst()).getSupport();
+                    this.donate = Objects.requireNonNull(realm.where(ReposList.class).equalTo("id", this.id).findFirst()).getDonate();
+                    this.submitModule = Objects.requireNonNull(realm.where(ReposList.class).equalTo("id", this.id).findFirst()).getSubmitModule();
                 }
             } catch (Exception e) {
-                e.printStackTrace();
-                Timber.w("If this is a first install, this is normal.");
+                Timber.w("Failed to load repo metadata from database: " + e.getMessage() + ". If this is a first time run, this is normal.");
             }
         }
     }

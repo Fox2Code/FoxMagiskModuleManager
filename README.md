@@ -64,9 +64,11 @@ me to not be stuck in my bed at least once a day because of pain.
 
 ## Screenshots
 
-Main activity:  
-[<img src="docs/screenshot-dark.jpg" width="250"/>](docs/screenshot-dark.jpg)
-[<img src="docs/screenshot-light.jpg" width="250"/>](docs/screenshot-light.jpg)
+Main activity:
+
+|                                  Dark theme                                   |                                   Light theme                                   |
+|:-----------------------------------------------------------------------------:|:-------------------------------------------------------------------------------:|
+| [<img src="docs/screenshot-dark.jpg" width="250"/>](docs/screenshot-dark.png) | [<img src="docs/screenshot-light.jpg" width="250"/>](docs/screenshot-light.png) |
 
 ## What is this?
 
@@ -100,20 +102,12 @@ drawbacks:
 (Note: Each module repo can be disabled in the settings of the app)  
 (Note²: I do not own or actively monitor any of the repos or modules, **download at your own risk**)
 
-#### [https://github.com/Magisk-Modules-Alt-Repo](https://github.com/Magisk-Modules-Alt-Repo)
-
-- Accepting new modules [here](https://github.com/Magisk-Modules-Alt-Repo/submission)
-- Less restrictive than the original repo
-- Officially supported by Fox's mmm
-
-Support:
-
-[![GitHub issues](https://img.shields.io/github/issues/Magisk-Modules-Alt-Repo/submission)](https://github.com/Magisk-Modules-Alt-Repo/submission/issues)
 
 #### [https://www.androidacy.com/modules-repo/](https://www.androidacy.com/modules-repo/)
 
 - Accepting new modules [here](https://www.androidacy.com/module-repository-applications/)
 - Modules downloadable easily outside the app
+- Rigorously reviewed and tested modules
 - Officially supported by Fox's mmm
 - May show ads to help cover infrastrcture costs.
     - [Read more](https://www.androidacycom/doing-it-alone-the-what-the-how-and-the-why/)
@@ -123,6 +117,18 @@ Support:
 Support:
 
 [![Telegram Group](https://img.shields.io/endpoint?color=neon&style=flat&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fandroidacy_discussions)](https://telegram.dog/androidacy_discussions)
+
+
+#### [Magisk Alt Repo](https://github.com/Magisk-Modules-Alt-Repo)
+
+- Accepting new modules [here](https://github.com/Magisk-Modules-Alt-Repo/submission)
+- Less restrictive than the original repo
+  - May have lower quality, untested, or otherwise broken modules due to this
+- Officially supported by Fox's mmm
+
+Support:
+
+[![GitHub issues](https://img.shields.io/github/issues/Magisk-Modules-Alt-Repo/submission)](https://github.com/Magisk-Modules-Alt-Repo/submission/issues)
 
 If a module is in multiple repos, the manager will just pick the most up to date version of the
 module, if a module is in multiple repos it will just use first registered repo.
@@ -149,14 +155,14 @@ For more information please check the [developer documentation](docs/DEVELOPERS.
 
 **We need your help!** The app has started lagging behind in translations, and we need your help to catch up! As a reminder, translations are required to be at 60% or more to be included in the app.
 
-### Recommended method
+### Weblate (recommended)
 
 We use Weblate for translations: [https://translate.nift4.org/engage/foxmmm/](https://translate.nift4.org/engage/foxmmm/)
 
 - You can create an account and start translating
 - You may need to check your spam folder for the confirmation email
 
-### GitHub method for advanced users
+### GitHub method (advanced users)
 
 See [`app/src/main/res/values/strings.xml`](https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/app/src/main/res/values/strings.xml)
 
@@ -186,18 +192,13 @@ later portions of the code are copyright
 2022-present [Androidacy](https://www.androidacy.com/?utm_source=fox-repo&utm_medium=web). See
 [LICENSE](LICENCE) for details. Library licenses can be found in the licenses section of the app.
 
-Modules are not covered by this license, please check the license of each module before using it.
+Modules and their files, names, and other assets are not covered by this license, please check the license of each module before using it.
 
-Some third party backend services may be proprietary, please check their terms of service before
+Some third party backend services may be proprietary or have additional terms, please check their terms of service before
 using them.
 
-## Disclaimer
+## EULA
 
-In no event shall the developer be liable for any special, direct, indirect, consequential, or
-incidental damages or any damages whatsoever, whether in an action of contract, negligence or other
-tort, arising out of or in connection with the use of the app or the contents of the app. The
-developer reserves the right to make additions, deletions, or modification to the contents on the
-app at any time without prior notice.
+The EULA can be found [here](https://www.androidacy.com/foxmmm-eula/). By downloading, installing, or using this app you agree to the terms of the EULA.
 
-This app is not affiliated with Magisk or its developers, nor with any of the module repos or
-developers of the modules.
+`IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.`
