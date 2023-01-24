@@ -447,65 +447,27 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         }
     }
 
-    public void clearAppData() {
-        // Clear app data
-        try {
-            // Clearing app data
-            // We have to manually delete the files and directories
-            // because the cache directory is not cleared by the following method
-            File cacheDir;
-            cacheDir = this.getDataDir();
-            if (cacheDir != null && cacheDir.isDirectory()) {
-                String[] children = cacheDir.list();
-                if (children != null) {
-                    for (String s : children) {
-                        if (BuildConfig.DEBUG)
-                            Timber.w("Deleting %s", s);
-                        if (!s.equals("lib")) {
-                            if (!new File(cacheDir, s).delete()) {
-                                if (BuildConfig.DEBUG)
-                                    Timber.w("Failed to delete %s", s);
-                            }
-                        }
-                    }
-                }
-            }
-            if (BuildConfig.DEBUG)
-                Timber.w("Deleting cache dir");
-            this.deleteSharedPreferences("mmm_boot");
-            this.deleteSharedPreferences("mmm");
-            this.deleteSharedPreferences("sentry");
-            this.deleteSharedPreferences("androidacy");
-            if (BuildConfig.DEBUG)
-                Timber.w("Deleting shared prefs");
-            this.getPackageManager().clearPackagePreferredActivities(this.getPackageName());
-            if (BuildConfig.DEBUG)
-                Timber.w("Done clearing app data");
-        } catch (
-                Exception e) {
-            Timber.e(e);
-        }
+    @SuppressLint("RestrictedApi")
+    // view is nullable because it's called from xml
+    public void resetApp() {
+        // cant show a dialog because android is throwing a fit so heres hoping anybody who calls this method is otherwise confirming that the user wants to reset the app
+        Timber.w("Resetting app...");
+        // recursively delete the app's data
+        ((ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE)).clearApplicationUserData();
     }
 
     public boolean isInForeground() {
         // determine if the app is in the foreground
         ActivityManager activityManager = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
-        if (activityManager != null) {
-            List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
-            if (appProcesses != null) {
-                for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
-                    if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
-                        for (String activeProcess : appProcess.pkgList) {
-                            if (activeProcess.equals(this.getPackageName())) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-                }
+        List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+        if (appProcesses == null) {
+            return false;
+        }
+        final String packageName = this.getPackageName();
+        for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+            if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND && appProcess.processName.equals(packageName)) {
+                return true;
             }
-        } else {
-            Timber.e("Failed to get activity manager");
         }
         return false;
     }

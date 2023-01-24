@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.fox2code.foxcompat.app.FoxActivity;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textview.MaterialTextView;
 
 import org.json.JSONException;
@@ -151,6 +152,21 @@ public class CrashHandler extends FoxActivity {
                 startActivity(getPackageManager().getLaunchIntentForPackage(getPackageName()));
             });
         }
+        // handle reset button
+        findViewById(R.id.reset).setOnClickListener(v -> {
+            // show a confirmation material dialog
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+            builder.setTitle(R.string.reset_app);
+            builder.setMessage(R.string.reset_app_confirmation);
+            builder.setPositiveButton(R.string.reset, (dialog, which) -> {
+                // reset the app
+               MainApplication.getINSTANCE().resetApp();
+            });
+            builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
+                // do nothing
+            });
+            builder.show();
+        });
     }
 
     public void copyCrashDetails(View view) {

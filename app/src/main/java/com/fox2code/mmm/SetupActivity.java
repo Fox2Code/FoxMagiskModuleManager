@@ -74,10 +74,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
 
         ActivitySetupBinding binding = ActivitySetupBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        // Show setup box. Put the setup_box in the main activity layout
-        View view = binding.setupBox;
-        // Make the setup_box linear layout the sole child of the root_container constraint layout
-        setContentView(view);
+        View view = binding.getRoot();
         ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).setChecked(BuildConfig.ENABLE_AUTO_UPDATER);
         ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).setChecked(BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING);
         // assert that both switches match the build config on debug builds
@@ -276,13 +273,11 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         Timber.d("Creating Realm databases");
         // create the realm database for ReposList
         // next, create the realm database for ReposList
-        RealmConfiguration config2 = new RealmConfiguration.Builder().name("ReposList.realm").directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+        RealmConfiguration config2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
         // get the instance
         Realm.getInstanceAsync(config2, new Realm.Callback() {
             @Override
             public void onSuccess(@NonNull Realm realm1) {
-                // drop the database if it exists
-                realm1.executeTransactionAsync(realm2 -> realm2.delete(ReposList.class));
                 // create androidacy_repo and magisk_alt_repo if they don't exist under ReposList
                 // each has id, name, donate, website, support, enabled, and lastUpdate and name
                 // create androidacy_repo

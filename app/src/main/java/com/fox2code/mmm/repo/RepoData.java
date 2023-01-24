@@ -105,14 +105,16 @@ public class RepoData extends XRepo {
         this.defaultName = url; // Set url as default name
         this.forceHide = AppUpdateManager.shouldForceHide(this.id);
         // this.enable is set from the database
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
-                .name("ReposList.realm")
-                .schemaVersion(1)
-                .allowQueriesOnUiThread(true)
-                .allowWritesOnUiThread(true)
-                .build();
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
         Realm realm = Realm.getInstance(realmConfiguration);
         ReposList reposList = realm.where(ReposList.class).equalTo("id", this.id).findFirst();
+        if (BuildConfig.DEBUG) {
+            if (reposList == null) {
+                Timber.d("RepoData for %s not found in database", this.id);
+            } else {
+                Timber.d("RepoData for %s found in database", this.id);
+            }
+        }
         Timber.d("RepoData: " + this.id + ". record in database: " + (reposList != null ? reposList.toString() : "none"));
         this.enabled = (!this.forceHide && reposList != null && reposList.isEnabled());
         this.defaultWebsite = "https://" + Uri.parse(url).getHost() + "/";
@@ -140,6 +142,7 @@ public class RepoData extends XRepo {
                 Timber.w("Failed to load repo metadata from database: " + e.getMessage() + ". If this is a first time run, this is normal.");
             }
         }
+        realm.close();
     }
 
     private static boolean isNonNull(String str) {

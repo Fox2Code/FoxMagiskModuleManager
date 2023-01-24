@@ -107,7 +107,7 @@
     <string name="disable_low_quality_module_filter_pref">Show low-quality modules</string>
     <string name="disable_low_quality_module_filter_desc">
         Some modules do not declare their metadata properly, causing visual glitches,
-        and/or indicating poor module quality.\nTurn this off at your own risk!
+        and/or indicating poor module quality.\nTurn this on at your own risk!
     </string>
     <string name="dns_over_https_pref">DNS over HTTPS</string>
     <string name="dns_over_https_desc">
@@ -313,4 +313,8 @@
     <string name="crash_details_copied">Copied stacktrace to clipboard!</string>
     <string name="crash_full_stacktrace">Stacktrace:\n%1$s</string>
     <string name="sentry_enable_nag">It looks like crash reporting is disabled. Please enable it to submit feedback.</string>
+    <string name="reset_app">Reset the app</string>
+    <string name="upgraded_summary">You\'re pretty awesome! Looks like you\'ve already upgraded your subscription and are supporting Androidacy.</string>
+    <string name="upgraded">Premium active</string>
+    <string name="reset_warning">If you keep seeing this screen, resetting the app might help. This will clear app data but will not effect installed modules.</string><string name="reset_app_message">This will completely remove all app data and close the app. Modules will not be uninstalled.</string><string name="reset">Reset</string><string name="reset_app_confirmation">This is going to completely wipe app data, but will not effect modules.</string>
 </resources>

@@ -86,6 +86,7 @@ import java.util.Random;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class SettingsActivity extends FoxActivity implements LanguageActivity {
@@ -383,9 +384,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         // Clear app data
                         new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.clear_data_dialogue_title).setMessage(R.string.clear_data_dialogue_message).setPositiveButton(R.string.yes, (dialog, which) -> {
                             // Clear app data
-                            MainApplication.getINSTANCE().clearAppData();
-                            // Restart app
-                            ProcessHelper.restartApplicationProcess(requireContext());
+                            MainApplication.getINSTANCE().resetApp();
                         }).setNegativeButton(R.string.no, (dialog, which) -> {
                         }).show();
                         return true;
@@ -787,9 +786,32 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
             Realm realm = Realm.getInstance(realmConfiguration);
             ReposList repoRealmResults = realm.where(ReposList.class).equalTo("id", "androidacy_repo").findFirst();
-            assert repoRealmResults != null;
+            if (repoRealmResults == null) {
+                // log the entries in the realm db and throw an illegal state exception
+                RealmResults<ReposList> reposListRealmResults = realm.where(ReposList.class).findAll();
+                if (reposListRealmResults.isEmpty()) {
+                    throw new IllegalStateException("Realm db is empty");
+                }
+                for (ReposList reposList2 : reposListRealmResults) {
+                    Timber.d("Realm db entry: %s %s %s", reposList2.getId(), reposList2.getName(), reposList2.isEnabled());
+                }
+                throw new IllegalStateException("Androidacy repo not found in realm db");
+            }
             boolean androidacyRepoEnabledPref = repoRealmResults.isEnabled();
             if (androidacyRepoEnabledPref) {
+                // get user role from AndroidacyRepoData.userInfo
+                String[][] userInfo = AndroidacyRepoData.getInstance().userInfo;
+                if (userInfo != null) {
+                    String userRole = userInfo[0][1];
+                    if (!Objects.equals(userRole, "Guest")) {
+                        // Disable the pref_androidacy_repo_api_token preference
+                        LongClickablePreference prefAndroidacyRepoApiD = Objects.requireNonNull(findPreference("pref_androidacy_repo_donate"));
+                        prefAndroidacyRepoApiD.setEnabled(false);
+                        prefAndroidacyRepoApiD.setSummary(R.string.upgraded_summary);
+                        prefAndroidacyRepoApiD.setTitle(R.string.upgraded);
+                        prefAndroidacyRepoApiD.setIcon(R.drawable.baseline_check_24);
+                    }
+                }
                 String[] originalApiKeyRef = new String[]{MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).getString("pref_androidacy_api_token", "")};
                 // Get the dummy pref_androidacy_repo_api_token preference with id pref_androidacy_repo_api_token
                 // we have to use the id because the key is different
@@ -913,7 +935,16 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
 
         @SuppressLint("RestrictedApi")
         public void updateCustomRepoList(boolean initial) {
-            final SharedPreferences sharedPreferences = Objects.requireNonNull(this.getPreferenceManager().getSharedPreferences());
+            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+            Realm realm = Realm.getInstance(realmConfiguration);
+            // get all repos that are not built-in
+            int CUSTOM_REPO_ENTRIES = 0;
+            RealmResults<ReposList> customRepoDataDB = realm.where(ReposList.class).findAll();
+            for (ReposList repo : customRepoDataDB) {
+                if (!repo.getId().equals("androidacy") && !repo.getId().equals("magisk_alt_repo")) {
+                    CUSTOM_REPO_ENTRIES++;
+                }
+            }
             final CustomRepoManager customRepoManager = RepoManager.getINSTANCE().getCustomRepoManager();
             for (int i = 0; i < CUSTOM_REPO_ENTRIES; i++) {
                 CustomRepoData repoData = customRepoManager.getRepo(i);
@@ -924,7 +955,9 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         continue;
                     final int index = i;
                     preference.setOnPreferenceClickListener(preference1 -> {
-                        sharedPreferences.edit().remove("pref_custom_repo_" + index + "_enabled").apply();
+                        realm.beginTransaction();
+                        Objects.requireNonNull(realm.where(ReposList.class).equalTo("id", repoData.id).findFirst()).deleteFromRealm();
+                        realm.commitTransaction();
                         customRepoManager.removeRepo(index);
                         updateCustomRepoList(false);
                         return true;
@@ -939,6 +972,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 preference = findPreference("pref_custom_add_repo_button");
                 if (preference == null)
                     return;
+                int finalCUSTOM_REPO_ENTRIES = CUSTOM_REPO_ENTRIES;
                 preference.setOnPreferenceClickListener(preference1 -> {
                     final Context context = this.requireContext();
                     MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
@@ -984,7 +1018,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     input.addTextChangedListener(new TextWatcherAdapter() {
                         @Override
                         public void onTextChanged(@NonNull CharSequence charSequence, int i, int i1, int i2) {
-                            positiveButton.setEnabled(customRepoManager.canAddRepo(charSequence.toString()) && customRepoManager.getRepoCount() < CUSTOM_REPO_ENTRIES);
+                            positiveButton.setEnabled(customRepoManager.canAddRepo(charSequence.toString()) && customRepoManager.getRepoCount() < finalCUSTOM_REPO_ENTRIES);
                         }
                     });
                     positiveButton.setEnabled(false);

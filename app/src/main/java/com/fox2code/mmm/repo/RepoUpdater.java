@@ -54,11 +54,7 @@ public class RepoUpdater {
             Realm realm = Realm.getInstance(realmConfiguration);
             RealmResults<ModuleListCache> results = realm.where(ModuleListCache.class).equalTo("repoId", this.repoData.id).findAll();
             // reposlist realm
-            RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder()
-                    .name("ReposList.realm")
-                    .schemaVersion(1)
-                    .modules(new ReposList())
-                    .build();
+            RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
             Realm realm2 = Realm.getInstance(realmConfiguration2);
             ReposList reposList = realm2.where(ReposList.class).equalTo("id", this.repoData.id).findFirst();
             this.toUpdate = Collections.emptyList();

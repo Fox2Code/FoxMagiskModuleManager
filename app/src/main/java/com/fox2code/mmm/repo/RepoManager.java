@@ -409,7 +409,7 @@ public final class RepoManager extends SyncManager {
 
     private AndroidacyRepoData addAndroidacyRepoData() {
         // cache dir is actually under app data
-        File cacheRoot = new File(this.mainApplication.getDataDir(), "repos/androidacy_repo");
+        File cacheRoot = this.mainApplication.getDataDirWithPath("realms/repos/androidacy_repo");
         SharedPreferences sharedPreferences = this.mainApplication.getSharedPreferences("mmm_androidacy_repo", Context.MODE_PRIVATE);
         AndroidacyRepoData repoData = new AndroidacyRepoData(cacheRoot, sharedPreferences, MainApplication.isAndroidacyTestMode());
         this.repoData.put(ANDROIDACY_MAGISK_REPO_ENDPOINT, repoData);

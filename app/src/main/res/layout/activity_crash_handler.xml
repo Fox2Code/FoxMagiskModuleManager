@@ -138,7 +138,20 @@
                     android:text="@string/restart" />
 
             </LinearLayout>
-        </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+
+                <com.google.android.material.textview.MaterialTextView android:layout_width="match_parent" android:layout_height="match_parent" android:layout_margin="10dp" android:gravity="fill" android:text="@string/reset_warning" android:textSize="16sp" />
+
+                <!-- reset app button -->
+                <com.google.android.material.button.MaterialButton
+                android:id="@+id/reset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/reset_app" />
             </LinearLayout>
         </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 </ScrollView>

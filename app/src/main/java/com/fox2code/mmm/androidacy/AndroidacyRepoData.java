@@ -41,6 +41,7 @@ import timber.log.Timber;
 
 @SuppressWarnings("KotlinInternalInJava")
 public final class AndroidacyRepoData extends RepoData {
+    public String[][] userInfo = new String[][]{{"role", null}, {"permissions", null}};
 
     public static String token = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).getString("pref_androidacy_api_token", null);
 
@@ -140,6 +141,9 @@ public final class AndroidacyRepoData extends RepoData {
             byte[] resp = Http.doHttpGet("https://" + this.host + "/auth/me?token=" + token + "&device_id=" + deviceId, false);
             JSONObject jsonObject = new JSONObject(new String(resp));
             memberLevel = jsonObject.getString("role");
+            JSONArray memberPermissions = jsonObject.getJSONArray("permissions");
+            // set role and permissions on userInfo property
+            userInfo = new String[][]{{"role", memberLevel}, {"permissions", String.valueOf(memberPermissions)}};
             String status = jsonObject.getString("status");
             if (status.equals("success")) {
                 return true;
