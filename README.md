@@ -68,7 +68,7 @@ Main activity:
 
 |                                  Dark theme                                   |                                   Light theme                                   |
 |:-----------------------------------------------------------------------------:|:-------------------------------------------------------------------------------:|
-| [<img src="docs/screenshot-dark.jpg" width="250"/>](docs/screenshot-dark.png) | [<img src="docs/screenshot-light.jpg" width="250"/>](docs/screenshot-light.png) |
+| [<img src="docs/screenshot-dark.jpg" width="250"/>](docs/screenshot-dark.jpg) | [<img src="docs/screenshot-light.jpg" width="250"/>](docs/screenshot-light.jpg) |
 
 ## What is this?
 
