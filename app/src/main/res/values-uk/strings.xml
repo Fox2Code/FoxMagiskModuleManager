@@ -254,7 +254,9 @@
     <string name="setup_language_button">Обрати мову</string>
     <string name="title_activity_setup">Майстер встановлення</string>
     <string name="action_settings">Налаштування</string>
-    <string name="repo_update_failed_message">Наступні репозиторії мають помилки при оновлені:\\n\\n%s</string>
+    <string name="repo_update_failed_message">Наступні репозиторії мають помилки при оновлені:
+\n
+\n%s</string>
     <string name="reset_api_key">Скинути API ключі</string>
     <string name="upgrade_androidacy_promo">Оновлення до преміум</string>
     <string name="upgrade_androidacy_promo_desc">Оновлення до преміум призведе до видалення реклами, капчі та завантажень для репозиторію Androidacy, а також підтримує Androidacy та авторів модулів.</string>
@@ -264,5 +266,21 @@
     <string name="save_logs">Зберегти журнал логів у сховищі та поділитись</string>
     <string name="share_logs">Поділитись журналом логів FoxMMM</string>
     <string name="fox2code_thanks_desc">Fox2Code є початковим автором додатку. Без нього це було б не можливо.</string>
-    <string name="not_official_build">Застереження: Ви використовуєте неофіційну і тому непідтримувану збірку FoxMMM.</string>
+    <string name="not_official_build">Цей додаток є неофіційною збіркою FoxMMM.</string>
+    <string name="crash_text">Ой, ми потрапили в халепу!</string>=
+    <string name="feedback_message">Розкажіть нам більше про те, що ви робили, коли це сталося. Чим більше, тим веселіше!</string>
+    <string name="feedback_submit">Надішліть і перезапустіть</string>
+    <string name="sentry_dialogue_disabled">Звіти про збої відключено. Увімкніть їх, щоб надіслати відгук.</string>
+    <string name="feedback_name">Ім\'я (необов\'язково)</string>
+    <string name="feedback_email">Електронна скринька (необов\'язково)</string>
+    <string name="crash_icon">Значок збою</string>
+    <string name="copy_button">Скопіюйте текст</string>
+    <string name="crash_details">Невідома причина</string>
+    <string name="crash_details_copied">Трасування стека скопійовано в буфер обміну!</string>
+    <string name="crash_full_stacktrace">Трасування стека:
+\n%1$s</string>
+    <string name="please_feedback">Допоможіть нам, розкажіть, що ви намагалися зробити, коли це сталося.</string>
+    <string name="sentry_dialogue_empty_message">Ви не вказали додатковий відгук.</string>
+    <string name="more_details">Більш детальну інформацію можна знайти нижче.</string>
+    <string name="sentry_enable_nag">Схоже, звіти про збої відключено. Будь ласка, увімкніть їх, щоб надіслати відгук.</string>
 </resources>

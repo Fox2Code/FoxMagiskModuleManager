@@ -259,7 +259,9 @@
     <string name="setup_theme_title">Выбрать тему</string>
     <string name="setup_language_button">Выбрать язык</string>
     <string name="action_settings">Настройки</string>
-    <string name="repo_update_failed_message">Не удалось обновить следующие репозитории:\\n\\n%s</string>
+    <string name="repo_update_failed_message">Не удалось обновить следующие репозитории:
+\n
+\n%s</string>
     <string name="reset_api_key">Сбросить API ключи</string>
     <string name="upgrade_androidacy_promo">Обновить до премиум</string>
     <string name="upgrade_androidacy_promo_desc">Обновление до премиум удалит рекламу, капчи и загрузки для репозитория Androidacy, а также поддержит Androidacy и авторов модулей.</string>
@@ -269,5 +271,21 @@
     <string name="save_logs">Сохранить журнал логов в хранилище и поделиться</string>
     <string name="error_saving_logs">Не удалось сохранить журнал логов</string>
     <string name="share_logs">Поделиться журналом логов FoxMMM</string>
-    <string name="not_official_build">Внимание: вы используете неофициальную и, следовательно, неподдерживаемую сборку FoxMMM.</string>
+    <string name="not_official_build">Данное приложение является неофициальной сборкой FoxMMM.</string>
+    <string name="please_feedback">Пожалуйста, помогите нам, рассказав нам, что вы пытались сделать, когда это произошло.</string>
+    <string name="copy_button">Скопировать текст</string>
+    <string name="more_details">Более подробную информацию можно найти ниже.</string>
+    <string name="sentry_enable_nag">Похоже, отчеты о сбоях отключены. Пожалуйста, включите их, чтобы отправить отзыв.</string>
+    <string name="crash_text">О-о, мы попали в ловушку!</string>=
+    <string name="feedback_message">Расскажите нам подробнее о том, что вы делали, когда это произошло. Чем больше тем лучше!</string>
+    <string name="feedback_submit">Отправить и перезапустить</string>
+    <string name="sentry_dialogue_disabled">Отчеты о сбоях отключены. Включите их, чтобы отправить отзыв.</string>
+    <string name="feedback_name">Имя (необязательно)</string>
+    <string name="feedback_email">Электронная почта (необязательно)</string>
+    <string name="sentry_dialogue_empty_message">Вы не указали дополнительный отзыв.</string>
+    <string name="crash_icon">Иконка сбоя</string>
+    <string name="crash_details">Неизвестная причина</string>
+    <string name="crash_details_copied">Стек трассировки скопирован в буфер обмена!</string>
+    <string name="crash_full_stacktrace">Стек трассировки:
+\n%1$s</string>
 </resources>
