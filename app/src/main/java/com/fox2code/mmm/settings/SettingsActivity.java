@@ -71,8 +71,6 @@ import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
-import org.json.JSONException;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -666,8 +664,11 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
     public static class RepoFragment extends PreferenceFragmentCompat {
         private static final int CUSTOM_REPO_ENTRIES = 5;
 
-        // *says proudly* I stole it
-        // namely, from https://github.com/NeoApplications/Neo-Wellbeing/blob/9fca4136263780c022f9ec6433c0b43d159166db/app/src/main/java/org/eu/droid_ng/wellbeing/prefs/SettingsActivity.java#L101
+        /**
+         * <i>proudly</i> I stole it
+         * <p>
+         * namely, from <a href="https://github.com/NeoApplications/Neo-Wellbeing/blob/9fca4136263780c022f9ec6433c0b43d159166db/app/src/main/java/org/eu/droid_ng/wellbeing/prefs/SettingsActivity.java#L101">neo wellbeing</a>
+         */
         public static void applyMaterial3(Preference p) {
             if (p instanceof PreferenceGroup) {
                 PreferenceGroup pg = (PreferenceGroup) p;
@@ -816,6 +817,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 // Get the dummy pref_androidacy_repo_api_token preference with id pref_androidacy_repo_api_token
                 // we have to use the id because the key is different
                 EditTextPreference prefAndroidacyRepoApiKey = Objects.requireNonNull(findPreference("pref_androidacy_repo_api_token"));
+                // add validation to the EditTextPreference
+                // string must be 64 characters long, and only allows alphanumeric characters
                 prefAndroidacyRepoApiKey.setTitle(R.string.api_key);
                 prefAndroidacyRepoApiKey.setSummary(R.string.api_key_summary);
                 prefAndroidacyRepoApiKey.setDialogTitle(R.string.api_key);
@@ -834,6 +837,14 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 });
                 prefAndroidacyRepoApiKey.setPositiveButtonText(R.string.save_api_key);
                 prefAndroidacyRepoApiKey.setOnPreferenceChangeListener((preference, newValue) -> {
+                    // validate the api key client side first. should be 64 characters long, and only allow alphanumeric characters
+                    if (!newValue.toString().matches("[a-zA-Z0-9]{64}")) {
+                        // Show snack bar with error
+                        Snackbar.make(requireView(), R.string.api_key_mismatch, Snackbar.LENGTH_LONG).show();
+                        // Restore the original api key
+                        prefAndroidacyRepoApiKey.setText(originalApiKeyRef[0]);
+                        return false;
+                    }
                     // Make sure originalApiKeyRef is not null
                     if (originalApiKeyRef[0].equals(newValue))
                         return true;
@@ -990,13 +1001,18 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                 public void run() {
                                     try {
                                         customRepoData.quickPrePopulate();
+                                        UiThreadHandler.handler.post(() -> updateCustomRepoList(false));
                                     } catch (
-                                            IOException |
-                                            JSONException |
-                                            NoSuchAlgorithmException e) {
+                                            Exception e) {
                                         Timber.e(e);
+                                        // show new dialog
+                                        new Handler(Looper.getMainLooper()).post(() -> new MaterialAlertDialogBuilder(context)
+                                                .setTitle(R.string.error_adding)
+                                                .setMessage(e.getMessage())
+                                                .setPositiveButton(android.R.string.ok, (dialog1, which1) -> {
+                                                })
+                                                .show());
                                     }
-                                    UiThreadHandler.handler.post(() -> updateCustomRepoList(false));
                                 }
                             }.start();
                         }

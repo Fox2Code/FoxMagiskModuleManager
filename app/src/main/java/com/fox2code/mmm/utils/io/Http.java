@@ -234,7 +234,13 @@ public class Http {
             // Log, but set all query parameters values to "****" while keeping the keys
             Timber.d("doHttpGet: %s", url.replaceAll("=[^&]*", "=****"));
         }
-        Response response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).get().build()).execute();
+        Response response;
+        try {
+            response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).get().build()).execute();
+        } catch (IOException e) {
+            Timber.e(e, "Failed to fetch %s", url.replaceAll("=[^&]*", "=****"));
+            throw new HttpException(e.getMessage(), 0);
+        }
         if (BuildConfig.DEBUG_HTTP) {
             Timber.d("doHttpGet: request executed");
         }

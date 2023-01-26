@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 
+import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 
 import java.io.IOException;
@@ -17,6 +18,7 @@ import java.util.HashSet;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
+import timber.log.Timber;
 
 public class ReceivedCookiesInterceptor implements Interceptor {
     private final Context context;
@@ -33,8 +35,14 @@ public class ReceivedCookiesInterceptor implements Interceptor {
             HashSet<String> cookies = (HashSet<String>) MainApplication.getSharedPreferences().getStringSet("PREF_COOKIES", new HashSet<>());
 
             cookies.addAll(originalResponse.headers("Set-Cookie"));
+            if (!cookies.toString().contains("is_foxmmm")) {
+                cookies.add("is_foxmmm=true; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/; domain=" + chain.request().url().host() + "; SameSite=None; Secure;");
+            }
 
             SharedPreferences.Editor memes = MainApplication.getSharedPreferences().edit();
+            if (BuildConfig.DEBUG_HTTP) {
+                Timber.d("Received cookies: %s", cookies);
+            }
             memes.putStringSet("PREF_COOKIES", cookies).apply();
             memes.commit();
         }

@@ -8,6 +8,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.util.HashSet;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
+import timber.log.Timber;
 
 /**
  * This interceptor put all the Cookies in Preferences in the Request.
@@ -42,14 +44,20 @@ public class AddCookiesInterceptor implements Interceptor {
         // Some APIs die if you do it differently.
         StringBuilder cookiestring = new StringBuilder();
         for (String cookie : preferences) {
-            String[] parser = cookie.split(";");
-            cookiestring.append(parser[0]).append("; ");
+            // if cookie doesn't end in a semicolon, add one.
+            if (!cookie.endsWith(";")) {
+                cookie = cookie + ";";
+            }
+            cookiestring.append(cookie).append(" ");
+        }
+        // if ccokiestring doesn't have is_foxmmm cookie, add a never expiring one for the current domain.
+        if (!cookiestring.toString().contains("is_foxmmm")) {
+            cookiestring.append("is_foxmmm=true; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/; domain=").append(chain.request().url().host()).append("; SameSite=None; Secure;");
+        }
+        if (BuildConfig.DEBUG_HTTP) {
+            Timber.d("Sending cookies: %s", cookiestring.toString());
         }
         builder.addHeader("Cookie", cookiestring.toString());
-
-        for (String cookie : preferences) {
-            builder.addHeader("Cookie", cookie);
-        }
 
         return chain.proceed(builder.build());
     }

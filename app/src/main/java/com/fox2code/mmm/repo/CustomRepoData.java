@@ -35,6 +35,10 @@ public final class CustomRepoData extends RepoData {
         JSONObject jsonObject = new JSONObject(
                 new String(Http.doHttpGet(this.getUrl(),
                         false), StandardCharsets.UTF_8));
+        // make sure there's at least a name and a modules or data object
+        if (!jsonObject.has("name") || (!jsonObject.has("modules") && !jsonObject.has("data"))) {
+            throw new IllegalArgumentException("Invalid repo: " + this.getUrl());
+        }
         this.name = jsonObject.getString("name").trim();
         this.website = jsonObject.optString("website");
         this.support = jsonObject.optString("support");
