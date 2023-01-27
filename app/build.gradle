@@ -336,6 +336,8 @@ dependencies {
 
     // ksp
     implementation "com.google.devtools.ksp:symbol-processing-api:1.8.0-1.0.8"
+
+    implementation "androidx.security:security-crypto:1.1.0-alpha04"
 }
 
 if (hasSentryConfig) {

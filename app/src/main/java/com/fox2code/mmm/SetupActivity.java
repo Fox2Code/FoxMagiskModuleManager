@@ -3,6 +3,7 @@ package com.fox2code.mmm;
 import static com.fox2code.mmm.utils.IntentHelper.getActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -13,6 +14,8 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.FragmentActivity;
+import androidx.security.crypto.EncryptedFile;
+import androidx.security.crypto.MasterKey;
 
 import com.fox2code.foxcompat.app.FoxActivity;
 import com.fox2code.mmm.androidacy.AndroidacyRepoData;
@@ -26,6 +29,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
+import java.io.File;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Objects;
 
 import io.realm.Realm;
@@ -328,5 +334,19 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                 }
             }
         });
+        try {
+            String cookieFileName = "cookies";
+            File cookieFile = new File(MainApplication.getINSTANCE().getFilesDir(), cookieFileName);
+            String initialCookie = "is_foxmmm=true; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/; domain=\" + chain.request().url().host() + \"; SameSite=None; Secure;|foxmmm_version=" + BuildConfig.VERSION_CODE + "; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/; domain=\" + chain.request().url().host() + \"; SameSite=None; Secure;";
+            Context context = getApplicationContext();
+            MasterKey mainKeyAlias = new MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build();
+            EncryptedFile encryptedFile = new EncryptedFile.Builder(context, new File(MainApplication.getINSTANCE().getFilesDir(), cookieFileName), mainKeyAlias, EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB).build();
+            encryptedFile.openFileOutput().write(initialCookie.getBytes());
+            encryptedFile.openFileOutput().flush();
+            encryptedFile.openFileOutput().close();
+        } catch (GeneralSecurityException |
+        IOException e) {
+            Timber.e(e);
+        }
     }
 }

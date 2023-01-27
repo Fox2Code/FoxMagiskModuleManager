@@ -7,24 +7,23 @@ package com.fox2code.mmm.utils.io;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.security.crypto.EncryptedFile;
+import androidx.security.crypto.MasterKey;
 
-import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
+import java.io.InputStream;
 
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 import timber.log.Timber;
 
-/**
- * This interceptor put all the Cookies in Preferences in the Request.
- * Your implementation on how to get the Preferences may ary, but this will work 99% of the time.
- */
+
 public class AddCookiesInterceptor implements Interceptor {
-    public static final String PREF_COOKIES = "PREF_COOKIES";
     // We're storing our stuff in a database made just for cookies called PREF_COOKIES.
     // I reccomend you do this, and don't change this default value.
     private final Context context;
@@ -37,9 +36,32 @@ public class AddCookiesInterceptor implements Interceptor {
     @Override
     public Response intercept(Interceptor.Chain chain) throws IOException {
         Request.Builder builder = chain.request().newBuilder();
+        MasterKey mainKeyAlias;
+        String cookieFileName = "cookies";
+        byte[] plaintext;
+        try {
+            // create cookie file if it doesn't exist
+            mainKeyAlias = new MasterKey.Builder(context)
+                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                    .build();
+            EncryptedFile encryptedFile = new EncryptedFile.Builder(context, new File(MainApplication.getINSTANCE().getFilesDir(), cookieFileName), mainKeyAlias, EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB).build();
+            InputStream inputStream;
+            inputStream = encryptedFile.openFileInput();
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            int nextByte = inputStream.read();
+            while (nextByte != -1) {
+                byteArrayOutputStream.write(nextByte);
+                nextByte = inputStream.read();
+            }
 
-        HashSet<String> preferences = (HashSet<String>) MainApplication.getSharedPreferences().getStringSet(PREF_COOKIES, new HashSet<>());
-
+            plaintext = byteArrayOutputStream.toByteArray();
+            inputStream.close();
+        } catch (
+                Exception e) {
+            Timber.e(e, "Error while reading cookies");
+            plaintext = new byte[0];
+        }
+        String[] preferences = new String(plaintext).split("\\|");
         // Use the following if you need everything in one line.
         // Some APIs die if you do it differently.
         StringBuilder cookiestring = new StringBuilder();
@@ -50,13 +72,7 @@ public class AddCookiesInterceptor implements Interceptor {
             }
             cookiestring.append(cookie).append(" ");
         }
-        // if ccokiestring doesn't have is_foxmmm cookie, add a never expiring one for the current domain.
-        if (!cookiestring.toString().contains("is_foxmmm")) {
-            cookiestring.append("is_foxmmm=true; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/; domain=").append(chain.request().url().host()).append("; SameSite=None; Secure;");
-        }
-        if (BuildConfig.DEBUG_HTTP) {
-            Timber.d("Sending cookies: %s", cookiestring.toString());
-        }
+        Timber.d("Sending cookies: %s", cookiestring.toString());
         builder.addHeader("Cookie", cookiestring.toString());
 
         return chain.proceed(builder.build());

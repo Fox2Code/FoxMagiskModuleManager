@@ -6,14 +6,20 @@ package com.fox2code.mmm.utils.io;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
+import androidx.security.crypto.EncryptedFile;
+import androidx.security.crypto.MasterKey;
 
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
 import java.util.HashSet;
 
 import okhttp3.Interceptor;
@@ -22,9 +28,11 @@ import timber.log.Timber;
 
 public class ReceivedCookiesInterceptor implements Interceptor {
     private final Context context;
+
     public ReceivedCookiesInterceptor(Context context) {
         this.context = context;
     } // AddCookiesInterceptor()
+
     @NonNull
     @SuppressLint({"MutatingSharedPrefs", "ApplySharedPref"})
     @Override
@@ -32,19 +40,48 @@ public class ReceivedCookiesInterceptor implements Interceptor {
         Response originalResponse = chain.proceed(chain.request());
 
         if (!originalResponse.headers("Set-Cookie").isEmpty()) {
-            HashSet<String> cookies = (HashSet<String>) MainApplication.getSharedPreferences().getStringSet("PREF_COOKIES", new HashSet<>());
+            MasterKey mainKeyAlias;
+            String cookieFileName = "cookies";
+            byte[] plaintext;
+            try {
+                mainKeyAlias = new MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build();
+                EncryptedFile encryptedFile = new EncryptedFile.Builder(context, new File(MainApplication.getINSTANCE().getFilesDir(), cookieFileName), mainKeyAlias, EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB).build();
+                InputStream inputStream = encryptedFile.openFileInput();
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                int nextByte = inputStream.read();
+                while (nextByte != -1) {
+                    byteArrayOutputStream.write(nextByte);
+                    nextByte = inputStream.read();
+                }
 
-            cookies.addAll(originalResponse.headers("Set-Cookie"));
-            if (!cookies.toString().contains("is_foxmmm")) {
-                cookies.add("is_foxmmm=true; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/; domain=" + chain.request().url().host() + "; SameSite=None; Secure;");
+                plaintext = byteArrayOutputStream.toByteArray();
+                inputStream.close();
+            } catch (
+                    Exception e) {
+                e.printStackTrace();
+                plaintext = new byte[0];
             }
-
-            SharedPreferences.Editor memes = MainApplication.getSharedPreferences().edit();
+            HashSet<String> cookies = new HashSet<>(Arrays.asList(new String(plaintext).split("\\|")));
+            HashSet<String> cookieSet = new HashSet<>(originalResponse.headers("Set-Cookie"));
             if (BuildConfig.DEBUG_HTTP) {
-                Timber.d("Received cookies: %s", cookies);
+                Timber.d("Received cookies: %s", cookieSet);
             }
-            memes.putStringSet("PREF_COOKIES", cookies).apply();
-            memes.commit();
+            // if we already have the cooki in cookies, remove the one in cookies
+            cookies.removeIf(cookie -> cookieSet.toString().contains(cookie.split(";")[0]));
+            // add the new cookies to the cookies
+            cookies.addAll(cookieSet);
+            // write the cookies to the file
+            try {
+                mainKeyAlias = new MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build();
+                EncryptedFile encryptedFile = new EncryptedFile.Builder(context, new File(MainApplication.getINSTANCE().getFilesDir(), cookieFileName), mainKeyAlias, EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB).build();
+                encryptedFile.openFileOutput().write(String.join("|", cookies).getBytes());
+                encryptedFile.openFileOutput().flush();
+                encryptedFile.openFileOutput().close();
+                Timber.d("Storing encrypted cookies: %s", String.join("|", cookies));
+            } catch (
+                    GeneralSecurityException e) {
+                throw new IllegalStateException("Unable to get master key", e);
+            }
         }
 
         return originalResponse;
