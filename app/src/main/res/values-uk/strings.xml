@@ -137,7 +137,7 @@
     <string name="use_magisk_install_command_desc">Під час тестування це викликало проблеми з інструментом діагностики помилок встановлення модуля, тому цей параметр приховано за режимом розробника.
 \nВмикайте це на свій страх і ризик!</string>
     <string name="disable_low_quality_module_filter_desc">Деякі модулі не декларують свої метадані належним чином, що спричиняє візуальні збої та/або вказує на низьку якість модуля.
-\nВимкніть на свій страх і ризик!</string>
+\nВмикайте на свій страх і ризик!</string>
     <string name="disable_extensions_pref">Вимкнути Mmm</string>
     <string name="disable_extensions_desc">Вимкніть розширення Fox\'s Mmm, щоб модулі не використовували розширення терміналів.
 \nКорисно, якщо модуль неправильно використовує розширення Fox\'s Mmm.</string>
@@ -283,4 +283,11 @@
     <string name="sentry_dialogue_empty_message">Ви не вказали додатковий відгук.</string>
     <string name="more_details">Більш детальну інформацію можна знайти нижче.</string>
     <string name="sentry_enable_nag">Схоже, звіти про збої відключено. Будь ласка, увімкніть їх, щоб надіслати відгук.</string>
+    <string name="reset_app">Скинути додаток</string>
+    <string name="upgraded_summary">Ти кращий! Схоже, ти вже оновили свою підписку та підтримуєш Androidacy.</string>
+    <string name="upgraded">Преміум активован</string>
+    <string name="reset_warning">Якщо ви продовжуєте бачити цей екран, скидання додатку може допомогти. Це видалить дані додатку, але не вплине на встановлені модулі.</string>
+    <string name="reset_app_message">Це повністю видалить усі дані додатку та його. Модулі не будуть видалені.</string>
+    <string name="reset">Скидання</string>
+    <string name="reset_app_confirmation">Це повністю видалить дані додатку, але не вплине на модулі.</string>
 </resources>
