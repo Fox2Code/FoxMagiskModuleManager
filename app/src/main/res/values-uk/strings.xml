@@ -290,4 +290,6 @@
     <string name="reset_app_message">Це повністю видалить усі дані додатку та його. Модулі не будуть видалені.</string>
     <string name="reset">Скидання</string>
     <string name="reset_app_confirmation">Це повністю видалить дані додатку, але не вплине на модулі.</string>
+    <string name="error_adding">Не вдалося додати репозиторій користувача</string>
+    <string name="api_key_mismatch">Ключ API має невірний формат</string>
 </resources>

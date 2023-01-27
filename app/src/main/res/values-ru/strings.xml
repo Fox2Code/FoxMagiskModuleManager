@@ -293,4 +293,6 @@
     <string name="reset">Сброс</string>
     <string name="reset_app_confirmation">Это полностью сотрет данные приложения, но не повлияет на модули.</string>
     <string name="reset_warning">Если вы продолжаете видеть этот экран, может помочь сброс приложения. Это очистит данные приложения, но не повлияет на установленные модули.</string>
+    <string name="error_adding">Не удалось добавить пользовательский репозиторий</string>
+    <string name="api_key_mismatch">Ключ API имеет неверный формат</string>
 </resources>
