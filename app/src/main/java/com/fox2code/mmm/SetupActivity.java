@@ -30,7 +30,10 @@ import com.google.android.material.materialswitch.MaterialSwitch;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.GeneralSecurityException;
 import java.util.Objects;
 
@@ -336,14 +339,37 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         });
         try {
             String cookieFileName = "cookies";
-            File cookieFile = new File(MainApplication.getINSTANCE().getFilesDir(), cookieFileName);
             String initialCookie = "is_foxmmm=true; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/; domain=\" + chain.request().url().host() + \"; SameSite=None; Secure;|foxmmm_version=" + BuildConfig.VERSION_CODE + "; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/; domain=\" + chain.request().url().host() + \"; SameSite=None; Secure;";
             Context context = getApplicationContext();
-            MasterKey mainKeyAlias = new MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build();
+            MasterKey mainKeyAlias;
+            mainKeyAlias = new MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build();
             EncryptedFile encryptedFile = new EncryptedFile.Builder(context, new File(MainApplication.getINSTANCE().getFilesDir(), cookieFileName), mainKeyAlias, EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB).build();
-            encryptedFile.openFileOutput().write(initialCookie.getBytes());
-            encryptedFile.openFileOutput().flush();
-            encryptedFile.openFileOutput().close();
+            InputStream inputStream;
+            try {
+                inputStream = encryptedFile.openFileInput();
+            } catch (
+                    FileNotFoundException e) {
+                Timber.d("Cookie file not found, creating new file");
+                OutputStream outputStream = encryptedFile.openFileOutput();
+                outputStream.write(initialCookie.getBytes());
+                outputStream.close();
+                outputStream.flush();
+                inputStream = encryptedFile.openFileInput();
+            }
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            StringBuilder outputString = new StringBuilder();
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputString.append(new String(buffer, 0, bytesRead));
+            }
+            inputStream.close();
+            if (outputString.toString().isEmpty()) {
+                Timber.d("Cookie file is empty, writing initial cookie");
+                OutputStream outputStream = encryptedFile.openFileOutput();
+                outputStream.write(initialCookie.getBytes());
+                outputStream.close();
+                outputStream.flush();
+            }
         } catch (GeneralSecurityException |
         IOException e) {
             Timber.e(e);

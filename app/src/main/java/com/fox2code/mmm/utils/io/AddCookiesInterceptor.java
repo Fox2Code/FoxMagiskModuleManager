@@ -1,9 +1,5 @@
 package com.fox2code.mmm.utils.io;
 
-// Original written by tsuharesu
-// Adapted to create a "drop it in and watch it work" approach by Nikhil Jha.
-// Just add your package statement and drop it in the folder with all your other classes.
-
 import android.content.Context;
 
 import androidx.annotation.NonNull;
@@ -12,7 +8,6 @@ import androidx.security.crypto.MasterKey;
 
 import com.fox2code.mmm.MainApplication;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,8 +19,6 @@ import timber.log.Timber;
 
 
 public class AddCookiesInterceptor implements Interceptor {
-    // We're storing our stuff in a database made just for cookies called PREF_COOKIES.
-    // I reccomend you do this, and don't change this default value.
     private final Context context;
 
     public AddCookiesInterceptor(Context context) {
@@ -36,44 +29,37 @@ public class AddCookiesInterceptor implements Interceptor {
     @Override
     public Response intercept(Interceptor.Chain chain) throws IOException {
         Request.Builder builder = chain.request().newBuilder();
-        MasterKey mainKeyAlias;
-        String cookieFileName = "cookies";
-        byte[] plaintext;
-        try {
-            // create cookie file if it doesn't exist
-            mainKeyAlias = new MasterKey.Builder(context)
-                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-                    .build();
-            EncryptedFile encryptedFile = new EncryptedFile.Builder(context, new File(MainApplication.getINSTANCE().getFilesDir(), cookieFileName), mainKeyAlias, EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB).build();
-            InputStream inputStream;
-            inputStream = encryptedFile.openFileInput();
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            int nextByte = inputStream.read();
-            while (nextByte != -1) {
-                byteArrayOutputStream.write(nextByte);
-                nextByte = inputStream.read();
-            }
 
-            plaintext = byteArrayOutputStream.toByteArray();
-            inputStream.close();
-        } catch (
-                Exception e) {
-            Timber.e(e, "Error while reading cookies");
-            plaintext = new byte[0];
-        }
-        String[] preferences = new String(plaintext).split("\\|");
-        // Use the following if you need everything in one line.
-        // Some APIs die if you do it differently.
-        StringBuilder cookiestring = new StringBuilder();
-        for (String cookie : preferences) {
-            // if cookie doesn't end in a semicolon, add one.
-            if (!cookie.endsWith(";")) {
-                cookie = cookie + ";";
+        // Cookies are stored in an encrypted file in the files directory in our app data
+        // so we need to decrypt the file before using it
+        // first, get our decryption key from MasterKey using the AES_256_GCM encryption scheme
+        // then, create an EncryptedFile object using the key and the file name
+        // finally, open the file and read the contents into a string
+        // the string is then split into an array of cookies
+        // the cookies are then added to the request builder
+
+        String cookieFileName = "cookies";
+        String[] cookies = new String[0];
+        MasterKey mainKeyAlias;
+        try {
+            mainKeyAlias = new MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build();
+            EncryptedFile encryptedFile = new EncryptedFile.Builder(context, new File(MainApplication.getINSTANCE().getFilesDir(), cookieFileName), mainKeyAlias, EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB).build();
+            InputStream inputStream = encryptedFile.openFileInput();
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            StringBuilder outputString = new StringBuilder();
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputString.append(new String(buffer, 0, bytesRead));
             }
-            cookiestring.append(cookie).append(" ");
+            cookies = outputString.toString().split("\\|");
+            inputStream.close();
+        } catch (Exception e) {
+            Timber.e(e, "Error reading cookies from file");
         }
-        Timber.d("Sending cookies: %s", cookiestring.toString());
-        builder.addHeader("Cookie", cookiestring.toString());
+
+        for (String cookie : cookies) {
+            builder.addHeader("Cookie", cookie);
+        }
 
         return chain.proceed(builder.build());
     }
