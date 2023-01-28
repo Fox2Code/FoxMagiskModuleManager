@@ -91,10 +91,8 @@
     <string name="dev_mode_enabled">Режим разработчика включён</string>
     <string name="force_english_pref">Интерфейс всегда на английском языке</string>
     <string name="disable_low_quality_module_filter_pref">Не отсеивать спорные модули</string>
-    <string name="disable_low_quality_module_filter_desc">
-        У некоторых модулей некорректно указаны метаданные, что вызывает визуальные глюки,
-        и/или указывает на плохую реализацию всего модуля.\nОтключайте фильтрацию на свой страх и риск!
-    </string>
+    <string name="disable_low_quality_module_filter_desc">У некоторых модулей некорректно указаны метаданные, что вызывает визуальные глюки, и/или указывает на плохую реализацию всего модуля.
+\nВключайте фильтрацию на свой страх и риск!</string>
     <string name="dns_over_https_pref">DNS поверх HTTPS</string>
     <string name="dns_over_https_desc">Может исправить проблемы с подключением к сети (не распространяется на WebView)</string>
     <string name="disable_extensions_pref">Отключить расширения</string>
@@ -288,4 +286,13 @@
     <string name="crash_details_copied">Стек трассировки скопирован в буфер обмена!</string>
     <string name="crash_full_stacktrace">Стек трассировки:
 \n%1$s</string>
+    <string name="upgraded_summary">Ты лучший! Похоже, ты уже обновили свою подписку и поддерживаешь Androidacy.</string>
+    <string name="upgraded">Премиум активный</string>
+    <string name="reset_app">Сбросить приложение</string>
+    <string name="reset_app_message">Это полностью удалит все данные приложения и закроет его. Модули не будут удалены.</string>
+    <string name="reset">Сброс</string>
+    <string name="reset_app_confirmation">Это полностью сотрет данные приложения, но не повлияет на модули.</string>
+    <string name="reset_warning">Если вы продолжаете видеть этот экран, может помочь сброс приложения. Это очистит данные приложения, но не повлияет на установленные модули.</string>
+    <string name="error_adding">Не удалось добавить пользовательский репозиторий</string>
+    <string name="api_key_mismatch">Ключ API имеет неверный формат</string>
 </resources>
