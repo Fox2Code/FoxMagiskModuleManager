@@ -81,7 +81,7 @@ public class BackgroundUpdateChecker extends Worker {
 
     public static void onMainActivityCreate(Context context) {
         // Refuse to run if first_launch pref is not false
-        if (MainApplication.getSharedPreferences().getBoolean("first_time_user", true))
+        if (MainApplication.getSharedPreferences().getBoolean("first_time_setup_done", true))
             return;
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
         notificationManagerCompat.createNotificationChannel(new NotificationChannelCompat.Builder(NOTIFICATION_CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_HIGH).setShowBadge(true).setName(context.getString(R.string.notification_update_pref)).build());

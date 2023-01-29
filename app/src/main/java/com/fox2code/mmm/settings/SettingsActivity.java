@@ -426,15 +426,30 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 });
                 backgroundUpdateCheck.setSummary(R.string.background_update_check_permission_required);
             }
+
+            EditTextPreference updateCheckExcludes = findPreference("pref_background_update_check_excludes");
             backgroundUpdateCheck.setOnPreferenceChangeListener((preference, newValue) -> {
                 boolean enabled = Boolean.parseBoolean(String.valueOf(newValue));
                 debugNotification.setEnabled(enabled);
+                updateCheckExcludes.setEnabled(enabled);
                 if (!enabled) {
                     BackgroundUpdateChecker.onMainActivityResume(this.requireContext());
                 }
                 return true;
             });
-
+            // updateCheckExcludes is an EditTextPreference. on change, validate it contains only alphanumerical and , - _ characters
+            updateCheckExcludes.setOnPreferenceChangeListener((preference, newValue) -> {
+                String value = String.valueOf(newValue);
+                // strip whitespace
+                value = value.replaceAll("\\s", "");
+                if (value.matches("^[a-zA-Z0-9,\\-_]*$")) {
+                    return true;
+                } else {
+                    new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.invalid_excludes).setMessage(R.string.invalid_characters_message).setPositiveButton(R.string.ok, (dialog, which) -> {
+                    }).show();
+                    return false;
+                }
+            });
             final LibsBuilder libsBuilder = new LibsBuilder().withShowLoadingProgress(false).withLicenseShown(true).withAboutMinimalDesign(false);
             ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
             LongClickablePreference linkClickable = findPreference("pref_update");
@@ -662,10 +677,9 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
     }
 
     public static class RepoFragment extends PreferenceFragmentCompat {
-        private static final int CUSTOM_REPO_ENTRIES = 5;
 
         /**
-         * <i>proudly</i> I stole it
+         * <i>says proudly</i>: I stole it
          * <p>
          * namely, from <a href="https://github.com/NeoApplications/Neo-Wellbeing/blob/9fca4136263780c022f9ec6433c0b43d159166db/app/src/main/java/org/eu/droid_ng/wellbeing/prefs/SettingsActivity.java#L101">neo wellbeing</a>
          */
@@ -764,7 +778,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 androidacyRepoEnabled.setOnPreferenceClickListener(preference -> {
                     new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.androidacy_repo_disabled).setCancelable(false).setMessage(R.string.androidacy_repo_disabled_message).setPositiveButton(R.string.download_full_app, (dialog, which) -> {
                         // User clicked OK button. Open GitHub releases page
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Fox2Code/FoxMagiskModuleManager/releases"));
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.androidacy.com/downloads/?view=FoxMMM&utm_source=FoxMMM&utm_medium=app&utm_campaign=FoxMMM"));
                         startActivity(browserIntent);
                     }).show();
                     // Revert the switch to off
@@ -792,9 +806,6 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 RealmResults<ReposList> reposListRealmResults = realm.where(ReposList.class).findAll();
                 if (reposListRealmResults.isEmpty()) {
                     throw new IllegalStateException("Realm db is empty");
-                }
-                for (ReposList reposList2 : reposListRealmResults) {
-                    Timber.d("Realm db entry: %s %s %s", reposList2.getId(), reposList2.getName(), reposList2.isEnabled());
                 }
                 throw new IllegalStateException("Androidacy repo not found in realm db");
             }
@@ -843,6 +854,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         Snackbar.make(requireView(), R.string.api_key_mismatch, Snackbar.LENGTH_LONG).show();
                         // Restore the original api key
                         prefAndroidacyRepoApiKey.setText(originalApiKeyRef[0]);
+                        prefAndroidacyRepoApiKey.performClick();
                         return false;
                     }
                     // Make sure originalApiKeyRef is not null
@@ -1006,12 +1018,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                             Exception e) {
                                         Timber.e(e);
                                         // show new dialog
-                                        new Handler(Looper.getMainLooper()).post(() -> new MaterialAlertDialogBuilder(context)
-                                                .setTitle(R.string.error_adding)
-                                                .setMessage(e.getMessage())
-                                                .setPositiveButton(android.R.string.ok, (dialog1, which1) -> {
-                                                })
-                                                .show());
+                                        new Handler(Looper.getMainLooper()).post(() -> new MaterialAlertDialogBuilder(context).setTitle(R.string.error_adding).setMessage(e.getMessage()).setPositiveButton(android.R.string.ok, (dialog1, which1) -> {
+                                        }).show());
                                     }
                                 }
                             }.start();

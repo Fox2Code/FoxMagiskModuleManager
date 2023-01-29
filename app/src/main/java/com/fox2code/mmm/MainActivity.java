@@ -124,7 +124,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             // Show a toast to warn the user
             Toast.makeText(this, R.string.not_official_build, Toast.LENGTH_LONG).show();
         }
-        if (!MainApplication.getSharedPreferences().getBoolean("first_time_user", true)) {
+        if (!MainApplication.getSharedPreferences().getBoolean("first_time_setup_done", true)) {
             this.setActionBarExtraMenuButton(R.drawable.ic_baseline_settings_24, v -> {
                 IntentHelper.startActivity(this, SettingsActivity.class);
                 return true;
@@ -648,7 +648,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             Timber.i("Checking if we need to run setup");
         // Check if this is the first launch
         SharedPreferences prefs = MainApplication.getSharedPreferences();
-        boolean firstLaunch = prefs.getBoolean("first_time_user", true);
+        boolean firstLaunch = prefs.getBoolean("first_time_setup_done", true);
         if (BuildConfig.DEBUG)
             Timber.i("First launch: %s", firstLaunch);
         if (firstLaunch) {

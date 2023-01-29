@@ -15,7 +15,7 @@
     <string name="no_web_view">Could not open system WebView</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="app_update_available">A new version of the app is available</string>
-    <string name="app_update">Upgrade</string>
+    <string name="app_update">Update app</string>
     <string name="no_desc_found">No description found.</string>
     <string name="download_module">Download module</string>
     <string name="install_module">Install module</string>
@@ -316,5 +316,14 @@
     <string name="reset_app">Reset the app</string>
     <string name="upgraded_summary">You\'re pretty awesome! Looks like you\'ve already upgraded your subscription and are supporting Androidacy.</string>
     <string name="upgraded">Premium active</string>
-    <string name="reset_warning">If you keep seeing this screen, resetting the app might help. This will clear app data but will not effect installed modules.</string><string name="reset_app_message">This will completely remove all app data and close the app. Modules will not be uninstalled.</string><string name="reset">Reset</string><string name="reset_app_confirmation">This is going to completely wipe app data, but will not effect modules.</string><string name="error_adding">Failed to add custom repo</string><string name="api_key_mismatch">API key is in an invalid format</string>
+    <string name="reset_warning">If you keep seeing this screen, resetting the app might help. This will clear app data but will not effect installed modules.</string>
+    <string name="reset_app_message">This will completely remove all app data and close the app. Modules will not be uninstalled.</string>
+    <string name="reset">Reset</string>
+    <string name="reset_app_confirmation">This is going to completely wipe app data, but will not effect modules.</string>
+    <string name="error_adding">Failed to add custom repo</string>
+    <string name="api_key_mismatch">API key is in an invalid format</string>
+    <string name="notification_update_ignore_desc">Comma separated list of modules to exclude from update checks</string>
+    <string name="notification_update_ignore_pref">Exclude modules</string>
+    <string name="pref_category_updates">Updates</string><string name="invalid_excludes">Invalid input</string>
+    <string name="invalid_characters_message">The list of modules you input is invalid. Please only input valid module id\'s separated by commas</string>
 </resources>

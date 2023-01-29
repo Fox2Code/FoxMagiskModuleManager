@@ -19,7 +19,6 @@ import io.sentry.android.timber.SentryTimberIntegration;
 
 public class SentryMain {
     public static final boolean IS_SENTRY_INSTALLED = true;
-    private static final String TAG = "SentryMain";
     private static boolean sentryEnabled = false;
 
     /**
@@ -30,7 +29,7 @@ public class SentryMain {
     public static void initialize(final MainApplication mainApplication) {
         // If first_launch pref is not false, refuse to initialize Sentry
         SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
-        if (sharedPreferences.getBoolean("first_time_user", true)) {
+        if (sharedPreferences.getBoolean("first_time_setup_done", true)) {
             return;
         }
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
@@ -110,6 +109,7 @@ public class SentryMain {
         }
     }
 
+    @SuppressWarnings("unused")
     public static boolean isSentryEnabled() {
         return sentryEnabled;
     }

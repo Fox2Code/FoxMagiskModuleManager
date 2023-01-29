@@ -178,7 +178,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             // Set first launch to false
             // get instance of editor
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean("first_time_user", false);
+            editor.putBoolean("first_time_setup_done", false);
             // Set the background update check pref
             editor.putBoolean("pref_background_update_check", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).isChecked());
             // Set the crash reporting pref
@@ -232,7 +232,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         cancelButton.setText(R.string.cancel);
         cancelButton.setOnClickListener(v -> {
             // Set first launch to false and restart the activity
-            prefs.edit().putBoolean("first_time_user", false).commit();
+            prefs.edit().putBoolean("first_time_setup_done", false).commit();
             MainActivity.doSetupRestarting = true;
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
@@ -339,7 +339,8 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         });
         try {
             String cookieFileName = "cookies";
-            String initialCookie = "is_foxmmm=true; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/; domain=\" + chain.request().url().host() + \"; SameSite=None; Secure;|foxmmm_version=" + BuildConfig.VERSION_CODE + "; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/; domain=\" + chain.request().url().host() + \"; SameSite=None; Secure;";
+            // initial set of cookies, only really used to create the keypair and encrypted file
+            String initialCookie = "is_foxmmm=true; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/; domain=production-api.androidacy.com; SameSite=None; Secure;|foxmmm_version=" + BuildConfig.VERSION_CODE + "; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/; domain=production-api.androidacy.com; SameSite=None; Secure;";
             Context context = getApplicationContext();
             MasterKey mainKeyAlias;
             mainKeyAlias = new MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build();

@@ -31,6 +31,9 @@
             app:singleLineTitle="false"
             app:summary="@string/use_magisk_install_command_desc"
             app:title="@string/use_magisk_install_command_pref" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/pref_category_updates">
 
         <SwitchPreferenceCompat
             app:defaultValue="true"
@@ -40,10 +43,27 @@
             app:summary="@string/notification_update_desc"
             app:title="@string/notification_update_pref" />
 
+        <!-- Ignore updates for preference. Used to ignore updates for specific modules -->
+        <EditTextPreference
+            app:defaultValue=""
+            app:icon="@drawable/ic_baseline_notifications_24"
+            app:key="pref_background_update_check_excludes"
+            app:singleLineTitle="false"
+            app:summary="@string/notification_update_ignore_desc"
+            app:title="@string/notification_update_ignore_pref" />
+
         <Preference
             app:key="pref_background_update_check_debug"
             app:singleLineTitle="false"
+            app:icon="@drawable/baseline_notification_important_24"
             app:title="@string/notification_update_debug_pref" />
+
+
+        <com.fox2code.mmm.settings.LongClickablePreference
+            app:icon="@drawable/ic_baseline_system_update_24"
+            app:key="pref_update"
+            app:singleLineTitle="false"
+            app:title="@string/app_update" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/pref_category_appearance">
@@ -149,11 +169,6 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/pref_category_info">
-        <com.fox2code.mmm.settings.LongClickablePreference
-            app:icon="@drawable/ic_baseline_system_update_24"
-            app:key="pref_update"
-            app:singleLineTitle="false"
-            app:title="@string/app_update" />
         <!-- Save logs -->
         <Preference
             app:icon="@drawable/baseline_save_24"

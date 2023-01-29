@@ -11,6 +11,7 @@ import com.fox2code.mmm.MainApplication;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.regex.Pattern;
 
 import okhttp3.Interceptor;
 import okhttp3.Request;
@@ -58,7 +59,18 @@ public class AddCookiesInterceptor implements Interceptor {
         }
 
         for (String cookie : cookies) {
-            builder.addHeader("Cookie", cookie);
+            // ensure the cookie applies to the current domain
+            if (cookie.contains("domain=")) {
+                // match from the start of the string to the first semicolon
+                Pattern pattern = Pattern.compile("domain=([^;]+)");
+                String domain = pattern.matcher(cookie).group(1);
+                if (domain != null && !chain.request().url().host().contains(domain)) {
+                    //noinspection UnnecessaryContinue
+                    continue;
+                } else {
+                    builder.addHeader("Cookie", cookie);
+                }
+            }
         }
 
         return chain.proceed(builder.build());
