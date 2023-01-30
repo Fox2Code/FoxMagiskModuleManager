@@ -96,7 +96,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).setChecked(BuildConfig.ENABLED_REPOS.contains("magisk_alt_repo"));
         // On debug builds, log when a switch is toggled
         if (BuildConfig.DEBUG) {
-            ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).setOnCheckedChangeListener((buttonView, isChecked) -> Timber.i("Background Update Check: %s", isChecked));
+            ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).setOnCheckedChangeListener((buttonView, isChecked) -> Timber.i("Automatic update Check: %s", isChecked));
             ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).setOnCheckedChangeListener((buttonView, isChecked) -> Timber.i("Crash Reporting: %s", isChecked));
             ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_androidacy_repo))).setOnCheckedChangeListener((buttonView, isChecked) -> Timber.i("Androidacy Repo: %s", isChecked));
             ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).setOnCheckedChangeListener((buttonView, isChecked) -> Timber.i("Magisk Alt Repo: %s", isChecked));
@@ -179,7 +179,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             // get instance of editor
             SharedPreferences.Editor editor = prefs.edit();
             editor.putBoolean("first_time_setup_done", false);
-            // Set the background update check pref
+            // Set the Automatic update check pref
             editor.putBoolean("pref_background_update_check", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).isChecked());
             // Set the crash reporting pref
             editor.putBoolean("pref_crash_reporting", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).isChecked());
@@ -218,7 +218,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             }
             // Log the changes if debug
             if (BuildConfig.DEBUG) {
-                Timber.d("Background update check: %s", prefs.getBoolean("pref_background_update_check", false));
+                Timber.d("Automatic update check: %s", prefs.getBoolean("pref_background_update_check", false));
                 Timber.i("Crash reporting: %s", prefs.getBoolean("pref_crash_reporting", false));
             }
             // Restart the activity
