@@ -14,8 +14,10 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 // ProgressDialog is deprecated because it's an bad UX pattern, but sometimes we have no other choice...
-public class BudgetProgressDialog {
-	public static AlertDialog build(Context context, String title, String message) {
+public enum BudgetProgressDialog {
+    ;
+
+    public static AlertDialog build(Context context, String title, String message) {
 		Resources r = context.getResources();
 		int padding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, r.getDisplayMetrics()));
 		LinearLayoutCompat v = new LinearLayoutCompat(context);
@@ -37,10 +39,6 @@ public class BudgetProgressDialog {
 
 	public static AlertDialog build(Context context, int title, String message) {
 		return build(context, context.getString(title), message);
-	}
-
-	public static AlertDialog build(Context context, String title, int message) {
-		return build(context, title, context.getString(message));
 	}
 
 	public static AlertDialog build(Context context, int title, int message) {

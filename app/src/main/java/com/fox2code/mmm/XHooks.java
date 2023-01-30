@@ -16,8 +16,11 @@ import java.util.Collection;
  * Class made to expose some manager functions to xposed modules.
  * It will not be obfuscated on release builds
  */
+@SuppressWarnings("unused")
 @Keep
-public class XHooks {
+public enum XHooks {
+    ;
+
     @Keep
     public static void onRepoManagerInitialize() {
         // Call addXRepo here if you are an XPosed module

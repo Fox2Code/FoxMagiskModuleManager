@@ -4,7 +4,8 @@ import java.util.ArrayList;
 
 import timber.log.Timber;
 
-public class MarkdownUrlLinker {
+public enum MarkdownUrlLinker {
+    ;
 
     public static String urlLinkify(String url) {
         int index = url.indexOf("https://");

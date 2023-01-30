@@ -56,7 +56,8 @@ import okhttp3.dnsoverhttps.DnsOverHttps;
 import okio.BufferedSink;
 import timber.log.Timber;
 
-public class Http {
+public enum Http {
+    ;
     private static final OkHttpClient httpClient;
     private static final OkHttpClient httpClientDoH;
     private static final OkHttpClient httpClientWithCache;

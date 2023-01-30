@@ -39,7 +39,8 @@ import java.net.URISyntaxException;
 
 import timber.log.Timber;
 
-public class IntentHelper {
+public enum IntentHelper {
+    ;
     private static final String EXTRA_TAB_SESSION =
             "android.support.customtabs.extra.SESSION";
     private static final String EXTRA_TAB_COLOR_SCHEME =

@@ -7,7 +7,8 @@ import java.util.regex.Pattern;
 
 import timber.log.Timber;
 
-public class Hashes {
+public enum Hashes {
+    ;
     private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
     private static final Pattern nonAlphaNum = Pattern.compile("[^a-zA-Z0-9]");
 

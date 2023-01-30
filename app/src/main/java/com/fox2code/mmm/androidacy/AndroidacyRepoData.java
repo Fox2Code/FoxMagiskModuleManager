@@ -56,7 +56,7 @@ public final class AndroidacyRepoData extends RepoData {
     public final String ClientID = BuildConfig.ANDROIDACY_CLIENT_ID;
     private final boolean testMode;
     private final String host;
-    public SharedPreferences cachedPreferences = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0);
+    public final SharedPreferences cachedPreferences = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0);
     public String memberLevel;
     // Avoid spamming requests to Androidacy
     private long androidacyBlockade = 0;

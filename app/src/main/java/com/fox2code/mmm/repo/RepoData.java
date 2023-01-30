@@ -123,6 +123,8 @@ public class RepoData extends XRepo {
         if (this.enabled) {
             try {
                 this.metaDataCache = ModuleListCache.getRepoModulesAsJson(this.id);
+                // log count of modules in the database
+                Timber.d("RepoData: " + this.id + ". modules in database: " + this.metaDataCache.length());
                 // load repo metadata from ReposList unless it's a built-in repo
                 if (RepoManager.isBuiltInRepo(this.id)) {
                     this.name = this.defaultName;

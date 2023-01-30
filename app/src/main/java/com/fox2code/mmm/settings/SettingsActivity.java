@@ -11,6 +11,7 @@ import android.app.PendingIntent;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -51,6 +52,8 @@ import com.fox2code.mmm.R;
 import com.fox2code.mmm.androidacy.AndroidacyRepoData;
 import com.fox2code.mmm.background.BackgroundUpdateChecker;
 import com.fox2code.mmm.installer.InstallerInitializer;
+import com.fox2code.mmm.manager.LocalModuleInfo;
+import com.fox2code.mmm.manager.ModuleManager;
 import com.fox2code.mmm.module.ActionButtonType;
 import com.fox2code.mmm.repo.CustomRepoData;
 import com.fox2code.mmm.repo.CustomRepoManager;
@@ -66,6 +69,7 @@ import com.fox2code.rosettax.LanguageActivity;
 import com.fox2code.rosettax.LanguageSwitcher;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.internal.TextWatcherAdapter;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.mikepenz.aboutlibraries.LibsBuilder;
@@ -78,9 +82,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -395,11 +402,11 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 findPreference("pref_use_magisk_install_command").setVisible(false);
             }
             Preference debugNotification = findPreference("pref_background_update_check_debug");
+            Preference updateCheckExcludes = findPreference("pref_background_update_check_excludes");
             debugNotification.setEnabled(MainApplication.isBackgroundUpdateCheckEnabled());
-            debugNotification.setVisible(MainApplication.isDeveloper() && !MainApplication.isWrapped());
-            debugNotification.setVisible(MainApplication.isDeveloper() && !MainApplication.isWrapped());
+            debugNotification.setVisible(MainApplication.isDeveloper() && !MainApplication.isWrapped() && MainApplication.isBackgroundUpdateCheckEnabled());
             debugNotification.setOnPreferenceClickListener(preference -> {
-                BackgroundUpdateChecker.postNotification(this.requireContext(), new Random().nextInt(4) + 2);
+                BackgroundUpdateChecker.postNotification(this.requireContext(), new Random().nextInt(4) + 2, true);
                 return true;
             });
             Preference backgroundUpdateCheck = findPreference("pref_background_update_check");
@@ -426,29 +433,57 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 });
                 backgroundUpdateCheck.setSummary(R.string.background_update_check_permission_required);
             }
-
-            EditTextPreference updateCheckExcludes = findPreference("pref_background_update_check_excludes");
+            updateCheckExcludes.setVisible(MainApplication.isBackgroundUpdateCheckEnabled() && !MainApplication.isWrapped());
             backgroundUpdateCheck.setOnPreferenceChangeListener((preference, newValue) -> {
                 boolean enabled = Boolean.parseBoolean(String.valueOf(newValue));
                 debugNotification.setEnabled(enabled);
+                debugNotification.setVisible(MainApplication.isDeveloper() && !MainApplication.isWrapped() && enabled);
                 updateCheckExcludes.setEnabled(enabled);
+                updateCheckExcludes.setVisible(enabled && !MainApplication.isWrapped());
                 if (!enabled) {
                     BackgroundUpdateChecker.onMainActivityResume(this.requireContext());
                 }
                 return true;
             });
-            // updateCheckExcludes is an EditTextPreference. on change, validate it contains only alphanumerical and , - _ characters
-            updateCheckExcludes.setOnPreferenceChangeListener((preference, newValue) -> {
-                String value = String.valueOf(newValue);
-                // strip whitespace
-                value = value.replaceAll("\\s", "");
-                if (value.matches("^[a-zA-Z0-9,\\-_]*$")) {
-                    return true;
-                } else {
-                    new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.invalid_excludes).setMessage(R.string.invalid_characters_message).setPositiveButton(R.string.ok, (dialog, which) -> {
-                    }).show();
-                    return false;
+            // updateCheckExcludes saves to pref_background_update_check_excludes as a stringset. On clicking, it should open a dialog with a list of all installed modules
+            updateCheckExcludes.setOnPreferenceClickListener(preference -> {
+                Collection<LocalModuleInfo> localModuleInfos = ModuleManager.getINSTANCE().getModules().values();
+                String[] moduleNames = new String[localModuleInfos.size()];
+                boolean[] checkedItems = new boolean[localModuleInfos.size()];
+                int i = 0;
+                for (LocalModuleInfo localModuleInfo : localModuleInfos) {
+                    moduleNames[i] = localModuleInfo.name;
+                    SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
+                    // get the stringset pref_background_update_check_excludes
+                    Set<String> stringSet = sharedPreferences.getStringSet("pref_background_update_check_excludes", new HashSet<>());
+                    // Stringset uses id, we show name
+                    checkedItems[i] = stringSet.contains(localModuleInfo.id);
+                    Timber.d("name: %s, checked: %s", moduleNames[i], checkedItems[i]);
+                    i++;
                 }
+                new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.background_update_check_excludes).setMultiChoiceItems(moduleNames, checkedItems, (dialog, which, isChecked) -> {
+                    // get the stringset pref_background_update_check_excludes
+                    SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
+                    Set<String> stringSet = new HashSet<>(sharedPreferences.getStringSet("pref_background_update_check_excludes", new HashSet<>()));
+                    // get id from name
+                    String id;
+                    if (localModuleInfos.stream().anyMatch(localModuleInfo -> localModuleInfo.name.equals(moduleNames[which]))) {
+                        //noinspection OptionalGetWithoutIsPresent
+                        id = localModuleInfos.stream().filter(localModuleInfo -> localModuleInfo.name.equals(moduleNames[which])).findFirst().get().id;
+                    } else {
+                        id = "";
+                    }
+                    if (!id.isEmpty()) {
+                        if (isChecked) {
+                            stringSet.add(id);
+                        } else {
+                            stringSet.remove(id);
+                        }
+                    }
+                    sharedPreferences.edit().putStringSet("pref_background_update_check_excludes", stringSet).apply();
+                }).setPositiveButton(R.string.ok, (dialog, which) -> {
+                }).show();
+                return true;
             });
             final LibsBuilder libsBuilder = new LibsBuilder().withShowLoadingProgress(false).withLicenseShown(true).withAboutMinimalDesign(false);
             ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
@@ -851,7 +886,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     // validate the api key client side first. should be 64 characters long, and only allow alphanumeric characters
                     if (!newValue.toString().matches("[a-zA-Z0-9]{64}")) {
                         // Show snack bar with error
-                        Snackbar.make(requireView(), R.string.api_key_mismatch, Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(requireView(), R.string.api_key_mismatch, BaseTransientBottomBar.LENGTH_LONG).show();
                         // Restore the original api key
                         prefAndroidacyRepoApiKey.setText(originalApiKeyRef[0]);
                         prefAndroidacyRepoApiKey.performClick();
@@ -863,7 +898,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     // get original api key
                     String apiKey = String.valueOf(newValue);
                     // Show snack bar with indeterminate progress
-                    Snackbar.make(requireView(), R.string.checking_api_key, Snackbar.LENGTH_INDEFINITE).setAction(R.string.cancel, v -> {
+                    Snackbar.make(requireView(), R.string.checking_api_key, BaseTransientBottomBar.LENGTH_INDEFINITE).setAction(R.string.cancel, v -> {
                         // Restore the original api key
                         prefAndroidacyRepoApiKey.setText(originalApiKeyRef[0]);
                     }).show();
@@ -873,7 +908,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         if (apiKey.isEmpty()) {
                             MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit().remove("pref_androidacy_api_token").apply();
                             new Handler(Looper.getMainLooper()).post(() -> {
-                                Snackbar.make(requireView(), R.string.api_key_removed, Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(requireView(), R.string.api_key_removed, BaseTransientBottomBar.LENGTH_SHORT).show();
                                 // Show dialog to restart app with ok button
                                 new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.restart).setCancelable(false).setMessage(R.string.api_key_restart).setNeutralButton(android.R.string.ok, (dialog, which) -> {
                                     // User clicked OK button
@@ -893,7 +928,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                             // If key < 64 chars, it's not valid
                             if (apiKey.length() < 64) {
                                 new Handler(Looper.getMainLooper()).post(() -> {
-                                    Snackbar.make(requireView(), R.string.api_key_invalid, Snackbar.LENGTH_SHORT).show();
+                                    Snackbar.make(requireView(), R.string.api_key_invalid, BaseTransientBottomBar.LENGTH_SHORT).show();
                                     // Save the original key
                                     MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit().putString("pref_androidacy_api_token", originalApiKeyRef[0]).apply();
                                     // Re-show the dialog with an error
@@ -904,7 +939,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                             } else {
                                 // If the key is the same as the original, just show a snack bar
                                 if (apiKey.equals(originalApiKeyRef[0])) {
-                                    new Handler(Looper.getMainLooper()).post(() -> Snackbar.make(requireView(), R.string.api_key_unchanged, Snackbar.LENGTH_SHORT).show());
+                                    new Handler(Looper.getMainLooper()).post(() -> Snackbar.make(requireView(), R.string.api_key_unchanged, BaseTransientBottomBar.LENGTH_SHORT).show());
                                     return;
                                 }
                                 boolean valid = false;
@@ -921,7 +956,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                     MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit().putString("pref_androidacy_api_token", apiKey).apply();
                                     // Snackbar with success and restart button
                                     new Handler(Looper.getMainLooper()).post(() -> {
-                                        Snackbar.make(requireView(), R.string.api_key_valid, Snackbar.LENGTH_SHORT).show();
+                                        Snackbar.make(requireView(), R.string.api_key_valid, BaseTransientBottomBar.LENGTH_SHORT).show();
                                         // Show dialog to restart app with ok button
                                         new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.restart).setCancelable(false).setMessage(R.string.api_key_restart).setNeutralButton(android.R.string.ok, (dialog, which) -> {
                                             // User clicked OK button
@@ -939,7 +974,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                     });
                                 } else {
                                     new Handler(Looper.getMainLooper()).post(() -> {
-                                        Snackbar.make(requireView(), R.string.api_key_invalid, Snackbar.LENGTH_SHORT).show();
+                                        Snackbar.make(requireView(), R.string.api_key_invalid, BaseTransientBottomBar.LENGTH_SHORT).show();
                                         // Save the original key
                                         MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit().putString("pref_androidacy_api_token", originalApiKeyRef[0]).apply();
                                         // Re-show the dialog with an error
@@ -1027,7 +1062,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     });
                     builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
                     AlertDialog alertDialog = builder.show();
-                    final Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                    final Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
                     input.setValidator(new AutoCompleteTextView.Validator() {
                         @Override
                         public boolean isValid(CharSequence charSequence) {
@@ -1086,7 +1121,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     preference.setOnPreferenceChangeListener((p, newValue) -> {
                         p.setTitle(((Boolean) newValue) ? R.string.repo_enabled : R.string.repo_disabled);
                         // Show snackbar telling the user to refresh the modules list or restart the app
-                        Snackbar.make(requireView(), R.string.repo_enabled_changed, Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(requireView(), R.string.repo_enabled_changed, BaseTransientBottomBar.LENGTH_LONG).show();
                         return true;
                     });
                 }

@@ -14,7 +14,9 @@ import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderEffectBlur;
 import eightbitlab.com.blurview.RenderScriptBlur;
 
-public class BlurUtils {
+public enum BlurUtils {
+    ;
+
     public static void setupBlur(BlurView blurView, Activity activity, @IdRes int viewId) {
         setupBlur(blurView, activity, activity.findViewById(viewId));
     }

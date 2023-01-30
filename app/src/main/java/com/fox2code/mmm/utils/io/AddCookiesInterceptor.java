@@ -62,14 +62,20 @@ public class AddCookiesInterceptor implements Interceptor {
             // ensure the cookie applies to the current domain
             if (cookie.contains("domain=")) {
                 // match from the start of the string to the first semicolon
-                Pattern pattern = Pattern.compile("domain=([^;]+)");
-                String domain = pattern.matcher(cookie).group(1);
-                if (domain != null && !chain.request().url().host().contains(domain)) {
-                    //noinspection UnnecessaryContinue
-                    continue;
-                } else {
-                    builder.addHeader("Cookie", cookie);
+                try {
+                    Pattern pattern = Pattern.compile("domain=([^;]+)");
+                    String domain = pattern.matcher(cookie).group(1);
+                    if (domain != null && !chain.request().url().host().contains(domain)) {
+                        //noinspection UnnecessaryContinue
+                        continue;
+                    } else {
+                        builder.addHeader("Cookie", cookie);
+                    }
+                } catch (
+                        Exception ignored) {
                 }
+            } else {
+                builder.addHeader("Cookie", cookie);
             }
         }
 

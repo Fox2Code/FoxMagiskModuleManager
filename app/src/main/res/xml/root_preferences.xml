@@ -44,9 +44,8 @@
             app:title="@string/notification_update_pref" />
 
         <!-- Ignore updates for preference. Used to ignore updates for specific modules -->
-        <EditTextPreference
-            app:defaultValue=""
-            app:icon="@drawable/ic_baseline_notifications_24"
+        <Preference
+            app:icon="@drawable/baseline_block_24"
             app:key="pref_background_update_check_excludes"
             app:singleLineTitle="false"
             app:summary="@string/notification_update_ignore_desc"

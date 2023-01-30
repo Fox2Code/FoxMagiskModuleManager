@@ -3,8 +3,6 @@ package com.fox2code.mmm.utils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fox2code.mmm.repo.RepoManager;
-
 /**
  * Manager that want both to be thread safe and not to worry about thread safety
  * {@link #scan()} and {@link #update(UpdateListener)} can be called from multiple

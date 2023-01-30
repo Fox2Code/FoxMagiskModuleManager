@@ -322,8 +322,13 @@
     <string name="reset_app_confirmation">This is going to completely wipe app data, but will not effect modules.</string>
     <string name="error_adding">Failed to add custom repo</string>
     <string name="api_key_mismatch">API key is in an invalid format</string>
-    <string name="notification_update_ignore_desc">Comma separated list of modules to exclude from update checks</string>
+    <string name="notification_update_ignore_desc">List of module IDs to exclude from update checks</string>
     <string name="notification_update_ignore_pref">Exclude modules</string>
     <string name="pref_category_updates">Updates</string><string name="invalid_excludes">Invalid input</string>
     <string name="invalid_characters_message">The list of modules you input is invalid. Please only input valid module id\'s separated by commas</string>
+    <string name="background_update_check_excludes">Modules to exclude from automatic update checks</string>
+    <string name="title_activity_update">In-app Updater</string>
+    <string name="update_title">Update app</string>
+    <string name="update_message">An update is available for FoxMMM. Please wait while we download and install it.</string>
+    <string name="update_button">Please wait...</string>
 </resources>

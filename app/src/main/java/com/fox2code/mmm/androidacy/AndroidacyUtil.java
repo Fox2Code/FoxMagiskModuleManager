@@ -7,7 +7,8 @@ import androidx.annotation.Nullable;
 
 import com.fox2code.mmm.BuildConfig;
 
-public class AndroidacyUtil {
+public enum AndroidacyUtil {
+    ;
     public static final String REFERRER = "utm_source=FoxMMM&utm_medium=app";
 
     public static boolean isAndroidacyLink(@Nullable Uri uri) {

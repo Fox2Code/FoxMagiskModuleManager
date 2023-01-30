@@ -29,7 +29,8 @@ import java.util.zip.ZipOutputStream;
 
 import timber.log.Timber;
 
-public class Files {
+public enum Files {
+    ;
     private static final boolean is64bit = Build.SUPPORTED_64_BIT_ABIS.length > 0;
 
     // stolen from https://stackoverflow.com/a/25005243

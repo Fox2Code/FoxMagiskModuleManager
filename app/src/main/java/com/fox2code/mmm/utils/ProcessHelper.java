@@ -9,7 +9,8 @@ import com.fox2code.mmm.MainActivity;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class ProcessHelper {
+public enum ProcessHelper {
+    ;
     private static final int sPendingIntentId = ThreadLocalRandom.current().nextInt(100, 1000000 + 1);
 
     public static void restartApplicationProcess(Context context) {

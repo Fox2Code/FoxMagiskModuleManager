@@ -22,11 +22,13 @@ import java.util.Locale;
 
 import timber.log.Timber;
 
-public class PropUtils {
+public enum PropUtils {
+    ;
     private static final HashMap<String, String> moduleSupportsFallbacks = new HashMap<>();
     private static final HashMap<String, String> moduleConfigsFallbacks = new HashMap<>();
     private static final HashMap<String, Integer> moduleMinApiFallbacks = new HashMap<>();
     private static final HashMap<String, String> moduleUpdateJsonFallbacks = new HashMap<>();
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private static final HashSet<String> moduleMTTRebornFallback = new HashSet<>();
     private static final HashSet<String> moduleImportantProp = new HashSet<>(Arrays.asList(
             "id", "name", "version", "versionCode"

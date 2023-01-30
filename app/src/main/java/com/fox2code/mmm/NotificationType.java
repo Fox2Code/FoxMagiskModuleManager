@@ -214,7 +214,7 @@ public enum NotificationType implements NotificationTypeCst {
     }
 
     NotificationType(@StringRes int textId, int iconId, int backgroundAttr, int foregroundAttr,
-                     View.OnClickListener onClickListener, boolean special) {
+                     View.OnClickListener onClickListener, @SuppressWarnings("SameParameterValue") boolean special) {
         this.textId = textId;
         this.iconId = iconId;
         this.backgroundAttr = backgroundAttr;

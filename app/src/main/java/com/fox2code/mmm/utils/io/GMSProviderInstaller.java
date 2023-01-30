@@ -35,7 +35,8 @@ import timber.log.Timber;
  */
 // Note: This code is MIT because I took it from another unpublished project I had
 // I might upstream this to MicroG at some point
-public class GMSProviderInstaller {
+public enum GMSProviderInstaller {
+    ;
     private static boolean called = false;
 
     public static void installIfNeeded(final Context context) {

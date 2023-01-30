@@ -41,6 +41,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import timber.log.Timber;
 
@@ -149,13 +151,17 @@ public final class AndroidacyActivity extends FoxActivity {
         webSettings.setUserAgentString(Http.getAndroidacyUA());
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
-        // Disable cache
-        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         webSettings.setAllowFileAccess(false);
         webSettings.setAllowContentAccess(false);
+        webSettings.setAllowFileAccessFromFileURLs(false);
+        webSettings.setAllowUniversalAccessFromFileURLs(false);
+        webSettings.setMediaPlaybackRequiresUserGesture(false);
         // Attempt at fixing CloudFlare captcha.
-        if (WebViewFeature.isFeatureSupported(WebViewFeature.REQUESTED_WITH_HEADER_CONTROL)) {
-            WebSettingsCompat.setRequestedWithHeaderMode(webSettings, WebSettingsCompat.REQUESTED_WITH_HEADER_MODE_NO_HEADER);
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.REQUESTED_WITH_HEADER_ALLOW_LIST)) {
+            Set<String> allowList = new HashSet<>();
+            allowList.add("https://*.androidacy.com");
+            WebSettingsCompat.setRequestedWithHeaderOriginAllowList(webSettings, allowList);
         }
 
         this.webView.setWebViewClient(new WebViewClientCompat() {

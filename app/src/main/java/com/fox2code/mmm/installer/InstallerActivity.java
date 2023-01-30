@@ -57,7 +57,6 @@ import java.util.zip.ZipInputStream;
 
 import timber.log.Timber;
 
-@SuppressWarnings("IOStreamConstructor")
 public class InstallerActivity extends FoxActivity {
     public LinearProgressIndicator progressIndicator;
     public ExtendedFloatingActionButton rebootFloatingButton;

@@ -1,6 +1,8 @@
 package com.fox2code.mmm;
 
-public class Constants {
+@SuppressWarnings("unused")
+public enum Constants {
+    ;
     public static final int MAGISK_VER_CODE_FLAT_MODULES = 19000;
     public static final int MAGISK_VER_CODE_UTIL_INSTALL = 20400;
     public static final int MAGISK_VER_CODE_PATH_SUPPORT = 21000;
