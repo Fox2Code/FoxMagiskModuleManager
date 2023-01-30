@@ -104,8 +104,8 @@
     <string name="file_picker_failure">使ってるファイルピッカーではファイルにアクセスできないよ。</string>
     <string name="use_magisk_install_command_desc">テスト中にエラー診断ツールで問題が発生したので、このオプションは開発者モードに隠されたよ。
 \n自己責任でオンにしてね！</string>
-    <string name="disable_low_quality_module_filter_desc">いくつかのモジュールは metadata が十分なものでなかったりするため、不具合が発生することがあるよ。
-\n自己責任でオフにしてね！</string>
+    <string name="disable_low_quality_module_filter_desc">いくつかのモジュールは metadata が十分なものでなかったりするため、不具合が発生することがあるよ。 
+\n自己責任でオンにしてね！</string>
     <string name="api_key_summary">Androidacy にカスタム API キーを使うよ。サブスクリプションを使ってたり広告除去機能などを使ってるときに便利だよ。</string>
     <string name="androidacy_repo_disabled_message">このビルドには Androidacy リポジトリのクライアントキーがないよ。モジュールをレビューしたり、セキュリティチェックなどをするには GitHub リリースをダウンロードしてね。</string>
     <string name="go_to_online_repo">スクロールしてリポジトリをオンラインにする</string>
@@ -242,4 +242,57 @@
     <string name="theme_dark">ダーク</string>
     <string name="theme_black">AMOLED ブラック</string>
     <string name="theme_light">ライト</string>
+    <string name="zip_security_warning">%s をインストールしますか？</string>
+    <string name="zip_prop_load_failed">モジュールの設定を読み込めなかったよ</string>
+    <string name="setup_theme_title">テーマを選択</string>
+    <string name="pref_category_contributors">貢献者</string>
+    <string name="fox2code_thanks">Fox2Code が作成したよ</string>
+    <string name="save_logs">ログをストレージに保存して共有</string>
+    <string name="error_saving_logs">ログを保存できなかったよ</string>
+    <string name="share_logs">FoxMMM のログをシェア</string>
+    <string name="not_official_build">このアプリは非公式 FoxMMM ビルドだよ。</string>
+    <string name="repo_update_failed_message">以下のリポジトリのアップデートに失敗したよ: 
+\n 
+\n%s</string>
+    <string name="reset_api_key">APIキーをリセット</string>
+    <string name="upgrade_androidacy_promo">プレミアムにアップグレード</string>
+    <string name="upgrade_androidacy_promo_desc">プレミアムにアップグレードすると、Androidacy リポジトリでの広告・Captchaの削除、モジュール作者のサポートなどができるようになるよ。</string>
+    <string name="feedback_submit">送信して再起動</string>
+    <string name="feedback_name">名前 (オプション)</string>
+    <string name="feedback_email">メールアドレス (オプション)</string>
+    <string name="sentry_dialogue_empty_message">フィードバックの追加情報がないよ。</string>
+    <string name="crash_icon">クラッシュアイコン</string>
+    <string name="copy_button">テキストをコピー</string>
+    <string name="crash_details">不明な原因</string>
+    <string name="more_details">詳細情報は以下で見つけられるよ。</string>
+    <string name="crash_full_stacktrace">スタックトレース: 
+\n%1$s</string>
+    <string name="sentry_enable_nag">クラッシュレポートが無効化されてるみたいだよ。有効化してフィードバックを送ってね。</string>
+    <string name="reset_app">アプリをリセット</string>
+    <string name="upgraded_summary">アップグレードありがとう！サブスクリプションで Androidacy をサポートしてるよ。</string>
+    <string name="upgraded">プレミアム有効</string>
+    <string name="reset_warning">もしこの画面の表示が続くようなら、アプリのリセットを試してみてね。アプリデータは削除されるけどモジュールは削除されないよ。</string>
+    <string name="reset_app_message">データをすべて削除してアプリを終了するよ。モジュールは削除されないよ。</string>
+    <string name="reset">リセット</string>
+    <string name="reset_app_confirmation">アプリデータを完全に削除しようとしてるよ。モジュールには影響しないよ。</string>
+    <string name="error_adding">カスタムリポジトリの追加に失敗したよ</string>
+    <string name="api_key_mismatch">API キーの形式が無効だよ</string>
+    <string name="zip_intent_module_install">本当にZIPファイル \"%2$s\" からモジュール \"%1$s\" をインストールしますか？
+\n 
+\nモジュールはとても強力で何でもできるため、ソースが信頼できるか確認してください。</string>
+    <string name="fox2code_thanks_desc">Fox2Code はこのアプリの元になったアプリだよ。それがなければおそらくこのアプリも完成しなかったよ。</string>
+    <string name="crash_text">うわっ、こんなところに障壁が！</string>=
+    <string name="feedback_message">詳細情報を送って何が起こったか教えてね。多いほど助かるよ！</string>
+    <string name="please_feedback">何をしようとしてこうなったのか教えてアプリの改善に協力してほしいな。</string>
+    <string name="theme_transparent_dark">ダーク (透過)</string>
+    <string name="zip_unpacking">モジュールを検証中…</string>
+    <string name="warning_message">このモジュールは勝手にインストールされたか、隠れようとしてるよ。 
+\n 
+\nアンインストールすることを強くおすすめするよ。</string>
+    <string name="understand">わかった</string>
+    <string name="setup_language_button">言語を選択</string>
+    <string name="title_activity_setup">セットアップ ウィザード</string>
+    <string name="action_settings">設定</string>
+    <string name="sentry_dialogue_disabled">クラッシュレポートは無効化されてるよ。有効化してフィードバックを送ってね。</string>
+    <string name="crash_details_copied">スタックトレースをクリップボードにコピーしたよ！</string>
 </resources>
