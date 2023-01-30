@@ -28,13 +28,13 @@
         <item name="dialogCornerRadius">@dimen/card_corner_radius</item>
         <item name="colorBackgroundFloating">@color/light_colorBackgroundFloating</item>
         <item name="backgroundColor">@color/light_backgroundColor</item>
-        <item name="chipStyle">@style/Widget.Material.Chip.Choice.Light</item>
+        <item name="chipStyle">@style/Widget.Material3.Chip.Choice.Light</item>
     </style>
 
-    <style name="Widget.Material.Chip.Choice.Light" parent="Widget.Material3.Chip.Choice.Light">
-        <item name="chipBackgroundColor">@color/light_chipBackgroundColor</item>
+    <style name="Widget.Material3.Chip.Choice.Light" parent="Widget.Material3.Chip.Assist">
+        <item name="chipBackgroundColor">@color/white</item>
         <item name="chipStrokeWidth">0dp</item>
-        <item name="chipIconTint">@color/black</item>
+        <item name="chipIconTint">?attr/colorControlNormal</item>
     </style>
 
     <style name="Theme.MagiskModuleManager.Transparent.Light" parent="Theme.MagiskModuleManager.Monet.Dark">
@@ -54,6 +54,7 @@
         <item name="android:actionBarStyle">@style/Widget.Material3.ActionBar.Solid</item>
         <!-- Action bar -->
         <item name="actionBarStyle">@style/Widget.Material3.ActionBar.Solid</item>
+        <item name="chipStyle">@style/Widget.Material3.Chip.Choice.Light</item>
     </style>
 
     <style name="Theme.MagiskModuleManager.Dark" parent="Theme.Material3.Dark">
