@@ -62,7 +62,7 @@
             app:icon="@drawable/ic_baseline_system_update_24"
             app:key="pref_update"
             app:singleLineTitle="false"
-            app:title="@string/app_update" />
+            app:title="@string/check_for_updates" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/pref_category_appearance">

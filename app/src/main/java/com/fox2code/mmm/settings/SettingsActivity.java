@@ -49,6 +49,7 @@ import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
+import com.fox2code.mmm.UpdateActivity;
 import com.fox2code.mmm.androidacy.AndroidacyRepoData;
 import com.fox2code.mmm.background.BackgroundUpdateChecker;
 import com.fox2code.mmm.installer.InstallerInitializer;
@@ -491,12 +492,15 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             linkClickable.setVisible(BuildConfig.ENABLE_AUTO_UPDATER && (BuildConfig.DEBUG || AppUpdateManager.getAppUpdateManager().peekHasUpdate()));
             linkClickable.setOnPreferenceClickListener(p -> {
                 devModeStep = 0;
-                IntentHelper.openUrl(p.getContext(), "https://github.com/Fox2Code/FoxMagiskModuleManager/releases");
+                // open UpdateActivity with CHECK action
+                Intent intent = new Intent(requireContext(), UpdateActivity.class);
+                intent.setAction(UpdateActivity.ACTIONS.CHECK.name());
+                startActivity(intent);
                 return true;
             });
             linkClickable.setOnPreferenceLongClickListener(p -> {
                 String toastText = requireContext().getString(R.string.link_copied);
-                clipboard.setPrimaryClip(ClipData.newPlainText(toastText, "https://github.com/Fox2Code/FoxMagiskModuleManager/releases"));
+                clipboard.setPrimaryClip(ClipData.newPlainText(toastText, "https://github.com/Fox2Code/FoxMagiskModuleManager/releases/latest"));
                 Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
                 return true;
             });

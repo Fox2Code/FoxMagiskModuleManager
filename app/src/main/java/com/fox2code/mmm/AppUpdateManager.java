@@ -30,21 +30,17 @@ public class AppUpdateManager {
     public static final int FLAG_COMPAT_MMT_REBORN = 0x0100;
     public static final int FLAG_COMPAT_ZIP_WRAPPER = 0x0200;
     private static final AppUpdateManager INSTANCE = new AppUpdateManager();
-    private static final String RELEASES_API_URL = "https://api.github.com/repos/Fox2Code/FoxMagiskModuleManager/releases";
+    public static final String RELEASES_API_URL = "https://api.github.com/repos/Fox2Code/FoxMagiskModuleManager/releases/latest";
     private final HashMap<String, Integer> compatDataId = new HashMap<>();
     private final Object updateLock = new Object();
     private final File compatFile;
     private String latestRelease;
-    private String latestPreRelease;
     private long lastChecked;
-    private boolean preReleaseNewer;
 
     private AppUpdateManager() {
         this.compatFile = new File(MainApplication.getINSTANCE().getFilesDir(), "compat.txt");
         this.latestRelease = MainApplication.getBootSharedPreferences().getString("updater_latest_release", BuildConfig.VERSION_NAME);
-        this.latestPreRelease = MainApplication.getBootSharedPreferences().getString("updater_latest_pre_release", BuildConfig.VERSION_NAME);
         this.lastChecked = 0;
-        this.preReleaseNewer = true;
         if (this.compatFile.isFile()) {
             try {
                 this.parseCompatibilityFlags(new FileInputStream(this.compatFile));
@@ -110,13 +106,6 @@ public class AppUpdateManager {
                 }
                 if (latestRelease != null)
                     this.latestRelease = latestRelease;
-                if (latestPreRelease != null) {
-                    this.latestPreRelease = latestPreRelease;
-                    this.preReleaseNewer = preReleaseNewer;
-                } else if (!preReleaseNewer) {
-                    this.latestPreRelease = "";
-                    this.preReleaseNewer = false;
-                }
                 if (BuildConfig.DEBUG)
                     Timber.d("Latest release: %s", latestRelease);
                 if (BuildConfig.DEBUG)
@@ -145,7 +134,7 @@ public class AppUpdateManager {
     }
 
     public boolean peekShouldUpdate() {
-        if (!BuildConfig.ENABLE_AUTO_UPDATER)
+        if (!BuildConfig.ENABLE_AUTO_UPDATER || BuildConfig.DEBUG)
             return false;
         // Convert both BuildConfig.VERSION_NAME and latestRelease to int
         int currentVersion = 0, latestVersion = 0;
@@ -155,20 +144,13 @@ public class AppUpdateManager {
         } catch (
                 NumberFormatException ignored) {
         }
-        int latestPreReleaseVersion = 0;
-        // replace all non-numeric characters with empty string
-        try {
-            latestPreReleaseVersion = Integer.parseInt(this.latestPreRelease.replaceAll("\\D", ""));
-        } catch (
-                NumberFormatException ignored) {
-        }
-        return currentVersion < latestVersion || (this.preReleaseNewer && currentVersion < latestPreReleaseVersion);
+        return currentVersion < latestVersion;
     }
 
     public boolean peekHasUpdate() {
-        if (!BuildConfig.ENABLE_AUTO_UPDATER)
+        if (!BuildConfig.ENABLE_AUTO_UPDATER || BuildConfig.DEBUG)
             return false;
-        return !BuildConfig.VERSION_NAME.equals(this.preReleaseNewer ? this.latestPreRelease : this.latestRelease);
+        return this.peekShouldUpdate();
     }
 
     private void parseCompatibilityFlags(InputStream inputStream) throws IOException {

@@ -1,69 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UpdateActivity">
+    android:orientation="vertical" tools:context=".UpdateActivity">
 
   <!-- Activity used to download and install app updates -->
-    <TextView
+  <!-- first, upgrade icon -->
+  <ImageView
+      android:id="@+id/updat_icon"
+      android:layout_width="101dp"
+      android:layout_height="93dp"
+      android:layout_gravity="center"
+      android:layout_margin="8dp"
+      android:contentDescription="@string/crash_icon"
+      android:src="@drawable/baseline_system_update_24" />
+
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/update_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
+        android:layout_gravity="center"
         android:layout_marginTop="16dp"
         android:text="@string/update_title"
-        android:textAppearance="?attr/textAppearanceHeadline6"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textAppearance="?attr/textAppearanceHeadline6" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/update_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
+        android:layout_gravity="center"
         android:text="@string/update_message"
-        android:textAppearance="?attr/textAppearanceBody2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/update_title" />
+        android:textAppearance="?attr/textAppearanceBody2" />
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/update_progress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/update_subtitle" />
+        android:layout_marginTop="16dp" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/update_progress_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
-        android:textAppearance="?attr/textAppearanceBody2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/update_progress" />
+        android:textAppearance="?attr/textAppearanceBody2" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/update_button"
         android:layout_width="wrap_content"
+        android:text="@string/update_button"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
-        android:text="@string/update_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/update_progress_text" />
+        android:visibility="invisible" />
+
+  <!-- Invisible warning for debug builds -->
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/update_debug_warning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/update_debug_warning"
+        android:textAppearance="?attr/textAppearanceBody2"
+        android:visibility="gone" />
 
 
 
-  </androidx.constraintlayout.widget.ConstraintLayout>
+  </LinearLayout>

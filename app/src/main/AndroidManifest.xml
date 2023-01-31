@@ -40,10 +40,13 @@
         tools:targetApi="tiramisu">
         <activity
             android:name=".UpdateActivity"
+            android:hardwareAccelerated="true"
+            android:process=":updater"
             android:exported="false" />
         <activity
             android:name=".CrashHandler"
             android:exported="false"
+            android:hardwareAccelerated="true"
             android:process=":crash" />
         <activity
             android:name=".SetupActivity"
