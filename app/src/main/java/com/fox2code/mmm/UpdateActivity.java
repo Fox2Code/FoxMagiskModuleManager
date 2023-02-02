@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Objects;
 
+import io.noties.markwon.Markwon;
 import timber.log.Timber;
 
 @SuppressWarnings("UnnecessaryReturnStatement")
@@ -36,6 +37,8 @@ public class UpdateActivity extends FoxActivity {
         // Get the progress bar and make it indeterminate for now
         LinearProgressIndicator progressIndicator = findViewById(R.id.update_progress);
         progressIndicator.setIndeterminate(true);
+        // get update_cancel button
+        MaterialButton updateCancel = findViewById(R.id.update_cancel_button);
         // get status text view
         MaterialTextView statusTextView = findViewById(R.id.update_progress_text);
         // set status text to please wait
@@ -48,71 +51,29 @@ public class UpdateActivity extends FoxActivity {
          statusTextView.setVisibility(MaterialTextView.INVISIBLE);
          return;
          }*/
-        new Thread(() -> {
-            // Now, parse the intent
-            String extras = getIntent().getAction();
-            // if extras is null, then we are in a bad state or user launched the activity manually
-            if (extras == null) {
-                runOnUiThread(() -> {
-                    // set status text to error
-                    statusTextView.setText(R.string.error_no_extras);
-                    // set progress bar to error
-                    progressIndicator.setIndeterminate(false);
-                    progressIndicator.setProgressCompat(0, false);
-                });
-                return;
-            }
-
-            // get action
-            ACTIONS action = ACTIONS.valueOf(extras);
-            // if action is null, then we are in a bad state or user launched the activity manually
-            if (Objects.isNull(action)) {
-                runOnUiThread(() -> {
-                    // set status text to error
-                    statusTextView.setText(R.string.error_no_action);
-                    // set progress bar to error
-                    progressIndicator.setIndeterminate(false);
-                    progressIndicator.setProgressCompat(0, false);
-                });
-                // return
-                return;
-            }
-
-            // For check action, we need to check if there is an update using the AppUpdateManager.peekShouldUpdate()
-            if (action == ACTIONS.CHECK) {
-                checkForUpdate();
-            } else if (action == ACTIONS.DOWNLOAD) {
-                try {
-                    downloadUpdate();
-                } catch (
-                        JSONException e) {
-                    e.printStackTrace();
+        Thread updateThread = new Thread() {
+            public void run() {
+                // Now, parse the intent
+                String extras = getIntent().getAction();
+                // if extras is null, then we are in a bad state or user launched the activity manually
+                if (extras == null) {
                     runOnUiThread(() -> {
                         // set status text to error
-                        statusTextView.setText(R.string.error_download_update);
-                        // set progress bar to error
-                        progressIndicator.setIndeterminate(false);
-                        progressIndicator.setProgressCompat(100, false);
-                    });
-                }
-            } else if (action == ACTIONS.INSTALL) {
-                // ensure path was passed and points to a file within our cache directory
-                String path = getIntent().getStringExtra("path");
-                if (path == null) {
-                    runOnUiThread(() -> {
-                        // set status text to error
-                        statusTextView.setText(R.string.no_file_found);
+                        statusTextView.setText(R.string.error_no_extras);
                         // set progress bar to error
                         progressIndicator.setIndeterminate(false);
                         progressIndicator.setProgressCompat(0, false);
                     });
                     return;
                 }
-                File file = new File(path);
-                if (!file.exists()) {
+
+                // get action
+                ACTIONS action = ACTIONS.valueOf(extras);
+                // if action is null, then we are in a bad state or user launched the activity manually
+                if (Objects.isNull(action)) {
                     runOnUiThread(() -> {
                         // set status text to error
-                        statusTextView.setText(R.string.no_file_found);
+                        statusTextView.setText(R.string.error_no_action);
                         // set progress bar to error
                         progressIndicator.setIndeterminate(false);
                         progressIndicator.setProgressCompat(0, false);
@@ -120,26 +81,77 @@ public class UpdateActivity extends FoxActivity {
                     // return
                     return;
                 }
-                if (!Objects.equals(file.getParentFile(), getCacheDir())) {
-                    // set status text to error
-                    runOnUiThread(() -> {
-                        statusTextView.setText(R.string.no_file_found);
-                        // set progress bar to error
-                        progressIndicator.setIndeterminate(false);
-                        progressIndicator.setProgressCompat(0, false);
-                    });
-                    // return
-                    return;
-                }
-                // set status text to installing
-                statusTextView.setText(R.string.installing_update);
-                // set progress bar to indeterminate
-                progressIndicator.setIndeterminate(true);
-                // install update
-                installUpdate(file);
-            }
 
-        }).start();
+                // For check action, we need to check if there is an update using the AppUpdateManager.peekShouldUpdate()
+                if (action == ACTIONS.CHECK) {
+                    checkForUpdate();
+                } else if (action == ACTIONS.DOWNLOAD) {
+                    try {
+                        downloadUpdate();
+                    } catch (
+                            JSONException e) {
+                        e.printStackTrace();
+                        runOnUiThread(() -> {
+                            // set status text to error
+                            statusTextView.setText(R.string.error_download_update);
+                            // set progress bar to error
+                            progressIndicator.setIndeterminate(false);
+                            progressIndicator.setProgressCompat(100, false);
+                        });
+                    }
+                } else if (action == ACTIONS.INSTALL) {
+                    // ensure path was passed and points to a file within our cache directory
+                    String path = getIntent().getStringExtra("path");
+                    if (path == null) {
+                        runOnUiThread(() -> {
+                            // set status text to error
+                            statusTextView.setText(R.string.no_file_found);
+                            // set progress bar to error
+                            progressIndicator.setIndeterminate(false);
+                            progressIndicator.setProgressCompat(0, false);
+                        });
+                        return;
+                    }
+                    File file = new File(path);
+                    if (!file.exists()) {
+                        runOnUiThread(() -> {
+                            // set status text to error
+                            statusTextView.setText(R.string.no_file_found);
+                            // set progress bar to error
+                            progressIndicator.setIndeterminate(false);
+                            progressIndicator.setProgressCompat(0, false);
+                        });
+                        // return
+                        return;
+                    }
+                    if (!Objects.equals(file.getParentFile(), getCacheDir())) {
+                        // set status text to error
+                        runOnUiThread(() -> {
+                            statusTextView.setText(R.string.no_file_found);
+                            // set progress bar to error
+                            progressIndicator.setIndeterminate(false);
+                            progressIndicator.setProgressCompat(0, false);
+                        });
+                        // return
+                        return;
+                    }
+                    // set status text to installing
+                    statusTextView.setText(R.string.installing_update);
+                    // set progress bar to indeterminate
+                    progressIndicator.setIndeterminate(true);
+                    // install update
+                    installUpdate(file);
+                }
+            }
+        };
+        // on click, finish the activity and anything running in it
+        updateCancel.setOnClickListener(v -> {
+            // end any download
+            updateThread.interrupt();
+            forceBackPressed();
+            finish();
+        });
+        updateThread.start();
     }
 
     public void checkForUpdate() {
@@ -193,6 +205,11 @@ public class UpdateActivity extends FoxActivity {
         }
         // convert to JSON
         JSONObject latestJSON = new JSONObject(new String(lastestJSON));
+        String changelog = latestJSON.getString("body");
+        // set changelog text. changelog could be markdown, so we need to convert it to HTML
+        MaterialTextView changelogTextView = findViewById(R.id.update_changelog);
+        final Markwon markwon = Markwon.builder(this).build();
+        runOnUiThread(() -> markwon.setMarkdown(changelogTextView, changelog));
         // we already know that there is an update, so we can get the latest version of our architecture. We're going to have to iterate through the assets to find the one we want
         JSONArray assets = latestJSON.getJSONArray("assets");
         // get the asset we want

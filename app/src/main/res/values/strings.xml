@@ -329,7 +329,7 @@
     <string name="background_update_check_excludes">Modules to exclude from automatic update checks</string>
     <string name="title_activity_update">In-app Updater</string>
     <string name="update_title">Update app</string>
-    <string name="update_message">An update may be available for FoxMMM. Please wait while we download and install it.</string>
+    <string name="update_message">Please wait while we check for and install updates to FoxMMM. This may take a few minutes</string>
     <string name="update_button">Please wait...</string>
     <string name="error_no_extras">ERROR: Invalid data received on launch</string>
     <string name="update_debug_warning">You appear to be running a debug build. Debug builds must be updated manually, and do not support in-app updates</string>
@@ -340,5 +340,5 @@
     <string name="error_download_update">An error occurred downloading the update information.</string>
     <string name="error_no_asset">ERROR: Failed to parse update information</string>
     <string name="downloading_update">Downloading update… %1$d%%</string>
-    <string name="installing_update">Installing update…</string><string name="no_file_found">ERROR: Could not find update package.</string><string name="check_for_updates">Check for app updates</string><string name="update_debug_download_pref">Test update download mechanism</string>
+    <string name="installing_update">Installing update…</string><string name="no_file_found">ERROR: Could not find update package.</string><string name="check_for_updates">Check for app updates</string><string name="update_debug_download_pref">Test update download mechanism</string><string name="changelog_none">No changes yet!</string><string name="update_cancel_button">Cancel update</string>
 </resources>
