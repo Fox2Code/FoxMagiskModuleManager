@@ -20,6 +20,7 @@
     <uses-permission-sdk-23 android:name="android.permission.QUERY_ALL_PACKAGES" /> <!-- Supposed to fix bugs with old firmware, only requested on pre Marshmallow -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- Post background notifications -->
     <uses-permission-sdk-23 android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
         android:name=".MainApplication"
@@ -41,7 +42,6 @@
         <activity
             android:name=".UpdateActivity"
             android:hardwareAccelerated="true"
-            android:process=":updater"
             android:exported="false" />
         <activity
             android:name=".CrashHandler"

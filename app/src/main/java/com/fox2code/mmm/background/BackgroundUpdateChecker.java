@@ -53,8 +53,11 @@ public class BackgroundUpdateChecker extends Worker {
                 if ("twrp-keep".equals(localModuleInfo.id))
                     continue;
                 // exclude all modules with id's stored in the pref pref_background_update_check_excludes
-                if (MainApplication.getSharedPreferences().getStringSet("pref_background_update_check_excludes", null).contains(localModuleInfo.id))
-                    continue;
+                try {
+                    if (MainApplication.getSharedPreferences().getStringSet("pref_background_update_check_excludes", null).contains(localModuleInfo.id))
+                        continue;
+                } catch (Exception ignored) {
+                }
                 RepoModule repoModule = repoModules.get(localModuleInfo.id);
                 localModuleInfo.checkModuleUpdate();
                 if (localModuleInfo.updateVersionCode > localModuleInfo.versionCode && !PropUtils.isNullString(localModuleInfo.updateVersion)) {

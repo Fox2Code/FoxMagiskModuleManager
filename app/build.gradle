@@ -338,7 +338,7 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:5.0.1'
 
     // ksp
-    implementation "com.google.devtools.ksp:symbol-processing-api:1.8.0-1.0.8"
+    implementation "com.google.devtools.ksp:symbol-processing-api:1.8.0-1.0.9"
 
     implementation "androidx.security:security-crypto:1.1.0-alpha04"
 }
@@ -364,7 +364,6 @@ android {
     }
     buildFeatures {
         viewBinding true
-        compose true
     }
 
     kotlinOptions {

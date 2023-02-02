@@ -375,5 +375,18 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         IOException e) {
             Timber.e(e);
         }
+        // we literally only use these to create the http cache folders
+        File httpCacheDir = MainApplication.getINSTANCE().getDataDirWithPath("cache/WebView/Default/HTTP Cache/Code Cache/js");
+        File httpCacheDir2 = MainApplication.getINSTANCE().getDataDirWithPath("cache/WebView/Default/HTTP Cache/Code Cache/wasm");
+        if (!httpCacheDir.exists()) {
+            if (httpCacheDir.mkdirs()) {
+                Timber.d("Created http cache dir");
+            }
+        }
+        if (!httpCacheDir2.exists()) {
+            if (httpCacheDir2.mkdirs()) {
+                Timber.d("Created http cache dir");
+            }
+        }
     }
 }

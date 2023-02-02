@@ -3,7 +3,6 @@ package com.fox2code.mmm;
 import com.fox2code.mmm.utils.io.Files;
 import com.fox2code.mmm.utils.io.Http;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -81,10 +80,16 @@ public class AppUpdateManager {
                 return this.peekShouldUpdate();
             boolean preReleaseNewer = true;
             try {
-                JSONArray releases = new JSONArray(new String(Http.doHttpGet(RELEASES_API_URL, false), StandardCharsets.UTF_8));
+                JSONObject releases = new JSONObject(new String(Http.doHttpGet(RELEASES_API_URL, false), StandardCharsets.UTF_8));
                 String latestRelease = null, latestPreRelease = null;
                 for (int i = 0; i < releases.length(); i++) {
-                    JSONObject release = releases.getJSONObject(i);
+                    JSONObject release;
+                    try {
+                        release = releases.getJSONObject(String.valueOf(i));
+                    } catch (
+                            Exception e) {
+                        continue;
+                    }
                     // Skip invalid entries
                     if (release.getBoolean("draft"))
                         continue;

@@ -57,6 +57,12 @@
             app:icon="@drawable/baseline_notification_important_24"
             app:title="@string/notification_update_debug_pref" />
 
+        <!-- For debugging: launch update activity with download action -->
+        <Preference
+            app:icon="@drawable/ic_baseline_download_24"
+            app:key="pref_background_update_check_debug_download"
+            app:singleLineTitle="false"
+            app:title="@string/update_debug_download_pref" />
 
         <com.fox2code.mmm.settings.LongClickablePreference
             app:icon="@drawable/ic_baseline_system_update_24"

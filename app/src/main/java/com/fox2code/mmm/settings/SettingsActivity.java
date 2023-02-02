@@ -504,6 +504,16 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
                 return true;
             });
+            // for pref_background_update_check_debug_download, do the same as pref_update except with DOWNLOAD action
+            Preference debugDownload = findPreference("pref_background_update_check_debug_download");
+            debugDownload.setVisible(MainApplication.isDeveloper() && MainApplication.isBackgroundUpdateCheckEnabled() && !MainApplication.isWrapped());
+            debugDownload.setOnPreferenceClickListener(p -> {
+                devModeStep = 0;
+                Intent intent = new Intent(requireContext(), UpdateActivity.class);
+                intent.setAction(UpdateActivity.ACTIONS.DOWNLOAD.name());
+                startActivity(intent);
+                return true;
+            });
             if (BuildConfig.DEBUG || BuildConfig.ENABLE_AUTO_UPDATER) {
                 linkClickable = findPreference("pref_report_bug");
                 linkClickable.setOnPreferenceClickListener(p -> {
