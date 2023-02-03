@@ -159,6 +159,7 @@ public class InstallerInitializer extends Shell.Initializer {
     public boolean onInit(@NonNull Context context, @NonNull Shell shell) {
         if (!shell.isRoot())
             return true;
-        return shell.newJob().add("export ASH_STANDALONE=1").exec().isSuccess();
+        // switch to global namespace using the setns syscall
+        return shell.newJob().add("export ASH_STANDALONE=1; nsenter -t 1 -m -u /data/adb/magisk/busybox ash").exec().isSuccess();
     }
 }
