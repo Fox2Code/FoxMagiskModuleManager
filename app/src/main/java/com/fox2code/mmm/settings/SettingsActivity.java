@@ -87,6 +87,7 @@ import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Objects;
@@ -116,16 +117,14 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         int totalCpuFreq = 0;
         int freqResolved = 0;
         for (int i = 0; i < cpuCount; i++) {
-            try {
-                RandomAccessFile reader = new RandomAccessFile(String.format(Locale.ENGLISH, "/sys/devices/system/cpu/cpu%d/cpufreq/cpuinfo_max_freq", i), "r");
+            try (RandomAccessFile reader = new RandomAccessFile(String.format(Locale.ENGLISH, "/sys/devices/system/cpu/cpu%d/cpufreq/cpuinfo_max_freq", i), "r")) {
                 String line = reader.readLine();
                 if (line != null) {
                     totalCpuFreq += parseInt(line) / 1000;
                     freqResolved++;
                 }
-                reader.close();
             } catch (
-                    Throwable ignore) {
+                    Exception ignore) {
             }
         }
         int maxCpuFreq = freqResolved == 0 ? -1 : (int) Math.ceil(totalCpuFreq / (float) freqResolved);
@@ -410,7 +409,23 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             debugNotification.setEnabled(MainApplication.isBackgroundUpdateCheckEnabled());
             debugNotification.setVisible(MainApplication.isDeveloper() && !MainApplication.isWrapped() && MainApplication.isBackgroundUpdateCheckEnabled());
             debugNotification.setOnPreferenceClickListener(preference -> {
-                BackgroundUpdateChecker.postNotification(this.requireContext(), new Random().nextInt(4) + 2, true);
+                // fake updateable modules hashmap
+                HashMap<String, String> updateableModules = new HashMap<>();
+                // count of modules to fake must match the count in the random number generator
+                Random random = new Random();
+                int count;
+                do {
+                    count = random.nextInt(4) + 2;
+                } while (count == 2);
+                for (int i = 0; i < count; i++) {
+                    int fakeVersion;
+                    do {
+                        fakeVersion = random.nextInt(10);
+                    } while (fakeVersion == 0);
+                    Timber.d("Fake version: %s, count: %s", fakeVersion, i);
+                    updateableModules.put("FakeModule " + i, "1.0." + fakeVersion);
+                }
+                BackgroundUpdateChecker.postNotification(this.requireContext(), updateableModules, count, true);
                 return true;
             });
             Preference backgroundUpdateCheck = findPreference("pref_background_update_check");
@@ -452,41 +467,47 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             // updateCheckExcludes saves to pref_background_update_check_excludes as a stringset. On clicking, it should open a dialog with a list of all installed modules
             updateCheckExcludes.setOnPreferenceClickListener(preference -> {
                 Collection<LocalModuleInfo> localModuleInfos = ModuleManager.getINSTANCE().getModules().values();
-                String[] moduleNames = new String[localModuleInfos.size()];
-                boolean[] checkedItems = new boolean[localModuleInfos.size()];
-                int i = 0;
-                for (LocalModuleInfo localModuleInfo : localModuleInfos) {
-                    moduleNames[i] = localModuleInfo.name;
-                    SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
-                    // get the stringset pref_background_update_check_excludes
-                    Set<String> stringSet = sharedPreferences.getStringSet("pref_background_update_check_excludes", new HashSet<>());
-                    // Stringset uses id, we show name
-                    checkedItems[i] = stringSet.contains(localModuleInfo.id);
-                    Timber.d("name: %s, checked: %s", moduleNames[i], checkedItems[i]);
-                    i++;
-                }
-                new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.background_update_check_excludes).setMultiChoiceItems(moduleNames, checkedItems, (dialog, which, isChecked) -> {
-                    // get the stringset pref_background_update_check_excludes
-                    SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
-                    Set<String> stringSet = new HashSet<>(sharedPreferences.getStringSet("pref_background_update_check_excludes", new HashSet<>()));
-                    // get id from name
-                    String id;
-                    if (localModuleInfos.stream().anyMatch(localModuleInfo -> localModuleInfo.name.equals(moduleNames[which]))) {
-                        //noinspection OptionalGetWithoutIsPresent
-                        id = localModuleInfos.stream().filter(localModuleInfo -> localModuleInfo.name.equals(moduleNames[which])).findFirst().get().id;
-                    } else {
-                        id = "";
+                // make sure we have modules
+                boolean[] checkedItems;
+                if (!localModuleInfos.isEmpty()) {
+                    String[] moduleNames = new String[localModuleInfos.size()];
+                    checkedItems = new boolean[localModuleInfos.size()];
+                    int i = 0;
+                    for (LocalModuleInfo localModuleInfo : localModuleInfos) {
+                        moduleNames[i] = localModuleInfo.name;
+                        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
+                        // get the stringset pref_background_update_check_excludes
+                        Set<String> stringSet = sharedPreferences.getStringSet("pref_background_update_check_excludes", new HashSet<>());
+                        // Stringset uses id, we show name
+                        checkedItems[i] = stringSet.contains(localModuleInfo.id);
+                        Timber.d("name: %s, checked: %s", moduleNames[i], checkedItems[i]);
+                        i++;
                     }
-                    if (!id.isEmpty()) {
-                        if (isChecked) {
-                            stringSet.add(id);
+                    new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.background_update_check_excludes).setMultiChoiceItems(moduleNames, checkedItems, (dialog, which, isChecked) -> {
+                        // get the stringset pref_background_update_check_excludes
+                        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
+                        Set<String> stringSet = new HashSet<>(sharedPreferences.getStringSet("pref_background_update_check_excludes", new HashSet<>()));
+                        // get id from name
+                        String id;
+                        if (localModuleInfos.stream().anyMatch(localModuleInfo -> localModuleInfo.name.equals(moduleNames[which]))) {
+                            id = localModuleInfos.stream().filter(localModuleInfo -> localModuleInfo.name.equals(moduleNames[which])).findFirst().orElse(null).id;
                         } else {
-                            stringSet.remove(id);
+                            id = "";
                         }
-                    }
-                    sharedPreferences.edit().putStringSet("pref_background_update_check_excludes", stringSet).apply();
-                }).setPositiveButton(R.string.ok, (dialog, which) -> {
-                }).show();
+                        if (!id.isEmpty()) {
+                            if (isChecked) {
+                                stringSet.add(id);
+                            } else {
+                                stringSet.remove(id);
+                            }
+                        }
+                        sharedPreferences.edit().putStringSet("pref_background_update_check_excludes", stringSet).apply();
+                    }).setPositiveButton(R.string.ok, (dialog, which) -> {
+                    }).show();
+                } else {
+                    new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.background_update_check_excludes).setMessage(R.string.background_update_check_excludes_no_modules).setPositiveButton(R.string.ok, (dialog, which) -> {
+                    }).show();
+                }
                 return true;
             });
             final LibsBuilder libsBuilder = new LibsBuilder().withShowLoadingProgress(false).withLicenseShown(true).withAboutMinimalDesign(false);
@@ -602,10 +623,11 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             saveLogs.setOnPreferenceClickListener(p -> {
                 // Save logs to external storage
                 File logsFile = new File(requireContext().getExternalFilesDir(null), "logs.txt");
+                FileOutputStream fileOutputStream = null;
                 try {
                     //noinspection ResultOfMethodCallIgnored
                     logsFile.createNewFile();
-                    FileOutputStream fileOutputStream = new FileOutputStream(logsFile);
+                    fileOutputStream = new FileOutputStream(logsFile);
                     // first, write some info about the device
                     fileOutputStream.write(("FoxMagiskModuleManager version: " + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")\n").getBytes());
                     fileOutputStream.write(("Android version: " + Build.VERSION.RELEASE + " (" + Build.VERSION.SDK_INT + ")\n").getBytes());
@@ -619,12 +641,18 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     while ((line = bufferedReader.readLine()) != null) {
                         fileOutputStream.write((line + "\n").getBytes());
                     }
-                    fileOutputStream.close();
                 } catch (
                         IOException e) {
                     e.printStackTrace();
                     Toast.makeText(requireContext(), R.string.error_saving_logs, Toast.LENGTH_SHORT).show();
                     return true;
+                } finally {
+                    if (fileOutputStream != null) {
+                        try {
+                            fileOutputStream.close();
+                        } catch (IOException ignored) {
+                        }
+                    }
                 }
                 // Share logs
                 Intent shareIntent = new Intent();
@@ -690,7 +718,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             try {
                 initialApplication = FoxProcessExt.getInitialApplication();
             } catch (
-                    Throwable ignored) {
+                    Exception ignored) {
             }
             String realPackageName;
             if (initialApplication != null) {
@@ -728,6 +756,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     public static class RepoFragment extends PreferenceFragmentCompat {
 
         /**
@@ -1088,6 +1117,10 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         }
                     });
                     builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+                    builder.setNeutralButton("Docs", (dialog, which) -> {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/docs/DEVELOPERS.md#custom-repo-format"));
+                        startActivity(intent);
+                    });
                     AlertDialog alertDialog = builder.show();
                     //make message clickable
                     ((TextView) Objects.requireNonNull(alertDialog.findViewById(android.R.id.message))).setMovementMethod(LinkMovementMethod.getInstance());
@@ -1123,18 +1156,32 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         }
 
         private void setRepoData(final RepoData repoData, String preferenceName) {
+            Timber.d("Setting preference " + preferenceName + " to " + repoData.toString());
             ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
             Preference preference = findPreference(preferenceName);
             if (preference == null)
                 return;
             if (!preferenceName.contains("androidacy") && !preferenceName.contains("magisk_alt_repo")) {
-                Timber.d("Setting preference " + preferenceName + " because it is not the Androidacy repo or the Magisk Alt Repo");
-                if (repoData == null || repoData.isForceHide()) {
+                if (repoData != null) {
+                    RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+                    Realm realm = Realm.getInstance(realmConfiguration);
+                    RealmResults<ReposList> repoDataRealmResults = realm.where(ReposList.class).equalTo("id", repoData.id).findAll();
+                    Timber.d("Setting preference " + preferenceName + " because it is not the Androidacy repo or the Magisk Alt Repo");
+                    if (repoData.isForceHide() || repoDataRealmResults.isEmpty()) {
+                        Timber.d("Hiding preference " + preferenceName + " because it is null or force hidden");
+                        hideRepoData(preferenceName);
+                        return;
+                    } else {
+                        //noinspection ConstantConditions
+                        Timber.d("Showing preference %s because the forceHide status is %s and the RealmResults is %s", preferenceName, repoData.isForceHide(), repoDataRealmResults.toString());
+                        preference.setTitle(repoData.getName());
+                        preference.setVisible(true);
+                    }
+                } else {
+                    Timber.d("Hiding preference " + preferenceName + " because it's data is null");
                     hideRepoData(preferenceName);
                     return;
                 }
-                preference.setTitle(repoData.getName());
-                preference.setVisible(true);
             }
             preference = findPreference(preferenceName + "_enabled");
             if (preference != null) {

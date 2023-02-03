@@ -323,7 +323,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 } else if (type == ModuleHolder.Type.INSTALLED && moduleHolder.hasFlag(ModuleInfo.FLAG_METADATA_INVALID)) {
                     this.invalidPropsChip.setOnClickListener(_view -> {
                         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(_view.getContext());
-                        builder.setTitle(R.string.low_quality_module).setMessage("Actual description for Low-quality module").setCancelable(true).setPositiveButton(R.string.ok, (x, y) -> x.dismiss()).show();
+                        builder.setTitle(R.string.low_quality_module).setMessage(R.string.low_quality_module_desc).setCancelable(true).setPositiveButton(R.string.ok, (x, y) -> x.dismiss()).show();
                     });
                     // Backup restore
                     // foregroundAttr = R.attr.colorOnError;

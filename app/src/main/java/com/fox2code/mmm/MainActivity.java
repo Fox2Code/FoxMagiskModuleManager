@@ -110,7 +110,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 }
                 urlFactoryInstalled = true;
             } catch (
-                    Throwable t) {
+                    Exception t) {
                 Timber.e("Failed to install CronetURLStreamHandlerFactory - other");
             }
         }
@@ -386,6 +386,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                         Thread.sleep(100);
                     } catch (
                             InterruptedException ignored) {
+                        Thread.currentThread().interrupt();
                     }
                 }
                 if (InstallerInitializer.peekMagiskVersion() < Constants.MAGISK_VER_CODE_INSTALL_COMMAND)
@@ -681,6 +682,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             }
         } catch (
                 InterruptedException e) {
+            Thread.currentThread().interrupt();
             return true;
         }
         return doSetupRestarting;

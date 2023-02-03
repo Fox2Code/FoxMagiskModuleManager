@@ -98,7 +98,7 @@ public class InstallerInitializer extends Shell.Initializer {
                 } catch (NoShellException e) {
                     error = ERROR_NO_SU;
                     Timber.w(e);
-                } catch (Throwable e) {
+                } catch (Exception e) {
                     error = ERROR_OTHER;
                     Timber.e(e);
                 }

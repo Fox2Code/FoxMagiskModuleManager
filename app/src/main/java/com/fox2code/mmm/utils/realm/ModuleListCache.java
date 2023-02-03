@@ -8,6 +8,7 @@ import io.realm.RealmObject;
 import io.realm.RealmResults;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
+import timber.log.Timber;
 
 @SuppressWarnings("unused")
 public class ModuleListCache extends RealmObject {
@@ -69,7 +70,7 @@ public class ModuleListCache extends RealmObject {
                 jsonObject.put(module.getId(), module.toJson());
             } catch (
                     JSONException e) {
-                e.printStackTrace();
+                Timber.e(e);
             }
         }
         realm.close();

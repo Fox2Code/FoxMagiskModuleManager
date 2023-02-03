@@ -83,7 +83,7 @@ public class InstallerActivity extends FoxActivity {
             return false;
         });
         final Intent intent = this.getIntent();
-        final String target;
+        String target;
         final String name;
         final String checksum;
         final boolean noExtensions;
@@ -96,7 +96,12 @@ public class InstallerActivity extends FoxActivity {
                 this.forceBackPressed();
                 return;
             }
-            target = intent.getStringExtra(Constants.EXTRA_INSTALL_PATH);
+            // ensure the intent is from our app, and is either a url or within our directory. replace all instances of .. and url encoded ..
+            target = intent.getStringExtra(Constants.EXTRA_INSTALL_PATH).trim().replaceAll("\\.\\.", "").replaceAll("%2e%2e", "");
+            if (target.isEmpty() || !target.startsWith(MainApplication.getINSTANCE().getDataDir().getAbsolutePath()) && !target.startsWith("https://")) {
+                this.forceBackPressed();
+                return;
+            }
             name = intent.getStringExtra(Constants.EXTRA_INSTALL_NAME);
             checksum = intent.getStringExtra(Constants.EXTRA_INSTALL_CHECKSUM);
             noExtensions = intent.getBooleanExtra(// Allow intent to disable extensions
@@ -110,7 +115,6 @@ public class InstallerActivity extends FoxActivity {
             this.forceBackPressed();
             return;
         }
-        Timber.i("Install link: %s", target);
         // Note: Sentry only send this info on crash.
         if (MainApplication.isCrashReportingEnabled()) {
             SentryBreadcrumb breadcrumb = new SentryBreadcrumb();
@@ -154,19 +158,29 @@ public class InstallerActivity extends FoxActivity {
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         this.progressIndicator.setVisibility(View.VISIBLE);
         if (urlMode) this.installerTerminal.addLine("- Downloading " + name);
+        String finalTarget = target;
         new Thread(() -> {
+            // ensure module cache is is in our cache dir
+            if (urlMode && !moduleCache.getAbsolutePath().startsWith(MainApplication.getINSTANCE().getCacheDir().getAbsolutePath()))
+                throw new SecurityException("Module cache is not in cache dir!");
             File moduleCache = this.toDelete = urlMode ?
-                    new File(this.moduleCache, "module.zip") : new File(target);
+                    new File(this.moduleCache, "module.zip") : new File(finalTarget);
+            try {
+                if (!moduleCache.getCanonicalPath().startsWith(MainApplication.getINSTANCE().getCacheDir().getAbsolutePath()))
+                    throw new SecurityException("Module cache is not in cache dir!");
+            } catch (
+                    IOException ignored) {
+            }
             if (urlMode && moduleCache.exists() && !moduleCache.delete() &&
                     !new SuFile(moduleCache.getAbsolutePath()).delete())
                 Timber.e("Failed to delete module cache");
             String errMessage = "Failed to download module zip";
             // Set this to the error message if it's a HTTP error
             byte[] rawModule;
-            boolean androidacyBlame = false; // In case Androidacy mess-up again... yeah screw you too jk jk
+            boolean androidacyBlame = false;
             try {
-                Timber.i("%s%s", (urlMode ? "Downloading: " : "Loading: "), target);
-                rawModule = urlMode ? Http.doHttpGet(target, (progress, max, done) -> {
+                Timber.i("%s%s", (urlMode ? "Downloading: " : "Loading: "), finalTarget);
+                rawModule = urlMode ? Http.doHttpGet(finalTarget, (progress, max, done) -> {
                     if (max <= 0 && this.progressIndicator.isIndeterminate())
                         return;
                     this.runOnUiThread(() -> {
@@ -180,9 +194,10 @@ public class InstallerActivity extends FoxActivity {
                     this.progressIndicator.setIndeterminate(true);
                 });
                 if (this.canceled) return;
-                androidacyBlame = urlMode && AndroidacyUtil.isAndroidacyFileUrl(target);
+                androidacyBlame = urlMode && AndroidacyUtil.isAndroidacyFileUrl(finalTarget);
                 if (checksum != null && !checksum.isEmpty()) {
-                    Timber.i("Checking for checksum: %s", checksum);
+                    //noinspection UnnecessaryCallToStringValueOf
+                    Timber.i("Checking for checksum: %s", String.valueOf(checksum));
                     this.runOnUiThread(() -> this.installerTerminal.addLine("- Checking file integrity"));
                     if (!Hashes.checkSumMatch(rawModule, checksum)) {
                         this.setInstallStateFinished(false,
@@ -245,7 +260,6 @@ public class InstallerActivity extends FoxActivity {
                 } else {
                     errMessage = "Failed to patch module zip";
                     this.runOnUiThread(() -> this.installerTerminal.addLine("- Patching " + name));
-                    Timber.i("Patching: %s", moduleCache.getName());
                     try (OutputStream outputStream = new FileOutputStream(moduleCache)) {
                         Files.patchModuleSimple(rawModule, outputStream);
                         outputStream.flush();

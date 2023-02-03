@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,8 +43,6 @@ import timber.log.Timber;
 
 @SuppressWarnings("KotlinInternalInJava")
 public final class AndroidacyRepoData extends RepoData {
-    public String[][] userInfo = new String[][]{{"role", null}, {"permissions", null}};
-
     public static String token = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).getString("pref_androidacy_api_token", null);
 
     static {
@@ -54,9 +54,10 @@ public final class AndroidacyRepoData extends RepoData {
 
     @SuppressWarnings("unused")
     public final String ClientID = BuildConfig.ANDROIDACY_CLIENT_ID;
+    public final SharedPreferences cachedPreferences = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0);
     private final boolean testMode;
     private final String host;
-    public final SharedPreferences cachedPreferences = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0);
+    public String[][] userInfo = new String[][]{{"role", null}, {"permissions", null}};
     public String memberLevel;
     // Avoid spamming requests to Androidacy
     private long androidacyBlockade = 0;
@@ -139,22 +140,13 @@ public final class AndroidacyRepoData extends RepoData {
         String deviceId = generateDeviceId();
         try {
             byte[] resp = Http.doHttpGet("https://" + this.host + "/auth/me?token=" + token + "&device_id=" + deviceId, false);
+            // response is JSON
             JSONObject jsonObject = new JSONObject(new String(resp));
             memberLevel = jsonObject.getString("role");
             JSONArray memberPermissions = jsonObject.getJSONArray("permissions");
             // set role and permissions on userInfo property
             userInfo = new String[][]{{"role", memberLevel}, {"permissions", String.valueOf(memberPermissions)}};
-            String status = jsonObject.getString("status");
-            if (status.equals("success")) {
-                return true;
-            } else {
-                Timber.w("Invalid token, resetting...");
-                // Remove saved preference
-                SharedPreferences.Editor editor = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit();
-                editor.remove("pref_androidacy_api_token");
-                editor.apply();
-                return false;
-            }
+            return true;
         } catch (
                 HttpException e) {
             if (e.getErrorCode() == 401) {
@@ -169,7 +161,13 @@ public final class AndroidacyRepoData extends RepoData {
         } catch (
                 JSONException e) {
             // response is not JSON
-            throw new IOException(e);
+            Timber.w("Invalid token, resetting...");
+            Timber.w(e);
+            // Remove saved preference
+            SharedPreferences.Editor editor = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit();
+            editor.remove("pref_androidacy_api_token");
+            editor.apply();
+            return false;
         }
     }
 
@@ -242,25 +240,30 @@ public final class AndroidacyRepoData extends RepoData {
         if (token == null) {
             try {
                 Timber.i("Requesting new token...");
-                // POST json request to https://produc/tion-api.androidacy.com/auth/register
-                token = new String(Http.doHttpPost("https://" + this.host + "/auth/register", "{\"device_id\":\"" + deviceId + "\"}", false));
+                // POST json request to https://production-api.androidacy.com/auth/register
+                token = new String(Http.doHttpPost("https://" + this.host + "/auth/register?client_id=" + BuildConfig.ANDROIDACY_CLIENT_ID, "{\"device_id\":\"" + deviceId + "\"}", false));
                 // Parse token
                 try {
                     JSONObject jsonObject = new JSONObject(token);
+                    Timber.d("Token: %s", token);
                     token = jsonObject.getString("token");
                     memberLevel = jsonObject.getString("role");
                 } catch (
                         JSONException e) {
                     Timber.e(e, "Failed to parse token");
                     // Show a toast
-                    Toast.makeText(MainApplication.getINSTANCE(), R.string.androidacy_failed_to_parse_token, Toast.LENGTH_LONG).show();
+                    Looper mainLooper = Looper.getMainLooper();
+                    Handler handler = new Handler(mainLooper);
+                    handler.post(() -> Toast.makeText(MainApplication.getINSTANCE(), R.string.androidacy_failed_to_parse_token, Toast.LENGTH_LONG).show());
                     return false;
                 }
                 // Ensure token is valid
                 if (!isValidToken(token)) {
                     Timber.e("Failed to validate token");
                     // Show a toast
-                    Toast.makeText(MainApplication.getINSTANCE(), R.string.androidacy_failed_to_validate_token, Toast.LENGTH_LONG).show();
+                    Looper mainLooper = Looper.getMainLooper();
+                    Handler handler = new Handler(mainLooper);
+                    handler.post(() -> Toast.makeText(MainApplication.getINSTANCE(), R.string.androidacy_failed_to_validate_token, Toast.LENGTH_LONG).show());
                     return false;
                 }
                 // Save token to shared preference
@@ -277,8 +280,6 @@ public final class AndroidacyRepoData extends RepoData {
                 return false;
             }
         }
-        //noinspection SillyAssignment // who are you calling silly?
-        token = token;
         return true;
     }
 

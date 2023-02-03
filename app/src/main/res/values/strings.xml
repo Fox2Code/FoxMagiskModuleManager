@@ -140,10 +140,10 @@
     <string name="androidacy_test_mode_desc">Use staging Androidacy endpoint instead of release endpoint. (Will restart app)</string>
 
     <!-- Background Notification translation -->
-    <string name="notification_update_title">Found %i module updates</string>
+    <string name="notification_update_title">Found %1$d module updates</string>
     <string name="notification_update_title_easter_egg">Sniffed %i module updates</string>
     <string name="notification_update_subtitle">Click to open the app</string>
-    <string name="notification_update_pref">Background modules update check</string>
+    <string name="notification_update_pref">Automatic modules update check</string>
     <string name="notification_update_desc">May increase battery usage</string>
     <string name="notification_update_debug_pref">Test Notification</string>
 
@@ -340,6 +340,19 @@
     <string name="error_download_update">An error occurred downloading the update information.</string>
     <string name="error_no_asset">ERROR: Failed to parse update information</string>
     <string name="downloading_update">Downloading update… %1$d%%</string>
-    <string name="installing_update">Installing update…</string><string name="no_file_found">ERROR: Could not find update package.</string><string name="check_for_updates">Check for app updates</string><string name="update_debug_download_pref">Test update download mechanism</string><string name="changelog_none">No changes yet!</string><string name="update_cancel_button">Cancel update</string><string name="invalid_repo_url">The URL you entered for the repo is invalid</string>
-    <string name="add_repo_message">Repos must be served over HTTPS, and must follow the spec outlined in the <a href="https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/docs/DEVELOPERS.md#custom-repo-format">docs</a>.</string>
+    <string name="installing_update">Installing update…</string>
+    <string name="no_file_found">ERROR: Could not find update package.</string>
+    <string name="check_for_updates">Check for app updates</string>
+    <string name="update_debug_download_pref">Test update download mechanism</string>
+    <string name="changelog_none">No changes yet!</string>
+    <string name="update_cancel_button">Cancel update</string>
+    <string name="invalid_repo_url">The URL you entered for the repo is invalid</string>
+    <string name="add_repo_message">Repos must be served over HTTPS, and must follow the spec outlined in the documentation.</string>
+    <string name="notification_update_summary">The following modules can be updated:</string>
+    <string name="notification_update_module_template">%1$s to version %2$s</string>
+    <string name="notification_channel_background_update">Checking for updates...</string>
+    <string name="notification_channel_background_update_description">FoxMMM is checking for updates in the background.</string><string name="notification_channel_category_background_update">Background update status</string>
+    <string name="notification_channel_category_background_update_description">Shows a notification while checking for updates so the system doesn\'t kill it</string>
+    <string name="notification_update_wifi_desc">Only check on WiFi</string>
+    <string name="notification_update_wifi_pref">Require wi-fi or an unmetered network for update checks. Recommended to leave on if you have limited mobile data.</string><string name="background_update_check_excludes_no_modules">No modules installed on device</string><string name="auto_updates_notifs">Notifies when module updates are found</string><string name="notification_group_updates">Updates</string><string name="low_quality_module_desc">This module has metadata that is either invalid or considered a marker for a low-quality module. Uninstallation is recommended.</string>
 </resources>

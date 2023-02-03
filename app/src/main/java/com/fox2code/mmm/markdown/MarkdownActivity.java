@@ -119,7 +119,14 @@ public class MarkdownActivity extends FoxActivity {
                         configPkg + "\" missing for markdown view");
             }
         }
-        Timber.i("Url for markdown %s", url);
+        // validate the url won't crash the app
+        if (url == null || url.isEmpty() || url.contains("..")) {
+            Timber.e("Invalid url %s", String.valueOf(url));
+            this.forceBackPressed();
+            return;
+        }
+        //noinspection UnnecessaryCallToStringValueOf
+        Timber.i("Url for markdown %s", String.valueOf(url));
         setContentView(R.layout.markdown_view);
         final ViewGroup markdownBackground = findViewById(R.id.markdownBackground);
         final TextView textView = findViewById(R.id.markdownView);

@@ -97,6 +97,7 @@
     </PreferenceCategory>
     <PreferenceCategory
         app:key="pref_custom_repo_0"
+        app:isPreferenceVisible="false"
         app:title="@string/loading">
         <!-- Custom repos can't be enabled/disabled. Instead, they must be deleted. Show a disabled
              switch to indicate that. -->
@@ -136,6 +137,7 @@
     </PreferenceCategory>
     <PreferenceCategory
         app:key="pref_custom_repo_1"
+        app:isPreferenceVisible="false"
         app:title="@string/loading">
         <SwitchPreferenceCompat
             app:defaultValue="true"
@@ -173,6 +175,7 @@
     </PreferenceCategory>
     <PreferenceCategory
         app:key="pref_custom_repo_2"
+        app:isPreferenceVisible="false"
         app:title="@string/loading">
         <SwitchPreferenceCompat
             app:defaultValue="true"
@@ -210,6 +213,7 @@
     </PreferenceCategory>
     <PreferenceCategory
         app:key="pref_custom_repo_3"
+        app:isPreferenceVisible="false"
         app:title="@string/loading">
         <SwitchPreferenceCompat
             app:defaultValue="true"
@@ -247,6 +251,7 @@
     </PreferenceCategory>
     <PreferenceCategory
         app:key="pref_custom_repo_4"
+        app:isPreferenceVisible="false"
         app:title="@string/loading">
         <SwitchPreferenceCompat
             app:defaultValue="true"

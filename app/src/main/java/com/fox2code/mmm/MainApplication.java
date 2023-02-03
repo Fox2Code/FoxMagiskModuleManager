@@ -60,7 +60,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     public static final HashSet<String> supportedLocales = new HashSet<>();
     private static final String timeFormatString = "dd MMM yyyy"; // Example: 13 july 2001
     private static final Shell.Builder shellBuilder;
-    private static final long secret;
+    private static long secret;
     @SuppressLint("RestrictedApi")
     // Use FoxProcess wrapper helper.
     private static final boolean wrapped = !FoxProcessExt.isRootLoader();
@@ -75,7 +75,10 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
 
     static {
         Shell.setDefaultBuilder(shellBuilder = Shell.Builder.create().setFlags(Shell.FLAG_REDIRECT_STDERR).setTimeout(10).setInitializers(InstallerInitializer.class));
-        secret = new Random().nextLong();
+        Random random = new Random();
+        do {
+            secret = random.nextLong();
+        } while (secret == 0);
     }
 
     @StyleRes

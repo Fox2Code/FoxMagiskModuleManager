@@ -1,10 +1,16 @@
 package com.fox2code.mmm.background;
 
 import android.Manifest;
+import android.app.NotificationChannelGroup;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationChannelCompat;
@@ -13,7 +19,6 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.work.Constraints;
 import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.Worker;
@@ -29,26 +34,66 @@ import com.fox2code.mmm.repo.RepoModule;
 import com.fox2code.mmm.utils.io.PropUtils;
 
 import java.util.HashMap;
-import java.util.Random;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
+import timber.log.Timber;
 
 public class BackgroundUpdateChecker extends Worker {
     public static final String NOTIFICATION_CHANNEL_ID = "background_update";
+    public static final String NOTIFICATION_CHANNEL_ID_ONGOING = "background_update_status";
     public static final int NOTIFICATION_ID = 1;
+    public static final int NOTIFICATION_ID_ONGOING = 2;
+    public static final String NOTFIICATION_GROUP = "updates";
     static final Object lock = new Object(); // Avoid concurrency issues
-    private static boolean easterEggActive = false;
 
     public BackgroundUpdateChecker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
     }
 
     static void doCheck(Context context) {
+        // first, check if the user has enabled background update checking
+        if (!MainApplication.getSharedPreferences().getBoolean("pref_background_update_check", false)) {
+            return;
+        }
+        // next, check if user requires wifi
+        if (MainApplication.getSharedPreferences().getBoolean("pref_background_update_check_wifi", true)) {
+            // check if wifi is connected
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            Network networkInfo = connectivityManager.getActiveNetwork();
+            if (networkInfo == null || !connectivityManager.getNetworkCapabilities(networkInfo).hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                Timber.w("Background update check: wifi not connected but required");
+                return;
+            }
+        }
+        // post checking notification if notofiications are enabled
+        if (ContextCompat.checkSelfPermission(MainApplication.getINSTANCE(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+            if (!MainApplication.getINSTANCE().isInForeground()) {
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.createNotificationChannel(new NotificationChannelCompat.Builder(NOTIFICATION_CHANNEL_ID_ONGOING, NotificationManagerCompat.IMPORTANCE_LOW).setName(context.getString(R.string.notification_channel_category_background_update)).setDescription(context.getString(R.string.notification_channel_category_background_update_description)).setGroup(NOTFIICATION_GROUP).build());
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID);
+                builder.setSmallIcon(R.drawable.ic_baseline_update_24);
+                builder.setPriority(NotificationCompat.PRIORITY_LOW);
+                builder.setCategory(NotificationCompat.CATEGORY_RECOMMENDATION);
+                builder.setShowWhen(false);
+                builder.setOnlyAlertOnce(true);
+                builder.setOngoing(true);
+                builder.setAutoCancel(false);
+                builder.setGroup("update");
+                builder.setContentTitle(context.getString(R.string.notification_channel_background_update));
+                builder.setContentText(context.getString(R.string.notification_channel_background_update_description));
+                notificationManager.notify(NOTIFICATION_ID_ONGOING, builder.build());
+            }
+        }
         Thread.currentThread().setPriority(2);
         ModuleManager.getINSTANCE().scanAsync();
         RepoManager.getINSTANCE().update(null);
         ModuleManager.getINSTANCE().runAfterScan(() -> {
             int moduleUpdateCount = 0;
             HashMap<String, RepoModule> repoModules = RepoManager.getINSTANCE().getModules();
+            // hasmap of updateable modules names
+            HashMap<String, String> updateableModules = new HashMap<>();
             for (LocalModuleInfo localModuleInfo : ModuleManager.getINSTANCE().getModules().values()) {
                 if ("twrp-keep".equals(localModuleInfo.id))
                     continue;
@@ -56,26 +101,55 @@ public class BackgroundUpdateChecker extends Worker {
                 try {
                     if (MainApplication.getSharedPreferences().getStringSet("pref_background_update_check_excludes", null).contains(localModuleInfo.id))
                         continue;
-                } catch (Exception ignored) {
+                } catch (
+                        Exception ignored) {
                 }
                 RepoModule repoModule = repoModules.get(localModuleInfo.id);
                 localModuleInfo.checkModuleUpdate();
                 if (localModuleInfo.updateVersionCode > localModuleInfo.versionCode && !PropUtils.isNullString(localModuleInfo.updateVersion)) {
                     moduleUpdateCount++;
+                    updateableModules.put(localModuleInfo.name, localModuleInfo.version);
                 } else if (repoModule != null && repoModule.moduleInfo.versionCode > localModuleInfo.versionCode && !PropUtils.isNullString(repoModule.moduleInfo.version)) {
                     moduleUpdateCount++;
+                    updateableModules.put(localModuleInfo.name, localModuleInfo.version);
                 }
             }
             if (moduleUpdateCount != 0) {
-                postNotification(context, moduleUpdateCount, false);
+                postNotification(context, updateableModules, moduleUpdateCount, false);
             }
         });
+        // remove checking notification
+        if (ContextCompat.checkSelfPermission(MainApplication.getINSTANCE(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+            notificationManager.cancel(NOTIFICATION_ID_ONGOING);
+        }
     }
 
-    public static void postNotification(Context context, int updateCount, boolean test) {
-        if (!easterEggActive)
-            easterEggActive = new Random().nextInt(100) <= updateCount;
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID).setContentTitle(context.getString(easterEggActive ? R.string.notification_update_title_easter_egg : R.string.notification_update_title).replace("%i", String.valueOf(updateCount))).setContentText(context.getString(R.string.notification_update_subtitle)).setSmallIcon(R.drawable.ic_baseline_extension_24).setPriority(NotificationCompat.PRIORITY_HIGH).setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK), PendingIntent.FLAG_IMMUTABLE)).setAutoCancel(true);
+    public static void postNotification(Context context, HashMap<String, String> updateable, int updateCount, boolean test) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID);
+        builder.setSmallIcon(R.drawable.baseline_system_update_24);
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+        builder.setCategory(NotificationCompat.CATEGORY_RECOMMENDATION);
+        builder.setShowWhen(false);
+        builder.setOnlyAlertOnce(true);
+        builder.setOngoing(false);
+        builder.setAutoCancel(true);
+        builder.setGroup(NOTFIICATION_GROUP);
+        // open app on click
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        builder.setContentIntent(android.app.PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE));
+        // set summary to Found X updates: <module name> <module version> <module name> <module version> ...
+        StringBuilder summary = new StringBuilder();
+        summary.append(context.getString(R.string.notification_update_summary));
+        // use notification_update_module_template string to set name and version
+        for (Map.Entry<String, String> entry : updateable.entrySet()) {
+            summary.append("\n").append(context.getString(R.string.notification_update_module_template, entry.getKey(), entry.getValue()));
+        }
+        builder.setContentTitle(context.getString(R.string.notification_update_title, updateCount));
+        builder.setContentText(summary);
+        // set long text to summary so it doesn't get cut off
+        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(summary));
         if (ContextCompat.checkSelfPermission(MainApplication.getINSTANCE(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -89,16 +163,20 @@ public class BackgroundUpdateChecker extends Worker {
         // Refuse to run if first_launch pref is not false
         if (MainApplication.getSharedPreferences().getBoolean("first_time_setup_done", true))
             return;
+        // create notification channel group
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence groupName = context.getString(R.string.notification_group_updates);
+            NotificationManager mNotificationManager = (NotificationManager) ContextCompat.getSystemService(context, NotificationManager.class);
+            Objects.requireNonNull(mNotificationManager).createNotificationChannelGroup(new NotificationChannelGroup(NOTFIICATION_GROUP, groupName));
+        }
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
-        notificationManagerCompat.createNotificationChannel(new NotificationChannelCompat.Builder(NOTIFICATION_CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_HIGH).setShowBadge(true).setName(context.getString(R.string.notification_update_pref)).build());
+        notificationManagerCompat.createNotificationChannel(new NotificationChannelCompat.Builder(NOTIFICATION_CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_HIGH).setShowBadge(true).setName(context.getString(R.string.notification_update_pref)).setDescription(context.getString(R.string.auto_updates_notifs)).setGroup(NOTFIICATION_GROUP).build());
         notificationManagerCompat.cancel(BackgroundUpdateChecker.NOTIFICATION_ID);
-        BackgroundUpdateChecker.easterEggActive = false;
-        WorkManager.getInstance(context).enqueueUniquePeriodicWork("background_checker", ExistingPeriodicWorkPolicy.REPLACE, new PeriodicWorkRequest.Builder(BackgroundUpdateChecker.class, 6, TimeUnit.HOURS).setConstraints(new Constraints.Builder().setRequiresBatteryNotLow(true).setRequiredNetworkType(NetworkType.UNMETERED).build()).build());
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork("background_checker", ExistingPeriodicWorkPolicy.REPLACE, new PeriodicWorkRequest.Builder(BackgroundUpdateChecker.class, 6, TimeUnit.HOURS).setConstraints(new Constraints.Builder().setRequiresBatteryNotLow(true).build()).build());
     }
 
     public static void onMainActivityResume(Context context) {
         NotificationManagerCompat.from(context).cancel(BackgroundUpdateChecker.NOTIFICATION_ID);
-        BackgroundUpdateChecker.easterEggActive = false;
     }
 
     @NonNull

@@ -41,7 +41,6 @@ import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class SetupActivity extends FoxActivity implements LanguageActivity {
@@ -161,8 +160,10 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                             break;
                     }
                     // restart the activity because switching to transparent pisses the rendering engine off
-                    Intent intent = getIntent();
+                    Intent intent = new Intent(this, SetupActivity.class);
                     finish();
+                    // ensure intent originates from the same package
+                    intent.setPackage(getPackageName());
                     startActivity(intent);
                 }, 100);
             });
@@ -218,7 +219,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                 Thread.sleep(500);
             } catch (
                     InterruptedException e) {
-                e.printStackTrace();
+                Thread.currentThread().interrupt();
             }
             // Log the changes if debug
             if (BuildConfig.DEBUG) {
@@ -275,7 +276,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         // refresh app language
         runOnUiThread(() -> {
             // refresh activity
-            Intent intent = getIntent();
+            Intent intent = new Intent(this, SetupActivity.class);
             finish();
             startActivity(intent);
         });
@@ -325,20 +326,6 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                     realm1.insertOrUpdate(magisk_alt_repo);
                 }
                 realm1.commitTransaction();
-                realm1.close();
-                if (BuildConfig.DEBUG) {
-                    Timber.d("Realm databases created");
-                    Realm realm3 = Realm.getInstance(config2);
-                    RealmResults<ReposList> reposLists = realm3.where(ReposList.class).findAll();
-                    assert reposLists != null;
-                    Timber.d("ReposList.realm");
-                    for (ReposList reposList : reposLists) {
-                        Timber.d("Record: %s", reposList.getId());
-                        // log the data
-                        Timber.d("Name: %s, Donate: %s, Support: %s, Submit Module: %s, Website: %s, Enabled: %s, Last Update: %s", reposList.getName(), reposList.getDonate(), reposList.getSupport(), reposList.getSubmitModule(), reposList.getWebsite(), reposList.isEnabled(), reposList.getLastUpdate());
-                    }
-                    realm3.close();
-                }
             }
         });
     }

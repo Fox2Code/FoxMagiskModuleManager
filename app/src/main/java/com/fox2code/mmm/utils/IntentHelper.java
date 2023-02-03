@@ -78,7 +78,6 @@ public enum IntentHelper {
         } catch (ActivityNotFoundException e) {
             Toast.makeText(context, "No application can handle this request.\n"
                     + " Please install a web-browser", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
         }
     }
 
@@ -93,7 +92,6 @@ public enum IntentHelper {
         } catch (ActivityNotFoundException e) {
             Toast.makeText(context, "No application can handle this request.\n"
                     + " Please install a web-browser", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
         }
     }
 
@@ -123,7 +121,6 @@ public enum IntentHelper {
         } catch (ActivityNotFoundException e) {
             Toast.makeText(context, "No application can handle this request."
                     + " Please install a web-browser",  Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
         }
     }
 
@@ -165,7 +162,6 @@ public enum IntentHelper {
         } catch (ActivityNotFoundException e) {
             Toast.makeText(context,
                     "Failed to launch module config activity",  Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
         }
     }
 
@@ -186,7 +182,6 @@ public enum IntentHelper {
         } catch (ActivityNotFoundException e) {
             Toast.makeText(context,
                     "Failed to launch markdown activity",  Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
         }
     }
 
@@ -215,7 +210,6 @@ public enum IntentHelper {
         } catch (ActivityNotFoundException e) {
             Toast.makeText(context,
                     "Failed to launch markdown activity",  Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
         }
     }
 
@@ -322,7 +316,7 @@ public enum IntentHelper {
                                   OnFileReceivedCallback callback) {
         File destinationFolder;
         if (destination == null || (destinationFolder = destination.getParentFile()) == null ||
-                (!destinationFolder.isDirectory() && !destinationFolder.mkdirs())) {
+                (!destinationFolder.mkdirs() && !destinationFolder.isDirectory())) {
             callback.onReceived(destination, null, RESPONSE_ERROR);
             return;
         }

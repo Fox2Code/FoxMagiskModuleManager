@@ -43,6 +43,15 @@
             app:summary="@string/notification_update_desc"
             app:title="@string/notification_update_pref" />
 
+        <!-- require wifi -->
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:icon="@drawable/baseline_network_wifi_24"
+            app:key="pref_background_update_check_wifi"
+            app:singleLineTitle="false"
+            app:summary="@string/notification_update_wifi_pref"
+            app:title="@string/notification_update_wifi_desc" />
+
         <!-- Ignore updates for preference. Used to ignore updates for specific modules -->
         <Preference
             app:icon="@drawable/baseline_block_24"

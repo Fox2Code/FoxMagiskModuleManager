@@ -10,21 +10,40 @@
         <intent>
             <action android:name="com.fox2code.mmm.utils.intent.action.OPEN_EXTERNAL" />
         </intent>
-    </queries> <!-- Wifi is not the only way to get an internet connection -->
+    </queries>
+    <!-- Wifi is not the only way to get an internet connection -->
     <uses-feature
         android:name="android.hardware.wifi"
-        android:required="false" /> <!-- Retrieve online modules -->
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- WebView offline webpage support -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- Check if there is modules updates on boot -->
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> <!-- Open config apps for applications -->
-    <uses-permission-sdk-23 android:name="android.permission.QUERY_ALL_PACKAGES" /> <!-- Supposed to fix bugs with old firmware, only requested on pre Marshmallow -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- Post background notifications -->
+        android:required="false" />
+    <!-- uses webview -->
+    <uses-feature
+        android:name="android.software.webview"
+        android:required="false" />
+    <!-- uses opengl 1.2 -->
+    <uses-feature
+        android:name="android.hardware.opengles.aep"
+        android:required="false" />
+    <uses-feature
+        android:glEsVersion="0x00020000" android:required="false" />
+    <!-- Retrieve online modules -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- WebView offline webpage support -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Check if there is modules updates on boot -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- Open config apps for applications -->
+    <uses-permission-sdk-23 android:name="android.permission.QUERY_ALL_PACKAGES" />
+    <!-- Open and read zips -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- Post background notifications -->
     <uses-permission-sdk-23 android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Install updates -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
         android:name=".MainApplication"
         android:allowBackup="false"
+        android:hardwareAccelerated="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:enableOnBackInvokedCallback="true"
         android:fullBackupContent="@xml/full_backup_content"
@@ -41,17 +60,14 @@
         tools:targetApi="tiramisu">
         <activity
             android:name=".UpdateActivity"
-            android:hardwareAccelerated="true"
             android:exported="false" />
         <activity
             android:name=".CrashHandler"
             android:exported="false"
-            android:hardwareAccelerated="true"
             android:process=":crash" />
         <activity
             android:name=".SetupActivity"
             android:exported="false"
-            android:hardwareAccelerated="true"
             android:label="@string/title_activity_setup"
             android:theme="@style/Theme.MagiskModuleManager.NoActionBar" />
 
@@ -66,7 +82,6 @@
         <activity
             android:name=".settings.SettingsActivity"
             android:exported="true"
-            android:hardwareAccelerated="true"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".MainActivity">
             <intent-filter>
@@ -76,7 +91,6 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:hardwareAccelerated="true"
             android:label="@string/app_name_short"
             android:launchMode="singleTask">
             <intent-filter>
@@ -88,7 +102,6 @@
         <activity
             android:name=".installer.InstallerActivity"
             android:exported="false"
-            android:hardwareAccelerated="true"
             android:launchMode="singleTop"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
@@ -103,7 +116,6 @@
         <activity
             android:name=".utils.ZipFileOpener"
             android:exported="true"
-            android:hardwareAccelerated="true"
             android:theme="@style/Theme.MagiskModuleManager">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -118,13 +130,11 @@
         <activity
             android:name=".markdown.MarkdownActivity"
             android:exported="false"
-            android:hardwareAccelerated="true"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.MagiskModuleManager" />
         <activity
             android:name=".androidacy.AndroidacyActivity"
             android:exported="false"
-            android:hardwareAccelerated="true"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.MagiskModuleManager">
 
@@ -165,22 +175,28 @@
             android:value="false" />
         <meta-data
             android:name="io.sentry.dsn"
-            android:value="https://198c68516cb0412b9832204631a3fac8@o993586.ingest.sentry.io/4504069942804480" /> <!-- Sane value, but feel free to lower it -->
+            android:value="https://198c68516cb0412b9832204631a3fac8@o993586.ingest.sentry.io/4504069942804480" />
+        <!-- Sane value, but feel free to lower it -->
         <meta-data
             android:name="io.sentry.traces.sample-rate"
-            android:value="0.5" /> <!-- Doesn't actually monitor anything, just used to get the activities the user went through -->
+            android:value="0.25" />
+        <!-- Doesn't actually monitor anything, just used to get the activities the user went through -->
         <meta-data
             android:name="io.sentry.traces.user-interaction.enable"
-            android:value="true" /> <!-- Just a screenshot of ONLY the current activity at the time of the crash -->
+            android:value="true" />
+        <!-- Just a screenshot of ONLY the current activity at the time of the crash -->
         <meta-data
             android:name="io.sentry.attach-screenshot"
-            android:value="true" /> <!-- Just the current activity at the time of the crash -->
+            android:value="true" />
+        <!-- Just the current activity at the time of the crash -->
         <meta-data
             android:name="io.sentry.attach-stacktrace"
-            android:value="true" /> <!-- Don't send PII, this is actually default but let's be explicit -->
+            android:value="true" />
+        <!-- Don't send PII, this is actually default but let's be explicit -->
         <meta-data
             android:name="io.sentry.sendDefaultPii"
             android:value="false" />
+        <!-- Performance profiling -->
         <meta-data
             android:name="io.sentry.traces.profiling.sample-rate"
             android:value="0.25" />

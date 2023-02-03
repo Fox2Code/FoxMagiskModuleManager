@@ -16,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -30,10 +31,6 @@ public class CrashHandler extends FoxActivity {
         Timber.i("CrashHandler.onCreate(%s)", savedInstanceState);
         // log intent with extras
         Timber.d("CrashHandler.onCreate: intent=%s", getIntent());
-        // get exception, stacktrace, and lastEventId from intent and log them
-        Timber.d("CrashHandler.onCreate: exception=%s", getIntent().getSerializableExtra("exception"));
-        Timber.d("CrashHandler.onCreate: stacktrace=%s", getIntent().getSerializableExtra("stacktrace"));
-        Timber.d("CrashHandler.onCreate: lastEventId=%s", getIntent().getStringExtra("lastEventId"));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crash_handler);
         // set crash_details MaterialTextView to the exception passed in the intent or unknown if null
@@ -95,8 +92,13 @@ public class CrashHandler extends FoxActivity {
                         body.put("comments", description.getText().toString());
                         // Send the request
                         connection.setDoOutput(true);
-                        connection.getOutputStream().write(body.toString().getBytes());
-                        connection.connect();
+                        OutputStream outputStream = connection.getOutputStream();
+                        outputStream.write(body.toString().getBytes());
+                        outputStream.flush();
+                        outputStream.close();
+                        // close and disconnect the connection
+                        connection.getInputStream().close();
+                        connection.disconnect();
                         // For debug builds, log the response code and response body
                         if (BuildConfig.DEBUG) {
                             Timber.d("Response Code: %s", connection.getResponseCode());
@@ -107,8 +109,6 @@ public class CrashHandler extends FoxActivity {
                         } else {
                             runOnUiThread(() -> Toast.makeText(this, R.string.sentry_dialogue_failed_toast, Toast.LENGTH_LONG).show());
                         }
-                        // close and disconnect the connection
-                        connection.disconnect();
                     } catch (
                             JSONException |
                             IOException ignored) {
@@ -184,7 +184,7 @@ public class CrashHandler extends FoxActivity {
                 Thread.sleep(1000);
             } catch (
                     InterruptedException e) {
-                e.printStackTrace();
+                Thread.currentThread().interrupt();
             }
             runOnUiThread(() -> view.setBackgroundResource(R.drawable.baseline_copy_all_24));
         }).start();

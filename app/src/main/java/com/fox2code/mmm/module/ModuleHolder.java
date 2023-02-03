@@ -299,7 +299,15 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
         // Note: This method should only be called if both element have the same type
         @Override
         public int compare(ModuleHolder o1, ModuleHolder o2) {
-            return 0;
+            if (o1 == o2) {
+                return 0;
+            } else if (o1 == null) {
+                return -1;
+            } else if (o2 == null) {
+                return 1;
+            } else {
+                return o1.moduleId.compareTo(o2.moduleId);
+            }
         }
     }
 

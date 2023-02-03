@@ -82,7 +82,6 @@ public class UpdateActivity extends FoxActivity {
                         downloadUpdate();
                     } catch (
                             JSONException e) {
-                        e.printStackTrace();
                         runOnUiThread(() -> {
                             // set status text to error
                             statusTextView.setText(R.string.error_download_update);
@@ -92,9 +91,9 @@ public class UpdateActivity extends FoxActivity {
                         });
                     }
                 } else if (action == ACTIONS.INSTALL) {
-                    // ensure path was passed and points to a file within our cache directory
-                    String path = getIntent().getStringExtra("path");
-                    if (path == null) {
+                    // ensure path was passed and points to a file within our cache directory. replace .. and url encoded characters
+                    String path = getIntent().getStringExtra("path").trim().replaceAll("\\.\\.", "").replaceAll("%2e%2e", "");
+                    if (path.isEmpty()) {
                         runOnUiThread(() -> {
                             // set status text to error
                             statusTextView.setText(R.string.no_file_found);
@@ -104,7 +103,21 @@ public class UpdateActivity extends FoxActivity {
                         });
                         return;
                     }
+                    // check and sanitize file path
+                    // path must be in our cache directory
+                    if (!path.startsWith(getCacheDir().getAbsolutePath())) {
+                        throw new SecurityException("Path is not in cache directory: " + path);
+                    }
                     File file = new File(path);
+                    File parentFile = file.getParentFile();
+                    try {
+                        if (parentFile == null || !parentFile.getCanonicalPath().startsWith(getCacheDir().getCanonicalPath())) {
+                            throw new SecurityException("Path is not in cache directory: " + path);
+                        }
+                    } catch (
+                            IOException e) {
+                        throw new SecurityException("Path is not in cache directory: " + path);
+                    }
                     if (!file.exists()) {
                         runOnUiThread(() -> {
                             // set status text to error
@@ -248,7 +261,6 @@ public class UpdateActivity extends FoxActivity {
             }));
         } catch (
                 Exception e) {
-            e.printStackTrace();
             runOnUiThread(() -> {
                 progressIndicator.setIndeterminate(false);
                 progressIndicator.setProgressCompat(100, false);
@@ -288,19 +300,27 @@ public class UpdateActivity extends FoxActivity {
         });
         // save the update to the cache
         File updateFile = null;
+        FileOutputStream fileOutputStream = null;
         try {
             updateFile = new File(getCacheDir(), "update.apk");
-            FileOutputStream fileOutputStream = new FileOutputStream(updateFile);
+            fileOutputStream = new FileOutputStream(updateFile);
             fileOutputStream.write(update);
-            fileOutputStream.close();
         } catch (
                 IOException e) {
-            e.printStackTrace();
             runOnUiThread(() -> {
                 progressIndicator.setIndeterminate(false);
                 progressIndicator.setProgressCompat(100, false);
                 statusTextView.setText(R.string.error_download_update);
             });
+        } finally {
+            if (Objects.nonNull(updateFile)) {
+                Objects.requireNonNull(updateFile).deleteOnExit();
+            }
+            try {
+                Objects.requireNonNull(fileOutputStream).close();
+            } catch (
+                    IOException ignored) {
+            }
         }
         // install the update
         installUpdate(updateFile);
@@ -321,10 +341,10 @@ public class UpdateActivity extends FoxActivity {
             progressIndicator.setProgressCompat(100, false);
         });
         // request install permissions
-        Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
         Context context = getApplicationContext();
         Uri uri = FileProvider.getUriForFile(context, context.getPackageName() + ".file-provider", updateFile);
-        intent.setData(uri);
+        intent.setDataAndTypeAndNormalize(uri, "application/vnd.android.package-archive");
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

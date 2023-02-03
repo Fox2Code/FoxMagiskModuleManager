@@ -93,7 +93,7 @@ public class RepoData extends XRepo {
             supportedProperties.put("installed", "");
             supportedProperties.put("installedVersionCode", "");
         } catch (JSONException e) {
-            e.printStackTrace();
+            Timber.e(e, "Error while setting up supportedProperties");
         }
         this.url = url;
         this.id = RepoManager.internalIdOfUrl(url);

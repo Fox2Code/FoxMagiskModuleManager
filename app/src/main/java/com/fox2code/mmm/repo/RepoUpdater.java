@@ -281,14 +281,12 @@ public class RepoUpdater {
                         realm.commitTransaction();
                     } catch (
                             Exception e) {
-                        e.printStackTrace();
                         Timber.w("Failed to get module info from module " + module + " in repo " + this.repoData.id + " with error " + e.getMessage());
                     }
                 }
                 realm.close();
             } catch (
-                    Exception e) {
-                e.printStackTrace();
+                    Exception ignored) {
             }
             this.indexRaw = null;
             RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();

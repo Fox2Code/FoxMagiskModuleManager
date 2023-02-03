@@ -90,7 +90,7 @@ public enum Http {
             cookieManager.setAcceptCookie(true);
             cookieManager.flush(); // Make sure the instance work
         } catch (
-                Throwable t) {
+                Exception t) {
             cookieManager = null;
             Timber.e(t, "No WebView support!");
         }

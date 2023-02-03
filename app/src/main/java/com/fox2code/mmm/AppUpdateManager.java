@@ -44,8 +44,7 @@ public class AppUpdateManager {
             try {
                 this.parseCompatibilityFlags(new FileInputStream(this.compatFile));
             } catch (
-                    IOException e) {
-                e.printStackTrace();
+                    IOException ignored) {
             }
         }
     }
@@ -132,7 +131,7 @@ public class AppUpdateManager {
             Files.write(compatFile, new byte[0]);
         } catch (
                 IOException e) {
-            e.printStackTrace();
+            Timber.e(e);
         }
         // There once lived an implementation that used a GitHub API to get the compatibility flags. It was removed because it was too slow and the API was rate limited.
         Timber.w("Remote compatibility data flags are not implemented.");
@@ -208,6 +207,7 @@ public class AppUpdateManager {
             }
             compatDataId.put(line.substring(0, i), value);
         }
+        bufferedReader.close();
     }
 
     public int getCompatibilityFlags(String moduleId) {

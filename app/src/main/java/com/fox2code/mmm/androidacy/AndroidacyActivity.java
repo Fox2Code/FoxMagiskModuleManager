@@ -110,8 +110,7 @@ public final class AndroidacyActivity extends FoxActivity {
             try {
                 device_id = AndroidacyRepoData.generateDeviceId();
             } catch (
-                    NoSuchAlgorithmException e) {
-                e.printStackTrace();
+                    NoSuchAlgorithmException ignored) {
             }
             url = url + "&device_id=" + device_id;
         }
@@ -173,7 +172,11 @@ public final class AndroidacyActivity extends FoxActivity {
                 if (request.isForMainFrame() && !AndroidacyUtil.isAndroidacyLink(request.getUrl())) {
                     if (downloadMode || backOnResume)
                         return true;
-                    Timber.i("Exiting WebView %s", AndroidacyUtil.hideToken(request.getUrl().toString()));
+                    // sanitize url
+                    String url = request.getUrl().toString();
+                    //noinspection UnnecessaryCallToStringValueOf
+                    url = String.valueOf(AndroidacyUtil.hideToken(url));
+                    Timber.i("Exiting WebView %s", url);
                     IntentHelper.openUri(view.getContext(), request.getUrl().toString());
                     return true;
                 }
@@ -369,10 +372,12 @@ public final class AndroidacyActivity extends FoxActivity {
     private boolean megaIntercept(String pageUrl, String fileUrl) {
         if (pageUrl == null || fileUrl == null)
             return false;
-        if (this.isFileUrl(fileUrl)) {
-            Timber.i("megaIntercept(%s", AndroidacyUtil.hideToken(AndroidacyUtil.hideToken(fileUrl) ));
-        } else
+        // ensure neither pageUrl nor fileUrl are going to cause a crash
+        if (pageUrl.contains(" ") || fileUrl.contains(" "))
             return false;
+        if (!this.isFileUrl(fileUrl)) {
+            return false;
+        }
         final AndroidacyWebAPI androidacyWebAPI = this.androidacyWebAPI;
         String moduleId = AndroidacyUtil.getModuleId(fileUrl);
         if (moduleId == null) {

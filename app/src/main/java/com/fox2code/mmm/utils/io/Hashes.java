@@ -19,30 +19,15 @@ public enum Hashes {
             hexChars[j * 2] = HEX_ARRAY[v >>> 4];
             hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
         }
-        return new String(hexChars);
+        return String.valueOf(hexChars);
     }
 
     public static String hashMd5(byte[] input) {
-        Timber.w("hashMd5: This method is insecure, use hashSha256 instead");
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-
-            return bytesToHex(md.digest(input));
-        } catch (
-                NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+        throw new SecurityException("MD5 is not secure");
     }
 
     public static String hashSha1(byte[] input) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-1");
-
-            return bytesToHex(md.digest(input));
-        } catch (
-                NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+        throw new SecurityException("SHA-1 is not secure");
     }
 
     public static String hashSha256(byte[] input) {

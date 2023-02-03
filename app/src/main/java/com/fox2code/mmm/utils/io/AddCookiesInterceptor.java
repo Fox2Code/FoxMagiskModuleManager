@@ -69,12 +69,16 @@ public class AddCookiesInterceptor implements Interceptor {
                         //noinspection UnnecessaryContinue
                         continue;
                     } else {
+                        // yeet any newlines from the cookie
+                        cookie = cookie.replaceAll("[\\r\\n]", "");
                         builder.addHeader("Cookie", cookie);
                     }
                 } catch (
                         Exception ignored) {
                 }
             } else {
+                // yeet any newlines from the cookie
+                cookie = cookie.replaceAll("[\\r\\n]", "");
                 builder.addHeader("Cookie", cookie);
             }
         }

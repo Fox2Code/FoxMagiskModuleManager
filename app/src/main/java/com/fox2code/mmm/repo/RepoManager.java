@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import timber.log.Timber;
@@ -231,11 +232,16 @@ public final class RepoManager extends SyncManager {
         // Check if we have internet connection
         // Attempt to contact connectivitycheck.gstatic.com/generate_204
         // If we can't, we don't have internet connection
+        HttpURLConnection urlConnection = null;
         try {
             Timber.d("Checking internet connection...");
             // this url is actually hosted by Cloudflare and is not dependent on Androidacy servers being up
-            HttpURLConnection urlConnection = (HttpURLConnection) new URL("https://production-api.androidacy.com/cdn-cgi/trace").openConnection();
-            Timber.d("Opened connection to %s", urlConnection.getURL());
+            urlConnection = (HttpURLConnection) new URL("https://production-api.androidacy.com/cdn-cgi/trace").openConnection();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Linux; Android 10; Pixel 3 XL) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Mobile Safari/537.36");
+            urlConnection.setRequestProperty("Accept", "*/*");
+            urlConnection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+            Timber.d("Opened connection to %s", String.valueOf(urlConnection.getURL()));
             urlConnection.setInstanceFollowRedirects(false);
             urlConnection.setReadTimeout(1000);
             urlConnection.setUseCaches(false);
@@ -243,17 +249,22 @@ public final class RepoManager extends SyncManager {
             // should return a 200 and the content should contain "visit_scheme=https" and ip=<some ip>
             Timber.d("Response code: %s", urlConnection.getResponseCode());
             // get the response body
-            String responseBody = new BufferedReader(new InputStreamReader(urlConnection.getInputStream())).lines().collect(Collectors.joining("\n"));
-            Timber.d("Response body: %s", responseBody);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            String responseBody = reader.lines().collect(Collectors.joining("\n"));
+            reader.close();
             // check if the response body contains the expected content
             if (urlConnection.getResponseCode() == 200 && responseBody.contains("visit_scheme=https") && responseBody.contains("ip=")) {
                 this.hasInternet = true;
             } else {
                 Timber.e("Failed to check internet connection");
             }
+            // close output stream
+            Timber.d("Closed connection to %s", String.valueOf(urlConnection.getURL()));
         } catch (
                 IOException e) {
             Timber.e(e);
+        } finally {
+            Objects.requireNonNull(urlConnection).disconnect();
         }
         for (int i = 0; i < repoDatas.length; i++) {
             if (BuildConfig.DEBUG)
@@ -300,7 +311,7 @@ public final class RepoManager extends SyncManager {
                     Timber.e(e);
                 }
                 updatedModules++;
-                updateListener.update(STEP1 + (STEP2 / moduleToUpdate * updatedModules));
+                updateListener.update(STEP1 + (STEP2 / (moduleToUpdate != 0 ? moduleToUpdate : 1) * updatedModules));
             }
             for (RepoModule repoModule : repoUpdaters[i].toApply()) {
                 if ((repoModule.moduleInfo.flags & ModuleInfo.FLAG_METADATA_INVALID) == 0) {
