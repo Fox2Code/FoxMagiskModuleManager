@@ -1,6 +1,6 @@
 plugins {
     // Gradle doesn't allow conditionally enabling/disabling plugins
-    id "io.sentry.android.gradle" version "3.4.0"
+    id "io.sentry.android.gradle" version "3.4.1"
     id 'com.android.application'
     id 'com.mikepenz.aboutlibraries.plugin'
     id 'org.jetbrains.kotlin.android'
@@ -270,7 +270,7 @@ sentry {
 
     // Enable auto-installation of Sentry components (sentry-android SDK and okhttp, timber and fragment integrations).
     autoInstallation {
-        sentryVersion = '6.12.1'
+        sentryVersion = sentry_version
     }
 
     // temp fix for gradle bug
@@ -318,6 +318,8 @@ dependencies {
     implementation "io.sentry:sentry-android-timber:$sentry_version"
     implementation "io.sentry:sentry-android-fragment:$sentry_version"
     implementation "io.sentry:sentry-android-okhttp:$sentry_version"
+    implementation "io.sentry:sentry-kotlin-extensions:$sentry_version"
+    implementation "io.sentry:sentry-android-ndk:$sentry_version"
 
     // Markdown
     implementation "io.noties.markwon:core:4.6.2"
@@ -332,7 +334,6 @@ dependencies {
 
     implementation 'androidx.core:core-ktx:1.9.0'
 
-    implementation "io.sentry:sentry-kotlin-extensions:$sentry_version"
 
     // timber
     implementation 'com.jakewharton.timber:timber:5.0.1'
@@ -377,11 +378,11 @@ android {
 
 kotlin {
     jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(11)) // "8"
+        languageVersion.set(JavaLanguageVersion.of(11))
     }
 }
 
-// Safeguard (Do not remove)
+// Safeguard (Do not remove. Or do, i'm just a comment not a cop)
 final File res = new File(projectDir, "src/main/res")
 for (String name : res.list()) {
     // Character.isDigit is required to make sure

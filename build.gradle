@@ -19,7 +19,7 @@ buildscript {
             flavorAware: true
     ]
     project.ext.kotlin_version = "1.8.0"
-    project.ext.sentry_version = "6.12.1"
+    project.ext.sentry_version = "6.13.0"
     dependencies {
         classpath 'com.android.tools.build:gradle:7.4.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"

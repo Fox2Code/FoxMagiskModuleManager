@@ -43,14 +43,6 @@ public class UpdateActivity extends FoxActivity {
         MaterialTextView statusTextView = findViewById(R.id.update_progress_text);
         // set status text to please wait
         statusTextView.setText(R.string.please_wait);
-        // for debug builds, set update_debug_warning to visible and return
-        /**if (BuildConfig.DEBUG) {
-         findViewById(R.id.update_debug_warning).setVisibility(MaterialTextView.VISIBLE);
-         progressIndicator.setIndeterminate(false);
-         progressIndicator.setProgressCompat(0, false);
-         statusTextView.setVisibility(MaterialTextView.INVISIBLE);
-         return;
-         }*/
         Thread updateThread = new Thread() {
             public void run() {
                 // Now, parse the intent

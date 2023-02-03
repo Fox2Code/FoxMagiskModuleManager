@@ -3,9 +3,11 @@ package com.fox2code.mmm;
 import static com.fox2code.mmm.utils.IntentHelper.getActivity;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
@@ -61,6 +63,8 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         }
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, 0);
         createRealmDatabase();
+        createFiles();
+        disableUpdateActivityForFdroidFlavor();
         // Set theme
         SharedPreferences prefs = MainApplication.getSharedPreferences();
         switch (prefs.getString("theme", "system")) {
@@ -337,6 +341,9 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                 }
             }
         });
+    }
+
+    public void createFiles() {
         try {
             String cookieFileName = "cookies";
             // initial set of cookies, only really used to create the keypair and encrypted file
@@ -372,7 +379,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                 outputStream.flush();
             }
         } catch (GeneralSecurityException |
-        IOException e) {
+                 IOException e) {
             Timber.e(e);
         }
         // we literally only use these to create the http cache folders
@@ -387,6 +394,17 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             if (httpCacheDir2.mkdirs()) {
                 Timber.d("Created http cache dir");
             }
+        }
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    public void disableUpdateActivityForFdroidFlavor() {
+        if (BuildConfig.FLAVOR.equals("fdroid")) {
+            Timber.d("Disabling update activity for fdroid flavor");
+            // disable update activity through package manager
+            PackageManager pm = getPackageManager();
+            ComponentName componentName = new ComponentName(this, UpdateActivity.class);
+            pm.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
         }
     }
 }
