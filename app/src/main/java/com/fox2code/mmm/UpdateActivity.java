@@ -200,10 +200,7 @@ public class UpdateActivity extends FoxActivity {
         } catch (
                 Exception e) {
             // when logging, REMOVE the json from the log
-            String msg = e.getMessage();
-            // remove everything from the first { to the last }
-            msg = Objects.requireNonNull(msg).substring(0, msg.indexOf("{")) + msg.substring(msg.lastIndexOf("}") + 1);
-            Timber.e(msg);
+            Timber.e(e, "Error downloading update info");
             progressIndicator.setIndeterminate(false);
             progressIndicator.setProgressCompat(100, false);
             statusTextView.setText(R.string.error_download_update);
