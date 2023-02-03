@@ -20,9 +20,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -1052,30 +1055,42 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     input.setHint(R.string.custom_url);
                     builder.setIcon(R.drawable.ic_baseline_add_box_24);
                     builder.setTitle(R.string.add_repo);
+                    // make link in message clickable
+                    //noinspection deprecation
+                    builder.setMessage(Html.fromHtml(getString(R.string.add_repo_message)));
                     builder.setView(input);
                     builder.setPositiveButton("OK", (dialog, which) -> {
                         String text = String.valueOf(input.getText());
-                        if (customRepoManager.canAddRepo(text)) {
-                            final CustomRepoData customRepoData = customRepoManager.addRepo(text);
-                            new Thread("Add Custom Repo Thread") {
-                                @Override
-                                public void run() {
-                                    try {
-                                        customRepoData.quickPrePopulate();
-                                        UiThreadHandler.handler.post(() -> updateCustomRepoList(false));
-                                    } catch (
-                                            Exception e) {
-                                        Timber.e(e);
-                                        // show new dialog
-                                        new Handler(Looper.getMainLooper()).post(() -> new MaterialAlertDialogBuilder(context).setTitle(R.string.error_adding).setMessage(e.getMessage()).setPositiveButton(android.R.string.ok, (dialog1, which1) -> {
-                                        }).show());
+                        // string should not be empty, start with https://, and not contain any spaces. http links are not allowed.
+                        if (text.matches("^https://.*") && !text.contains(" ") && !text.isEmpty()) {
+                            if (customRepoManager.canAddRepo(text)) {
+                                final CustomRepoData customRepoData = customRepoManager.addRepo(text);
+                                new Thread("Add Custom Repo Thread") {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            customRepoData.quickPrePopulate();
+                                            UiThreadHandler.handler.post(() -> updateCustomRepoList(false));
+                                        } catch (
+                                                Exception e) {
+                                            Timber.e(e);
+                                            // show new dialog
+                                            new Handler(Looper.getMainLooper()).post(() -> new MaterialAlertDialogBuilder(context).setTitle(R.string.error_adding).setMessage(e.getMessage()).setPositiveButton(android.R.string.ok, (dialog1, which1) -> {
+                                            }).show());
+                                        }
                                     }
-                                }
-                            }.start();
+                                }.start();
+                            } else {
+                                Snackbar.make(requireView(), R.string.invalid_repo_url, BaseTransientBottomBar.LENGTH_LONG).show();
+                            }
+                        } else {
+                            Snackbar.make(requireView(), R.string.invalid_repo_url, BaseTransientBottomBar.LENGTH_LONG).show();
                         }
                     });
                     builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
                     AlertDialog alertDialog = builder.show();
+                    //make message clickable
+                    ((TextView) Objects.requireNonNull(alertDialog.findViewById(android.R.id.message))).setMovementMethod(LinkMovementMethod.getInstance());
                     final Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
                     input.setValidator(new AutoCompleteTextView.Validator() {
                         @Override

@@ -340,5 +340,6 @@
     <string name="error_download_update">An error occurred downloading the update information.</string>
     <string name="error_no_asset">ERROR: Failed to parse update information</string>
     <string name="downloading_update">Downloading update… %1$d%%</string>
-    <string name="installing_update">Installing update…</string><string name="no_file_found">ERROR: Could not find update package.</string><string name="check_for_updates">Check for app updates</string><string name="update_debug_download_pref">Test update download mechanism</string><string name="changelog_none">No changes yet!</string><string name="update_cancel_button">Cancel update</string>
+    <string name="installing_update">Installing update…</string><string name="no_file_found">ERROR: Could not find update package.</string><string name="check_for_updates">Check for app updates</string><string name="update_debug_download_pref">Test update download mechanism</string><string name="changelog_none">No changes yet!</string><string name="update_cancel_button">Cancel update</string><string name="invalid_repo_url">The URL you entered for the repo is invalid</string>
+    <string name="add_repo_message">Repos must be served over HTTPS, and must follow the spec outlined in the <a href="https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/docs/DEVELOPERS.md#custom-repo-format">docs</a>.</string>
 </resources>
