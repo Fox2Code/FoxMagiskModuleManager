@@ -8,7 +8,7 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/online"
-        android:icon="@drawable/baseline_monetization_on_24"
+        android:icon="@drawable/baseline_cloud_download_24"
         android:title="@string/online"
         app:showAsAction="ifRoom" />
     <item
