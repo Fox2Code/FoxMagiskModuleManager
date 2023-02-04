@@ -25,7 +25,13 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/module_list"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                app:edgeToEdge="true" />
+            <!-- online modules -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/online_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 app:edgeToEdge="true" />
         </FrameLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
@@ -64,10 +70,8 @@
         android:id="@+id/search_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginVertical="8dp"
         android:gravity="right"
         android:filterTouchesWhenObscured="true"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -83,8 +87,7 @@
             android:id="@+id/down_arrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginHorizontal="8dp"
             android:background="@color/transparent"
             android:visibility="gone" />
         <com.google.android.material.card.MaterialCardView
@@ -103,9 +106,24 @@
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/search_bar"
                 android:layout_width="match_parent"
+                app:useDrawerArrowDrawable="true"
                 android:layout_height="wrap_content"
                 android:background="@null" />
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
+    <!-- bottom md3 navigation bar -->
+    <!-- used for local and remote module list -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:background="?attr/backgroundColor"
+        android:visibility="visible"
+        app:compatShadowEnabled="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

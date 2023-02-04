@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!-- two options: "Installed" and "Online" -->
+    <item
+        android:id="@+id/installed"
+        android:icon="@drawable/ic_baseline_extension_24"
+        android:title="@string/installed"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/online"
+        android:icon="@drawable/baseline_monetization_on_24"
+        android:title="@string/online"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:title="@string/action_settings"
+        app:showAsAction="ifRoom" />
+</menu>

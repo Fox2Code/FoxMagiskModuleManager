@@ -351,8 +351,13 @@
     <string name="notification_update_summary">The following modules can be updated:</string>
     <string name="notification_update_module_template">%1$s to version %2$s</string>
     <string name="notification_channel_background_update">Checking for updates...</string>
-    <string name="notification_channel_background_update_description">FoxMMM is checking for updates in the background.</string><string name="notification_channel_category_background_update">Background update status</string>
+    <string name="notification_channel_background_update_description">FoxMMM is checking for updates in the background.</string>
+    <string name="notification_channel_category_background_update">Background update status</string>
     <string name="notification_channel_category_background_update_description">Shows a notification while checking for updates so the system doesn\'t kill it</string>
     <string name="notification_update_wifi_desc">Only check on WiFi</string>
-    <string name="notification_update_wifi_pref">Require wi-fi or an unmetered network for update checks. Recommended to leave on if you have limited mobile data.</string><string name="background_update_check_excludes_no_modules">No modules installed on device</string><string name="auto_updates_notifs">Notifies when module updates are found</string><string name="notification_group_updates">Updates</string><string name="low_quality_module_desc">This module has metadata that is either invalid or considered a marker for a low-quality module. Uninstallation is recommended.</string>
+    <string name="notification_update_wifi_pref">Require wi-fi or an unmetered network for update checks. Recommended to leave on if you have limited mobile data.</string>
+    <string name="background_update_check_excludes_no_modules">No modules installed on device</string>
+    <string name="auto_updates_notifs">Notifies when module updates are found</string>
+    <string name="notification_group_updates">Updates</string>
+    <string name="low_quality_module_desc">This module has metadata that is either invalid or considered a marker for a low-quality module. Uninstallation is recommended.</string><string name="online">Online</string>
 </resources>
