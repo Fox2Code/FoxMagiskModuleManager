@@ -283,4 +283,5 @@
     <string name="error_saving_logs">Günlükler kaydedilemedi</string>
     <string name="share_logs">FoxMMM günlüklerini paylaş</string>
     <string name="not_official_build">Bu uygulama resmi olmayan FoxMMM yapımıdır.</string>
+    <string name="update_button">Lütfen bekleyin...</string>
 </resources>

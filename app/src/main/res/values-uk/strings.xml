@@ -10,7 +10,7 @@
     <string name="no_web_view">Неможливо відкрити системний WebView</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="app_update_available">Доступна нова версія додатку</string>
-    <string name="app_update">Оновити</string>
+    <string name="app_update">Оновити додаток</string>
     <string name="download_module">Завантажити модуль</string>
     <string name="install_module">Встановити модуль</string>
     <string name="update_module">Оновити модуль</string>
@@ -164,7 +164,7 @@
     <string name="install_terminal_reboot_now_message">Ви збираєтеся перезавантажити пристрій. Якщо ви зберегли свою роботу, натисніть OK, щоб продовжити. В іншому випадку натисніть Скасувати.</string>
     <string name="api_key_unchanged">Введений ключ API вже існує і використовується.</string>
     <string name="permission_notification_title">Дозволити сповіщення\?</string>
-    <string name="permission_notification_message">Нам потрібен дозвіл на сповіщення, щоб сповіщати вас про оновлення додатків і модулів. Без цього дозволу фонова перевірка оновлень запускатися не буде.</string>
+    <string name="permission_notification_message">Нам потрібен дозвіл на сповіщення, щоб сповіщати вас про оновлення додатків і модулів. Без цього дозволу автоматична перевірка оновлень запускатися не буде.</string>
     <string name="permission_notification_grant">Надати дозвіл</string>
     <string name="background_update_check_permission_required">Дозвольте сповіщення, щоб увімкнути цю опцію.</string>
     <string name="dont_ask_again">Більше не питати</string>
@@ -191,7 +191,7 @@
     <string name="unofficial">Неофіційна</string>
     <string name="setup_title">Перше налаштування</string>
     <string name="setup_button">Пізніше</string>
-    <string name="setup_background_update_check">Фонова перевірка оновлень</string>
+    <string name="setup_background_update_check">Автоматична перевірка оновлень</string>
     <string name="setup_androidacy_repo">Репозиторій Androidacy</string>
     <string name="setup_androidacy_repo_summary">Є відгуки користувачів, автоматичне сканування на віруси, швидке оновлення, широкий вибір і підтримується Androidacy.</string>
     <string name="setup_magisk_alt_repo">Репозиторій Magisk Alt</string>
@@ -292,4 +292,32 @@
     <string name="reset_app_confirmation">Це повністю видалить дані додатку, але не вплине на модулі.</string>
     <string name="error_adding">Не вдалося додати репозиторій користувача</string>
     <string name="api_key_mismatch">Ключ API має невірний формат</string>
+    <string name="notification_update_ignore_desc">Список модулів, які потрібно виключити з перевірки оновлень</string>
+    <string name="title_activity_update">Внутрішній апдейтор</string>
+    <string name="update_title">Оновити додаток</string>
+    <string name="update_button">Будь ласка, зачекайте...</string>
+    <string name="invalid_characters_message">Введений вами список модулів недійсний. Будь ласка, вводьте лише дійсні ідентифікатори модулів, розділені комами</string>
+    <string name="background_update_check_excludes">Модулі, які потрібно виключити з автоматичних перевірок оновлень</string>
+    <string name="update_message">Будь ласка, зачекайте поки ми перевіримо та встановимо оновлення для FoxMMM. Це може зайняти декілька хвилин</string>
+    <string name="notification_update_ignore_pref">Виключити модулі</string>
+    <string name="pref_category_updates">Оновлення</string>
+    <string name="invalid_excludes">Невірні дані</string>
+    <string name="error_no_extras">ПОМИЛКА: Отримано недійсні дані під час запуску</string>
+    <string name="update_debug_warning">Здається, ви запускаєте збірку для налагодження. Збірки для налагодження потрібно оновлювати вручну, і вони не підтримують оновлення в додатках</string>
+    <string name="error_no_action">ПОМИЛКА: Невірна дія. У продовженні відмовлено.</string>
+    <string name="update_available">Оновлення знайдено</string>
+    <string name="checking_for_update">Перевірка оновлень…</string>
+    <string name="no_update_available">У вас остання версія!</string>
+    <string name="download_update">Завантажте оновлення</string>
+    <string name="error_download_update">Під час завантаження інформації про оновлення сталася помилка.</string>
+    <string name="error_no_asset">ПОМИЛКА: Не вдалося проаналізувати інформацію про оновлення</string>
+    <string name="downloading_update">Завантаження оновлення… %1$d%%</string>
+    <string name="installing_update">Встановлення оновлення…</string>
+    <string name="no_file_found">ПОМИЛКА: Не вдалося знайти пакет оновлення.</string>
+    <string name="check_for_updates">Перевірте наявність оновлень додатку</string>
+    <string name="update_debug_download_pref">Тестовий механізм завантаження оновлень</string>
+    <string name="changelog_none">Змін ще немає!</string>
+    <string name="update_cancel_button">Скасувати оновлення</string>
+    <string name="invalid_repo_url">URL-адреса, яку ви ввели для репозиторію, недійсна</string>
+    <string name="add_repo_message">Репозиторії повинні обслуговуватися за допомогою HTTPS і відповідати специфікаціям, викладеним у <a href="https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/docs/DEVELOPERS.md#custom-repo-format">документації</a>.</string>
 </resources>
