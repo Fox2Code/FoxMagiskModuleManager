@@ -14,7 +14,7 @@
     <string name="no_web_view">Không thể mở WebView của Hệ thống</string>
     <string name="title_activity_settings">Cài đặt Hoạt động</string>
     <string name="app_update_available">Bản cập nhật ứng dụng có sẵn</string>
-    <string name="app_update">Cập nhật</string>
+    <string name="app_update">Cập nhật ứng dụng</string>
     <string name="no_desc_found">Không tìm thấy mô tả.</string>
     <string name="download_module">Tải xuống mô-đun</string>
     <string name="install_module">Cài đặt mô-đun</string>
@@ -93,10 +93,7 @@
     <string name="dev_mode_enabled">Đã bật Chế độ nhà phát triển</string>
     <string name="force_english_pref">Buộc ngôn ngữ Tiếng Anh</string>
     <string name="disable_low_quality_module_filter_pref">Tắt bộ lọc mô-đun chất lượng thấp</string>
-    <string name="disable_low_quality_module_filter_desc">
-        Một số mô-đun không khai báo siêu dữ liệu của chúng đúng cách, gây ra lỗi hiển thị,
-        và/hoặc cho biết chất lượng mô-đun kém, hãy tự chịu rủi ro khi tắt tùy chọn này!
-    </string>
+    <string name="disable_low_quality_module_filter_desc">Một số mô-đun không khai báo siêu dữ liệu của chúng đúng cách, gây ra lỗi hiển thị, và/hoặc cho ra chất lượng mô-đun kém, hãy tự chịu rủi ro khi tắt tùy chọn này!</string>
     <string name="dns_over_https_pref">DNS qua HTTPS</string>
     <string name="dns_over_https_desc">
 	    Có thể khắc phục sự cố kết nối trong một số trường hợp.
@@ -118,4 +115,8 @@
     <string name="backup_module_list">Sao lưu mô-đun</string>
     <string name="restore_module_list">Khôi phục mô-đun</string>
     <string name="require_internet">Quá trình này yêu cầu kết nối internet</string>
+    <string name="fail_magisk_missing">Magisk chưa được cài đặt trên thiết bị của bạn</string>
+    <string name="favourite">Yêu Thích</string>
+    <string name="dev_mode_disabled">Chế độ nhà phát triển đang tắt</string>
+    <string name="report_bugs">Báo cáo lỗi</string>
 </resources>

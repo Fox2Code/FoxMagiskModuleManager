@@ -99,7 +99,7 @@
     <string name="force_english_pref">Wymuś język angielski</string>
     <string name="disable_low_quality_module_filter_pref">Wyłącz filtr modułu niskiej jakości</string>
     <string name="disable_low_quality_module_filter_desc">Niektóre moduły nie deklarują swoich metadanych poprawnie, powodując wizualne zakłócenia i/lub wskazują na niską jakość modułu.
-\nWyłącz to na własne ryzyko!</string>
+\nWłącz to na własne ryzyko!</string>
     <string name="dns_over_https_pref">DNS przez HTTPS</string>
     <string name="dns_over_https_desc">W niektórych przypadkach może naprawić problemy z połączeniami (nie dotyczy WebView).</string>
     <string name="disable_extensions_pref">Wyłącz rozszerzenia</string>
@@ -121,10 +121,10 @@
     <string name="androidacy_test_mode_pref">Tryb testowy Androidacy</string>
     <string name="androidacy_test_mode_desc">Użyj punktu końcowego staging Androidacy zamiast punktu końcowego release. (Spowoduje restart aplikacji)</string>
     <!-- Background Notification translation -->
-    <string name="notification_update_title">Dostępne są nowe wersje modułów: %i</string>
+    <string name="notification_update_title">Dostępne są nowe wersje modułów: %1$d</string>
     <string name="notification_update_title_easter_egg">Wywęszono nowe wersje modułów: %i</string>
     <string name="notification_update_subtitle">Kliknij, aby otworzyć aplikację</string>
-    <string name="notification_update_pref">Sprawdzanie aktualizacji modułów w tle</string>
+    <string name="notification_update_pref">Sprawdzanie aktualizacji modułów</string>
     <string name="notification_update_desc">Może zwiększyć użycie baterii</string>
     <string name="notification_update_debug_pref">Powiadomienie testowe</string>
     <!-- Set to true in translation file if your language is right to left -->
@@ -192,7 +192,7 @@
     <string name="sentry_dialogue_success">Pomyślnie przesłano opinię. Wkrótce to sprawdzimy</string>
     <string name="setup_title">Powitalna konfiguracja</string>
     <string name="setup_button">Zastosuj</string>
-    <string name="setup_background_update_check">Sprawdzanie aktualizacji w tle</string>
+    <string name="setup_background_update_check">Automatyczne sprawdzanie aktualizacji</string>
     <string name="setup_magisk_alt_repo">Repozytorium Magisk Alt</string>
     <string name="setup_crash_reporting">Raportowanie Sentry</string>
     <string name="setup_custom_repos">Możesz później dodać niestandardowe repozytoria w ustawieniach.</string>
@@ -217,7 +217,7 @@
     <string name="setup_androidacy_repo_summary">Oferuje recenzje użytkowników, automatyczne skanowanie wirusów, szybkie aktualizacje, szeroki wybór i jest wspierane przez Androidacy.</string>
     <string name="setup_magisk_alt_repo_summary">Znacznie luźniejsze niż oryginalne. Posiada wiele modułów kosztem pewnego bezpieczeństwa.</string>
     <string name="setup_crash_reporting_summary">Monitorowanie wydajności i rejestracja awarii. Wszystkie raporty są ściśle anonimowe i poufne.</string>
-    <string name="debug_build">Wersja testowa (debug).</string>
+    <string name="debug_build">Wersja testowa. Spodziewaj się błędów i gorszego działania.</string>
     <string name="androidacy_repo_name">Repozytorium Androidacy</string>
     <string name="magisk_alt_repo_name">Repozytorium Magisk Alt</string>
     <string name="repo_enabled_changed">Włączono lub wyłączono repozytorium. Proszę odświeżyć listę modułów lub zrestartować aplikację.</string>
@@ -292,4 +292,53 @@
     <string name="feedback_message">Podaj nam więcej szczegółów, co się działo. Im więcej, tym weselej!</string>
     <string name="crash_details">Nieznana przyczyna</string>
     <string name="sentry_enable_nag">Wygląda na to, że raportowanie o błędach jest wyłączone. Proszę włącz, aby przesłać informację zwrotną.</string>
+    <string name="reset_app">Zresetuj aplikację</string>
+    <string name="upgraded_summary">Posiadasz już subskrypcję i wspierasz Androidacy.</string>
+    <string name="upgraded">Premium aktywny</string>
+    <string name="reset_warning">Jeśli widzisz ten ekran, zresetowanie aplikacji może pomóc. Wyczysci to jej dane, lecz zainstalowane moduły zostaną.</string>
+    <string name="reset_app_message">Wyczysci to wszystkie dane aplikacji i ją zamknie. Moduły nie zostaną usunięte.</string>
+    <string name="reset">Zresetuj</string>
+    <string name="background_update_check_excludes">Moduły do wykluczenia z automatycznego sprawdzania aktualizacji</string>
+    <string name="title_activity_update">Wbudowany aktualizator</string>
+    <string name="update_title">Zaktualizuj aplikację</string>
+    <string name="update_message">Proszę poczekać, aż sprawdzimy i zainstalujemy aktualizacje dla FoxMMM. Może to potrwać kilka minut</string>
+    <string name="update_button">Proszę czekać...</string>
+    <string name="reset_app_confirmation">To całkowicie wyczysci dane aplikacji, ale moduły nie zostaną ruszone.</string>
+    <string name="error_no_extras">BŁĄD: Nieprawidłowe dane otrzymane przy uruchomieniu</string>
+    <string name="update_debug_warning">Wygląda na to, że używasz wersji debugowanej. Kompilacje debugowe muszą być aktualizowane ręcznie i nie obsługują aktualizacji w aplikacji</string>
+    <string name="error_no_action">BŁĄD: Określono nieprawidłowe działanie. Odmowa kontynuacji.</string>
+    <string name="update_available">Znaleziono aktualizację</string>
+    <string name="checking_for_update">Wyszukiwanie aktualizacji…</string>
+    <string name="no_update_available">Brak nowych wersji!</string>
+    <string name="download_update">Pobierz aktualizację</string>
+    <string name="error_download_update">Wystąpił błąd podczas pobierania informacji o aktualizacji.</string>
+    <string name="error_no_asset">BŁĄD: nie udało się przeanalizować informacji o aktualizacji</string>
+    <string name="downloading_update">Pobieranie aktualizacji... %1$d%%</string>
+    <string name="installing_update">Instalowanie aktualizacji…</string>
+    <string name="check_for_updates">Sprawdź aktualizacje aplikacji</string>
+    <string name="error_adding">Nie udało się dodać własnego repo</string>
+    <string name="api_key_mismatch">Klucz API jest w nieprawidłowym formacie</string>
+    <string name="notification_update_ignore_desc">Lista modułów do wykluczenia ze sprawdzania aktualizacji</string>
+    <string name="notification_update_ignore_pref">Wyklucz moduły</string>
+    <string name="pref_category_updates">Aktualizacje</string>
+    <string name="invalid_excludes">Nieprawidłowa wartość</string>
+    <string name="invalid_characters_message">Wprowadzona lista modułów jest nieprawidłowa. Proszę wprowadzić tylko poprawne identyfikatory modułów oddzielone przecinkami</string>
+    <string name="no_file_found">BŁĄD: Nie można znaleźć pakietu aktualizacji.</string>
+    <string name="update_debug_download_pref">Przetestuj mechanizm pobierania aktualizacji</string>
+    <string name="invalid_repo_url">Wprowadzony adres URL dla repo jest nieprawidłowy</string>
+    <string name="changelog_none">Brak zmian!</string>
+    <string name="update_cancel_button">Anuluj aktualizację</string>
+    <string name="add_repo_message">Repozytoria muszą być obsługiwane przez HTTPS i muszą być zgodne ze specyfikacją przedstawioną w dokumentacji.</string>
+    <string name="notification_update_summary">Następujące moduły mogą być uaktualnione:</string>
+    <string name="notification_update_module_template">%1$s do wersji %2$s</string>
+    <string name="notification_channel_background_update">Wyszukiwanie uaktualnień...</string>
+    <string name="notification_channel_background_update_description">FoxMMM sprawdza w tle aktualizacje.</string>
+    <string name="notification_channel_category_background_update">Stan aktualizacji w tle</string>
+    <string name="notification_update_wifi_desc">Sprawdzaj tylko na WiFi</string>
+    <string name="notification_update_wifi_pref">Do sprawdzenia aktualizacji wymagane jest WiFi lub sieć bez limitu. Zalecane pozostawienie włączone, jeśli masz ograniczone dane komórkowe.</string>
+    <string name="background_update_check_excludes_no_modules">Brak zainstalowanych modułów</string>
+    <string name="auto_updates_notifs">Powiadamia o znalezieniu aktualizacji modułu</string>
+    <string name="notification_group_updates">Aktualizacje</string>
+    <string name="notification_channel_category_background_update_description">Pokazuje powiadomienie podczas sprawdzania aktualizacji, aby system go nie ubił</string>
+    <string name="low_quality_module_desc">Ten moduł ma metadane, które są albo nieprawidłowe, albo uważane za znacznik dla modułu niskiej jakości. Zaleca się odinstalowanie.</string>
 </resources>
