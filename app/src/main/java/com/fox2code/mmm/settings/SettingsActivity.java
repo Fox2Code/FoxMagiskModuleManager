@@ -22,6 +22,7 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -71,8 +72,10 @@ import com.fox2code.mmm.utils.realm.ReposList;
 import com.fox2code.mmm.utils.sentry.SentryMain;
 import com.fox2code.rosettax.LanguageActivity;
 import com.fox2code.rosettax.LanguageSwitcher;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.internal.TextWatcherAdapter;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
@@ -142,17 +145,42 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         return devicePerformanceClass;
     }
 
+    @SuppressLint("RestrictedApi")
+    private final NavigationBarView.OnItemSelectedListener onItemSelectedListener = item -> {
+        int itemId = item.getItemId();
+        if (itemId == R.id.installed_menu_item || itemId == R.id.online_menu_item) {
+            startActivity(new Intent(this, MainActivity.class));
+            return true;
+        } else //noinspection RedundantIfStatement
+            if (itemId == R.id.settings_menu_item) {
+            return true;
+        }
+        return false;
+    };
+
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         devModeStep = 0;
         super.onCreate(savedInstanceState);
-        this.setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.settings_activity);
         setTitle(R.string.app_name);
-        setActionBarBackground(null);
+        hideActionBar();
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnItemSelectedListener(onItemSelectedListener);
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.settings, new SettingsFragment()).commit();
+            SettingsFragment settingsFragment = new SettingsFragment();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.settings, settingsFragment)
+                    .commit();
         }
+        // get height of bottomnavigationview and adjust padding of settings fragment
+        bottomNavigationView.post(() -> {
+            int bottomNavigationHeight = bottomNavigationView.getHeight();
+            View settingsFragment = findViewById(R.id.settings);
+            settingsFragment.setPadding(0, 0, 0, bottomNavigationHeight);
+        });
     }
 
     @Override
@@ -171,6 +199,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat implements FoxActivity.OnBackPressedCallback {
+
+
         @SuppressLint("UnspecifiedImmutableFlag")
         @Override
         @SuppressWarnings("ConstantConditions")
@@ -178,6 +208,10 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             getPreferenceManager().setSharedPreferencesName("mmm");
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
             applyMaterial3(getPreferenceScreen());
+            // add bottom navigation bar to the settings
+            BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_navigation);
+            bottomNavigationView.setVisibility(View.VISIBLE);
+            bottomNavigationView.getMenu().findItem(R.id.settings_menu_item).setChecked(true);
             findPreference("pref_manage_repos").setOnPreferenceClickListener(p -> {
                 devModeStep = 0;
                 openFragment(new RepoFragment(), R.string.manage_repos_pref);
@@ -1156,7 +1190,9 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         }
 
         private void setRepoData(final RepoData repoData, String preferenceName) {
-            Timber.d("Setting preference " + preferenceName + " to " + repoData.toString());
+            if (repoData == null)
+                return;
+            Timber.d("Setting preference " + preferenceName + " to " + repoData);
             ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
             Preference preference = findPreference(preferenceName);
             if (preference == null)

@@ -47,8 +47,8 @@ import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.settings.SettingsActivity;
 import com.fox2code.mmm.utils.BlurUtils;
 import com.fox2code.mmm.utils.ExternalHelper;
-import com.fox2code.mmm.utils.IntentHelper;
 import com.fox2code.mmm.utils.io.Http;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
@@ -76,6 +76,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     private BlurView actionBarBlur;
     private ColorDrawable actionBarBackground;
     private RecyclerView moduleList;
+    private RecyclerView moduleListOnline;
     private CardView searchCard;
     private SearchView searchView;
     private boolean initMode;
@@ -93,6 +94,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         super.onResume();
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.initMode = true;
@@ -124,13 +126,19 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             // Show a toast to warn the user
             Toast.makeText(this, R.string.not_official_build, Toast.LENGTH_LONG).show();
         }
-        if (!MainApplication.getSharedPreferences().getBoolean("first_time_setup_done", true)) {
-            this.setActionBarExtraMenuButton(R.drawable.ic_baseline_settings_24, v -> {
-                IntentHelper.startActivity(this, SettingsActivity.class);
-                return true;
-            }, R.string.pref_category_settings);
-        }
         setContentView(R.layout.activity_main);
+        // on the bottom nav, there's a settings item. open the settings activity when it's clicked.
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.settings_menu_item) {
+                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+            }
+            return true;
+        });
+        // set the selected item to the installed tab
+        bottomNavigationView.setSelectedItemId(R.id.installed_menu_item);
+        // set the bottom padding of the main layout to the height of the bottom nav
+        findViewById(R.id.root_container).setPadding(0, 0, 0, bottomNavigationView.getHeight());
         this.setTitle(R.string.app_name);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, 0);
         setActionBarBackground(null);
@@ -149,6 +157,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         this.swipeRefreshLayoutOrigEndOffset = this.swipeRefreshLayout.getProgressViewEndOffset();
         this.swipeRefreshBlocker = Long.MAX_VALUE;
         this.moduleList = findViewById(R.id.module_list);
+        this.moduleListOnline = findViewById(R.id.module_list_online);
         this.searchCard = findViewById(R.id.search_card);
         this.searchView = findViewById(R.id.search_bar);
         this.moduleViewAdapter = new ModuleViewAdapter();
@@ -157,6 +166,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         this.moduleList.setItemViewCacheSize(4); // Default is 2
         this.swipeRefreshLayout.setOnRefreshListener(this);
         this.actionBarBlur.setBackground(this.actionBarBackground);
+        hideActionBar();
         BlurUtils.setupBlur(this.actionBarBlur, this, R.id.blur_frame);
         this.updateBlurState();
         checkShowInitialSetup();

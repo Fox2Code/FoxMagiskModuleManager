@@ -29,9 +29,10 @@
                 app:edgeToEdge="true" />
             <!-- online modules -->
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/online_list"
+                android:id="@+id/module_list_online"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 app:edgeToEdge="true" />
         </FrameLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
@@ -114,10 +115,9 @@
     <!-- bottom md3 navigation bar -->
     <!-- used for local and remote module list -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_nav"
+        android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:background="?attr/backgroundColor"
         android:visibility="visible"
         app:compatShadowEnabled="true"

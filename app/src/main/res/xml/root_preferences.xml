@@ -240,4 +240,5 @@
             app:singleLineTitle="false"
             app:summary="@string/loading" />
     </PreferenceCategory>
+
 </PreferenceScreen>
