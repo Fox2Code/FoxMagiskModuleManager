@@ -89,10 +89,10 @@
     <string name="restore_module_list">Відновлення модулів</string>
     <string name="require_internet">Для цієї операції потрібне підключення до Інтернету</string>
     <string name="androidacy_test_mode_pref">Тестовий режим Androidacy</string>
-    <string name="notification_update_title">Знайдено оновлень модулів: %i</string>
+    <string name="notification_update_title">Знайдені оновлення модулів: %1$d</string>
     <string name="notification_update_title_easter_egg">Виявлено оновлення модулів: %i</string>
     <string name="notification_update_subtitle">Натисніть, щоб відкрити додаток</string>
-    <string name="notification_update_pref">Фонова перевірка оновлень модулів</string>
+    <string name="notification_update_pref">Автоматична перевірка оновлень модулів</string>
     <string name="notification_update_desc">Може збільшити використання акумулятора</string>
     <string name="notification_update_debug_pref">Тестове сповіщення</string>
     <string name="api_key">Ключ API Androidacy</string>
@@ -320,4 +320,17 @@
     <string name="update_cancel_button">Скасувати оновлення</string>
     <string name="invalid_repo_url">URL-адреса, яку ви ввели для репозиторію, недійсна</string>
     <string name="add_repo_message">Репозиторії повинні обслуговуватися за допомогою HTTPS і відповідати специфікаціям, викладеним у <a href="https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/docs/DEVELOPERS.md#custom-repo-format">документації</a>.</string>
+    <string name="notification_update_summary">Наступні модулі можуть бути оновлені:</string>
+    <string name="notification_update_module_template">%1$s до версії %2$s</string>
+    <string name="notification_channel_background_update">Перевірка оновлень...</string>
+    <string name="notification_channel_category_background_update">Статус фонового оновлення</string>
+    <string name="notification_update_wifi_desc">Перевіряти тільки по Wi-Fi</string>
+    <string name="notification_update_wifi_pref">Вимагати Wi-Fi або безлімітну мережу для перевірки оновлень. Рекомендовано залишити увімкненим, якщо у вас обмежено мобільні дані.</string>
+    <string name="background_update_check_excludes_no_modules">На пристрої не встановлено модулів</string>
+    <string name="auto_updates_notifs">Повідомляє, коли знайдено оновлення для модулів</string>
+    <string name="notification_group_updates">Оновлення</string>
+    <string name="online">Онлайн</string>
+    <string name="notification_channel_background_update_description">FoxMMM перевіряє наявність оновлень у фоновому режимі.</string>
+    <string name="notification_channel_category_background_update_description">Відображає повідомлення під час перевірки оновлень, щоб система не завершила їх примусово</string>
+    <string name="low_quality_module_desc">Цей модуль містить метадані, які або недійсні, або вважаються маркером низькоякісного модуля. Рекомендовано видалити.</string>
 </resources>

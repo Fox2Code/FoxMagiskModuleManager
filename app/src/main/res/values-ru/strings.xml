@@ -128,7 +128,7 @@
     <string name="dev_mode_disabled">Режим разработчика отключён</string>
     <string name="androidacy_repo_info">Этот репозиторий может показывать рекламу для покрытия расходов на сервер и разработку.</string>
     <string name="androidacy_test_mode_pref">Тестовый режим Androidacy</string>
-    <string name="notification_update_title">Найдены обновления модулей: %i</string>
+    <string name="notification_update_title">Найдены обновления модулей: %1$d</string>
     <string name="androidacy_test_mode_desc">Использовать конечную точку Androidacy staging вместо релизной конечной точки. (Это приведет к перезапуску приложения)</string>
     <string name="api_key">Ключ API Androidacy</string>
     <string name="androidacy_failed_to_parse_token">Не удалось получить токен из Androidacy. Пожалуйста, повторите попытку позже.</string>
@@ -136,7 +136,7 @@
     <string name="androidacy_server_down">Невозможно связаться с сервером Androidacy. Проверьте соединение и повторите попытку.</string>
     <string name="androidacy_need_captcha">Обновление Androidacy заблокировано капчей</string>
     <string name="notification_update_subtitle">Нажмите, чтобы открыть приложение</string>
-    <string name="notification_update_pref">Фоновая проверка обновлений модулей</string>
+    <string name="notification_update_pref">Автоматическая проверка обновлений модулей</string>
     <string name="notification_update_debug_pref">Тестовое уаедомление</string>
     <string name="language_translated_by">Перевод: Omegaplex, Uatel</string>
     <string name="crash_reporting">Автоотчёты об ошибках</string>
@@ -322,5 +322,18 @@
     <string name="update_cancel_button">Отменить обновление</string>
     <string name="changelog_none">Пока нет изменений!</string>
     <string name="invalid_repo_url">URL-адрес, который вы ввели для репозитория, недействителен</string>
-    <string name="add_repo_message">Репозитории должны обслуживаться через HTTPS и должны соответствовать спецификации, изложенной в <a href="https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/docs/DEVELOPERS.md#custom-repo-format">документации</a>.</string>
+    <string name="add_repo_message">Репозитории должны обслуживаться через HTTPS и соответствовать спецификации, изложенной в документации.</string>
+    <string name="notification_update_summary">Следующие модули могут быть обновлены:</string>
+    <string name="notification_update_module_template">%1$s до версии %2$s</string>
+    <string name="notification_channel_background_update">Проверка обновлений...</string>
+    <string name="notification_channel_background_update_description">FoxMMM проверяет наличие обновлений в фоновом режиме.</string>
+    <string name="notification_channel_category_background_update">Статус фонового обновления</string>
+    <string name="notification_update_wifi_desc">Проверка только по Wi-Fi</string>
+    <string name="notification_update_wifi_pref">Требовать Wi-Fi или безлимитную сеть для проверки обновлений. Рекомендуется оставить включенным, если у вас ограничены мобильные данные.</string>
+    <string name="background_update_check_excludes_no_modules">На устройстве не установлены модули</string>
+    <string name="auto_updates_notifs">Уведомления о найденых обновлениях модулей</string>
+    <string name="notification_group_updates">Обновления</string>
+    <string name="online">Онлайн</string>
+    <string name="notification_channel_category_background_update_description">Отображает уведомление при проверке обновлений, чтобы система не завершила их принудительно</string>
+    <string name="low_quality_module_desc">Этот модуль содержит метаданные, которые либо недействительны, либо считаются признаком низкокачественного модуля. Рекомендуется удалить.</string>
 </resources>
