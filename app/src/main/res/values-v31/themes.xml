@@ -36,10 +36,8 @@
         <!-- Override chip style -->
         <item name="chipBackgroundColor">@color/system_accent2_700</item>
         <item name="chipSurfaceColor">@color/system_accent2_700</item>
-        <!-- <item name="colorOnPrimary">@color/system_accent2_100</item>
-        <item name="colorOnSecondary">@color/system_accent2_100</item>
-        <item name="colorOnBackground">@color/system_accent2_100</item>
-        <item name="colorOnSurface">@color/system_accent2_100</item> -->
+        <!-- chips should be dark, not black -->
+        <item name="chipStyle">@style/Widget.Material.Chip.Choice.Dark</item>
     </style>
 
     <style name="Widget.Material3.Chip.Choice.Dark" parent="Widget.Material3.Chip.Assist">

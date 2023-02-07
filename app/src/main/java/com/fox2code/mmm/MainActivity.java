@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.TypedValue;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
@@ -63,9 +64,11 @@ import timber.log.Timber;
 public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, OverScrollManager.OverScrollHelper {
     private static final int PRECISION = 10000;
     public static boolean doSetupNowRunning = true;
+    public static boolean doSetupRestarting = false;
     public final ModuleViewListBuilder moduleViewListBuilder;
     public LinearProgressIndicator progressIndicator;
     private ModuleViewAdapter moduleViewAdapter;
+    private ModuleViewAdapter moduleViewAdapterOnline;
     private SwipeRefreshLayout swipeRefreshLayout;
     private int swipeRefreshLayoutOrigStartOffset;
     private int swipeRefreshLayoutOrigEndOffset;
@@ -80,7 +83,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     private CardView searchCard;
     private SearchView searchView;
     private boolean initMode;
-    public static boolean doSetupRestarting = false;
     private boolean urlFactoryInstalled = false;
 
     public MainActivity() {
@@ -127,18 +129,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             Toast.makeText(this, R.string.not_official_build, Toast.LENGTH_LONG).show();
         }
         setContentView(R.layout.activity_main);
-        // on the bottom nav, there's a settings item. open the settings activity when it's clicked.
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.settings_menu_item) {
-                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
-            }
-            return true;
-        });
-        // set the selected item to the installed tab
-        bottomNavigationView.setSelectedItemId(R.id.installed_menu_item);
-        // set the bottom padding of the main layout to the height of the bottom nav
-        findViewById(R.id.root_container).setPadding(0, 0, 0, bottomNavigationView.getHeight());
         this.setTitle(R.string.app_name);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, 0);
         setActionBarBackground(null);
@@ -161,8 +151,11 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         this.searchCard = findViewById(R.id.search_card);
         this.searchView = findViewById(R.id.search_bar);
         this.moduleViewAdapter = new ModuleViewAdapter();
+        this.moduleViewAdapterOnline = new ModuleViewAdapter();
         this.moduleList.setAdapter(this.moduleViewAdapter);
+        this.moduleListOnline.setAdapter(this.moduleViewAdapterOnline);
         this.moduleList.setLayoutManager(new LinearLayoutManager(this));
+        this.moduleListOnline.setLayoutManager(new LinearLayoutManager(this));
         this.moduleList.setItemViewCacheSize(4); // Default is 2
         this.swipeRefreshLayout.setOnRefreshListener(this);
         this.actionBarBlur.setBackground(this.actionBarBackground);
@@ -195,6 +188,27 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         this.cardIconifyUpdate();
         this.updateScreenInsets(this.getResources().getConfiguration());
 
+        // on the bottom nav, there's a settings item. open the settings activity when it's clicked.
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        // set the bottom padding of the main layout to the height of the bottom nav
+        findViewById(R.id.root_container).setPadding(0, 0, 0, bottomNavigationView.getHeight());
+        bottomNavigationView.setSelectedItemId(R.id.installed_menu_item);
+        MenuItem installedMenuItem = bottomNavigationView.getMenu().findItem(R.id.installed_menu_item);
+        installedMenuItem.setChecked(true);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.settings_menu_item) {
+                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+            } else if (item.getItemId() == R.id.online_menu_item) {
+                // set module_list_online as visible and module_list as gone
+                this.moduleList.setVisibility(View.GONE);
+                this.moduleListOnline.setVisibility(View.VISIBLE);
+            } else if (item.getItemId() == R.id.installed_menu_item) {
+                // set module_list_online as gone and module_list as visible
+                this.moduleList.setVisibility(View.VISIBLE);
+                this.moduleListOnline.setVisibility(View.GONE);
+            }
+            return true;
+        });
         InstallerInitializer.tryGetMagiskPathAsync(new InstallerInitializer.Callback() {
             @Override
             public void onPathReceived(String path) {
@@ -244,19 +258,23 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     // Log all preferences changes
                     MainApplication.getSharedPreferences().registerOnSharedPreferenceChangeListener((prefs, key) -> Timber.i("onSharedPreferenceChanged: " + key + " = " + prefs.getAll().get(key)));
                 }
+
                 Timber.i("Scanning for modules!");
                 if (BuildConfig.DEBUG)
                     Timber.i("Initialize Update");
                 final int max = ModuleManager.getINSTANCE().getUpdatableModuleCount();
                 if (RepoManager.getINSTANCE().getCustomRepoManager().needUpdate()) {
-                    Timber.w("Need update on create?");
+                    Timber.w("Need update on create");
                 }
+                // update compat metadata
                 if (BuildConfig.DEBUG)
                     Timber.i("Check Update Compat");
                 AppUpdateManager.getAppUpdateManager().checkUpdateCompat();
                 if (BuildConfig.DEBUG)
                     Timber.i("Check Update");
+                // update repos
                 RepoManager.getINSTANCE().update(value -> runOnUiThread(max == 0 ? () -> progressIndicator.setProgressCompat((int) (value * PRECISION), true) : () -> progressIndicator.setProgressCompat((int) (value * PRECISION * 0.75F), true)));
+                // various notifications
                 NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
                 // Add debug notification for debug builds
                 if (!NotificationType.DEBUG.shouldRemove()) {
@@ -278,7 +296,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     if (max != 0) {
 
                         int current = 0;
-                        // noodleDebug.push("");
                         for (LocalModuleInfo localModuleInfo : ModuleManager.getINSTANCE().getModules().values()) {
                             if (localModuleInfo.updateJson != null) {
                                 if (BuildConfig.DEBUG)
@@ -307,9 +324,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     Timber.i("Apply");
                 RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilder::appendRemoteModules);
 
-                moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
+                moduleViewListBuilder.applyTo(moduleListOnline, moduleViewAdapterOnline);
                 Timber.i("Finished app opening state!");
-                // noodleDebug.unbind();
             }
         }, true);
         ExternalHelper.INSTANCE.refreshHelper(this);
@@ -441,7 +457,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     Timber.i("Apply");
                 RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilder::appendRemoteModules);
                 Timber.i("Common Before applyTo");
-                moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
+                moduleViewListBuilder.applyTo(moduleListOnline, moduleViewAdapterOnline);
                 Timber.i("Common After");
             }
         });
@@ -467,7 +483,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         // this.swipeRefreshLayout.setRefreshing(true); ??
         new Thread(() -> {
             Http.cleanDnsCache(); // Allow DNS reload from network
-            // noodleDebug.push("Check Update");
             final int max = ModuleManager.getINSTANCE().getUpdatableModuleCount();
             RepoManager.getINSTANCE().update(value -> runOnUiThread(max == 0 ? () -> progressIndicator.setProgressCompat((int) (value * PRECISION), true) : () -> progressIndicator.setProgressCompat((int) (value * PRECISION * 0.75F), true)));
             NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
@@ -608,7 +623,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     if (BuildConfig.DEBUG) {
                         // Log if granted via onRequestPermissionsResult
                         boolean granted = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
-                        Timber.i( "Request Notification Permission Done. Result: %s", granted);
+                        Timber.i("Request Notification Permission Done. Result: %s", granted);
                     }
                     doSetupNowRunning = false;
                 }

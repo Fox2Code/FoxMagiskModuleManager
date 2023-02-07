@@ -160,38 +160,46 @@ public class UpdateActivity extends FoxActivity {
     }
 
     public void checkForUpdate() {
-        LinearProgressIndicator progressIndicator = findViewById(R.id.update_progress);
-        progressIndicator.setIndeterminate(true);
         // get status text view
         MaterialTextView statusTextView = findViewById(R.id.update_progress_text);
-        // set status text to checking for update
-        statusTextView.setText(R.string.checking_for_update);
-        // set progress bar to indeterminate
-        progressIndicator.setIndeterminate(true);
+        LinearProgressIndicator progressIndicator = findViewById(R.id.update_progress);
+        runOnUiThread(() -> {
+            progressIndicator.setIndeterminate(true);
+            // set status text to checking for update
+            statusTextView.setText(R.string.checking_for_update);
+            // set progress bar to indeterminate
+            progressIndicator.setIndeterminate(true);
+        });
         // check for update
         boolean shouldUpdate = AppUpdateManager.getAppUpdateManager().peekShouldUpdate();
         // if shouldUpdate is true, then we have an update
         if (shouldUpdate) {
-            // set status text to update available
-            statusTextView.setText(R.string.update_available);
-            // set button text to download
-            MaterialButton button = findViewById(R.id.update_button);
-            button.setText(R.string.download_update);
+            runOnUiThread(() -> {
+                // set status text to update available
+                statusTextView.setText(R.string.update_available);
+                // set button text to download
+                MaterialButton button = findViewById(R.id.update_button);
+                button.setText(R.string.download_update);
+            });
             // return
         } else {
-            // set status text to no update available
-            statusTextView.setText(R.string.no_update_available);
+            runOnUiThread(() -> {
+                // set status text to no update available
+                statusTextView.setText(R.string.no_update_available);
+            });
             // set progress bar to error
             // return
         }
-        progressIndicator.setIndeterminate(false);
-        progressIndicator.setProgressCompat(100, false);
+        runOnUiThread(() -> {
+            progressIndicator.setIndeterminate(false);
+            progressIndicator.setProgressCompat(100, false);
+        });
         return;
     }
 
     public void downloadUpdate() throws JSONException {
         LinearProgressIndicator progressIndicator = findViewById(R.id.update_progress);
-        progressIndicator.setIndeterminate(true);
+        runOnUiThread(() -> progressIndicator.setIndeterminate(true));
         // get status text view
         MaterialTextView statusTextView = findViewById(R.id.update_progress_text);
         byte[] lastestJSON = new byte[0];
@@ -201,9 +209,11 @@ public class UpdateActivity extends FoxActivity {
                 Exception e) {
             // when logging, REMOVE the json from the log
             Timber.e(e, "Error downloading update info");
-            progressIndicator.setIndeterminate(false);
-            progressIndicator.setProgressCompat(100, false);
-            statusTextView.setText(R.string.error_download_update);
+            runOnUiThread(() -> {
+                progressIndicator.setIndeterminate(false);
+                progressIndicator.setProgressCompat(100, false);
+                statusTextView.setText(R.string.error_download_update);
+            });
         }
         // convert to JSON
         JSONObject latestJSON = new JSONObject(new String(lastestJSON));
@@ -229,10 +239,12 @@ public class UpdateActivity extends FoxActivity {
         // if asset is null, then we are in a bad state
         if (Objects.isNull(asset)) {
             // set status text to error
-            statusTextView.setText(R.string.error_no_asset);
-            // set progress bar to error
-            progressIndicator.setIndeterminate(false);
-            progressIndicator.setProgressCompat(100, false);
+            runOnUiThread(() -> {
+                statusTextView.setText(R.string.error_no_asset);
+                // set progress bar to error
+                progressIndicator.setIndeterminate(false);
+                progressIndicator.setProgressCompat(100, false);
+            });
             // return
             return;
         }

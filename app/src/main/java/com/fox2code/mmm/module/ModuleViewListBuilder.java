@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fox2code.mmm.AppUpdateManager;
+import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.NotificationType;
 import com.fox2code.mmm.installer.InstallerInitializer;
@@ -93,6 +94,9 @@ public class ModuleViewListBuilder {
     }
 
     public void appendRemoteModules() {
+        if (BuildConfig.DEBUG) {
+            Timber.i("appendRemoteModules() called");
+        }
         synchronized (this.updateLock) {
             boolean showIncompatible = MainApplication.isShowIncompatibleModules();
             for (ModuleHolder moduleHolder : this.mappedModuleHolders.values()) {
