@@ -28,8 +28,8 @@ public class AppUpdateManager {
     public static final int FLAG_COMPAT_FORCE_HIDE = 0x0080;
     public static final int FLAG_COMPAT_MMT_REBORN = 0x0100;
     public static final int FLAG_COMPAT_ZIP_WRAPPER = 0x0200;
-    private static final AppUpdateManager INSTANCE = new AppUpdateManager();
     public static final String RELEASES_API_URL = "https://api.github.com/repos/Fox2Code/FoxMagiskModuleManager/releases/latest";
+    private static final AppUpdateManager INSTANCE = new AppUpdateManager();
     private final HashMap<String, Integer> compatDataId = new HashMap<>();
     private final Object updateLock = new Object();
     private final File compatFile;
@@ -77,45 +77,23 @@ public class AppUpdateManager {
         synchronized (this.updateLock) {
             if (lastChecked != this.lastChecked)
                 return this.peekShouldUpdate();
-            boolean preReleaseNewer = true;
             try {
-                JSONObject releases = new JSONObject(new String(Http.doHttpGet(RELEASES_API_URL, false), StandardCharsets.UTF_8));
-                String latestRelease = null, latestPreRelease = null;
-                for (int i = 0; i < releases.length(); i++) {
-                    JSONObject release;
-                    try {
-                        release = releases.getJSONObject(String.valueOf(i));
-                    } catch (
-                            Exception e) {
-                        continue;
-                    }
-                    // Skip invalid entries
-                    if (release.getBoolean("draft"))
-                        continue;
-                    boolean preRelease = release.getBoolean("prerelease");
-                    String version = release.getString("tag_name");
-                    if (version.startsWith("v"))
-                        version = version.substring(1);
-                    if (preRelease) {
-                        if (latestPreRelease == null)
-                            latestPreRelease = version;
-                    } else if (latestRelease == null) {
-                        latestRelease = version;
-                        if (latestPreRelease == null)
-                            preReleaseNewer = false;
-                    }
-                    if (latestRelease != null && latestPreRelease != null) {
-                        break; // We read everything we needed to read.
-                    }
+                JSONObject release = new JSONObject(new String(Http.doHttpGet(RELEASES_API_URL, false), StandardCharsets.UTF_8));
+                String latestRelease = null;
+                boolean preRelease = false;
+                // get latest_release from tag_name translated to int
+                if (release.has("tag_name")) {
+                    latestRelease = release.getString("tag_name");
+                    preRelease = release.getBoolean("prerelease");
                 }
-                if (latestRelease != null)
-                    this.latestRelease = latestRelease;
-                if (BuildConfig.DEBUG)
-                    Timber.d("Latest release: %s", latestRelease);
-                if (BuildConfig.DEBUG)
-                    Timber.d("Latest pre-release: %s", latestPreRelease);
-                if (BuildConfig.DEBUG)
-                    Timber.d("Latest pre-release newer: %s", preReleaseNewer);
+                Timber.d("Latest release: %s, isPreRelease: %s", latestRelease, preRelease);
+                if (latestRelease == null)
+                    return false;
+                if (preRelease) {
+                    this.latestRelease = "99999999"; // prevent updating to pre-release
+                    return false;
+                }
+                this.latestRelease = latestRelease;
                 this.lastChecked = System.currentTimeMillis();
             } catch (
                     Exception ioe) {

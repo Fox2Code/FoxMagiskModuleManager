@@ -202,7 +202,6 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
 
     public static class SettingsFragment extends PreferenceFragmentCompat implements FoxActivity.OnBackPressedCallback {
 
-
         @SuppressLint("UnspecifiedImmutableFlag")
         @Override
         @SuppressWarnings("ConstantConditions")

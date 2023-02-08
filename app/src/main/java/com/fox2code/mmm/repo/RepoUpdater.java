@@ -46,6 +46,7 @@ public class RepoUpdater {
         }
         // if we shouldn't update, get the values from the ModuleListCache realm
         if (!this.repoData.shouldUpdate()) {
+            Timber.d("Fetching index from cache for %s", this.repoData.id);
             RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
                     .name("ModuleListCache.realm")
                     .schemaVersion(1)
@@ -64,6 +65,7 @@ public class RepoUpdater {
                 this.toApply.add(new RepoModule(repoData, moduleListCache.getId()));
             }
             this.toApply = new HashSet<>(this.toUpdate);
+            Timber.d("Fetched %d modules from cache for %s", this.toApply.size(), this.repoData.id);
             return this.toUpdate.size();
         }
         try {
@@ -299,6 +301,8 @@ public class RepoUpdater {
                 ReposList repoListCache = r.where(ReposList.class).equalTo("id", this.repoData.id).findFirst();
                 if (repoListCache != null) {
                     repoListCache.setLastUpdate((int) System.currentTimeMillis());
+                } else {
+                    Timber.w("Failed to update lastUpdate for repo %s", this.repoData.id);
                 }
             });
         }
