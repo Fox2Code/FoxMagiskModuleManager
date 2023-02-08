@@ -3,6 +3,8 @@ package com.fox2code.mmm;
 import static com.fox2code.mmm.MainApplication.isOfficial;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,7 +18,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.TypedValue;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
@@ -66,6 +67,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     public static boolean doSetupNowRunning = true;
     public static boolean doSetupRestarting = false;
     public final ModuleViewListBuilder moduleViewListBuilder;
+    public final ModuleViewListBuilder moduleViewListBuilderOnline;
     public LinearProgressIndicator progressIndicator;
     private ModuleViewAdapter moduleViewAdapter;
     private ModuleViewAdapter moduleViewAdapterOnline;
@@ -87,6 +89,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
 
     public MainActivity() {
         this.moduleViewListBuilder = new ModuleViewListBuilder(this);
+        this.moduleViewListBuilderOnline = new ModuleViewListBuilder(this);
         this.moduleViewListBuilder.addNotification(NotificationType.INSTALL_FROM_STORAGE);
     }
 
@@ -193,19 +196,31 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         // set the bottom padding of the main layout to the height of the bottom nav
         findViewById(R.id.root_container).setPadding(0, 0, 0, bottomNavigationView.getHeight());
         bottomNavigationView.setSelectedItemId(R.id.installed_menu_item);
-        MenuItem installedMenuItem = bottomNavigationView.getMenu().findItem(R.id.installed_menu_item);
-        installedMenuItem.setChecked(true);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.settings_menu_item) {
                 startActivity(new Intent(MainActivity.this, SettingsActivity.class));
             } else if (item.getItemId() == R.id.online_menu_item) {
-                // set module_list_online as visible and module_list as gone
-                this.moduleList.setVisibility(View.GONE);
+                // set module_list_online as visible and module_list as gone. fade in/out
+                this.moduleListOnline.setAlpha(0F);
                 this.moduleListOnline.setVisibility(View.VISIBLE);
+                this.moduleListOnline.animate().alpha(1F).setDuration(300).setListener(null);
+                this.moduleList.animate().alpha(0F).setDuration(300).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        MainActivity.this.moduleList.setVisibility(View.GONE);
+                    }
+                });
             } else if (item.getItemId() == R.id.installed_menu_item) {
-                // set module_list_online as gone and module_list as visible
+                // set module_list_online as gone and module_list as visible. fade in/out
+                this.moduleList.setAlpha(0F);
                 this.moduleList.setVisibility(View.VISIBLE);
-                this.moduleListOnline.setVisibility(View.GONE);
+                this.moduleList.animate().alpha(1F).setDuration(300).setListener(null);
+                this.moduleListOnline.animate().alpha(0F).setDuration(300).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        MainActivity.this.moduleListOnline.setVisibility(View.GONE);
+                    }
+                });
             }
             return true;
         });
@@ -322,9 +337,9 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 });
                 if (BuildConfig.DEBUG)
                     Timber.i("Apply");
-                RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilder::appendRemoteModules);
+                RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilderOnline::appendRemoteModules);
 
-                moduleViewListBuilder.applyTo(moduleListOnline, moduleViewAdapterOnline);
+                moduleViewListBuilderOnline.applyTo(moduleListOnline, moduleViewAdapterOnline);
                 Timber.i("Finished app opening state!");
             }
         }, true);
@@ -455,9 +470,9 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 }
                 if (BuildConfig.DEBUG)
                     Timber.i("Apply");
-                RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilder::appendRemoteModules);
+                RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilderOnline::appendRemoteModules);
                 Timber.i("Common Before applyTo");
-                moduleViewListBuilder.applyTo(moduleListOnline, moduleViewAdapterOnline);
+                moduleViewListBuilderOnline.applyTo(moduleListOnline, moduleViewAdapterOnline);
                 Timber.i("Common After");
             }
         });
@@ -526,11 +541,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             });
             NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
             RepoManager.getINSTANCE().updateEnabledStates();
-            RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilder::appendRemoteModules);
-            this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
-            /*
-             noodleDebug.unbind();
-            */
+            RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilderOnline::appendRemoteModules);
+            this.moduleViewListBuilderOnline.applyTo(moduleList, moduleViewAdapter);
         }, "Repo update thread").start();
     }
 

@@ -25,13 +25,13 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/module_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 app:edgeToEdge="true" />
             <!-- online modules -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/module_list_online"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:visibility="gone"
                 app:edgeToEdge="true" />
         </FrameLayout>
