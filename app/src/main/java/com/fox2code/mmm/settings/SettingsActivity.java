@@ -150,6 +150,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         int itemId = item.getItemId();
         if (itemId == R.id.installed_menu_item || itemId == R.id.online_menu_item) {
             startActivity(new Intent(this, MainActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
             return true;
         } else //noinspection RedundantIfStatement
             if (itemId == R.id.settings_menu_item) {

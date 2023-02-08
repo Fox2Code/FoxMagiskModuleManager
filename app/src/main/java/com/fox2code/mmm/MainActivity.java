@@ -195,10 +195,11 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         // set the bottom padding of the main layout to the height of the bottom nav
         findViewById(R.id.root_container).setPadding(0, 0, 0, bottomNavigationView.getHeight());
-        bottomNavigationView.setSelectedItemId(R.id.installed_menu_item);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.settings_menu_item) {
                 startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                finish();
             } else if (item.getItemId() == R.id.online_menu_item) {
                 // set module_list_online as visible and module_list as gone. fade in/out
                 this.moduleListOnline.setAlpha(0F);
