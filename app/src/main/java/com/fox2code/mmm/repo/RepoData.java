@@ -92,6 +92,7 @@ public class RepoData extends XRepo {
             supportedProperties.put("repoId", "");
             supportedProperties.put("installed", "");
             supportedProperties.put("installedVersionCode", "");
+            supportedProperties.put("safe", "");
         } catch (JSONException e) {
             Timber.e(e, "Error while setting up supportedProperties");
         }
@@ -354,6 +355,7 @@ public class RepoData extends XRepo {
 
     // should update (lastUpdate > 15 minutes)
     public boolean shouldUpdate() {
+        Timber.d("Repo " + this.id + " should update check called");
         RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
         Realm realm2 = Realm.getInstance(realmConfiguration2);
         ReposList repo = realm2.where(ReposList.class).equalTo("id", this.id).findFirst();
@@ -367,8 +369,10 @@ public class RepoData extends XRepo {
                 long currentTime = System.currentTimeMillis();
                 long diff = currentTime - lastUpdate;
                 long diffMinutes = diff / (60 * 1000) % 60;
+                Timber.d("Repo " + this.id + " updated: " + diffMinutes + " minutes ago");
                 return diffMinutes > 15;
             } else {
+                Timber.d("Repo " + this.id + " should update could not find repo in database");
                 return true;
             }
         }

@@ -250,6 +250,15 @@ public class RepoUpdater {
                         boolean installed = false;
                         // get module installed version code
                         int installedVersionCode = 0;
+                        // get safe property. for now, only supported by androidacy repo and they use "vt_status" key
+                        boolean safe = false;
+                        if (this.repoData.getName().equals("Androidacy Modules Repo")) {
+                            if (module.has("vt_status")) {
+                                if (module.getString("vt_status").equals("safe")) {
+                                    safe = true;
+                                }
+                            }
+                        }
                         // insert module to realm
                         // first create a collection of all the properties
                         // then insert to realm
@@ -279,6 +288,7 @@ public class RepoUpdater {
                         moduleListCache.setRepoId(repoId);
                         moduleListCache.setInstalled(installed);
                         moduleListCache.setInstalledVersionCode(installedVersionCode);
+                        moduleListCache.setSafe(safe);
                         realm.copyToRealmOrUpdate(moduleListCache);
                         realm.commitTransaction();
                     } catch (

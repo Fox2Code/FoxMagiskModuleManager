@@ -34,6 +34,8 @@ public class ModuleListCache extends RealmObject {
     private boolean installed;
     private int installedVersionCode;
     private int lastUpdate;
+    // androidacy specific, may be added by other repos
+    private boolean safe;
 
     public ModuleListCache(String id, String name, String version, int versionCode, String author, String description, int minApi, int maxApi, int minMagisk, boolean needRamdisk, String support, String donate, String config, boolean changeBoot, boolean mmtReborn, String repoId, boolean installed, int installedVersionCode, int lastUpdate) {
         this.id = id;
@@ -55,6 +57,7 @@ public class ModuleListCache extends RealmObject {
         this.installed = installed;
         this.installedVersionCode = installedVersionCode;
         this.lastUpdate = lastUpdate;
+        this.safe = false;
     }
 
     public ModuleListCache() {
@@ -227,6 +230,14 @@ public class ModuleListCache extends RealmObject {
 
     public void setLastUpdate(int lastUpdate) {
         this.lastUpdate = lastUpdate;
+    }
+
+    public boolean isSafe() {
+        return safe;
+    }
+
+    public void setSafe(boolean safe) {
+        this.safe = safe;
     }
 
     private JSONObject toJson() {

@@ -216,6 +216,19 @@ public enum ActionButtonType {
             new MaterialAlertDialogBuilder(button.getContext()).setTitle(R.string.warning).setMessage(R.string.warning_message).setPositiveButton(R.string.understand, (v, i) -> {
             }).create().show();
         }
+    }, SAFE() {
+        // SAFE is for modules that the api says are clean. only supported by androidacy currently
+        @Override
+        public void update(Chip button, ModuleHolder moduleHolder) {
+            button.setChipIcon(button.getContext().getDrawable(R.drawable.baseline_verified_user_24));
+            button.setText(R.string.safe);
+        }
+
+        @Override
+        public void doAction(Chip button, ModuleHolder moduleHolder) {
+            new MaterialAlertDialogBuilder(button.getContext()).setTitle(R.string.safe_module).setMessage(R.string.safe_message).setPositiveButton(R.string.understand, (v, i) -> {
+            }).create().show();
+        }
     };
 
     @DrawableRes

@@ -359,5 +359,5 @@
     <string name="background_update_check_excludes_no_modules">No modules installed on device</string>
     <string name="auto_updates_notifs">Notifies when module updates are found</string>
     <string name="notification_group_updates">Updates</string>
-    <string name="low_quality_module_desc">This module has metadata that is either invalid or considered a marker for a low-quality module. Uninstallation is recommended.</string><string name="online">Online</string>
+    <string name="low_quality_module_desc">This module has metadata that is either invalid or considered a marker for a low-quality module. Uninstallation is recommended.</string><string name="online">Online</string><string name="safe">Safe</string><string name="safe_module">Verified safe module</string><string name="safe_message">This module has been verified by the repository as safe, meaning it passes certain quality and safety thresholds, and is checked for malware.</string>
 </resources>

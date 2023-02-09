@@ -45,6 +45,7 @@ public class ModuleInfo {
     public int maxApi;
     // Module status (0 if not from Module Manager)
     public int flags;
+    public boolean safe;
 
     public ModuleInfo(String id) {
         this.id = id;
@@ -69,6 +70,7 @@ public class ModuleInfo {
         this.minApi = moduleInfo.minApi;
         this.maxApi = moduleInfo.maxApi;
         this.flags = moduleInfo.flags;
+        this.safe = moduleInfo.safe;
     }
 
     public boolean hasFlag(int flag) {

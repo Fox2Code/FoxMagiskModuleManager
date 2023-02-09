@@ -212,6 +212,9 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
         if (moduleInfo.donate != null) {
             buttonTypeList.add(ActionButtonType.DONATE);
         }
+        if (moduleInfo.safe) {
+            buttonTypeList.add(ActionButtonType.SAFE);
+        }
     }
 
     public boolean hasUpdate() {
