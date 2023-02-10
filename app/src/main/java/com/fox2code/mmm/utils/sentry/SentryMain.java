@@ -17,8 +17,7 @@ import io.sentry.android.core.SentryAndroid;
 import io.sentry.android.fragment.FragmentLifecycleIntegration;
 import io.sentry.android.timber.SentryTimberIntegration;
 
-public enum SentryMain {
-    ;
+public class SentryMain {
     public static final boolean IS_SENTRY_INSTALLED = true;
     private static boolean sentryEnabled = false;
 

@@ -10,3 +10,4 @@
 local.properties
 sentry.properties
 androidacy.properties
+app/google-services.json

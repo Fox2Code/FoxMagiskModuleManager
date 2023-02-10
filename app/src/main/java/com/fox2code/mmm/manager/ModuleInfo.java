@@ -45,6 +45,7 @@ public class ModuleInfo {
     public int maxApi;
     // Module status (0 if not from Module Manager)
     public int flags;
+    // Module safety (null if not provided)
     public boolean safe;
 
     public ModuleInfo(String id) {

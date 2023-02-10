@@ -10,11 +10,12 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -47,25 +48,24 @@ public class RepoUpdater {
         // if we shouldn't update, get the values from the ModuleListCache realm
         if (!this.repoData.shouldUpdate()) {
             Timber.d("Fetching index from cache for %s", this.repoData.id);
-            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
-                    .name("ModuleListCache.realm")
-                    .schemaVersion(1)
-                    .modules(new ModuleListCache())
-                    .build();
+            File cacheRoot = MainApplication.getINSTANCE().getDataDirWithPath("realms/repos/" + this.repoData.id);
+            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ModuleListCache.realm").schemaVersion(1).deleteRealmIfMigrationNeeded().allowWritesOnUiThread(true).allowQueriesOnUiThread(true).directory(cacheRoot).build();
             Realm realm = Realm.getInstance(realmConfiguration);
             RealmResults<ModuleListCache> results = realm.where(ModuleListCache.class).equalTo("repoId", this.repoData.id).findAll();
             // reposlist realm
             RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
             Realm realm2 = Realm.getInstance(realmConfiguration2);
-            ReposList reposList = realm2.where(ReposList.class).equalTo("id", this.repoData.id).findFirst();
             this.toUpdate = Collections.emptyList();
             this.toApply = new HashSet<>();
             for (ModuleListCache moduleListCache : results) {
-                RepoData repoData = RepoManager.getINSTANCE().get(Objects.requireNonNull(reposList).getUrl());
-                this.toApply.add(new RepoModule(repoData, moduleListCache.getId()));
+                this.toApply.add(new RepoModule(this.repoData, moduleListCache.getId()));
             }
-            this.toApply = new HashSet<>(this.toUpdate);
-            Timber.d("Fetched %d modules from cache for %s", this.toApply.size(), this.repoData.id);
+            Timber.d("Fetched %d modules from cache for %s, from %s records", this.toApply.size(), this.repoData.id, results.size());
+            // close realm
+            realm.close();
+            realm2.close();
+            // apply the toApply list to the toUpdate list
+            this.toUpdate = new ArrayList<>(this.toApply);
             return this.toUpdate.size();
         }
         try {
@@ -101,7 +101,7 @@ public class RepoUpdater {
     }
 
     public boolean finish() {
-        boolean success = this.indexRaw != null;
+        var success = new AtomicBoolean(false);
         // If repo is not enabled we don't need to do anything, just return true
         if (!this.repoData.isEnabled()) {
             return true;
@@ -111,7 +111,7 @@ public class RepoUpdater {
                 // iterate over modules, using this.supportedProperties as a template to attempt to get each property from the module. everything that is not null is added to the module
                 // use realm to insert to
                 // props avail:
-                File cacheRoot = MainApplication.getINSTANCE().getDataDirWithPath("realms/repos" + this.repoData.id);
+                File cacheRoot = MainApplication.getINSTANCE().getDataDirWithPath("realms/repos/" + this.repoData.id);
                 RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ModuleListCache.realm").schemaVersion(1).deleteRealmIfMigrationNeeded().allowWritesOnUiThread(true).allowQueriesOnUiThread(true).directory(cacheRoot).build();
                 // array with module info default values
                 // supported properties for a module
@@ -254,7 +254,7 @@ public class RepoUpdater {
                         boolean safe = false;
                         if (this.repoData.getName().equals("Androidacy Modules Repo")) {
                             if (module.has("vt_status")) {
-                                if (module.getString("vt_status").equals("safe")) {
+                                if (module.getString("vt_status").equals("Clean")) {
                                     safe = true;
                                 }
                             }
@@ -298,7 +298,8 @@ public class RepoUpdater {
                 }
                 realm.close();
             } catch (
-                    Exception ignored) {
+                    Exception e) {
+                Timber.w("Failed to get module info from %s with error %s", this.repoData.id, e.getMessage());
             }
             this.indexRaw = null;
             RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
@@ -310,15 +311,16 @@ public class RepoUpdater {
             realm2.executeTransaction(r -> {
                 ReposList repoListCache = r.where(ReposList.class).equalTo("id", this.repoData.id).findFirst();
                 if (repoListCache != null) {
+                    success.set(true);
                     repoListCache.setLastUpdate((int) System.currentTimeMillis());
                 } else {
                     Timber.w("Failed to update lastUpdate for repo %s", this.repoData.id);
                 }
             });
+        } else {
+            success.set(true); // assume we're reading from cache. this may be unsafe but it's better than nothing
         }
-        this.toUpdate = null;
-        this.toApply = null;
-        return success;
+        return success.get();
     }
 
 }

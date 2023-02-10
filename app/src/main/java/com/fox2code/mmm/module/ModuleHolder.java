@@ -214,6 +214,8 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
         }
         if (moduleInfo.safe) {
             buttonTypeList.add(ActionButtonType.SAFE);
+        } else {
+            Timber.d("Module %s is not safe", this.moduleId);
         }
     }
 

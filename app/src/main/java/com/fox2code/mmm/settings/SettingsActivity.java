@@ -211,8 +211,10 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             applyMaterial3(getPreferenceScreen());
             // add bottom navigation bar to the settings
             BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_navigation);
-            bottomNavigationView.setVisibility(View.VISIBLE);
-            bottomNavigationView.getMenu().findItem(R.id.settings_menu_item).setChecked(true);
+            if (bottomNavigationView != null) {
+                bottomNavigationView.setVisibility(View.VISIBLE);
+                bottomNavigationView.getMenu().findItem(R.id.settings_menu_item).setChecked(true);
+            }
             findPreference("pref_manage_repos").setOnPreferenceClickListener(p -> {
                 devModeStep = 0;
                 openFragment(new RepoFragment(), R.string.manage_repos_pref);
@@ -931,7 +933,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 String[][] userInfo = AndroidacyRepoData.getInstance().userInfo;
                 if (userInfo != null) {
                     String userRole = userInfo[0][1];
-                    if (!Objects.equals(userRole, "Guest")) {
+                    if (Objects.nonNull(userRole) && !Objects.equals(userRole, "Guest")) {
                         // Disable the pref_androidacy_repo_api_token preference
                         LongClickablePreference prefAndroidacyRepoApiD = Objects.requireNonNull(findPreference("pref_androidacy_repo_donate"));
                         prefAndroidacyRepoApiD.setEnabled(false);

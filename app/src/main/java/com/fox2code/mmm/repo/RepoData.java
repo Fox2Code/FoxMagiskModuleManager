@@ -32,6 +32,7 @@ import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class RepoData extends XRepo {
@@ -277,20 +278,22 @@ public class RepoData extends XRepo {
 
     @Override
     public boolean isEnabled() {
-        SharedPreferences preferenceManager = MainApplication.getSharedPreferences();
-        boolean enabled = preferenceManager.getBoolean("pref_" + this.id + "_enabled", this.isEnabledByDefault());
-        if (this.enabled != enabled) {
-            Timber.d("Repo " + this.id + " enable mismatch: " + this.enabled + " vs " + enabled);
-            this.enabled = enabled;
-        }
         return this.enabled;
     }
 
     @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled && !this.forceHide;
-        Timber.d("Repo " + this.id + " enabled: " + this.enabled + " (forced: " + this.forceHide + ") with preferenceID: " + this.getPreferenceId());
-        MainApplication.getSharedPreferences().edit().putBoolean("pref_" + this.getPreferenceId() + "_enabled", enabled).apply();
+        // reposlist realm
+        RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+        Realm realm2 = Realm.getInstance(realmConfiguration2);
+        realm2.executeTransaction(realm -> {
+            ReposList reposList = realm.where(ReposList.class).equalTo("id", this.id).findFirst();
+            if (reposList != null) {
+                reposList.setEnabled(enabled);
+            }
+        });
+        realm2.close();
     }
 
     public void updateEnabledState() {
@@ -299,8 +302,10 @@ public class RepoData extends XRepo {
             return;
         }
         this.forceHide = AppUpdateManager.shouldForceHide(this.id);
-        Timber.d("Repo " + this.id + " update enabled: " + this.enabled + " (forced: " + this.forceHide + ") with preferenceID: " + this.getPreferenceId());
-        this.enabled = (!this.forceHide) && MainApplication.getSharedPreferences().getBoolean("pref_" + this.getPreferenceId() + "_enabled", true);
+        // reposlist realm
+        RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+        Realm realm2 = Realm.getInstance(realmConfiguration2);
+        this.enabled = (!this.forceHide) && Objects.requireNonNull(realm2.where(ReposList.class).equalTo("id", this.id).findFirst()).isEnabled();
     }
 
     public String getUrl() throws NoSuchAlgorithmException {
@@ -360,11 +365,12 @@ public class RepoData extends XRepo {
         Realm realm2 = Realm.getInstance(realmConfiguration2);
         ReposList repo = realm2.where(ReposList.class).equalTo("id", this.id).findFirst();
         // Make sure ModuleListCache for repoId is not null
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ModuleListCache.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms/" + this.id)).schemaVersion(1).build();
+        File cacheRoot = MainApplication.getINSTANCE().getDataDirWithPath("realms/repos/" + this.id);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ModuleListCache.realm").schemaVersion(1).deleteRealmIfMigrationNeeded().allowWritesOnUiThread(true).allowQueriesOnUiThread(true).directory(cacheRoot).build();
         Realm realm = Realm.getInstance(realmConfiguration);
-        ModuleListCache moduleListCache = realm.where(ModuleListCache.class).equalTo("repoId", this.id).findFirst();
+        RealmResults<ModuleListCache> moduleListCache = realm.where(ModuleListCache.class).equalTo("repoId", this.id).findAll();
         if (repo != null) {
-            if (repo.getLastUpdate() != 0 && moduleListCache != null) {
+            if (repo.getLastUpdate() != 0 && moduleListCache.size() != 0) {
                 long lastUpdate = repo.getLastUpdate();
                 long currentTime = System.currentTimeMillis();
                 long diff = currentTime - lastUpdate;

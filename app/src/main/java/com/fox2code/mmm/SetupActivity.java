@@ -303,8 +303,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                     androidacy_repo.setDonate(AndroidacyRepoData.getInstance().getDonate());
                     androidacy_repo.setSupport(AndroidacyRepoData.getInstance().getSupport());
                     androidacy_repo.setSubmitModule(AndroidacyRepoData.getInstance().getSubmitModule());
-                    androidacy_repo.setWebsite(AndroidacyRepoData.getInstance().getWebsite());
-                    androidacy_repo.setUrl(AndroidacyRepoData.getInstance().getWebsite());
+                    androidacy_repo.setUrl(RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT);
                     androidacy_repo.setEnabled(true);
                     androidacy_repo.setLastUpdate(0);
                     androidacy_repo.setWebsite(RepoManager.ANDROIDACY_MAGISK_REPO_HOMEPAGE);
@@ -319,7 +318,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                     magisk_alt_repo.setWebsite(RepoManager.MAGISK_ALT_REPO_HOMEPAGE);
                     magisk_alt_repo.setSupport(null);
                     magisk_alt_repo.setEnabled(true);
-                    magisk_alt_repo.setUrl(RepoManager.MAGISK_ALT_REPO_HOMEPAGE);
+                    magisk_alt_repo.setUrl(RepoManager.MAGISK_ALT_REPO);
                     magisk_alt_repo.setSubmitModule(RepoManager.MAGISK_ALT_REPO_HOMEPAGE + "/submission");
                     magisk_alt_repo.setLastUpdate(0);
                     // commit the changes

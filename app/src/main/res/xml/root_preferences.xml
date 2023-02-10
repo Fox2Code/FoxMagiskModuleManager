@@ -43,11 +43,21 @@
             app:summary="@string/notification_update_desc"
             app:title="@string/notification_update_pref" />
 
+        <!-- check for app updates -->
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:icon="@drawable/ic_baseline_app_settings_alt_24"
+            app:key="pref_background_update_check_app"
+            app:singleLineTitle="false"
+            app:summary="@string/notification_update_app_desc"
+            app:title="@string/notification_update_app_pref" />
+
         <!-- require wifi -->
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:icon="@drawable/baseline_network_wifi_24"
             app:key="pref_background_update_check_wifi"
+            app:dependency="pref_background_update_check"
             app:singleLineTitle="false"
             app:summary="@string/notification_update_wifi_pref"
             app:title="@string/notification_update_wifi_desc" />

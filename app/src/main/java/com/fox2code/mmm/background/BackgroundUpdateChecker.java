@@ -1,6 +1,7 @@
 package com.fox2code.mmm.background;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.NotificationChannelGroup;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -24,9 +25,11 @@ import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
+import com.fox2code.mmm.UpdateActivity;
 import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleManager;
 import com.fox2code.mmm.repo.RepoManager;
@@ -42,11 +45,13 @@ import timber.log.Timber;
 
 public class BackgroundUpdateChecker extends Worker {
     public static final String NOTIFICATION_CHANNEL_ID = "background_update";
+    public static final String NOTIFICATION_CHANNEL_ID_APP = "background_update_app";
     public static final String NOTIFICATION_CHANNEL_ID_ONGOING = "background_update_status";
     public static final int NOTIFICATION_ID = 1;
     public static final int NOTIFICATION_ID_ONGOING = 2;
     public static final String NOTFIICATION_GROUP = "updates";
     static final Object lock = new Object(); // Avoid concurrency issues
+    private static final int NOTIFICATION_ID_APP = 3;
 
     public BackgroundUpdateChecker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -118,10 +123,50 @@ public class BackgroundUpdateChecker extends Worker {
                 postNotification(context, updateableModules, moduleUpdateCount, false);
             }
         });
+        // check for app updates
+        if (MainApplication.getSharedPreferences().getBoolean("pref_background_update_check_app", false)) {
+            try {
+                boolean shouldUpdate = AppUpdateManager.getAppUpdateManager().checkUpdate(true);
+                if (shouldUpdate) {
+                    postNotificationForAppUpdate(context);
+                }
+            } catch (
+                    Exception e) {
+                e.printStackTrace();
+            }
+        }
         // remove checking notification
         if (ContextCompat.checkSelfPermission(MainApplication.getINSTANCE(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
             notificationManager.cancel(NOTIFICATION_ID_ONGOING);
+        }
+    }
+
+    @SuppressLint("RestrictedApi")
+    private static void postNotificationForAppUpdate(Context context) {
+        // create the notification channel if not already created
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.createNotificationChannel(new NotificationChannelCompat.Builder(NOTIFICATION_CHANNEL_ID_APP, NotificationManagerCompat.IMPORTANCE_HIGH).setName(context.getString(R.string.notification_channel_category_app_update)).setDescription(context.getString(R.string.notification_channel_category_app_update_description)).setGroup(NOTFIICATION_GROUP).build());
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_APP);
+        builder.setSmallIcon(R.drawable.baseline_system_update_24);
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+        builder.setCategory(NotificationCompat.CATEGORY_RECOMMENDATION);
+        builder.setShowWhen(false);
+        builder.setOnlyAlertOnce(true);
+        builder.setOngoing(false);
+        builder.setAutoCancel(true);
+        builder.setGroup(NOTFIICATION_GROUP);
+        // open app on click
+        Intent intent = new Intent(context, UpdateActivity.class);
+        // set action to ACTIONS.DOWNLOAD
+        intent.setAction(String.valueOf(UpdateActivity.ACTIONS.DOWNLOAD));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        builder.setContentIntent(android.app.PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE));
+        // set summary to Found X
+        builder.setContentTitle(context.getString(R.string.notification_channel_background_update_app));
+        builder.setContentText(context.getString(R.string.notification_channel_background_update_app_description));
+        if (ContextCompat.checkSelfPermission(MainApplication.getINSTANCE(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+            notificationManager.notify(NOTIFICATION_ID_APP, builder.build());
         }
     }
 
@@ -166,7 +211,7 @@ public class BackgroundUpdateChecker extends Worker {
         // create notification channel group
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence groupName = context.getString(R.string.notification_group_updates);
-            NotificationManager mNotificationManager = (NotificationManager) ContextCompat.getSystemService(context, NotificationManager.class);
+            NotificationManager mNotificationManager = ContextCompat.getSystemService(context, NotificationManager.class);
             Objects.requireNonNull(mNotificationManager).createNotificationChannelGroup(new NotificationChannelGroup(NOTFIICATION_GROUP, groupName));
         }
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);

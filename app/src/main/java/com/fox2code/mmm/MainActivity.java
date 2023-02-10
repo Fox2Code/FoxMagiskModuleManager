@@ -279,8 +279,10 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 if (BuildConfig.DEBUG)
                     Timber.i("Initialize Update");
                 final int max = ModuleManager.getINSTANCE().getUpdatableModuleCount();
-                if (RepoManager.getINSTANCE().getCustomRepoManager().needUpdate()) {
+                if (RepoManager.getINSTANCE().getCustomRepoManager() != null && RepoManager.getINSTANCE().getCustomRepoManager().needUpdate()) {
                     Timber.w("Need update on create");
+                } else if (RepoManager.getINSTANCE().getCustomRepoManager() == null) {
+                    Timber.w("CustomRepoManager is null");
                 }
                 // update compat metadata
                 if (BuildConfig.DEBUG)
@@ -586,6 +588,18 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     @Override
     public int getOverScrollInsetBottom() {
         return this.overScrollInsetBottom;
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        this.updateScreenInsets();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        this.updateScreenInsets();
     }
 
     @SuppressLint("RestrictedApi")

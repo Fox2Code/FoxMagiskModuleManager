@@ -107,7 +107,16 @@ public class ModuleViewListBuilder {
                 Timber.i("A2: %s", repoManager.getModules().size());
                 boolean no32bitSupport = Build.SUPPORTED_32_BIT_ABIS.length == 0;
                 for (RepoModule repoModule : repoManager.getModules().values()) {
-                    if (!repoModule.repoData.isEnabled()) continue;
+                    Timber.i("Module id %s from repo %s", repoModule.id, (repoModule.repoData == null ? "null" : repoModule.repoData.id));
+                    // if repoData is null, something is wrong
+                    if (repoModule.repoData == null) {
+                        Timber.w("RepoData is null for module %s", repoModule.id);
+                        continue;
+                    }
+                    if (!repoModule.repoData.isEnabled()) {
+                        Timber.i("Repo %s is disabled, skipping module %s", repoModule.repoData.id, repoModule.id);
+                        continue;
+                    }
                     ModuleInfo moduleInfo = repoModule.moduleInfo;
                     if (!showIncompatible && (moduleInfo.minApi > Build.VERSION.SDK_INT ||
                             (moduleInfo.maxApi != 0 && moduleInfo.maxApi < Build.VERSION.SDK_INT) ||
