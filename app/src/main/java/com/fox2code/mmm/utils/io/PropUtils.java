@@ -379,7 +379,8 @@ public enum PropUtils {
                 || moduleInfo.author == null || !TextUtils.isGraphic(moduleInfo.author)
                 || isNullString(description = moduleInfo.description) || !TextUtils.isGraphic(description)
                 || description.toLowerCase(Locale.ROOT).equals(moduleInfo.name.toLowerCase(Locale.ROOT))
-                || (getFlagsForModule(moduleInfo.id) & FLAG_COMPAT_LOW_QUALITY) != 0;
+                || (getFlagsForModule(moduleInfo.id) & FLAG_COMPAT_LOW_QUALITY) != 0
+                || (moduleInfo.id.startsWith("."));
     }
 
     private static boolean isInvalidValue(String name) {

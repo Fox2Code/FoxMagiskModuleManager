@@ -58,7 +58,7 @@ public class RepoUpdater {
             this.toUpdate = Collections.emptyList();
             this.toApply = new HashSet<>();
             for (ModuleListCache moduleListCache : results) {
-                this.toApply.add(new RepoModule(this.repoData, moduleListCache.getId()));
+                this.toApply.add(new RepoModule(this.repoData, moduleListCache.getId(), moduleListCache.getName(), moduleListCache.getDescription(), moduleListCache.getAuthor(), moduleListCache.getDonate(), moduleListCache.getConfig(), moduleListCache.getSupport(), moduleListCache.getVersion(), moduleListCache.getVersionCode()));
             }
             Timber.d("Fetched %d modules from cache for %s, from %s records", this.toApply.size(), this.repoData.id, results.size());
             // close realm

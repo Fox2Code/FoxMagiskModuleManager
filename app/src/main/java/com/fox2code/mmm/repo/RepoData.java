@@ -161,7 +161,10 @@ public class RepoData extends XRepo {
         List<RepoModule> newModules = new ArrayList<>();
         synchronized (this.populateLock) {
             String name = jsonObject.getString("name").trim();
+            // if Official is present, remove it, or (Official), or [Official]. We don't want to show it in the UI
             String nameForModules = name.endsWith(" (Official)") ? name.substring(0, name.length() - 11) : name;
+            nameForModules = nameForModules.endsWith(" [Official]") ? nameForModules.substring(0, nameForModules.length() - 11) : nameForModules;
+            nameForModules = nameForModules.contains("Official") ? nameForModules.replace("Official", "").trim() : nameForModules;
             long lastUpdate = jsonObject.getLong("last_update");
             for (RepoModule repoModule : this.moduleHashMap.values()) {
                 repoModule.processed = false;
@@ -203,6 +206,8 @@ public class RepoData extends XRepo {
                 repoModule.propUrl = modulePropsUrl;
                 repoModule.zipUrl = moduleZipUrl;
                 repoModule.checksum = moduleChecksum;
+                // safety check must be overriden per repo. only androidacy repo has this flag currently
+                // repoModule.safe = module.optBoolean("safe", false);
                 if (!moduleStars.isEmpty()) {
                     try {
                         repoModule.qualityValue = Integer.parseInt(moduleStars);
@@ -271,6 +276,8 @@ public class RepoData extends XRepo {
                     throw new RuntimeException("Failed to delete invalid metadata file");
                 }
             }
+        } else {
+            Timber.d("Metadata file not found for %s", repoModule.id);
         }
         repoModule.moduleInfo.flags |= ModuleInfo.FLAG_METADATA_INVALID;
         return false;

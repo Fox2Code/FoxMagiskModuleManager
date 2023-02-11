@@ -359,6 +359,7 @@ public final class AndroidacyRepoData extends RepoData {
             moduleInfo.mmtReborn = jsonObject.optBoolean("mmtReborn", false);
             moduleInfo.support = filterURL(jsonObject.optString("support"));
             moduleInfo.donate = filterURL(jsonObject.optString("donate"));
+            moduleInfo.safe = (jsonObject.has("vt_status") && jsonObject.getString("vt_status").equalsIgnoreCase("clean")) || jsonObject.optBoolean("safe", false);
             String config = jsonObject.optString("config", "");
             moduleInfo.config = config.isEmpty() ? null : config;
             PropUtils.applyFallbacks(moduleInfo); // Apply fallbacks

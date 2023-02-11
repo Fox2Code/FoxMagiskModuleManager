@@ -545,7 +545,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
             RepoManager.getINSTANCE().updateEnabledStates();
             RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilderOnline::appendRemoteModules);
-            this.moduleViewListBuilderOnline.applyTo(moduleList, moduleViewAdapter);
+            this.moduleViewListBuilderOnline.applyTo(moduleListOnline, moduleViewAdapterOnline);
         }, "Repo update thread").start();
     }
 

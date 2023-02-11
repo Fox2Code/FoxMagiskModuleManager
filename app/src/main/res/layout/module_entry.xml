@@ -65,7 +65,7 @@
                     <com.google.android.material.materialswitch.MaterialSwitch
                         android:id="@+id/switch_action"
                         android:layout_width="wrap_content"
-                        android:layout_height="35dp" />
+                        android:layout_height="wrap_content" />
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/button_action"
@@ -183,6 +183,14 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/button_action6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/loading"
+                        android:visibility="gone"
+                        app:chipIcon="@drawable/ic_baseline_error_24" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/button_action7"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/loading"

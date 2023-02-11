@@ -305,6 +305,8 @@ public final class RepoManager extends SyncManager {
                         } else if (repoModule.moduleInfo.versionCode > registeredRepoModule.moduleInfo.versionCode) {
                             this.modules.put(repoModule.id, repoModule);
                         }
+                    } else {
+                        repoModule.moduleInfo.flags |= ModuleInfo.FLAG_METADATA_INVALID;
                     }
                 } catch (
                         Exception e) {
