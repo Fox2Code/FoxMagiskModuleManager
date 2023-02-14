@@ -333,4 +333,7 @@
     <string name="notification_channel_background_update_description">FoxMMM перевіряє наявність оновлень у фоновому режимі.</string>
     <string name="notification_channel_category_background_update_description">Відображає повідомлення під час перевірки оновлень, щоб система не завершила їх примусово</string>
     <string name="low_quality_module_desc">Цей модуль містить метадані, які або недійсні, або вважаються маркером низькоякісного модуля. Рекомендовано видалити.</string>
+    <string name="safe">Безпечний</string>
+    <string name="safe_module">Перевірений безпечний модуль</string>
+    <string name="safe_message">Цей модуль був позначений репозиторієм як безпечний, тобто він відповідає певним граничним значенням якості та безпеки, а також перевірений на наявність шкідливих додатків.</string>
 </resources>

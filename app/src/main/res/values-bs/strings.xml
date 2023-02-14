@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Fox\'s Magisk Modul Menadžer</string>
+    <string name="app_name">Fox-ov Magisk Modul Upravitelj</string>
     <string name="fail_root_magisk">Nije moguće pristupiti Root-u ili Magisk-u</string>
     <string name="fail_root_denied">Root je odbijen putem aplikacije Magisk</string>
     <string name="loading">Učitavanje…</string>
@@ -11,7 +11,7 @@
     <string name="fail_internet">Povezivanje na internet nije uspjelo</string>
     <string name="no_web_view">Nije moguće otvoriti sistemski WebView</string>
     <string name="app_update_available">Nova verzija aplikacije je dostupna</string>
-    <string name="app_update">Nadogradite</string>
+    <string name="app_update">Ažurirajte</string>
     <string name="no_desc_found">Opis nije pronađen.</string>
     <string name="download_module">Preuzmite modul</string>
     <string name="install_module">Instalirajte modul</string>
@@ -64,8 +64,8 @@
     <string name="dev_mode_enabled">Način rada za programere uključen</string>
     <string name="dev_mode_disabled">Način rada za programere isključen</string>
     <string name="disable_low_quality_module_filter_pref">Prikazati module niskog kvaliteta</string>
-    <string name="disable_low_quality_module_filter_desc">Neki moduli ne deklarišu svoje metapodatke ispravno, što uzrokuje vizuelne probleme i/ili ukazuje na loš kvalitet modula.
-\nIsključite ovo na vlastitu odgovornost!</string>
+    <string name="disable_low_quality_module_filter_desc">Neki moduli ne deklarišu svoje metapodatke ispravno, što uzrokuje vizualne probleme i/ili ukazuje na loš kvalitet modula.
+\nUključite ovo na vlastitu odgovornost!</string>
     <string name="manage_repos_pref">Upravljajte repozitorijem</string>
     <string name="pref_category_repos">Repozitoriji</string>
     <string name="dns_over_https_pref">DNS preko HTTPS</string>
@@ -85,7 +85,7 @@
     <string name="androidacy_test_mode_pref">Androidacy testni režim</string>
     <string name="notification_update_title_easter_egg">Praćenje %i ažuriranje modula</string>
     <string name="notification_update_subtitle">Kliknite da otvorite aplikaciju</string>
-    <string name="notification_update_pref">Provjera ažuriranja pozadinskih modula</string>
+    <string name="notification_update_pref">Automatska provjera ažuriranja modula</string>
     <string name="notification_update_desc">Može povećati potrošnju baterije</string>
     <string name="notification_update_debug_pref">Test obavještenje</string>
     <string name="fail_magisk_missing">Magisk nije instaliran na ovom uređaju</string>
@@ -102,7 +102,7 @@
     <string name="dns_over_https_desc">Može riješiti probleme sa povezivanjem u nekim slučajevima. (Ne odnosi se na WebView.)</string>
     <string name="disable_extensions_desc">Isključite Foxove Mmm ekstenzije, sprječavajući module da koriste terminalne ekstenzije.
 \nKorisno ako modul zloupotrebljava Foxove Mmm ekstenzije.</string>
-    <string name="notification_update_title">Pronađeno %i ažuriranje modula</string>
+    <string name="notification_update_title">Pronađeno %1$d ažuriranja modula</string>
     <string name="language_support_outdated">Neki prijevodi za trenutni jezik nisu ažurirani, razmislite o doprinosu prijevoda aplikacije na GitHubu</string>
     <string name="clear_data_dialogue_message">Upravo ćete obrisati podatke aplikacije. Molimo potvrdite ovu radnju.</string>
     <string name="repo_enabled_changed">Omogućili ste ili onemogućili repozitorij. Osvježite listu modula ili ponovo pokrenite aplikaciju.</string>
@@ -116,7 +116,7 @@
     <string name="api_key_valid">API ključ je ispravan.</string>
     <string name="checking_api_key">Provjera API ključa…</string>
     <string name="validating_api_key">Provjera API ključa…</string>
-    <string name="please_wait">Molimo sačekajte...</string>
+    <string name="please_wait">Molimo sačekajte</string>
     <string name="api_key_removed">Uspješno resetiran API ključ</string>
     <string name="save_api_key">Provjera</string>
     <string name="warning">Upozorenje!</string>
@@ -134,7 +134,7 @@
     <string name="permission_notification_title">Dozvoliti obavještenja\?</string>
     <string name="permission_notification_grant">Dajte dozvolu</string>
     <string name="background_update_check_permission_required">Omogućite obavještenja da omogućite ovu opciju.</string>
-    <string name="dont_ask_again">Omogućite obavještenje da omogućite ovu mogućnost.</string>
+    <string name="dont_ask_again">Ne pitaj ponovno</string>
     <string name="force_black_theme_desc">Forsira AMOLED crnu pozadinu kada koristite tamnu temu. Imajte na umu da ovo može praviti problem s kontrastom sa nekim temama u boji.</string>
     <string name="force_black_theme_pref">Forsiraj crnu temu</string>
     <string name="androidacy_repo_disabled">Ovaj repozitorij je trenutno onemogućen</string>
@@ -159,10 +159,10 @@
     <string name="unofficial">Ne-službeno</string>
     <string name="setup_title">Prvo postavljanje</string>
     <string name="setup_button">Završite postavljanje</string>
-    <string name="setup_background_update_check">Provjera ažuriranja u pozadini</string>
+    <string name="setup_background_update_check">Automatski provjeravanje ažuriranja</string>
     <string name="setup_background_update_check_summary">Dozvolite nam da provjerimo ima li ažuriranja modula i aplikacija u pozadini. Ova funkcija može trošiti više baterije i podataka.</string>
     <string name="setup_androidacy_repo">Omogućite Androidacy repozitorij</string>
-    <string name="setup_magisk_alt_repo">Omogući Magisk Alt Repo</string>
+    <string name="setup_magisk_alt_repo">Omogući Magisk Alternativni Repozitorij</string>
     <string name="setup_magisk_alt_repo_summary">Mnogo opuštenije od originala. Ima puno modula po cijenu neke sigurnosti.</string>
     <string name="setup_crash_reporting">Omogući Sentry</string>
     <string name="setup_crash_reporting_summary">Izvještavanje o padu i praćenju performansi. Sve prijave su strogo anonimne i povjerljive.</string>
@@ -204,26 +204,30 @@
     <string name="zip_prop_load_failed">Nije moguće učitati svojstva modula</string>
     <string name="zip_security_warning">Instaliraj %s\?</string>
     <string name="zip_intent_module_install">Da li zaista želite da instalirate modul \"%1$s\" iz ZIP datoteke \"%2$s\"\?
+\n
 \nUvjerite se da vjerujete izvoru ovog modula, jer su moduli vrlo moćni i mogu učiniti gotovo sve.</string>
     <string name="androidacy_thanks">Djelomično razvio Androidacy</string>
     <string name="androidacy_thanks_desc">Velika pohvala za Androidacy za njihovu integraciju i doprinos aplikaciji.</string>
     <string name="contributors">I naravno, hvala svim našim suradnicima, bilo da se radi o prijevodima, kodu ili jednostavno zabavnom druženju! Volimo vas sve.</string>
     <string name="zip_unpacking">Provjera modula…</string>
     <string name="warning_message">Imamo pretpostavku da je ovaj modul možda instaliran bez vašeg znanja ili da se pokušava sakriti.
-\nDeinstalacija se preporučuje.</string>
+\n
+\nDeinstalacija se strogo preporučuje.</string>
     <string name="understand">Razumijem</string>
     <string name="setup_theme_title">Odaberite temu</string>
     <string name="setup_language_button">Odaberite jezik</string>
     <string name="title_activity_setup">Čarobnjak za podešavanja</string>
     <string name="action_settings">Podešavanja</string>
-    <string name="repo_update_failed_message">Sljedeći repozitoriji se nisu uspjeli ažurirati:\\n\\n%s</string>
+    <string name="repo_update_failed_message">Sljedeći repozitoriji se nisu uspjeli ažurirati:
+\n
+\n%s</string>
     <string name="reset_api_key">Resetiranje API ključa</string>
     <string name="upgrade_androidacy_promo">Nadogradi na premium</string>
     <string name="upgrade_androidacy_promo_desc">Nadogradnja na premium će ukloniti oglase, captcha i preuzimanja za Androidacy Repository i podržati Androidacy i autore modula.</string>
     <string name="crash_reporting_restart_message">Aplikacija se mora ponovo pokrenuti da primijeni ovu postavku</string>
     <string name="androidacy_failed_to_parse_token">Nije moguće preuzeti token iz Androidacy-a. Molimo pokušajte ponovo kasnije.</string>
     <string name="api_key_restart">API ključ je promijenjen. Ponovo pokrenite aplikaciju da primijenite izmjene.</string>
-    <string name="permission_notification_message">Potrebna nam je dozvola za obavještenja da vas obavijestimo o ažuriranjima aplikacije i modula. Ako ne date ovu dozvolu, provjera ažuriranja u pozadini neće započeti.</string>
+    <string name="permission_notification_message">Potrebna nam je dozvola za obavještenja da vas obavijestimo o ažuriranjima aplikacije i modula. Ako ne date ovu dozvolu, automatska provjera ažuriranja će se izgasiti.</string>
     <string name="androidacy_repo_disabled_message">Ovoj verziji nedostaju klijentski ključevi za Androidacy Repo. Molimo preuzmite GitHub izdanje ako želite imati koristi od funkcija kao što su recenzije modula, automatske sigurnosne provjere i još mnogo toga.</string>
     <string name="transparent_theme_dialogue_message">Transparentne teme mogu imati neke nedostatke i možda neće raditi na svim ROM-ovima. Osim toga, monet i zamućenje će biti onemogućeno. Možete promijeniti kadgod poželite.</string>
     <string name="sentry_dialogue_message">Naišli smo na grešku! Pomozite nam da poboljšamo aplikaciju dodavanjem nekih informacija o grešci ispod.
@@ -233,4 +237,109 @@
     <string name="low_performance_device_dialogue_title">Omogućavanje zamućenja na nižim uređajima</string>
     <string name="low_performance_device_dialogue_message">Pokušavate omogućiti zamućenje na uređaju koji možda neće dobro raditi s njim.
 \nMožete ga omogućiti, ali to može dovesti do lošeg korisničkog iskustva i preporučujemo da to ne učinite.</string>
+    <string name="error_no_extras">ERROR: Nevažeći podatci primljeni pri paljenju</string>
+    <string name="pref_category_contributors">Suradnici</string>
+    <string name="fox2code_thanks">Kreirao Fox2Code</string>
+    <string name="save_logs">Pohrani izvješća na disk i podijeli</string>
+    <string name="error_saving_logs">Pohranjivanje izvješća nije uspjelo</string>
+    <string name="not_official_build">Ova aplikacija je neslužbena verzija Fox-ovog MMU-a.</string>
+    <string name="share_logs">Podijeli izvješća Fox-ovog MMU-a</string>
+    <string name="safe">Sigurno</string>
+    <string name="error_no_action">ERROR: Nevažeća radnja. Odbijanje nastavka rada.</string>
+    <string name="update_available">Nova verzija pronađena</string>
+    <string name="checking_for_update">Provjeravanje za nove verzije…</string>
+    <string name="no_update_available">Na najnovijoj ste verziji!</string>
+    <string name="download_update">Preuzmi novu verziju</string>
+    <string name="error_download_update">Greška se dogodila pri preuzimanju informacija o novoj verziji.</string>
+    <string name="error_no_asset">ERROR: Raščlanjivanje informacija o novoj verziji nije uspjelo</string>
+    <string name="downloading_update">Preuzimanje nove verzije… %1$d%%</string>
+    <string name="installing_update">Instaliranje nove verzije…</string>
+    <string name="no_file_found">ERROR: Paket sa novom verzijom nije pronađen.</string>
+    <string name="check_for_updates">Provjeri za novu verziju aplikacije</string>
+    <string name="crash_full_stacktrace">Izvršni trag:
+\n%1$s</string>
+    <string name="crash_text">Ups, naišli smo na prepreku!</string>
+    <string name="feedback_message">Recite nam više detalja o tome što ste radili kada se ovo dogodilo. Što više to bolje!</string>
+    <string name="feedback_submit">Predaj i ponovno pokreni</string>
+    <string name="please_feedback">Molimo vas da pomognete tako što kažete što ste pokušavali učiniti kada se ovo dogodilo.</string>
+    <string name="sentry_dialogue_disabled">Izvješćivanje o greškama je onemogućeno. Omogućite ga za slanje povratnih informacija.</string>
+    <string name="feedback_name">Ime (neobavezno)</string>
+    <string name="feedback_email">Email (neobavezno)</string>
+    <string name="crash_icon">Ikona rušenja</string>
+    <string name="copy_button">Kopiraj tekst</string>
+    <string name="crash_details">Nepoznat uzrok</string>
+    <string name="reset_app">Resetiraj aplikaciju</string>
+    <string name="upgraded_summary">Fenomenalni ste! Izgleda kao da ste već nadogradili svoju pretplatu i podržavate Androidacy.</string>
+    <string name="upgraded">Premium je aktivan</string>
+    <string name="reset_warning">Ako često vidite ovo, resetiranje aplikacije možda pomogne. Ovo će očistiti podatke aplikacije ali neće utjecati na instalirane module.</string>
+    <string name="reset_app_message">Ovo će potpuno izbrisati sve podatke aplikacije i zatvoriti ju. Moduli se neće izbrisati.</string>
+    <string name="reset">Resetiraj</string>
+    <string name="reset_app_confirmation">Ovo će potpuno izbrisati podatke aplikacije, ali neće utjecati na module.</string>
+    <string name="online_repo">Online repositorij</string>
+    <string name="app_name_short">Fox-ov MMU</string>
+    <string name="changelog">Promjene</string>
+    <string name="website">Stranica</string>
+    <string name="config">Konfiguracija</string>
+    <string name="favourite">Omiljeni</string>
+    <string name="sniffed_modules">Pretraženi moduli</string>
+    <string name="sniffing_modules">Pretraživanje modula</string>
+    <string name="module_repo">Repositorij:</string>
+    <string name="module_by">od</string>
+    <string name="module_stars">Zvijezda:</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="module_min_sdk_chip">Min. Android</string>
+    <string name="pref_category_info">Info</string>
+    <string name="source_code">Izvorni kod</string>
+    <string name="force_english_pref">Engleski jezik aplikacije</string>
+    <string name="module_min_magisk_chip">Min. Magisk ver. %s</string>
+    <string name="module_max_sdk_chip">Max. Android</string>
+    <string name="disable_extensions_pref">Bez MMU</string>
+    <string name="wrap_text_desc">Prikaži tekst na više linija umjesto stavljanja cijelog teksta na jednu liniju pri instaliranju modula.</string>
+    <string name="androidacy_test_mode_desc">Koristi testnu krajnju točku za Androidacy umjesto produkcijsku. (Aplikacija će se ponovno pokrenuti)</string>
+    <string name="api_key">Androidacy API Ključ</string>
+    <string name="magisk_alt_repo_name">Magisk Alternativni Repozitorij</string>
+    <string name="api_key_mismatch">API ključ je u nevaljanom formatu</string>
+    <string name="notification_update_ignore_pref">Odstrani module</string>
+    <string name="pref_category_updates">Ažuriranja</string>
+    <string name="invalid_excludes">Nevaljan unos</string>
+    <string name="notification_update_ignore_desc">Lista modula koji se neće provjeravati za ažuriranja</string>
+    <string name="background_update_check_excludes">Moduli koji se neće automatski provjeravati za ažuriranja</string>
+    <string name="title_activity_update">Ažuriranje u aplikaciji</string>
+    <string name="update_title">Ažuriraj aplikaciju</string>
+    <string name="update_button">Molimo pričekajte...</string>
+    <string name="invalid_repo_url">URL koji ste unijeli za repositorij nije važeći</string>
+    <string name="add_repo_message">Repositoriji moraju biti posluženi preko HTTPS, i moraju pratiti specifikaciju označenu u dokumentaciji.</string>
+    <string name="update_message">Molimo pričekajte dok provjerimo i instaliramo ažuriranja za Fox-ov MMU. Ovo možda potraje par minuta</string>
+    <string name="changelog_none">Nema još promjena!</string>
+    <string name="update_cancel_button">Zaustavi ažuriranje</string>
+    <string name="notification_channel_background_update_description">FoxMMU provjerava za ažuriranja u pozadini.</string>
+    <string name="notification_update_summary">Sljedeći moduli se mogu ažurirati:</string>
+    <string name="notification_update_module_template">%1$s na verziju %2$s</string>
+    <string name="notification_channel_background_update">Provjera ažuriranja...</string>
+    <string name="notification_channel_category_background_update">Status ažuriranja u pozadini</string>
+    <string name="notification_update_wifi_desc">Provjerite samo na WiFi</string>
+    <string name="notification_update_wifi_pref">Zahtijevaj wi-fi ili neograničenu mrežu za provjere ažuriranja. Preporučuje se da ovo ostavite uključeno ako imate ograničene mobilne podatke.</string>
+    <string name="background_update_check_excludes_no_modules">Nema instaliranih modula na uređaju</string>
+    <string name="auto_updates_notifs">Šalje obavijest kada se pronađu ažuriranja modula</string>
+    <string name="notification_group_updates">Ažuriranja</string>
+    <string name="online">Online</string>
+    <string name="safe_module">Provjereno siguran modul</string>
+    <string name="notification_update_app_pref">Provjerite ažuriranja aplikacije</string>
+    <string name="notification_channel_category_app_update">Ažuriranja aplikacije</string>
+    <string name="notification_channel_category_app_update_description">Šalje obavijest kada je dostupno ažuriranje aplikacije</string>
+    <string name="notification_channel_background_update_app">Dostupna nova verzija aplikacije!</string>
+    <string name="more_details">Više detalja se mogu naći ispod.</string>
+    <string name="crash_details_copied">Izvršni trag kopiran u međuspremnik!</string>
+    <string name="sentry_enable_nag">Izgleda da je prijavljivanje izvještaja o padu isključeno. Molimo uključite ga da biste mogli dostaviti povratne informacije.</string>
+    <string name="error_adding">Dodavanje repozitorija nije uspjelo</string>
+    <string name="invalid_characters_message">Lista modula koju ste unijeli je nevažeća. Molimo unesite samo važeće id-eve modula razmaknute zarezima</string>
+    <string name="update_debug_warning">Izgleda da pokrećete debug build tip aplikacije. Aplikaciju ćete morati ručno ažurirati, i ažuriranja unutar aplikacije nisu podržana</string>
+    <string name="update_debug_download_pref">Testiraj mehanizam preuzimanja nove verzije</string>
+    <string name="fox2code_thanks_desc">Fox2Code je originalni stvaratelj aplikacije. Bez njega, ovo nikada ne bi bilo moguće.</string>
+    <string name="sentry_dialogue_empty_message">Niste naveli dodatne povratne informacije.</string>
+    <string name="notification_channel_category_background_update_description">Prikazuje obavijest dok se vrši provjera ažuriranja tako da ju sustav ne bi ukinuo</string>
+    <string name="low_quality_module_desc">Ovaj modul ima metapodatke koji su ili nevažeći ili se smatraju oznakom za modul niske kvalitete. Preporučuje se deinstalacija.</string>
+    <string name="safe_message">Repozitorij je potvrdio da je ovaj modul siguran, što znači da prolazi određene pragove kvalitete i sigurnosti, te da nije zlonamjeran.</string>
+    <string name="notification_update_app_desc">Omogućite automatsku provjeru ažuriranja aplikacije. Ažuriranja se neće preuzeti automatski.</string>
+    <string name="notification_channel_background_update_app_description">Dostupno je ažuriranje za Fox-ov MMU. Dodirnite ovdje za ažuriranje.</string>
 </resources>
