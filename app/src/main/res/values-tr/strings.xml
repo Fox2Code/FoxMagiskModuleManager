@@ -16,7 +16,7 @@
     <string name="no_web_view">Sistem WebView açılamadı</string>
     <string name="title_activity_settings">AyarlarEtkinliği</string>
     <string name="app_update_available">Uygulama güncellemesi mevcut</string>
-    <string name="app_update">Yükselt</string>
+    <string name="app_update">Uygulamayı güncelle</string>
     <string name="no_desc_found">Açıklama bulunamadı.</string>
     <string name="download_module">Modülü indir</string>
     <string name="install_module">Modülü yükle</string>
@@ -102,8 +102,8 @@
     <string name="dev_mode_disabled">Geliştirici modu kapalı</string>
     <string name="force_english_pref">İngilizce dilini zorla</string>
     <string name="disable_low_quality_module_filter_pref">Düşük kalite modül filtresini devre dışı bırak</string>
-    <string name="disable_low_quality_module_filter_desc">Bazı modüller metaveri\'lerini düzgün bir şekilde bildirmiyor, görsel hatalara neden oluyor, ve/veya modül kalitesini zayıf gösteriyor.
-\nDevre dışı bırakmada sorumluluk size aittir!</string>
+    <string name="disable_low_quality_module_filter_desc">Bazı modüller meta verilerini düzgün bir şekilde beyan etmeyerek görsel aksaklıklara neden olur ve/veya modül kalitesinin düşük olduğunu gösterir.
+\nBunu kendi sorumluluğunuzda açın!</string>
     <string name="dns_over_https_pref">Https üzerinden dns</string>
     <string name="dns_over_https_desc">
         Bazı durumlarda bağlantı sorunlarını düzeltebilir.
@@ -130,10 +130,10 @@
     <string name="androidacy_test_mode_pref">Androidacy test modu</string>
     <string name="androidacy_test_mode_desc">Release endpoint yerine Androidacy Endpoint\'i kullan. (Uygulama sürecinin yeniden başlatılması gerekir)</string>
     <!-- Background Notification translation -->
-    <string name="notification_update_title">%i modül güncellemesi bulundu</string>
+    <string name="notification_update_title">%1$d modül güncellemesi bulundu</string>
     <string name="notification_update_title_easter_egg">%i modül güncellemesi koklandı</string>
     <string name="notification_update_subtitle">Uygulamayı açmak için tıkla</string>
-    <string name="notification_update_pref">Modül güncellemesi arkaplan kontrolü</string>
+    <string name="notification_update_pref">Otomatik modül güncelleme kontrolü</string>
     <string name="notification_update_desc">Pil kullanımını arttırabilir</string>
     <string name="notification_update_debug_pref">Bildirim Testi</string>
     <!-- Set to true in translation file if your language is right to left -->
@@ -172,7 +172,7 @@
     <string name="api_key_restart">API anahtarı değiştirildi. Değişiklikleri uygulamak için uygulamayı yeniden başlatın.</string>
     <string name="api_key_unchanged">Girdiğiniz API anahtarı zaten kullanımda olanıyla aynı.</string>
     <string name="permission_notification_title">Bildirimlere izin ver\?</string>
-    <string name="permission_notification_message">Size uygulama ve modül güncellemelerini bildirmek için bildirim iznine ihtiyacımız vardır. Eğer bu izni vermezseniz, arkaplanda güncelleme kontrolleri çalışmayacaktır.</string>
+    <string name="permission_notification_message">Uygulama ve modül güncellemelerini size bildirmek için bildirim iznine ihtiyacımız var. Bu izni vermezseniz, Otomatik güncelleme kontrolleri çalışmayacaktır.</string>
     <string name="permission_notification_grant">İzni ver</string>
     <string name="background_update_check_permission_required">Bu seçeneği etkinleştirmek için lütfen bildirimleri etkinleştirin.</string>
     <string name="dont_ask_again">Birdaha sorma</string>
@@ -211,7 +211,7 @@
     <string name="setup_title">İlk kez kurulum</string>
     <string name="setup_message">Hoşgeldiniz! Bu uygulama Magisk modüllerini yüklemeye ve yönetmeye yardımcı olur. Başlamak için lütfen aşağıdaki ayarları seçin. Bunlar ve daha fazlası ayarlardan daha sonra değiştirilebilir.</string>
     <string name="setup_button">Kurulumu bitir</string>
-    <string name="setup_background_update_check">Güncelleme arkaplan kontrolü</string>
+    <string name="setup_background_update_check">Otomatik güncelleme kontrolü</string>
     <string name="setup_androidacy_repo">Androidacy deposunu etkinleştir</string>
     <string name="setup_androidacy_repo_summary">Özellikler, kullanıcı incelemeleri, otomatik virüs taramaları, hızlı güncellemeler, geniş seçimler ve Androidacy destekli.</string>
     <string name="setup_magisk_alt_repo">Magisk Alt Depo\'yu etkinleştir</string>
@@ -272,7 +272,9 @@
 \n
 \nModüller çok güçlü ve neredeyse her şeyi yapabildiğinden bu modülün kaynağına güvendiğinizden emin olun.</string>
     <string name="theme_transparent_dark">Koyu (şeffaf)</string>
-    <string name="repo_update_failed_message">Aşağıdaki depolar güncellenemedi:\\n\\n%s</string>
+    <string name="repo_update_failed_message">Aşağıdaki repolar güncellenemedi:
+\n
+\n%s</string>
     <string name="reset_api_key">API anahtarlarını sıfırla</string>
     <string name="upgrade_androidacy_promo">Premium\'a yükselt</string>
     <string name="upgrade_androidacy_promo_desc">Premium\'a yükseltmek Androidacy Deposu için reklamları, captchaları ve indirmeleri kaldıracak ayrıca Androidacy ve modül geliştiricilerini destekleyecektir.</string>
@@ -284,4 +286,78 @@
     <string name="share_logs">FoxMMM günlüklerini paylaş</string>
     <string name="not_official_build">Bu uygulama resmi olmayan FoxMMM yapımıdır.</string>
     <string name="update_button">Lütfen bekleyin...</string>
+    <string name="notification_update_ignore_desc">Güncelleme kontrollerinden hariç tutulacak modüllerin listesi</string>
+    <string name="background_update_check_excludes">Otomatik güncelleme kontrollerinden hariç tutulacak modüller</string>
+    <string name="title_activity_update">Uygulama İçi Güncelleyici</string>
+    <string name="update_title">Uygulamayı güncelle</string>
+    <string name="update_message">FoxMMM güncellemelerini kontrol edip yüklerken lütfen bekleyin. Bu işlem birkaç dakika sürebilir</string>
+    <string name="crash_text">Uh-oh, bir engele takıldık!</string>
+    <string name="feedback_submit">Gönder ve yeniden başlat</string>
+    <string name="please_feedback">Lütfen bu olay olduğunda ne yapmaya çalıştığınızı anlatarak bize yardımcı olun.</string>
+    <string name="feedback_name">İsim (isteğe bağlı)</string>
+    <string name="feedback_email">E-posta (isteğe bağlı)</string>
+    <string name="sentry_dialogue_empty_message">Ek geri bildirim belirtmediniz.</string>
+    <string name="crash_icon">Arıza simgesi</string>
+    <string name="copy_button">Metni kopyala</string>
+    <string name="crash_details">Bilinmeyen neden</string>
+    <string name="more_details">Daha fazla ayrıntı aşağıda bulunabilir.</string>
+    <string name="crash_details_copied">Yığın izi panoya kopyalandı!</string>
+    <string name="crash_full_stacktrace">Yığın izi:
+\n%1$s</string>
+    <string name="reset_app">Uygulamayı sıfırlayın</string>
+    <string name="upgraded_summary">Sen harikasın! Görünüşe göre aboneliğinizi çoktan yükseltmişsiniz ve Androidacy\'i destekliyorsunuz.</string>
+    <string name="upgraded">Premium aktif</string>
+    <string name="reset_warning">Bu ekranı görmeye devam ederseniz, uygulamayı sıfırlamak yardımcı olabilir. Bu işlem uygulama verilerini temizler ancak yüklü modülleri etkilemez.</string>
+    <string name="reset_app_message">Bu, tüm uygulama verilerini tamamen kaldıracak ve uygulamayı kapatacaktır. Modüller kaldırılmayacaktır.</string>
+    <string name="reset">Sıfırla</string>
+    <string name="reset_app_confirmation">Bu işlem uygulama verilerini tamamen silecek ancak modülleri etkilemeyecektir.</string>
+    <string name="error_no_extras">HATA: Başlatma sırasında geçersiz veri alındı</string>
+    <string name="update_debug_warning">"Bir hata ayıklama derlemesi  (debug) sürümü  çalıştırıyor gibi görünüyorsunuz. Hata ayıklama derlemeleri manuel olarak güncellenmelidir ve uygulama içi güncellemeleri desteklemez"</string>
+    <string name="error_no_action">HATA: Geçersiz eylem belirtildi. Devam etmeyi reddediyor.</string>
+    <string name="update_available">Güncelleme bulundu</string>
+    <string name="checking_for_update">Güncellemeler kontrol ediliyor…</string>
+    <string name="no_update_available">Her şey güncel!</string>
+    <string name="download_update">Güncellemeyi indirin</string>
+    <string name="error_download_update">Güncelleme bilgileri indirilirken bir hata oluştu.</string>
+    <string name="error_no_asset">HATA: Güncelleme bilgileri ayrıştırılamadı</string>
+    <string name="downloading_update">Güncelleme indiriliyor... %1$d%%</string>
+    <string name="installing_update">Güncelleme yükleniyor…</string>
+    <string name="no_file_found">HATA: Güncelleme paketi bulunamadı.</string>
+    <string name="check_for_updates">Uygulama güncellemelerini kontrol edin</string>
+    <string name="error_adding">Özel depo eklenemedi</string>
+    <string name="api_key_mismatch">API anahtarı geçersiz bir biçimde</string>
+    <string name="notification_update_ignore_pref">Modülleri hariç tut</string>
+    <string name="pref_category_updates">Güncellemeler</string>
+    <string name="invalid_excludes">Geçersiz giriş</string>
+    <string name="invalid_characters_message">Girdiğiniz modül listesi geçersiz. Lütfen yalnızca virgülle ayrılmış geçerli modül kimliklerini girin</string>
+    <string name="update_debug_download_pref">Güncelleme indirme mekanizmasını test edin</string>
+    <string name="changelog_none">Henüz bir değişiklik yok!</string>
+    <string name="update_cancel_button">Güncellemeyi iptal et</string>
+    <string name="invalid_repo_url">Depo için girdiğiniz URL geçersiz</string>
+    <string name="add_repo_message">Repolar HTTPS üzerinden sunulmalı ve belgelerde belirtilen özelliklere uymalıdır.</string>
+    <string name="notification_update_wifi_pref">Güncelleme kontrolleri için wi-fi veya ölçülmemiş bir ağ gerektirir. Sınırlı mobil veriniz varsa açık bırakmanız önerilir.</string>
+    <string name="notification_update_summary">Aşağıdaki modüller güncellenebilir:</string>
+    <string name="notification_update_module_template">%1$s sürümünden %2$s sürümüne</string>
+    <string name="notification_channel_background_update">Güncellemeler kontrol ediliyor...</string>
+    <string name="notification_channel_background_update_description">FoxMMM arka planda güncellemeleri kontrol ediyor.</string>
+    <string name="notification_channel_category_background_update">Arka plan güncelleme durumu</string>
+    <string name="notification_channel_category_background_update_description">Güncellemeleri kontrol ederken bir bildirim gösterir, böylece sistem onu öldürmez</string>
+    <string name="notification_update_wifi_desc">Sadece WiFi üzerinden kontrol edin</string>
+    <string name="background_update_check_excludes_no_modules">Cihazda yüklü modül yok</string>
+    <string name="auto_updates_notifs">Modül güncellemeleri bulunduğunda bildirir</string>
+    <string name="notification_group_updates">Güncellemeler</string>
+    <string name="low_quality_module_desc">Bu modül geçersiz veya düşük kaliteli bir modül için işaret olarak kabul edilen meta verilere sahiptir. Kaldırılması önerilir.</string>
+    <string name="online">Çevrimiçi</string>
+    <string name="safe">Güvenli</string>
+    <string name="safe_module">Doğrulanmış güvenli modül</string>
+    <string name="notification_update_app_pref">Uygulama güncellemelerini kontrol edin</string>
+    <string name="notification_channel_category_app_update">Uygulama güncellemeleri</string>
+    <string name="notification_channel_background_update_app">Uygulama güncellemesi mevcut!</string>
+    <string name="notification_channel_background_update_app_description">FoxMMM için bir güncelleme mevcuttur. Güncellemek için buraya dokunun.</string>
+    <string name="feedback_message">Bu olay olduğunda ne yaptığınız hakkında bize daha fazla ayrıntı verin. Ne kadar çok, o kadar iyi!</string>
+    <string name="sentry_dialogue_disabled">Çökme raporlama devre dışı. Geri bildirim göndermek için etkinleştirin.</string>
+    <string name="sentry_enable_nag">Kilitlenme raporlaması devre dışı gibi görünüyor. Geri bildirim göndermek için lütfen etkinleştirin.</string>
+    <string name="safe_message">Bu modül depo tarafından güvenli olarak doğrulanmıştır, yani belirli kalite ve güvenlik eşiklerini geçmiştir ve kötü amaçlı yazılımlara karşı kontrol edilmiştir.</string>
+    <string name="notification_update_app_desc">Uygulama güncellemelerini otomatik olarak kontrol etmeyi etkinleştirin. Güncellemeler otomatik olarak indirilmeyecektir.</string>
+    <string name="notification_channel_category_app_update_description">Bir uygulama güncellemesi mevcut olduğunda bildirir</string>
 </resources>
