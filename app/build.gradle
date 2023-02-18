@@ -12,7 +12,7 @@ apply plugin: "realm-android"
 android {
     namespace "com.fox2code.mmm"
     compileSdk 33
-    ndkVersion "25.1.8937393"
+    ndkVersion "25.2.9519653"
     signingConfigs {
         release {
             // Everything comes from local.properties
@@ -207,12 +207,11 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     lint {
         disable 'MissingTranslation'
-        disable 'TypographyEllipsis'
     }
 }
 
@@ -274,7 +273,7 @@ sentry {
     }
 
     // temp fix for gradle bug
-    includeDependenciesReport = false
+    includeDependenciesReport = true
 }
 
 configurations {
@@ -283,8 +282,9 @@ configurations {
 
 dependencies {
     // UI
-    implementation 'androidx.appcompat:appcompat:1.6.0'
-    implementation "androidx.activity:activity-ktx:1.7.0-alpha04"
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    //noinspection GradleDependency
+    implementation "androidx.activity:activity-ktx:1.7.0-beta01"
     implementation 'androidx.emoji2:emoji2:1.2.0'
     implementation 'androidx.emoji2:emoji2-views-helper:1.2.0'
     implementation 'androidx.preference:preference-ktx:1.2.0'
@@ -302,7 +302,7 @@ dependencies {
     implementation "com.mikepenz:aboutlibraries:${latestAboutLibsRelease}"
 
     // Utils
-    implementation 'androidx.work:work-runtime:2.7.1'
+    implementation 'androidx.work:work-runtime:2.8.0'
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.10'
     implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:5.0.0-alpha.10'
     // Chromium cronet from androidacy
@@ -368,7 +368,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget=JavaVersion.VERSION_11
+        jvmTarget=JavaVersion.VERSION_17
     }
     //noinspection GrDeprecatedAPIUsage
     buildToolsVersion '33.0.1'
@@ -378,7 +378,7 @@ android {
 
 kotlin {
     jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 

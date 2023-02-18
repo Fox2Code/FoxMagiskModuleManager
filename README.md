@@ -25,7 +25,7 @@ was more painful that trying something while in pain.
 
 Spending time with my friend and working on this project was a sort of pain killer for me.
 
-Even tho I received money from my parent and the governement for my health problems, I didn't know
+Even tho I received money from my parent and the government for my health problems, I didn't know
 what to do with it cause anything I could have bought had no use for me because my extreme pain made
 me unable to use anything (even play video games).
 
@@ -35,8 +35,8 @@ community support I would have been physically unable to continue this project.
 There was clues of my health problems, right on this project, and theses are the following:
 
 - My commit time of day being random proving I have no jobs.
-- Me not commiting for entire week, or having only commited one line in a week.
-- Me taking too much time to publish release after I did the relase commit.
+- Me not committing for entire week, or having only committed one line in a week.
+- Me taking too much time to publish release after I did the release commit.
 - Me missing obvious bugs and being able to do simple task properly
   (Well maybe this last one is harder to prove via commit history)
 
@@ -45,10 +45,10 @@ analysis to prove what it would make my day, and I would be happy to give money 
 that because I don't know what do to with my money at this point.
 
 This is really sickening peoples need to give proof for their mental/health issues because some
-peoples fake having thoses issues for clout.
+peoples fake having those issues for clout.
 
 If you want to use my health problems for clout, I don't care as long as you are respectful, at
-least you won't be hurting peoples with mental/health issues by faking having thoses issues.
+least you won't be hurting peoples with mental/health issues by faking having those issues.
 
 I'll probably delete this section once my health would be gotten better, or at least good enough for
 me to not be stuck in my bed at least once a day because of pain.
