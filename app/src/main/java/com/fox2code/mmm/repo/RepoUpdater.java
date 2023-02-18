@@ -10,7 +10,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -61,11 +60,19 @@ public class RepoUpdater {
                 this.toApply.add(new RepoModule(this.repoData, moduleListCache.getId(), moduleListCache.getName(), moduleListCache.getDescription(), moduleListCache.getAuthor(), moduleListCache.getDonate(), moduleListCache.getConfig(), moduleListCache.getSupport(), moduleListCache.getVersion(), moduleListCache.getVersionCode()));
             }
             Timber.d("Fetched %d modules from cache for %s, from %s records", this.toApply.size(), this.repoData.id, results.size());
+            // apply the toApply list to the toUpdate list
+            try {
+                this.toUpdate = this.repoData.populate(new JSONObject(new String(results.asJSON().getBytes(), StandardCharsets.UTF_8)));
+            } catch (Exception e) {
+                Timber.e(e);
+            }
             // close realm
             realm.close();
             realm2.close();
-            // apply the toApply list to the toUpdate list
-            this.toUpdate = new ArrayList<>(this.toApply);
+            // Since we reuse instances this should work
+            this.toApply = new HashSet<>(this.repoData.moduleHashMap.values());
+            this.toApply.removeAll(this.toUpdate);
+            // Return repo to update
             return this.toUpdate.size();
         }
         try {
