@@ -286,11 +286,21 @@ public final class AndroidacyRepoData extends RepoData {
     @Override
     protected List<RepoModule> populate(JSONObject jsonObject) throws JSONException, NoSuchAlgorithmException {
         Timber.d("AndroidacyRepoData populate start");
-        if (!jsonObject.getString("status").equals("success"))
-            throw new JSONException("Response is not a success!");
         String name = jsonObject.optString("name", "Androidacy Modules Repo");
         String nameForModules = name.endsWith(" (Official)") ? name.substring(0, name.length() - 11) : name;
-        JSONArray jsonArray = jsonObject.getJSONArray("data");
+        JSONArray jsonArray;
+        try {
+            jsonArray = jsonObject.getJSONArray("data");
+        } catch (JSONException e) {
+            // probably using modules key since it's cached
+            try {
+                jsonArray = jsonObject.getJSONArray("modules");
+            } catch (JSONException e2) {
+                // we should never get here, bail out
+                Timber.e(e2, "Failed to parse modules");
+                return null;
+            }
+        }
         for (RepoModule repoModule : this.moduleHashMap.values()) {
             repoModule.processed = false;
         }
@@ -299,9 +309,20 @@ public final class AndroidacyRepoData extends RepoData {
         long lastLastUpdate = 0;
         for (int i = 0; i < len; i++) {
             jsonObject = jsonArray.getJSONObject(i);
-            String moduleId = jsonObject.getString("codename");
+            String moduleId;
+            try {
+                moduleId = jsonObject.getString("codename");
+            } catch (JSONException e) {
+                Timber.e("Module %s has no codename or json %s is invalid", jsonObject.optString("codename", "Unknown"), jsonObject.toString());
+                continue;
+            }
             // Normally, we'd validate the module id here, but we don't need to because the server does it for us
-            long lastUpdate = jsonObject.getLong("updated_at") * 1000;
+            long lastUpdate;
+            try {
+                lastUpdate = jsonObject.getLong("updated_at") * 1000;
+            } catch (JSONException e) {
+                lastUpdate = jsonObject.getLong("lastUpdate") * 1000;
+            }
             lastLastUpdate = Math.max(lastLastUpdate, lastUpdate);
             RepoModule repoModule = this.moduleHashMap.get(moduleId);
             if (repoModule == null) {

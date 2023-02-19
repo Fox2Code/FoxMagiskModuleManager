@@ -1,5 +1,6 @@
 package com.fox2code.mmm.utils.realm;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,7 +16,7 @@ public class ModuleListCache extends RealmObject {
     // for compatibility, only id is required
     @PrimaryKey
     @Required
-    private String id;
+    private String codename;
     private String name;
     private String version;
     private int versionCode;
@@ -37,8 +38,8 @@ public class ModuleListCache extends RealmObject {
     // androidacy specific, may be added by other repos
     private boolean safe;
 
-    public ModuleListCache(String id, String name, String version, int versionCode, String author, String description, int minApi, int maxApi, int minMagisk, boolean needRamdisk, String support, String donate, String config, boolean changeBoot, boolean mmtReborn, String repoId, boolean installed, int installedVersionCode, int lastUpdate) {
-        this.id = id;
+    public ModuleListCache(String codename, String name, String version, int versionCode, String author, String description, int minApi, int maxApi, int minMagisk, boolean needRamdisk, String support, String donate, String config, boolean changeBoot, boolean mmtReborn, String repoId, boolean installed, int installedVersionCode, int lastUpdate) {
+        this.codename = codename;
         this.name = name;
         this.version = version;
         this.versionCode = versionCode;
@@ -70,7 +71,7 @@ public class ModuleListCache extends RealmObject {
         JSONObject jsonObject = new JSONObject();
         for (ModuleListCache module : modules) {
             try {
-                jsonObject.put(module.getId(), module.toJson());
+                jsonObject.put(module.getCodename(), module.toJson());
             } catch (
                     JSONException e) {
                 Timber.e(e);
@@ -216,12 +217,12 @@ public class ModuleListCache extends RealmObject {
         this.installedVersionCode = installedVersionCode;
     }
 
-    public String getId() {
-        return id;
+    public String getCodename() {
+        return codename;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setCodename(String codename) {
+        this.codename = codename;
     }
 
     public int getLastUpdate() {
@@ -272,5 +273,28 @@ public class ModuleListCache extends RealmObject {
         RealmResults<ModuleListCache> modules = realm.where(ModuleListCache.class).equalTo("repoId", repoId).findAll();
         realm.close();
         return modules;
+    }
+
+    // same as above but returns a json object
+    public JSONObject getModulesAsJson(String repoId) {
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<ModuleListCache> modules = realm.where(ModuleListCache.class).equalTo("repoId", repoId).findAll();
+        JSONObject jsonObject = new JSONObject();
+        // everything goes under top level "modules" key
+        try {
+            jsonObject.put("modules", new JSONArray());
+        } catch (JSONException ignored) {
+            // we should never get here
+        }
+        for (ModuleListCache module : modules) {
+            try {
+                jsonObject.getJSONArray("modules").put(module.toJson());
+            } catch (
+                    JSONException e) {
+                Timber.e(e);
+            }
+        }
+        realm.close();
+        return jsonObject;
     }
 }

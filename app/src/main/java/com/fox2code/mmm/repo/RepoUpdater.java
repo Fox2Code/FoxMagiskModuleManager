@@ -57,12 +57,14 @@ public class RepoUpdater {
             this.toUpdate = Collections.emptyList();
             this.toApply = new HashSet<>();
             for (ModuleListCache moduleListCache : results) {
-                this.toApply.add(new RepoModule(this.repoData, moduleListCache.getId(), moduleListCache.getName(), moduleListCache.getDescription(), moduleListCache.getAuthor(), moduleListCache.getDonate(), moduleListCache.getConfig(), moduleListCache.getSupport(), moduleListCache.getVersion(), moduleListCache.getVersionCode()));
+                this.toApply.add(new RepoModule(this.repoData, moduleListCache.getCodename(), moduleListCache.getName(), moduleListCache.getDescription(), moduleListCache.getAuthor(), moduleListCache.getDonate(), moduleListCache.getConfig(), moduleListCache.getSupport(), moduleListCache.getVersion(), moduleListCache.getVersionCode()));
             }
             Timber.d("Fetched %d modules from cache for %s, from %s records", this.toApply.size(), this.repoData.id, results.size());
             // apply the toApply list to the toUpdate list
             try {
-                this.toUpdate = this.repoData.populate(new JSONObject(new String(results.asJSON().getBytes(), StandardCharsets.UTF_8)));
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("modules", new JSONArray(results.asJSON()));
+                this.toUpdate = this.repoData.populate(jsonObject);
             } catch (Exception e) {
                 Timber.e(e);
             }
@@ -251,6 +253,15 @@ public class RepoUpdater {
                         } else {
                             mmtReborn = false;
                         }
+                        // try to get updated_at or lastUpdate value for lastUpdate
+                        int lastUpdate;
+                        if (module.has("updated_at")) {
+                            lastUpdate = module.getInt("updated_at");
+                        } else if (module.has("lastUpdate")) {
+                            lastUpdate = module.getInt("lastUpdate");
+                        } else {
+                            lastUpdate = 0;
+                        }
                         // get module repo id
                         String repoId = this.repoData.id;
                         // get module installed
@@ -296,6 +307,7 @@ public class RepoUpdater {
                         moduleListCache.setInstalled(installed);
                         moduleListCache.setInstalledVersionCode(installedVersionCode);
                         moduleListCache.setSafe(safe);
+                        moduleListCache.setLastUpdate(lastUpdate);
                         realm.copyToRealmOrUpdate(moduleListCache);
                         realm.commitTransaction();
                     } catch (
