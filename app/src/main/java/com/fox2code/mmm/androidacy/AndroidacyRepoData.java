@@ -352,6 +352,9 @@ public final class AndroidacyRepoData extends RepoData {
             repoModule.notesUrl = this.injectToken(repoModule.notesUrl);
             repoModule.qualityText = R.string.module_downloads;
             repoModule.qualityValue = jsonObject.optInt("downloads", 0);
+            if (repoModule.qualityValue == 0) {
+                repoModule.qualityValue = jsonObject.optInt("stats", 0);
+            }
             String checksum = jsonObject.optString("checksum", "");
             repoModule.checksum = checksum.isEmpty() ? null : checksum;
             ModuleInfo moduleInfo = repoModule.moduleInfo;

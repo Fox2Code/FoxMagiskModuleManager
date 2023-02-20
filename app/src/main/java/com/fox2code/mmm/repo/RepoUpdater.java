@@ -262,6 +262,15 @@ public class RepoUpdater {
                         } else {
                             lastUpdate = 0;
                         }
+                        // now downloads or stars
+                        int downloads;
+                        if (module.has("downloads")) {
+                            downloads = module.getInt("downloads");
+                        } else if (module.has("stars")) {
+                            downloads = module.getInt("stars");
+                        } else {
+                            downloads = 0;
+                        }
                         // get module repo id
                         String repoId = this.repoData.id;
                         // get module installed
@@ -308,6 +317,7 @@ public class RepoUpdater {
                         moduleListCache.setInstalledVersionCode(installedVersionCode);
                         moduleListCache.setSafe(safe);
                         moduleListCache.setLastUpdate(lastUpdate);
+                        moduleListCache.setStats(downloads);
                         realm.copyToRealmOrUpdate(moduleListCache);
                         realm.commitTransaction();
                     } catch (

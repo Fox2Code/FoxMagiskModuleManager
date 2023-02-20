@@ -40,13 +40,12 @@ public class RepoData extends XRepo {
     public final String id;
     public final File cacheRoot;
     public final SharedPreferences cachedPreferences;
-    public JSONObject metaDataCache;
     public final HashMap<String, RepoModule> moduleHashMap;
+    public final JSONObject supportedProperties = new JSONObject();
     private final Object populateLock = new Object();
+    public JSONObject metaDataCache;
     public long lastUpdate;
     public String name, website, support, donate, submitModule;
-    public final JSONObject supportedProperties = new JSONObject();
-
     protected String defaultName, defaultWebsite, defaultSupport, defaultDonate, defaultSubmitModule;
 
     // array with module info default values
@@ -189,6 +188,10 @@ public class RepoData extends XRepo {
                 String moduleChecksum = module.optString("checksum");
                 String moduleStars = module.optString("stars");
                 String moduleDownloads = module.optString("downloads");
+                // if downloads is mull or empty, try to get it from the stats field
+                if (moduleDownloads.isEmpty() && module.has("stats")) {
+                    moduleDownloads = module.optString("stats");
+                }
                 RepoModule repoModule = this.moduleHashMap.get(moduleId);
                 if (repoModule == null) {
                     repoModule = new RepoModule(this, moduleId);
@@ -212,15 +215,13 @@ public class RepoData extends XRepo {
                     try {
                         repoModule.qualityValue = Integer.parseInt(moduleStars);
                         repoModule.qualityText = R.string.module_stars;
-                    } catch (
-                            NumberFormatException ignored) {
+                    } catch (NumberFormatException ignored) {
                     }
                 } else if (!moduleDownloads.isEmpty()) {
                     try {
                         repoModule.qualityValue = Integer.parseInt(moduleDownloads);
                         repoModule.qualityText = R.string.module_downloads;
-                    } catch (
-                            NumberFormatException ignored) {
+                    } catch (NumberFormatException ignored) {
                     }
                 }
             }
@@ -269,8 +270,7 @@ public class RepoData extends XRepo {
                     moduleInfo.version = "v" + moduleInfo.versionCode;
                 }
                 return true;
-            } catch (
-                    Exception ignored) {
+            } catch (Exception ignored) {
                 boolean delete = file.delete();
                 if (!delete) {
                     throw new RuntimeException("Failed to delete invalid metadata file");
@@ -312,7 +312,15 @@ public class RepoData extends XRepo {
         // reposlist realm
         RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
         Realm realm2 = Realm.getInstance(realmConfiguration2);
-        this.enabled = (!this.forceHide) && Objects.requireNonNull(realm2.where(ReposList.class).equalTo("id", this.id).findFirst()).isEnabled();
+        boolean dbEnabled;
+        try {
+            dbEnabled = Objects.requireNonNull(realm2.where(ReposList.class).equalTo("id", this.id).findFirst()).isEnabled();
+        } catch (NullPointerException e) {
+            Timber.e(e, "Error while updating enabled state");
+            // for now, throw an exception
+            throw e;
+        }
+        this.enabled = (!this.forceHide) && dbEnabled;
     }
 
     public String getUrl() throws NoSuchAlgorithmException {
@@ -327,37 +335,30 @@ public class RepoData extends XRepo {
     @NonNull
     @Override
     public String getName() {
-        if (isNonNull(this.name))
-            return this.name;
-        if (this.defaultName != null)
-            return this.defaultName;
+        if (isNonNull(this.name)) return this.name;
+        if (this.defaultName != null) return this.defaultName;
         return this.url;
     }
 
     @NonNull
     public String getWebsite() {
-        if (isNonNull(this.website))
-            return this.website;
-        if (this.defaultWebsite != null)
-            return this.defaultWebsite;
+        if (isNonNull(this.website)) return this.website;
+        if (this.defaultWebsite != null) return this.defaultWebsite;
         return this.url;
     }
 
     public String getSupport() {
-        if (isNonNull(this.support))
-            return this.support;
+        if (isNonNull(this.support)) return this.support;
         return this.defaultSupport;
     }
 
     public String getDonate() {
-        if (isNonNull(this.donate))
-            return this.donate;
+        if (isNonNull(this.donate)) return this.donate;
         return this.defaultDonate;
     }
 
     public String getSubmitModule() {
-        if (isNonNull(this.submitModule))
-            return this.submitModule;
+        if (isNonNull(this.submitModule)) return this.submitModule;
         return this.defaultSubmitModule;
     }
 

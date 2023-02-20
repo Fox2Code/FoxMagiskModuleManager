@@ -165,12 +165,6 @@ public class InstallerActivity extends FoxActivity {
                 throw new SecurityException("Module cache is not in cache dir!");
             File moduleCache = this.toDelete = urlMode ?
                     new File(this.moduleCache, "module.zip") : new File(finalTarget);
-            try {
-                if (!moduleCache.getCanonicalPath().startsWith(MainApplication.getINSTANCE().getCacheDir().getAbsolutePath()))
-                    throw new SecurityException("Module cache is not in cache dir!");
-            } catch (
-                    IOException ignored) {
-            }
             if (urlMode && moduleCache.exists() && !moduleCache.delete() &&
                     !new SuFile(moduleCache.getAbsolutePath()).delete())
                 Timber.e("Failed to delete module cache");

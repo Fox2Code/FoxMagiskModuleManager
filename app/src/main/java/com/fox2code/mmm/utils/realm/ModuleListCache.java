@@ -37,8 +37,9 @@ public class ModuleListCache extends RealmObject {
     private int lastUpdate;
     // androidacy specific, may be added by other repos
     private boolean safe;
+    private int stats;
 
-    public ModuleListCache(String codename, String name, String version, int versionCode, String author, String description, int minApi, int maxApi, int minMagisk, boolean needRamdisk, String support, String donate, String config, boolean changeBoot, boolean mmtReborn, String repoId, boolean installed, int installedVersionCode, int lastUpdate) {
+    public ModuleListCache(String codename, String name, String version, int versionCode, String author, String description, int minApi, int maxApi, int minMagisk, boolean needRamdisk, String support, String donate, String config, boolean changeBoot, boolean mmtReborn, String repoId, boolean installed, int installedVersionCode, int lastUpdate, int stats) {
         this.codename = codename;
         this.name = name;
         this.version = version;
@@ -59,6 +60,7 @@ public class ModuleListCache extends RealmObject {
         this.installedVersionCode = installedVersionCode;
         this.lastUpdate = lastUpdate;
         this.safe = false;
+        this.stats = stats;
     }
 
     public ModuleListCache() {
@@ -241,6 +243,14 @@ public class ModuleListCache extends RealmObject {
         this.safe = safe;
     }
 
+    public int getStats() {
+        return stats;
+    }
+
+    public void setStats(int stats) {
+        this.stats = stats;
+    }
+
     private JSONObject toJson() {
         JSONObject jsonObject = new JSONObject();
         try {
@@ -261,6 +271,9 @@ public class ModuleListCache extends RealmObject {
             jsonObject.put("repoId", repoId);
             jsonObject.put("installed", installed);
             jsonObject.put("installedVersionCode", installedVersionCode);
+            jsonObject.put("lastUpdate", lastUpdate);
+            jsonObject.put("safe", safe);
+            jsonObject.put("stats", stats);
         } catch (JSONException e) {
             e.printStackTrace();
         }

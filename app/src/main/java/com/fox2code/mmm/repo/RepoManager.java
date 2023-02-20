@@ -128,27 +128,20 @@ public final class RepoManager extends SyncManager {
     }
 
     public static String internalIdOfUrl(String url) {
-        switch (url) {
-            case MAGISK_ALT_REPO:
-            case MAGISK_ALT_REPO_JSDELIVR:
-                return "magisk_alt_repo";
-            case ANDROIDACY_MAGISK_REPO_ENDPOINT:
-            case ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT:
-                return "androidacy_repo";
-            default:
-                return "repo_" + Hashes.hashSha256(url.getBytes(StandardCharsets.UTF_8));
-        }
+        return switch (url) {
+            case MAGISK_ALT_REPO, MAGISK_ALT_REPO_JSDELIVR -> "magisk_alt_repo";
+            case ANDROIDACY_MAGISK_REPO_ENDPOINT, ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT ->
+                    "androidacy_repo";
+            default -> "repo_" + Hashes.hashSha256(url.getBytes(StandardCharsets.UTF_8));
+        };
     }
 
     static boolean isBuiltInRepo(String repo) {
-        switch (repo) {
-            case RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT:
-            case RepoManager.ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT:
-            case RepoManager.MAGISK_ALT_REPO:
-            case RepoManager.MAGISK_ALT_REPO_JSDELIVR:
-                return true;
-        }
-        return false;
+        return switch (repo) {
+            case RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT, RepoManager.ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT, RepoManager.MAGISK_ALT_REPO, RepoManager.MAGISK_ALT_REPO_JSDELIVR ->
+                    true;
+            default -> false;
+        };
     }
 
     /**
@@ -408,10 +401,7 @@ public final class RepoManager extends SyncManager {
             }
         }
         switch (url) {
-            case MAGISK_REPO:
-            case MAGISK_REPO_MANAGER: {
-                repoData.defaultWebsite = MAGISK_REPO_HOMEPAGE;
-            }
+            case MAGISK_REPO, MAGISK_REPO_MANAGER -> repoData.defaultWebsite = MAGISK_REPO_HOMEPAGE;
         }
         this.repoData.put(url, repoData);
         if (this.initialized) {
