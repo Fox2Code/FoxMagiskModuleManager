@@ -1,7 +1,8 @@
 import io.sentry.android.gradle.extensions.InstrumentationFeature
+
 plugins {
     // Gradle doesn't allow conditionally enabling/disabling plugins
-    id "io.sentry.android.gradle" version "3.4.1"
+    id "io.sentry.android.gradle" version "3.4.2"
     id 'com.android.application'
     id 'com.mikepenz.aboutlibraries.plugin'
     id 'org.jetbrains.kotlin.android'
@@ -375,12 +376,11 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget=JavaVersion.VERSION_17
+        jvmTarget = JavaVersion.VERSION_17
     }
     //noinspection GrDeprecatedAPIUsage
     buildToolsVersion '33.0.1'
 }
-
 
 
 kotlin {

@@ -190,7 +190,6 @@
 # Keep all of Cronet API and google's internal classes
 -keep class org.chromium.net.** { *; }
 -keep class org.chromium.** { *; }
--keep class com.google.** { *; }
 
 # Silence some warnings
 -dontwarn android.os.SystemProperties
