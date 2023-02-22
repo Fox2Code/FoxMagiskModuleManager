@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.realm.Realm;
@@ -161,7 +162,7 @@ public class RepoUpdater {
                 realm.beginTransaction();
                 realm.where(ModuleListCache.class).equalTo("repoId", this.repoData.id).findAll().deleteAllFromRealm();
                 realm.commitTransaction();
-                // iterate over modules. pls dont hate me for this, its ugly but it works
+                // iterate over modules. pls don't hate me for this, its ugly but it works
                 for (int n = 0; n < modulesArray.length(); n++) {
                     // get module
                     JSONObject module = modulesArray.getJSONObject(n);
@@ -294,6 +295,7 @@ public class RepoUpdater {
                         if (realm.isInTransaction()) {
                             realm.cancelTransaction();
                         }
+                        Timber.d("Inserting module %s to realm", id);
                         // create a realm object and insert or update it
                         // add everything to the realm object
                         realm.beginTransaction();
@@ -320,6 +322,7 @@ public class RepoUpdater {
                         moduleListCache.setStats(downloads);
                         realm.copyToRealmOrUpdate(moduleListCache);
                         realm.commitTransaction();
+                        Timber.d("Inserted module %s to realm. New record is %s", id, Objects.requireNonNull(realm.where(ModuleListCache.class).equalTo("codename", id).findFirst()).toString());
                     } catch (
                             Exception e) {
                         Timber.w("Failed to get module info from module " + module + " in repo " + this.repoData.id + " with error " + e.getMessage());
@@ -341,7 +344,9 @@ public class RepoUpdater {
                 ReposList repoListCache = r.where(ReposList.class).equalTo("id", this.repoData.id).findFirst();
                 if (repoListCache != null) {
                     success.set(true);
-                    repoListCache.setLastUpdate((int) System.currentTimeMillis());
+                    // get unix timestamp of current time
+                    int currentTime = (int) (System.currentTimeMillis() / 1000);
+                    repoListCache.setLastUpdate(currentTime);
                 } else {
                     Timber.w("Failed to update lastUpdate for repo %s", this.repoData.id);
                 }

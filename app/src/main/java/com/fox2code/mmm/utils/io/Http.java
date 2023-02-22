@@ -97,8 +97,8 @@ public enum Http {
         hasWebView = cookieManager != null;
         OkHttpClient.Builder httpclientBuilder = new OkHttpClient.Builder();
         // Default is 10, extend it a bit for slow mobile connections.
-        httpclientBuilder.connectTimeout(15, TimeUnit.SECONDS);
-        httpclientBuilder.writeTimeout(15, TimeUnit.SECONDS);
+        httpclientBuilder.connectTimeout(5, TimeUnit.SECONDS);
+        httpclientBuilder.writeTimeout(10, TimeUnit.SECONDS);
         httpclientBuilder.readTimeout(15, TimeUnit.SECONDS);
         httpclientBuilder.proxy(Proxy.NO_PROXY); // Do not use system proxy
         Dns dns = Dns.SYSTEM;

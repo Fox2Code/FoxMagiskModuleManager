@@ -22,13 +22,11 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
@@ -47,7 +45,6 @@ import com.fox2code.mmm.module.ModuleViewAdapter;
 import com.fox2code.mmm.module.ModuleViewListBuilder;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.settings.SettingsActivity;
-import com.fox2code.mmm.utils.BlurUtils;
 import com.fox2code.mmm.utils.ExternalHelper;
 import com.fox2code.mmm.utils.io.Http;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -59,7 +56,6 @@ import org.chromium.net.urlconnection.CronetURLStreamHandlerFactory;
 
 import java.net.URL;
 
-import eightbitlab.com.blurview.BlurView;
 import timber.log.Timber;
 
 public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, OverScrollManager.OverScrollHelper {
@@ -77,8 +73,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     private long swipeRefreshBlocker = 0;
     private int overScrollInsetTop;
     private int overScrollInsetBottom;
-    private TextView actionBarPadding;
-    private BlurView actionBarBlur;
     private ColorDrawable actionBarBackground;
     private RecyclerView moduleList;
     private RecyclerView moduleListOnline;
@@ -141,8 +135,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
             this.getWindow().setAttributes(layoutParams);
         }
-        this.actionBarPadding = findViewById(R.id.action_bar_padding);
-        this.actionBarBlur = findViewById(R.id.action_bar_blur);
         this.actionBarBackground = new ColorDrawable(Color.TRANSPARENT);
         this.progressIndicator = findViewById(R.id.progress_bar);
         this.swipeRefreshLayout = findViewById(R.id.swipe_refresh);
@@ -158,12 +150,12 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         this.moduleList.setAdapter(this.moduleViewAdapter);
         this.moduleListOnline.setAdapter(this.moduleViewAdapterOnline);
         this.moduleList.setLayoutManager(new LinearLayoutManager(this));
+        // set top padding to 0
+        this.moduleList.setPadding(0, 0, 0, 0);
         this.moduleListOnline.setLayoutManager(new LinearLayoutManager(this));
         this.moduleList.setItemViewCacheSize(4); // Default is 2
         this.swipeRefreshLayout.setOnRefreshListener(this);
-        this.actionBarBlur.setBackground(this.actionBarBackground);
         hideActionBar();
-        BlurUtils.setupBlur(this.actionBarBlur, this, R.id.blur_frame);
         this.updateBlurState();
         checkShowInitialSetup();
         this.moduleList.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -194,7 +186,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         // on the bottom nav, there's a settings item. open the settings activity when it's clicked.
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         // set the bottom padding of the main layout to the height of the bottom nav
-        findViewById(R.id.root_container).setPadding(0, 0, 0, bottomNavigationView.getHeight());
+        findViewById(R.id.root_container).setPadding(0, 0, 0, (bottomNavigationView.getHeight() > 0) ? bottomNavigationView.getHeight() : FoxDisplay.dpToPixel(56));
         bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.settings_menu_item) {
                 startActivity(new Intent(MainActivity.this, SettingsActivity.class));
@@ -250,6 +242,15 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     Timber.d("Common next");
                     moduleViewListBuilder.addNotification(NotificationType.DEBUG);
                 }
+                NotificationType.NO_INTERNET.autoAdd(moduleViewListBuilderOnline);
+                // hide progress bar is repo-manager says we have no internet
+                if (!RepoManager.getINSTANCE().hasConnectivity()) {
+                    runOnUiThread(() -> {
+                        progressIndicator.setVisibility(View.GONE);
+                        progressIndicator.setIndeterminate(false);
+                        progressIndicator.setMax(PRECISION);
+                    });
+                }
                 updateScreenInsets(); // Fix an edge case
                 if (waitInitialSetupFinished()) {
                     Timber.d("waiting...");
@@ -294,13 +295,10 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 RepoManager.getINSTANCE().update(value -> runOnUiThread(max == 0 ? () -> progressIndicator.setProgressCompat((int) (value * PRECISION), true) : () -> progressIndicator.setProgressCompat((int) (value * PRECISION * 0.75F), true)));
                 // various notifications
                 NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
-                // Add debug notification for debug builds
-                if (!NotificationType.DEBUG.shouldRemove()) {
-                    moduleViewListBuilder.addNotification(NotificationType.DEBUG);
-                }
-                if (!NotificationType.NO_INTERNET.shouldRemove()) {
-                    moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
-                } else if (!NotificationType.REPO_UPDATE_FAILED.shouldRemove()) {
+                NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilderOnline);
+                NotificationType.DEBUG.autoAdd(moduleViewListBuilder);
+                NotificationType.DEBUG.autoAdd(moduleViewListBuilderOnline);
+                if (!NotificationType.REPO_UPDATE_FAILED.shouldRemove()) {
                     moduleViewListBuilder.addNotification(NotificationType.REPO_UPDATE_FAILED);
                 } else {
                     // Compatibility data still needs to be updated
@@ -312,7 +310,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     if (BuildConfig.DEBUG)
                         Timber.i("Check Json Update");
                     if (max != 0) {
-
                         int current = 0;
                         for (LocalModuleInfo localModuleInfo : ModuleManager.getINSTANCE().getModules().values()) {
                             if (localModuleInfo.updateJson != null) {
@@ -371,7 +368,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         int statusBarHeight = getStatusBarHeight();
         int actionBarHeight = getActionBarHeight();
         int combinedBarsHeight = statusBarHeight + actionBarHeight;
-        this.actionBarPadding.setMinHeight(combinedBarsHeight);
         this.swipeRefreshLayout.setProgressViewOffset(false, swipeRefreshLayoutOrigStartOffset + combinedBarsHeight, swipeRefreshLayoutOrigEndOffset + combinedBarsHeight);
         this.moduleViewListBuilder.setHeaderPx(Math.max(statusBarHeight, combinedBarsHeight - FoxDisplay.dpToPixel(4)));
         this.moduleViewListBuilder.setFooterPx(FoxDisplay.dpToPixel(4) + bottomInset + this.searchCard.getHeight());
@@ -393,12 +389,9 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             colorBackground = this.getColorCompat(isLightMode ? R.color.white : R.color.black);
         }
         if (MainApplication.isBlurEnabled()) {
-            this.actionBarBlur.setBlurEnabled(true);
             this.actionBarBackground.setColor(ColorUtils.setAlphaComponent(colorBackground, 0x02));
             this.actionBarBackground.setColor(Color.TRANSPARENT);
         } else {
-            this.actionBarBlur.setBlurEnabled(false);
-            this.actionBarBlur.setOverlayColor(Color.TRANSPARENT);
             this.actionBarBackground.setColor(colorBackground);
         }
     }
@@ -452,10 +445,9 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 Timber.i("Common Before");
                 if (MainApplication.isShowcaseMode())
                     moduleViewListBuilder.addNotification(NotificationType.SHOWCASE_MODE);
-                NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
-                if (!NotificationType.NO_INTERNET.shouldRemove())
-                    moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
-                else if (AppUpdateManager.getAppUpdateManager().checkUpdate(false))
+                NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilderOnline);
+                NotificationType.NO_INTERNET.autoAdd(moduleViewListBuilderOnline);
+                if (AppUpdateManager.getAppUpdateManager().checkUpdate(false))
                     moduleViewListBuilder.addNotification(NotificationType.UPDATE_AVAILABLE);
                 RepoManager.getINSTANCE().updateEnabledStates();
                 if (RepoManager.getINSTANCE().getCustomRepoManager().needUpdate()) {
@@ -505,7 +497,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             RepoManager.getINSTANCE().update(value -> runOnUiThread(max == 0 ? () -> progressIndicator.setProgressCompat((int) (value * PRECISION), true) : () -> progressIndicator.setProgressCompat((int) (value * PRECISION * 0.75F), true)));
             NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
             if (!NotificationType.NO_INTERNET.shouldRemove()) {
-                moduleViewListBuilder.addNotification(NotificationType.NO_INTERNET);
+                moduleViewListBuilderOnline.addNotification(NotificationType.NO_INTERNET);
             } else if (!NotificationType.REPO_UPDATE_FAILED.shouldRemove()) {
                 moduleViewListBuilder.addNotification(NotificationType.REPO_UPDATE_FAILED);
             } else {
@@ -611,7 +603,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 if (BuildConfig.DEBUG)
                     Timber.i("Request Notification Permission");
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS)) {
+                if (FoxActivity.getFoxActivity(this).shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
                     // Show a dialog explaining why we need this permission, which is to show
                     // notifications for updates
                     runOnUiThread(() -> {

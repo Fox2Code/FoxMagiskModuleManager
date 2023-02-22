@@ -45,6 +45,7 @@ public class SentryMain {
             intent.putExtra("stacktrace", throwable.getStackTrace());
             // put lastEventId in intent (get from preferences)
             intent.putExtra("lastEventId", String.valueOf(Sentry.getLastEventId()));
+            intent.putExtra("crashReportingEnabled", isSentryEnabled());
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             mainApplication.startActivity(intent);
             android.os.Process.killProcess(android.os.Process.myPid());
@@ -87,7 +88,7 @@ public class SentryMain {
                     editor.apply();
                     return event;
                 });
-                // Filter breadrcrumb content from crash report.
+                // Filter breadcrumb content from crash report.
                 options.setBeforeBreadcrumb((breadcrumb, hint) -> {
                     String url = (String) breadcrumb.getData("url");
                     if (url == null || url.isEmpty())

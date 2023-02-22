@@ -265,21 +265,18 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
 
     @SuppressLint("NonConstantResourceId")
     public boolean isLightTheme() {
-        switch (this.managerThemeResId) {
-            case R.style.Theme_MagiskModuleManager:
-            case R.style.Theme_MagiskModuleManager_Monet:
-                return (this.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) != Configuration.UI_MODE_NIGHT_YES;
-            case R.style.Theme_MagiskModuleManager_Monet_Light:
-            case R.style.Theme_MagiskModuleManager_Light:
-                return true;
-            case R.style.Theme_MagiskModuleManager_Monet_Dark:
-            case R.style.Theme_MagiskModuleManager_Dark:
-                return false;
-            default:
-                return super.isLightTheme();
-        }
+        return switch (this.managerThemeResId) {
+            case R.style.Theme_MagiskModuleManager, R.style.Theme_MagiskModuleManager_Monet ->
+                    (this.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) != Configuration.UI_MODE_NIGHT_YES;
+            case R.style.Theme_MagiskModuleManager_Monet_Light, R.style.Theme_MagiskModuleManager_Light ->
+                    true;
+            case R.style.Theme_MagiskModuleManager_Monet_Dark, R.style.Theme_MagiskModuleManager_Dark ->
+                    false;
+            default -> super.isLightTheme();
+        };
     }
 
+    @SuppressWarnings("unused")
     @SuppressLint("NonConstantResourceId")
     public boolean isDarkTheme() {
         return !this.isLightTheme();

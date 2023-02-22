@@ -1,3 +1,4 @@
+import io.sentry.android.gradle.extensions.InstrumentationFeature
 plugins {
     // Gradle doesn't allow conditionally enabling/disabling plugins
     id "io.sentry.android.gradle" version "3.4.1"
@@ -30,6 +31,8 @@ android {
             }
             enableV3Signing = true
             enableV4Signing = true
+            enableV1Signing = true
+            enableV2Signing = true
         }
         debug {
             // Everything comes from local.properties
@@ -47,6 +50,8 @@ android {
             }
             enableV3Signing = true
             enableV4Signing = true
+            enableV1Signing = true
+            enableV2Signing = true
         }
     }
 
@@ -265,6 +270,7 @@ sentry {
     // Default is enabled.
     tracingInstrumentation {
         enabled = hasSentryConfig
+        features = EnumSet.allOf(InstrumentationFeature)
     }
 
     // Enable auto-installation of Sentry components (sentry-android SDK and okhttp, timber and fragment integrations).
@@ -299,7 +305,7 @@ dependencies {
     implementation 'com.github.KieronQuinn:MonetCompat:0.4.1'
     implementation 'com.github.Fox2Code:FoxCompat:0.2.0'
     // Update the version code in the root build.gradle
-    implementation "com.mikepenz:aboutlibraries:${latestAboutLibsRelease}"
+    implementation "com.mikepenz:aboutlibraries:10.6.0"
 
     // Utils
     implementation 'androidx.work:work-runtime:2.8.0'
@@ -314,12 +320,13 @@ dependencies {
     implementation 'com.github.Fox2Code:AndroidANSI:1.0.1'
 
     // sentry
-    implementation "io.sentry:sentry-android:$sentry_version"
-    implementation "io.sentry:sentry-android-timber:$sentry_version"
-    implementation "io.sentry:sentry-android-fragment:$sentry_version"
-    implementation "io.sentry:sentry-android-okhttp:$sentry_version"
-    implementation "io.sentry:sentry-kotlin-extensions:$sentry_version"
-    implementation "io.sentry:sentry-android-ndk:$sentry_version"
+    implementation platform('io.sentry:sentry-bom:6.14.0')
+    implementation "io.sentry:sentry-android"
+    implementation "io.sentry:sentry-android-timber"
+    implementation "io.sentry:sentry-android-fragment"
+    implementation "io.sentry:sentry-android-okhttp"
+    implementation "io.sentry:sentry-kotlin-extensions"
+    implementation "io.sentry:sentry-android-ndk"
 
     // Markdown
     implementation "io.noties.markwon:core:4.6.2"
@@ -360,8 +367,8 @@ if (hasSentryConfig) {
 android {
     ndkVersion '25.1.8937393'
     dependenciesInfo {
-        includeInApk true
-        includeInBundle true
+        includeInApk false
+        includeInBundle false
     }
     buildFeatures {
         viewBinding true

@@ -37,35 +37,16 @@
         </FrameLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <eightbitlab.com.blurview.BlurView
-        android:id="@+id/action_bar_blur"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/action_bar_padding"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </eightbitlab.com.blurview.BlurView>
-
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:indeterminate="true"
+        android:scaleY="2"
+        app:showAnimationBehavior="outward"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/action_bar_blur" />
-
-    <!--<TextView
-        android:id="@+id/noodle_debug"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/action_bar_blur" />-->
+        app:layout_constraintTop_toTopOf="@+id/swipe_refresh" />
 
     <LinearLayout
         android:id="@+id/search_container"
@@ -73,8 +54,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="12dp"
         android:layout_marginVertical="8dp"
-        android:gravity="right"
         android:filterTouchesWhenObscured="true"
+        android:gravity="bottom|end"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_fitsSystemWindowsInsets="bottom"
@@ -91,6 +72,7 @@
             android:layout_marginHorizontal="8dp"
             android:background="@color/transparent"
             android:visibility="gone" />
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/search_card"
             android:layout_width="wrap_content"
@@ -101,15 +83,16 @@
             app:cardCornerRadius="@dimen/card_corner_radius"
             app:cardElevation="0dp"
             app:cardPreventCornerOverlap="true"
+            android:visibility="gone"
             app:strokeColor="@android:color/transparent"
             app:strokeWidth="0dp">
 
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/search_bar"
                 android:layout_width="match_parent"
-                app:useDrawerArrowDrawable="true"
                 android:layout_height="wrap_content"
-                android:background="@null" />
+                android:background="@null"
+                app:useDrawerArrowDrawable="true" />
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
     <!-- bottom md3 navigation bar -->

@@ -315,8 +315,8 @@ public class RepoData extends XRepo {
         boolean dbEnabled;
         try {
             dbEnabled = Objects.requireNonNull(realm2.where(ReposList.class).equalTo("id", this.id).findFirst()).isEnabled();
-        } catch (NullPointerException e) {
-            Timber.e(e, "Error while updating enabled state");
+        } catch (Exception e) {
+            Timber.e(e, "Error while updating enabled state for repo %s", this.id);
             // for now, throw an exception
             throw e;
         }
@@ -384,7 +384,7 @@ public class RepoData extends XRepo {
                 long diff = currentTime - lastUpdate;
                 long diffMinutes = diff / (60 * 1000) % 60;
                 Timber.d("Repo " + this.id + " updated: " + diffMinutes + " minutes ago");
-                return diffMinutes > 15;
+                return diffMinutes > (BuildConfig.DEBUG ? 5 : 20);
             } else {
                 Timber.d("Repo " + this.id + " should update could not find repo in database");
                 return true;

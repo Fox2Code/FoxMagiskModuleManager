@@ -9,17 +9,22 @@ import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.utils.SyncManager;
 import com.fox2code.mmm.utils.io.PropUtils;
+import com.fox2code.mmm.utils.realm.ModuleListCache;
 import com.topjohnwu.superuser.Shell;
 import com.topjohnwu.superuser.io.SuFile;
 import com.topjohnwu.superuser.io.SuFileInputStream;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Objects;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import timber.log.Timber;
 
 public final class ModuleManager extends SyncManager {
@@ -68,15 +73,61 @@ public final class ModuleManager extends SyncManager {
         if (!FORCE_NEED_FALLBACK && needFallback) {
             Timber.e("using fallback instead.");
         }
-        if (BuildConfig.DEBUG)
-            Timber.d("Scan");
+        if (BuildConfig.DEBUG) Timber.d("Scan");
         if (modules != null) {
             for (String module : modules) {
                 if (!new SuFile("/data/adb/modules/" + module).isDirectory())
                     continue; // Ignore non directory files inside modules folder
-                if (BuildConfig.DEBUG)
-                    Timber.d(module);
+                if (BuildConfig.DEBUG) Timber.d(module);
                 LocalModuleInfo moduleInfo = moduleInfos.get(module);
+                // next, merge the module info with a record from ModuleListCache if it exists
+                RealmConfiguration realmConfiguration;
+                // get all dirs under the realms/repos/ dir under app's data dir
+                File cacheRoot = new File(MainApplication.getINSTANCE().getDataDirWithPath("realms/repos/").toURI());
+                ModuleListCache moduleListCache;
+                for (File dir : Objects.requireNonNull(cacheRoot.listFiles())) {
+                    if (dir.isDirectory()) {
+                        // if the dir name matches the module name, use it as the cache dir
+                        File tempCacheRoot = new File(dir.toString());
+                        Timber.d("Looking for cache in %s", tempCacheRoot);
+                        realmConfiguration = new RealmConfiguration.Builder().name("ModuleListCache.realm").schemaVersion(1).deleteRealmIfMigrationNeeded().allowWritesOnUiThread(true).allowQueriesOnUiThread(true).directory(tempCacheRoot).build();
+                        Realm realm = Realm.getInstance(realmConfiguration);
+                        Timber.d("Looking for cache for %s out of %d", module, realm.where(ModuleListCache.class).count());
+                        moduleListCache = realm.where(ModuleListCache.class).equalTo("codename", module).findFirst();
+                        if (moduleListCache != null) {
+                            Timber.d("Found cache for %s", module);
+                            moduleInfo = new LocalModuleInfo(module);
+                            assert moduleListCache.getAuthor() != null;
+                            assert moduleListCache.getDescription() != null;
+                            assert moduleListCache.getSupport() != null;
+                            assert moduleListCache.getConfig() != null;
+                            assert moduleListCache.getName() != null;
+                            moduleInfo.author = moduleListCache.getAuthor();
+                            moduleInfo.description = moduleListCache.getDescription() + " (from cache)";
+                            moduleInfo.support = moduleListCache.getSupport();
+                            moduleInfo.config = moduleListCache.getConfig();
+                            moduleInfo.name = moduleListCache.getName();
+                            moduleInfo.minApi = moduleListCache.getMinApi();
+                            moduleInfo.maxApi = moduleListCache.getMaxApi();
+                            moduleInfo.minMagisk = moduleListCache.getMinMagisk();
+                            moduleInfo.safe = moduleListCache.isSafe();
+                            moduleInfos.put(module, moduleInfo);
+                            // This should not really happen, but let's handles theses cases anyway
+                            moduleInfo.flags |= ModuleInfo.FLAG_MODULE_UPDATING_ONLY;
+                            break;
+                        } else {
+                            Timber.d("No cache for %s", module);
+                            // just for shits n giggles, log the codename of all the modules in the cache
+                            Iterator<ModuleListCache> iterator = realm.where(ModuleListCache.class).findAll().iterator();
+                            StringBuilder sb = new StringBuilder();
+                            while (iterator.hasNext()) {
+                                sb.append(iterator.next().getCodename()).append(", ");
+                            }
+                            Timber.d("Cache contains: %s", sb.toString());
+                        }
+                    }
+                }
+
                 if (moduleInfo == null) {
                     moduleInfo = new LocalModuleInfo(module);
                     moduleInfos.put(module, moduleInfo);
@@ -106,23 +157,19 @@ public final class ModuleManager extends SyncManager {
                 }
                 try {
                     PropUtils.readProperties(moduleInfo, "/data/adb/modules/" + module + "/module.prop", true);
-                } catch (
-                        Exception e) {
-                    if (BuildConfig.DEBUG)
-                        Timber.d(e);
+                } catch (Exception e) {
+                    if (BuildConfig.DEBUG) Timber.d(e);
                     moduleInfo.flags |= FLAG_MM_INVALID;
                 }
             }
         }
-        if (BuildConfig.DEBUG)
-            Timber.d("Scan update");
+        if (BuildConfig.DEBUG) Timber.d("Scan update");
         String[] modules_update = new SuFile("/data/adb/modules_update").list();
         if (modules_update != null) {
             for (String module : modules_update) {
                 if (!new SuFile("/data/adb/modules_update/" + module).isDirectory())
                     continue; // Ignore non directory files inside modules folder
-                if (BuildConfig.DEBUG)
-                    Timber.d(module);
+                if (BuildConfig.DEBUG) Timber.d(module);
                 LocalModuleInfo moduleInfo = moduleInfos.get(module);
                 if (moduleInfo == null) {
                     moduleInfo = new LocalModuleInfo(module);
@@ -132,22 +179,18 @@ public final class ModuleManager extends SyncManager {
                 moduleInfo.flags |= ModuleInfo.FLAG_MODULE_UPDATING;
                 try {
                     PropUtils.readProperties(moduleInfo, "/data/adb/modules_update/" + module + "/module.prop", true);
-                } catch (
-                        Exception e) {
-                    if (BuildConfig.DEBUG)
-                        Timber.d(e);
+                } catch (Exception e) {
+                    if (BuildConfig.DEBUG) Timber.d(e);
                     moduleInfo.flags |= FLAG_MM_INVALID;
                 }
             }
         }
-        if (BuildConfig.DEBUG)
-            Timber.d("Finalize scan");
+        if (BuildConfig.DEBUG) Timber.d("Finalize scan");
         this.updatableModuleCount = 0;
         Iterator<LocalModuleInfo> moduleInfoIterator = this.moduleInfos.values().iterator();
         while (moduleInfoIterator.hasNext()) {
             LocalModuleInfo moduleInfo = moduleInfoIterator.next();
-            if (BuildConfig.DEBUG)
-                Timber.d(moduleInfo.id);
+            if (BuildConfig.DEBUG) Timber.d(moduleInfo.id);
             if ((moduleInfo.flags & FLAG_MM_UNPROCESSED) != 0) {
                 moduleInfoIterator.remove();
                 continue; // Don't process fallbacks if unreferenced
@@ -185,8 +228,7 @@ public final class ModuleManager extends SyncManager {
     }
 
     public boolean setEnabledState(ModuleInfo moduleInfo, boolean checked) {
-        if (moduleInfo.hasFlag(ModuleInfo.FLAG_MODULE_UPDATING) && !checked)
-            return false;
+        if (moduleInfo.hasFlag(ModuleInfo.FLAG_MODULE_UPDATING) && !checked) return false;
         SuFile disable = new SuFile("/data/adb/modules/" + moduleInfo.id + "/disable");
         if (checked) {
             if (disable.exists() && !disable.delete()) {
@@ -204,8 +246,7 @@ public final class ModuleManager extends SyncManager {
     }
 
     public boolean setUninstallState(ModuleInfo moduleInfo, boolean checked) {
-        if (checked && moduleInfo.hasFlag(ModuleInfo.FLAG_MODULE_UPDATING))
-            return false;
+        if (checked && moduleInfo.hasFlag(ModuleInfo.FLAG_MODULE_UPDATING)) return false;
         SuFile disable = new SuFile("/data/adb/modules/" + moduleInfo.id + "/remove");
         if (checked) {
             if (!disable.exists() && !disable.createNewFile()) {
@@ -223,8 +264,7 @@ public final class ModuleManager extends SyncManager {
     }
 
     public boolean masterClear(ModuleInfo moduleInfo) {
-        if (moduleInfo.hasFlag(ModuleInfo.FLAG_MODULE_HAS_ACTIVE_MOUNT))
-            return false;
+        if (moduleInfo.hasFlag(ModuleInfo.FLAG_MODULE_HAS_ACTIVE_MOUNT)) return false;
         String escapedId = moduleInfo.id.replace("\\", "\\\\").replace("\"", "\\\"").replace(" ", "\\ ");
         try { // Check for module that declare having file outside their own folder.
             try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(SuFileInputStream.open("/data/adb/modules/." + moduleInfo.id + "-files"), StandardCharsets.UTF_8))) {
@@ -237,8 +277,7 @@ public final class ModuleManager extends SyncManager {
                     Shell.cmd("rm -rf \"" + line + "\"").exec();
                 }
             }
-        } catch (
-                IOException ignored) {
+        } catch (IOException ignored) {
         }
         Shell.cmd("rm -rf /data/adb/modules/" + escapedId + "/").exec();
         Shell.cmd("rm -f /data/adb/modules/." + escapedId + "-files").exec();

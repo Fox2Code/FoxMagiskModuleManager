@@ -67,6 +67,8 @@ public class ModuleViewListBuilder {
         if (notificationType == null) {
             Timber.w("addNotification(null) called!");
             return;
+        } else {
+            Timber.i("addNotification(%s) called", notificationType);
         }
         synchronized (this.updateLock) {
             this.notifications.add(notificationType);

@@ -40,6 +40,8 @@ public class CrashHandler extends FoxActivity {
         crashDetails.setText("");
         // get the exception from the intent
         Throwable exception = (Throwable) getIntent().getSerializableExtra("exception");
+        // get the crashReportingEnabled from the intent
+        boolean crashReportingEnabled = getIntent().getBooleanExtra("crashReportingEnabled", false);
         // if the exception is null, set the crash details to "Unknown"
         if (exception == null) {
             crashDetails.setText(R.string.crash_details);
@@ -55,9 +57,23 @@ public class CrashHandler extends FoxActivity {
         SharedPreferences preferences = getSharedPreferences("sentry", MODE_PRIVATE);
         // get lastEventId from intent
         String lastEventId = getIntent().getStringExtra("lastEventId");
+        Timber.d("CrashHandler.onCreate: lastEventId=%s, crashReportingEnabled=%s", lastEventId, crashReportingEnabled);
+        if (lastEventId == null && crashReportingEnabled) {
+            // if lastEventId is null, hide the feedback button
+            findViewById(R.id.feedback).setVisibility(View.GONE);
+            Timber.d("CrashHandler.onCreate: lastEventId is null but crash reporting is enabled. This may indicate a bug in the crash reporting system.");
+        } else {
+            // if lastEventId is not null, show the feedback button
+            findViewById(R.id.feedback).setVisibility(View.VISIBLE);
+            // set the name and email fields to the saved values
+            EditText name = findViewById(R.id.feedback_name);
+            EditText email = findViewById(R.id.feedback_email);
+            name.setText(preferences.getString("name", ""));
+            email.setText(preferences.getString("email", ""));
+        }
         // disable feedback if sentry is disabled
         //noinspection ConstantConditions
-        if (MainApplication.isCrashReportingEnabled() && !BuildConfig.SENTRY_TOKEN.equals("") && lastEventId != null) {
+        if (crashReportingEnabled && !BuildConfig.SENTRY_TOKEN.equals("") && lastEventId != null) {
             // get name, email, and message fields
             EditText name = findViewById(R.id.feedback_name);
             EditText email = findViewById(R.id.feedback_email);

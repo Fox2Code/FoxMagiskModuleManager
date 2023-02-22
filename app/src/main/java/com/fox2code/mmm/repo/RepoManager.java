@@ -25,20 +25,13 @@ import com.fox2code.mmm.utils.io.Http;
 import com.fox2code.mmm.utils.io.PropUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import timber.log.Timber;
 
@@ -84,8 +77,7 @@ public final class RepoManager extends SyncManager {
         boolean x = false;
         for (RepoData repoData : this.repoData.values()) {
             if (repoData == this.androidacyRepoData) {
-                if (x)
-                    return;
+                if (x) return;
                 x = true;
             }
             this.populateDefaultCache(repoData);
@@ -174,8 +166,7 @@ public final class RepoManager extends SyncManager {
     }
 
     public RepoData get(String url) {
-        if (url == null)
-            return null;
+        if (url == null) return null;
         if (MAGISK_ALT_REPO_JSDELIVR.equals(url)) {
             url = MAGISK_ALT_REPO;
         }
@@ -187,8 +178,7 @@ public final class RepoManager extends SyncManager {
     }
 
     public RepoData addOrGet(String url, String fallBackName) {
-        if (MAGISK_ALT_REPO_JSDELIVR.equals(url))
-            url = MAGISK_ALT_REPO;
+        if (MAGISK_ALT_REPO_JSDELIVR.equals(url)) url = MAGISK_ALT_REPO;
         RepoData repoData;
         synchronized (this.syncLock) {
             repoData = this.repoData.get(url);
@@ -221,52 +211,17 @@ public final class RepoManager extends SyncManager {
         RepoData[] repoDatas = new LinkedHashSet<>(this.repoData.values()).toArray(new RepoData[0]);
         RepoUpdater[] repoUpdaters = new RepoUpdater[repoDatas.length];
         int moduleToUpdate = 0;
-        this.hasInternet = false;
-        // Check if we have internet connection
-        // Attempt to contact connectivitycheck.gstatic.com/generate_204
-        // If we can't, we don't have internet connection
-        HttpURLConnection urlConnection = null;
-        try {
-            Timber.d("Checking internet connection...");
-            // this url is actually hosted by Cloudflare and is not dependent on Androidacy servers being up
-            urlConnection = (HttpURLConnection) new URL("https://production-api.androidacy.com/cdn-cgi/trace").openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Linux; Android 10; Pixel 3 XL) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Mobile Safari/537.36");
-            urlConnection.setRequestProperty("Accept", "*/*");
-            urlConnection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-            Timber.d("Opened connection to %s", String.valueOf(urlConnection.getURL()));
-            urlConnection.setInstanceFollowRedirects(false);
-            urlConnection.setReadTimeout(1000);
-            urlConnection.setUseCaches(false);
-            urlConnection.getInputStream().close();
-            // should return a 200 and the content should contain "visit_scheme=https" and ip=<some ip>
-            Timber.d("Response code: %s", urlConnection.getResponseCode());
-            // get the response body
-            BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-            String responseBody = reader.lines().collect(Collectors.joining("\n"));
-            reader.close();
-            // check if the response body contains the expected content
-            if (urlConnection.getResponseCode() == 200 && responseBody.contains("visit_scheme=https") && responseBody.contains("ip=")) {
-                this.hasInternet = true;
-            } else {
-                Timber.e("Failed to check internet connection");
-            }
-            // close output stream
-            Timber.d("Closed connection to %s", String.valueOf(urlConnection.getURL()));
-        } catch (
-                IOException e) {
-            Timber.e(e);
-        } finally {
-            Objects.requireNonNull(urlConnection).disconnect();
+        this.checkConnection();
+        if (!this.hasConnectivity()) {
+            updateListener.update(STEP3);
+            return;
         }
         for (int i = 0; i < repoDatas.length; i++) {
-            if (BuildConfig.DEBUG)
-                Timber.d("Preparing to fetch: %s", repoDatas[i].getName());
+            if (BuildConfig.DEBUG) Timber.d("Preparing to fetch: %s", repoDatas[i].getName());
             moduleToUpdate += (repoUpdaters[i] = new RepoUpdater(repoDatas[i])).fetchIndex();
             updateListener.update(STEP1 / repoDatas.length * (i + 1));
         }
-        if (BuildConfig.DEBUG)
-            Timber.d("Updating meta-data");
+        if (BuildConfig.DEBUG) Timber.d("Updating meta-data");
         int updatedModules = 0;
         boolean allowLowQualityModules = MainApplication.isDisableLowQualityModuleFilter();
         for (int i = 0; i < repoUpdaters.length; i++) {
@@ -278,8 +233,7 @@ public final class RepoManager extends SyncManager {
             }
             List<RepoModule> repoModules = repoUpdaters[i].toUpdate();
             RepoData repoData = repoDatas[i];
-            if (BuildConfig.DEBUG)
-                Timber.d("Registering %s", repoData.getName());
+            if (BuildConfig.DEBUG) Timber.d("Registering %s", repoData.getName());
             for (RepoModule repoModule : repoModules) {
                 try {
                     if (repoModule.propUrl != null && !repoModule.propUrl.isEmpty()) {
@@ -301,8 +255,7 @@ public final class RepoManager extends SyncManager {
                     } else {
                         repoModule.moduleInfo.flags |= ModuleInfo.FLAG_METADATA_INVALID;
                     }
-                } catch (
-                        Exception e) {
+                } catch (Exception e) {
                     Timber.e(e);
                 }
                 updatedModules++;
@@ -323,9 +276,8 @@ public final class RepoManager extends SyncManager {
                 }
             }
         }
-        if (BuildConfig.DEBUG)
-            Timber.d("Finishing update");
-        if (hasInternet) {
+        if (BuildConfig.DEBUG) Timber.d("Finishing update");
+        if (hasConnectivity()) {
             for (int i = 0; i < repoDatas.length; i++) {
                 // If repo is not enabled, skip
                 if (!repoDatas[i].isEnabled()) {
@@ -368,6 +320,27 @@ public final class RepoManager extends SyncManager {
         updateListener.update(1D);
     }
 
+    private void checkConnection() {
+        this.hasInternet = false;
+        // Check if we have internet connection
+        // Attempt to contact connectivitycheck.gstatic.com/generate_204
+        // If we can't, we don't have internet connection
+        Timber.d("Checking internet connection...");
+        // this url is actually hosted by Cloudflare and is not dependent on Androidacy servers being up
+        byte[] resp = new byte[0];
+        try {
+            resp = Http.doHttpGet("https://production-api.androidacy.com/cdn-cgi/trace", false);
+        } catch (Exception e) {
+            Timber.e("Failed to check internet connection. Assuming no internet connection.");
+        }
+        // get the response body
+        String response = new String(resp, StandardCharsets.UTF_8);
+        // check if the response body contains "visit_scheme=https" and "http/<some number>"
+        // if it does, we have internet connection
+        this.hasInternet = response.contains("visit_scheme=https") && response.contains("http/");
+        Timber.d("Internet connection: %s", this.hasInternet);
+    }
+
     public void updateEnabledStates() {
         for (RepoData repoData : this.repoData.values()) {
             boolean wasEnabled = repoData.isEnabled();
@@ -384,6 +357,7 @@ public final class RepoManager extends SyncManager {
     }
 
     public boolean hasConnectivity() {
+        Timber.d("Has connectivity: %s", this.hasInternet);
         return this.hasInternet;
     }
 
