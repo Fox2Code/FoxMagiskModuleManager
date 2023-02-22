@@ -341,4 +341,14 @@
     <string name="notification_group_updates">Aktualizacje</string>
     <string name="notification_channel_category_background_update_description">Pokazuje powiadomienie podczas sprawdzania aktualizacji, aby system go nie ubił</string>
     <string name="low_quality_module_desc">Ten moduł ma metadane, które są albo nieprawidłowe, albo uważane za znacznik dla modułu niskiej jakości. Zaleca się odinstalowanie.</string>
+    <string name="safe_message">Ten moduł został zweryfikowany przez repozytorium jako bezpieczny, co oznacza, że przechodzi pewne progi jakości i bezpieczeństwa oraz jest sprawdzany pod kątem złośliwego oprogramowania.</string>
+    <string name="notification_update_app_desc">Włącz automatyczne sprawdzanie aktualizacji aplikacji. Aktualizacje nie będą pobierane automatycznie.</string>
+    <string name="notification_channel_category_app_update_description">Powiadamia, gdy dostępna jest aktualizacja aplikacji</string>
+    <string name="online">Online</string>
+    <string name="safe">Bezpieczny</string>
+    <string name="safe_module">Zweryfikowany bezpieczny moduł</string>
+    <string name="notification_update_app_pref">Sprawdzaj aktualizacje aplikacji</string>
+    <string name="notification_channel_category_app_update">Aktualizacje aplikacji</string>
+    <string name="notification_channel_background_update_app">Dostępna nowa wersja aplikacji!</string>
+    <string name="notification_channel_background_update_app_description">Dostępna jest nowa wersja FoxMMM. Kliknij, aby zaktualizować.</string>
 </resources>

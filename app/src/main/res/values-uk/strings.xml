@@ -336,4 +336,10 @@
     <string name="safe">Безпечний</string>
     <string name="safe_module">Перевірений безпечний модуль</string>
     <string name="safe_message">Цей модуль був позначений репозиторієм як безпечний, тобто він відповідає певним граничним значенням якості та безпеки, а також перевірений на наявність шкідливих додатків.</string>
+    <string name="notification_update_app_pref">Перевірити наявність оновлень</string>
+    <string name="notification_channel_background_update_app_description">Доступне оновлення для FoxMMM. Натисніть тут, щоб оновити.</string>
+    <string name="notification_update_app_desc">Увімкніть автоматичну перевірку оновлень додатків. Оновлення не завантажуються автоматично.</string>
+    <string name="notification_channel_category_app_update">Оновлення додатків</string>
+    <string name="notification_channel_category_app_update_description">Повідомляє, коли доступне оновлення додатку</string>
+    <string name="notification_channel_background_update_app">Доступне оновлення додатку!</string>
 </resources>
