@@ -313,4 +313,57 @@
     <string name="crash_details_copied">Copier la pile dans le presse-papier!</string>
     <string name="crash_full_stacktrace">Pile:\n%1$s</string>
     <string name="sentry_enable_nag">On dirait que le rapport de plantage est désactivé. Merci de l\’activer pour l\’envoyer.</string>
+    <string name="reset_app">Réinitialiser l\’application</string>
+    <string name="upgraded_summary">Vous êtes vraiment génial! Apparamment vous avez déjà souscrit votre abonnement et supportez Androidacy.</string>
+    <string name="upgraded">Prémium actif</string>
+    <string name="reset_warning">Si vous voyez à nouveau ceci, une réinitialisation de l\’application pourrait aider. Celà effacera les données de l\’application mais n'affectera pas le modules installés.</string>
+    <string name="reset_app_message">Celà supprimera complêtement toutes les données de l\’application et la fermera. Les modules ne seront pas désinstallés.</string>
+    <string name="reset">Réinitialiser</string>
+    <string name="reset_app_confirmation">Celà va complêtement effacer les données de l\’application, mais ça n\’affectera pas les modules.</string>
+    <string name="error_adding">Échec de l\’ajout d\’un dépôt personnalisé</string>
+    <string name="api_key_mismatch">La clé d\’API n\’est pas dans un format valide</string>
+    <string name="notification_update_ignore_desc">Liste des modules à exclure des vérifications de MàJ</string>
+    <string name="notification_update_ignore_pref">Modules exclus</string>
+    <string name="pref_category_updates">MàJ</string><string name="invalid_excludes">Saisie invalide</string>
+    <string name="invalid_characters_message">La liste de modules que vous avez saisie est invalide. Veuillez n\’entrer que des ID de noms de modules valides séparés par des virgules</string>
+    <string name="background_update_check_excludes">Modules à exclure des vérifications de MàJ automatiques</string>
+    <string name="title_activity_update">MàJ dans l\’application</string>
+    <string name="update_title">MàJ l\’application</string>
+    <string name="update_message">Merci de patienter pendant que nous vérifions et installons les MàJ pour FoxMMM. Celà peut prendre quelques minutes</string>
+    <string name="update_button">Merci de patienter...</string>
+    <string name="error_no_extras">ERREURE: Donnée invalides reçues au lancement</string>
+    <string name="update_debug_warning">Il semblerait que vous soyez en train d\’utiliser une fabrication de débuggage. Les fabrications de débuggage doivent être MàJ manuellement, et les MàJ incorporées ne sont pas supportées</string>
+    <string name="error_no_action">ERROR: Invalid action specified. Refusing to continue.</string><string name="update_available">Update found</string>
+    <string name="checking_for_update">Checking for updates…</string>
+    <string name="no_update_available">You\'re up to date!</string>
+    <string name="download_update">Download update</string>
+    <string name="error_download_update">An error occurred downloading the update information.</string>
+    <string name="error_no_asset">ERROR: Failed to parse update information</string>
+    <string name="downloading_update">Downloading update… %1$d%%</string>
+    <string name="installing_update">Installing update…</string>
+    <string name="no_file_found">ERROR: Could not find update package.</string>
+    <string name="check_for_updates">Check for app updates</string>
+    <string name="update_debug_download_pref">Test update download mechanism</string>
+    <string name="changelog_none">No changes yet!</string>
+    <string name="update_cancel_button">Cancel update</string>
+    <string name="invalid_repo_url">The URL you entered for the repo is invalid</string>
+    <string name="add_repo_message">Repos must be served over HTTPS, and must follow the spec outlined in the documentation.</string>
+    <string name="notification_update_summary">The following modules can be updated:</string>
+    <string name="notification_update_module_template">%1$s to version %2$s</string>
+    <string name="notification_channel_background_update">Checking for updates...</string>
+    <string name="notification_channel_background_update_description">FoxMMM is checking for updates in the background.</string>
+    <string name="notification_channel_category_background_update">Background update status</string>
+    <string name="notification_channel_category_background_update_description">Shows a notification while checking for updates so the system doesn\'t kill it</string>
+    <string name="notification_update_wifi_desc">Only check on WiFi</string>
+    <string name="notification_update_wifi_pref">Require wi-fi or an unmetered network for update checks. Recommended to leave on if you have limited mobile data.</string>
+    <string name="background_update_check_excludes_no_modules">No modules installed on device</string>
+    <string name="auto_updates_notifs">Notifies when module updates are found</string>
+    <string name="notification_group_updates">Updates</string>
+    <string name="low_quality_module_desc">This module has metadata that is either invalid or considered a marker for a low-quality module. Uninstallation is recommended.</string>
+    <string name="online">Online</string>
+    <string name="safe">Safe</string>
+    <string name="safe_module">Verified safe module</string>
+    <string name="safe_message">This module has been verified by the repository as safe, meaning it passes certain quality and safety thresholds, and is checked for malware.</string>
+    <string name="notification_update_app_desc">Enable automatically checking for app updates. Updates will not download automatically.</string>
+    <string name="notification_update_app_pref">Check for app updates</string><string name="notification_channel_category_app_update">App updates</string><string name="notification_channel_category_app_update_description">Notifies when an app update is available</string><string name="notification_channel_background_update_app">App update available!</string><string name="notification_channel_background_update_app_description">An update is available for FoxMMM. Tap here to update.</string>
 </resources>
