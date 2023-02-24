@@ -13,7 +13,7 @@
     <string name="fail_internet">Verbindung mit dem Internet fehlgeschlagen</string>
     <string name="title_activity_settings">Aktivitätseinstellungen</string>
     <string name="app_update_available">Anwendungsaktualisierung verfügbar</string>
-    <string name="app_update">Update</string>
+    <string name="app_update">Update app</string>
     <!-- Module section translation -->
     <string name="module_last_update">Letzte Aktualisierung:</string>
     <string name="module_repo">Repo:</string>
@@ -50,7 +50,9 @@
     <string name="dev_mode_enabled">Entwicklermodus aktiviert</string>
     <string name="force_english_pref">Englische Sprache erzwingen</string>
     <string name="disable_low_quality_module_filter_pref">Modulfilter niedriger Qualität deaktivieren</string>
-    <string name="disable_low_quality_module_filter_desc">Einige Module deklarieren ihre Metadaten nicht richtig, was zu visuellen Störungen führt, und/oder auf eine schlechte Modulqualität hinweisen.
+    <string name="disable_low_quality_module_filter_desc">Some modules do not declare their metadata properly, causing visual glitches, and/or indicating poor module quality.
+\nTurn this on at your own risk!
+\nTurn this on at your own risk!
 \nDeaktivieren auf eigene Gefahr!</string>
     <string name="no_web_view">System WebView konnte nicht geöffnet werden</string>
     <string name="no_desc_found">Keine Beschreibung gefunden.</string>
@@ -121,10 +123,10 @@
     <string name="androidacy_repo_info">Dieses Repository könnte Anzeigen anzeigen. Unterstützt Bewertungen, automatische Virus-Scans und weitere Features.</string>
     <string name="androidacy_test_mode_pref">Androidacy Testmodus</string>
     <string name="androidacy_test_mode_desc">Androidacy Beta aktivieren (wird App neu starten)</string>
-    <string name="notification_update_title">%i Updates gefunden</string>
+    <string name="notification_update_title">Modulaktualisierungen gefunden: %1$d</string>
     <string name="notification_update_title_easter_egg">%i Updates geschnüffelt</string>
     <string name="notification_update_subtitle">Tippen, um die App zu öffnen</string>
-    <string name="notification_update_pref">Aktualisierungsbenachrichtigung</string>
+    <string name="notification_update_pref">Automatische Suche nach Modulaktualisierungen</string>
     <string name="notification_update_desc">Könnte Batterie-Nutzung erhöhen</string>
     <string name="notification_update_debug_pref">Test-Benachrichtigung</string>
     <string name="language_support_outdated">Einige Übersetzungen für die aktuelle Sprache sind nicht aktuell, bitte überlege, auf GitHub beizutragen</string>
@@ -185,7 +187,7 @@
     <string name="setup_title">Willkommen</string>
     <string name="setup_message">Willkommen! Diese App hilft dir, Magisk-Module zu installieren und einzurichten. Bitte stelle die folgenden Optionen ein um anzufangen. Diese und weiter können später in den Einstellungen umgestellt werden.</string>
     <string name="setup_button">Weiter</string>
-    <string name="setup_background_update_check">Updatesuche im Hintergrund</string>
+    <string name="setup_background_update_check">Automatische Suche nach Updates</string>
     <string name="setup_androidacy_repo">Aktiviere Androidacy-Repo</string>
     <string name="setup_magisk_alt_repo">Aktiviere Magisk Alt Repo</string>
     <string name="setup_crash_reporting">Aktiviere Sentry</string>
@@ -194,7 +196,7 @@
     <string name="api_key_restart">API-Schlüssel wurde geändert. Starte die App neu, um Änderungen anzuwenden.</string>
     <string name="api_key_unchanged">Der eingegebene API-Schlüssel ist bereits eingestellt. Nichts hat sich geändert.</string>
     <string name="permission_notification_title">Erlaube Benachrichtigungen\?</string>
-    <string name="permission_notification_message">Wir brauchen die Benachrichtigungsberechtigung, um dich bei App- und Modulupdates zu informieren. Ohne diese Berechtigung wird nicht automatisch nach Updates gesucht.</string>
+    <string name="permission_notification_message">Wir müssen dieBenachrichtigung senden, um Sie über App-und modulsupdates zu benachrichtigen. Automatische Updates werden nicht ausgeführt, wenn Sie diese Erlaubnis nicht bereitstellen.</string>
     <string name="permission_notification_grant">Erlauben</string>
     <string name="background_update_check_permission_required">Bitte aktiviere Benachrichtigungen, um diese Einstellung zu aktivieren.</string>
     <string name="dont_ask_again">Nicht nochmal fragen</string>
@@ -259,4 +261,12 @@
     <string name="androidacy_thanks">In Teilen von Androidacy entwickelt</string>
     <string name="androidacy_thanks_desc">Danke Androidacy für eure Integration und Beiträge zur App.</string>
     <string name="theme_transparent_dark">Dunkel (transparent)</string>
+    <string name="upgrade_androidacy_promo_desc">Durch das Upgrade auf Premium werden Anzeigen, Captchas und Downloads für das Androidacy-Repository entfernt und Androidacy und die Modulautoren unterstützt.</string>
+    <string name="pref_category_contributors">Autoren</string>
+    <string name="fox2code_thanks_desc">Fox2Code ist der ursprüngliche Autor der App. Ohne ihn wäre das nicht möglich gewesen.</string>
+    <string name="fox2code_thanks">Erstellt von Fox2Code</string>
+    <string name="save_logs">Log-Log im Tresor speichern und freigeben</string>
+    <string name="repo_update_failed_message">Die folgenden Repos konnten nicht aktualisiert werden: %s</string>
+    <string name="reset_api_key">API-Schlüssel zurücksetzen</string>
+    <string name="upgrade_androidacy_promo">Upgrade auf Premium</string>
 </resources>
