@@ -65,23 +65,14 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         createFiles();
         disableUpdateActivityForFdroidFlavor();
         // Set theme
-        SharedPreferences prefs = MainApplication.getSharedPreferences();
+        SharedPreferences prefs = MainApplication.getSharedPreferences("mmm");
         switch (prefs.getString("theme", "system")) {
-            case "light":
-                setTheme(R.style.Theme_MagiskModuleManager_Monet_Light);
-                break;
-            case "dark":
-                setTheme(R.style.Theme_MagiskModuleManager_Monet_Dark);
-                break;
-            case "system":
-                setTheme(R.style.Theme_MagiskModuleManager_Monet);
-                break;
-            case "black":
-                setTheme(R.style.Theme_MagiskModuleManager_Monet_Black);
-                break;
-            case "transparent_light":
-                setTheme(R.style.Theme_MagiskModuleManager_Transparent_Light);
-                break;
+            case "light" -> setTheme(R.style.Theme_MagiskModuleManager_Monet_Light);
+            case "dark" -> setTheme(R.style.Theme_MagiskModuleManager_Monet_Dark);
+            case "system" -> setTheme(R.style.Theme_MagiskModuleManager_Monet);
+            case "black" -> setTheme(R.style.Theme_MagiskModuleManager_Monet_Black);
+            case "transparent_light" ->
+                    setTheme(R.style.Theme_MagiskModuleManager_Transparent_Light);
         }
 
         ActivitySetupBinding binding = ActivitySetupBinding.inflate(getLayoutInflater());
@@ -143,21 +134,12 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                 // Set the theme
                 UiThreadHandler.handler.postDelayed(() -> {
                     switch (prefs.getString("pref_theme", "system")) {
-                        case "light":
-                            setTheme(R.style.Theme_MagiskModuleManager_Monet_Light);
-                            break;
-                        case "dark":
-                            setTheme(R.style.Theme_MagiskModuleManager_Monet_Dark);
-                            break;
-                        case "system":
-                            setTheme(R.style.Theme_MagiskModuleManager_Monet);
-                            break;
-                        case "black":
-                            setTheme(R.style.Theme_MagiskModuleManager_Monet_Black);
-                            break;
-                        case "transparent_light":
-                            setTheme(R.style.Theme_MagiskModuleManager_Transparent_Light);
-                            break;
+                        case "light" -> setTheme(R.style.Theme_MagiskModuleManager_Monet_Light);
+                        case "dark" -> setTheme(R.style.Theme_MagiskModuleManager_Monet_Dark);
+                        case "system" -> setTheme(R.style.Theme_MagiskModuleManager_Monet);
+                        case "black" -> setTheme(R.style.Theme_MagiskModuleManager_Monet_Black);
+                        case "transparent_light" ->
+                                setTheme(R.style.Theme_MagiskModuleManager_Transparent_Light);
                     }
                     // restart the activity because switching to transparent pisses the rendering engine off
                     Intent intent = new Intent(this, SetupActivity.class);
@@ -249,23 +231,14 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
     public Resources.Theme getTheme() {
         Resources.Theme theme = super.getTheme();
         // Set the theme
-        SharedPreferences prefs = MainApplication.getSharedPreferences();
+        SharedPreferences prefs = MainApplication.getSharedPreferences("mmm");
         switch (prefs.getString("pref_theme", "system")) {
-            case "light":
-                theme.applyStyle(R.style.Theme_MagiskModuleManager_Monet_Light, true);
-                break;
-            case "dark":
-                theme.applyStyle(R.style.Theme_MagiskModuleManager_Monet_Dark, true);
-                break;
-            case "system":
-                theme.applyStyle(R.style.Theme_MagiskModuleManager_Monet, true);
-                break;
-            case "black":
-                theme.applyStyle(R.style.Theme_MagiskModuleManager_Monet_Black, true);
-                break;
-            case "transparent_light":
-                theme.applyStyle(R.style.Theme_MagiskModuleManager_Transparent_Light, true);
-                break;
+            case "light" -> theme.applyStyle(R.style.Theme_MagiskModuleManager_Monet_Light, true);
+            case "dark" -> theme.applyStyle(R.style.Theme_MagiskModuleManager_Monet_Dark, true);
+            case "system" -> theme.applyStyle(R.style.Theme_MagiskModuleManager_Monet, true);
+            case "black" -> theme.applyStyle(R.style.Theme_MagiskModuleManager_Monet_Black, true);
+            case "transparent_light" ->
+                    theme.applyStyle(R.style.Theme_MagiskModuleManager_Transparent_Light, true);
         }
         return theme;
     }

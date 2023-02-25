@@ -22,7 +22,7 @@ buildscript {
     project.ext.sentry_version = "6.14.0"
     dependencies {
         classpath 'com.android.tools.build:gradle:7.4.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10"
         classpath "com.mikepenz.aboutlibraries.plugin:aboutlibraries-plugin:${latestAboutLibsRelease}"
         classpath 'io.sentry:sentry-android:6.14.0'
 

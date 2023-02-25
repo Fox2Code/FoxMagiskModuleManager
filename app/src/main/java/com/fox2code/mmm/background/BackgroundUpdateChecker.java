@@ -59,11 +59,15 @@ public class BackgroundUpdateChecker extends Worker {
 
     static void doCheck(Context context) {
         // first, check if the user has enabled background update checking
-        if (!MainApplication.getSharedPreferences().getBoolean("pref_background_update_check", false)) {
+        if (!MainApplication.getSharedPreferences("mmm").getBoolean("pref_background_update_check", false)) {
+            return;
+        }
+        if (MainApplication.getINSTANCE().isInForeground()) {
+            // don't check if app is in foreground, this is a background check
             return;
         }
         // next, check if user requires wifi
-        if (MainApplication.getSharedPreferences().getBoolean("pref_background_update_check_wifi", true)) {
+        if (MainApplication.getSharedPreferences("mmm").getBoolean("pref_background_update_check_wifi", true)) {
             // check if wifi is connected
             ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             Network networkInfo = connectivityManager.getActiveNetwork();
@@ -74,7 +78,6 @@ public class BackgroundUpdateChecker extends Worker {
         }
         // post checking notification if notofiications are enabled
         if (ContextCompat.checkSelfPermission(MainApplication.getINSTANCE(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-            if (!MainApplication.getINSTANCE().isInForeground()) {
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
                 notificationManager.createNotificationChannel(new NotificationChannelCompat.Builder(NOTIFICATION_CHANNEL_ID_ONGOING, NotificationManagerCompat.IMPORTANCE_LOW).setName(context.getString(R.string.notification_channel_category_background_update)).setDescription(context.getString(R.string.notification_channel_category_background_update_description)).setGroup(NOTFIICATION_GROUP).build());
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID);
@@ -89,7 +92,6 @@ public class BackgroundUpdateChecker extends Worker {
                 builder.setContentTitle(context.getString(R.string.notification_channel_background_update));
                 builder.setContentText(context.getString(R.string.notification_channel_background_update_description));
                 notificationManager.notify(NOTIFICATION_ID_ONGOING, builder.build());
-            }
         }
         Thread.currentThread().setPriority(2);
         ModuleManager.getINSTANCE().scanAsync();
@@ -104,7 +106,7 @@ public class BackgroundUpdateChecker extends Worker {
                     continue;
                 // exclude all modules with id's stored in the pref pref_background_update_check_excludes
                 try {
-                    if (MainApplication.getSharedPreferences().getStringSet("pref_background_update_check_excludes", null).contains(localModuleInfo.id))
+                    if (MainApplication.getSharedPreferences("mmm").getStringSet("pref_background_update_check_excludes", null).contains(localModuleInfo.id))
                         continue;
                 } catch (
                         Exception ignored) {
@@ -124,7 +126,7 @@ public class BackgroundUpdateChecker extends Worker {
             }
         });
         // check for app updates
-        if (MainApplication.getSharedPreferences().getBoolean("pref_background_update_check_app", false)) {
+        if (MainApplication.getSharedPreferences("mmm").getBoolean("pref_background_update_check_app", false)) {
             try {
                 boolean shouldUpdate = AppUpdateManager.getAppUpdateManager().checkUpdate(true);
                 if (shouldUpdate) {
@@ -206,7 +208,7 @@ public class BackgroundUpdateChecker extends Worker {
 
     public static void onMainActivityCreate(Context context) {
         // Refuse to run if first_launch pref is not false
-        if (MainApplication.getSharedPreferences().getBoolean("first_time_setup_done", true))
+        if (MainApplication.getSharedPreferences("mmm").getBoolean("first_time_setup_done", true))
             return;
         // create notification channel group
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

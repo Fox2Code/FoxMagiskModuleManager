@@ -78,13 +78,13 @@ public final class ModuleManager extends SyncManager {
             for (String module : modules) {
                 if (!new SuFile("/data/adb/modules/" + module).isDirectory())
                     continue; // Ignore non directory files inside modules folder
-                if (BuildConfig.DEBUG) Timber.d(module);
                 LocalModuleInfo moduleInfo = moduleInfos.get(module);
                 // next, merge the module info with a record from ModuleListCache if it exists
                 RealmConfiguration realmConfiguration;
                 // get all dirs under the realms/repos/ dir under app's data dir
                 File cacheRoot = new File(MainApplication.getINSTANCE().getDataDirWithPath("realms/repos/").toURI());
                 ModuleListCache moduleListCache;
+                boolean foundCache = false;
                 for (File dir : Objects.requireNonNull(cacheRoot.listFiles())) {
                     if (dir.isDirectory()) {
                         // if the dir name matches the module name, use it as the cache dir
@@ -95,35 +95,21 @@ public final class ModuleManager extends SyncManager {
                         Timber.d("Looking for cache for %s out of %d", module, realm.where(ModuleListCache.class).count());
                         moduleListCache = realm.where(ModuleListCache.class).equalTo("codename", module).findFirst();
                         if (moduleListCache != null) {
+                            foundCache = true;
                             Timber.d("Found cache for %s", module);
-                            moduleInfo = new LocalModuleInfo(module);
-                            assert moduleListCache.getAuthor() != null;
-                            assert moduleListCache.getDescription() != null;
-                            assert moduleListCache.getSupport() != null;
-                            assert moduleListCache.getConfig() != null;
-                            assert moduleListCache.getName() != null;
-                            moduleInfo.author = moduleListCache.getAuthor();
-                            moduleInfo.description = moduleListCache.getDescription() + " (from cache)";
-                            moduleInfo.support = moduleListCache.getSupport();
-                            moduleInfo.config = moduleListCache.getConfig();
-                            moduleInfo.name = moduleListCache.getName();
-                            moduleInfo.minApi = moduleListCache.getMinApi();
-                            moduleInfo.maxApi = moduleListCache.getMaxApi();
-                            moduleInfo.minMagisk = moduleListCache.getMinMagisk();
-                            moduleInfo.safe = moduleListCache.isSafe();
-                            moduleInfos.put(module, moduleInfo);
-                            // This should not really happen, but let's handles theses cases anyway
-                            moduleInfo.flags |= ModuleInfo.FLAG_MODULE_UPDATING_ONLY;
-                            break;
-                        } else {
-                            Timber.d("No cache for %s", module);
-                            // just for shits n giggles, log the codename of all the modules in the cache
-                            Iterator<ModuleListCache> iterator = realm.where(ModuleListCache.class).findAll().iterator();
-                            StringBuilder sb = new StringBuilder();
-                            while (iterator.hasNext()) {
-                                sb.append(iterator.next().getCodename()).append(", ");
+                            // get module info from cache
+                            if (moduleInfo == null) {
+                                moduleInfo = new LocalModuleInfo(module);
                             }
-                            Timber.d("Cache contains: %s", sb.toString());
+                            moduleInfo.name = moduleListCache.getName();
+                            moduleInfo.description = moduleListCache.getDescription() + " (cached)";
+                            moduleInfo.author = moduleListCache.getAuthor();
+                            moduleInfo.safe = moduleListCache.isSafe();
+                            moduleInfo.support = moduleListCache.getSupport();
+                            moduleInfo.donate = moduleListCache.getDonate();
+                            moduleInfos.put(module, moduleInfo);
+                            realm.close();
+                            break;
                         }
                     }
                 }

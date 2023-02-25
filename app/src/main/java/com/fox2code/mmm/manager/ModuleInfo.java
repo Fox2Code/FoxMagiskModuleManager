@@ -25,7 +25,7 @@ public class ModuleInfo {
     private static final int FLAG_FENCE = 0x10000000; // Should never be set
 
     // Magisk standard
-    public final String id;
+    public String id;
     public String name;
     public String version;
     public long versionCode;

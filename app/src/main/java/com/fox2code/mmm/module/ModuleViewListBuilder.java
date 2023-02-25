@@ -183,7 +183,6 @@ public class ModuleViewListBuilder {
         final ArrayList<ModuleHolder> moduleHolders;
         final int newNotificationsLen;
         final boolean first;
-        final ModuleHolder[] headerFooter = new ModuleHolder[2];
         try {
             synchronized (this.updateLock) {
                 // Build start
@@ -236,11 +235,11 @@ public class ModuleViewListBuilder {
                 }
                 moduleHolders.sort(this.moduleSorter);
                 // Header is always first
-                moduleHolders.add(0, headerFooter[0] =
-                        new ModuleHolder(this.headerPx, true));
+                //moduleHolders.add(0, headerFooter[0] =
+                //        new ModuleHolder(this.headerPx / 2, true));
                 // Footer is always last
-                moduleHolders.add(headerFooter[1] =
-                        new ModuleHolder(this.footerPx, false));
+                //moduleHolders.add(headerFooter[1] =
+                //        new ModuleHolder(this.footerPx * 2, false));
                 Timber.i("Got " + moduleHolders.size() + " entries!");
                 // Build end
             }
@@ -281,10 +280,6 @@ public class ModuleViewListBuilder {
             int oldLen = moduleViewAdapter.moduleHolders.size();
             moduleViewAdapter.moduleHolders.clear();
             moduleViewAdapter.moduleHolders.addAll(moduleHolders);
-            synchronized (this.updateLock) {
-                headerFooter[0].footerPx = this.headerPx;
-                headerFooter[1].footerPx = this.footerPx;
-            }
             if (oldNotificationsLen != newNotificationsLen ||
                     !oldNotifications.equals(this.notifications)) {
                 notifySizeChanged(moduleViewAdapter, 0,
@@ -306,8 +301,6 @@ public class ModuleViewListBuilder {
             if (isTop) moduleList.scrollToPosition(0);
             if (isBottom) moduleList.scrollToPosition(newLen);
             this.updateInsets = () -> {
-                headerFooter[0].footerPx = this.headerPx;
-                headerFooter[1].footerPx = this.footerPx;
                 notifySizeChanged(moduleViewAdapter, 0, 1, 1);
                 notifySizeChanged(moduleViewAdapter,
                         moduleHolders.size(), 1, 1);
