@@ -6,7 +6,6 @@ import static java.lang.Integer.parseInt;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
-import android.app.Application;
 import android.app.PendingIntent;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -40,11 +39,11 @@ import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
+import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreferenceCompat;
 import androidx.preference.TwoStatePreference;
 
 import com.fox2code.foxcompat.app.FoxActivity;
-import com.fox2code.foxcompat.app.internal.FoxProcessExt;
 import com.fox2code.foxcompat.view.FoxDisplay;
 import com.fox2code.foxcompat.view.FoxViewCompat;
 import com.fox2code.mmm.AppUpdateManager;
@@ -206,7 +205,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         @Override
         @SuppressWarnings("ConstantConditions")
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-            getPreferenceManager().setSharedPreferencesName("mmm");
+            PreferenceManager preferenceManager = getPreferenceManager();
+            preferenceManager.setPreferenceDataStore(EncryptedPreferenceDataStore.getInstance());
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
             applyMaterial3(getPreferenceScreen());
             // add bottom navigation bar to the settings
@@ -475,7 +475,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     // set the box to unchecked
                     ((SwitchPreferenceCompat) backgroundUpdateCheck).setChecked(false);
                     // ensure that the preference is false
-                    MainApplication.getSharedPreferences().edit().putBoolean("pref_background_update_check", false).apply();
+                    MainApplication.getSharedPreferences("mmm").edit().putBoolean("pref_background_update_check", false).apply();
                     new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.permission_notification_title).setMessage(R.string.permission_notification_message).setPositiveButton(R.string.ok, (dialog, which) -> {
                         // Open the app settings
                         Intent intent = new Intent();
@@ -512,7 +512,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     int i = 0;
                     for (LocalModuleInfo localModuleInfo : localModuleInfos) {
                         moduleNames[i] = localModuleInfo.name;
-                        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
+                        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences("mmm");
                         // get the stringset pref_background_update_check_excludes
                         Set<String> stringSet = sharedPreferences.getStringSet("pref_background_update_check_excludes", new HashSet<>());
                         // Stringset uses id, we show name
@@ -522,7 +522,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     }
                     new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.background_update_check_excludes).setMultiChoiceItems(moduleNames, checkedItems, (dialog, which, isChecked) -> {
                         // get the stringset pref_background_update_check_excludes
-                        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
+                        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences("mmm");
                         Set<String> stringSet = new HashSet<>(sharedPreferences.getStringSet("pref_background_update_check_excludes", new HashSet<>()));
                         // get id from name
                         String id;
@@ -610,11 +610,11 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 if (devModeStep == 2) {
                     devModeStep = 0;
                     if (MainApplication.isDeveloper() && !BuildConfig.DEBUG) {
-                        MainApplication.getSharedPreferences().edit().putBoolean("developer", false).apply();
+                        MainApplication.getSharedPreferences("mmm").edit().putBoolean("developer", false).apply();
                         Toast.makeText(getContext(), // Tell the user something changed
                                 R.string.dev_mode_disabled, Toast.LENGTH_SHORT).show();
                     } else {
-                        MainApplication.getSharedPreferences().edit().putBoolean("developer", true).apply();
+                        MainApplication.getSharedPreferences("mmm").edit().putBoolean("developer", true).apply();
                         Toast.makeText(getContext(), // Tell the user something changed
                                 R.string.dev_mode_enabled, Toast.LENGTH_SHORT).show();
                     }
@@ -693,7 +693,9 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 }
                 // Share logs
                 Intent shareIntent = new Intent();
+                // create a new intent and grantUriPermission to the file provider
                 shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 shareIntent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID + ".file-provider", logsFile));
                 shareIntent.setType("text/plain");
                 startActivity(Intent.createChooser(shareIntent, getString(R.string.share_logs)));
@@ -749,25 +751,6 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             findPreference("pref_pkg_info").setSummary(pkgInfo);
         }
 
-        @SuppressLint("RestrictedApi")
-        private String getRepackageState() {
-            Application initialApplication = null;
-            try {
-                initialApplication = FoxProcessExt.getInitialApplication();
-            } catch (
-                    Exception ignored) {
-            }
-            String realPackageName;
-            if (initialApplication != null) {
-                realPackageName = initialApplication.getPackageName();
-            } else {
-                realPackageName = this.requireContext().getPackageName();
-            }
-            if (BuildConfig.APPLICATION_ID.equals(realPackageName))
-                return "";
-            return "\n" + this.getString(FoxProcessExt.isRootLoader() ? R.string.repackaged_as : R.string.wrapped_from) + realPackageName;
-        }
-
         private void openFragment(Fragment fragment, @StringRes int title) {
             FoxActivity compatActivity = getFoxActivity(this);
             compatActivity.setOnBackPressedCallback(this);
@@ -802,8 +785,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
          * namely, from <a href="https://github.com/NeoApplications/Neo-Wellbeing/blob/9fca4136263780c022f9ec6433c0b43d159166db/app/src/main/java/org/eu/droid_ng/wellbeing/prefs/SettingsActivity.java#L101">neo wellbeing</a>
          */
         public static void applyMaterial3(Preference p) {
-            if (p instanceof PreferenceGroup) {
-                PreferenceGroup pg = (PreferenceGroup) p;
+            if (p instanceof PreferenceGroup pg) {
                 for (int i = 0; i < pg.getPreferenceCount(); i++) {
                     applyMaterial3(pg.getPreference(i));
                 }
@@ -827,7 +809,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         // Use MaterialAlertDialogBuilder
                         new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.warning).setCancelable(false).setMessage(R.string.androidacy_test_mode_warning).setPositiveButton(android.R.string.ok, (dialog, which) -> {
                             // User clicked OK button
-                            MainApplication.getSharedPreferences().edit().putBoolean("androidacy_test_mode", true).apply();
+                            MainApplication.getSharedPreferences("mmm").edit().putBoolean("androidacy_test_mode", true).apply();
                             // Check the switch
                             Intent mStartActivity = new Intent(requireContext(), MainActivity.class);
                             mStartActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -845,10 +827,10 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                             SwitchPreferenceCompat switchPreferenceCompat = (SwitchPreferenceCompat) androidacyTestMode;
                             switchPreferenceCompat.setChecked(false);
                             // There's probably a better way to do this than duplicate code but I'm too lazy to figure it out
-                            MainApplication.getSharedPreferences().edit().putBoolean("androidacy_test_mode", false).apply();
+                            MainApplication.getSharedPreferences("mmm").edit().putBoolean("androidacy_test_mode", false).apply();
                         }).show();
                     } else {
-                        MainApplication.getSharedPreferences().edit().putBoolean("androidacy_test_mode", false).apply();
+                        MainApplication.getSharedPreferences("mmm").edit().putBoolean("androidacy_test_mode", false).apply();
                         // Show dialog to restart app with ok button
                         new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.warning).setCancelable(false).setMessage(R.string.androidacy_test_mode_disable_warning).setNeutralButton(android.R.string.ok, (dialog, which) -> {
                             // User clicked OK button

@@ -14,6 +14,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.net.http.HttpResponseCache;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -51,9 +52,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
-import org.chromium.net.ExperimentalCronetEngine;
-import org.chromium.net.urlconnection.CronetURLStreamHandlerFactory;
+import org.chromium.net.CronetEngine;
 
+import java.io.File;
 import java.net.URL;
 
 import timber.log.Timber;
@@ -101,10 +102,17 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         Http.ensureCacheDirs(this);
         if (!urlFactoryInstalled) {
             try {
-                ExperimentalCronetEngine cronetEngine = new ExperimentalCronetEngine.Builder(this).build();
-                CronetURLStreamHandlerFactory cronetURLStreamHandlerFactory = new CronetURLStreamHandlerFactory(cronetEngine);
+                HttpResponseCache cache = HttpResponseCache.getInstalled();
+                if (cache == null) {
+                    File cacheDir = new File(getCacheDir(), "http");
+                    //noinspection ResultOfMethodCallIgnored
+                    cacheDir.mkdirs();
+                    long cacheSize = 10 * 1024 * 1024; // 10 MiB
+                    HttpResponseCache.install(cacheDir, cacheSize);
+                }
+                CronetEngine cronetEngine = new CronetEngine.Builder(this).build();
                 try {
-                    URL.setURLStreamHandlerFactory(cronetURLStreamHandlerFactory);
+                    URL.setURLStreamHandlerFactory(cronetEngine.createURLStreamHandlerFactory());
                 } catch (
                         Error e) {
                     Timber.e("Failed to install Cronet URLStreamHandlerFactory");
@@ -150,8 +158,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         this.moduleList.setAdapter(this.moduleViewAdapter);
         this.moduleListOnline.setAdapter(this.moduleViewAdapterOnline);
         this.moduleList.setLayoutManager(new LinearLayoutManager(this));
-        // set top padding to 0
-        this.moduleList.setPadding(0, 0, 0, 0);
         this.moduleListOnline.setLayoutManager(new LinearLayoutManager(this));
         this.moduleList.setItemViewCacheSize(4); // Default is 2
         this.swipeRefreshLayout.setOnRefreshListener(this);
@@ -185,8 +191,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
 
         // on the bottom nav, there's a settings item. open the settings activity when it's clicked.
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        // set the bottom padding of the main layout to the height of the bottom nav
-        findViewById(R.id.root_container).setPadding(0, 0, 0, (bottomNavigationView.getHeight() > 0) ? bottomNavigationView.getHeight() : FoxDisplay.dpToPixel(56));
         bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.settings_menu_item) {
                 startActivity(new Intent(MainActivity.this, SettingsActivity.class));
@@ -271,9 +275,9 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
 
                 // On every preferences change, log the change if debug is enabled
                 if (BuildConfig.DEBUG) {
-                    Timber.d("onCreate: Preferences: %s", MainApplication.getSharedPreferences().getAll());
+                    Timber.d("onCreate: Preferences: %s", MainApplication.getSharedPreferences("mmm").getAll());
                     // Log all preferences changes
-                    MainApplication.getSharedPreferences().registerOnSharedPreferenceChangeListener((prefs, key) -> Timber.i("onSharedPreferenceChanged: " + key + " = " + prefs.getAll().get(key)));
+                    MainApplication.getSharedPreferences("mmm").registerOnSharedPreferenceChangeListener((prefs, key) -> Timber.i("onSharedPreferenceChanged: " + key + " = " + prefs.getAll().get(key)));
                 }
 
                 Timber.i("Scanning for modules!");
@@ -692,7 +696,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         if (BuildConfig.DEBUG)
             Timber.i("Checking if we need to run setup");
         // Check if this is the first launch
-        SharedPreferences prefs = MainApplication.getSharedPreferences();
+        SharedPreferences prefs = MainApplication.getSharedPreferences("mmm");
         boolean firstLaunch = prefs.getBoolean("first_time_setup_done", true);
         if (BuildConfig.DEBUG)
             Timber.i("First launch: %s", firstLaunch);

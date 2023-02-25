@@ -22,6 +22,7 @@ import java.util.Locale;
 
 import timber.log.Timber;
 
+@SuppressWarnings("SpellCheckingInspection")
 public enum PropUtils {
     ;
     private static final HashMap<String, String> moduleSupportsFallbacks = new HashMap<>();
@@ -122,6 +123,10 @@ public enum PropUtils {
                     continue;
                 String key = line.substring(0, index);
                 String value = line.substring(index + 1).trim();
+                // check if field is defined on the moduleInfo object we are reading
+                if (moduleInfo.toString().contains(key)) {
+                    continue;
+                }
                 // name and id have their own implementation
                 if (isInvalidValue(key)) {
                     if (local) {
@@ -144,7 +149,8 @@ public enum PropUtils {
                             if (local) {
                                 invalid = true;
                                 break;
-                            } throw new IOException("Invalid module id!");
+                            }
+                            throw new IOException("Invalid module id!");
                         }
                         readId = true;
                         if (!moduleInfo.id.equals(value)) {
@@ -167,7 +173,8 @@ public enum PropUtils {
                             if (local) {
                                 invalid = true;
                                 break;
-                            } throw new IOException("Invalid module name!");
+                            }
+                            throw new IOException("Invalid module name!");
                         }
                         readName = true;
                         moduleInfo.name = value;

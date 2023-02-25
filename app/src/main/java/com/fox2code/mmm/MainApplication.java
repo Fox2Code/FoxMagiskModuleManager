@@ -20,6 +20,8 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.emoji2.text.DefaultEmojiCompatConfig;
 import androidx.emoji2.text.EmojiCompat;
 import androidx.emoji2.text.FontRequestEmojiCompatConfig;
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKey;
 
 import com.fox2code.foxcompat.app.FoxActivity;
 import com.fox2code.foxcompat.app.FoxApplication;
@@ -34,6 +36,8 @@ import com.google.common.hash.Hashing;
 import com.topjohnwu.superuser.Shell;
 
 import java.io.File;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -55,16 +59,16 @@ import timber.log.Timber;
 
 @SuppressWarnings("CommentedOutCode")
 public class MainApplication extends FoxApplication implements androidx.work.Configuration.Provider {
-    // Warning! Locales that are't exist will crash the app
+    // Warning! Locales that don't exist will crash the app
     // Anything that is commented out is supported but the translation is not complete to at least 60%
     public static final HashSet<String> supportedLocales = new HashSet<>();
     private static final String timeFormatString = "dd MMM yyyy"; // Example: 13 july 2001
     private static final Shell.Builder shellBuilder;
-    private static long secret;
     @SuppressLint("RestrictedApi")
     // Use FoxProcess wrapper helper.
     private static final boolean wrapped = !FoxProcessExt.isRootLoader();
     public static boolean isOfficial = false;
+    private static long secret;
     private static Locale timeFormatLocale = Resources.getSystem().getConfiguration().getLocales().get(0);
     private static SimpleDateFormat timeFormat = new SimpleDateFormat(timeFormatString, timeFormatLocale);
     private static SharedPreferences bootSharedPreferences;
@@ -116,62 +120,72 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         return intent != null && intent.getLongExtra("secret", ~secret) == secret;
     }
 
-    public static SharedPreferences getSharedPreferences() {
-        return INSTANCE.getSharedPreferences("mmm", MODE_PRIVATE);
+    public static SharedPreferences getSharedPreferences(String store) {
+        MasterKey mainKeyAlias;
+        try {
+            mainKeyAlias = new MasterKey.Builder(INSTANCE.getApplicationContext()).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build();
+        } catch (GeneralSecurityException | IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            return EncryptedSharedPreferences.create(INSTANCE.getApplicationContext(), store, mainKeyAlias, EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV, EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM);
+        } catch (GeneralSecurityException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static boolean isShowcaseMode() {
-        return getSharedPreferences().getBoolean("pref_showcase_mode", false);
+        return getSharedPreferences("mmm").getBoolean("pref_showcase_mode", false);
     }
 
     public static boolean shouldPreventReboot() {
-        return getSharedPreferences().getBoolean("pref_prevent_reboot", true);
+        return getSharedPreferences("mmm").getBoolean("pref_prevent_reboot", true);
     }
 
     public static boolean isShowIncompatibleModules() {
-        return getSharedPreferences().getBoolean("pref_show_incompatible", false);
+        return getSharedPreferences("mmm").getBoolean("pref_show_incompatible", false);
     }
 
     public static boolean isForceDarkTerminal() {
-        return getSharedPreferences().getBoolean("pref_force_dark_terminal", false);
+        return getSharedPreferences("mmm").getBoolean("pref_force_dark_terminal", false);
     }
 
     public static boolean isTextWrapEnabled() {
-        return getSharedPreferences().getBoolean("pref_wrap_text", false);
+        return getSharedPreferences("mmm").getBoolean("pref_wrap_text", false);
     }
 
     public static boolean isDohEnabled() {
-        return getSharedPreferences().getBoolean("pref_dns_over_https", true);
+        return getSharedPreferences("mmm").getBoolean("pref_dns_over_https", true);
     }
 
     public static boolean isMonetEnabled() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && getSharedPreferences().getBoolean("pref_enable_monet", true);
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && getSharedPreferences("mmm").getBoolean("pref_enable_monet", true);
     }
 
     public static boolean isBlurEnabled() {
-        return getSharedPreferences().getBoolean("pref_enable_blur", false);
+        return getSharedPreferences("mmm").getBoolean("pref_enable_blur", false);
     }
 
     public static boolean isDeveloper() {
         if (BuildConfig.DEBUG)
             return true;
-        return getSharedPreferences().getBoolean("developer", false);
+        return getSharedPreferences("mmm").getBoolean("developer", false);
     }
 
     public static boolean isDisableLowQualityModuleFilter() {
-        return getSharedPreferences().getBoolean("pref_disable_low_quality_module_filter", false) && isDeveloper();
+        return getSharedPreferences("mmm").getBoolean("pref_disable_low_quality_module_filter", false) && isDeveloper();
     }
 
     public static boolean isUsingMagiskCommand() {
-        return InstallerInitializer.peekMagiskVersion() >= Constants.MAGISK_VER_CODE_INSTALL_COMMAND && getSharedPreferences().getBoolean("pref_use_magisk_install_command", false) && isDeveloper();
+        return InstallerInitializer.peekMagiskVersion() >= Constants.MAGISK_VER_CODE_INSTALL_COMMAND && getSharedPreferences("mmm").getBoolean("pref_use_magisk_install_command", false) && isDeveloper();
     }
 
     public static boolean isBackgroundUpdateCheckEnabled() {
-        return !wrapped && getSharedPreferences().getBoolean("pref_background_update_check", true);
+        return !wrapped && getSharedPreferences("mmm").getBoolean("pref_background_update_check", true);
     }
 
     public static boolean isAndroidacyTestMode() {
-        return isDeveloper() && getSharedPreferences().getBoolean("pref_androidacy_test_mode", false);
+        return isDeveloper() && getSharedPreferences("mmm").getBoolean("pref_androidacy_test_mode", false);
     }
 
     public static boolean isFirstBoot() {
@@ -179,11 +193,11 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     }
 
     public static void setHasGottenRootAccess(boolean bool) {
-        getSharedPreferences().edit().putBoolean("has_root_access", bool).apply();
+        getSharedPreferences("mmm").edit().putBoolean("has_root_access", bool).apply();
     }
 
     public static boolean isCrashReportingEnabled() {
-        return SentryMain.IS_SENTRY_INSTALLED && getSharedPreferences().getBoolean("pref_crash_reporting", BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING);
+        return SentryMain.IS_SENTRY_INSTALLED && getSharedPreferences("mmm").getBoolean("pref_crash_reporting", BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING);
     }
 
     public static SharedPreferences getBootSharedPreferences() {
@@ -224,7 +238,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         @StyleRes int themeResId;
         String theme;
         boolean monet = isMonetEnabled();
-        switch (theme = getSharedPreferences().getString("pref_theme", "system")) {
+        switch (theme = getSharedPreferences("mmm").getString("pref_theme", "system")) {
             default:
                 Timber.w("Unknown theme id: %s", theme);
             case "system":
@@ -336,15 +350,15 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         try {
             // Get the signature of the key used to sign the app
             @SuppressLint("PackageManagerGetSignatures") Signature[] signatures = this.getPackageManager().getPackageInfo(this.getPackageName(), PackageManager.GET_SIGNATURES).signatures;
-            String[] officialSignatureHashArray = new String[]{"7bec7c4462f4aac616612d9f56a023ee3046e83afa956463b5fab547fd0a0be6", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"};
+            @SuppressWarnings("SpellCheckingInspection") String[] officialSignatureHashArray = new String[]{"7bec7c4462f4aac616612d9f56a023ee3046e83afa956463b5fab547fd0a0be6", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"};
             String ourSignatureHash = Hashing.sha256().hashBytes(signatures[0].toByteArray()).toString();
             isOfficial = Arrays.asList(officialSignatureHashArray).contains(ourSignatureHash);
         } catch (
                 PackageManager.NameNotFoundException ignored) {
         }
-        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
+        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences("mmm");
         // We are only one process so it's ok to do this
-        SharedPreferences bootPrefs = MainApplication.bootSharedPreferences = this.getSharedPreferences("mmm_boot", MODE_PRIVATE);
+        SharedPreferences bootPrefs = MainApplication.bootSharedPreferences = MainApplication.getSharedPreferences("mmm_boot");
         long lastBoot = System.currentTimeMillis() - SystemClock.elapsedRealtime();
         long lastBootPrefs = bootPrefs.getLong("last_boot", 0);
         if (lastBootPrefs == 0 || Math.abs(lastBoot - lastBootPrefs) > 100) {
@@ -450,7 +464,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     @SuppressLint("RestrictedApi")
     // view is nullable because it's called from xml
     public void resetApp() {
-        // cant show a dialog because android is throwing a fit so heres hoping anybody who calls this method is otherwise confirming that the user wants to reset the app
+        // cant show a dialog because android is throwing a fit so here's hoping anybody who calls this method is otherwise confirming that the user wants to reset the app
         Timber.w("Resetting app...");
         // recursively delete the app's data
         ((ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE)).clearApplicationUserData();
@@ -461,15 +475,28 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         ActivityManager activityManager = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
         if (appProcesses == null) {
+            Timber.d("appProcesses is null");
             return false;
         }
         final String packageName = this.getPackageName();
         for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+            Timber.d("Process: %s, Importance: %d", appProcess.processName, appProcess.importance);
             if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND && appProcess.processName.equals(packageName)) {
                 return true;
             }
         }
         return false;
+    }
+
+    // returns if background execution is restricted
+    @SuppressWarnings("unused")
+    public boolean isBackgroundRestricted() {
+        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            return am.isBackgroundRestricted();
+        } else {
+            return false;
+        }
     }
 
     private static class ReleaseTree extends Timber.Tree {

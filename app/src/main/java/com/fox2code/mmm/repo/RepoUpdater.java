@@ -295,7 +295,6 @@ public class RepoUpdater {
                         if (realm.isInTransaction()) {
                             realm.cancelTransaction();
                         }
-                        Timber.d("Inserting module %s to realm", id);
                         // create a realm object and insert or update it
                         // add everything to the realm object
                         realm.beginTransaction();
@@ -346,6 +345,7 @@ public class RepoUpdater {
                     success.set(true);
                     // get unix timestamp of current time
                     int currentTime = (int) (System.currentTimeMillis() / 1000);
+                    Timber.d("Updating lastUpdate for repo %s to %s which is %s seconds ago", this.repoData.id, currentTime, (currentTime - repoListCache.getLastUpdate()));
                     repoListCache.setLastUpdate(currentTime);
                 } else {
                     Timber.w("Failed to update lastUpdate for repo %s", this.repoData.id);

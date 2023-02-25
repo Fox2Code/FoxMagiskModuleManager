@@ -237,21 +237,11 @@ public final class AndroidacyActivity extends FoxActivity {
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
                 if (BuildConfig.DEBUG) {
                     switch (consoleMessage.messageLevel()) {
-                        case TIP:
-                            Timber.v(consoleMessage.message());
-                            break;
-                        case LOG:
-                            Timber.i(consoleMessage.message());
-                            break;
-                        case WARNING:
-                            Timber.w(consoleMessage.message());
-                            break;
-                        case ERROR:
-                            Timber.e(consoleMessage.message());
-                            break;
-                        case DEBUG:
-                            Timber.d(consoleMessage.message());
-                            break;
+                        case TIP -> Timber.v(consoleMessage.message());
+                        case LOG -> Timber.i(consoleMessage.message());
+                        case WARNING -> Timber.w(consoleMessage.message());
+                        case ERROR -> Timber.e(consoleMessage.message());
+                        case DEBUG -> Timber.d(consoleMessage.message());
                     }
                 }
                 return true;

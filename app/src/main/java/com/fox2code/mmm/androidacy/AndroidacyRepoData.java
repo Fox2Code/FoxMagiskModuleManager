@@ -43,7 +43,7 @@ import timber.log.Timber;
 
 @SuppressWarnings("KotlinInternalInJava")
 public final class AndroidacyRepoData extends RepoData {
-    public static String token = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).getString("pref_androidacy_api_token", null);
+    public static String token = MainApplication.getSharedPreferences("androidacy").getString("pref_androidacy_api_token", null);
 
     static {
         HttpUrl.Builder OK_HTTP_URL_BUILDER = new HttpUrl.Builder().scheme("https");
@@ -54,7 +54,7 @@ public final class AndroidacyRepoData extends RepoData {
 
     @SuppressWarnings("unused")
     public final String ClientID = BuildConfig.ANDROIDACY_CLIENT_ID;
-    public final SharedPreferences cachedPreferences = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0);
+    public final SharedPreferences cachedPreferences = MainApplication.getSharedPreferences("androidacy");
     private final boolean testMode;
     private final String host;
     public String[][] userInfo = new String[][]{{"role", null}, {"permissions", null}};
@@ -88,12 +88,11 @@ public final class AndroidacyRepoData extends RepoData {
     // limiting and fraud detection.
     public static String generateDeviceId() throws NoSuchAlgorithmException {
         // Try to get the device ID from the shared preferences
-        SharedPreferences sharedPreferences = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0);
+        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences("androidacy");
         String deviceIdPref = sharedPreferences.getString("device_id", null);
         if (deviceIdPref != null) {
             return deviceIdPref;
         } else {
-            // AAAA we're fingerprintiiiiing
             // Really not that scary - just hashes some device info. We can't even get the info
             // we originally hashed, so it's not like we can use it to track you.
             String deviceId = null;
@@ -176,7 +175,7 @@ public final class AndroidacyRepoData extends RepoData {
     protected boolean prepare() throws NoSuchAlgorithmException {
         // If ANDROIDACY_CLIENT_ID is not set or is empty, disable this repo and return
         if (Objects.equals(BuildConfig.ANDROIDACY_CLIENT_ID, "")) {
-            SharedPreferences.Editor editor = MainApplication.getSharedPreferences().edit();
+            SharedPreferences.Editor editor = MainApplication.getSharedPreferences("mmm").edit();
             editor.putBoolean("pref_androidacy_repo_enabled", false);
             editor.apply();
             return false;
@@ -213,7 +212,7 @@ public final class AndroidacyRepoData extends RepoData {
         long time = System.currentTimeMillis();
         if (this.androidacyBlockade > time)
             return true; // fake it till you make it. Basically,
-        // don't fail just becaue we're rate limited. API and web rate limits are different.
+        // don't fail just because we're rate limited. API and web rate limits are different.
         this.androidacyBlockade = time + 30_000L;
         try {
             if (token == null) {
@@ -267,7 +266,7 @@ public final class AndroidacyRepoData extends RepoData {
                     return false;
                 }
                 // Save token to shared preference
-                SharedPreferences.Editor editor = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit();
+                SharedPreferences.Editor editor = MainApplication.getSharedPreferences("androidacy").edit();
                 editor.putString("pref_androidacy_api_token", token);
                 editor.apply();
             } catch (
