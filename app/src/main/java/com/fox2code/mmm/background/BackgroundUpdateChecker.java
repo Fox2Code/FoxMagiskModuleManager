@@ -208,7 +208,7 @@ public class BackgroundUpdateChecker extends Worker {
 
     public static void onMainActivityCreate(Context context) {
         // Refuse to run if first_launch pref is not false
-        if (MainApplication.getSharedPreferences("mmm").getBoolean("first_time_setup_done", true))
+        if (!Objects.equals(MainApplication.getSharedPreferences("mmm").getString("last_shown_setup", null), "v1"))
             return;
         // create notification channel group
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -219,7 +219,7 @@ public class BackgroundUpdateChecker extends Worker {
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
         notificationManagerCompat.createNotificationChannel(new NotificationChannelCompat.Builder(NOTIFICATION_CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_HIGH).setShowBadge(true).setName(context.getString(R.string.notification_update_pref)).setDescription(context.getString(R.string.auto_updates_notifs)).setGroup(NOTFIICATION_GROUP).build());
         notificationManagerCompat.cancel(BackgroundUpdateChecker.NOTIFICATION_ID);
-        WorkManager.getInstance(context).enqueueUniquePeriodicWork("background_checker", ExistingPeriodicWorkPolicy.REPLACE, new PeriodicWorkRequest.Builder(BackgroundUpdateChecker.class, 6, TimeUnit.HOURS).setConstraints(new Constraints.Builder().setRequiresBatteryNotLow(true).build()).build());
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork("background_checker", ExistingPeriodicWorkPolicy.UPDATE, new PeriodicWorkRequest.Builder(BackgroundUpdateChecker.class, 6, TimeUnit.HOURS).setConstraints(new Constraints.Builder().setRequiresBatteryNotLow(true).build()).build());
     }
 
     public static void onMainActivityResume(Context context) {

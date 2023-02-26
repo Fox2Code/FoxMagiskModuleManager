@@ -147,6 +147,10 @@ public final class RepoManager extends SyncManager {
 
     @SuppressWarnings("StatementWithEmptyBody")
     private void populateDefaultCache(RepoData repoData) {
+        // if last_shown_setup is not "v1", them=n refuse to continue
+        if (!MainApplication.getSharedPreferences("mmm").getString("last_shown_setup", "").equals("v1")) {
+            return;
+        }
         for (RepoModule repoModule : repoData.moduleHashMap.values()) {
             if (!repoModule.moduleInfo.hasFlag(ModuleInfo.FLAG_METADATA_INVALID)) {
                 RepoModule registeredRepoModule = this.modules.get(repoModule.id);

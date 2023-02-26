@@ -29,7 +29,7 @@ public class SentryMain {
     public static void initialize(final MainApplication mainApplication) {
         // If first_launch pref is not false, refuse to initialize Sentry
         SharedPreferences sharedPreferences = MainApplication.getSharedPreferences("mmm");
-        if (sharedPreferences.getBoolean("first_time_setup_done", true)) {
+        if (!Objects.equals(sharedPreferences.getString("last_shown_setup", null), "v1")) {
             return;
         }
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {

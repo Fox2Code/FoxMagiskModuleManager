@@ -10,6 +10,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
+import android.util.Base64;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -36,14 +39,34 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.security.GeneralSecurityException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SecureRandom;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.Objects;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import timber.log.Timber;
 
 public class SetupActivity extends FoxActivity implements LanguageActivity {
+
+    MasterKey mainKeyAlias;
 
     @SuppressLint({"ApplySharedPref", "RestrictedApi"})
     @Override
@@ -61,7 +84,6 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             actionBar.show();
         }
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, 0);
-        createRealmDatabase();
         createFiles();
         disableUpdateActivityForFdroidFlavor();
         // Set theme
@@ -165,42 +187,27 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             // Set first launch to false
             // get instance of editor
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean("first_time_setup_done", false);
+            editor.putString("last_shown_setup", "v1");
             // Set the Automatic update check pref
             editor.putBoolean("pref_background_update_check", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).isChecked());
             // Set the crash reporting pref
             editor.putBoolean("pref_crash_reporting", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).isChecked());
             // Set the repos in the ReposList realm db
-            RealmConfiguration realmConfig = new RealmConfiguration.Builder().name("ReposList.realm").directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).build();
+            RealmConfiguration realmConfig = new RealmConfiguration.Builder().name("ReposList.realm").directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).build();
             boolean androidacyRepo = ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_androidacy_repo))).isChecked();
             boolean magiskAltRepo = ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).isChecked();
-            Realm.getInstanceAsync(realmConfig, new Realm.Callback() {
-                @Override
-                public void onSuccess(@NonNull Realm realm) {
-                    realm.executeTransaction(realm1 -> {
-                        ReposList androidacyRepoDB = realm1.where(ReposList.class).equalTo("id", "androidacy_repo").findFirst();
-                        if (androidacyRepoDB != null) {
-                            androidacyRepoDB.setEnabled(androidacyRepo);
-                        }
-                        ReposList magiskAltRepoDB = realm1.where(ReposList.class).equalTo("id", "magisk_alt_repo").findFirst();
-                        if (magiskAltRepoDB != null) {
-                            magiskAltRepoDB.setEnabled(magiskAltRepo);
-                        }
-                        // commit the changes
-                        realm1.commitTransaction();
-                        realm1.close();
-                    });
-                    realm.commitTransaction();
-                    realm.close();
-                }
-            });
+            Realm realm = Realm.getInstance(realmConfig);
+            Objects.requireNonNull(realm.where(ReposList.class).equalTo("id", "androidacy_repo").findFirst()).setEnabled(androidacyRepo);
+            Objects.requireNonNull(realm.where(ReposList.class).equalTo("id", "magisk_alt_repo").findFirst()).setEnabled(magiskAltRepo);
+            // commit the changes
+            realm.commitTransaction();
+            realm.close();
             // Commit the changes
             editor.commit();
             // Sleep for 1 second to allow the user to see the changes
             try {
                 Thread.sleep(500);
-            } catch (
-                    InterruptedException e) {
+            } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
             // Log the changes if debug
@@ -219,7 +226,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         cancelButton.setText(R.string.cancel);
         cancelButton.setOnClickListener(v -> {
             // Set first launch to false and restart the activity
-            prefs.edit().putBoolean("first_time_setup_done", false).commit();
+            prefs.edit().putString("last_shown_setup", "v1").commit();
             MainActivity.doSetupRestarting = true;
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
@@ -258,9 +265,13 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
     // creates the realm database
     private void createRealmDatabase() {
         Timber.d("Creating Realm databases");
+        // create encryption key
+        Timber.d("Creating encryption key");
+        // generate the encryption key and store it in the prefs
+        byte[] encryptionKey = getNewKey();
         // create the realm database for ReposList
         // next, create the realm database for ReposList
-        RealmConfiguration config2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+        RealmConfiguration config2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).encryptionKey(MainApplication.getINSTANCE().getExistingKey()).encryptionKey(encryptionKey).build();
         // get the instance
         Realm.getInstanceAsync(config2, new Realm.Callback() {
             @Override
@@ -308,14 +319,12 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             // initial set of cookies, only really used to create the keypair and encrypted file
             String initialCookie = "is_foxmmm=true; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/; domain=production-api.androidacy.com; SameSite=None; Secure;|foxmmm_version=" + BuildConfig.VERSION_CODE + "; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/; domain=production-api.androidacy.com; SameSite=None; Secure;";
             Context context = getApplicationContext();
-            MasterKey mainKeyAlias;
             mainKeyAlias = new MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build();
             EncryptedFile encryptedFile = new EncryptedFile.Builder(context, new File(MainApplication.getINSTANCE().getFilesDir(), cookieFileName), mainKeyAlias, EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB).build();
             InputStream inputStream;
             try {
                 inputStream = encryptedFile.openFileInput();
-            } catch (
-                    FileNotFoundException e) {
+            } catch (FileNotFoundException e) {
                 Timber.d("Cookie file not found, creating new file");
                 OutputStream outputStream = encryptedFile.openFileOutput();
                 outputStream.write(initialCookie.getBytes());
@@ -337,8 +346,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                 outputStream.close();
                 outputStream.flush();
             }
-        } catch (GeneralSecurityException |
-                 IOException e) {
+        } catch (GeneralSecurityException | IOException e) {
             Timber.e(e);
         }
         // we literally only use these to create the http cache folders
@@ -354,6 +362,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                 Timber.d("Created http cache dir");
             }
         }
+        createRealmDatabase();
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -365,5 +374,70 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             ComponentName componentName = new ComponentName(this, UpdateActivity.class);
             pm.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
         }
+    }
+
+    @SuppressLint("NewApi")
+    public byte[] getNewKey() {
+        if (MainApplication.getSharedPreferences("mmm").getBoolean("keygen", false)) {
+            Timber.d("Key already generated, returning");
+            return MainApplication.getINSTANCE().getExistingKey();
+        }
+        // open a connection to the android keystore
+        KeyStore keyStore;
+        try {
+            keyStore = KeyStore.getInstance("AndroidKeyStore");
+            keyStore.load(null);
+        } catch (java.security.KeyStoreException | NoSuchAlgorithmException | CertificateException |
+                 IOException e) {
+            throw new RuntimeException(e);
+        }
+        // create a securely generated random asymmetric RSA key
+        byte[] realmKey = new byte[Realm.ENCRYPTION_KEY_LENGTH];
+        new SecureRandom().nextBytes(realmKey);
+        // create a cipher that uses AES encryption -- we'll use this to encrypt our key
+        Cipher cipher;
+        try {
+            cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            throw new RuntimeException(e);
+        }
+        // generate secret key
+        KeyGenerator keyGenerator;
+        try {
+            keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
+        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+            throw new RuntimeException(e);
+        }
+        KeyGenParameterSpec keySpec = new KeyGenParameterSpec.Builder("realm_key", KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT).setBlockModes(KeyProperties.BLOCK_MODE_CBC).setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7).setUserAuthenticationRequired(false).build();
+        try {
+            keyGenerator.init(keySpec);
+        } catch (InvalidAlgorithmParameterException e) {
+            throw new RuntimeException(e);
+        }
+        keyGenerator.generateKey();
+        // access the generated key in the android keystore, then
+        // use the cipher to create an encrypted version of the key
+        byte[] initializationVector;
+        byte[] encryptedKeyForRealm;
+        try {
+            SecretKey secretKey = (SecretKey) keyStore.getKey("realm_key", null);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            encryptedKeyForRealm = cipher.doFinal(realmKey);
+            initializationVector = cipher.getIV();
+        } catch (InvalidKeyException | UnrecoverableKeyException | NoSuchAlgorithmException |
+                 KeyStoreException | BadPaddingException | IllegalBlockSizeException e) {
+            throw new RuntimeException(e);
+        }
+        // keep the encrypted key in shared preferences
+        // to persist it across application runs
+        byte[] initializationVectorAndEncryptedKey = new byte[Integer.BYTES + initializationVector.length + encryptedKeyForRealm.length];
+        ByteBuffer buffer = ByteBuffer.wrap(initializationVectorAndEncryptedKey);
+        buffer.order(ByteOrder.BIG_ENDIAN);
+        buffer.putInt(initializationVector.length);
+        buffer.put(initializationVector);
+        buffer.put(encryptedKeyForRealm);
+        MainApplication.getSharedPreferences("realm_key").edit().putString("iv_and_encrypted_key", Base64.encodeToString(initializationVectorAndEncryptedKey, Base64.NO_WRAP)).apply();
+        MainApplication.getSharedPreferences("mmm").edit().putBoolean("keygen", true).apply();
+        return realmKey; // pass to a realm configuration via encryptionKey()
     }
 }

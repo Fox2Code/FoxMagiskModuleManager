@@ -697,7 +697,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             Timber.i("Checking if we need to run setup");
         // Check if this is the first launch
         SharedPreferences prefs = MainApplication.getSharedPreferences("mmm");
-        boolean firstLaunch = prefs.getBoolean("first_time_setup_done", true);
+        boolean firstLaunch = prefs.getString("last_shown_setup", null) == null;
         if (BuildConfig.DEBUG)
             Timber.i("First launch: %s", firstLaunch);
         if (firstLaunch) {
