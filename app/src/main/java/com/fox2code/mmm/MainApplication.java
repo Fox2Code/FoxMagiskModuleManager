@@ -12,6 +12,8 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.SystemClock;
+import android.security.keystore.KeyProperties;
+import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -37,7 +39,16 @@ import com.topjohnwu.superuser.Shell;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.security.GeneralSecurityException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -46,6 +57,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 
 import io.noties.markwon.Markwon;
 import io.noties.markwon.html.HtmlPlugin;
@@ -512,5 +530,58 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
                 }
             }
         }
+    }
+
+    // Access the encrypted key in the keystore, decrypt it with the secret,
+    // and use it to open and read from the realm again
+    public byte[] getExistingKey() {
+        // open a connection to the android keystore
+        KeyStore keyStore;
+        try {
+            keyStore = KeyStore.getInstance("AndroidKeyStore");
+            keyStore.load(null);
+        } catch (KeyStoreException | NoSuchAlgorithmException
+                 | CertificateException | IOException e) {
+            throw new RuntimeException(e);
+        }
+        // access the encrypted key that's stored in shared preferences
+        byte[] initializationVectorAndEncryptedKey = Base64.decode(getSharedPreferences("realm_key")
+                .getString("iv_and_encrypted_key", null), Base64.DEFAULT);
+        ByteBuffer buffer = ByteBuffer.wrap(initializationVectorAndEncryptedKey);
+        buffer.order(ByteOrder.BIG_ENDIAN);
+        // extract the length of the initialization vector from the buffer
+        int initializationVectorLength = buffer.getInt();
+        // extract the initialization vector based on that length
+        byte[] initializationVector = new byte[initializationVectorLength];
+        buffer.get(initializationVector);
+        // extract the encrypted key
+        byte[] encryptedKey = new byte[initializationVectorAndEncryptedKey.length
+                - Integer.BYTES
+                - initializationVectorLength];
+        buffer.get(encryptedKey);
+        // create a cipher that uses AES encryption to decrypt our key
+        Cipher cipher;
+        try {
+            cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES
+                    + "/" + KeyProperties.BLOCK_MODE_CBC
+                    + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            throw new RuntimeException(e);
+        }
+        // decrypt the encrypted key with the secret key stored in the keystore
+        byte[] decryptedKey;
+        try {
+            final SecretKey secretKey =
+                    (SecretKey) keyStore.getKey("realm_key", null);
+            final IvParameterSpec initializationVectorSpec =
+                    new IvParameterSpec(initializationVector);
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, initializationVectorSpec);
+            decryptedKey = cipher.doFinal(encryptedKey);
+        } catch (InvalidKeyException | UnrecoverableKeyException | NoSuchAlgorithmException |
+                 BadPaddingException | KeyStoreException | IllegalBlockSizeException |
+                 InvalidAlgorithmParameterException e) {
+            throw new RuntimeException(e);
+        }
+        return decryptedKey; // pass to a realm configuration via encryptionKey()
     }
 }

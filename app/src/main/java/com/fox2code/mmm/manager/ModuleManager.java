@@ -54,6 +54,10 @@ public final class ModuleManager extends SyncManager {
     }
 
     protected void scanInternal(@NonNull UpdateListener updateListener) {
+        // if last_shown_setup is not "v1", them=n refuse to continue
+        if (!MainApplication.getSharedPreferences("mmm").getString("last_shown_setup", "").equals("v1")) {
+            return;
+        }
         boolean firstScan = this.bootPrefs.getBoolean("mm_first_scan", true);
         SharedPreferences.Editor editor = firstScan ? this.bootPrefs.edit() : null;
         for (ModuleInfo v : this.moduleInfos.values()) {
@@ -90,7 +94,7 @@ public final class ModuleManager extends SyncManager {
                         // if the dir name matches the module name, use it as the cache dir
                         File tempCacheRoot = new File(dir.toString());
                         Timber.d("Looking for cache in %s", tempCacheRoot);
-                        realmConfiguration = new RealmConfiguration.Builder().name("ModuleListCache.realm").schemaVersion(1).deleteRealmIfMigrationNeeded().allowWritesOnUiThread(true).allowQueriesOnUiThread(true).directory(tempCacheRoot).build();
+                        realmConfiguration = new RealmConfiguration.Builder().name("ModuleListCache.realm").schemaVersion(1).encryptionKey(MainApplication.getINSTANCE().getExistingKey()).deleteRealmIfMigrationNeeded().allowWritesOnUiThread(true).allowQueriesOnUiThread(true).directory(tempCacheRoot).build();
                         Realm realm = Realm.getInstance(realmConfiguration);
                         Timber.d("Looking for cache for %s out of %d", module, realm.where(ModuleListCache.class).count());
                         moduleListCache = realm.where(ModuleListCache.class).equalTo("codename", module).findFirst();
