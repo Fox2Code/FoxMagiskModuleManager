@@ -134,7 +134,7 @@
     <string name="api_key_not_set">Androidacy API キーが空だよ</string>
     <string name="api_key_set">現在の Androidacy API キー</string>
     <string name="api_key_invalid">API キーを検証できなかったよ。もう一度確認してみてね。</string>
-    <string name="api_key_valid">API キーが無効だよ。</string>
+    <string name="api_key_valid">API キーが有効だよ。</string>
     <string name="checking_api_key">API キーを検証しています…</string>
     <string name="please_wait">少々お待ちください</string>
     <string name="androidacy_update_needed">このアプリのバージョンが古いよ。</string>
