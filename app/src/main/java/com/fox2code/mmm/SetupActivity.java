@@ -4,7 +4,6 @@ import static com.fox2code.mmm.utils.IntentHelper.getActivity;
 
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -19,8 +18,6 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.FragmentActivity;
-import androidx.security.crypto.EncryptedFile;
-import androidx.security.crypto.MasterKey;
 
 import com.fox2code.foxcompat.app.FoxActivity;
 import com.fox2code.mmm.androidacy.AndroidacyRepoData;
@@ -35,13 +32,10 @@ import com.google.android.material.materialswitch.MaterialSwitch;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyStore;
@@ -65,9 +59,6 @@ import io.realm.RealmConfiguration;
 import timber.log.Timber;
 
 public class SetupActivity extends FoxActivity implements LanguageActivity {
-
-    MasterKey mainKeyAlias;
-
     @SuppressLint({"ApplySharedPref", "RestrictedApi"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,10 +184,11 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             // Set the crash reporting pref
             editor.putBoolean("pref_crash_reporting", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).isChecked());
             // Set the repos in the ReposList realm db
-            RealmConfiguration realmConfig = new RealmConfiguration.Builder().name("ReposList.realm").directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).build();
+            RealmConfiguration realmConfig = new RealmConfiguration.Builder().name("ReposList.realm").directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).build();
             boolean androidacyRepo = ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_androidacy_repo))).isChecked();
             boolean magiskAltRepo = ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).isChecked();
             Realm realm = Realm.getInstance(realmConfig);
+            realm.beginTransaction();
             Objects.requireNonNull(realm.where(ReposList.class).equalTo("id", "androidacy_repo").findFirst()).setEnabled(androidacyRepo);
             Objects.requireNonNull(realm.where(ReposList.class).equalTo("id", "magisk_alt_repo").findFirst()).setEnabled(magiskAltRepo);
             // commit the changes
@@ -265,13 +257,12 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
     // creates the realm database
     private void createRealmDatabase() {
         Timber.d("Creating Realm databases");
+        long startTime = System.currentTimeMillis();
         // create encryption key
         Timber.d("Creating encryption key");
-        // generate the encryption key and store it in the prefs
-        byte[] encryptionKey = getNewKey();
         // create the realm database for ReposList
         // next, create the realm database for ReposList
-        RealmConfiguration config2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).encryptionKey(MainApplication.getINSTANCE().getExistingKey()).encryptionKey(encryptionKey).build();
+        RealmConfiguration config2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
         // get the instance
         Realm.getInstanceAsync(config2, new Realm.Callback() {
             @Override
@@ -311,47 +302,34 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                 realm1.commitTransaction();
             }
         });
+        long endTime = System.currentTimeMillis();
+        Timber.d("Realm databases created in %d ms", endTime - startTime);
     }
 
     public void createFiles() {
         try {
             String cookieFileName = "cookies";
-            // initial set of cookies, only really used to create the keypair and encrypted file
+            // initial set of cookies, only really used to create the file
             String initialCookie = "is_foxmmm=true; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/; domain=production-api.androidacy.com; SameSite=None; Secure;|foxmmm_version=" + BuildConfig.VERSION_CODE + "; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/; domain=production-api.androidacy.com; SameSite=None; Secure;";
-            Context context = getApplicationContext();
-            mainKeyAlias = new MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build();
-            EncryptedFile encryptedFile = new EncryptedFile.Builder(context, new File(MainApplication.getINSTANCE().getFilesDir(), cookieFileName), mainKeyAlias, EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB).build();
-            InputStream inputStream;
-            try {
-                inputStream = encryptedFile.openFileInput();
-            } catch (FileNotFoundException e) {
-                Timber.d("Cookie file not found, creating new file");
-                OutputStream outputStream = encryptedFile.openFileOutput();
-                outputStream.write(initialCookie.getBytes());
-                outputStream.close();
-                outputStream.flush();
-                inputStream = encryptedFile.openFileInput();
+            File cookieFile = new File(MainApplication.getINSTANCE().getFilesDir(), cookieFileName);
+            // if the file exists, delete it
+            if (cookieFile.exists()) {
+                cookieFile.delete();
             }
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            StringBuilder outputString = new StringBuilder();
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputString.append(new String(buffer, 0, bytesRead));
-            }
-            inputStream.close();
-            if (outputString.toString().isEmpty()) {
-                Timber.d("Cookie file is empty, writing initial cookie");
-                OutputStream outputStream = encryptedFile.openFileOutput();
-                outputStream.write(initialCookie.getBytes());
-                outputStream.close();
-                outputStream.flush();
-            }
-        } catch (GeneralSecurityException | IOException e) {
+            // create the file
+            cookieFile.createNewFile();
+            // create the file output stream
+            FileOutputStream fileOutputStream = new FileOutputStream(cookieFile);
+            // write the initial cookie to the file
+            fileOutputStream.write(Base64.encode(initialCookie.getBytes(), Base64.DEFAULT));
+            // close the file output stream
+            fileOutputStream.close();
+        } catch (IOException e) {
             Timber.e(e);
         }
         // we literally only use these to create the http cache folders
-        File httpCacheDir = MainApplication.getINSTANCE().getDataDirWithPath("cache/WebView/Default/HTTP Cache/Code Cache/js");
-        File httpCacheDir2 = MainApplication.getINSTANCE().getDataDirWithPath("cache/WebView/Default/HTTP Cache/Code Cache/wasm");
+        File httpCacheDir = MainApplication.getINSTANCE().getDataDirWithPath("cache/WebView/Default/HTTP Cache/Code Cache/wasm");
+        File httpCacheDir2 = MainApplication.getINSTANCE().getDataDirWithPath("cache/WebView/Default/HTTP Cache/Code Cache/js");
         if (!httpCacheDir.exists()) {
             if (httpCacheDir.mkdirs()) {
                 Timber.d("Created http cache dir");
@@ -368,19 +346,27 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
     @SuppressWarnings("ConstantConditions")
     public void disableUpdateActivityForFdroidFlavor() {
         if (BuildConfig.FLAVOR.equals("fdroid")) {
-            Timber.d("Disabling update activity for fdroid flavor");
-            // disable update activity through package manager
+            // check if the update activity is enabled
             PackageManager pm = getPackageManager();
             ComponentName componentName = new ComponentName(this, UpdateActivity.class);
-            pm.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+            int componentEnabledSetting = pm.getComponentEnabledSetting(componentName);
+            if (componentEnabledSetting == PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
+                Timber.d("Disabling update activity for fdroid flavor");
+                // disable update activity through package manager
+                pm.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+            }
         }
     }
 
     @SuppressLint("NewApi")
     public byte[] getNewKey() {
+        long startTime;
         if (MainApplication.getSharedPreferences("mmm").getBoolean("keygen", false)) {
             Timber.d("Key already generated, returning");
             return MainApplication.getINSTANCE().getExistingKey();
+        } else {
+            startTime = System.currentTimeMillis();
+            Timber.d("Generating new key for realm");
         }
         // open a connection to the android keystore
         KeyStore keyStore;
@@ -438,6 +424,8 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         buffer.put(encryptedKeyForRealm);
         MainApplication.getSharedPreferences("realm_key").edit().putString("iv_and_encrypted_key", Base64.encodeToString(initializationVectorAndEncryptedKey, Base64.NO_WRAP)).apply();
         MainApplication.getSharedPreferences("mmm").edit().putBoolean("keygen", true).apply();
+        long endTime = System.currentTimeMillis();
+        Timber.d("Key generation took %s ms", endTime - startTime);
         return realmKey; // pass to a realm configuration via encryptionKey()
     }
 }

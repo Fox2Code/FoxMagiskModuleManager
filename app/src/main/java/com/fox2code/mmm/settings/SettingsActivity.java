@@ -87,7 +87,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
-import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -109,6 +108,20 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
     private static final int LANGUAGE_SUPPORT_LEVEL = 1;
     private static boolean devModeStepFirstBootIgnore = MainApplication.isDeveloper();
     private static int devModeStep = 0;
+    @SuppressLint("RestrictedApi")
+    private final NavigationBarView.OnItemSelectedListener onItemSelectedListener = item -> {
+        int itemId = item.getItemId();
+        if (itemId == R.id.back) {
+            startActivity(new Intent(this, MainActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
+            return true;
+        } else //noinspection RedundantIfStatement
+            if (itemId == R.id.settings_menu_item) {
+                return true;
+            }
+        return false;
+    };
 
     @PerformanceClass
     public static int getDevicePerformanceClass() {
@@ -125,8 +138,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     totalCpuFreq += parseInt(line) / 1000;
                     freqResolved++;
                 }
-            } catch (
-                    Exception ignore) {
+            } catch (Exception ignore) {
             }
         }
         int maxCpuFreq = freqResolved == 0 ? -1 : (int) Math.ceil(totalCpuFreq / (float) freqResolved);
@@ -145,21 +157,6 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
     }
 
     @SuppressLint("RestrictedApi")
-    private final NavigationBarView.OnItemSelectedListener onItemSelectedListener = item -> {
-        int itemId = item.getItemId();
-        if (itemId == R.id.installed_menu_item || itemId == R.id.online_menu_item) {
-            startActivity(new Intent(this, MainActivity.class));
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            finish();
-            return true;
-        } else //noinspection RedundantIfStatement
-            if (itemId == R.id.settings_menu_item) {
-            return true;
-        }
-        return false;
-    };
-
-    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         devModeStep = 0;
@@ -171,17 +168,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         bottomNavigationView.setOnItemSelectedListener(onItemSelectedListener);
         if (savedInstanceState == null) {
             SettingsFragment settingsFragment = new SettingsFragment();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.settings, settingsFragment)
-                    .commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.settings, settingsFragment).commit();
         }
-        // get height of bottomnavigationview and adjust padding of settings fragment
-        bottomNavigationView.post(() -> {
-            int bottomNavigationHeight = bottomNavigationView.getHeight();
-            View settingsFragment = findViewById(R.id.settings);
-            settingsFragment.setPadding(0, 0, 0, bottomNavigationHeight);
-        });
     }
 
     @Override
@@ -240,8 +228,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             themePreference.setSummaryProvider(p -> themePreference.getEntry());
             themePreference.setOnPreferenceChangeListener((preference, newValue) -> {
                 // You need to reboot your device at least once to be able to access dev-mode
-                if (devModeStepFirstBootIgnore || !MainApplication.isFirstBoot())
-                    devModeStep = 1;
+                if (devModeStepFirstBootIgnore || !MainApplication.isFirstBoot()) devModeStep = 1;
                 Timber.d("refreshing activity. New value: %s", newValue);
                 // Immediately save
                 SharedPreferences.Editor editor = getPreferenceManager().getSharedPreferences().edit();
@@ -295,15 +282,13 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             });
             // Crash reporting
             TwoStatePreference crashReportingPreference = findPreference("pref_crash_reporting");
-            if (!SentryMain.IS_SENTRY_INSTALLED)
-                crashReportingPreference.setVisible(false);
+            if (!SentryMain.IS_SENTRY_INSTALLED) crashReportingPreference.setVisible(false);
             crashReportingPreference.setChecked(MainApplication.isCrashReportingEnabled());
             final Object initialValue = MainApplication.isCrashReportingEnabled();
             crashReportingPreference.setOnPreferenceChangeListener((preference, newValue) -> {
                 devModeStepFirstBootIgnore = true;
                 devModeStep = 0;
-                if (initialValue == newValue)
-                    return true;
+                if (initialValue == newValue) return true;
                 // Show a dialog to restart the app
                 MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(requireContext());
                 materialAlertDialogBuilder.setTitle(R.string.crash_reporting_restart_title);
@@ -596,16 +581,15 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             // Set summary to the last commit this build was built from @ User/Repo
             // Build userRepo by removing all parts of REMOTE_URL that are not the user/repo
             String userRepo = BuildConfig.REMOTE_URL;
-            // Get the index of the first slash after the protocol (https://)
-            int firstSlash = userRepo.indexOf('/', 8);
-            // Check if it ends with .git
-            if (userRepo.endsWith(".git")) {
-                // Remove the .git
-                userRepo = userRepo.substring(0, userRepo.length() - 4);
-            }
-            // Remove everything before the first slash
-            userRepo = userRepo.substring(firstSlash + 1);
-            linkClickable.setSummary(String.format(getString(R.string.source_code_summary), BuildConfig.COMMIT_HASH, userRepo));
+            // remove .git
+            userRepo = userRepo.replaceAll("\\.git$", "");
+            Timber.d("userRepo: %s", userRepo);
+
+            // finalUserRepo is the user/repo part of REMOTE_URL
+            // get everything after .com/ or .org/ or .io/ or .me/ or .net/ or .xyz/ or .tk/ or .co/ minus .git
+            String finalUserRepo = userRepo.replaceAll("^(https?://)?(www\\.)?(github\\.com|gitlab\\.com|bitbucket\\.org|git\\.io|git\\.me|git\\.net|git\\.xyz|git\\.tk|git\\.co)/", "");
+            linkClickable.setSummary(String.format(getString(R.string.source_code_summary), BuildConfig.COMMIT_HASH, finalUserRepo));
+            Timber.d("finalUserRepo: %s", finalUserRepo);
             linkClickable.setOnPreferenceClickListener(p -> {
                 if (devModeStep == 2) {
                     devModeStep = 0;
@@ -622,7 +606,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     return true;
                 }
                 // build url from BuildConfig.REMOTE_URL and BuildConfig.COMMIT_HASH. May have to remove the .git at the end
-                IntentHelper.openUrl(p.getContext(), BuildConfig.REMOTE_URL + "/tree/" + BuildConfig.COMMIT_HASH);
+                IntentHelper.openUrl(p.getContext(), finalUserRepo + "/tree/" + BuildConfig.COMMIT_HASH);
                 return true;
             });
             linkClickable.setOnPreferenceLongClickListener(p -> {
@@ -678,8 +662,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     while ((line = bufferedReader.readLine()) != null) {
                         fileOutputStream.write((line + "\n").getBytes());
                     }
-                } catch (
-                        IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                     Toast.makeText(requireContext(), R.string.error_saving_logs, Toast.LENGTH_SHORT).show();
                     return true;
@@ -749,6 +732,25 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             // Set the summary of pref_pkg_info to something like default-debug v1.0 (123) (Official)
             String pkgInfo = getString(R.string.pref_pkg_info_summary, flavor + "-" + type, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, MainApplication.isOfficial ? getString(R.string.official) : getString(R.string.unofficial));
             findPreference("pref_pkg_info").setSummary(pkgInfo);
+            // special easter egg :)
+            var ref = new Object() {
+                int versionClicks = 0;
+            };
+            findPreference("pref_pkg_info").setOnPreferenceClickListener(p -> {
+                ref.versionClicks++;
+                Timber.d("Version clicks: %d", ref.versionClicks);
+                // if it's been 3 clicks, toast "yer a wizard, harry" or "keep tapping to enter hogwarts"
+                if (ref.versionClicks == 3) {
+                    // pick 1 or 2
+                    int random = new Random().nextInt(2) + 1;
+                    Toast.makeText(p.getContext(), random == 1 ? R.string.yer_a_wizard_harry : R.string.keep_tapping_to_enter_hogwarts, Toast.LENGTH_SHORT).show();
+                }
+                if (ref.versionClicks == 7) {
+                    ref.versionClicks = 0;
+                    IntentHelper.openUrl(p.getContext(), "https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+                }
+                return true;
+            });
         }
 
         private void openFragment(Fragment fragment, @StringRes int title) {
@@ -767,8 +769,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
 
         private int currentLanguageLevel() {
             int declaredLanguageLevel = this.getResources().getInteger(R.integer.language_support_level);
-            if (declaredLanguageLevel != LANGUAGE_SUPPORT_LEVEL)
-                return declaredLanguageLevel;
+            if (declaredLanguageLevel != LANGUAGE_SUPPORT_LEVEL) return declaredLanguageLevel;
             if (!this.getResources().getConfiguration().getLocales().get(0).getLanguage().equals("en") && this.getResources().getString(R.string.notification_update_pref).equals("Background modules update check") && this.getResources().getString(R.string.notification_update_desc).equals("May increase battery usage")) {
                 return 0;
             }
@@ -850,7 +851,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 });
             }
             // Get magisk_alt_repo enabled state from realm db
-            RealmConfiguration realmConfig = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).encryptionKey(MainApplication.getINSTANCE().getExistingKey()).build();
+            RealmConfiguration realmConfig = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
             Realm realm1 = Realm.getInstance(realmConfig);
             ReposList reposList = realm1.where(ReposList.class).equalTo("id", "magisk_alt_repo").findFirst();
             if (reposList != null) {
@@ -885,7 +886,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     SwitchPreferenceCompat switchPreferenceCompat = (SwitchPreferenceCompat) androidacyRepoEnabled;
                     switchPreferenceCompat.setChecked(false);
                     // Disable in realm db
-                    RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).encryptionKey(MainApplication.getINSTANCE().getExistingKey()).build();
+                    RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
                     Realm realm = Realm.getInstance(realmConfiguration);
                     realm.executeTransaction(realm2 -> {
                         ReposList repoRealmResults = realm2.where(ReposList.class).equalTo("id", "androidacy_repo").findFirst();
@@ -898,7 +899,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 });
             }
             // get if androidacy repo is enabled from realm db
-            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).encryptionKey(MainApplication.getINSTANCE().getExistingKey()).build();
+            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
             Realm realm = Realm.getInstance(realmConfiguration);
             ReposList repoRealmResults = realm.where(ReposList.class).equalTo("id", "androidacy_repo").findFirst();
             if (repoRealmResults == null) {
@@ -958,8 +959,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         return false;
                     }
                     // Make sure originalApiKeyRef is not null
-                    if (originalApiKeyRef[0].equals(newValue))
-                        return true;
+                    if (originalApiKeyRef[0].equals(newValue)) return true;
                     // get original api key
                     String apiKey = String.valueOf(newValue);
                     // Show snack bar with indeterminate progress
@@ -1010,9 +1010,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                 boolean valid = false;
                                 try {
                                     valid = AndroidacyRepoData.getInstance().isValidToken(apiKey);
-                                } catch (
-                                        IOException |
-                                        NoSuchAlgorithmException ignored) {
+                                } catch (IOException ignored) {
                                 }
                                 // If the key is valid, save it
                                 if (valid) {
@@ -1058,7 +1056,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
 
         @SuppressLint("RestrictedApi")
         public void updateCustomRepoList(boolean initial) {
-            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).encryptionKey(MainApplication.getINSTANCE().getExistingKey()).build();
+            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
             Realm realm = Realm.getInstance(realmConfiguration);
             // get all repos that are not built-in
             int CUSTOM_REPO_ENTRIES = 0;
@@ -1074,8 +1072,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 setRepoData(repoData, "pref_custom_repo_" + i);
                 if (initial) {
                     Preference preference = findPreference("pref_custom_repo_" + i + "_delete");
-                    if (preference == null)
-                        continue;
+                    if (preference == null) continue;
                     final int index = i;
                     preference.setOnPreferenceClickListener(preference1 -> {
                         realm.beginTransaction();
@@ -1088,13 +1085,11 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 }
             }
             Preference preference = findPreference("pref_custom_add_repo");
-            if (preference == null)
-                return;
+            if (preference == null) return;
             preference.setVisible(customRepoManager.canAddRepo() && customRepoManager.getRepoCount() < CUSTOM_REPO_ENTRIES);
             if (initial) { // Custom repo add button part.
                 preference = findPreference("pref_custom_add_repo_button");
-                if (preference == null)
-                    return;
+                if (preference == null) return;
                 int finalCUSTOM_REPO_ENTRIES = CUSTOM_REPO_ENTRIES;
                 preference.setOnPreferenceClickListener(preference1 -> {
                     final Context context = this.requireContext();
@@ -1119,8 +1114,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                         try {
                                             customRepoData.quickPrePopulate();
                                             UiThreadHandler.handler.post(() -> updateCustomRepoList(false));
-                                        } catch (
-                                                Exception e) {
+                                        } catch (Exception e) {
                                             Timber.e(e);
                                             // show new dialog
                                             new Handler(Looper.getMainLooper()).post(() -> new MaterialAlertDialogBuilder(context).setTitle(R.string.error_adding).setMessage(e.getMessage()).setPositiveButton(android.R.string.ok, (dialog1, which1) -> {
@@ -1175,16 +1169,14 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         }
 
         private void setRepoData(final RepoData repoData, String preferenceName) {
-            if (repoData == null)
-                return;
+            if (repoData == null) return;
             Timber.d("Setting preference " + preferenceName + " to " + repoData);
             ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
             Preference preference = findPreference(preferenceName);
-            if (preference == null)
-                return;
+            if (preference == null) return;
             if (!preferenceName.contains("androidacy") && !preferenceName.contains("magisk_alt_repo")) {
                 if (repoData != null) {
-                    RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).encryptionKey(MainApplication.getINSTANCE().getExistingKey()).build();
+                    RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
                     Realm realm = Realm.getInstance(realmConfiguration);
                     RealmResults<ReposList> repoDataRealmResults = realm.where(ReposList.class).equalTo("id", repoData.id).findAll();
                     Timber.d("Setting preference " + preferenceName + " because it is not the Androidacy repo or the Magisk Alt Repo");
@@ -1305,8 +1297,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
 
         private void hideRepoData(String preferenceName) {
             Preference preference = findPreference(preferenceName);
-            if (preference == null)
-                return;
+            if (preference == null) return;
             preference.setVisible(false);
         }
 

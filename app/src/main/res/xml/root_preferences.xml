@@ -244,7 +244,7 @@
             app:title="@string/contributors" />
         <!-- And the translators -->
         <Preference
-            app:enabled="false"
+            app:enabled="true"
             app:iconSpaceReserved="false"
             app:key="pref_pkg_info"
             app:singleLineTitle="false"

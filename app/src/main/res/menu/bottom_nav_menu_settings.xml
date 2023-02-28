@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/bottom_nav_menu">
+    <!-- two options: "Installed" and "Online" -->
+    <item
+        android:id="@+id/back"
+        android:icon="@drawable/ic_baseline_extension_24"
+        android:title="@string/modules"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/settings_menu_item"
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:title="@string/action_settings"
+        app:showAsAction="ifRoom" />
+</menu>

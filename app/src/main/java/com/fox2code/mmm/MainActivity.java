@@ -219,6 +219,10 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     }
                 });
             }
+            // update the padding of blur_frame to match the new bottom nav height
+            View blurFrame = findViewById(R.id.blur_frame);
+            blurFrame.setPadding(blurFrame.getPaddingLeft(), blurFrame.getPaddingTop(),
+                    blurFrame.getPaddingRight(), bottomNavigationView.getHeight());
             return true;
         });
         InstallerInitializer.tryGetMagiskPathAsync(new InstallerInitializer.Callback() {

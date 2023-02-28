@@ -2,16 +2,16 @@ package com.fox2code.mmm.utils.io;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Base64;
 
 import androidx.annotation.NonNull;
-import androidx.security.crypto.EncryptedFile;
-import androidx.security.crypto.MasterKey;
 
-import com.fox2code.mmm.MainApplication;
-
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -43,28 +43,23 @@ public class ReceivedCookiesInterceptor implements Interceptor {
                 cookieBuffer.deleteCharAt(lastPipe);
             }
 
-            // Cookies are stored in an encrypted file in the files directory in our app data
-            // so we need to decrypt the file before using it
-            // first, get our decryption key from MasterKey using the AES_256_GCM encryption scheme
-            // then, create an EncryptedFile object using the key and the file name
-            // finally, open the file and read the contents into a string
-            // the string is then split into an array of cookies
-
             String cookieFileName = "cookies";
             String[] cookies = new String[0];
-            MasterKey mainKeyAlias;
             try {
-                mainKeyAlias = new MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build();
-                EncryptedFile encryptedFile = new EncryptedFile.Builder(context, new File(MainApplication.getINSTANCE().getFilesDir(), cookieFileName), mainKeyAlias, EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB).build();
-                InputStream inputStream = encryptedFile.openFileInput();
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                StringBuilder outputString = new StringBuilder();
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    outputString.append(new String(buffer, 0, bytesRead));
+                File cookieFile = new File(context.getFilesDir(), cookieFileName);
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(cookieFile)));
+                char[] buf = new char[1024];
+                int read;
+                StringBuilder stringBuilder = new StringBuilder();
+                while ((read = bufferedReader.read(buf)) != -1) {
+                    stringBuilder.append(buf, 0, read);
                 }
-                cookies = outputString.toString().split("\\|");
-                inputStream.close();
+                bufferedReader.close();
+                String cookieString = stringBuilder.toString();
+                // base64 decode the string
+                cookieString = Arrays.toString(Base64.decode(cookieString, Base64.DEFAULT));
+                // split the string into an array of cookies
+                cookies = cookieString.split("\\|");
             } catch (Exception e) {
                 Timber.e(e, "Error reading cookies from file");
             }
@@ -93,14 +88,10 @@ public class ReceivedCookiesInterceptor implements Interceptor {
             }
 
             // write the new cookies to the file
-            try {
-                mainKeyAlias = new MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build();
-                EncryptedFile encryptedFile = new EncryptedFile.Builder(context, new File(MainApplication.getINSTANCE().getFilesDir(), cookieFileName), mainKeyAlias, EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB).build();
-                encryptedFile.openFileOutput().write(newCookieBuffer.toString().getBytes());
-            } catch (Exception e) {
-                Timber.e(e, "Error writing cookies to file");
-            }
-
+            File cookieFile = new File(context.getFilesDir(), cookieFileName);
+            FileOutputStream fileOutputStream = new FileOutputStream(cookieFile);
+            fileOutputStream.write(newCookieBuffer.toString().getBytes());
+            fileOutputStream.close();
         }
 
         return originalResponse;

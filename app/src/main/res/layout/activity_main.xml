@@ -11,27 +11,26 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
+        app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintTop_toTopOf="parent">
         <!-- FrameLayout is the best way to fix blurring -->
         <FrameLayout
             android:id="@+id/blur_frame"
+            android:paddingBottom="56dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/module_list"
-                android:paddingVertical="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:edgeToEdge="true" />
             <!-- online modules -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/module_list_online"
-                android:paddingVertical="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
@@ -108,7 +107,6 @@
         android:visibility="visible"
         app:compatShadowEnabled="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/swipe_refresh"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_nav_menu" />

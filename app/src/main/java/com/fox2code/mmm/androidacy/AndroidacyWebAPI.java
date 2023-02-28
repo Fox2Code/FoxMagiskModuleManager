@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.util.TypedValue;
-import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.widget.Button;
 import android.widget.Toast;
@@ -48,7 +47,6 @@ public class AndroidacyWebAPI {
     boolean downloadMode;
     int effectiveCompatMode;
     int notifiedCompatMode;
-    private boolean allowHideNote = true;
 
     public AndroidacyWebAPI(AndroidacyActivity activity, boolean allowInstall) {
         this.activity = activity;
@@ -341,10 +339,6 @@ public class AndroidacyWebAPI {
         this.activity.runOnUiThread(() -> {
             this.activity.hideActionBar();
             this.consumedAction = false;
-            if (this.allowHideNote) {
-                this.allowHideNote = false;
-                this.activity.webViewNote.setVisibility(View.GONE);
-            }
         });
     }
 
@@ -367,7 +361,7 @@ public class AndroidacyWebAPI {
     }
 
     /**
-     * Return true if the module is an Andoridacy module.
+     * Return true if the module is an Androidacy module.
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     @JavascriptInterface

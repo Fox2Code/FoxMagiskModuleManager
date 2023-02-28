@@ -39,7 +39,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -107,11 +106,7 @@ public final class AndroidacyActivity extends FoxActivity {
         String device_id = uri.getQueryParameter("device_id");
         if (device_id == null) {
             // get from shared preferences
-            try {
-                device_id = AndroidacyRepoData.generateDeviceId();
-            } catch (
-                    NoSuchAlgorithmException ignored) {
-            }
+            device_id = AndroidacyRepoData.generateDeviceId();
             url = url + "&device_id=" + device_id;
         }
         boolean allowInstall = intent.getBooleanExtra(Constants.EXTRA_ANDROIDACY_ALLOW_INSTALL, false);
@@ -145,7 +140,6 @@ public final class AndroidacyActivity extends FoxActivity {
         this.progressIndicator = this.findViewById(R.id.progress_bar);
         this.progressIndicator.setMax(100);
         this.webView = this.findViewById(R.id.webView);
-        this.webViewNote = this.findViewById(R.id.webViewNote);
         WebSettings webSettings = this.webView.getSettings();
         webSettings.setUserAgentString(Http.getAndroidacyUA());
         webSettings.setDomStorageEnabled(true);
@@ -156,6 +150,17 @@ public final class AndroidacyActivity extends FoxActivity {
         webSettings.setAllowFileAccessFromFileURLs(false);
         webSettings.setAllowUniversalAccessFromFileURLs(false);
         webSettings.setMediaPlaybackRequiresUserGesture(false);
+        // if app is in dark mode, force dark mode on webview
+        if (MainApplication.getINSTANCE().isDarkTheme()) {
+            // for api 33, use setAlgorithmicDarkeningAllowed, for api 29-32 use setForceDark, for api 28 and below use setForceDarkStrategy
+            if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
+                WebSettingsCompat.setAlgorithmicDarkeningAllowed(webSettings, true);
+            } else if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+                WebSettingsCompat.setForceDark(webSettings, WebSettingsCompat.FORCE_DARK_ON);
+            } else if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK_STRATEGY)) {
+                WebSettingsCompat.setForceDarkStrategy(webSettings, WebSettingsCompat.DARK_STRATEGY_WEB_THEME_DARKENING_ONLY);
+            }
+        }
         // Attempt at fixing CloudFlare captcha.
         if (WebViewFeature.isFeatureSupported(WebViewFeature.REQUESTED_WITH_HEADER_ALLOW_LIST)) {
             Set<String> allowList = new HashSet<>();
@@ -200,7 +205,6 @@ public final class AndroidacyActivity extends FoxActivity {
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                webViewNote.setVisibility(View.GONE);
                 progressIndicator.setVisibility(View.INVISIBLE);
                 progressIndicator.setProgressCompat(0, false);
             }

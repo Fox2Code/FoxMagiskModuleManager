@@ -86,7 +86,7 @@ public final class AndroidacyRepoData extends RepoData {
 
     // Generates a unique device ID. This is used to identify the device in the API for rate
     // limiting and fraud detection.
-    public static String generateDeviceId() throws NoSuchAlgorithmException {
+    public static String generateDeviceId() {
         // Try to get the device ID from the shared preferences
         SharedPreferences sharedPreferences = MainApplication.getSharedPreferences("androidacy");
         String deviceIdPref = sharedPreferences.getString("device_id", null);
@@ -115,7 +115,13 @@ public final class AndroidacyRepoData extends RepoData {
             // Append it all together
             deviceId += deviceModel + deviceManufacturer + androidVersion;
             // Hash it
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            MessageDigest digest;
+            try {
+                digest = MessageDigest.getInstance("SHA-256");
+            } catch (NoSuchAlgorithmException ignored) {
+                // This should never happen so we can just return the original device ID
+                return deviceId;
+            }
             byte[] hash = digest.digest(deviceId.getBytes());
             // Convert it to a hex string
             StringBuilder hexString = new StringBuilder();
@@ -135,7 +141,7 @@ public final class AndroidacyRepoData extends RepoData {
         }
     }
 
-    public boolean isValidToken(String token) throws IOException, NoSuchAlgorithmException {
+    public boolean isValidToken(String token) throws IOException {
         String deviceId = generateDeviceId();
         try {
             byte[] resp = Http.doHttpGet("https://" + this.host + "/auth/me?token=" + token + "&device_id=" + deviceId, false);
@@ -172,7 +178,7 @@ public final class AndroidacyRepoData extends RepoData {
 
     @SuppressLint("RestrictedApi")
     @Override
-    protected boolean prepare() throws NoSuchAlgorithmException {
+    protected boolean prepare() {
         // If ANDROIDACY_CLIENT_ID is not set or is empty, disable this repo and return
         if (Objects.equals(BuildConfig.ANDROIDACY_CLIENT_ID, "")) {
             SharedPreferences.Editor editor = MainApplication.getSharedPreferences("mmm").edit();
@@ -283,7 +289,7 @@ public final class AndroidacyRepoData extends RepoData {
     }
 
     @Override
-    protected List<RepoModule> populate(JSONObject jsonObject) throws JSONException, NoSuchAlgorithmException {
+    protected List<RepoModule> populate(JSONObject jsonObject) throws JSONException {
         Timber.d("AndroidacyRepoData populate start");
         String name = jsonObject.optString("name", "Androidacy Modules Repo");
         String nameForModules = name.endsWith(" (Official)") ? name.substring(0, name.length() - 11) : name;
@@ -420,11 +426,11 @@ public final class AndroidacyRepoData extends RepoData {
     }
 
     @Override
-    public String getUrl() throws NoSuchAlgorithmException {
+    public String getUrl() {
         return token == null ? this.url : this.url + "?token=" + token + "&v=" + BuildConfig.VERSION_CODE + "&c=" + BuildConfig.VERSION_NAME + "&device_id=" + generateDeviceId() + "&client_id=" + BuildConfig.ANDROIDACY_CLIENT_ID;
     }
 
-    private String injectToken(String url) throws NoSuchAlgorithmException {
+    private String injectToken(String url) {
         // Do not inject token for non Androidacy urls
         if (!AndroidacyUtil.isAndroidacyLink(url))
             return url;

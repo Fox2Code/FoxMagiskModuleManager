@@ -36,10 +36,14 @@
     <uses-permission-sdk-23 android:name="android.permission.QUERY_ALL_PACKAGES" />
     <!-- Open and read zips -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- Write to external storage -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!-- Post background notifications -->
-    <uses-permission-sdk-23 android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- Install updates -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <!-- Foreground service -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".MainApplication"
@@ -62,7 +66,8 @@
         tools:targetApi="tiramisu">
         <activity
             android:name=".UpdateActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:process=":update" />
         <activity
             android:name=".CrashHandler"
             android:exported="false"
@@ -70,6 +75,7 @@
         <activity
             android:name=".SetupActivity"
             android:exported="false"
+            android:process=":setup"
             android:label="@string/title_activity_setup"
             android:theme="@style/Theme.MagiskModuleManager.NoActionBar" />
 

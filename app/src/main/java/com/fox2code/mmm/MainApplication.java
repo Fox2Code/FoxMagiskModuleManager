@@ -22,8 +22,6 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.emoji2.text.DefaultEmojiCompatConfig;
 import androidx.emoji2.text.EmojiCompat;
 import androidx.emoji2.text.FontRequestEmojiCompatConfig;
-import androidx.security.crypto.EncryptedSharedPreferences;
-import androidx.security.crypto.MasterKey;
 
 import com.fox2code.foxcompat.app.FoxActivity;
 import com.fox2code.foxcompat.app.FoxApplication;
@@ -41,7 +39,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyStore;
@@ -139,17 +136,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     }
 
     public static SharedPreferences getSharedPreferences(String store) {
-        MasterKey mainKeyAlias;
-        try {
-            mainKeyAlias = new MasterKey.Builder(INSTANCE.getApplicationContext()).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build();
-        } catch (GeneralSecurityException | IOException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            return EncryptedSharedPreferences.create(INSTANCE.getApplicationContext(), store, mainKeyAlias, EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV, EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM);
-        } catch (GeneralSecurityException | IOException e) {
-            throw new RuntimeException(e);
-        }
+        return FoxApplication.getInitialApplication().getSharedPreferences(store, Context.MODE_PRIVATE);
     }
 
     public static boolean isShowcaseMode() {
@@ -303,6 +290,8 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
             case R.style.Theme_MagiskModuleManager_Monet_Light, R.style.Theme_MagiskModuleManager_Light ->
                     true;
             case R.style.Theme_MagiskModuleManager_Monet_Dark, R.style.Theme_MagiskModuleManager_Dark ->
+                    false;
+            case R.style.Theme_MagiskModuleManager_Monet_Black, R.style.Theme_MagiskModuleManager_Black ->
                     false;
             default -> super.isLightTheme();
         };
@@ -517,24 +506,11 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         }
     }
 
-    private static class ReleaseTree extends Timber.Tree {
-        @Override
-        protected void log(int priority, String tag, @NonNull String message, Throwable t) {
-            // basically silently drop all logs below error, and write the rest to logcat
-            if (priority >= Log.ERROR) {
-                if (t != null) {
-                    Log.println(priority, tag, message);
-                    t.printStackTrace();
-                } else {
-                    Log.println(priority, tag, message);
-                }
-            }
-        }
-    }
-
     // Access the encrypted key in the keystore, decrypt it with the secret,
     // and use it to open and read from the realm again
     public byte[] getExistingKey() {
+        Timber.d("Getting existing key...");
+        long startTime = System.currentTimeMillis();
         // open a connection to the android keystore
         KeyStore keyStore;
         try {
@@ -582,6 +558,23 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
                  InvalidAlgorithmParameterException e) {
             throw new RuntimeException(e);
         }
+        long endTime = System.currentTimeMillis();
+        Timber.d("Got existing key in %d ms", endTime - startTime);
         return decryptedKey; // pass to a realm configuration via encryptionKey()
+    }
+
+    private static class ReleaseTree extends Timber.Tree {
+        @Override
+        protected void log(int priority, String tag, @NonNull String message, Throwable t) {
+            // basically silently drop all logs below error, and write the rest to logcat
+            if (priority >= Log.ERROR) {
+                if (t != null) {
+                    Log.println(priority, tag, message);
+                    t.printStackTrace();
+                } else {
+                    Log.println(priority, tag, message);
+                }
+            }
+        }
     }
 }

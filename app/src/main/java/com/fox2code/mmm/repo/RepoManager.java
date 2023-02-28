@@ -151,6 +151,10 @@ public final class RepoManager extends SyncManager {
         if (!MainApplication.getSharedPreferences("mmm").getString("last_shown_setup", "").equals("v1")) {
             return;
         }
+        // make sure repodata is not null
+        if (repoData == null || repoData.moduleHashMap == null) {
+            return;
+        }
         for (RepoModule repoModule : repoData.moduleHashMap.values()) {
             if (!repoModule.moduleInfo.hasFlag(ModuleInfo.FLAG_METADATA_INVALID)) {
                 RepoModule registeredRepoModule = this.modules.get(repoModule.id);
@@ -335,7 +339,7 @@ public final class RepoManager extends SyncManager {
         try {
             resp = Http.doHttpGet("https://production-api.androidacy.com/cdn-cgi/trace", false);
         } catch (Exception e) {
-            Timber.e("Failed to check internet connection. Assuming no internet connection.");
+            Timber.e(e, "Failed to check internet connection. Assuming no internet connection.");
         }
         // get the response body
         String response = new String(resp, StandardCharsets.UTF_8);

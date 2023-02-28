@@ -365,5 +365,12 @@
     <string name="safe_module">Verified safe module</string>
     <string name="safe_message">This module has been verified by the repository as safe, meaning it passes certain quality and safety thresholds, and is checked for malware.</string>
     <string name="notification_update_app_desc">Enable automatically checking for app updates. Updates will not download automatically.</string>
-    <string name="notification_update_app_pref">Check for app updates</string><string name="notification_channel_category_app_update">App updates</string><string name="notification_channel_category_app_update_description">Notifies when an app update is available</string><string name="notification_channel_background_update_app">App update available!</string><string name="notification_channel_background_update_app_description">An update is available for FoxMMM. Tap here to update.</string>
+    <string name="notification_update_app_pref">Check for app updates</string>
+    <string name="notification_channel_category_app_update">App updates</string>
+    <string name="notification_channel_category_app_update_description">Notifies when an app update is available</string>
+    <string name="notification_channel_background_update_app">App update available!</string>
+    <string name="notification_channel_background_update_app_description">An update is available for FoxMMM. Tap here to update.</string>
+    <string name="yer_a_wizard_harry">Yer a wizard, Harry!</string>
+    <string name="keep_tapping_to_enter_hogwarts">Keep tapping to be admitted into Hogwarts!</string>
+    <string name="modules">Modules</string>
 </resources>
