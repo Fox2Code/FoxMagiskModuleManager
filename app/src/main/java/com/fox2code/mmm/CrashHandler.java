@@ -35,7 +35,6 @@ public class CrashHandler extends FoxActivity {
         setContentView(R.layout.activity_crash_handler);
         // set crash_details MaterialTextView to the exception passed in the intent or unknown if null
         // convert stacktrace from array to string, and pretty print it (first line is the exception, the rest is the stacktrace, with each line indented by 4 spaces)
-        // first line is the exception, the rest is the stacktrace, with each line indented by 4 spaces. empty out the material text view first
         MaterialTextView crashDetails = findViewById(R.id.crash_details);
         crashDetails.setText("");
         // get the exception from the intent

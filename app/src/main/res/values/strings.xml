@@ -373,4 +373,6 @@
     <string name="yer_a_wizard_harry">Yer a wizard, Harry!</string>
     <string name="keep_tapping_to_enter_hogwarts">Keep tapping to be admitted into Hogwarts!</string>
     <string name="modules">Modules</string>
+    <string name="no_browser">You do not have a browser installed. Please install one to continue.</string>
+    <string name="search">Search</string>
 </resources>

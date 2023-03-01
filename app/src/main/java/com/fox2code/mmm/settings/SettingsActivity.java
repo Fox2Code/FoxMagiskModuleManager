@@ -590,6 +590,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             String finalUserRepo = userRepo.replaceAll("^(https?://)?(www\\.)?(github\\.com|gitlab\\.com|bitbucket\\.org|git\\.io|git\\.me|git\\.net|git\\.xyz|git\\.tk|git\\.co)/", "");
             linkClickable.setSummary(String.format(getString(R.string.source_code_summary), BuildConfig.COMMIT_HASH, finalUserRepo));
             Timber.d("finalUserRepo: %s", finalUserRepo);
+            String finalUserRepo1 = userRepo;
             linkClickable.setOnPreferenceClickListener(p -> {
                 if (devModeStep == 2) {
                     devModeStep = 0;
@@ -606,7 +607,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     return true;
                 }
                 // build url from BuildConfig.REMOTE_URL and BuildConfig.COMMIT_HASH. May have to remove the .git at the end
-                IntentHelper.openUrl(p.getContext(), finalUserRepo + "/tree/" + BuildConfig.COMMIT_HASH);
+                IntentHelper.openUrl(p.getContext(), finalUserRepo1.replace(".git", "") + "/tree/" + BuildConfig.COMMIT_HASH);
                 return true;
             });
             linkClickable.setOnPreferenceLongClickListener(p -> {

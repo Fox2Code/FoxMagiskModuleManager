@@ -12,16 +12,16 @@
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintTop_toTopOf="parent">
         <!-- FrameLayout is the best way to fix blurring -->
         <FrameLayout
             android:id="@+id/blur_frame"
-            android:paddingBottom="56dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingBottom="56dp">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/module_list"
@@ -44,11 +44,11 @@
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:scaleY="2"
-        app:showAnimationBehavior="outward"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/swipe_refresh" />
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/swipe_refresh"
+        app:showAnimationBehavior="outward" />
 
     <LinearLayout
         android:id="@+id/search_container"
@@ -57,8 +57,10 @@
         android:layout_marginHorizontal="12dp"
         android:layout_marginVertical="8dp"
         android:filterTouchesWhenObscured="true"
-        android:gravity="bottom|end"
+        android:gravity="bottom|start"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_fitsSystemWindowsInsets="bottom"
         tools:ignore="RtlHardcoded">
@@ -66,34 +68,31 @@
         setting high app:cardCornerRadius is not supported on some versions
         so we must use code to get a round appearance.
         -->
-        <!-- Material down arrow icon -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/down_arrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
-            android:background="@color/transparent"
-            android:visibility="gone" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/search_card"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="65dp"
             android:layout_gravity="center"
             android:background="@null"
             android:shape="ring"
+            android:visibility="visible"
             app:cardCornerRadius="@dimen/card_corner_radius"
             app:cardElevation="0dp"
             app:cardPreventCornerOverlap="true"
-            android:visibility="gone"
             app:strokeColor="@android:color/transparent"
             app:strokeWidth="0dp">
 
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/search_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="300dp"
+                android:layout_height="24dp"
                 android:background="@null"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/bottom_navigation"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:iconifiedByDefault="true"
                 app:useDrawerArrowDrawable="true" />
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>

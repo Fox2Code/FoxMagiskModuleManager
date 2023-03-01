@@ -76,8 +76,8 @@ public enum IntentHelper {
             }
             startActivity(context, myIntent, false);
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(context, "No application can handle this request.\n"
-                    + " Please install a web-browser", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, FoxActivity.getFoxActivity(context).getString(
+                    R.string.no_browser), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -90,8 +90,8 @@ public enum IntentHelper {
             tabIntent.addCategory(Intent.CATEGORY_BROWSABLE);
             startActivityEx(context, tabIntent, viewIntent);
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(context, "No application can handle this request.\n"
-                    + " Please install a web-browser", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, FoxActivity.getFoxActivity(context).getString(
+                    R.string.no_browser), Toast.LENGTH_LONG).show();
         }
     }
 
