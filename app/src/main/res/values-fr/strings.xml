@@ -24,7 +24,7 @@
     <string name="website">Site web</string>
     <string name="support">Support</string>
     <string name="donate">Dons</string>
-    <string name="update">Mise-à-jour</string>
+    <string name="update">MàJ</string>
     <string name="install">Installer</string>
     <string name="description">Description</string>
     <string name="uninstall">Désinstaller</string>
@@ -313,4 +313,57 @@
     <string name="crash_details_copied">Copier la pile dans le presse-papier!</string>
     <string name="crash_full_stacktrace">Pile:\n%1$s</string>
     <string name="sentry_enable_nag">On dirait que le rapport de plantage est désactivé. Merci de l\’activer pour l\’envoyer.</string>
+    <string name="reset_app">Réinitialiser l\’application</string>
+    <string name="upgraded_summary">Vous êtes vraiment génial! Apparamment vous avez déjà souscrit votre abonnement et supportez Androidacy.</string>
+    <string name="upgraded">Prémium actif</string>
+    <string name="reset_warning">Si vous voyez à nouveau ceci, une réinitialisation de l\’application pourrait aider. Celà effacera les données de l\’application mais n\’affectera pas le modules installés.</string>
+    <string name="reset_app_message">Celà supprimera complêtement toutes les données de l\’application et la fermera. Les modules ne seront pas désinstallés.</string>
+    <string name="reset">Réinitialiser</string>
+    <string name="reset_app_confirmation">Celà va complêtement effacer les données de l\’application, mais ça n\’affectera pas les modules.</string>
+    <string name="error_adding">Échec de l\’ajout d\’un dépôt personnalisé</string>
+    <string name="api_key_mismatch">La clé d\’API n\’est pas dans un format valide</string>
+    <string name="notification_update_ignore_desc">Liste des modules à exclure des vérifications de MàJ</string>
+    <string name="notification_update_ignore_pref">Modules exclus</string>
+    <string name="pref_category_updates">MàJ</string><string name="invalid_excludes">Saisie invalide</string>
+    <string name="invalid_characters_message">La liste de modules que vous avez saisie est invalide. Veuillez n\’entrer que des ID de noms de modules valides séparés par des virgules</string>
+    <string name="background_update_check_excludes">Modules à exclure des vérifications de MàJ automatiques</string>
+    <string name="title_activity_update">MàJ dans l\’application</string>
+    <string name="update_title">MàJ l\’application</string>
+    <string name="update_message">Merci de patienter pendant que nous vérifions et installons les MàJ pour FoxMMM. Celà peut prendre quelques minutes</string>
+    <string name="update_button">Merci de patienter...</string>
+    <string name="error_no_extras">ERREURE: Donnée invalides reçues au lancement</string>
+    <string name="update_debug_warning">Il semblerait que vous soyez en train d\’utiliser une fabrication de débuggage. Les fabrications de débuggage doivent être MàJ manuellement, et les MàJ incorporées ne sont pas supportées</string>
+    <string name="error_no_action">ERREURE: Action spécifiée invalide. Refus de continuer.</string><string name="update_available">MàJ trouvée</string>
+    <string name="checking_for_update">Vérification des MàJ…</string>
+    <string name="no_update_available">Vous êtes à jour!</string>
+    <string name="download_update">Téléchargement de la MàJ</string>
+    <string name="error_download_update">Une erreur est survenue lors du téléchargement des infos de la MàJ.</string>
+    <string name="error_no_asset">ERREURE: ERROR: Échec de l\’analyse des infos de la MàJ</string>
+    <string name="downloading_update">Téléchargement de la MàJ… %1$d%%</string>
+    <string name="installing_update">Installation de la MàJ…</string>
+    <string name="no_file_found">ERREURE: Le paquet de la MàJ n\’a pas pu être trouvé.</string>
+    <string name="check_for_updates">Vérification des MàJ de l\’application</string>
+    <string name="update_debug_download_pref">Test du méchanisme de téléchargement de la MàJ</string>
+    <string name="changelog_none">Pas encore de changements!</string>
+    <string name="update_cancel_button">Annuler MàJ</string>
+    <string name="invalid_repo_url">L\’URL que vous venez d\’entrer pour le dépôt est invalide</string>
+    <string name="add_repo_message">Les dépôts doivent êtres distribués via HTTPS, et doivent répondrent aux spécificités décrites dans la documentation.</string>
+    <string name="notification_update_summary">Les modules suivants peuvent êtres MàJ:</string>
+    <string name="notification_update_module_template">%1$s vers la version %2$s</string>
+    <string name="notification_channel_background_update">Vérification des MàJ...</string>
+    <string name="notification_channel_background_update_description">FoxMMM est en train de vérifier les MàJ en tâche de fond.</string>
+    <string name="notification_channel_category_background_update">Statut de la MàJ en arrière-plan</string>
+    <string name="notification_channel_category_background_update_description">Afficher une notification lors de la vérification des MàJ pour que le système ne la ferme pas opportunément</string>
+    <string name="notification_update_wifi_desc">Vérifier uniquement via le WiFi</string>
+    <string name="notification_update_wifi_pref">Rquière le wi-fi ou un réseau non payant pour vérifier les MàJ. Cette option est recommandée de laisser cette option activée si vous disposez de peu de données mobiles.</string>
+    <string name="background_update_check_excludes_no_modules">Aucun module installé sur votre périphérique</string>
+    <string name="auto_updates_notifs">Notifier quand des MàJ de module sont trouvées</string>
+    <string name="notification_group_updates">MàJ</string>
+    <string name="low_quality_module_desc">Ce module a des métadatas invalides ou venant d\’un marché considéré de qualité médiocre avec des modules de qualité médiocre. Sa désinstallation est recommandée.</string>
+    <string name="online">En ligne</string>
+    <string name="safe">Sûr</string>
+    <string name="safe_module">Module sûr vérifié</string>
+    <string name="safe_message">Ce module a été vérifié par le dépôt comme étant sûr, ce qui veut dire qu\’il a passé un certain seuil de qualité et de sécurité, et qu\’il a été vérifié par rapport aux malware.</string>
+    <string name="notification_update_app_desc">Activer automatiquement la vérification pour les MàJ de l\’application. Les MàJ ne seront pas téléchargées automatiquement.</string>
+    <string name="notification_update_app_pref">Vérification des MàJs de l\’application</string><string name="notification_channel_category_app_update">MàJs de l\’application</string><string name="notification_channel_category_app_update_description">ÊTre notifié lorsce qu\’une MàJ de l\’application est trouvée</string><string name="notification_channel_background_update_app">MàJ de l\’application disponible!</string><string name="notification_channel_background_update_app_description">Une MàJ est disponible pour FoxMMM. Appuyer ici pour MàJ.</string>
 </resources>
