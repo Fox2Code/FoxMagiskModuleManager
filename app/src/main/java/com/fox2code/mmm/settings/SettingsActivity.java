@@ -194,7 +194,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         @SuppressWarnings("ConstantConditions")
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             PreferenceManager preferenceManager = getPreferenceManager();
-            preferenceManager.setPreferenceDataStore(EncryptedPreferenceDataStore.getInstance());
+            preferenceManager.setSharedPreferencesName("mmm");
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
             applyMaterial3(getPreferenceScreen());
             // add bottom navigation bar to the settings
@@ -262,10 +262,6 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         ((ListPreference) findPreference("pref_theme")).setValue("system");
                         // Refresh activity
                         devModeStep = 0;
-                        UiThreadHandler.handler.postDelayed(() -> {
-                            MainApplication.getINSTANCE().updateTheme();
-                            FoxActivity.getFoxActivity(this).setThemeRecreate(MainApplication.getINSTANCE().getManagerThemeResId());
-                        }, 1);
                     }).show();
                 } else {
                     findPreference("pref_enable_monet").setEnabled(true);
@@ -273,11 +269,11 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     findPreference("pref_enable_blur").setEnabled(true);
                     findPreference("pref_enable_blur").setSummary(null);
                     devModeStep = 0;
-                    UiThreadHandler.handler.postDelayed(() -> {
-                        MainApplication.getINSTANCE().updateTheme();
-                        FoxActivity.getFoxActivity(this).setThemeRecreate(MainApplication.getINSTANCE().getManagerThemeResId());
-                    }, 1);
                 }
+                UiThreadHandler.handler.postDelayed(() -> {
+                    MainApplication.getINSTANCE().updateTheme();
+                    FoxActivity.getFoxActivity(this).setThemeRecreate(MainApplication.getINSTANCE().getManagerThemeResId());
+                }, 1);
                 return true;
             });
             // Crash reporting
@@ -460,7 +456,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     // set the box to unchecked
                     ((SwitchPreferenceCompat) backgroundUpdateCheck).setChecked(false);
                     // ensure that the preference is false
-                    MainApplication.getSharedPreferences("mmm").edit().putBoolean("pref_background_update_check", false).apply();
+                    MainApplication.getSharedPreferences().edit().putBoolean("pref_background_update_check", false).apply();
                     new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.permission_notification_title).setMessage(R.string.permission_notification_message).setPositiveButton(R.string.ok, (dialog, which) -> {
                         // Open the app settings
                         Intent intent = new Intent();
@@ -497,7 +493,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     int i = 0;
                     for (LocalModuleInfo localModuleInfo : localModuleInfos) {
                         moduleNames[i] = localModuleInfo.name;
-                        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences("mmm");
+                        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
                         // get the stringset pref_background_update_check_excludes
                         Set<String> stringSet = sharedPreferences.getStringSet("pref_background_update_check_excludes", new HashSet<>());
                         // Stringset uses id, we show name
@@ -507,7 +503,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     }
                     new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.background_update_check_excludes).setMultiChoiceItems(moduleNames, checkedItems, (dialog, which, isChecked) -> {
                         // get the stringset pref_background_update_check_excludes
-                        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences("mmm");
+                        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
                         Set<String> stringSet = new HashSet<>(sharedPreferences.getStringSet("pref_background_update_check_excludes", new HashSet<>()));
                         // get id from name
                         String id;
@@ -595,11 +591,11 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 if (devModeStep == 2) {
                     devModeStep = 0;
                     if (MainApplication.isDeveloper() && !BuildConfig.DEBUG) {
-                        MainApplication.getSharedPreferences("mmm").edit().putBoolean("developer", false).apply();
+                        MainApplication.getSharedPreferences().edit().putBoolean("developer", false).apply();
                         Toast.makeText(getContext(), // Tell the user something changed
                                 R.string.dev_mode_disabled, Toast.LENGTH_SHORT).show();
                     } else {
-                        MainApplication.getSharedPreferences("mmm").edit().putBoolean("developer", true).apply();
+                        MainApplication.getSharedPreferences().edit().putBoolean("developer", true).apply();
                         Toast.makeText(getContext(), // Tell the user something changed
                                 R.string.dev_mode_enabled, Toast.LENGTH_SHORT).show();
                     }
@@ -811,7 +807,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         // Use MaterialAlertDialogBuilder
                         new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.warning).setCancelable(false).setMessage(R.string.androidacy_test_mode_warning).setPositiveButton(android.R.string.ok, (dialog, which) -> {
                             // User clicked OK button
-                            MainApplication.getSharedPreferences("mmm").edit().putBoolean("androidacy_test_mode", true).apply();
+                            MainApplication.getSharedPreferences().edit().putBoolean("androidacy_test_mode", true).apply();
                             // Check the switch
                             Intent mStartActivity = new Intent(requireContext(), MainActivity.class);
                             mStartActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -829,10 +825,10 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                             SwitchPreferenceCompat switchPreferenceCompat = (SwitchPreferenceCompat) androidacyTestMode;
                             switchPreferenceCompat.setChecked(false);
                             // There's probably a better way to do this than duplicate code but I'm too lazy to figure it out
-                            MainApplication.getSharedPreferences("mmm").edit().putBoolean("androidacy_test_mode", false).apply();
+                            MainApplication.getSharedPreferences().edit().putBoolean("androidacy_test_mode", false).apply();
                         }).show();
                     } else {
-                        MainApplication.getSharedPreferences("mmm").edit().putBoolean("androidacy_test_mode", false).apply();
+                        MainApplication.getSharedPreferences().edit().putBoolean("androidacy_test_mode", false).apply();
                         // Show dialog to restart app with ok button
                         new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.warning).setCancelable(false).setMessage(R.string.androidacy_test_mode_disable_warning).setNeutralButton(android.R.string.ok, (dialog, which) -> {
                             // User clicked OK button

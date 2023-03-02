@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_container"
     android:layout_width="match_parent"
+    android:paddingVertical="0dp"
     android:layout_height="match_parent"
-    app:fitsSystemWindowsInsets="left|right"
+    app:fitsSystemWindowsInsets="start|end|bottom|top"
     tools:context=".MainActivity">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -21,7 +22,7 @@
             android:id="@+id/blur_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="56dp">
+            android:paddingBottom="84dp">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/module_list"
@@ -102,8 +103,8 @@
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/backgroundColor"
         android:visibility="visible"
+        android:paddingBottom="0dp"
         app:compatShadowEnabled="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

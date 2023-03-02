@@ -12,8 +12,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.SystemClock;
-import android.security.keystore.KeyProperties;
-import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -36,16 +34,6 @@ import com.google.common.hash.Hashing;
 import com.topjohnwu.superuser.Shell;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -54,13 +42,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
 
 import io.noties.markwon.Markwon;
 import io.noties.markwon.html.HtmlPlugin;
@@ -125,6 +106,10 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         intent.putExtra("secret", secret);
     }
 
+    public static SharedPreferences getSharedPreferences() {
+        return INSTANCE.getSharedPreferences("mmm", MODE_PRIVATE);
+    }
+
     // Is application wrapped, and therefore must reduce it's feature set.
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isWrapped() {
@@ -135,62 +120,58 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         return intent != null && intent.getLongExtra("secret", ~secret) == secret;
     }
 
-    public static SharedPreferences getSharedPreferences(String store) {
-        return FoxApplication.getInitialApplication().getSharedPreferences(store, Context.MODE_PRIVATE);
-    }
-
     public static boolean isShowcaseMode() {
-        return getSharedPreferences("mmm").getBoolean("pref_showcase_mode", false);
+        return getSharedPreferences().getBoolean("pref_showcase_mode", false);
     }
 
     public static boolean shouldPreventReboot() {
-        return getSharedPreferences("mmm").getBoolean("pref_prevent_reboot", true);
+        return getSharedPreferences().getBoolean("pref_prevent_reboot", true);
     }
 
     public static boolean isShowIncompatibleModules() {
-        return getSharedPreferences("mmm").getBoolean("pref_show_incompatible", false);
+        return getSharedPreferences().getBoolean("pref_show_incompatible", false);
     }
 
     public static boolean isForceDarkTerminal() {
-        return getSharedPreferences("mmm").getBoolean("pref_force_dark_terminal", false);
+        return getSharedPreferences().getBoolean("pref_force_dark_terminal", false);
     }
 
     public static boolean isTextWrapEnabled() {
-        return getSharedPreferences("mmm").getBoolean("pref_wrap_text", false);
+        return getSharedPreferences().getBoolean("pref_wrap_text", false);
     }
 
     public static boolean isDohEnabled() {
-        return getSharedPreferences("mmm").getBoolean("pref_dns_over_https", true);
+        return getSharedPreferences().getBoolean("pref_dns_over_https", true);
     }
 
     public static boolean isMonetEnabled() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && getSharedPreferences("mmm").getBoolean("pref_enable_monet", true);
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && getSharedPreferences().getBoolean("pref_enable_monet", true);
     }
 
     public static boolean isBlurEnabled() {
-        return getSharedPreferences("mmm").getBoolean("pref_enable_blur", false);
+        return getSharedPreferences().getBoolean("pref_enable_blur", false);
     }
 
     public static boolean isDeveloper() {
         if (BuildConfig.DEBUG)
             return true;
-        return getSharedPreferences("mmm").getBoolean("developer", false);
+        return getSharedPreferences().getBoolean("developer", false);
     }
 
     public static boolean isDisableLowQualityModuleFilter() {
-        return getSharedPreferences("mmm").getBoolean("pref_disable_low_quality_module_filter", false) && isDeveloper();
+        return getSharedPreferences().getBoolean("pref_disable_low_quality_module_filter", false) && isDeveloper();
     }
 
     public static boolean isUsingMagiskCommand() {
-        return InstallerInitializer.peekMagiskVersion() >= Constants.MAGISK_VER_CODE_INSTALL_COMMAND && getSharedPreferences("mmm").getBoolean("pref_use_magisk_install_command", false) && isDeveloper();
+        return InstallerInitializer.peekMagiskVersion() >= Constants.MAGISK_VER_CODE_INSTALL_COMMAND && getSharedPreferences().getBoolean("pref_use_magisk_install_command", false) && isDeveloper();
     }
 
     public static boolean isBackgroundUpdateCheckEnabled() {
-        return !wrapped && getSharedPreferences("mmm").getBoolean("pref_background_update_check", true);
+        return !wrapped && getSharedPreferences().getBoolean("pref_background_update_check", true);
     }
 
     public static boolean isAndroidacyTestMode() {
-        return isDeveloper() && getSharedPreferences("mmm").getBoolean("pref_androidacy_test_mode", false);
+        return isDeveloper() && getSharedPreferences().getBoolean("pref_androidacy_test_mode", false);
     }
 
     public static boolean isFirstBoot() {
@@ -198,11 +179,11 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     }
 
     public static void setHasGottenRootAccess(boolean bool) {
-        getSharedPreferences("mmm").edit().putBoolean("has_root_access", bool).apply();
+        getSharedPreferences().edit().putBoolean("has_root_access", bool).apply();
     }
 
     public static boolean isCrashReportingEnabled() {
-        return SentryMain.IS_SENTRY_INSTALLED && getSharedPreferences("mmm").getBoolean("pref_crash_reporting", BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING);
+        return SentryMain.IS_SENTRY_INSTALLED && getSharedPreferences().getBoolean("pref_crash_reporting", BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING);
     }
 
     public static SharedPreferences getBootSharedPreferences() {
@@ -243,7 +224,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         @StyleRes int themeResId;
         String theme;
         boolean monet = isMonetEnabled();
-        switch (theme = getSharedPreferences("mmm").getString("pref_theme", "system")) {
+        switch (theme = getSharedPreferences().getString("pref_theme", "system")) {
             default:
                 Timber.w("Unknown theme id: %s", theme);
             case "system":
@@ -289,9 +270,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
                     (this.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) != Configuration.UI_MODE_NIGHT_YES;
             case R.style.Theme_MagiskModuleManager_Monet_Light, R.style.Theme_MagiskModuleManager_Light ->
                     true;
-            case R.style.Theme_MagiskModuleManager_Monet_Dark, R.style.Theme_MagiskModuleManager_Dark ->
-                    false;
-            case R.style.Theme_MagiskModuleManager_Monet_Black, R.style.Theme_MagiskModuleManager_Black ->
+            case R.style.Theme_MagiskModuleManager_Monet_Dark, R.style.Theme_MagiskModuleManager_Dark, R.style.Theme_MagiskModuleManager_Monet_Black, R.style.Theme_MagiskModuleManager_Black ->
                     false;
             default -> super.isLightTheme();
         };
@@ -363,9 +342,9 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         } catch (
                 PackageManager.NameNotFoundException ignored) {
         }
-        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences("mmm");
+        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
         // We are only one process so it's ok to do this
-        SharedPreferences bootPrefs = MainApplication.bootSharedPreferences = MainApplication.getSharedPreferences("mmm_boot");
+        SharedPreferences bootPrefs = MainApplication.bootSharedPreferences = MainApplication.getINSTANCE().getSharedPreferences("mmm_boot", Context.MODE_PRIVATE);
         long lastBoot = System.currentTimeMillis() - SystemClock.elapsedRealtime();
         long lastBootPrefs = bootPrefs.getLong("last_boot", 0);
         if (lastBootPrefs == 0 || Math.abs(lastBoot - lastBootPrefs) > 100) {
@@ -504,63 +483,6 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         } else {
             return false;
         }
-    }
-
-    // Access the encrypted key in the keystore, decrypt it with the secret,
-    // and use it to open and read from the realm again
-    public byte[] getExistingKey() {
-        Timber.d("Getting existing key...");
-        long startTime = System.currentTimeMillis();
-        // open a connection to the android keystore
-        KeyStore keyStore;
-        try {
-            keyStore = KeyStore.getInstance("AndroidKeyStore");
-            keyStore.load(null);
-        } catch (KeyStoreException | NoSuchAlgorithmException
-                 | CertificateException | IOException e) {
-            throw new RuntimeException(e);
-        }
-        // access the encrypted key that's stored in shared preferences
-        byte[] initializationVectorAndEncryptedKey = Base64.decode(getSharedPreferences("realm_key")
-                .getString("iv_and_encrypted_key", null), Base64.DEFAULT);
-        ByteBuffer buffer = ByteBuffer.wrap(initializationVectorAndEncryptedKey);
-        buffer.order(ByteOrder.BIG_ENDIAN);
-        // extract the length of the initialization vector from the buffer
-        int initializationVectorLength = buffer.getInt();
-        // extract the initialization vector based on that length
-        byte[] initializationVector = new byte[initializationVectorLength];
-        buffer.get(initializationVector);
-        // extract the encrypted key
-        byte[] encryptedKey = new byte[initializationVectorAndEncryptedKey.length
-                - Integer.BYTES
-                - initializationVectorLength];
-        buffer.get(encryptedKey);
-        // create a cipher that uses AES encryption to decrypt our key
-        Cipher cipher;
-        try {
-            cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES
-                    + "/" + KeyProperties.BLOCK_MODE_CBC
-                    + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-            throw new RuntimeException(e);
-        }
-        // decrypt the encrypted key with the secret key stored in the keystore
-        byte[] decryptedKey;
-        try {
-            final SecretKey secretKey =
-                    (SecretKey) keyStore.getKey("realm_key", null);
-            final IvParameterSpec initializationVectorSpec =
-                    new IvParameterSpec(initializationVector);
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, initializationVectorSpec);
-            decryptedKey = cipher.doFinal(encryptedKey);
-        } catch (InvalidKeyException | UnrecoverableKeyException | NoSuchAlgorithmException |
-                 BadPaddingException | KeyStoreException | IllegalBlockSizeException |
-                 InvalidAlgorithmParameterException e) {
-            throw new RuntimeException(e);
-        }
-        long endTime = System.currentTimeMillis();
-        Timber.d("Got existing key in %d ms", endTime - startTime);
-        return decryptedKey; // pass to a realm configuration via encryptionKey()
     }
 
     private static class ReleaseTree extends Timber.Tree {

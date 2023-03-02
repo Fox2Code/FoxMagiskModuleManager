@@ -28,12 +28,12 @@ public class SentryMain {
     @SuppressLint({"RestrictedApi", "UnspecifiedImmutableFlag"})
     public static void initialize(final MainApplication mainApplication) {
         // If first_launch pref is not false, refuse to initialize Sentry
-        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences("mmm");
+        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences();
         if (!Objects.equals(sharedPreferences.getString("last_shown_setup", null), "v1")) {
             return;
         }
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
-            SharedPreferences.Editor editor = MainApplication.getSharedPreferences("sentry").edit();
+            SharedPreferences.Editor editor = MainApplication.getINSTANCE().getSharedPreferences("sentry", Context.MODE_PRIVATE).edit();
             editor.putString("lastExitReason", "crash");
             editor.putLong("lastExitTime", System.currentTimeMillis());
             editor.apply();

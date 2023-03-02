@@ -2,30 +2,31 @@
 
     <style name="Theme.MagiskModuleManager.Monet.Light" parent="Theme.Material3.DynamicColors.Light">
         <item name="android:statusBarColor">@color/status_bar_color</item>
-        <item name="colorBackgroundFloating">@color/system_accent2_200</item>
-        <item name="android:windowBackground">@color/system_accent2_100</item>
+        <item name="colorBackgroundFloating">@color/system_accent2_10</item>
+        <item name="android:windowBackground">@color/system_neutral1_10</item>
         <item name="chipStyle">@style/Widget.Material3.Chip.Choice.Light</item>
+        <!-- fix bottom navigation bar color -->
+        <item name="android:navigationBarColor">@color/system_accent2_100</item>
     </style>
 
     <style name="Widget.Material3.Chip.Choice.Light" parent="Widget.Material3.Chip.Assist">
-        <item name="chipBackgroundColor">@color/system_accent2_300</item>
+        <item name="chipBackgroundColor">@color/system_accent2_100</item>
         <item name="chipStrokeWidth">0dp</item>
         <item name="chipIconTint">?attr/colorControlNormal</item>
     </style>
 
     <style name="Theme.MagiskModuleManager.Monet.Dark" parent="Theme.Material3.DynamicColors.Dark">
         <item name="android:statusBarColor">@color/status_bar_color</item>
-        <item name="colorBackgroundFloating">@color/system_accent2_800</item>
-        <item name="android:windowBackground">@color/system_accent2_900</item>
+        <item name="colorBackgroundFloating">@color/system_neutral1_800</item>
+        <item name="android:windowBackground">@color/system_neutral1_900</item>
         <item name="chipStyle">@style/Widget.Material3.Chip.Choice.Dark</item>
     </style>
 
     <!-- Black monet theme, which is just dark monet theme with black background -->
     <style name="Theme.MagiskModuleManager.Monet.Black" parent="Theme.MagiskModuleManager.Monet.Dark">
-        <item name="colorBackgroundFloating">@color/black</item>
+        <item name="colorBackgroundFloating">@color/system_neutral2_900</item>
+        <item name="boxBackgroundColor">@color/black</item>
         <item name="android:windowBackground">@color/black</item>
-        <item name="boxBackgroundColor">@color/dark_backgroundColor</item>
-        <item name="cardBackgroundColor">@color/cardview_dark_background</item>
         <item name="backgroundColor">@color/black</item>
         <item name="colorSurface">@color/black</item>
         <!-- Darker variants of the monet colors -->
@@ -37,7 +38,7 @@
         <item name="chipBackgroundColor">@color/system_accent2_700</item>
         <item name="chipSurfaceColor">@color/system_accent2_700</item>
         <!-- chips should be dark, not black -->
-        <item name="chipStyle">@style/Widget.Material.Chip.Choice.Dark</item>
+        <item name="chipStyle">@style/Widget.Material.Chip.Choice.Black</item>
     </style>
 
     <style name="Widget.Material3.Chip.Choice.Dark" parent="Widget.Material3.Chip.Assist">
@@ -46,8 +47,14 @@
         <item name="chipIconTint">?attr/colorControlNormal</item>
     </style>
 
+    <!-- I have no idea why this is needed, but it is -->
+    <style name="Widget.Material.Chip.Choice.Black" parent="Widget.Material3.Chip.Choice.Dark">
+        <item name="chipBackgroundColor">@color/system_accent2_800</item>
+        <item name="chipStrokeWidth">0dp</item>
+        <item name="chipIconTint">?attr/colorControlNormal</item>
+    </style>
+
 
     <!-- Base application theme. -->
-
     <style name="Theme.MagiskModuleManager.Monet" parent="Theme.MagiskModuleManager.Monet.Light" />
 </resources>

@@ -3,14 +3,13 @@ package com.fox2code.mmm;
 import static com.fox2code.mmm.utils.IntentHelper.getActivity;
 
 import android.annotation.SuppressLint;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.security.keystore.KeyGenParameterSpec;
-import android.security.keystore.KeyProperties;
 import android.util.Base64;
 import android.view.View;
 import android.view.WindowManager;
@@ -34,25 +33,7 @@ import com.topjohnwu.superuser.internal.UiThreadHandler;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SecureRandom;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 import java.util.Objects;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -78,7 +59,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         createFiles();
         disableUpdateActivityForFdroidFlavor();
         // Set theme
-        SharedPreferences prefs = MainApplication.getSharedPreferences("mmm");
+        SharedPreferences prefs = MainApplication.getSharedPreferences();
         switch (prefs.getString("theme", "system")) {
             case "light" -> setTheme(R.style.Theme_MagiskModuleManager_Monet_Light);
             case "dark" -> setTheme(R.style.Theme_MagiskModuleManager_Monet_Dark);
@@ -209,8 +190,12 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             }
             // Restart the activity
             MainActivity.doSetupRestarting = true;
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            PendingIntent intent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_IMMUTABLE);
+            try {
+                intent.send();
+            } catch (PendingIntent.CanceledException e) {
+                e.printStackTrace();
+            }
             finish();
         });
         // Cancel button
@@ -230,7 +215,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
     public Resources.Theme getTheme() {
         Resources.Theme theme = super.getTheme();
         // Set the theme
-        SharedPreferences prefs = MainApplication.getSharedPreferences("mmm");
+        SharedPreferences prefs = MainApplication.getSharedPreferences();
         switch (prefs.getString("pref_theme", "system")) {
             case "light" -> theme.applyStyle(R.style.Theme_MagiskModuleManager_Monet_Light, true);
             case "dark" -> theme.applyStyle(R.style.Theme_MagiskModuleManager_Monet_Dark, true);
@@ -314,10 +299,16 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             File cookieFile = new File(MainApplication.getINSTANCE().getFilesDir(), cookieFileName);
             // if the file exists, delete it
             if (cookieFile.exists()) {
-                cookieFile.delete();
+                if (!cookieFile.delete()) {
+                    Timber.e("Failed to delete cookie file");
+                    throw new IllegalStateException("Failed to create cookie file. This probably means that the app doesn't have permission to write to the files directory");
+                }
             }
             // create the file
-            cookieFile.createNewFile();
+            if (!cookieFile.createNewFile()) {
+                Timber.e("Failed to create cookie file");
+                throw new IllegalStateException("Failed to create cookie file. This probably means that the app doesn't have permission to write to the files directory");
+            }
             // create the file output stream
             FileOutputStream fileOutputStream = new FileOutputStream(cookieFile);
             // write the initial cookie to the file
@@ -356,76 +347,5 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                 pm.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
             }
         }
-    }
-
-    @SuppressLint("NewApi")
-    public byte[] getNewKey() {
-        long startTime;
-        if (MainApplication.getSharedPreferences("mmm").getBoolean("keygen", false)) {
-            Timber.d("Key already generated, returning");
-            return MainApplication.getINSTANCE().getExistingKey();
-        } else {
-            startTime = System.currentTimeMillis();
-            Timber.d("Generating new key for realm");
-        }
-        // open a connection to the android keystore
-        KeyStore keyStore;
-        try {
-            keyStore = KeyStore.getInstance("AndroidKeyStore");
-            keyStore.load(null);
-        } catch (java.security.KeyStoreException | NoSuchAlgorithmException | CertificateException |
-                 IOException e) {
-            throw new RuntimeException(e);
-        }
-        // create a securely generated random asymmetric RSA key
-        byte[] realmKey = new byte[Realm.ENCRYPTION_KEY_LENGTH];
-        new SecureRandom().nextBytes(realmKey);
-        // create a cipher that uses AES encryption -- we'll use this to encrypt our key
-        Cipher cipher;
-        try {
-            cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-            throw new RuntimeException(e);
-        }
-        // generate secret key
-        KeyGenerator keyGenerator;
-        try {
-            keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-            throw new RuntimeException(e);
-        }
-        KeyGenParameterSpec keySpec = new KeyGenParameterSpec.Builder("realm_key", KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT).setBlockModes(KeyProperties.BLOCK_MODE_CBC).setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7).setUserAuthenticationRequired(false).build();
-        try {
-            keyGenerator.init(keySpec);
-        } catch (InvalidAlgorithmParameterException e) {
-            throw new RuntimeException(e);
-        }
-        keyGenerator.generateKey();
-        // access the generated key in the android keystore, then
-        // use the cipher to create an encrypted version of the key
-        byte[] initializationVector;
-        byte[] encryptedKeyForRealm;
-        try {
-            SecretKey secretKey = (SecretKey) keyStore.getKey("realm_key", null);
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-            encryptedKeyForRealm = cipher.doFinal(realmKey);
-            initializationVector = cipher.getIV();
-        } catch (InvalidKeyException | UnrecoverableKeyException | NoSuchAlgorithmException |
-                 KeyStoreException | BadPaddingException | IllegalBlockSizeException e) {
-            throw new RuntimeException(e);
-        }
-        // keep the encrypted key in shared preferences
-        // to persist it across application runs
-        byte[] initializationVectorAndEncryptedKey = new byte[Integer.BYTES + initializationVector.length + encryptedKeyForRealm.length];
-        ByteBuffer buffer = ByteBuffer.wrap(initializationVectorAndEncryptedKey);
-        buffer.order(ByteOrder.BIG_ENDIAN);
-        buffer.putInt(initializationVector.length);
-        buffer.put(initializationVector);
-        buffer.put(encryptedKeyForRealm);
-        MainApplication.getSharedPreferences("realm_key").edit().putString("iv_and_encrypted_key", Base64.encodeToString(initializationVectorAndEncryptedKey, Base64.NO_WRAP)).apply();
-        MainApplication.getSharedPreferences("mmm").edit().putBoolean("keygen", true).apply();
-        long endTime = System.currentTimeMillis();
-        Timber.d("Key generation took %s ms", endTime - startTime);
-        return realmKey; // pass to a realm configuration via encryptionKey()
     }
 }

@@ -55,7 +55,7 @@ public final class ModuleManager extends SyncManager {
 
     protected void scanInternal(@NonNull UpdateListener updateListener) {
         // if last_shown_setup is not "v1", them=n refuse to continue
-        if (!MainApplication.getSharedPreferences("mmm").getString("last_shown_setup", "").equals("v1")) {
+        if (!MainApplication.getSharedPreferences().getString("last_shown_setup", "").equals("v1")) {
             return;
         }
         boolean firstScan = this.bootPrefs.getBoolean("mm_first_scan", true);

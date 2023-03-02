@@ -5,7 +5,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:layout_marginHorizontal="8dp"
-              android:layout_marginVertical="2dp"
+              android:layout_marginVertical="3dp"
               android:filterTouchesWhenObscured="true"
               android:gravity="center_vertical"
               android:orientation="vertical"

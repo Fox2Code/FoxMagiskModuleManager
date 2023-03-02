@@ -56,6 +56,7 @@ import org.chromium.net.CronetEngine;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Objects;
 
 import timber.log.Timber;
 
@@ -135,7 +136,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         }
         setContentView(R.layout.activity_main);
         this.setTitle(R.string.app_name);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, 0);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FIRST_APPLICATION_WINDOW, WindowManager.LayoutParams.FIRST_APPLICATION_WINDOW);
         setActionBarBackground(null);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             WindowManager.LayoutParams layoutParams = this.getWindow().getAttributes();
@@ -285,9 +286,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
 
                 // On every preferences change, log the change if debug is enabled
                 if (BuildConfig.DEBUG) {
-                    Timber.d("onCreate: Preferences: %s", MainApplication.getSharedPreferences("mmm").getAll());
                     // Log all preferences changes
-                    MainApplication.getSharedPreferences("mmm").registerOnSharedPreferenceChangeListener((prefs, key) -> Timber.i("onSharedPreferenceChanged: " + key + " = " + prefs.getAll().get(key)));
+                    MainApplication.getSharedPreferences().registerOnSharedPreferenceChangeListener((prefs, key) -> Timber.i("onSharedPreferenceChanged: " + key + " = " + prefs.getAll().get(key)));
                 }
 
                 Timber.i("Scanning for modules!");
@@ -379,17 +379,21 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     private void updateScreenInsets(Configuration configuration) {
         boolean landscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE;
         int bottomInset = (landscape ? 0 : this.getNavigationBarHeight());
-        int statusBarHeight = getStatusBarHeight();
+        int statusBarHeight = getStatusBarHeight() + FoxDisplay.dpToPixel(2);
         int actionBarHeight = getActionBarHeight();
         int combinedBarsHeight = statusBarHeight + actionBarHeight;
         this.swipeRefreshLayout.setProgressViewOffset(false, swipeRefreshLayoutOrigStartOffset + combinedBarsHeight, swipeRefreshLayoutOrigEndOffset + combinedBarsHeight);
-        this.moduleViewListBuilder.setHeaderPx(Math.max(statusBarHeight, combinedBarsHeight - FoxDisplay.dpToPixel(4)));
+        this.moduleViewListBuilder.setHeaderPx(Math.max(statusBarHeight, combinedBarsHeight));
+        this.moduleViewListBuilderOnline.setHeaderPx(Math.max(statusBarHeight, combinedBarsHeight));
         this.moduleViewListBuilder.setFooterPx(FoxDisplay.dpToPixel(4) + bottomInset + this.searchCard.getHeight());
+        this.moduleViewListBuilderOnline.setFooterPx(FoxDisplay.dpToPixel(4) + bottomInset + this.searchCard.getHeight());
         this.searchCard.setRadius(this.searchCard.getHeight() / 2F);
         this.moduleViewListBuilder.updateInsets();
         //this.actionBarBlur.invalidate();
         this.overScrollInsetTop = combinedBarsHeight;
         this.overScrollInsetBottom = bottomInset;
+        // set root_container to have zero padding
+        findViewById(R.id.root_container).setPadding(0, statusBarHeight, 0, 0);
         Timber.i("(" + this.searchCard.getHeight() + ")");
     }
 
@@ -705,11 +709,18 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     private void checkShowInitialSetup() {
         if (BuildConfig.DEBUG)
             Timber.i("Checking if we need to run setup");
-        // Check if this is the first launch
-        SharedPreferences prefs = MainApplication.getSharedPreferences("mmm");
-        boolean firstLaunch = prefs.getString("last_shown_setup", null) == null;
-        if (BuildConfig.DEBUG)
-            Timber.i("First launch: %s", firstLaunch);
+        // Check if this is the first launch using prefs and if doSetupRestarting was passed in the intent
+        SharedPreferences prefs = MainApplication.getSharedPreferences();
+        boolean firstLaunch = !Objects.equals(prefs.getString("last_shown_setup", null), "v1");
+        // First launch
+        // this is intentionally separate from the above if statement, because it needs to be checked even if the first launch check is true due to some weird edge cases
+        if (getIntent().getBooleanExtra("doSetupRestarting", false)) {
+            // Restarting setup
+            firstLaunch = false;
+        }
+        if (BuildConfig.DEBUG) {
+            Timber.i("First launch: %s, pref value: %s", firstLaunch, prefs.getString("last_shown_setup", null));
+        }
         if (firstLaunch) {
             doSetupNowRunning = true;
             // Launch setup wizard
