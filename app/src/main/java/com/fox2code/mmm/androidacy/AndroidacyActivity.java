@@ -20,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.webkit.WebResourceErrorCompat;
 import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewClientCompat;
@@ -66,7 +67,7 @@ public final class AndroidacyActivity extends FoxActivity {
 
     @SuppressWarnings("deprecation")
     @Override
-    @SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface", "RestrictedApi"})
+    @SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface", "RestrictedApi", "ClickableViewAccessibility"})
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         this.moduleFile = new File(this.getCacheDir(), "module.zip");
         super.onCreate(savedInstanceState);
@@ -132,8 +133,7 @@ public final class AndroidacyActivity extends FoxActivity {
                         IntentHelper.openConfig(this, config);
                         return true;
                     });
-                } catch (
-                        PackageManager.NameNotFoundException ignored) {
+                } catch (PackageManager.NameNotFoundException ignored) {
                 }
             }
         }
@@ -150,6 +150,8 @@ public final class AndroidacyActivity extends FoxActivity {
         webSettings.setAllowFileAccessFromFileURLs(false);
         webSettings.setAllowUniversalAccessFromFileURLs(false);
         webSettings.setMediaPlaybackRequiresUserGesture(false);
+        // enable swiping to refresh
+
         // if app is in dark mode, force dark mode on webview
         if (MainApplication.getINSTANCE().isDarkTheme()) {
             // for api 33, use setAlgorithmicDarkeningAllowed, for api 29-32 use setForceDark, for api 28 and below use setForceDarkStrategy
@@ -167,6 +169,8 @@ public final class AndroidacyActivity extends FoxActivity {
             allowList.add("https://*.androidacy.com");
             WebSettingsCompat.setRequestedWithHeaderOriginAllowList(webSettings, allowList);
         }
+        // get swipe to refresh layout
+        SwipeRefreshLayout swipeRefreshLayout = this.findViewById(R.id.swipe_refresh_layout);
 
         this.webView.setWebViewClient(new WebViewClientCompat() {
             private String pageUrl;
@@ -175,8 +179,7 @@ public final class AndroidacyActivity extends FoxActivity {
             public boolean shouldOverrideUrlLoading(@NonNull WebView view, @NonNull WebResourceRequest request) {
                 // Don't open non Androidacy urls inside WebView
                 if (request.isForMainFrame() && !AndroidacyUtil.isAndroidacyLink(request.getUrl())) {
-                    if (downloadMode || backOnResume)
-                        return true;
+                    if (downloadMode || backOnResume) return true;
                     // sanitize url
                     String url = request.getUrl().toString();
                     //noinspection UnnecessaryCallToStringValueOf
@@ -230,6 +233,11 @@ public final class AndroidacyActivity extends FoxActivity {
                 }
             }
         });
+        // logic for swipe to refresh
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            webView.reload();
+            swipeRefreshLayout.setRefreshing(false);
+        });
         this.webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
@@ -253,8 +261,7 @@ public final class AndroidacyActivity extends FoxActivity {
 
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
-                if (downloadMode)
-                    return;
+                if (downloadMode) return;
                 if (newProgress != 100 && // Show progress bar
                         progressIndicator.getVisibility() != View.VISIBLE)
                     progressIndicator.setVisibility(View.VISIBLE);
@@ -265,15 +272,13 @@ public final class AndroidacyActivity extends FoxActivity {
             }
         });
         this.webView.setDownloadListener((downloadUrl, userAgent, contentDisposition, mimetype, contentLength) -> {
-            if (this.downloadMode || this.isDownloadUrl(downloadUrl))
-                return;
+            if (this.downloadMode || this.isDownloadUrl(downloadUrl)) return;
             if (AndroidacyUtil.isAndroidacyLink(downloadUrl) && !this.backOnResume) {
                 AndroidacyWebAPI androidacyWebAPI = this.androidacyWebAPI;
                 if (androidacyWebAPI != null) {
                     if (!androidacyWebAPI.downloadMode) {
                         // Native module popup may cause download after consumed action
-                        if (androidacyWebAPI.consumedAction)
-                            return;
+                        if (androidacyWebAPI.consumedAction) return;
                         // Workaround Androidacy bug
                         final String moduleId = moduleIdOfUrl(downloadUrl);
                         if (this.megaIntercept(webView.getUrl(), downloadUrl)) {
@@ -301,8 +306,7 @@ public final class AndroidacyActivity extends FoxActivity {
         this.androidacyWebAPI = new AndroidacyWebAPI(this, allowInstall);
         XHooks.onWebViewInitialize(this.webView, allowInstall);
         this.webView.addJavascriptInterface(this.androidacyWebAPI, "mmm");
-        if (compatLevel != 0)
-            androidacyWebAPI.notifyCompatModeRaw(compatLevel);
+        if (compatLevel != 0) androidacyWebAPI.notifyCompatModeRaw(compatLevel);
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Accept-Language", this.getResources().getConfiguration().locale.toLanguageTag());
         if (BuildConfig.DEBUG) {
@@ -326,10 +330,8 @@ public final class AndroidacyActivity extends FoxActivity {
     private String moduleIdOfUrl(String url) {
         for (String prefix : new String[]{"https://production-api.androidacy.com/downloads/", "https://staging-api.androidacy.com/downloads/", "https://production-api.androidacy.com/magisk/readme/", "https://staging-api.androidacy.com/magisk/readme/", "https://prodiuction-api.androidacy.com/magisk/info/", "https://staging-api.androidacy.com/magisk/info/"}) { // Make both staging and non staging act the same
             int i = url.indexOf('?', prefix.length());
-            if (i == -1)
-                i = url.length();
-            if (url.startsWith(prefix))
-                return url.substring(prefix.length(), i);
+            if (i == -1) i = url.length();
+            if (url.startsWith(prefix)) return url.substring(prefix.length(), i);
         }
         if (this.isFileUrl(url)) {
             int i = url.indexOf("&module=");
@@ -346,29 +348,24 @@ public final class AndroidacyActivity extends FoxActivity {
     }
 
     private boolean isFileUrl(String url) {
-        if (url == null)
-            return false;
+        if (url == null) return false;
         for (String prefix : new String[]{"https://production-api.androidacy.com/downloads/", "https://staging-api.androidacy.com/downloads/"}) { // Make both staging and non staging act the same
-            if (url.startsWith(prefix))
-                return true;
+            if (url.startsWith(prefix)) return true;
         }
         return false;
     }
 
     private boolean isDownloadUrl(String url) {
         for (String prefix : new String[]{"https://production-api.androidacy.com/magisk/downloads/", "https://staging-api.androidacy.com/magisk/downloads/"}) { // Make both staging and non staging act the same
-            if (url.startsWith(prefix))
-                return true;
+            if (url.startsWith(prefix)) return true;
         }
         return false;
     }
 
     private boolean megaIntercept(String pageUrl, String fileUrl) {
-        if (pageUrl == null || fileUrl == null)
-            return false;
+        if (pageUrl == null || fileUrl == null) return false;
         // ensure neither pageUrl nor fileUrl are going to cause a crash
-        if (pageUrl.contains(" ") || fileUrl.contains(" "))
-            return false;
+        if (pageUrl.contains(" ") || fileUrl.contains(" ")) return false;
         if (!this.isFileUrl(fileUrl)) {
             return false;
         }

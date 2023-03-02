@@ -22,7 +22,7 @@
             android:id="@+id/blur_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="84dp">
+            android:paddingBottom="84dp" >
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/module_list"
