@@ -89,6 +89,8 @@ public final class AndroidacyActivity extends FoxActivity {
             this.forceBackPressed();
             return;
         }
+        // if action bar is shown, hide it
+        this.hideActionBar();
         Http.markCaptchaAndroidacySolved();
         if (!url.contains(AndroidacyUtil.REFERRER)) {
             if (url.lastIndexOf('/') < url.lastIndexOf('?')) {
@@ -235,8 +237,9 @@ public final class AndroidacyActivity extends FoxActivity {
         });
         // logic for swipe to refresh
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            webView.reload();
             swipeRefreshLayout.setRefreshing(false);
+            // reload page
+            webView.reload();
         });
         this.webView.setWebChromeClient(new WebChromeClient() {
             @Override
@@ -262,13 +265,21 @@ public final class AndroidacyActivity extends FoxActivity {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 if (downloadMode) return;
-                if (newProgress != 100 && // Show progress bar
-                        progressIndicator.getVisibility() != View.VISIBLE)
+                if (newProgress != 100 && progressIndicator.getVisibility() != View.VISIBLE) {
+                    Timber.i("Progress: %d, showing progress bar", newProgress);
                     progressIndicator.setVisibility(View.VISIBLE);
+                }
+                // if progress is greater than one, set indeterminate to false
+                if (newProgress > 1) {
+                    Timber.i("Progress: %d, setting indeterminate to false", newProgress);
+                    progressIndicator.setIndeterminate(false);
+                }
                 progressIndicator.setProgressCompat(newProgress, true);
-                if (newProgress == 100 && // Hide progress bar
-                        progressIndicator.getVisibility() != View.INVISIBLE)
-                    progressIndicator.setVisibility(View.INVISIBLE);
+                if (newProgress == 100 && progressIndicator.getVisibility() != View.INVISIBLE) {
+                    Timber.i("Progress: %d, hiding progress bar", newProgress);
+                    progressIndicator.setIndeterminate(true);
+                    progressIndicator.setVisibility(View.GONE);
+                }
             }
         });
         this.webView.setDownloadListener((downloadUrl, userAgent, contentDisposition, mimetype, contentLength) -> {
@@ -309,10 +320,7 @@ public final class AndroidacyActivity extends FoxActivity {
         if (compatLevel != 0) androidacyWebAPI.notifyCompatModeRaw(compatLevel);
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Accept-Language", this.getResources().getConfiguration().locale.toLanguageTag());
-        if (BuildConfig.DEBUG) {
-            headers.put("X-Debug", "true");
-            Timber.i("Debug mode enabled for webview using URL: " + url + " with headers: " + headers);
-        }
+        // set layout to view
         this.webView.loadUrl(url, headers);
     }
 
