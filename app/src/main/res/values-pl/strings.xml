@@ -351,4 +351,9 @@
     <string name="notification_channel_category_app_update">Aktualizacje aplikacji</string>
     <string name="notification_channel_background_update_app">Dostępna nowa wersja aplikacji!</string>
     <string name="notification_channel_background_update_app_description">Dostępna jest nowa wersja FoxMMM. Kliknij, aby zaktualizować.</string>
+    <string name="modules">Moduły</string>
+    <string name="no_browser">Nie masz zainstalowanej przeglądarki. Zainstaluj ją, aby kontynuować.</string>
+    <string name="search">Szukaj</string>
+    <string name="yer_a_wizard_harry">Jesteś czarodziejem, Harry!</string>
+    <string name="keep_tapping_to_enter_hogwarts">Stukaj dalej, aby zostać przyjętym do Hogwartu!</string>
 </resources>

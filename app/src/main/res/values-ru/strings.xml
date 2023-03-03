@@ -345,4 +345,9 @@
     <string name="notification_channel_category_app_update_description">Уведомляет, когда доступно обновление приложения</string>
     <string name="notification_channel_background_update_app">Доступно обновление приложения!</string>
     <string name="notification_channel_background_update_app_description">Доступно обновление для FoxMMM. Нажмите здесь, чтобы обновить.</string>
+    <string name="modules">Модули</string>
+    <string name="search">Поиск</string>
+    <string name="yer_a_wizard_harry">Ты волшебник, Гарри!</string>
+    <string name="keep_tapping_to_enter_hogwarts">Продолжайте нажимать, чтобы поступить в Хогвартс!</string>
+    <string name="no_browser">У вас не установлен браузер. Пожалуйста, установите его, чтобы продолжить.</string>
 </resources>
