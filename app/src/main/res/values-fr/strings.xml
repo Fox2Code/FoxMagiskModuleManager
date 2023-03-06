@@ -365,5 +365,14 @@
     <string name="safe_module">Module sûr vérifié</string>
     <string name="safe_message">Ce module a été vérifié par le dépôt comme étant sûr, ce qui veut dire qu\’il a passé un certain seuil de qualité et de sécurité, et qu\’il a été vérifié par rapport aux malware.</string>
     <string name="notification_update_app_desc">Activer automatiquement la vérification pour les MàJ de l\’application. Les MàJ ne seront pas téléchargées automatiquement.</string>
-    <string name="notification_update_app_pref">Vérification des MàJs de l\’application</string><string name="notification_channel_category_app_update">MàJs de l\’application</string><string name="notification_channel_category_app_update_description">ÊTre notifié lorsce qu\’une MàJ de l\’application est trouvée</string><string name="notification_channel_background_update_app">MàJ de l\’application disponible!</string><string name="notification_channel_background_update_app_description">Une MàJ est disponible pour FoxMMM. Appuyer ici pour MàJ.</string>
+    <string name="notification_update_app_pref">Vérification des MàJs de l\’application</string>
+    <string name="notification_channel_category_app_update">MàJs de l\’application</string>
+    <string name="notification_channel_category_app_update_description">ÊTre notifié lorsce qu\’une MàJ de l\’application est trouvée</string>
+    <string name="notification_channel_background_update_app">MàJ de l\’application disponible!</string>
+    <string name="notification_channel_background_update_app_description">Une MàJ est disponible pour FoxMMM. Appuyer ici pour MàJ.</string>
+    <string name="yer_a_wizard_harry">Vous êtes un magicien, Harry!</string>
+    <string name="keep_tapping_to_enter_hogwarts">Continuez à toquer pour être admis à Poudlard !</string>
+    <string name="modules">Modules</string>
+    <string name="no_browser">Vous n\’avez pas de navigateur installé. Merci d\’en installer un pour continuer.</string>
+    <string name="search">Rechercher</string>
 </resources>
