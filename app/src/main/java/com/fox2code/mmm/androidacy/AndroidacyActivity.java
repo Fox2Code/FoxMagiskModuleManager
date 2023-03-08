@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.ConsoleMessage;
+import android.webkit.CookieManager;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
@@ -27,6 +29,7 @@ import androidx.webkit.WebViewClientCompat;
 import androidx.webkit.WebViewFeature;
 
 import com.fox2code.foxcompat.app.FoxActivity;
+import com.fox2code.foxcompat.app.FoxApplication;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
@@ -71,6 +74,10 @@ public final class AndroidacyActivity extends FoxActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         this.moduleFile = new File(this.getCacheDir(), "module.zip");
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            // per process webview data dir
+            WebView.setDataDirectorySuffix(FoxApplication.getProcessName());
+        }
         Intent intent = this.getIntent();
         Uri uri;
         if (!MainApplication.checkSecret(intent) || (uri = intent.getData()) == null) {
@@ -144,6 +151,9 @@ public final class AndroidacyActivity extends FoxActivity {
         this.webView = this.findViewById(R.id.webView);
         WebSettings webSettings = this.webView.getSettings();
         webSettings.setUserAgentString(Http.getAndroidacyUA());
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.setAcceptCookie(true);
+        cookieManager.setAcceptThirdPartyCookies(this.webView, true);
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);

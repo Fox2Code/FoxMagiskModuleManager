@@ -22,6 +22,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.webkit.WebView;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.fox2code.foxcompat.app.FoxActivity;
+import com.fox2code.foxcompat.app.FoxApplication;
 import com.fox2code.foxcompat.view.FoxDisplay;
 import com.fox2code.mmm.background.BackgroundUpdateChecker;
 import com.fox2code.mmm.installer.InstallerInitializer;
@@ -129,6 +131,10 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         }
         BackgroundUpdateChecker.onMainActivityCreate(this);
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            // per process webview data dir
+            WebView.setDataDirectorySuffix(FoxApplication.getProcessName());
+        }
         if (!isOfficial) {
             Timber.w("You may be running an untrusted build.");
             // Show a toast to warn the user
