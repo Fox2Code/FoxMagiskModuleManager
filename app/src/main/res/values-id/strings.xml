@@ -316,7 +316,7 @@
     <string name="reset_app">Reset aplikasi</string>
     <string name="upgraded_summary">Anda cukup mengagumkan! Kelihatannya anda sudah memperbarui subskripsi premium dan mendukung Androidacy.</string>
     <string name="upgraded">Premium aktif</string>
-    <string name="reset_warning"Jika anda selalu melihat layar ini, mereset aplikasi mungkin akan membantu. Ini akan menghapus data aplikasi tetapi tidak ada efek terhadap modul-modul terpasang.</string>
+    <string name="reset_warning">Jika anda selalu melihat layar ini, mereset aplikasi mungkin akan membantu. Ini akan menghapus data aplikasi tetapi tidak ada efek terhadap modul-modul terpasang.</string>
     <string name="reset_app_message">Ini akan menghapus semua data dan menutup aplikasi. Modul-modul tidak akan dihapus.</string>
     <string name="reset">Reset</string>
     <string name="reset_app_confirmation">Ini akan menghapus data aplikasi, tetapi tidak ada efek terhadap modul-modul.</string>
