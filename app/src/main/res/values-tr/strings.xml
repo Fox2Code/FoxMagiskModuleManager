@@ -360,4 +360,5 @@
     <string name="safe_message">Bu modül depo tarafından güvenli olarak doğrulanmıştır, yani belirli kalite ve güvenlik eşiklerini geçmiştir ve kötü amaçlı yazılımlara karşı kontrol edilmiştir.</string>
     <string name="notification_update_app_desc">Uygulama güncellemelerini otomatik olarak kontrol etmeyi etkinleştirin. Güncellemeler otomatik olarak indirilmeyecektir.</string>
     <string name="notification_channel_category_app_update_description">Bir uygulama güncellemesi mevcut olduğunda bildirir</string>
+    <string name="search">Ara</string>
 </resources>
