@@ -14,7 +14,7 @@
     <string name="fail_internet">No se pudo conectar a Internet</string>
     <string name="title_activity_settings">AjustesActividad</string>
     <string name="app_update_available">Una nueva versión de la aplicación está disponible</string>
-    <string name="app_update">Actualizar</string>
+    <string name="app_update">Actualizar aplicación</string>
     <string name="no_desc_found">No se ha encontrado ninguna descripción.</string>
     <string name="download_module">Descargar Modulo</string>
     <string name="install_module">Instalar el módulo</string>
@@ -101,14 +101,14 @@
     <string name="remove_repo">Borrar repositorio</string>
     <string name="custom_url">URL personalizada</string>
     <string name="link_copied">Enlace copiado</string>
-    <string name="androidacy_repo_info">Este repositorio puede mostrar alguna publicidad no intrusiva para cubrir los costes de servidor y desarrollo.</string>
+    <string name="androidacy_repo_info">Este repositorio puede mostrar publicidad no intrusiva para cubrir los costos del servidor y el desarrollo. Revisiones de características, escaneos automáticos de virus y más.</string>
     <string name="backup_module_list">Backup modulos</string>
     <string name="restore_module_list">Restaurar módulos</string>
     <string name="require_internet">Esta operación requiere una conexión a Internet</string>
     <string name="androidacy_test_mode_desc">Utilice el punto final de Androidacy en lugar del punto final de lanzamiento. (Reiniciará la aplicación)</string>
     <string name="notification_update_title">Se han encontrado %i actualizaciones de módulos</string>
     <string name="notification_update_title_easter_egg">Actualizaciones de los módulos %i</string>
-    <string name="notification_update_pref">Comprobación de la actualización de los módulos de fondo</string>
+    <string name="notification_update_pref">Comprobación automática de módulos en segundo plano</string>
     <string name="notification_update_desc">Puede aumentar el uso de la batería</string>
     <string name="notification_update_debug_pref">Notificación de prueba</string>
     <string name="language_translated_by">Traducido por Fox2Code (Ponga su nombre aquí)</string>
@@ -150,6 +150,10 @@
     <string name="api_key_removed">Restablecimiento exitoso de la clave API</string>
     <string name="androidacy_test_mode_warning">Está configurando la aplicación para que utilice un punto final que no es de producción para Androidacy. Esto puede dar lugar a la inestabilidad de la aplicación y a la imposibilidad de cargar el repositorio en línea. NO informe de errores si tiene este interruptor activado. La aplicación se reiniciará para recargar los repos.</string>
     <string name="androidacy_failed_to_validate_token">No se ha podido validar el token de Androidacy. Por favor, inténtelo más tarde.</string>
-    <string name="disable_low_quality_module_filter_desc">Algunos módulos no declaran sus metadatos correctamente, causando fallos visuales, y/o indicando una mala calidad del módulo. 
-\nDesactive esta opción bajo su propia responsabilidad!</string>
+    <string name="disable_low_quality_module_filter_desc">Algunos módulos no declaran sus metadatos correctamente, lo que provoca fallas visuales y/o indica una mala calidad del módulo.
+\n¡Activa esto bajo tu propio riesgo!</string>
+    <string name="api_key_restart">Se ha cambiado la clave API. Reinicie la aplicación para aplicar los cambios.</string>
+    <string name="permission_notification_title">¿Permitir notificaciones\?</string>
+    <string name="permission_notification_message">Necesitamos el permiso de notificaciones para notificarle sobre actualizaciones de aplicaciones y módulos. Si no concede este permiso, no se ejecutarán las comprobaciones de actualizaciones automáticas.</string>
+    <string name="api_key_unchanged">La clave API que ingresa es la misma que ya está en uso.</string>
 </resources>

@@ -13,7 +13,7 @@
     <string name="fail_internet">無法連線到網路</string>
     <string name="no_web_view">無法開啟系統內的 WebView</string>
     <string name="title_activity_settings">設定活動</string>
-    <string name="app_update_available">可用的應用程序更新</string>
+    <string name="app_update_available">可用的應用程式更新</string>
     <string name="app_update">更新</string>
     <string name="no_desc_found">沒有安裝說明</string>
     <string name="download_module">下載模組</string>
@@ -86,26 +86,25 @@
     <string name="magisk_builtin_module">Magisk 內建模組</string>
     <string name="substratum_builtin_module">Substratum 內建模組</string>
     <string name="force_dark_terminal_title">終端強制使用深色模式</string>
-    <string name="file_picker_failure">您目前的檔案管理員無法使用</string>
+    <string name="file_picker_failure">您目前的檔案管理員無法讀取這個檔案。</string>
     <string name="remote_install_title">遠端安裝</string>
-    <string name="file_picker_wierd">您的檔案管理器返回了非標準響應</string>
+    <string name="file_picker_wierd">您的檔案管理器返回了非標準響應。</string>
     <string name="use_magisk_install_command_pref" tools:ignore="TypographyDashes">使用 Magisk 安裝命令</string>
-    <string name="use_magisk_install_command_desc">
-        在測試過程中導致模組安裝錯誤診斷工具出現問題，
-        所以我把這個選項隱藏在 dev-mode 後面，啟用它需要自行承擔風險!</string>
+    <string name="use_magisk_install_command_desc">在測試過程中導致模組安裝錯誤診斷工具出現問題， 所以這個選項被隱藏在開發者模式裡面。
+\n啟用本功能的後果請自負！</string>
     <string name="dev_mode_enabled">開發者模式已啟用</string>
     <string name="dev_mode_disabled">開發者模式已關閉</string>
     <string name="force_english_pref">強制使用英語</string>
     <string name="disable_low_quality_module_filter_pref">停止過濾「粗糙的模組」</string>
-    <string name="disable_low_quality_module_filter_desc">一些模組沒有正確宣告他們的詮釋資訊，導致顯示上的問題並有可能表示模組的整體品質有問題。 這代表可能這個模組可能會產生未知的問題。</string>
+    <string name="disable_low_quality_module_filter_desc">一些模組沒有正確宣告他們的詮釋資訊，導致顯示上的問題並有可能表示模組的整體品質有問題。
+\n開啟的後果請自負！</string>
     <string name="dns_over_https_pref">加密的 HTTPS 協定進行 DNS 解析請求</string>
     <string name="dns_over_https_desc">
         在某些情況下可能會修復連線問題
         (不適用於 WebView)</string>
     <string name="disable_extensions_pref">禁用擴充套件</string>
-    <string name="disable_extensions_desc">
-        禁用 Fox\'s Mmm 擴充套件, 這可以防止模組使用
-        終端擴充套件, 如果模組濫用 Fox\'s Mmm 的擴充套件, 這將會很有用。</string>
+    <string name="disable_extensions_desc">禁用 Fox\'s Mmm 擴充套件, 這可以防止模組使用 終端擴充套件。
+\n如果模組濫用 Fox\'s Mmm 的擴充套件, 這將會很有用。</string>
     <string name="wrap_text_pref">文字換行</string>
     <string name="wrap_text_desc">
         將文字換行至新行，
@@ -131,28 +130,28 @@
     <bool name="lang_support_rtl">false</bool>
     <!-- Always copy language_support_level when translating -->
     <integer name="language_support_level">1</integer>
-    <string name="language_support_outdated">如果您使用的當前語言沒有及時更新，請考慮在 GitHub 上的為翻譯做出貢獻。</string>
+    <string name="language_support_outdated">如果您使用的當前語言沒有及時更新，請考慮在 GitHub 上的為翻譯做出貢獻</string>
     <!-- Replace with your own username when translating -->
     <string name="language_translated_by">由 OrStudio.tw(@crcky5322), ProtoAES256 提供美妙的翻譯</string>
     <!-- Form ender-zhao replenish, may not be standard. some translate need local Taiwan resident change -->
     <string name="fail_magisk_missing">此設備上未安裝 Magisk</string>
-    <string name="fail_root_denied">Root 被 Magisk 應用程序被拒絕</string>
+    <string name="fail_root_denied">Root 權限被 Magisk 拒絕授予</string>
     <string name="setup_button">完成</string>
-    <string name="crash">為測試崩潰此程序</string>
+    <string name="crash">程式手動崩潰測試</string>
     <string name="repackaged_as">重新包裝為:</string>
     <string name="wrapped_from">包裝自:</string>
-    <string name="crash_reporting_restart_title">重新啟動應用程序以應用更改?</string>
+    <string name="crash_reporting_restart_title">重新啟動應用程式讓更動生效\?</string>
     <string name="crash_reporting_restart_message">該應用需要重新啟動才能應用此設置</string>
     <string name="restart">重新啓動</string>
-    <string name="androidacy_test_mode_disable_warning">應用程序將重新啟動以禁用暫存端點</string>
+    <string name="androidacy_test_mode_disable_warning">應用程式將重新啟動以禁用暫存端點</string>
     <string name="androidacy_failed_to_parse_token">無法從 Androidacy 檢索令牌。 請稍後再試。</string>
     <string name="androidacy_failed_to_validate_token">無法驗證 Androidacy 的令牌。 請稍後再試。</string>
     <string name="androidacy_server_down">無法聯繫 Androidacy 服務器。 請檢查您的連接並重試。</string>
     <string name="androidacy_need_captcha">Androidacy 更新被驗證碼阻止</string>
-    <string name="api_key_restart">API 密鑰已更改。 重新啟動應用程序以應用更改。</string>
+    <string name="api_key_restart">API 密鑰已更改。 重新啟動應用程式讓更動生效。</string>
     <string name="api_key_unchanged">您輸入的 API 密鑰與已經使用的 API 密鑰相同。</string>
     <string name="permission_notification_title">允許通知?</string>
-    <string name="permission_notification_message">我們需要通知權限才能通知您應用程序和模塊更新。 如果您不授予此權限，則不會運行後台自動更新檢查。</string>
+    <string name="permission_notification_message">我們需要通知權限才能通知你應用和模組的更新。 如果你不授予此權限，則不會運行後台的自動更新檢測。</string>
     <string name="permission_notification_grant">授予權限</string>
     <string name="background_update_check_permission_required">請啟用通知以啟用此選項。</string>
     <string name="dont_ask_again">不再詢問</string>
@@ -166,16 +165,16 @@
     <string name="setup_button_skip">跳過</string>
     <string name="low_performance_device_dialogue_title">在低端設備上啟用模糊</string>
     <string name="low_performance_device_dialogue_message">你正在尝试在可能无法正常运行的設備上启用模糊.\n啓用他可能會導致糟糕的用戶體驗，我們建議你不要這樣做。</string>
-    <string name="alt_repo_info">倉庫的限制和審查較少，這可能會導致模塊質量較低。很粗糙，不過有很多模塊。</string>
+    <string name="alt_repo_info">倉庫的限制和審查較少，這可能會導致模組質量較低。很粗糙，不過有很多模組。</string>
     <string name="install_terminal_reboot_now_message">您即將重啟您的設備。如果你保存了你的工作, 點擊確定以繼續。否則, 請點擊取消。</string>
-    <string name="install_terminal_config_missing">包 %s 缺少模塊的配置, 因此我們無法運行它.</string>
+    <string name="install_terminal_config_missing">包 %s 缺少模組的配置, 因此無法運行。</string>
     <string name="clear_app_data">清除應用數據</string>
     <string name="clear_data_dialogue_title">清除應用數據?</string>
     <string name="clear_data_dialogue_message">你將清除所有程式資料。請再次確認是否執行。</string>
     <string name="debug_build">這是一個測試構建。預計會出現一些錯誤和更差的性能。</string>
     <string name="androidacy_repo_name">Androidacy 倉庫</string>
     <string name="magisk_alt_repo_name">Magisk Alt 倉庫</string>
-    <string name="repo_enabled_changed">你啟用或禁用了一個倉庫。請刷新模塊列表或重啟應用。</string>
+    <string name="repo_enabled_changed">你啟用或禁用了一個倉庫。請刷新模組列表或重啟應用。</string>
     <string name="finish">完成</string>
     <string name="setup_theme">選擇一個主題</string>
     <string name="setup_theme_header">選擇一個主題</string>
@@ -192,15 +191,15 @@
     <string name="theme_transparent_light">明亮 (透明)</string>
     <string name="theme_light">明亮</string>
     <string name="androidacy_update_needed">此應用程式需要更新。</string>
-    <string name="androidacy_update_needed_message">請更新應用至最新版本</string>
-    <string name="androidacy_webview_update_required">你的webview已過時! 請更新它</string>
+    <string name="androidacy_update_needed_message">請更新應用至最新版本。</string>
+    <string name="androidacy_webview_update_required">你的WebView已過時! 請把它更新。</string>
     <string name="language_cta">沒有看見你的語言?</string>
-    <string name="language_cta_desc">幫助我們翻譯它! 點擊這裡了解更多</string>
+    <string name="language_cta_desc">幫助我們翻譯! 點擊這裡以了解更多。</string>
     <string name="source_code_summary"><b>Commit</b> %1$s @ %2$s</string>
-    <string name="no_file_provided">嘗試打開的 zip 文件未提供文件</string>
+    <string name="no_file_provided">在嘗試打開的 zip 檔案時並未提供任何檔案。</string>
     <string name="zip_load_failed">無法加載 zip 文件</string>
     <string name="androidacy_thanks">部分由 Androidacy 開發</string>
-    <string name="androidacy_thanks_desc">對 Androidacy 的集成和對應用程序的貢獻大加讚賞</string>
+    <string name="androidacy_thanks_desc">對 Androidacy 在應用程式的貢獻以及整合表示感謝。</string>
     <string name="contributors">當然，感謝我們所有的貢獻者, 無論是翻譯, 代碼, 或只是為了好玩! 我們愛你們所有人。</string>
     <string name="crash_reporting">自動發送錯誤以及性能相關數據給開發者</string>
     <string name="api_key">Androidacy API 密鑰</string>
@@ -246,4 +245,120 @@
     <string name="link_copied">鏈接已複製</string>
     <string name="androidacy_test_mode_pref">Androidacy 測試模式</string>
     <string name="androidacy_test_mode_desc">使用 Androidacy 的架設服務端而不是發行版的服務端。（將會重啟應用程式）</string>
+    <string name="transparent_theme_dialogue_message">透明主題可能會有某些不穩定性，且不一定能在所有ROM上使用。除外，Monet以及Blur將會被禁用。你可以隨時復原此設定。</string>
+    <string name="setup_message">歡迎！這個應用程式將會引導你安裝並管理Magisk模組。作為開始，請選擇以下選項。這些以及其他選項也可以過後在設置中修改。</string>
+    <string name="setup_crash_reporting">啟用Sentry</string>
+    <string name="androidacy_repo_disabled_message">此發行版不包含Androidacy倉庫的應用端密鑰。如果需要模組審核，自動安全檢查等功能請下載GitHub的發行版。</string>
+    <string name="zip_prop_load_failed">無法加載模組設定</string>
+    <string name="zip_security_warning">安裝 %s 嗎？</string>
+    <string name="zip_unpacking">檢查模組中…</string>
+    <string name="warning_message">有跡象顯示此模組在未經過你允許的情況下安裝完畢，或者想要嘗試隱藏自身的存在。
+\n
+\n我們強烈建議你解除安裝此模組。</string>
+    <string name="understand">我知道了</string>
+    <string name="setup_language_button">選擇語言</string>
+    <string name="title_activity_setup">設置精靈</string>
+    <string name="action_settings">設置</string>
+    <string name="safe">安全</string>
+    <string name="safe_module">已認證的安全模組</string>
+    <string name="safe_message">這個模組已被倉庫認證為安全的，表示它通過某種程度的質量以及安全檢查，也通過了病毒檢測。</string>
+    <string name="background_update_check_excludes">要從自動更新檢查除開的模組</string>
+    <string name="update_title">更新應用程式</string>
+    <string name="update_button">請稍等...</string>
+    <string name="setup_magisk_alt_repo_summary">比原版的規範寬鬆。有大量的模組，不過安全性較低。</string>
+    <string name="setup_crash_reporting_summary">錯誤回報以及效能分析回傳。所有提交的報告將會嚴格保證匿名且私密。</string>
+    <string name="pref_category_contributors">貢獻者</string>
+    <string name="fox2code_thanks">製作 by Fox2Code</string>
+    <string name="save_logs">儲存日誌到手機上後分享</string>
+    <string name="error_saving_logs">無法儲存日誌</string>
+    <string name="share_logs">分享 FoxMMM 日誌</string>
+    <string name="not_official_build">此應用為非官方的 FoxMMM 發行。</string>
+    <string name="yer_a_wizard_harry">哈利，你是個巫師！</string>
+    <string name="keep_tapping_to_enter_hogwarts">繼續點擊來加入霍格華茲！</string>
+    <string name="modules">模組</string>
+    <string name="no_browser">沒有發現瀏覽器的存在。請安裝一個來繼續操作。</string>
+    <string name="search">搜尋</string>
+    <string name="repo_update_failed_message">以下倉庫無法完成更新：
+\n
+\n%s</string>
+    <string name="reset_api_key">重置API密鑰</string>
+    <string name="upgrade_androidacy_promo">升級至高級用戶</string>
+    <string name="upgrade_androidacy_promo_desc">升級至高級用戶將會去除廣告，驗證碼，以及直接下載，且可以支持Androidacy以及模組作者的工作。</string>
+    <string name="setup_background_update_check_summary">允許我們在後台檢查模組以及應用程式的更新。這項功能將會使用更多電池電量和數據。</string>
+    <string name="setup_androidacy_repo_summary">用戶評價功能，自動病毒掃描，更新迅速，選項繁多，且被Androidacy所支援。</string>
+    <string name="zip_intent_module_install">你確定要安裝來自 \"%2$s\" zip壓縮檔的模組 \"%1$s\" 嗎？
+\n
+\n請確認模組來源的可信度，因為模組功能的影響非常大且可以做將近任何事情。</string>
+    <string name="setup_theme_title">選擇主題</string>
+    <string name="crash_text">喔不，我們碰到問題了！</string>
+    <string name="feedback_message">告訴我們發生了什麼事，以及當下你在做什麼。越詳細越好！</string>
+    <string name="feedback_submit">發送後重啟</string>
+    <string name="please_feedback">請告訴我們當時問題發生時你想要做什麼。</string>
+    <string name="sentry_dialogue_disabled">錯誤回報已被禁止。請允許後再發送回報。</string>
+    <string name="feedback_name">名字（非必要）</string>
+    <string name="feedback_email">電子信箱（非必要）</string>
+    <string name="sentry_dialogue_empty_message">你沒有輸入任何回報內容。</string>
+    <string name="crash_icon">崩潰圖示</string>
+    <string name="copy_button">複製文本</string>
+    <string name="crash_details">不明原因</string>
+    <string name="more_details">以下有更多詳情。</string>
+    <string name="crash_details_copied">已複製堆疊追踪到剪貼簿！</string>
+    <string name="crash_full_stacktrace">堆疊追踪：
+\n%1$s</string>
+    <string name="sentry_enable_nag">看起來錯誤回報被禁止了。請允許後再發送回報。</string>
+    <string name="fox2code_thanks_desc">Fox2Code是此應用的原作者。這裡的存在都要歸功於他。</string>
+    <string name="title_activity_update">內置更新器</string>
+    <string name="update_message">FoxMMM檢查更新中。這將會持續幾分鐘</string>
+    <string name="no_file_found">錯誤：找不到更新包。</string>
+    <string name="low_quality_module_desc">這個模組的元資料或為無效，又或為低質量模組的徵兆。建議解除安裝。</string>
+    <string name="reset_app">重置此應用</string>
+    <string name="upgraded_summary">你真棒！看起來你已經升級你的訂閱且支持著Androidacy。</string>
+    <string name="upgraded">高級會員啟用中</string>
+    <string name="reset_warning">如果你一直看到這個畫面，重置應用程式可能會有幫助。這會清除掉應用資料，可是不會影響已安裝的模組。</string>
+    <string name="reset_app_message">這將會完全移除所有應用資料並關閉應用程式。模組不會被解除安裝。</string>
+    <string name="reset">重置</string>
+    <string name="reset_app_confirmation">這將會完全清除應用資料，可是不會影響模組。</string>
+    <string name="error_adding">自定義倉庫添加失敗</string>
+    <string name="api_key_mismatch">輸入的資料不是一個有效的API密鑰格式</string>
+    <string name="error_no_extras">錯誤：啟動時接收到了無效資料</string>
+    <string name="update_debug_warning">你看起來正在運行除錯測試版。除錯測試版只能透過手動更新，且不支援應用程式內建更新</string>
+    <string name="error_no_action">錯誤：無效的行動被指定。拒絕繼續執行。</string>
+    <string name="update_available">找到更新</string>
+    <string name="checking_for_update">檢查更新中…</string>
+    <string name="no_update_available">已經是最新版！</string>
+    <string name="download_update">下載更新</string>
+    <string name="error_download_update">下載更新資訊時發生錯誤。</string>
+    <string name="error_no_asset">錯誤：讀取更新資訊失敗</string>
+    <string name="installing_update">安裝更新中…</string>
+    <string name="check_for_updates">檢查應用程式更新</string>
+    <string name="theme_transparent_dark">暗（透明）</string>
+    <string name="notification_update_ignore_desc">模組更新檢查例外列表</string>
+    <string name="notification_update_ignore_pref">除開模組</string>
+    <string name="pref_category_updates">更新</string>
+    <string name="invalid_excludes">無效輸入</string>
+    <string name="invalid_characters_message">輸入的模組列表無效。請輸入模組ID並用逗點隔開複數模組</string>
+    <string name="downloading_update">下載更新中... %1$d%%</string>
+    <string name="update_debug_download_pref">測試更新下載機制</string>
+    <string name="changelog_none">沒有任何修改！</string>
+    <string name="update_cancel_button">取消更新</string>
+    <string name="invalid_repo_url">輸入的倉庫鏈接無效</string>
+    <string name="add_repo_message">倉庫必須使用HTTPS，並且遵循文檔內列出的規範。</string>
+    <string name="notification_update_summary">以下模組可以更新：</string>
+    <string name="notification_update_module_template">%1$s 到 版本 %2$s</string>
+    <string name="notification_channel_background_update">檢查更新中...</string>
+    <string name="notification_channel_background_update_description">FoxMMM在後台檢查更新中。</string>
+    <string name="notification_channel_category_background_update">後台更新狀態</string>
+    <string name="notification_channel_category_background_update_description">在檢查更新時顯示一個通知，不讓系統自動結束進程</string>
+    <string name="notification_update_wifi_desc">只在WiFi連線下檢查</string>
+    <string name="notification_update_wifi_pref">需要WiFi或者無限量網路來檢查更新。如果流量有限制建議開啟。</string>
+    <string name="background_update_check_excludes_no_modules">裝置上沒有已安裝的模組</string>
+    <string name="auto_updates_notifs">當有模組更新時通知</string>
+    <string name="notification_group_updates">更新</string>
+    <string name="online">在線</string>
+    <string name="notification_update_app_desc">允許自動檢查應用更新。更新不會自動下載。</string>
+    <string name="notification_update_app_pref">檢查應用更新</string>
+    <string name="notification_channel_category_app_update">應用程式更新</string>
+    <string name="notification_channel_category_app_update_description">當應用程式有更新時通知</string>
+    <string name="notification_channel_background_update_app">應用有新的更新！</string>
+    <string name="notification_channel_background_update_app_description">FoxMMM有更新。點擊安裝更新。</string>
 </resources>

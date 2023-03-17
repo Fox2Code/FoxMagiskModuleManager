@@ -342,4 +342,9 @@
     <string name="notification_channel_category_app_update">Оновлення додатків</string>
     <string name="notification_channel_category_app_update_description">Повідомляє, коли доступне оновлення додатку</string>
     <string name="notification_channel_background_update_app">Доступне оновлення додатку!</string>
+    <string name="keep_tapping_to_enter_hogwarts">Продовжуйте натискати, щоб вас зарахували до Гоґвортсу!</string>
+    <string name="modules">Модулі</string>
+    <string name="search">Пошук</string>
+    <string name="yer_a_wizard_harry">Ти чарівник, Гаррі!</string>
+    <string name="no_browser">У вас не відсутній браузер. Щоб продовжити, встановіть його.</string>
 </resources>
