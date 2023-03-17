@@ -269,4 +269,19 @@
     <string name="repo_update_failed_message">Die folgenden Repos konnten nicht aktualisiert werden: %s</string>
     <string name="reset_api_key">API-Schlüssel zurücksetzen</string>
     <string name="upgrade_androidacy_promo">Upgrade auf Premium</string>
+    <string name="share_logs">Teile Logs</string>
+    <string name="not_official_build">Diese App ist ein inoffizieller FoxMMM-Build.</string>
+    <string name="feedback_submit">Absenden und neu starten</string>
+    <string name="please_feedback">Bitte hilf uns aus, indem du uns erzählst, was du machen wolltest, bevor dies passiert ist.</string>
+    <string name="sentry_dialogue_disabled">Fehler-Upload deaktiviert. Aktivieren, um Feedback hochzuladen.</string>
+    <string name="feedback_name">Name (optional)</string>
+    <string name="feedback_email">E-Mail (optional)</string>
+    <string name="sentry_dialogue_empty_message">Du hast kein Feedback eingegeben.</string>
+    <string name="crash_icon">Crash-Icon</string>
+    <string name="copy_button">Text kopieren</string>
+    <string name="crash_details">Unbekannter Fehler</string>
+    <string name="error_saving_logs">Konnte Logs nicht speichern</string>
+    <string name="crash_text">Fehler!</string>
+    <string name="feedback_message">Bitte gib uns mehr Details, was du gerade getan hast, als das passiert ist. Je mehr, desto besser!</string>
+    <string name="more_details">Weitere Details können unten gefunden werden.</string>
 </resources>
