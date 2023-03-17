@@ -99,8 +99,8 @@
     <string name="dev_mode_enabled">Modo desenvolvedor habilitado</string>
     <string name="force_english_pref">Forçar uso do inglês</string>
     <string name="disable_low_quality_module_filter_pref">Desabilitar filtro de módulos de baixa qualidade</string>
-    <string name="disable_low_quality_module_filter_desc">Alguns módulos não declaram a metadata corretamente, causando defeitos visuais. Isso indica que o módulo é de baixa qualidade.
-\nDesabilite por sua conta e risco!</string>
+    <string name="disable_low_quality_module_filter_desc">Alguns módulos não declaram a metadata corretamente, causando defeitos visuais e/ou indicando que o módulo é de baixa qualidade.
+\nHabilite por sua conta e risco!</string>
     <string name="dns_over_https_desc">
         Em alguns casos pode consertar erros de conexão.
         (Não se aplica ao WebView)
