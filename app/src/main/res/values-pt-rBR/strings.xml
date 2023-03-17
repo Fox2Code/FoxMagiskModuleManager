@@ -99,7 +99,7 @@
     <string name="dev_mode_enabled">Modo desenvolvedor habilitado</string>
     <string name="force_english_pref">Forçar uso do inglês</string>
     <string name="disable_low_quality_module_filter_pref">Desabilitar filtro de módulos de baixa qualidade</string>
-    <string name="disable_low_quality_module_filter_desc">Alguns módulos não declaram a metadata corretamente, causando defeitos visuais e/ou indicando que o módulo é de baixa qualidade.
+    <string name="disable_low_quality_module_filter_desc">Alguns módulos não declaram a metadata corretamente, causando defeitos visuais. Isso indica que o módulo é de baixa qualidade.
 \nHabilite por sua conta e risco!</string>
     <string name="dns_over_https_desc">
         Em alguns casos pode consertar erros de conexão.
@@ -122,9 +122,9 @@
     <string name="androidacy_test_mode_pref">Androidacy modo teste</string>
     <string name="androidacy_test_mode_desc">Use a conexão de teste do Androidacy invés da normal. (Requer reinicialização do app)</string>
     <!-- Background Notification translation -->
-    <string name="notification_update_title">Encontrado %i1$d atualizações de modulo</string>
+    <string name="notification_update_title">Encontramos %1$d atualizações de módulos</string>
     <string name="notification_update_subtitle">Clique para abrir o app</string>
-    <string name="notification_update_pref">Verificação de atualizações em segundo plano</string>
+    <string name="notification_update_pref">Verificação automática de atualizações</string>
     <string name="notification_update_desc">Pode aumentar o consumo de bateria</string>
     <string name="notification_update_debug_pref">Notificação de teste</string>
     <!-- Set to true in translation file if your language is right to left -->
@@ -147,7 +147,7 @@
     <string name="androidacy_test_mode_warning">Você está configurando o app para usar um servidor de testes da Androidacy. Isso pode resultar em instabilidade no app e falha ao carregar o repositório. NÃO reporte bugs se isto estiver ativado. O app ira reiniciar para recarregar os repositórios.</string>
     <string name="androidacy_need_captcha">Atualização da Androidacy bloqueado por Captcha</string>
     <string name="api_key_restart">Chave de API foi mudada. Reinicie o app para aplicar as mudanças.</string>
-    <string name="permission_notification_message">Precisamos da permissão de notificações para te notificar sobre atualização de módulos e do app. Se você não permitir, verificações de atualização em segundo plano serão feitas.</string>
+    <string name="permission_notification_message">Precisamos da permissão de notificações para te notificar sobre atualizações de módulos e do app. Se você não permitir, verificações de atualização automáticas não serão feitas.</string>
     <string name="repo_update_failed_extended">Atualização de %1$s falhou. Por favor tente de novo mais tarde.</string>
     <string name="monet_disabled_summary">Monet não é compatível com temas transparentes.</string>
     <string name="blur_disabled_summary">Desfoque não é compatível com temas transparentes.</string>
@@ -170,7 +170,7 @@
     <string name="setup_title">Configuração inicial</string>
     <string name="setup_message">Bem-vindo! Esse app irá te ajudar a instalar e gerenciar módulos do Magisk. Para começar, selecione as opções abaixo. Essas e outras podem ser ajustadas de novo nas configurações depois.</string>
     <string name="setup_button">Terminar configuração</string>
-    <string name="setup_background_update_check">Atualizações em segundo plano</string>
+    <string name="setup_background_update_check">Verificação automática de atualizações</string>
     <string name="setup_androidacy_repo">Ativar o repositório Androidacy</string>
     <string name="transparent_theme_dialogue_message">Temas transparentes podem ter inconsistências e podem não funcionar em todas as ROMs. E eles irão desativar o Monet e desfoque. Você pode mudar isso a qualquer hora.</string>
     <string name="androidacy_repo_disabled_message">Essa versão não incluir as chaves do repositório Androidacy. Por favor baixe do Github se você quiser aproveitar os benefícios como pontuação dos módulos, verificações de segurança e mais.</string>
@@ -247,12 +247,12 @@
     <string name="theme_black">Preto AMOLED</string>
     <string name="theme_transparent_light">Claro (transparente)</string>
     <string name="theme_light">Claro</string>
-    <string name="zip_prop_load_failed">Não foi possível ler as propriedades do módulo</string>
+    <string name="zip_prop_load_failed">Não foi possível carregar as propriedades do módulo</string>
     <string name="zip_security_warning">Instalar %s\?</string>
     <string name="zip_unpacking">Inspecionando módulo…</string>
-    <string name="warning_message">Esse módulo tem indicadores que pode ter sido instalado sem seu conhecimento, ou que estão tentando se esconder.
+    <string name="warning_message">Há indicações de que este módulo tenha sido instalado sem seu conhecimento, ou de que esteja tentando se ocultar.
 \n
-\nRemove-lo é altamente recomendado.</string>
+\nÉ altamente recomendado removê-lo.</string>
     <string name="understand">Eu entendo</string>
     <string name="setup_theme_title">Escolha o tema</string>
     <string name="setup_language_button">Escolha o idioma</string>
@@ -276,7 +276,7 @@
 \n
 \n%s</string>
     <string name="reset_api_key">Resetar chaves de API</string>
-    <string name="upgrade_androidacy_promo">Atualizar pra premium</string>
+    <string name="upgrade_androidacy_promo">Atualizar para premium</string>
     <string name="upgrade_androidacy_promo_desc">Atualizar pra premium irá remover anúncios, captchas, e acelerar downloads do repositório Androidacy, e contribuir para o Androidacy e os autores dos módulos.</string>
     <string name="pref_category_contributors">Contribuidores</string>
     <string name="fox2code_thanks_desc">Fox2Code é o desenvolvedor original do app. Sem ele, isso não seria possível.</string>
@@ -307,7 +307,7 @@
     <string name="no_file_found">ERRO: Pacote de atualização não encontrado.</string>
     <string name="update_debug_download_pref">Testar mecanismo de download de atualização</string>
     <string name="notification_channel_category_background_update_description">Mostra uma notificação enquanto procura por atualizações para que o sistema não mate o app</string>
-    <string name="theme_transparent_dark">Escuro (Transparente)</string>
+    <string name="theme_transparent_dark">Escuro (transparente)</string>
     <string name="reset_app">Resetar o app</string>
     <string name="upgraded_summary">Você é muito incrível! Parece que você já atualizou sua inscrição e está contribuindo para o Androidacy.</string>
     <string name="low_quality_module_desc">Esse módulos tem metadados que são inválidos ou considerado indicadores de um módulo de baixa qualidade. Remoção é recomendado.</string>
@@ -315,8 +315,8 @@
     <string name="reset">Resetar</string>
     <string name="reset_app_confirmation">Isso irá completamente limpar os dados do app, mas não irá afetar os módulos.</string>
     <string name="error_no_extras">ERRO: dados inválidos recebidos ao iníciar</string>
-    <string name="error_no_action">ERRO: ação invalida especificada. Recusando a continuar.</string>
-    <string name="update_available">Atualização encontrada</string>
+    <string name="error_no_action">ERRO: Ação inválida especificada. Recusa em continuar.</string>
+    <string name="update_available">Atualização disponível</string>
     <string name="checking_for_update">Procurando por atualizações…</string>
     <string name="no_update_available">Você está atualizado!</string>
     <string name="download_update">Baixar atualização</string>
@@ -325,13 +325,13 @@
     <string name="downloading_update">Baixando atualização... %1$d%%</string>
     <string name="installing_update">Instalando atualização…</string>
     <string name="check_for_updates">Procurar atualizações do app</string>
-    <string name="language_cta_desc">Nós ajude a traduzir! Toque aqui pra descobrir mais.</string>
+    <string name="language_cta_desc">Nos ajude a traduzir! Toque aqui para saber mais.</string>
     <string name="no_browser">Você não possui um navegador instalado. Por favor instale um para continuar.</string>
     <string name="api_key_mismatch">Chave de API está com formato inválido</string>
-    <string name="language_cta">Não acha seu idioma\?</string>
+    <string name="language_cta">Não vê seu idioma\?</string>
     <string name="source_code_summary"><b>Commit</b> %1$s @ %2$s</string>
     <string name="no_file_provided">Nenhum arquivo foi providenciado ao tentar abrir um zip.</string>
-    <string name="zip_load_failed">Não foi possível ler o arquivo zip</string>
+    <string name="zip_load_failed">Não foi possível carregar o arquivo zip</string>
     <string name="androidacy_thanks">Desenvolvido em parte por Androidacy</string>
     <string name="notification_update_ignore_pref">Excluir módulos</string>
     <string name="pref_category_updates">Atualizações</string>
@@ -360,7 +360,7 @@
     <string name="notification_channel_category_app_update_description">Notifica quando uma atualização do app está disponível</string>
     <string name="notification_channel_background_update_app">Atualização do app disponível!</string>
     <string name="notification_channel_background_update_app_description">Uma atualização está disponível para o FoxMMM. Toque aqui para atualizar.</string>
-    <string name="zip_intent_module_install">Você realmente quer instalar o módulo \"%1$\" do arquivo ZIP \"%2$s\"\?
+    <string name="zip_intent_module_install">Você realmente quer instalar o módulo \"%1$s\" do arquivo ZIP \"%2$s\"\?
 \n
 \nTenha certeza que você confia na fonte desse módulo, já que módulos são muito poderosos e podem fazer quase qualquer coisa.</string>
 </resources>
