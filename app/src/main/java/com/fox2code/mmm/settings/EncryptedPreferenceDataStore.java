@@ -22,7 +22,7 @@ public class EncryptedPreferenceDataStore extends PreferenceDataStore {
     private static EncryptedPreferenceDataStore mInstance;
     private SharedPreferences mSharedPreferences;
 
-    private EncryptedPreferenceDataStore(Context context) {
+    EncryptedPreferenceDataStore(Context context) {
         try {
             MasterKey mainKeyAlias;
             try {

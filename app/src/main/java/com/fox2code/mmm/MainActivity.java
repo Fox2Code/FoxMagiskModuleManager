@@ -101,11 +101,18 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.initMode = true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            // per process webview data dir
+            try {
+                WebView.setDataDirectorySuffix(FoxApplication.getProcessName());
+            } catch (IllegalStateException e) {
+                Timber.d("Could not set webview data dir, possibly already set or webview already initialized");
+            }
+        }
         // Ensure HTTP Cache directories are created
         Http.ensureCacheDirs(this);
         if (!urlFactoryInstalled) {
-            try {
-                HttpResponseCache cache = HttpResponseCache.getInstalled();
+            try (HttpResponseCache cache = HttpResponseCache.getInstalled()) {
                 if (cache == null) {
                     File cacheDir = new File(getCacheDir(), "http");
                     //noinspection ResultOfMethodCallIgnored
@@ -131,10 +138,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         }
         BackgroundUpdateChecker.onMainActivityCreate(this);
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            // per process webview data dir
-            WebView.setDataDirectorySuffix(FoxApplication.getProcessName());
-        }
         if (!isOfficial) {
             Timber.w("You may be running an untrusted build.");
             // Show a toast to warn the user
@@ -293,7 +296,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 // On every preferences change, log the change if debug is enabled
                 if (BuildConfig.DEBUG) {
                     // Log all preferences changes
-                    MainApplication.getSharedPreferences().registerOnSharedPreferenceChangeListener((prefs, key) -> Timber.i("onSharedPreferenceChanged: " + key + " = " + prefs.getAll().get(key)));
+                    MainApplication.getSharedPreferences("mmm").registerOnSharedPreferenceChangeListener((prefs, key) -> Timber.i("onSharedPreferenceChanged: " + key + " = " + prefs.getAll().get(key)));
                 }
 
                 Timber.i("Scanning for modules!");
@@ -716,7 +719,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         if (BuildConfig.DEBUG)
             Timber.i("Checking if we need to run setup");
         // Check if this is the first launch using prefs and if doSetupRestarting was passed in the intent
-        SharedPreferences prefs = MainApplication.getSharedPreferences();
+        SharedPreferences prefs = MainApplication.getSharedPreferences("mmm");
         boolean firstLaunch = !Objects.equals(prefs.getString("last_shown_setup", null), "v1");
         // First launch
         // this is intentionally separate from the above if statement, because it needs to be checked even if the first launch check is true due to some weird edge cases

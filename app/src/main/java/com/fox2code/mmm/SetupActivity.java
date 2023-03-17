@@ -14,7 +14,6 @@ import android.util.Base64;
 import android.view.View;
 import android.view.WindowManager;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.FragmentActivity;
 
@@ -59,7 +58,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         createFiles();
         disableUpdateActivityForFdroidFlavor();
         // Set theme
-        SharedPreferences prefs = MainApplication.getSharedPreferences();
+        SharedPreferences prefs = MainApplication.getSharedPreferences("mmm");
         switch (prefs.getString("theme", "system")) {
             case "light" -> setTheme(R.style.Theme_MagiskModuleManager_Monet_Light);
             case "dark" -> setTheme(R.style.Theme_MagiskModuleManager_Monet_Dark);
@@ -215,7 +214,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
     public Resources.Theme getTheme() {
         Resources.Theme theme = super.getTheme();
         // Set the theme
-        SharedPreferences prefs = MainApplication.getSharedPreferences();
+        SharedPreferences prefs = MainApplication.getSharedPreferences("mmm");
         switch (prefs.getString("pref_theme", "system")) {
             case "light" -> theme.applyStyle(R.style.Theme_MagiskModuleManager_Monet_Light, true);
             case "dark" -> theme.applyStyle(R.style.Theme_MagiskModuleManager_Monet_Dark, true);
@@ -244,51 +243,52 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         Timber.d("Creating Realm databases");
         long startTime = System.currentTimeMillis();
         // create encryption key
-        Timber.d("Creating encryption key");
+        // Timber.d("Creating encryption key");
         // create the realm database for ReposList
         // next, create the realm database for ReposList
-        RealmConfiguration config2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
-        // get the instance
-        Realm.getInstanceAsync(config2, new Realm.Callback() {
-            @Override
-            public void onSuccess(@NonNull Realm realm1) {
-                // create androidacy_repo and magisk_alt_repo if they don't exist under ReposList
-                // each has id, name, donate, website, support, enabled, and lastUpdate and name
-                // create androidacy_repo
-                realm1.beginTransaction();
-                if (realm1.where(ReposList.class).equalTo("id", "androidacy_repo").findFirst() == null) {
-                    // cant use createObject because it crashes because reasons. use copyToRealm instead
-                    ReposList androidacy_repo = realm1.createObject(ReposList.class, "androidacy_repo");
-                    androidacy_repo.setName("Androidacy Repo");
-                    androidacy_repo.setDonate(AndroidacyRepoData.getInstance().getDonate());
-                    androidacy_repo.setSupport(AndroidacyRepoData.getInstance().getSupport());
-                    androidacy_repo.setSubmitModule(AndroidacyRepoData.getInstance().getSubmitModule());
-                    androidacy_repo.setUrl(RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT);
-                    androidacy_repo.setEnabled(true);
-                    androidacy_repo.setLastUpdate(0);
-                    androidacy_repo.setWebsite(RepoManager.ANDROIDACY_MAGISK_REPO_HOMEPAGE);
-                    // now copy the data from the data class to the realm object using copyToRealmOrUpdate
-                    realm1.insertOrUpdate(androidacy_repo);
-                }
-                // create magisk_alt_repo
-                if (realm1.where(ReposList.class).equalTo("id", "magisk_alt_repo").findFirst() == null) {
-                    ReposList magisk_alt_repo = realm1.createObject(ReposList.class, "magisk_alt_repo");
-                    magisk_alt_repo.setName("Magisk Alt Repo");
-                    magisk_alt_repo.setDonate(null);
-                    magisk_alt_repo.setWebsite(RepoManager.MAGISK_ALT_REPO_HOMEPAGE);
-                    magisk_alt_repo.setSupport(null);
-                    magisk_alt_repo.setEnabled(true);
-                    magisk_alt_repo.setUrl(RepoManager.MAGISK_ALT_REPO);
-                    magisk_alt_repo.setSubmitModule(RepoManager.MAGISK_ALT_REPO_HOMEPAGE + "/submission");
-                    magisk_alt_repo.setLastUpdate(0);
-                    // commit the changes
-                    realm1.insertOrUpdate(magisk_alt_repo);
-                }
-                realm1.commitTransaction();
+        new Thread(() -> {
+            // create the realm database for ReposList
+            // create the realm configuration
+            RealmConfiguration config2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+            // get the instance
+            Realm realm1 = Realm.getInstance(config2);
+            // create androidacy_repo and magisk_alt_repo if they don't exist under ReposList
+            // each has id, name, donate, website, support, enabled, and lastUpdate and name
+            // create androidacy_repo
+            realm1.beginTransaction();
+            if (realm1.where(ReposList.class).equalTo("id", "androidacy_repo").findFirst() == null) {
+                // cant use createObject because it crashes because reasons. use copyToRealm instead
+                ReposList androidacy_repo = realm1.createObject(ReposList.class, "androidacy_repo");
+                androidacy_repo.setName("Androidacy Repo");
+                androidacy_repo.setDonate(AndroidacyRepoData.getInstance().getDonate());
+                androidacy_repo.setSupport(AndroidacyRepoData.getInstance().getSupport());
+                androidacy_repo.setSubmitModule(AndroidacyRepoData.getInstance().getSubmitModule());
+                androidacy_repo.setUrl(RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT);
+                androidacy_repo.setEnabled(true);
+                androidacy_repo.setLastUpdate(0);
+                androidacy_repo.setWebsite(RepoManager.ANDROIDACY_MAGISK_REPO_HOMEPAGE);
+                // now copy the data from the data class to the realm object using copyToRealmOrUpdate
+                realm1.insertOrUpdate(androidacy_repo);
             }
-        });
-        long endTime = System.currentTimeMillis();
-        Timber.d("Realm databases created in %d ms", endTime - startTime);
+            // create magisk_alt_repo
+            if (realm1.where(ReposList.class).equalTo("id", "magisk_alt_repo").findFirst() == null) {
+                ReposList magisk_alt_repo = realm1.createObject(ReposList.class, "magisk_alt_repo");
+                magisk_alt_repo.setName("Magisk Alt Repo");
+                magisk_alt_repo.setDonate(null);
+                magisk_alt_repo.setWebsite(RepoManager.MAGISK_ALT_REPO_HOMEPAGE);
+                magisk_alt_repo.setSupport(null);
+                magisk_alt_repo.setEnabled(true);
+                magisk_alt_repo.setUrl(RepoManager.MAGISK_ALT_REPO);
+                magisk_alt_repo.setSubmitModule(RepoManager.MAGISK_ALT_REPO_HOMEPAGE + "/submission");
+                magisk_alt_repo.setLastUpdate(0);
+                // commit the changes
+                realm1.insertOrUpdate(magisk_alt_repo);
+            }
+            realm1.commitTransaction();
+            realm1.close();
+            long endTime = System.currentTimeMillis();
+            Timber.d("Realm databases created in %d ms", endTime - startTime);
+        }).start();
     }
 
     public void createFiles() {

@@ -12,6 +12,8 @@ public class BackgroundBootListener extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (!BOOT_COMPLETED.equals(intent.getAction())) return;
+        // clear boot shared prefs
+        MainApplication.getBootSharedPreferences().edit().clear().apply();
         synchronized (BackgroundUpdateChecker.lock) {
             new Thread(() -> {
                 BackgroundUpdateChecker.onMainActivityCreate(context);

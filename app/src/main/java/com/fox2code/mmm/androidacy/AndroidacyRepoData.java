@@ -44,7 +44,7 @@ import timber.log.Timber;
 
 @SuppressWarnings("KotlinInternalInJava")
 public final class AndroidacyRepoData extends RepoData {
-    public static String token = MainApplication.getINSTANCE().getSharedPreferences("androidacy", Context.MODE_PRIVATE).getString("pref_androidacy_api_token", null);
+    public static String token = MainApplication.getSharedPreferences("androidacy").getString("pref_androidacy_api_token", null);
 
     static {
         HttpUrl.Builder OK_HTTP_URL_BUILDER = new HttpUrl.Builder().scheme("https");
@@ -55,7 +55,7 @@ public final class AndroidacyRepoData extends RepoData {
 
     @SuppressWarnings("unused")
     public final String ClientID = BuildConfig.ANDROIDACY_CLIENT_ID;
-    public final SharedPreferences cachedPreferences = MainApplication.getINSTANCE().getSharedPreferences("androidacy", Context.MODE_PRIVATE);
+    public final SharedPreferences cachedPreferences = MainApplication.getSharedPreferences("androidacy");
     private final boolean testMode;
     private final String host;
     public String[][] userInfo = new String[][]{{"role", null}, {"permissions", null}};
@@ -89,7 +89,7 @@ public final class AndroidacyRepoData extends RepoData {
     // limiting and fraud detection.
     public static String generateDeviceId() {
         // Try to get the device ID from the shared preferences
-        SharedPreferences sharedPreferences = MainApplication.getINSTANCE().getSharedPreferences("androidacy", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences("androidacy");
         String deviceIdPref = sharedPreferences.getString("device_id", null);
         if (deviceIdPref != null) {
             return deviceIdPref;
@@ -182,7 +182,7 @@ public final class AndroidacyRepoData extends RepoData {
     protected boolean prepare() {
         // If ANDROIDACY_CLIENT_ID is not set or is empty, disable this repo and return
         if (Objects.equals(BuildConfig.ANDROIDACY_CLIENT_ID, "")) {
-            SharedPreferences.Editor editor = MainApplication.getSharedPreferences().edit();
+            SharedPreferences.Editor editor = MainApplication.getSharedPreferences("mmm").edit();
             editor.putBoolean("pref_androidacy_repo_enabled", false);
             editor.apply();
             return false;
