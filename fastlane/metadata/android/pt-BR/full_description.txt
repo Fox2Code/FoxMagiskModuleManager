@@ -1,0 +1,4 @@
+Este app não é oficialmente mantido pelo Magisk ou seus desenvolvedores.
+
+Os módulos mostrados neste app não têm afiliação com o Fox's MMM.
+Favor contatar os donos dos respectivos repositórios.
