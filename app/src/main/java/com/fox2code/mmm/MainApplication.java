@@ -311,18 +311,21 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
                 Timber.plant(new ReleaseTree());
             }
         }
-        // supportedLocales.add("ar");
+        supportedLocales.add("ar");
         // supportedLocales.add("ar_SA");
+        supportedLocales.add("bs");
         supportedLocales.add("cs");
         supportedLocales.add("de");
         // supportedLocales.add("el");
-        supportedLocales.add("es");
-        supportedLocales.add("es-rMX");
+        // supportedLocales.add("es");
+        // supportedLocales.add("es-rMX");
         // supportedLocales.add("et");
         supportedLocales.add("fr");
+        supportedLocales.add("hu");
         supportedLocales.add("id");
         supportedLocales.add("it");
-        // supportedLocales.add("ja");
+        supportedLocales.add("ja");
+        supportedLocales.add("ko");
         // supportedLocales.add("nb-rNO");
         supportedLocales.add("pl");
         supportedLocales.add("pt-rBR");
@@ -330,10 +333,11 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         supportedLocales.add("ru");
         supportedLocales.add("sk");
         supportedLocales.add("tr");
+        // supportedLocales.add("th");
         supportedLocales.add("uk");
         // supportedLocales.add("vi");
-        supportedLocales.add("zh-rCH");
-        // supportedLocales.add("zh-rTW");
+        supportedLocales.add("zh-rCN");
+        supportedLocales.add("zh-rTW");
         supportedLocales.add("en");
         if (INSTANCE == null)
             INSTANCE = this;

@@ -81,6 +81,7 @@ public class InstallerTerminal extends RecyclerView.Adapter<InstallerTerminal.Te
         }
     }
 
+    @SuppressWarnings("unused")
     public void removeLastLine() {
         synchronized (lock) {
             int size = this.terminal.size();
@@ -153,6 +154,7 @@ public class InstallerTerminal extends RecyclerView.Adapter<InstallerTerminal.Te
         }
     }
 
+    @SuppressWarnings("ClassCanBeRecord")
     private static class ProcessedLine {
         public final String line;
         public final Spannable spannable;
