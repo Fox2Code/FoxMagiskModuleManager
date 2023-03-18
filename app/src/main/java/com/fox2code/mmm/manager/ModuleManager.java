@@ -54,7 +54,7 @@ public final class ModuleManager extends SyncManager {
     }
 
     protected void scanInternal(@NonNull UpdateListener updateListener) {
-        // if last_shown_setup is not "v1", them=n refuse to continue
+        // if last_shown_setup is not "v1", then refuse to continue
         if (!MainApplication.getSharedPreferences("mmm").getString("last_shown_setup", "").equals("v1")) {
             return;
         }

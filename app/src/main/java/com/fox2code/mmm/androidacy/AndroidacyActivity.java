@@ -162,8 +162,10 @@ public final class AndroidacyActivity extends FoxActivity {
         webSettings.setAllowFileAccessFromFileURLs(false);
         webSettings.setAllowUniversalAccessFromFileURLs(false);
         webSettings.setMediaPlaybackRequiresUserGesture(false);
-        // enable swiping to refresh
-
+        // enable webview debugging on debug builds
+        if (BuildConfig.DEBUG) {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
         // if app is in dark mode, force dark mode on webview
         if (MainApplication.getINSTANCE().isDarkTheme()) {
             // for api 33, use setAlgorithmicDarkeningAllowed, for api 29-32 use setForceDark, for api 28 and below use setForceDarkStrategy
