@@ -256,7 +256,7 @@
     <string name="understand">Eu entendo</string>
     <string name="setup_theme_title">Escolha o tema</string>
     <string name="setup_language_button">Escolha o idioma</string>
-    <string name="title_activity_setup">Configuração inicial</string>
+    <string name="title_activity_setup">Instalador</string>
     <string name="action_settings">Configurações</string>
     <string name="androidacy_thanks_desc">Grande abraços a Android por sua integração e contribuição para o app.</string>
     <string name="background_update_check_excludes">Modulos a excluir das verificações de atualizações automáticas</string>
@@ -276,7 +276,7 @@
 \n
 \n%s</string>
     <string name="reset_api_key">Resetar chaves de API</string>
-    <string name="upgrade_androidacy_promo">Atualizar para premium</string>
+    <string name="upgrade_androidacy_promo">Atualize para premium</string>
     <string name="upgrade_androidacy_promo_desc">Atualizar pra premium irá remover anúncios, captchas, e acelerar downloads do repositório Androidacy, e contribuir para o Androidacy e os autores dos módulos.</string>
     <string name="pref_category_contributors">Contribuidores</string>
     <string name="fox2code_thanks_desc">Fox2Code é o desenvolvedor original do app. Sem ele, isso não seria possível.</string>
@@ -360,7 +360,7 @@
     <string name="notification_channel_category_app_update_description">Notifica quando uma atualização do app está disponível</string>
     <string name="notification_channel_background_update_app">Atualização do app disponível!</string>
     <string name="notification_channel_background_update_app_description">Uma atualização está disponível para o FoxMMM. Toque aqui para atualizar.</string>
-    <string name="zip_intent_module_install">Você realmente quer instalar o módulo \"%1$s\" do arquivo ZIP \"%2$s\"\?
+    <string name="zip_intent_module_install">Você realmente quer instalar o módulo \"%1$s\" do arquivo zip \"%2$s\"\?
 \n
-\nTenha certeza que você confia na fonte desse módulo, já que módulos são muito poderosos e podem fazer quase qualquer coisa.</string>
+\nTenha certeza de que você confia na fonte deste módulo, já que os módulos são muito poderosos e podem fazer quase tudo.</string>
 </resources>

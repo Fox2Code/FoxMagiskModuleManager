@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Gestionnaire de modules Magisk de Fox</string>
     <string name="app_name_short">Gestionnaire de Fox</string>
@@ -15,7 +16,7 @@
     <string name="no_web_view">Impossible d\’ouvrir le WebView du système</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="app_update_available">Mis-à-jour de l\’application disponible</string>
-    <string name="app_update">Mis-à-jour</string>
+    <string name="app_update">MàJ l\'application</string>
     <string name="no_desc_found">Aucune description trouvée.</string>
     <string name="download_module">Mode téléchargement</string>
     <string name="install_module">Installation du module</string>
@@ -42,7 +43,6 @@
     <string name="no" translatable="false">Non</string>
     <string name="ok" translatable="false">@android:string/ok</string>
     <string name="cancel" translatable="false">Annuler</string>
-    
     <!-- Module section translation -->
     <string name="module_last_update">Dernière mis-à-jour :</string>
     <string name="module_repo">Dépôt :</string>
@@ -56,7 +56,6 @@
     <string name="module_min_magisk_chip">Magisk min. "%s"</string>
     <string name="module_min_sdk_chip">Android Min.</string>
     <string name="module_max_sdk_chip">Android Max.</string>
-    
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">Gestion des dépôts</string>
@@ -105,10 +104,8 @@
     <string name="dev_mode_disabled">Mode développeur désactivé</string>
     <string name="force_english_pref">Forcer la langue Anglaise</string>
     <string name="disable_low_quality_module_filter_pref">Désactiver le filtre de module de basse qualité</string>
-    <string name="disable_low_quality_module_filter_desc">
-        Certains modules ne déclarent pas leur métadonnées correctement, causant des bugs visuels,
-        et/ou indicant une mauvaise qualité du module, à désactiver à vos risques et périls !
-    </string>
+    <string name="disable_low_quality_module_filter_desc">Certains modules ne déclarent pas leur métadonnées correctement, causant des bugs visuels, et/ou indiquant une mauvaise qualité du module.
+\nÀ activer à vos risques et périls!</string>
     <string name="dns_over_https_pref">DNS sur https</string>
     <string name="dns_over_https_desc">
         Pourrait corriger les problèmes de connexions dans certains cas.
@@ -138,15 +135,13 @@
     <string name="require_internet">Cette opération requière une connexion internet</string>
     <string name="androidacy_test_mode_pref">Mode test Androidacy</string>
     <string name="androidacy_test_mode_desc">Utiliser la mise à disposition Androidacy de test au lieu du point de terminaison stable. (Nécessite le redémarrage du processus d\’application)</string>
-    
     <!-- Background Notification translation -->
-    <string name="notification_update_title">%i mises à jours de module trouvé</string>
+    <string name="notification_update_title">%1$d mise(s) à jour de module(s) trouvée(s)</string>
     <string name="notification_update_title_easter_egg">%i mises à jours de module camouflée</string>
     <string name="notification_update_subtitle">Appuyer pour ouvrir l\’application</string>
-    <string name="notification_update_pref">Vérification de mise à jour pour les modules en arrière-plan</string>
+    <string name="notification_update_pref">Vérification automatique de mise à jour pour les modules</string>
     <string name="notification_update_desc">Peut améliorer l\’usage de la batterie</string>
     <string name="notification_update_debug_pref">Test de notification</string>
-    
     <!-- Set to true in translation file if your language is right to left -->
     <bool name="lang_support_rtl">false</bool>
     <!-- Always copy language_support_level when translating -->
@@ -184,7 +179,7 @@
     <string name="api_key_restart">La clé d\’API à été changée. Redémarrer l\’application pour appliquer les changements.</string>
     <string name="api_key_unchanged">La clé d\’API que vous avez entré est la même que celle étant déjà utilisée.</string>
     <string name="permission_notification_title">Autoriser les notifications?</string>
-    <string name="permission_notification_message">Nous avons de l\’accès aux notifications pour vous avertir des mises à jour de l\’application et des modules. Si vous n\’autorisez cette permission, la vérification des mises à jours en arrière-plan ne fonctionnera pas.</string>
+    <string name="permission_notification_message">Nous avons de l\'accès aux notifications pour vous avertir des mises à jour de l\'application et des modules. Si vous n\'autorisez pas cette permission, la vérification des mises à jours en arrière-plan ne fonctionnera pas.</string>
     <string name="permission_notification_grant">Accorder la permission</string>
     <string name="background_update_check_permission_required">Merci d\’activer les notifications pour activer cette option.</string>
     <string name="dont_ask_again">Ne plus demander</string>
@@ -224,7 +219,7 @@
     <string name="setup_title">Première mise en service</string>
     <string name="setup_message">Bienvenue! Cette application vous aidera à installer et gérer vos modules Magisk. Pour commencer, merci de sélectionner les options ci-dessous. Celles-ci et d\’autres peuvent êtres configurées ultérieusement dans les paramètres.</string>
     <string name="setup_button">Terminer la configuration</string>
-    <string name="setup_background_update_check">Vérification des MàJ en arrière-plan</string>
+    <string name="setup_background_update_check">Vérification des MàJ automatique</string>
     <string name="setup_background_update_check_summary">Nous permettre de vérifier les mises-à-jours en arrière-plan.\nCette fonctionnalité peut utiliser d\’avantage de batterie.</string>
     <string name="setup_androidacy_repo">Activer le dépôt Androidacy</string>
     <string name="setup_androidacy_repo_summary">Activer le dépôt Androidacy\nRetours des utilisateurs sur les fonctionnalités, analyse antivirales automatiques, Mises-à-jours rapides, un grand choix de sélection, et soutenu par eux-mêmes.</string>
@@ -287,7 +282,9 @@
     <string name="setup_language_button">Choisir un language</string>
     <string name="title_activity_setup">Assistant de configuration</string>
     <string name="action_settings">Réglages</string>
-    <string name="repo_update_failed_message">Échec de MàJ pour les dépôts suivants:\\n\\n%s</string>
+    <string name="repo_update_failed_message">Échec de MàJ pour les dépôts suivants:
+\n
+\n%s</string>
     <string name="reset_api_key">Réinitialiser les clés d\’API</string>
     <string name="upgrade_androidacy_promo">MàJ vers l\’offre payante</string>
     <string name="upgrade_androidacy_promo_desc">MàJ vers l\’offre supprimera les pubs, les captchas, les téléchargements pour le dépôt Androidacy, leur support et les autheurs des modules.</string>
@@ -324,7 +321,8 @@
     <string name="api_key_mismatch">La clé d\’API n\’est pas dans un format valide</string>
     <string name="notification_update_ignore_desc">Liste des modules à exclure des vérifications de MàJ</string>
     <string name="notification_update_ignore_pref">Modules exclus</string>
-    <string name="pref_category_updates">MàJ</string><string name="invalid_excludes">Saisie invalide</string>
+    <string name="pref_category_updates">MàJ</string>
+    <string name="invalid_excludes">Saisie invalide</string>
     <string name="invalid_characters_message">La liste de modules que vous avez saisie est invalide. Veuillez n\’entrer que des ID de noms de modules valides séparés par des virgules</string>
     <string name="background_update_check_excludes">Modules à exclure des vérifications de MàJ automatiques</string>
     <string name="title_activity_update">MàJ dans l\’application</string>
@@ -333,7 +331,8 @@
     <string name="update_button">Merci de patienter...</string>
     <string name="error_no_extras">ERREURE: Donnée invalides reçues au lancement</string>
     <string name="update_debug_warning">Il semblerait que vous soyez en train d\’utiliser une fabrication de débuggage. Les fabrications de débuggage doivent être MàJ manuellement, et les MàJ incorporées ne sont pas supportées</string>
-    <string name="error_no_action">ERREURE: Action spécifiée invalide. Refus de continuer.</string><string name="update_available">MàJ trouvée</string>
+    <string name="error_no_action">ERREURE: Action spécifiée invalide. Refus de continuer.</string>
+    <string name="update_available">MàJ trouvée</string>
     <string name="checking_for_update">Vérification des MàJ…</string>
     <string name="no_update_available">Vous êtes à jour!</string>
     <string name="download_update">Téléchargement de la MàJ</string>
