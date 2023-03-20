@@ -39,6 +39,8 @@ import io.realm.RealmConfiguration;
 import timber.log.Timber;
 
 public class SetupActivity extends FoxActivity implements LanguageActivity {
+    private int cachedTheme;
+
     @SuppressLint({"ApplySharedPref", "RestrictedApi"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,7 +160,6 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             // Set first launch to false
             // get instance of editor
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("last_shown_setup", "v1");
             // Set the Automatic update check pref
             editor.putBoolean("pref_background_update_check", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).isChecked());
             // Set the crash reporting pref
@@ -174,6 +175,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             // commit the changes
             realm.commitTransaction();
             realm.close();
+            editor.putString("last_shown_setup", "v1");
             // Commit the changes
             editor.commit();
             // Sleep for 1 second to allow the user to see the changes
@@ -186,6 +188,10 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             if (BuildConfig.DEBUG) {
                 Timber.d("Automatic update check: %s", prefs.getBoolean("pref_background_update_check", false));
                 Timber.i("Crash reporting: %s", prefs.getBoolean("pref_crash_reporting", false));
+                Timber.i("Androidacy repo: %s", androidacyRepo);
+                Timber.i("Magisk Alt repo: %s", magiskAltRepo);
+                // log last shown setup
+                Timber.i("Last shown setup: %s", prefs.getString("last_shown_setup", "v0"));
             }
             // Restart the activity
             MainActivity.doSetupRestarting = true;
@@ -213,15 +219,35 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
     @Override
     public Resources.Theme getTheme() {
         Resources.Theme theme = super.getTheme();
+        // try cached value
+        if (cachedTheme != 0) {
+            theme.applyStyle(cachedTheme, true);
+            return theme;
+        }
         // Set the theme
         SharedPreferences prefs = MainApplication.getSharedPreferences("mmm");
-        switch (prefs.getString("pref_theme", "system")) {
-            case "light" -> theme.applyStyle(R.style.Theme_MagiskModuleManager_Monet_Light, true);
-            case "dark" -> theme.applyStyle(R.style.Theme_MagiskModuleManager_Monet_Dark, true);
-            case "system" -> theme.applyStyle(R.style.Theme_MagiskModuleManager_Monet, true);
-            case "black" -> theme.applyStyle(R.style.Theme_MagiskModuleManager_Monet_Black, true);
-            case "transparent_light" ->
-                    theme.applyStyle(R.style.Theme_MagiskModuleManager_Transparent_Light, true);
+        String themePref = prefs.getString("pref_theme", "system");
+        switch (themePref) {
+            case "light" -> {
+                theme.applyStyle(R.style.Theme_MagiskModuleManager_Monet_Light, true);
+                cachedTheme = R.style.Theme_MagiskModuleManager_Monet_Light;
+            }
+            case "dark" -> {
+                theme.applyStyle(R.style.Theme_MagiskModuleManager_Monet_Dark, true);
+                cachedTheme = R.style.Theme_MagiskModuleManager_Monet_Dark;
+            }
+            case "system" -> {
+                theme.applyStyle(R.style.Theme_MagiskModuleManager_Monet, true);
+                cachedTheme = R.style.Theme_MagiskModuleManager_Monet;
+            }
+            case "black" -> {
+                theme.applyStyle(R.style.Theme_MagiskModuleManager_Monet_Black, true);
+                cachedTheme = R.style.Theme_MagiskModuleManager_Monet_Black;
+            }
+            case "transparent_light" -> {
+                theme.applyStyle(R.style.Theme_MagiskModuleManager_Transparent_Light, true);
+                cachedTheme = R.style.Theme_MagiskModuleManager_Transparent_Light;
+            }
         }
         return theme;
     }

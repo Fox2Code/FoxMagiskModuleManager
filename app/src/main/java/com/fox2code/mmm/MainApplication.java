@@ -110,20 +110,28 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     }
 
     public static SharedPreferences getSharedPreferences(String name) {
+        // for debugging, log timing
+        long start = SystemClock.elapsedRealtime();
+        // log what's requesting the shared preferences
+        // get caller if debug build
+        if (BuildConfig.DEBUG) {
+            StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
+            StackTraceElement e = stacktrace[3];
+            String methodName = e.getMethodName();
+            String className = e.getClassName();
+            Timber.d("Shared preferences %s requested by %s.%s", name, className, methodName);
+        }
         // encryptedSharedPreferences is used
-        MasterKey mainKeyAlias;
+        Context context = getINSTANCE().getApplicationContext();
         try {
-            mainKeyAlias = new MasterKey.Builder(MainApplication.getINSTANCE().getApplicationContext()).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build();
+            MasterKey masterKey = new MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build();
+            SharedPreferences mSharedPrefs = EncryptedSharedPreferences.create(context, name, masterKey, EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV, EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM);
+            Timber.d("Encrypted shared preferences %s took %dms",  name, SystemClock.elapsedRealtime() - start);
+            return mSharedPrefs;
         } catch (GeneralSecurityException | IOException e) {
-            throw new RuntimeException(e);
+            Timber.e(e, "Failed to create encrypted shared preferences");
+            return context.getSharedPreferences(name, Context.MODE_PRIVATE);
         }
-        SharedPreferences mSharedPreferences;
-        try {
-            mSharedPreferences = EncryptedSharedPreferences.create(MainApplication.getINSTANCE().getApplicationContext(), name, mainKeyAlias, EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV, EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM);
-        } catch (GeneralSecurityException | IOException e) {
-            throw new RuntimeException(e);
-        }
-        return mSharedPreferences;
     }
 
     // Is application wrapped, and therefore must reduce it's feature set.
@@ -169,8 +177,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     }
 
     public static boolean isDeveloper() {
-        if (BuildConfig.DEBUG)
-            return true;
+        if (BuildConfig.DEBUG) return true;
         return getSharedPreferences("mmm").getBoolean("developer", false);
     }
 
@@ -220,8 +227,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     }
 
     public Markwon getMarkwon() {
-        if (this.markwon != null)
-            return this.markwon;
+        if (this.markwon != null) return this.markwon;
         FoxThemeWrapper contextThemeWrapper = this.markwonThemeContext;
         if (contextThemeWrapper == null) {
             contextThemeWrapper = this.markwonThemeContext = new FoxThemeWrapper(this, this.managerThemeResId);
@@ -339,8 +345,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         supportedLocales.add("zh-rCN");
         supportedLocales.add("zh-rTW");
         supportedLocales.add("en");
-        if (INSTANCE == null)
-            INSTANCE = this;
+        if (INSTANCE == null) INSTANCE = this;
         relPackageName = this.getPackageName();
         Timber.d("Starting FoxMMM version " + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + "), commit " + BuildConfig.COMMIT_HASH);
         super.onCreate();
@@ -361,8 +366,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
             @SuppressWarnings("SpellCheckingInspection") String[] officialSignatureHashArray = new String[]{"7bec7c4462f4aac616612d9f56a023ee3046e83afa956463b5fab547fd0a0be6", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"};
             String ourSignatureHash = Hashing.sha256().hashBytes(signatures[0].toByteArray()).toString();
             isOfficial = Arrays.asList(officialSignatureHashArray).contains(ourSignatureHash);
-        } catch (
-                PackageManager.NameNotFoundException ignored) {
+        } catch (PackageManager.NameNotFoundException ignored) {
         }
         SharedPreferences sharedPreferences = MainApplication.getSharedPreferences("mmm");
         // We are only one process so it's ok to do this
@@ -435,10 +439,8 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         File dataDir = this.getDataDir();
         // for path with / somewhere in the middle, its a subdirectory
         if (path != null) {
-            if (path.startsWith("/"))
-                path = path.substring(1);
-            if (path.endsWith("/"))
-                path = path.substring(0, path.length() - 1);
+            if (path.startsWith("/")) path = path.substring(1);
+            if (path.endsWith("/")) path = path.substring(0, path.length() - 1);
             if (path.contains("/")) {
                 String[] dirs = path.split("/");
                 for (String dir : dirs) {
@@ -456,8 +458,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
                 // create the directory if it doesn't exist
                 if (!dataDir.exists()) {
                     if (!dataDir.mkdirs()) {
-                        if (BuildConfig.DEBUG)
-                            Timber.w("Failed to create directory %s", dataDir);
+                        if (BuildConfig.DEBUG) Timber.w("Failed to create directory %s", dataDir);
                     }
                 }
             }
