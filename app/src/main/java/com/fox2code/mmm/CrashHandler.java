@@ -37,8 +37,12 @@ public class CrashHandler extends FoxActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crash_handler);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            // per process webview data dir
-            WebView.setDataDirectorySuffix(FoxApplication.getProcessName());
+            try {
+                // per process webview data dir
+                WebView.setDataDirectorySuffix(FoxApplication.getProcessName());
+            } catch (Exception e) {
+                Timber.e(e, "CrashHandler.onCreate: Failed to set webview data directory suffix");
+            }
         }
         // set crash_details MaterialTextView to the exception passed in the intent or unknown if null
         // convert stacktrace from array to string, and pretty print it (first line is the exception, the rest is the stacktrace, with each line indented by 4 spaces)

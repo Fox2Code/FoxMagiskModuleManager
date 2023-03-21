@@ -1,4 +1,4 @@
-package com.fox2code.mmm.utils.io;
+package com.fox2code.mmm.utils.io.net;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -18,6 +18,7 @@ import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.androidacy.AndroidacyUtil;
 import com.fox2code.mmm.installer.InstallerInitializer;
+import com.fox2code.mmm.utils.io.Files;
 import com.google.net.cronet.okhttptransport.CronetInterceptor;
 
 import org.chromium.net.CronetEngine;
@@ -42,8 +43,6 @@ import java.util.concurrent.TimeUnit;
 
 import io.sentry.android.okhttp.SentryOkHttpInterceptor;
 import okhttp3.Cache;
-import okhttp3.Cookie;
-import okhttp3.CookieJar;
 import okhttp3.Dns;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
@@ -111,16 +110,14 @@ public enum Http {
                 return Dns.SYSTEM.lookup(s);
             };
             httpclientBuilder.dns(dns);
-            httpclientBuilder.cookieJar(new CDNCookieJar());
+            WebkitCookieManagerProxy cookieJar = new WebkitCookieManagerProxy();
+            httpclientBuilder.cookieJar(cookieJar);
             dns = new DnsOverHttps.Builder().client(httpclientBuilder.build()).url(Objects.requireNonNull(HttpUrl.parse("https://cloudflare-dns.com/dns-query"))).bootstrapDnsHosts(cloudflareBootstrap).resolvePrivateAddresses(true).build();
         } catch (
                 UnknownHostException |
                 RuntimeException e) {
             Timber.e(e, "Failed to init DoH");
         }
-        // Add cookie support.
-        httpclientBuilder.addInterceptor(new AddCookiesInterceptor(MainApplication.getINSTANCE().getApplicationContext())); // VERY VERY IMPORTANT
-        httpclientBuilder.addInterceptor(new ReceivedCookiesInterceptor(MainApplication.getINSTANCE().getApplicationContext())); // VERY VERY IMPORTANT
         // User-Agent format was agreed on telegram
         if (hasWebView) {
             androidacyUA = WebSettings.getDefaultUserAgent(mainApplication).replace("wv", "") + " FoxMMM/" + BuildConfig.VERSION_CODE;
@@ -182,7 +179,6 @@ public enum Http {
         }
         // Fallback DNS cache responses in case request fail but already succeeded once in the past
         fallbackDNS = new FallBackDNS(mainApplication, dns, "github.com", "api.github.com", "raw.githubusercontent.com", "camo.githubusercontent.com", "user-images.githubusercontent.com", "cdn.jsdelivr.net", "img.shields.io", "magisk-modules-repo.github.io", "www.androidacy.com", "api.androidacy.com", "production-api.androidacy.com");
-        httpclientBuilder.cookieJar(new CDNCookieJar(cookieManager));
         httpclientBuilder.dns(Dns.SYSTEM);
         httpClient = followRedirects(httpclientBuilder, true).build();
         followRedirects(httpclientBuilder, false).build();
@@ -412,95 +408,6 @@ public enum Http {
 
     public interface ProgressListener {
         void onUpdate(int downloaded, int total, boolean done);
-    }
-
-    /**
-     * Cookie jar that allow CDN cookies, reset on app relaunch
-     * Note: An argument can be made that it allow tracking but
-     * caching is a better attack vector for tracking, this system
-     * only exist to improve CDN response time, any other cookies
-     * that are not CDN related are just simply ignored.
-     * <p>
-     * Note: CDNCookies are only stored in RAM unlike https cache
-     */
-    private static class CDNCookieJar implements CookieJar {
-        private final HashMap<String, Cookie> cookieMap = new HashMap<>();
-        private final boolean androidacySupport;
-        private final CookieManager cookieManager;
-        private List<Cookie> androidacyCookies;
-
-        private CDNCookieJar() {
-            this.androidacySupport = false;
-            this.cookieManager = null;
-        }
-
-        private CDNCookieJar(CookieManager cookieManager) {
-            this.androidacySupport = true;
-            this.cookieManager = cookieManager;
-            if (cookieManager == null) {
-                this.androidacyCookies = Collections.emptyList();
-            }
-        }
-
-        @NonNull
-        @Override
-        public List<Cookie> loadForRequest(@NonNull HttpUrl httpUrl) {
-            if (!httpUrl.isHttps())
-                return Collections.emptyList();
-            if (this.androidacySupport && httpUrl.host().endsWith(".androidacy.com")) {
-                if (this.cookieManager == null)
-                    return this.androidacyCookies;
-                String cookies = this.cookieManager.getCookie(httpUrl.uri().toString());
-                if (cookies == null || cookies.isEmpty())
-                    return Collections.emptyList();
-                String[] splitCookies = cookies.split(";");
-                ArrayList<Cookie> cookieList = new ArrayList<>(splitCookies.length);
-                for (String cookie : splitCookies) {
-                    cookieList.add(Cookie.parse(httpUrl, cookie));
-                }
-                return cookieList;
-            }
-            Cookie cookies = cookieMap.get(httpUrl.url().getHost());
-            return cookies == null || cookies.expiresAt() < System.currentTimeMillis() ? Collections.emptyList() : Collections.singletonList(cookies);
-        }
-
-        @Override
-        public void saveFromResponse(@NonNull HttpUrl httpUrl, @NonNull List<Cookie> cookies) {
-            if (!httpUrl.isHttps())
-                return;
-            if (this.androidacySupport && httpUrl.host().endsWith(".androidacy.com")) {
-                if (this.cookieManager == null) {
-                    if (httpUrl.host().equals(".androidacy.com") || !cookies.isEmpty())
-                        this.androidacyCookies = cookies;
-                    return;
-                }
-                for (Cookie cookie : cookies) {
-                    this.cookieManager.setCookie(httpUrl.uri().toString(), cookie.toString());
-                }
-                return;
-            }
-            String host = httpUrl.url().getHost();
-            Iterator<Cookie> cookieIterator = cookies.iterator();
-            Cookie cdnCookie = cookieMap.get(host);
-            while (cookieIterator.hasNext()) {
-                Cookie cookie = cookieIterator.next();
-                if (host.equals(cookie.domain()) && cookie.secure() && cookie.httpOnly() && cookie.expiresAt() < (System.currentTimeMillis() + 1000 * 60 * 60 * 48)) {
-                    if (cdnCookie != null && !cdnCookie.name().equals(cookie.name())) {
-                        cookieMap.remove(host);
-                        cdnCookie = null;
-                        break;
-                    } else {
-                        cdnCookie = cookie;
-                    }
-                }
-            }
-            if (cdnCookie == null) {
-                cookieMap.remove(host);
-            } else {
-                cookieMap.put(host, cdnCookie);
-            }
-        }
-
     }
 
     /**

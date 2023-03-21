@@ -1,4 +1,4 @@
-package com.fox2code.mmm.utils.io;
+package com.fox2code.mmm.utils.io.net;
 
 import androidx.annotation.Keep;
 
@@ -23,14 +23,10 @@ public final class HttpException extends IOException {
     }
 
     public boolean shouldTimeout() {
-        switch (errorCode) {
-            case 419:
-            case 429:
-            case 503:
-                return true;
-            default:
-                return false;
-        }
+        return switch (errorCode) {
+            case 419, 429, 503 -> true;
+            default -> false;
+        };
     }
 
     public static boolean shouldTimeout(Exception exception) {

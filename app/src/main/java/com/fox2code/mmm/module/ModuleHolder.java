@@ -15,7 +15,7 @@ import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.repo.RepoModule;
 import com.fox2code.mmm.utils.IntentHelper;
-import com.fox2code.mmm.utils.io.Http;
+import com.fox2code.mmm.utils.io.net.Http;
 import com.fox2code.mmm.utils.io.PropUtils;
 
 import java.util.Comparator;

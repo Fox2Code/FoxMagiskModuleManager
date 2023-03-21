@@ -28,7 +28,7 @@ public class SentryMain {
     @SuppressLint({"RestrictedApi", "UnspecifiedImmutableFlag"})
     public static void initialize(final MainApplication mainApplication) {
         // If first_launch pref is not false, refuse to initialize Sentry
-        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences("sentry");
+        SharedPreferences sharedPreferences = MainApplication.getPreferences("sentry");
         if (!Objects.equals(sharedPreferences.getString("last_shown_setup", null), "v1")) {
             return;
         }
@@ -81,7 +81,7 @@ public class SentryMain {
                 // With this callback, you can modify the event or, when returning null, also discard the event.
                 options.setBeforeSend((event, hint) -> {
                     // Save lastEventId to private shared preferences
-                    SharedPreferences sentryPrefs = MainApplication.getSharedPreferences("sentry");
+                    SharedPreferences sentryPrefs = MainApplication.getPreferences("sentry");
                     String lastEventId = Objects.requireNonNull(event.getEventId()).toString();
                     SharedPreferences.Editor editor = sentryPrefs.edit();
                     editor.putString("lastEventId", lastEventId);

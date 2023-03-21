@@ -1,7 +1,7 @@
 package com.fox2code.mmm.repo;
 
 import com.fox2code.mmm.MainApplication;
-import com.fox2code.mmm.utils.io.Http;
+import com.fox2code.mmm.utils.io.net.Http;
 import com.fox2code.mmm.utils.realm.ModuleListCache;
 import com.fox2code.mmm.utils.realm.ReposList;
 

@@ -31,7 +31,7 @@ import com.fox2code.mmm.utils.FastException;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.fox2code.mmm.utils.io.Files;
 import com.fox2code.mmm.utils.io.Hashes;
-import com.fox2code.mmm.utils.io.Http;
+import com.fox2code.mmm.utils.io.net.Http;
 import com.fox2code.mmm.utils.io.PropUtils;
 import com.fox2code.mmm.utils.sentry.SentryBreadcrumb;
 import com.fox2code.mmm.utils.sentry.SentryMain;

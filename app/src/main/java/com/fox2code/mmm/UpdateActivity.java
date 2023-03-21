@@ -12,7 +12,7 @@ import androidx.core.content.FileProvider;
 
 import com.fox2code.foxcompat.app.FoxActivity;
 import com.fox2code.foxcompat.app.FoxApplication;
-import com.fox2code.mmm.utils.io.Http;
+import com.fox2code.mmm.utils.io.net.Http;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textview.MaterialTextView;
@@ -36,10 +36,6 @@ public class UpdateActivity extends FoxActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            // per process webview data dir
-            WebView.setDataDirectorySuffix(FoxApplication.getProcessName());
-        }
         // Get the progress bar and make it indeterminate for now
         LinearProgressIndicator progressIndicator = findViewById(R.id.update_progress);
         progressIndicator.setIndeterminate(true);

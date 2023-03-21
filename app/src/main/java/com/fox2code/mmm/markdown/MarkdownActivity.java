@@ -24,7 +24,7 @@ import com.fox2code.mmm.R;
 import com.fox2code.mmm.XHooks;
 import com.fox2code.mmm.utils.BlurUtils;
 import com.fox2code.mmm.utils.IntentHelper;
-import com.fox2code.mmm.utils.io.Http;
+import com.fox2code.mmm.utils.io.net.Http;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -263,46 +263,27 @@ public class MarkdownActivity extends FoxActivity {
     }
 
     private String parseAndroidVersion(int version) {
-        switch (version) {
-            case Build.VERSION_CODES.JELLY_BEAN:
-                return "4.1 JellyBean";
-            case Build.VERSION_CODES.JELLY_BEAN_MR1:
-                return "4.2 JellyBean";
-            case Build.VERSION_CODES.JELLY_BEAN_MR2:
-                return "4.3 JellyBean";
-            case Build.VERSION_CODES.KITKAT:
-                return "4.4 KitKat";
-            case Build.VERSION_CODES.KITKAT_WATCH:
-                return "4.4 KitKat Watch";
-            case Build.VERSION_CODES.LOLLIPOP:
-                return "5.0 Lollipop";
-            case Build.VERSION_CODES.LOLLIPOP_MR1:
-                return "5.1 Lollipop";
-            case Build.VERSION_CODES.M:
-                return "6.0 Marshmallow";
-            case Build.VERSION_CODES.N:
-                return "7.0 Nougat";
-            case Build.VERSION_CODES.N_MR1:
-                return "7.1 Nougat";
-            case Build.VERSION_CODES.O:
-                return "8.0 Oreo";
-            case Build.VERSION_CODES.O_MR1:
-                return "8.1 Oreo";
-            case Build.VERSION_CODES.P:
-                return "9.0 Pie";
-            case Build.VERSION_CODES.Q:
-                return "10 (Q)";
-            case Build.VERSION_CODES.R:
-                return "11 (R)";
-            case Build.VERSION_CODES.S:
-                return "12 (S)";
-            case Build.VERSION_CODES.S_V2:
-                return "12L";
-            case Build.VERSION_CODES.TIRAMISU:
-                return "13 Tiramisu";
-            default:
-                return "Sdk: " + version;
-        }
+        return switch (version) {
+            case Build.VERSION_CODES.JELLY_BEAN -> "4.1 JellyBean";
+            case Build.VERSION_CODES.JELLY_BEAN_MR1 -> "4.2 JellyBean";
+            case Build.VERSION_CODES.JELLY_BEAN_MR2 -> "4.3 JellyBean";
+            case Build.VERSION_CODES.KITKAT -> "4.4 KitKat";
+            case Build.VERSION_CODES.KITKAT_WATCH -> "4.4 KitKat Watch";
+            case Build.VERSION_CODES.LOLLIPOP -> "5.0 Lollipop";
+            case Build.VERSION_CODES.LOLLIPOP_MR1 -> "5.1 Lollipop";
+            case Build.VERSION_CODES.M -> "6.0 Marshmallow";
+            case Build.VERSION_CODES.N -> "7.0 Nougat";
+            case Build.VERSION_CODES.N_MR1 -> "7.1 Nougat";
+            case Build.VERSION_CODES.O -> "8.0 Oreo";
+            case Build.VERSION_CODES.O_MR1 -> "8.1 Oreo";
+            case Build.VERSION_CODES.P -> "9.0 Pie";
+            case Build.VERSION_CODES.Q -> "10 (Q)";
+            case Build.VERSION_CODES.R -> "11 (R)";
+            case Build.VERSION_CODES.S -> "12 (S)";
+            case Build.VERSION_CODES.S_V2 -> "12L";
+            case Build.VERSION_CODES.TIRAMISU -> "13 Tiramisu";
+            default -> "Sdk: " + version;
+        };
     }
 
     @Override

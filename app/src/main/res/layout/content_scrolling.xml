@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="setupScrollView"
     android:layout_height="wrap_content"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".SetupActivity"
@@ -194,14 +195,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="2dp"
                 android:layout_weight="1"
-                android:text="@string/cancel" android:textColor="#5D4037" />
+                android:text="@string/cancel" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/setup_continue"
+            android:id="@+id/setup_finish"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/finish" android:textColor="#5D4037" />
+            android:text="@string/finish" />
 
             </LinearLayout>
     </LinearLayout>

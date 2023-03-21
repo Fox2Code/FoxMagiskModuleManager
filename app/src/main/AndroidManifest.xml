@@ -66,8 +66,7 @@
         tools:targetApi="tiramisu">
         <activity
             android:name=".UpdateActivity"
-            android:exported="false"
-            android:process=":update" />
+            android:exported="false" />
         <activity
             android:name=".CrashHandler"
             android:exported="false"
@@ -75,7 +74,6 @@
         <activity
             android:name=".SetupActivity"
             android:exported="false"
-            android:process=":setup"
             android:label="@string/title_activity_setup"
             android:theme="@style/Theme.MagiskModuleManager.NoActionBar" />
 
@@ -96,6 +94,7 @@
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -106,6 +105,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".installer.InstallerActivity"
             android:exported="false"
@@ -119,7 +119,9 @@
                 <action android:name="${applicationId}.intent.action.INSTALL_MODULE_INTERNAL" />
             </intent-filter>
             -->
-        </activity> <!-- We can handle zip files -->
+        </activity>
+
+        <!-- We can handle zip files -->
         <activity
             android:name=".utils.ZipFileOpener"
             android:exported="true"
@@ -134,11 +136,13 @@
                 <data android:scheme="content" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".markdown.MarkdownActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.MagiskModuleManager" />
+
         <activity
             android:name=".androidacy.AndroidacyActivity"
             android:exported="false"
@@ -151,6 +155,7 @@
             </intent-filter>
             -->
         </activity>
+
         <activity
             android:name="com.mikepenz.aboutlibraries.ui.LibsActivity"
             tools:node="remove" />
@@ -167,6 +172,7 @@
                 android:name="androidx.work.WorkManagerInitializer"
                 tools:node="remove" />
         </provider>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.file-provider"

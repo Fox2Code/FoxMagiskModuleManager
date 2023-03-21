@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.ConsoleMessage;
@@ -29,14 +28,13 @@ import androidx.webkit.WebViewClientCompat;
 import androidx.webkit.WebViewFeature;
 
 import com.fox2code.foxcompat.app.FoxActivity;
-import com.fox2code.foxcompat.app.FoxApplication;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.XHooks;
 import com.fox2code.mmm.utils.IntentHelper;
-import com.fox2code.mmm.utils.io.Http;
+import com.fox2code.mmm.utils.io.net.Http;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import java.io.ByteArrayInputStream;
@@ -74,10 +72,6 @@ public final class AndroidacyActivity extends FoxActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         this.moduleFile = new File(this.getCacheDir(), "module.zip");
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            // per process webview data dir
-            WebView.setDataDirectorySuffix(FoxApplication.getProcessName());
-        }
         Intent intent = this.getIntent();
         Uri uri;
         if (!MainApplication.checkSecret(intent) || (uri = intent.getData()) == null) {
@@ -118,6 +112,13 @@ public final class AndroidacyActivity extends FoxActivity {
             // get from shared preferences
             device_id = AndroidacyRepoData.generateDeviceId();
             url = url + "&device_id=" + device_id;
+        }
+        // check if client_id is present
+        String client_id = uri.getQueryParameter("client_id");
+        if (client_id == null) {
+            // get from shared preferences
+            client_id = BuildConfig.ANDROIDACY_CLIENT_ID;
+            url = url + "&client_id=" + client_id;
         }
         boolean allowInstall = intent.getBooleanExtra(Constants.EXTRA_ANDROIDACY_ALLOW_INSTALL, false);
         String title = intent.getStringExtra(Constants.EXTRA_ANDROIDACY_ACTIONBAR_TITLE);

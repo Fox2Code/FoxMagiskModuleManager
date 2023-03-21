@@ -1,7 +1,7 @@
 package com.fox2code.mmm;
 
 import com.fox2code.mmm.utils.io.Files;
-import com.fox2code.mmm.utils.io.Http;
+import com.fox2code.mmm.utils.io.net.Http;
 
 import org.json.JSONObject;
 
@@ -149,38 +149,18 @@ public class AppUpdateManager {
             int value = 0;
             for (String arg : line.substring(i + 1).split(",")) {
                 switch (arg) {
-                    default:
-                        break;
-                    case "lowQuality":
-                        value |= FLAG_COMPAT_LOW_QUALITY;
-                        break;
-                    case "noExt":
-                        value |= FLAG_COMPAT_NO_EXT;
-                        break;
-                    case "magiskCmd":
-                        value |= FLAG_COMPAT_MAGISK_CMD;
-                        break;
-                    case "need32bit":
-                        value |= FLAG_COMPAT_NEED_32BIT;
-                        break;
-                    case "malware":
-                        value |= FLAG_COMPAT_MALWARE;
-                        break;
-                    case "noANSI":
-                        value |= FLAG_COMPAT_NO_ANSI;
-                        break;
-                    case "forceANSI":
-                        value |= FLAG_COMPAT_FORCE_ANSI;
-                        break;
-                    case "forceHide":
-                        value |= FLAG_COMPAT_FORCE_HIDE;
-                        break;
-                    case "mmtReborn":
-                        value |= FLAG_COMPAT_MMT_REBORN;
-                        break;
-                    case "wrapper":
-                        value |= FLAG_COMPAT_ZIP_WRAPPER;
-                        break;
+                    default -> {
+                    }
+                    case "lowQuality" -> value |= FLAG_COMPAT_LOW_QUALITY;
+                    case "noExt" -> value |= FLAG_COMPAT_NO_EXT;
+                    case "magiskCmd" -> value |= FLAG_COMPAT_MAGISK_CMD;
+                    case "need32bit" -> value |= FLAG_COMPAT_NEED_32BIT;
+                    case "malware" -> value |= FLAG_COMPAT_MALWARE;
+                    case "noANSI" -> value |= FLAG_COMPAT_NO_ANSI;
+                    case "forceANSI" -> value |= FLAG_COMPAT_FORCE_ANSI;
+                    case "forceHide" -> value |= FLAG_COMPAT_FORCE_HIDE;
+                    case "mmtReborn" -> value |= FLAG_COMPAT_MMT_REBORN;
+                    case "wrapper" -> value |= FLAG_COMPAT_ZIP_WRAPPER;
                 }
             }
             compatDataId.put(line.substring(0, i), value);

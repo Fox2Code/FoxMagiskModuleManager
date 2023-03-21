@@ -13,7 +13,7 @@ import com.fox2code.mmm.module.ModuleViewListBuilder;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.fox2code.mmm.utils.io.Files;
-import com.fox2code.mmm.utils.io.Http;
+import com.fox2code.mmm.utils.io.net.Http;
 
 import java.io.BufferedReader;
 import java.io.File;

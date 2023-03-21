@@ -18,8 +18,8 @@ import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.repo.RepoData;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.repo.RepoModule;
-import com.fox2code.mmm.utils.io.Http;
-import com.fox2code.mmm.utils.io.HttpException;
+import com.fox2code.mmm.utils.io.net.Http;
+import com.fox2code.mmm.utils.io.net.HttpException;
 import com.fox2code.mmm.utils.io.PropUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.topjohnwu.superuser.Shell;
@@ -44,7 +44,7 @@ import timber.log.Timber;
 
 @SuppressWarnings("KotlinInternalInJava")
 public final class AndroidacyRepoData extends RepoData {
-    public static String token = MainApplication.getSharedPreferences("androidacy").getString("pref_androidacy_api_token", null);
+    public static String token = MainApplication.getPreferences("androidacy").getString("pref_androidacy_api_token", null);
 
     static {
         HttpUrl.Builder OK_HTTP_URL_BUILDER = new HttpUrl.Builder().scheme("https");
@@ -55,7 +55,7 @@ public final class AndroidacyRepoData extends RepoData {
 
     @SuppressWarnings("unused")
     public final String ClientID = BuildConfig.ANDROIDACY_CLIENT_ID;
-    public final SharedPreferences cachedPreferences = MainApplication.getSharedPreferences("androidacy");
+    public final SharedPreferences cachedPreferences = MainApplication.getPreferences("androidacy");
     private final boolean testMode;
     private final String host;
     public String[][] userInfo = new String[][]{{"role", null}, {"permissions", null}};
@@ -89,7 +89,7 @@ public final class AndroidacyRepoData extends RepoData {
     // limiting and fraud detection.
     public static String generateDeviceId() {
         // Try to get the device ID from the shared preferences
-        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences("androidacy");
+        SharedPreferences sharedPreferences = MainApplication.getPreferences("androidacy");
         String deviceIdPref = sharedPreferences.getString("device_id", null);
         if (deviceIdPref != null) {
             return deviceIdPref;
@@ -145,7 +145,7 @@ public final class AndroidacyRepoData extends RepoData {
     public boolean isValidToken(String token) throws IOException {
         String deviceId = generateDeviceId();
         try {
-            byte[] resp = Http.doHttpGet("https://" + this.host + "/auth/me?token=" + token + "&device_id=" + deviceId, false);
+            byte[] resp = Http.doHttpGet("https://" + this.host + "/auth/me?token=" + token + "&device_id=" + deviceId + "&client_id=" + BuildConfig.ANDROIDACY_CLIENT_ID, false);
             // response is JSON
             JSONObject jsonObject = new JSONObject(new String(resp));
             memberLevel = jsonObject.getString("role");
@@ -182,7 +182,7 @@ public final class AndroidacyRepoData extends RepoData {
     protected boolean prepare() {
         // If ANDROIDACY_CLIENT_ID is not set or is empty, disable this repo and return
         if (Objects.equals(BuildConfig.ANDROIDACY_CLIENT_ID, "")) {
-            SharedPreferences.Editor editor = MainApplication.getSharedPreferences("mmm").edit();
+            SharedPreferences.Editor editor = MainApplication.getPreferences("mmm").edit();
             editor.putBoolean("pref_androidacy_repo_enabled", false);
             editor.apply();
             return false;

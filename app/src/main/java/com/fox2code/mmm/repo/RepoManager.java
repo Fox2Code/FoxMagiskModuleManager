@@ -2,7 +2,6 @@ package com.fox2code.mmm.repo;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
@@ -21,7 +20,7 @@ import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.utils.SyncManager;
 import com.fox2code.mmm.utils.io.Files;
 import com.fox2code.mmm.utils.io.Hashes;
-import com.fox2code.mmm.utils.io.Http;
+import com.fox2code.mmm.utils.io.net.Http;
 import com.fox2code.mmm.utils.io.PropUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -148,7 +147,7 @@ public final class RepoManager extends SyncManager {
     @SuppressWarnings("StatementWithEmptyBody")
     private void populateDefaultCache(RepoData repoData) {
         // if last_shown_setup is not "v1", them=n refuse to continue
-        if (!MainApplication.getSharedPreferences("mmm").getString("last_shown_setup", "").equals("v1")) {
+        if (!MainApplication.getPreferences("mmm").getString("last_shown_setup", "").equals("v1")) {
             return;
         }
         // make sure repodata is not null
@@ -372,7 +371,7 @@ public final class RepoManager extends SyncManager {
     private RepoData addRepoData(String url, String fallBackName) {
         String id = internalIdOfUrl(url);
         File cacheRoot = new File(this.mainApplication.getDataDir(), "repos/" + id);
-        SharedPreferences sharedPreferences = this.mainApplication.getSharedPreferences("mmm_" + id, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = MainApplication.getPreferences("mmm_" + id);
         RepoData repoData = id.startsWith("repo_") ? new CustomRepoData(url, cacheRoot, sharedPreferences) : new RepoData(url, cacheRoot, sharedPreferences);
         if (fallBackName != null && !fallBackName.isEmpty()) {
             repoData.defaultName = fallBackName;
@@ -395,7 +394,7 @@ public final class RepoManager extends SyncManager {
     private AndroidacyRepoData addAndroidacyRepoData() {
         // cache dir is actually under app data
         File cacheRoot = this.mainApplication.getDataDirWithPath("realms/repos/androidacy_repo");
-        SharedPreferences sharedPreferences = this.mainApplication.getSharedPreferences("mmm_androidacy_repo", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = MainApplication.getPreferences("mmm_androidacy_repo");
         AndroidacyRepoData repoData = new AndroidacyRepoData(cacheRoot, sharedPreferences, MainApplication.isAndroidacyTestMode());
         this.repoData.put(ANDROIDACY_MAGISK_REPO_ENDPOINT, repoData);
         this.repoData.put(ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT, repoData);

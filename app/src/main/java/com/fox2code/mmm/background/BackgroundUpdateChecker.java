@@ -60,7 +60,7 @@ public class BackgroundUpdateChecker extends Worker {
 
     static void doCheck(Context context) {
         // first, check if the user has enabled background update checking
-        if (!MainApplication.getSharedPreferences("mmm").getBoolean("pref_background_update_check", false)) {
+        if (!MainApplication.getPreferences("mmm").getBoolean("pref_background_update_check", false)) {
             return;
         }
         if (MainApplication.getINSTANCE().isInForeground()) {
@@ -68,7 +68,7 @@ public class BackgroundUpdateChecker extends Worker {
             return;
         }
         // next, check if user requires wifi
-        if (MainApplication.getSharedPreferences("mmm").getBoolean("pref_background_update_check_wifi", true)) {
+        if (MainApplication.getPreferences("mmm").getBoolean("pref_background_update_check_wifi", true)) {
             // check if wifi is connected
             ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             Network networkInfo = connectivityManager.getActiveNetwork();
@@ -107,7 +107,7 @@ public class BackgroundUpdateChecker extends Worker {
                     continue;
                 // exclude all modules with id's stored in the pref pref_background_update_check_excludes
                 try {
-                    if (MainApplication.getSharedPreferences("mmm").getStringSet("pref_background_update_check_excludes", null).contains(localModuleInfo.id))
+                    if (MainApplication.getPreferences("mmm").getStringSet("pref_background_update_check_excludes", null).contains(localModuleInfo.id))
                         continue;
                 } catch (
                         Exception ignored) {
@@ -127,7 +127,7 @@ public class BackgroundUpdateChecker extends Worker {
             }
         });
         // check for app updates
-        if (MainApplication.getSharedPreferences("mmm").getBoolean("pref_background_update_check_app", false)) {
+        if (MainApplication.getPreferences("mmm").getBoolean("pref_background_update_check_app", false)) {
             try {
                 boolean shouldUpdate = AppUpdateManager.getAppUpdateManager().checkUpdate(true);
                 if (shouldUpdate) {
@@ -209,7 +209,7 @@ public class BackgroundUpdateChecker extends Worker {
 
     public static void onMainActivityCreate(Context context) {
         // Refuse to run if first_launch pref is not false
-        if (!Objects.equals(MainApplication.getSharedPreferences("mmm").getString("last_shown_setup", null), "v1"))
+        if (!Objects.equals(MainApplication.getPreferences("mmm").getString("last_shown_setup", null), "v1"))
             return;
         // create notification channel group
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

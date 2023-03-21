@@ -1,22 +1,20 @@
 package com.fox2code.mmm.repo;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.utils.io.PropUtils;
 
 public class CustomRepoManager {
-    private static final boolean AUTO_RECOMPILE = true;
     public static final int MAX_CUSTOM_REPOS = 5;
-    private final MainApplication mainApplication;
+    private static final boolean AUTO_RECOMPILE = true;
     private final RepoManager repoManager;
     private final String[] customRepos;
-    private int customReposCount;
     boolean dirty;
+    private int customReposCount;
 
+    @SuppressWarnings("unused")
     CustomRepoManager(MainApplication mainApplication, RepoManager repoManager) {
-        this.mainApplication = mainApplication;
         this.repoManager = repoManager;
         this.customRepos = new String[MAX_CUSTOM_REPOS];
         this.customReposCount = 0;
@@ -45,8 +43,8 @@ public class CustomRepoManager {
     }
 
     private SharedPreferences getSharedPreferences() {
-        return this.mainApplication.getSharedPreferences(
-                "mmm_custom_repos", Context.MODE_PRIVATE);
+        return MainApplication.getPreferences(
+                "mmm_custom_repos");
     }
 
     public CustomRepoData addRepo(String repo) {

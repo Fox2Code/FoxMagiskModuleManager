@@ -302,13 +302,13 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.webkit:webkit:1.6.0'
     implementation 'com.google.android.material:material:1.8.0'
-    implementation "dev.rikka.rikkax.layoutinflater:layoutinflater:1.2.0"
+    implementation 'dev.rikka.rikkax.layoutinflater:layoutinflater:1.3.0'
     implementation "dev.rikka.rikkax.insets:insets:1.3.0"
     implementation 'com.github.Dimezis:BlurView:version-2.0.2'
     implementation 'com.github.KieronQuinn:MonetCompat:0.4.1'
     implementation 'com.github.Fox2Code:FoxCompat:0.2.0'
     // Update the version code in the root build.gradle
-    implementation "com.mikepenz:aboutlibraries:10.6.0"
+    implementation 'com.mikepenz:aboutlibraries:10.6.1'
 
     // Utils
     implementation 'androidx.work:work-runtime:2.8.0'
@@ -326,7 +326,7 @@ dependencies {
     implementation 'com.github.Fox2Code:AndroidANSI:1.0.1'
 
     // sentry
-    implementation platform('io.sentry:sentry-bom:6.15.0')
+    implementation platform('io.sentry:sentry-bom:6.16.0')
     implementation "io.sentry:sentry-android"
     implementation "io.sentry:sentry-android-timber"
     implementation "io.sentry:sentry-android-fragment"

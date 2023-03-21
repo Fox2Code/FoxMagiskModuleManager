@@ -3,14 +3,12 @@ package com.fox2code.mmm;
 import static com.fox2code.mmm.utils.IntentHelper.getActivity;
 
 import android.annotation.SuppressLint;
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Base64;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -30,9 +28,9 @@ import com.google.android.material.materialswitch.MaterialSwitch;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -60,7 +58,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         createFiles();
         disableUpdateActivityForFdroidFlavor();
         // Set theme
-        SharedPreferences prefs = MainApplication.getSharedPreferences("mmm");
+        SharedPreferences prefs = MainApplication.getPreferences("mmm");
         switch (prefs.getString("theme", "system")) {
             case "light" -> setTheme(R.style.Theme_MagiskModuleManager_Monet_Light);
             case "dark" -> setTheme(R.style.Theme_MagiskModuleManager_Monet_Dark);
@@ -155,9 +153,9 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         });
         // Set up the buttons
         // Setup button
-        MaterialButton setupButton = view.findViewById(R.id.setup_continue);
+        MaterialButton setupButton = view.findViewById(R.id.setup_finish);
         setupButton.setOnClickListener(v -> {
-            // Set first launch to false
+            Timber.i("Setup button clicked");
             // get instance of editor
             SharedPreferences.Editor editor = prefs.edit();
             // Set the Automatic update check pref
@@ -178,39 +176,31 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             editor.putString("last_shown_setup", "v1");
             // Commit the changes
             editor.commit();
-            // Sleep for 1 second to allow the user to see the changes
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-            // Log the changes if debug
-            if (BuildConfig.DEBUG) {
-                Timber.d("Automatic update check: %s", prefs.getBoolean("pref_background_update_check", false));
-                Timber.i("Crash reporting: %s", prefs.getBoolean("pref_crash_reporting", false));
-                Timber.i("Androidacy repo: %s", androidacyRepo);
-                Timber.i("Magisk Alt repo: %s", magiskAltRepo);
-                // log last shown setup
-                Timber.i("Last shown setup: %s", prefs.getString("last_shown_setup", "v0"));
-            }
+            // Log the changes
+            Timber.d("Setup finished. Preferences: %s", prefs.getAll());
+            Timber.d("Androidacy repo: %s", androidacyRepo);
+            Timber.d("Magisk Alt repo: %s", magiskAltRepo);
+            // log last shown setup
+            Timber.d("Last shown setup: %s", prefs.getString("last_shown_setup", "v0"));
             // Restart the activity
             MainActivity.doSetupRestarting = true;
-            PendingIntent intent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_IMMUTABLE);
-            try {
-                intent.send();
-            } catch (PendingIntent.CanceledException e) {
-                e.printStackTrace();
-            }
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("doSetupRestarting", true);
+            startActivity(intent);
             finish();
         });
         // Cancel button
         MaterialButton cancelButton = view.findViewById(R.id.setup_cancel);
         cancelButton.setText(R.string.cancel);
         cancelButton.setOnClickListener(v -> {
+            Timber.i("Cancel button clicked");
             // Set first launch to false and restart the activity
             prefs.edit().putString("last_shown_setup", "v1").commit();
             MainActivity.doSetupRestarting = true;
             Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("doSetupRestarting", true);
             startActivity(intent);
             finish();
         });
@@ -225,7 +215,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             return theme;
         }
         // Set the theme
-        SharedPreferences prefs = MainApplication.getSharedPreferences("mmm");
+        SharedPreferences prefs = MainApplication.getPreferences("mmm");
         String themePref = prefs.getString("pref_theme", "system");
         switch (themePref) {
             case "light" -> {
@@ -318,32 +308,14 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
     }
 
     public void createFiles() {
-        try {
-            String cookieFileName = "cookies";
-            // initial set of cookies, only really used to create the file
-            String initialCookie = "is_foxmmm=true; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/; domain=production-api.androidacy.com; SameSite=None; Secure;|foxmmm_version=" + BuildConfig.VERSION_CODE + "; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/; domain=production-api.androidacy.com; SameSite=None; Secure;";
-            File cookieFile = new File(MainApplication.getINSTANCE().getFilesDir(), cookieFileName);
-            // if the file exists, delete it
-            if (cookieFile.exists()) {
-                if (!cookieFile.delete()) {
-                    Timber.e("Failed to delete cookie file");
-                    throw new IllegalStateException("Failed to create cookie file. This probably means that the app doesn't have permission to write to the files directory");
-                }
-            }
-            // create the file
-            if (!cookieFile.createNewFile()) {
-                Timber.e("Failed to create cookie file");
-                throw new IllegalStateException("Failed to create cookie file. This probably means that the app doesn't have permission to write to the files directory");
-            }
-            // create the file output stream
-            FileOutputStream fileOutputStream = new FileOutputStream(cookieFile);
-            // write the initial cookie to the file
-            fileOutputStream.write(Base64.encode(initialCookie.getBytes(), Base64.DEFAULT));
-            // close the file output stream
-            fileOutputStream.close();
-        } catch (IOException e) {
-            Timber.e(e);
-        }
+        // create cookie prefs
+        SharedPreferences cookiePrefs = MainApplication.getPreferences("cookies");
+        // add is_foxmmm cookie to the universal cookie stringset
+        Set<String> universalCookies = cookiePrefs.getStringSet("universal", new HashSet<>());
+        // silence the warning by copying the set to a new set
+        Set<String> universalCookies2 = new HashSet<>(universalCookies);
+        universalCookies2.add("is_foxmmm=true");
+        cookiePrefs.edit().putStringSet("universal", universalCookies2).apply();
         // we literally only use these to create the http cache folders
         File httpCacheDir = MainApplication.getINSTANCE().getDataDirWithPath("cache/WebView/Default/HTTP Cache/Code Cache/wasm");
         File httpCacheDir2 = MainApplication.getINSTANCE().getDataDirWithPath("cache/WebView/Default/HTTP Cache/Code Cache/js");

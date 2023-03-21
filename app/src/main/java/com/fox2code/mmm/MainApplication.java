@@ -29,15 +29,13 @@ import com.fox2code.foxcompat.app.internal.FoxProcessExt;
 import com.fox2code.foxcompat.view.FoxThemeWrapper;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.utils.io.GMSProviderInstaller;
-import com.fox2code.mmm.utils.io.Http;
+import com.fox2code.mmm.utils.io.net.Http;
 import com.fox2code.mmm.utils.sentry.SentryMain;
 import com.fox2code.rosettax.LanguageSwitcher;
 import com.google.common.hash.Hashing;
 import com.topjohnwu.superuser.Shell;
 
 import java.io.File;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -109,26 +107,13 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         intent.putExtra("secret", secret);
     }
 
-    public static SharedPreferences getSharedPreferences(String name) {
-        // for debugging, log timing
-        long start = SystemClock.elapsedRealtime();
-        // log what's requesting the shared preferences
-        // get caller if debug build
-        if (BuildConfig.DEBUG) {
-            StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
-            StackTraceElement e = stacktrace[3];
-            String methodName = e.getMethodName();
-            String className = e.getClassName();
-            Timber.d("Shared preferences %s requested by %s.%s", name, className, methodName);
-        }
+    public static SharedPreferences getPreferences(String name) {
         // encryptedSharedPreferences is used
-        Context context = getINSTANCE().getApplicationContext();
+        Context context = getINSTANCE();
         try {
             MasterKey masterKey = new MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build();
-            SharedPreferences mSharedPrefs = EncryptedSharedPreferences.create(context, name, masterKey, EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV, EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM);
-            Timber.d("Encrypted shared preferences %s took %dms",  name, SystemClock.elapsedRealtime() - start);
-            return mSharedPrefs;
-        } catch (GeneralSecurityException | IOException e) {
+            return EncryptedSharedPreferences.create(context, name, masterKey, EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV, EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM);
+        } catch (Exception e) {
             Timber.e(e, "Failed to create encrypted shared preferences");
             return context.getSharedPreferences(name, Context.MODE_PRIVATE);
         }
@@ -145,56 +130,56 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     }
 
     public static boolean isShowcaseMode() {
-        return getSharedPreferences("mmm").getBoolean("pref_showcase_mode", false);
+        return getPreferences("mmm").getBoolean("pref_showcase_mode", false);
     }
 
     public static boolean shouldPreventReboot() {
-        return getSharedPreferences("mmm").getBoolean("pref_prevent_reboot", true);
+        return getPreferences("mmm").getBoolean("pref_prevent_reboot", true);
     }
 
     public static boolean isShowIncompatibleModules() {
-        return getSharedPreferences("mmm").getBoolean("pref_show_incompatible", false);
+        return getPreferences("mmm").getBoolean("pref_show_incompatible", false);
     }
 
     public static boolean isForceDarkTerminal() {
-        return getSharedPreferences("mmm").getBoolean("pref_force_dark_terminal", false);
+        return getPreferences("mmm").getBoolean("pref_force_dark_terminal", false);
     }
 
     public static boolean isTextWrapEnabled() {
-        return getSharedPreferences("mmm").getBoolean("pref_wrap_text", false);
+        return getPreferences("mmm").getBoolean("pref_wrap_text", false);
     }
 
     public static boolean isDohEnabled() {
-        return getSharedPreferences("mmm").getBoolean("pref_dns_over_https", true);
+        return getPreferences("mmm").getBoolean("pref_dns_over_https", true);
     }
 
     public static boolean isMonetEnabled() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && getSharedPreferences("mmm").getBoolean("pref_enable_monet", true);
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && getPreferences("mmm").getBoolean("pref_enable_monet", true);
     }
 
     public static boolean isBlurEnabled() {
-        return getSharedPreferences("mmm").getBoolean("pref_enable_blur", false);
+        return getPreferences("mmm").getBoolean("pref_enable_blur", false);
     }
 
     public static boolean isDeveloper() {
         if (BuildConfig.DEBUG) return true;
-        return getSharedPreferences("mmm").getBoolean("developer", false);
+        return getPreferences("mmm").getBoolean("developer", false);
     }
 
     public static boolean isDisableLowQualityModuleFilter() {
-        return getSharedPreferences("mmm").getBoolean("pref_disable_low_quality_module_filter", false) && isDeveloper();
+        return getPreferences("mmm").getBoolean("pref_disable_low_quality_module_filter", false) && isDeveloper();
     }
 
     public static boolean isUsingMagiskCommand() {
-        return InstallerInitializer.peekMagiskVersion() >= Constants.MAGISK_VER_CODE_INSTALL_COMMAND && getSharedPreferences("mmm").getBoolean("pref_use_magisk_install_command", false) && isDeveloper();
+        return InstallerInitializer.peekMagiskVersion() >= Constants.MAGISK_VER_CODE_INSTALL_COMMAND && getPreferences("mmm").getBoolean("pref_use_magisk_install_command", false) && isDeveloper();
     }
 
     public static boolean isBackgroundUpdateCheckEnabled() {
-        return !wrapped && getSharedPreferences("mmm").getBoolean("pref_background_update_check", true);
+        return !wrapped && getPreferences("mmm").getBoolean("pref_background_update_check", true);
     }
 
     public static boolean isAndroidacyTestMode() {
-        return isDeveloper() && getSharedPreferences("mmm").getBoolean("pref_androidacy_test_mode", false);
+        return isDeveloper() && getPreferences("mmm").getBoolean("pref_androidacy_test_mode", false);
     }
 
     public static boolean isFirstBoot() {
@@ -202,15 +187,15 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     }
 
     public static void setHasGottenRootAccess(boolean bool) {
-        getSharedPreferences("mmm").edit().putBoolean("has_root_access", bool).apply();
+        getPreferences("mmm").edit().putBoolean("has_root_access", bool).apply();
     }
 
     public static boolean isCrashReportingEnabled() {
-        return SentryMain.IS_SENTRY_INSTALLED && getSharedPreferences("mmm").getBoolean("pref_crash_reporting", BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING);
+        return SentryMain.IS_SENTRY_INSTALLED && getPreferences("mmm").getBoolean("pref_crash_reporting", BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING);
     }
 
     public static SharedPreferences getBootSharedPreferences() {
-        return getSharedPreferences("mmm_boot");
+        return getPreferences("mmm_boot");
     }
 
     public static MainApplication getINSTANCE() {
@@ -246,7 +231,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         @StyleRes int themeResId;
         String theme;
         boolean monet = isMonetEnabled();
-        switch (theme = getSharedPreferences("mmm").getString("pref_theme", "system")) {
+        switch (theme = getPreferences("mmm").getString("pref_theme", "system")) {
             default:
                 Timber.w("Unknown theme id: %s", theme);
             case "system":
@@ -368,9 +353,9 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
             isOfficial = Arrays.asList(officialSignatureHashArray).contains(ourSignatureHash);
         } catch (PackageManager.NameNotFoundException ignored) {
         }
-        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences("mmm");
+        SharedPreferences sharedPreferences = MainApplication.getPreferences("mmm");
         // We are only one process so it's ok to do this
-        SharedPreferences bootPrefs = MainApplication.getSharedPreferences("mmm_boot");
+        SharedPreferences bootPrefs = MainApplication.getPreferences("mmm_boot");
         long lastBoot = System.currentTimeMillis() - SystemClock.elapsedRealtime();
         long lastBootPrefs = bootPrefs.getLong("last_boot", 0);
         if (lastBootPrefs == 0 || Math.abs(lastBoot - lastBootPrefs) > 100) {

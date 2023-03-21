@@ -8,7 +8,7 @@ buildscript {
             url 'https://jitpack.io'
         }
     }
-    project.ext.latestAboutLibsRelease = "10.5.2"
+    project.ext.latestAboutLibsRelease = "10.6.1"
     project.ext.sentryConfigFile = new File(rootDir, "sentry.properties").getAbsoluteFile()
     project.ext.hasSentryConfig = sentryConfigFile.exists()
     project.ext.sentryCli = [
@@ -16,7 +16,7 @@ buildscript {
             flavorAware: true
     ]
     project.ext.kotlin_version = "1.8.0"
-    project.ext.sentry_version = "6.14.0"
+    project.ext.sentry_version = "6.16.0"
     dependencies {
         classpath 'com.android.tools.build:gradle:7.4.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10"

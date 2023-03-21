@@ -22,7 +22,6 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.webkit.WebView;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
@@ -38,7 +37,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.fox2code.foxcompat.app.FoxActivity;
-import com.fox2code.foxcompat.app.FoxApplication;
 import com.fox2code.foxcompat.view.FoxDisplay;
 import com.fox2code.mmm.background.BackgroundUpdateChecker;
 import com.fox2code.mmm.installer.InstallerInitializer;
@@ -49,7 +47,7 @@ import com.fox2code.mmm.module.ModuleViewListBuilder;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.settings.SettingsActivity;
 import com.fox2code.mmm.utils.ExternalHelper;
-import com.fox2code.mmm.utils.io.Http;
+import com.fox2code.mmm.utils.io.net.Http;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
@@ -58,6 +56,7 @@ import org.chromium.net.CronetEngine;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Map;
 import java.util.Objects;
 
 import timber.log.Timber;
@@ -101,14 +100,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.initMode = true;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            // per process webview data dir
-            try {
-                WebView.setDataDirectorySuffix(FoxApplication.getProcessName());
-            } catch (IllegalStateException e) {
-                Timber.d("Could not set webview data dir, possibly already set or webview already initialized");
-            }
-        }
         // Ensure HTTP Cache directories are created
         Http.ensureCacheDirs(this);
         if (!urlFactoryInstalled) {
@@ -138,6 +129,13 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         }
         BackgroundUpdateChecker.onMainActivityCreate(this);
         super.onCreate(savedInstanceState);
+        // log all shared preferences that are present
+        // first, get every shared preference
+        Map<String, ?> allPrefs = MainApplication.getPreferences("mmm").getAll();
+        // then, log them
+        for (Map.Entry<String, ?> entry : allPrefs.entrySet()) {
+            Timber.d("Shared preference: %s = %s", entry.getKey(), entry.getValue());
+        }
         if (!isOfficial) {
             Timber.w("You may be running an untrusted build.");
             // Show a toast to warn the user
@@ -296,7 +294,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 // On every preferences change, log the change if debug is enabled
                 if (BuildConfig.DEBUG) {
                     // Log all preferences changes
-                    MainApplication.getSharedPreferences("mmm").registerOnSharedPreferenceChangeListener((prefs, key) -> Timber.i("onSharedPreferenceChanged: " + key + " = " + prefs.getAll().get(key)));
+                    MainApplication.getPreferences("mmm").registerOnSharedPreferenceChangeListener((prefs, key) -> Timber.i("onSharedPreferenceChanged: " + key + " = " + prefs.getAll().get(key)));
                 }
 
                 Timber.i("Scanning for modules!");
@@ -719,7 +717,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         if (BuildConfig.DEBUG)
             Timber.i("Checking if we need to run setup");
         // Check if this is the first launch using prefs and if doSetupRestarting was passed in the intent
-        SharedPreferences prefs = MainApplication.getSharedPreferences("mmm");
+        SharedPreferences prefs = MainApplication.getPreferences("mmm");
         boolean firstLaunch = !Objects.equals(prefs.getString("last_shown_setup", null), "v1");
         // First launch
         // this is intentionally separate from the above if statement, because it needs to be checked even if the first launch check is true due to some weird edge cases
