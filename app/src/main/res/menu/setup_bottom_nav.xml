@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!-- cancel and finish setup -->
+    <item
+        android:id="@+id/cancel_setup"
+        android:icon="@drawable/baseline_close_24"
+        android:title="@string/cancel"
+        app:showAsAction="ifRoom" />
+
+    <!-- save and finish setup -->
+    <item
+        android:id="@+id/setup_finish"
+        android:icon="@drawable/baseline_check_24"
+        android:title="@string/finish"
+        app:showAsAction="ifRoom" />
+</menu>

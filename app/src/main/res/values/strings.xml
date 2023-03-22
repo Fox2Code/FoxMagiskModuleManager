@@ -375,4 +375,8 @@
     <string name="modules">Modules</string>
     <string name="no_browser">You do not have a browser installed. Please install one to continue.</string>
     <string name="search">Search</string>
+    <string name="crash_reporting_headline">Crash reporting</string>
+    <string name="setup_update_check_headline">Update checks</string>
+    <string name="setup_background_update_check_require_wifi">Require wifi for update checks</string>
+    <string name="setup_background_update_check_require_wifi_summary">Require wifi or an otherwise unmetered connection to do update checks</string>
 </resources>

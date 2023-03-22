@@ -22,6 +22,7 @@ import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.utils.realm.ReposList;
 import com.fox2code.rosettax.LanguageActivity;
 import com.fox2code.rosettax.LanguageSwitcher;
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
@@ -48,11 +49,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             // back button is close button
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_USE_LOGO | ActionBar.DISPLAY_SHOW_HOME);
-            actionBar.setLogo(R.drawable.ic_foreground);
-            // set title
-            actionBar.setTitle(R.string.setup_title);
-            actionBar.show();
+            actionBar.hide();
         }
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, 0);
         createFiles();
@@ -153,7 +150,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         });
         // Set up the buttons
         // Setup button
-        MaterialButton setupButton = view.findViewById(R.id.setup_finish);
+        BottomNavigationItemView setupButton = view.findViewById(R.id.setup_finish);
         setupButton.setOnClickListener(v -> {
             Timber.i("Setup button clicked");
             // get instance of editor
@@ -191,8 +188,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             finish();
         });
         // Cancel button
-        MaterialButton cancelButton = view.findViewById(R.id.setup_cancel);
-        cancelButton.setText(R.string.cancel);
+        BottomNavigationItemView cancelButton = view.findViewById(R.id.cancel_setup);
         cancelButton.setOnClickListener(v -> {
             Timber.i("Cancel button clicked");
             // Set first launch to false and restart the activity
