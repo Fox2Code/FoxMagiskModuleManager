@@ -10,7 +10,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
 
 public final class CustomRepoData extends RepoData {
     boolean loadedExternal;
@@ -31,7 +30,7 @@ public final class CustomRepoData extends RepoData {
                 this.id : this.override;
     }
 
-    public void quickPrePopulate() throws IOException, JSONException, NoSuchAlgorithmException {
+    public void quickPrePopulate() throws IOException, JSONException {
         JSONObject jsonObject = new JSONObject(
                 new String(Http.doHttpGet(this.getUrl(),
                         false), StandardCharsets.UTF_8));

@@ -4,6 +4,11 @@ import android.content.SharedPreferences;
 
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.utils.io.PropUtils;
+import com.fox2code.mmm.utils.realm.ReposList;
+
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import timber.log.Timber;
 
 public class CustomRepoManager {
     public static final int MAX_CUSTOM_REPOS = 5;
@@ -21,7 +26,19 @@ public class CustomRepoManager {
         SharedPreferences sharedPreferences = this.getSharedPreferences();
         int lastFilled = 0;
         for (int i = 0; i < MAX_CUSTOM_REPOS; i++) {
-            String repo = sharedPreferences.getString("repo_" + i, "");
+            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+            Realm realm = Realm.getInstance(realmConfiguration);
+            try {
+                realm.beginTransaction();
+            } catch (IllegalStateException e) {
+                Timber.w(e, "Failed to begin transaction");
+            }
+            // find the matching entry for repo_0, repo_1, etc.
+            ReposList reposList = realm.where(ReposList.class).equalTo("id", "repo_" + i).findFirst();
+            if (reposList == null) {
+                continue;
+            }
+            String repo = reposList.getUrl();
             if (!PropUtils.isNullString(repo) && !RepoManager.isBuiltInRepo(repo)) {
                 lastFilled = i;
                 int index = AUTO_RECOMPILE ?
@@ -33,12 +50,23 @@ public class CustomRepoManager {
             }
         }
         if (AUTO_RECOMPILE && (lastFilled + 1) != this.customReposCount) {
-            SharedPreferences.Editor editor = sharedPreferences.edit().clear();
-            for (int i = 0; i < MAX_CUSTOM_REPOS; i++) {
-                if (this.customRepos[i] != null)
-                    editor.putString("repo_" + i, this.customRepos[i]);
+            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+            Realm realm = Realm.getInstance(realmConfiguration);
+            try {
+                realm.beginTransaction();
+            } catch (IllegalStateException e) {
+                Timber.w(e, "Failed to begin transaction");
             }
-            editor.apply();
+            for (int i = 0; i < MAX_CUSTOM_REPOS; i++) {
+                if (this.customRepos[i] != null) {
+                    // find the matching entry for repo_0, repo_1, etc.
+                    ReposList reposList = realm.where(ReposList.class).equalTo("id", "repo_" + i).findFirst();
+                    if (reposList == null) {
+                        continue;
+                    }
+                    reposList.setUrl(this.customRepos[i]);
+                }
+            }
         }
     }
 
@@ -57,8 +85,17 @@ public class CustomRepoManager {
         int i = 0;
         while (customRepos[i] != null) i++;
         customRepos[i] = repo;
-        this.getSharedPreferences().edit()
-                .putString("repo_" + i, repo).apply();
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+        Realm realm = Realm.getInstance(realmConfiguration);
+        realm.beginTransaction();
+        // find the matching entry for repo_0, repo_1, etc.
+        ReposList reposList = realm.where(ReposList.class).equalTo("id", "repo_" + i).findFirst();
+        if (reposList == null) {
+            reposList = realm.createObject(ReposList.class, "repo_" + i);
+        }
+        reposList.setUrl(repo);
+        realm.commitTransaction();
+        customReposCount++;
         this.dirty = true;
         CustomRepoData customRepoData = (CustomRepoData)
                 this.repoManager.addOrGet(repo);

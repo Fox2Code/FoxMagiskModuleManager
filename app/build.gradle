@@ -66,6 +66,7 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+        multiDexEnabled true
     }
 
     splits {
@@ -110,7 +111,6 @@ android {
         }
     }
 
-    //noinspection GrDeprecatedAPIUsage
     flavorDimensions "type"
     productFlavors {
         "default" {
@@ -138,6 +138,7 @@ android {
                 buildConfigField "String", "SENTRY_TOKEN", '""'
             }
             // Get the androidacy client ID from the androidacy.properties
+
             Properties properties = new Properties()
             // If androidacy.properties doesn't exist, use the default client ID which is heavily
             // rate limited to 30 requests per minute
@@ -146,7 +147,7 @@ android {
             } else {
                 properties.setProperty('client_id', '"5KYccdYxWB2RxMq5FTbkWisXi2dS6yFN9R7RVlFCG98FRdz6Mf5ojY2fyJCUlXJZ"')
             }
-            buildConfigField("String", "ANDROIDACY_CLIENT_ID", properties.getProperty('client_id'))
+            buildConfigField("String", "ANDROIDACY_CLIENT_ID", "\"" + properties.getProperty('client_id') + "\"")
             // If client ID is empty, disable androidacy
             if (properties.getProperty('client_id').isEmpty()) {
                 buildConfigField("java.util.List<String>",
@@ -314,11 +315,13 @@ dependencies {
     implementation 'androidx.work:work-runtime:2.8.0'
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.10'
     implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:5.0.0-alpha.10'
+    // logging interceptor
+    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.10'
     // Chromium cronet from androidacy
     implementation 'com.androidacy:cronet-common:111.0.5563.75'
     implementation 'com.androidacy:cronet-native:111.0.5563.75'
     implementation 'com.androidacy:cronet-api:111.0.5563.75'
-    // protobuf - fixes a crash on some devicesa
+    // protobuf - fixes a crash on some devices
     implementation 'com.google.protobuf:protobuf-javalite:3.22.2'
 
     implementation 'com.github.topjohnwu.libsu:io:5.0.1'
@@ -377,13 +380,14 @@ android {
     }
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17
     }
     //noinspection GrDeprecatedAPIUsage
-    buildToolsVersion '33.0.2'
+    buildToolsVersion '34.0.0 rc2'
 }
 
 

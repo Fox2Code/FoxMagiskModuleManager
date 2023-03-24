@@ -111,19 +111,13 @@ public enum Hashes {
     public static String checkSumName(String checksum) {
         if (checksum == null)
             return null;
-        switch (checksum.length()) {
-            case 0:
-            default:
-                return null;
-            case 32:
-                return "MD5";
-            case 40:
-                return "SHA-1";
-            case 64:
-                return "SHA-256";
-            case 128:
-                return "SHA-512";
-        }
+        return switch (checksum.length()) {
+            default -> null;
+            case 32 -> "MD5";
+            case 40 -> "SHA-1";
+            case 64 -> "SHA-256";
+            case 128 -> "SHA-512";
+        };
     }
 
     public static String checkSumFormat(String checksum) {

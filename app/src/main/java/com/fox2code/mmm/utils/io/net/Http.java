@@ -52,6 +52,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okhttp3.dnsoverhttps.DnsOverHttps;
+import okhttp3.logging.HttpLoggingInterceptor;
 import okio.BufferedSink;
 import timber.log.Timber;
 
@@ -140,8 +141,29 @@ public enum Http {
                 request.header("Accept-Language", // Send system language to the server
                         mainApplication.getResources().getConfiguration().getLocales().get(0).toLanguageTag());
             }
+            // add client hints
+            request.header("Sec-CH-UA", androidacyUA);
+            request.header("Sec-CH-UA-Mobile", "?1");
+            request.header("Sec-CH-UA-Platform", "Android");
+            request.header("Sec-CH-UA-Platform-Version", Build.VERSION.RELEASE);
+            request.header("Sec-CH-UA-Arch", Build.SUPPORTED_ABIS[0]);
+            request.header("Sec-CH-UA-Full-Version", BuildConfig.VERSION_NAME);
+            request.header("Sec-CH-UA-Model", Build.DEVICE);
+            request.header("Sec-CH-UA-Bitness", Build.SUPPORTED_64_BIT_ABIS.length > 0 ? "64" : "32");
             return chain.proceed(request.build());
         });
+        // add sentry interceptor
+        if (MainApplication.isCrashReportingEnabled()) {
+            httpclientBuilder.addInterceptor(new SentryOkHttpInterceptor());
+        }
+
+        // for debug builds, add a logging interceptor
+        if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            httpclientBuilder.addInterceptor(loggingInterceptor);
+        }
+
         // Add cronet interceptor
         // init cronet
         try {
@@ -172,10 +194,6 @@ public enum Http {
                 Exception e) {
             Timber.e(e, "Failed to init cronet");
             // Gracefully fallback to okhttp
-        }
-        // add sentry interceptor
-        if (MainApplication.isCrashReportingEnabled()) {
-            httpclientBuilder.addInterceptor(new SentryOkHttpInterceptor());
         }
         // Fallback DNS cache responses in case request fail but already succeeded once in the past
         fallbackDNS = new FallBackDNS(mainApplication, dns, "github.com", "api.github.com", "raw.githubusercontent.com", "camo.githubusercontent.com", "user-images.githubusercontent.com", "cdn.jsdelivr.net", "img.shields.io", "magisk-modules-repo.github.io", "www.androidacy.com", "api.androidacy.com", "production-api.androidacy.com");

@@ -379,4 +379,5 @@
     <string name="setup_update_check_headline">Update checks</string>
     <string name="setup_background_update_check_require_wifi">Require wifi for update checks</string>
     <string name="setup_background_update_check_require_wifi_summary">Require wifi or an otherwise unmetered connection to do update checks</string>
+    <string name="setup_app_analytics">Allow app analytics</string>
 </resources>

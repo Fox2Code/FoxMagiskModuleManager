@@ -428,7 +428,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             debugNotification.setEnabled(MainApplication.isBackgroundUpdateCheckEnabled());
             debugNotification.setVisible(MainApplication.isDeveloper() && !MainApplication.isWrapped() && MainApplication.isBackgroundUpdateCheckEnabled());
             debugNotification.setOnPreferenceClickListener(preference -> {
-                // fake updateable modules hashmap
+                // fake updatable modules hashmap
                 HashMap<String, String> updateableModules = new HashMap<>();
                 // count of modules to fake must match the count in the random number generator
                 Random random = new Random();
@@ -797,7 +797,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         @SuppressLint({"RestrictedApi", "UnspecifiedImmutableFlag"})
         public void onCreatePreferencesAndroidacy() {
             // Bind the pref_show_captcha_webview to captchaWebview('https://production-api.androidacy.com/')
-            // Also require dev modeowCaptchaWebview.setVisible(false);
+            // Also require dev mode
+            // CaptchaWebview.setVisible(false);
             Preference androidacyTestMode = Objects.requireNonNull(findPreference("pref_androidacy_test_mode"));
             if (!MainApplication.isDeveloper()) {
                 androidacyTestMode.setVisible(false);
