@@ -356,4 +356,9 @@
     <string name="search">Szukaj</string>
     <string name="yer_a_wizard_harry">Jesteś czarodziejem, Harry!</string>
     <string name="keep_tapping_to_enter_hogwarts">Stukaj dalej, aby zostać przyjętym do Hogwartu!</string>
+    <string name="setup_background_update_check_require_wifi">Wymagaj sieci WiFi do sprawdzania aktualizacji</string>
+    <string name="setup_app_analytics">Pozwól na analizę aplikacji</string>
+    <string name="crash_reporting_headline">Raportowanie błędów</string>
+    <string name="setup_update_check_headline">Sprawdzanie aktualizacji</string>
+    <string name="setup_background_update_check_require_wifi_summary">Wymagaj WiFi lub innego nieopomiarowanego połączenia, aby wykonać sprawdzanie aktualizacji</string>
 </resources>
