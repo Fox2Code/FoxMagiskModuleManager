@@ -345,4 +345,9 @@
     <string name="notification_channel_category_app_update_description">アプリのアップデートがあるときに通知するよ</string>
     <string name="notification_channel_background_update_app">アプリのアップデートがあるよ！</string>
     <string name="notification_channel_background_update_app_description">FoxMMM のアップデートがあるよ。ここをタップしてアップデートできるよ。</string>
+    <string name="modules">モジュール</string>
+    <string name="no_browser">ブラウザーがインストールされていないよ。続けるにはインストールしてね。</string>
+    <string name="search">検索</string>
+    <string name="yer_a_wizard_harry">あなたはハリーみたいな魔法使いだよ！</string>
+    <string name="keep_tapping_to_enter_hogwarts">ホグワーツに入学したいならタップを続けてね！</string>
 </resources>

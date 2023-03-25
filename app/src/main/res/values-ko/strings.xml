@@ -145,4 +145,23 @@
     <string name="support">지원</string>
     <string name="donate">기부</string>
     <string name="require_android_12">안드로이드 12 이상 필요</string>
+    <string name="repackaged_as">다음으로 리패키지됨:</string>
+    <string name="androidacy_failed_to_parse_token">Androidacy에서 토큰을 가져올 수 없습니다. 나중에 다시 시도해 주세요.</string>
+    <string name="androidacy_failed_to_validate_token">Androidacy 토큰을 검증할 수 없습니다. 나중에 다시 시도해 주세요.</string>
+    <string name="api_key_unchanged">입력한 API 키가 지금 사용중인 것과 동일합니다.</string>
+    <string name="permission_notification_title">알림을 허용하시겠습니까\?</string>
+    <string name="permission_notification_grant">권한 부여</string>
+    <string name="dont_ask_again">다시 보지 않기</string>
+    <string name="force_black_theme_pref">검정 배경 강제</string>
+    <string name="androidacy_repo_disabled">이 저장소는 현재 비활성화 되어있습니다</string>
+    <string name="download_full_app">전체 버전 다운로드</string>
+    <string name="repo_update_failed">업데이트에 실패한 저장소가 있습니다</string>
+    <string name="androidacy_server_down">Androidacy 서버에 연결할 수 없습니다. 인터넷 연결을 확인하고 다시 시도해 주세요.</string>
+    <string name="androidacy_need_captcha">Androidacy 업데이트가 Captcha로 인해 막혔습니다</string>
+    <string name="api_key_restart">API키가 변경되었습니다. 변경사항을 적용하기 위해 앱을 재시작 해주세요.</string>
+    <string name="permission_notification_message">앱 및 모듈 업데이트에 대한 알림을 받으려면 알림 권한이 필요합니다. 이 권한이 없으면 자동 업데이트 확인이 실행되지 않습니다.</string>
+    <string name="background_update_check_permission_required">이 옵션을 켤려면 알림을 허용해주세요.</string>
+    <string name="force_black_theme_desc">어두운 테마를 사용할 때 강제로 AMOLED 검정 배경을 사용합니다. 일부 색상 테마에는 대비 문제가 있을 수 있습니다.</string>
+    <string name="androidacy_repo_disabled_message">이 빌드에는 Androidacy 저장소용 클라이언트 키가 없습니다. 모듈 평가, 자동 보안 검사 등과 같은 기능을 이용하려면 GitHub 릴리스를 다운로드하십시오.</string>
+    <string name="repo_update_failed_extended">%1$s개의 업데이트 실패. 나중에 다시 시도해주새요.</string>
 </resources>

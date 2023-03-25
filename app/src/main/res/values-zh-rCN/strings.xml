@@ -15,7 +15,7 @@
     <string name="no_web_view">无法打开系统 WebView</string>
     <string name="title_activity_settings">设置活动</string>
     <string name="app_update_available">应用程序有更新可用</string>
-    <string name="app_update">更新</string>
+    <string name="app_update">更新应用</string>
     <string name="no_desc_found">没有提供说明。</string>
     <string name="download_module">下载模块</string>
     <string name="install_module">安装模块</string>
@@ -102,7 +102,7 @@
     <string name="force_english_pref">强制设定语言为英语</string>
     <string name="disable_low_quality_module_filter_pref">显示低质量模块</string>
     <string name="disable_low_quality_module_filter_desc">一些模块没有正确声明它们的元数据，导致显示上出现问题，或提示模块质量不佳。
-\n使用时请自担风险！</string>
+\n打开它需要您自担风险!</string>
     <string name="dns_over_https_pref">安全 DNS (DoH)</string>
     <string name="dns_over_https_desc">在某些情况下可能会修复连接问题。 (不适用于 WebView)</string>
     <string name="disable_extensions_pref">禁用扩展</string>
@@ -125,10 +125,10 @@
     <string name="androidacy_test_mode_pref">Androidacy 测试模式</string>
     <string name="androidacy_test_mode_desc">使用 Androidacy 临时分支而不是稳定版分支。 (要求重新启动应用程序)</string>
     <!-- Background Notification translation -->
-    <string name="notification_update_title">发现 %i 个模块更新</string>
+    <string name="notification_update_title">发现 %1$d 个模块更新</string>
     <string name="notification_update_title_easter_egg">嗅探到 %i 个模块更新</string>
     <string name="notification_update_subtitle">点击打开应用</string>
-    <string name="notification_update_pref">后台检查模块更新</string>
+    <string name="notification_update_pref">自动检查模块更新</string>
     <string name="notification_update_desc">可能会增加电池使用量</string>
     <string name="notification_update_debug_pref">测试通知</string>
     <!-- Set to true in translation file if your language is right to left -->
@@ -167,7 +167,7 @@
     <string name="api_key_restart">API 密钥已更改，请重启应用以让更改生效。</string>
     <string name="api_key_unchanged">你输入的 API 密钥与已经当前使用的一致。</string>
     <string name="permission_notification_title">是否允许通知？</string>
-    <string name="permission_notification_message">我们需要通知权限以用于通知您关于此程序及模块的更新，如果您不同意授权此权限，后台更新检查将不会运行。</string>
+    <string name="permission_notification_message">我们需要通知权限以用于通知您关于此程序及模块的更新，如果您不同意授权此权限，自动更新检查将不会运行。</string>
     <string name="permission_notification_grant">授予权限</string>
     <string name="background_update_check_permission_required">请打开通知以启用此选项。</string>
     <string name="dont_ask_again">不再询问</string>
@@ -200,7 +200,7 @@
     <string name="setup_title">初始设定</string>
     <string name="setup_message">欢迎！这个程序将帮助您安装和管理 Magisk 模块。在开始前，请对以下选项进行设置，这些选项可以稍后在设置中更改。</string>
     <string name="setup_button">完成设定</string>
-    <string name="setup_background_update_check">在后台检查更新</string>
+    <string name="setup_background_update_check">自动检查更新</string>
     <string name="setup_background_update_check_summary">允许我们在后台检查模块和应用更新，此功能可能会消耗更多电量和数据。</string>
     <string name="setup_androidacy_repo">启用 Androidacy 仓库</string>
     <string name="setup_androidacy_repo_summary">具有用户评论、自动病毒扫描、快速更新功能，作为更广泛的选择，并由 Androidacy 提供支持。</string>
@@ -271,13 +271,95 @@
 \n我们强烈建议卸载。</string>
     <string name="zip_security_warning">安装 %s 吗？</string>
     <string name="fox2code_thanks_desc">Fox2Code 是此应用程序的原始创建者，如果没有他就不会有这个应用程序。</string>
-    <string name="not_official_build">注意：你正在运行一个非官方版本的 FoxMMM 构建，此版本将不会得到支持。</string>
+    <string name="not_official_build">这个应用程序是一个非官方的 FoxMMM 版本。</string>
     <string name="save_logs">将日志保存到本地并分享</string>
     <string name="error_saving_logs">无法保存日志</string>
     <string name="share_logs">分享 FoxMMM 的日志</string>
     <string name="reset_api_key">重置 API 密钥</string>
     <string name="upgrade_androidacy_promo">升级到高级版</string>
-    <string name="repo_update_failed_message">以下仓库未能更新：\\n\\n%s</string>
+    <string name="repo_update_failed_message">以下仓库未能更新：
+\n
+\n%s</string>
     <string name="upgrade_androidacy_promo_desc">升级到高级版将会移除广告、验证码，并支持从 Androidacy 仓库下载，同时可以为 Androidacy 与模块作者提供支持。</string>
     <string name="theme_transparent_dark">深色 (透明)</string>
+    <string name="safe">安全</string>
+    <string name="download_update">下载更新</string>
+    <string name="background_update_check_excludes">从自动更新检查中排除的模块</string>
+    <string name="title_activity_update">应用内更新程序</string>
+    <string name="update_title">更新应用</string>
+    <string name="update_button">请稍等...</string>
+    <string name="yer_a_wizard_harry">你是个巫师, Harry!</string>
+    <string name="keep_tapping_to_enter_hogwarts">继续点击以进入霍格沃茨!</string>
+    <string name="modules">模块</string>
+    <string name="search">搜索</string>
+    <string name="feedback_name">名字 (可选)</string>
+    <string name="feedback_email">邮件 (可选)</string>
+    <string name="crash_text">Uh-oh, 我们遇到障碍了！</string>
+    <string name="feedback_message">向我们提供有关发生这种情况时您正在做什么的更多详细信息。 多多益善！</string>
+    <string name="feedback_submit">提交并重启</string>
+    <string name="please_feedback">请告诉我们发生这种情况时您正在尝试做什么，以帮助我们解决问题。</string>
+    <string name="crash_icon">崩溃图标</string>
+    <string name="copy_button">复制文本</string>
+    <string name="crash_details">未知原因</string>
+    <string name="more_details">更多细节可以在下面找到。</string>
+    <string name="crash_full_stacktrace">堆栈跟踪:
+\n%1$s</string>
+    <string name="sentry_dialogue_empty_message">您没有指定其他反馈.</string>
+    <string name="crash_details_copied">已将堆栈跟踪复制到剪贴板！</string>
+    <string name="sentry_enable_nag">看起来崩溃反馈被禁用了。 请启用它以提交反馈。</string>
+    <string name="reset_app">重置应用程序</string>
+    <string name="reset_app_message">这将完全删除所有应用程序数据并关闭应用程序。 模块不会被卸载。</string>
+    <string name="upgraded_summary">你真棒！ 看起来您已经升级了您的订阅并支持了 Androidacy。</string>
+    <string name="upgraded">Premium 活跃</string>
+    <string name="reset_warning">如果您一直看到此屏幕，重置应用程序可能会有所帮助。 这将清除应用程序数据，但不会影响已安装的模块。</string>
+    <string name="reset">重置</string>
+    <string name="reset_app_confirmation">这将完全擦除应用程序数据，但不会影响安装的模块。</string>
+    <string name="error_no_extras">ERROR: 启动时收到无效数据</string>
+    <string name="update_debug_warning">您似乎正在运行调试版本。 调试版本必须手动更新，并且不支持应用内更新</string>
+    <string name="error_no_action">ERROR: 指定的操作无效。 拒绝继续。</string>
+    <string name="update_available">发现更新</string>
+    <string name="checking_for_update">检查更新中…</string>
+    <string name="no_update_available">已经是最新的了！</string>
+    <string name="api_key_mismatch">API key 的格式无效</string>
+    <string name="error_adding">无法添加自定义存储库</string>
+    <string name="error_download_update">下载更新信息时出错。</string>
+    <string name="error_no_asset">ERROR: 解析更新信息失败</string>
+    <string name="downloading_update">下载更新中… %1$d%%</string>
+    <string name="installing_update">安装更新中…</string>
+    <string name="check_for_updates">检查应用更新</string>
+    <string name="notification_update_ignore_pref">排除模块</string>
+    <string name="pref_category_updates">更新</string>
+    <string name="invalid_excludes">输入无效</string>
+    <string name="update_cancel_button">取消更新</string>
+    <string name="invalid_repo_url">您输入的存储库 URL 无效</string>
+    <string name="notification_channel_background_update">检查更新...</string>
+    <string name="notification_channel_category_background_update">后台更新状态</string>
+    <string name="notification_channel_category_background_update_description">在检查更新时显示通知，以让系统就不会杀死它</string>
+    <string name="notification_update_wifi_desc">仅在WiFi连接时检查</string>
+    <string name="background_update_check_excludes_no_modules">设备上没有安装的模块</string>
+    <string name="auto_updates_notifs">发现模块更新时发出通知</string>
+    <string name="notification_group_updates">更新</string>
+    <string name="low_quality_module_desc">此模块包含无效或被视为低质量模块标记的元数据。 建议卸载。</string>
+    <string name="online">线上</string>
+    <string name="notification_update_module_template">%1$s 到版本 %2$s</string>
+    <string name="notification_update_app_pref">检查应用更新</string>
+    <string name="notification_channel_category_app_update">应用更新</string>
+    <string name="notification_channel_category_app_update_description">当有可用的更新时提醒</string>
+    <string name="notification_channel_background_update_app">有应用更新可用!</string>
+    <string name="notification_channel_background_update_app_description">FoxMMM 有一个可用的更新。点击此处以更新。</string>
+    <string name="notification_update_ignore_desc">从更新检查中排除的模块列表</string>
+    <string name="invalid_characters_message">您输入的模块列表无效。 请仅输入以逗号分隔的有效模块 ID</string>
+    <string name="update_message">我们正在检查并安装 FoxMMM 的更新，请稍候。 这可能需要几分钟的时间</string>
+    <string name="sentry_dialogue_disabled">崩溃报告被禁用. 启用以提交反馈.</string>
+    <string name="no_file_found">ERROR: 没有找到更新包。</string>
+    <string name="update_debug_download_pref">测试更新下载机制</string>
+    <string name="changelog_none">还没有变化!</string>
+    <string name="add_repo_message">存储库必须通过 HTTPS 提供，并且必须遵循文档中概述的规范。</string>
+    <string name="notification_update_summary">可以更新以下模块:</string>
+    <string name="notification_channel_background_update_description">FoxMMM 正在后台检查更新。</string>
+    <string name="notification_update_wifi_pref">需要 Wi-Fi 或不按流量计费的网络进行更新检查。 如果您的移动数据有限，建议继续使用。</string>
+    <string name="safe_module">经验证的安全模块</string>
+    <string name="safe_message">该模块已被存储库验证为安全的，这意味着它通过了特定的质量和安全阈值，并检查了恶意软件。</string>
+    <string name="notification_update_app_desc">启用自动检查应用更新。 更新不会自动下载。</string>
+    <string name="no_browser">您没有安装浏览器。 请安装一个以继续。</string>
 </resources>
