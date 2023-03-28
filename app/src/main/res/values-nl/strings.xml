@@ -11,7 +11,7 @@
     <string name="fail_internet">Geen internetverbinding</string>
     <string name="no_web_view">Kan system Webview niet openen</string>
     <string name="title_activity_settings">InstellingsActiviteit</string>
-    <string name="app_update">Bijwerken</string>
+    <string name="app_update">App Bijwerken</string>
     <string name="no_desc_found">Geen beschrijving gevonden.</string>
     <string name="download_module">Download module</string>
     <string name="install_module">Installeer module</string>
@@ -98,7 +98,7 @@
     <string name="require_internet">Deze bewerking vereist een internetverbinding</string>
     <string name="androidacy_test_mode_pref">Androidacy test modus</string>
     <string name="androidacy_test_mode_desc">Gebruik staging Androidacy endpoint in plaats van release endpoint. (Dit start de app opnieuw op)</string>
-    <string name="notification_update_title">%i module updates gevonden</string>
+    <string name="notification_update_title">%1$d module updates gevonden</string>
     <string name="notification_update_title_easter_egg">%i module updates gezocht</string>
     <string name="notification_update_subtitle">Klik om de app te openen</string>
     <string name="notification_update_desc">Kan het batterijgebruik verhogen</string>
@@ -156,14 +156,10 @@
     <string name="setup_title">Eerste installatie</string>
     <string name="setup_message">Welkom! Deze app helpt je bij het installeren en beheren van Magisk-modules. Selecteer de onderstaande opties om aan de slag te gaan. Deze en meer kunnen later worden geconfigureerd vanuit de instellingen.</string>
     <string name="setup_button">Installatie voltooien</string>
-    <string name="setup_background_update_check">Laat ons controleren op updates op de achtergrond.
-\nDeze functie kan meer batterij gebruiken.</string>
-    <string name="setup_androidacy_repo">Schakel de Androidacy-repo in 
-\nBeschikt over gebruikersrecensies, automatische virusscans, snelle updates, een brede selectie en wordt ondersteund door Androidacy.</string>
-    <string name="setup_magisk_alt_repo">Schakel de Magisk Alt Repo in
-\nVeel lakser dan het origineel. Heeft veel modules ten koste van enige veiligheid.</string>
-    <string name="setup_crash_reporting">Schakel Sentry-crashrapportage en prestatiebewaking in.
-\nAlle meldingen zijn strikt anoniem en vertrouwelijk.</string>
+    <string name="setup_background_update_check">Automatische controle op update</string>
+    <string name="setup_androidacy_repo">Schakel de Androidacy-repo in</string>
+    <string name="setup_magisk_alt_repo">Schakel de Magisk Alt Repo in</string>
+    <string name="setup_crash_reporting">Schakel Sentry in</string>
     <string name="setup_custom_repos">U kunt later aangepaste repo\'s toevoegen in de instellingen.</string>
     <string name="repos">Pakketbeheerders</string>
     <string name="misc">Allerlei</string>
@@ -185,23 +181,175 @@
     <string name="file_picker_wierd">Je huidige bestandsbeheerder heeft een niet-standaard antwoord gegeven.</string>
     <string name="use_magisk_install_command_desc">Tijdens het testen veroorzaakte het problemen met het foutdiagnose-programma, daarom is deze optie enkel toegankelijk in ontwikkelmodus.
 \nActiveren is op eigen risico!</string>
-    <string name="disable_low_quality_module_filter_desc">Sommige modules declareren hun metagegevens niet correct, wat visuele storingen veroorzaakt en/of wijst op een slechte modulekwaliteit.
+    <string name="disable_low_quality_module_filter_desc">Sommige modules declareren hun metagegevens niet correct wat visuele storingen veroorzaakt en/of wijst op een slechte modulekwaliteit.
 \nSchakel dit uit op eigen risico!</string>
     <string name="disable_extensions_desc">Schakel Fox\'s Mmm-extensies uit, zodat modules geen terminalextensies kunnen gebruiken.
 \nHandig als een module misbruik maakt van Fox\'s Mmm extensies.</string>
     <string name="androidacy_repo_info">Deze repository kan een aantal niet-intrusieve reclameboodschappen weergeven om de server- en ontwikkelingskosten te dekken. Beschikt over beoordelingen, automatische virusscans en meer.</string>
-    <string name="notification_update_pref">Updatecontrole van achtergrondmodules</string>
+    <string name="notification_update_pref">Automatische updatecontrole van modules</string>
     <string name="language_support_outdated">Sommige vertalingen voor de huidige taal zijn niet up-to-date, overweeg om bij te dragen aan de app-vertalingen op GitHub</string>
     <string name="crash_reporting_desc">Als je dit uitschakelt, krijgt de ontwikkelaar geen automatische bugrapporten en dit kan het oplossen van problemen bemoeilijken</string>
     <string name="save_api_key">Valideren</string>
     <string name="androidacy_test_mode_warning">Je stelt de app in om een niet-productie-eindpunt voor Androidacy te gebruiken. Dit kan leiden tot instabiliteit van de app en het niet laden van de online repo. Meld GEEN bugs als u deze schakelaar hebt ingeschakeld. De app wordt opnieuw gestart om repo\'s opnieuw te laden.</string>
     <string name="androidacy_failed_to_parse_token">Kan token niet ophalen van Androidacy. Probeer het later opnieuw.</string>
     <string name="api_key_restart">API-sleutel is gewijzigd. Start de app opnieuw om wijzigingen toe te passen.</string>
-    <string name="permission_notification_message">We hebben de toestemming voor meldingen nodig om je op de hoogte te stellen van app- en module-updates. Als je deze machtiging niet verleent, worden er geen controles van achtergrondupdates uitgevoerd.</string>
+    <string name="permission_notification_message">We hebben de toestemming voor meldingen nodig om je op de hoogte te stellen van app- en module-updates. Als je deze machtiging niet verleent, worden er geen automatische controles van updates uitgevoerd.</string>
     <string name="force_black_theme_desc">Forceert zwarte achtergronden voor AMOLED bij gebruik van donker thema. Houd er rekening mee dat dit contrastproblemen kan veroorzaken met sommige kleurthema\'s.</string>
     <string name="transparent_theme_dialogue_message">Transparante thema\'s kunnen enkele inconsistenties hebben en werken mogelijk niet op alle ROM\'s. Bovendien worden Monet en vervaging uitgeschakeld. Je kan dit op elk gewenst moment wijzigen.</string>
     <string name="sentry_dialogue_message">Er is een fout opgetreden! Help ons de app te verbeteren door wat informatie over de onderstaande fout toe te voegen.
 \nNaam en e-mailadres zijn optioneel maar stellen ons in staat om indien nodig contact met u op te nemen voor meer informatie.</string>
     <string name="low_performance_device_dialogue_message">Je probeert vervaging in te schakelen op een apparaat dat er mogelijk niet goed mee presteert.
 \nJe kan dit inschakelen, maar het kan leiden tot een slechte gebruikerservaring en we raden je aan dit niet te doen.</string>
+    <string name="androidacy_update_needed_message">Werk de app bij naar de nieuwste versie.</string>
+    <string name="zip_prop_load_failed">Kan de module-eigenschappen niet laden</string>
+    <string name="zip_security_warning">%s installeren\?</string>
+    <string name="zip_unpacking">Module controleren…</string>
+    <string name="setup_language_button">Kies je taal</string>
+    <string name="action_settings">Instellingen</string>
+    <string name="language_cta_desc">Help ons door mee te vertalen! Tik hier voor meer informatie.</string>
+    <string name="language_cta">Zie je je taal niet\?</string>
+    <string name="androidacy_thanks_desc">Enorme shoutout naar Androidacy voor hun integratie en bijdragen aan de app.</string>
+    <string name="contributors">En natuurlijk, dank aan al onze bijdragers, of het nu gaat om vertalingen, code of gewoon voor de fun! We houden van jullie allemaal.</string>
+    <string name="background_update_check_excludes">Modules uitgesloten van automatische updatecontroles</string>
+    <string name="title_activity_update">In-app Updater</string>
+    <string name="update_title">App bijwerken</string>
+    <string name="update_message">Even geduld terwijl we controleren op updates voor FoxMMM en deze installeren. Dit kan enkele minuten duren</string>
+    <string name="update_button">Even geduld...</string>
+    <string name="clear_app_data">Verwijder app data</string>
+    <string name="clear_data_dialogue_title">App data verwijderen\?</string>
+    <string name="clear_data_dialogue_message">Je staat op het punt de app-gegevens te wissen. Bevestig deze actie.</string>
+    <string name="setup_androidacy_repo_summary">Beschikt over gebruikersrecensies, automatische virusscans, snelle updates, een brede selectie en wordt ondersteund door Androidacy.</string>
+    <string name="setup_magisk_alt_repo_summary">Veel lakser dan het origineel. Heeft veel modules maar gaat ten koste van enige veiligheid.</string>
+    <string name="setup_crash_reporting_summary">Crashrapportage en prestatiebewaking. Alle meldingen zijn strikt anoniem en vertrouwelijk.</string>
+    <string name="debug_build">Dit is een debug build. Verwacht enkele bugs en slechtere prestaties.</string>
+    <string name="androidacy_repo_name">Androidacy Repo</string>
+    <string name="magisk_alt_repo_name">Magisk Alt Repo</string>
+    <string name="finish">Beëindigen</string>
+    <string name="pref_category_contributors">Bijdragers</string>
+    <string name="fox2code_thanks_desc">Fox2Code is de oorspronkelijke maker van de app. Zonder hem was dit nooit mogelijk geweest.</string>
+    <string name="fox2code_thanks">Gemaakt door Fox2Code</string>
+    <string name="save_logs">Logboeken opslaan en delen</string>
+    <string name="error_saving_logs">Kan logboeken niet opslaan</string>
+    <string name="share_logs">FoxMMM logs delen</string>
+    <string name="not_official_build">Deze app is geen officiële FoxMMM build.</string>
+    <string name="yer_a_wizard_harry">Je bent een tovenaar, Harry!</string>
+    <string name="keep_tapping_to_enter_hogwarts">Blijf tikken om toegelaten te worden tot Zweinstein!</string>
+    <string name="modules">Modules</string>
+    <string name="no_browser">Je hebt geen browser geïnstalleerd. Installeer er een om door te gaan.</string>
+    <string name="search">Zoeken</string>
+    <string name="setup_theme">Kies een thema</string>
+    <string name="setup_theme_header">Kies een thema</string>
+    <string name="setup_theme_system">Systeem thema</string>
+    <string name="setup_theme_light">Licht thema</string>
+    <string name="setup_theme_dark">Donker thema</string>
+    <string name="setup_theme_black">AMOLED Donker thema</string>
+    <string name="setup_theme_transparent_light">Transparant licht thema - schakelt monet en vervagen uit!</string>
+    <string name="setup_theme_button">Kies een thema</string>
+    <string name="theme">Thema</string>
+    <string name="theme_system">Systeem</string>
+    <string name="theme_dark">Donker</string>
+    <string name="theme_black">AMOLED Donker</string>
+    <string name="theme_transparent_light">Licht (transparant)</string>
+    <string name="theme_light">Licht</string>
+    <string name="repo_update_failed_message">De volgende repo\'s kunnen niet bijgewerkt worden:
+\n
+\n%s</string>
+    <string name="reset_api_key">API-sleutels opnieuw instellen</string>
+    <string name="upgrade_androidacy_promo">Upgrade naar premium</string>
+    <string name="upgrade_androidacy_promo_desc">Upgraden naar premium verwijdert advertenties, captcha\'s en downloads voor de Androidacy Repository en ondersteunt Androidacy en de auteurs van de module.</string>
+    <string name="crash_text">Oh-oh, er zit een addertje onder het gras!</string>
+    <string name="feedback_message">Geef ons meer details over wat je deed toen dit gebeurde. Hoe meer, hoe beter!</string>
+    <string name="feedback_submit">Verzenden en opnieuw opstarten</string>
+    <string name="please_feedback">Help ons alsjeblieft door ons te vertellen wat je probeerde te doen toen dit gebeurde.</string>
+    <string name="sentry_dialogue_disabled">Crashrapportage is uitgeschakeld. Schakel deze in om feedback te verzenden.</string>
+    <string name="feedback_name">Naam (optioneel)</string>
+    <string name="feedback_email">Email (optioneel)</string>
+    <string name="sentry_dialogue_empty_message">U hebt geen aanvullende feedback opgegeven.</string>
+    <string name="crash_icon">Crash-pictogram</string>
+    <string name="copy_button">Tekst kopiëren</string>
+    <string name="crash_details">Oorzaak onbekend</string>
+    <string name="more_details">Meer details zijn hieronder te vinden.</string>
+    <string name="crash_details_copied">Stacktrace gekopieerd naar het klembord!</string>
+    <string name="crash_full_stacktrace">Stacktrace:
+\n%1$s</string>
+    <string name="upgraded">Premium actief</string>
+    <string name="reset_app">De app opnieuw instellen</string>
+    <string name="upgraded_summary">Je bent best geweldig! Het lijkt erop dat je je abonnement al hebt geüpgrade en zo Androidacy ondersteunt.</string>
+    <string name="reset_warning">Als je dit scherm blijft zien kan het helpen om de app opnieuw in te stellen. Hiermee worden app-gegevens gewist maar dit heeft geen invloed op de geïnstalleerde modules.</string>
+    <string name="reset_app_message">Hiermee worden alle app-gegevens volledig verwijderd en wordt de app afgesloten. Modules worden niet verwijderd.</string>
+    <string name="reset">Reset</string>
+    <string name="reset_app_confirmation">Dit zal de app-gegevens volledig wissen, maar dit heeft geen effect op de modules.</string>
+    <string name="error_no_extras">FOUT: Ongeldige gegevens ontvangen bij het starten</string>
+    <string name="update_debug_warning">Het lijkt erop dat je een debug-build uitvoert. Debug-builds moeten handmatig worden bijgewerkt en ondersteunen geen in-app-updates</string>
+    <string name="error_no_action">FOUT: Ongeldige actie opgegeven. Doorgaan niet mogelijk.</string>
+    <string name="update_available">Update gevonden</string>
+    <string name="checking_for_update">Controleren op updates…</string>
+    <string name="no_update_available">Je hebt de recentste versie!</string>
+    <string name="download_update">Update downloaden</string>
+    <string name="error_download_update">Er is een fout opgetreden bij het downloaden van de updategegevens.</string>
+    <string name="error_no_asset">FOUT: Kan de update-informatie niet verwerken</string>
+    <string name="downloading_update">Update downloaden… %1$d%%</string>
+    <string name="installing_update">Update installeren…</string>
+    <string name="check_for_updates">Controleren op app-updates</string>
+    <string name="error_adding">Kan persoonlijke repo niet toevoegen</string>
+    <string name="api_key_mismatch">API-sleutel heeft een ongeldige indeling</string>
+    <string name="theme_transparent_dark">Donker (transparant)</string>
+    <string name="source_code_summary"><b>Opslaan</b> %1$s @ %2$s</string>
+    <string name="no_file_provided">Er is geen bestand aanwezig bij het openen van zip.</string>
+    <string name="zip_load_failed">Kan het zip-bestand niet laden</string>
+    <string name="zip_intent_module_install">Ben je zeker dat je de module \"%1$s\" uit het ZIP-bestand \"%2$s\" wil installeren\?
+\n
+\n Zorg ervoor dat je de bron van deze module vertrouwt want modules zijn zeer krachtig en kunnen bijna alles.</string>
+    <string name="androidacy_thanks">Mede ontwikkeld door Androidacy</string>
+    <string name="warning_message">Deze module heeft aanwijzingen dat deze mogelijk zonder je medeweten is geïnstalleerd of probeert zichzelf te verbergen. 
+\n
+\nVerwijderen wordt sterk aanbevolen.</string>
+    <string name="understand">Ik begrijp het</string>
+    <string name="notification_update_ignore_desc">Lijst met modules die je wil uitsluiten van updatecontroles</string>
+    <string name="notification_update_ignore_pref">Modules uitsluiten</string>
+    <string name="pref_category_updates">Updates</string>
+    <string name="invalid_excludes">Ongeldige invoer</string>
+    <string name="invalid_characters_message">De lijst met modules die je hebt ingevoerd is ongeldig. Voer alleen geldige module-id\'s in, gescheiden door komma\'s</string>
+    <string name="update_debug_download_pref">Controleren van het update download-mechanisme</string>
+    <string name="changelog_none">Nog geen wijzigingen beschikbaar!</string>
+    <string name="update_cancel_button">Update annuleren</string>
+    <string name="invalid_repo_url">De URL die je voor de repo hebt ingevoerd is ongeldig</string>
+    <string name="add_repo_message">Repo\'s moeten via HTTPS worden aangeboden en moeten voldoen aan de specificaties die in de documentatie worden beschreven.</string>
+    <string name="notification_update_summary">De volgende modules kunnen worden bijgewerkt:</string>
+    <string name="notification_update_module_template">%1$s naar versie %2$s</string>
+    <string name="notification_channel_background_update">Controleren op updates...</string>
+    <string name="notification_channel_category_background_update">Status van de update op de achtergrond</string>
+    <string name="notification_channel_category_background_update_description">Toont een melding tijdens het controleren op updates zodat het systeem deze niet onverwacht afsluit</string>
+    <string name="notification_update_wifi_desc">Controleer alleen via WiFi</string>
+    <string name="notification_update_wifi_pref">Wi-Fi of een netwerk zonder kosten vereisen voor updatecontroles. Aanbevolen om aan te laten als je beperkte mobiele data hebt.</string>
+    <string name="background_update_check_excludes_no_modules">Geen modules geïnstalleerd op het apparaat</string>
+    <string name="auto_updates_notifs">Waarschuwt wanneer module-updates zijn gevonden</string>
+    <string name="notification_group_updates">Updates</string>
+    <string name="low_quality_module_desc">Deze module bevat metagegevens die ongeldig zijn of worden beschouwd als een marker voor een module van lage kwaliteit. Verwijderen wordt aanbevolen.</string>
+    <string name="online">Online</string>
+    <string name="safe">Veilig</string>
+    <string name="safe_module">Geverifieerde veilige module</string>
+    <string name="safe_message">Deze module is door de repository geverifieerd als veilig, wat betekent dat deze aan bepaalde kwaliteits- en veiligheidsvereisten voldoet en gecontroleerd is op malware.</string>
+    <string name="notification_update_app_desc">Schakel automatisch controleren op app-updates in. Updates worden niet automatisch gedownload.</string>
+    <string name="notification_update_app_pref">Controleren op app-updates</string>
+    <string name="notification_channel_category_app_update">App-updates</string>
+    <string name="notification_channel_category_app_update_description">Waarschuwt wanneer een app-update beschikbaar is</string>
+    <string name="notification_channel_background_update_app">App-update beschikbaar!</string>
+    <string name="notification_channel_background_update_app_description">Er is een update beschikbaar voor FoxMMM. Tik hier om bij te werken.</string>
+    <string name="crash_reporting_headline">Crash melding</string>
+    <string name="setup_update_check_headline">Update controle</string>
+    <string name="setup_background_update_check_require_wifi">Wifi vereist voor updatecontroles</string>
+    <string name="setup_background_update_check_require_wifi_summary">Wifi of een anderszins ongelimiteerde verbinding vereisen om updatecontroles uit te voeren</string>
+    <string name="setup_app_analytics">App analytics toestaan</string>
+    <string name="setup_background_update_check_summary">Laat ons toe op de achtergrond te controleren op module- en app-updates. Deze functie kan meer batterij en gegevens gebruiken.</string>
+    <string name="install_terminal_reboot_now_message">U staat op het punt uw apparaat opnieuw op te starten. Als u uw werk hebt opgeslagen, drukt u op OK om door te gaan. Druk anders op annuleren.</string>
+    <string name="install_terminal_config_missing">Pakket %s ontbreekt voor moduleconfiguratie, we kunnen het dus niet starten.</string>
+    <string name="repo_enabled_changed">Je hebt een repo in- of uitgeschakeld. Vernieuw de modulelijst of start de app opnieuw op.</string>
+    <string name="androidacy_update_needed">Deze app is verouderd.</string>
+    <string name="androidacy_webview_update_required">Je webview is verouderd! Gelieve deze bij te werken.</string>
+    <string name="setup_theme_title">Kies je thema</string>
+    <string name="title_activity_setup">Installatiewizard</string>
+    <string name="sentry_enable_nag">Het lijkt erop dat crashrapportage is uitgeschakeld. Schakel deze in om feedback te geven.</string>
+    <string name="no_file_found">FOUT: Kan updatepakket niet vinden.</string>
+    <string name="notification_channel_background_update_description">FoxMMM controleert op updates in de achtergrond.</string>
 </resources>
