@@ -145,7 +145,7 @@ android {
             if (project.rootProject.file('androidacy.properties').exists()) {
                 properties.load(project.rootProject.file('androidacy.properties').newDataInputStream())
             } else {
-                properties.setProperty('client_id', '"5KYccdYxWB2RxMq5FTbkWisXi2dS6yFN9R7RVlFCG98FRdz6Mf5ojY2fyJCUlXJZ"')
+                properties.setProperty('client_id', '5KYccdYxWB2RxMq5FTbkWisXi2dS6yFN9R7RVlFCG98FRdz6Mf5ojY2fyJCUlXJZ')
             }
             buildConfigField("String", "ANDROIDACY_CLIENT_ID", "\"" + properties.getProperty('client_id') + "\"")
             // If client ID is empty, disable androidacy
