@@ -15,6 +15,9 @@ import com.topjohnwu.superuser.io.SuFile;
 import com.topjohnwu.superuser.io.SuFileInputStream;
 import com.topjohnwu.superuser.io.SuFileOutputStream;
 
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
 
 import java.io.ByteArrayInputStream;
@@ -26,8 +29,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Enumeration;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -111,7 +114,8 @@ public enum Files {
         if (file.isFile() && file.canRead()) {
             try { // Read as app if su not required
                 return read(file);
-            } catch (IOException ignored) {}
+            } catch (IOException ignored) {
+            }
         }
         try (InputStream inputStream = SuFileInputStream.open(file)) {
             return readAllBytes(inputStream);
@@ -122,7 +126,7 @@ public enum Files {
         return file.exists() || new SuFile(file.getAbsolutePath()).exists();
     }
 
-    public static void copy(InputStream inputStream,OutputStream outputStream) throws IOException {
+    public static void copy(InputStream inputStream, OutputStream outputStream) throws IOException {
         int nRead;
         byte[] data = new byte[16384];
         while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
@@ -134,7 +138,8 @@ public enum Files {
     public static void closeSilently(Closeable closeable) {
         try {
             if (closeable != null) closeable.close();
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
     }
 
     public static ByteArrayOutputStream makeBuffer(long capacity) {
@@ -164,11 +169,12 @@ public enum Files {
             bytes[0x7] = 0x8; // Known hax to prevent java zip file read
     }
 
-    public static void patchModuleSimple(byte[] bytes,OutputStream outputStream) throws IOException {
-        fixJavaZipHax(bytes); patchModuleSimple(new ByteArrayInputStream(bytes), outputStream);
+    public static void patchModuleSimple(byte[] bytes, OutputStream outputStream) throws IOException {
+        fixJavaZipHax(bytes);
+        patchModuleSimple(new ByteArrayInputStream(bytes), outputStream);
     }
 
-    public static void patchModuleSimple(InputStream inputStream,OutputStream outputStream) throws IOException {
+    public static void patchModuleSimple(InputStream inputStream, OutputStream outputStream) throws IOException {
         ZipInputStream zipInputStream = new ZipInputStream(inputStream);
         ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
         int nRead;
@@ -201,47 +207,72 @@ public enum Files {
             if (tempDir.exists()) {
                 FileUtils.deleteDirectory(tempDir);
             }
-            tempDir.mkdirs();
+            if (!tempDir.mkdirs()) {
+                throw new IOException("Unable to create temp dir");
+            }
             File tempFile = new File(tempDir, "module.zip");
             Files.write(tempFile, rawModule);
             File tempUnzipDir = new File(tempDir, "unzip");
-            tempUnzipDir.mkdirs();
+            if (!tempUnzipDir.mkdirs()) {
+                throw new IOException("Unable to create temp unzip dir");
+            }
             // unzip
-            try (ZipInputStream zipInputStream = new ZipInputStream(
-                    new ByteArrayInputStream(rawModule))) {
-                ZipEntry zipEntry;
-                while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-                    String name = zipEntry.getName();
-                    File file = new File(tempUnzipDir, name);
-                    if (zipEntry.isDirectory()) {
-                        file.mkdirs();
-                    } else {
-                        file.getParentFile().mkdirs();
-                        try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
-                            int nRead;
-                            byte[] data = new byte[16384];
-                            while ((nRead = zipInputStream.read(data, 0, data.length)) != -1) {
-                                fileOutputStream.write(data, 0, nRead);
-                            }
-                            fileOutputStream.flush();
-                        }
+            Timber.d("Unzipping module to %s", tempUnzipDir.getAbsolutePath());
+            try (ZipFile zipFile = new ZipFile(tempFile)) {
+                Enumeration<ZipArchiveEntry> files = zipFile.getEntries();
+                // check if there is only one folder in the top level
+                int folderCount = 0;
+                while (files.hasMoreElements()) {
+                    ZipArchiveEntry entry = files.nextElement();
+                    if (entry.isDirectory()) {
+                        folderCount++;
                     }
                 }
-            } catch (Exception e) {
-                Timber.e(Log.getStackTraceString(e));
-            }
-            File[] files = tempUnzipDir.listFiles();
-            if (files != null && files.length == 1 && files[0].isDirectory()) {
-                File[] files2 = files[0].listFiles();
-                if (files2 != null && files2.length > 0) {
-                    File tempZipFile = new File(tempDir, "module2.zip");
-                    // TODO: zip the contents of the folder
-                    Files.write(tempFile, Files.read(tempZipFile));
+                if (folderCount == 1) {
+                    files = zipFile.getEntries();
+                    while (files.hasMoreElements()) {
+                        ZipArchiveEntry entry = files.nextElement();
+                        if (entry.isDirectory()) {
+                            continue;
+                        }
+                        File file = new File(tempUnzipDir, entry.getName());
+                        if (!Objects.requireNonNull(file.getParentFile()).exists()) {
+                            if (!file.getParentFile().mkdirs()) {
+                                throw new IOException("Unable to create parent dir");
+                            }
+                        }
+                        try (ZipArchiveOutputStream zipArchiveOutputStream = new ZipArchiveOutputStream(file)) {
+                            zipArchiveOutputStream.putArchiveEntry(entry);
+                            try (InputStream inputStream = zipFile.getInputStream(entry)) {
+                                copy(inputStream, zipArchiveOutputStream);
+                            }
+                            zipArchiveOutputStream.closeArchiveEntry();
+                        }
+                    }
+                    // zip up the contents of the folder but not the folder itself
+                    File[] filesInFolder = Objects.requireNonNull(tempUnzipDir.listFiles());
+                    // create a new zip file
+                    try (ZipArchiveOutputStream archive = new ZipArchiveOutputStream(new FileOutputStream("new.zip"))) {
+                        for (File files2 : filesInFolder) {
+                            // create a new ZipArchiveEntry and add it to the ZipArchiveOutputStream
+                            ZipArchiveEntry entry = new ZipArchiveEntry(files2, files2.getName());
+                            archive.putArchiveEntry(entry);
+                            try (InputStream input = new FileInputStream(files2)) {
+                                copy(input, archive);
+                            }
+                            archive.closeArchiveEntry();
+                        }
+                    } catch (IOException e) {
+                        Timber.e(e, "Unable to zip up module");
+                    }
+                } else {
+                    Timber.d("Module does not have a single folder in the top level, skipping");
                 }
+            } catch (IOException e) {
+                Timber.e(e, "Unable to unzip module");
             }
-            rawModule = Files.read(tempFile);
-        } catch (Exception e) {
-            Timber.e(Log.getStackTraceString(e));
+        } catch (IOException e) {
+            Timber.e(e, "Unable to create temp dir");
         }
     }
 }

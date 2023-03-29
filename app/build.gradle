@@ -338,15 +338,13 @@ dependencies {
     implementation "io.sentry:sentry-android-ndk"
 
     // Markdown
+    // TODO: switch to an updated implementation
     implementation "io.noties.markwon:core:4.6.2"
     implementation "io.noties.markwon:html:4.6.2"
     implementation "io.noties.markwon:image:4.6.2"
     implementation "io.noties.markwon:syntax-highlight:4.6.2"
     implementation 'com.google.net.cronet:cronet-okhttp:0.1.0'
     implementation "com.caverock:androidsvg:1.4"
-    // Icons
-    // implementation "com.mikepenz:iconics-core:3.2.5"
-    //implementation "androidx.appcompat:appcompat:${versions.appCompat}"
 
     implementation 'androidx.core:core-ktx:1.9.0'
 
@@ -360,6 +358,8 @@ dependencies {
 
     // some utils
     implementation 'commons-io:commons-io:2.11.0'
+    implementation 'org.apache.commons:commons-compress:1.23.0'
+
 }
 
 if (hasSentryConfig) {

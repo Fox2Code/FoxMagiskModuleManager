@@ -158,7 +158,8 @@ public enum Http {
         }
 
         // for debug builds, add a logging interceptor
-        if (BuildConfig.DEBUG) {
+        // this spams the logcat, so it's disabled by default and hidden behind a build config flag
+        if (BuildConfig.DEBUG && BuildConfig.DEBUG_HTTP) {
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             httpclientBuilder.addInterceptor(loggingInterceptor);
@@ -182,6 +183,7 @@ public enum Http {
             }
             builder.setStoragePath(mainApplication.getCacheDir().getAbsolutePath() + "/cronet");
             builder.enableHttpCache(CronetEngine.Builder.HTTP_CACHE_DISK_NO_HTTP, 10 * 1024 * 1024);
+            builder.enableNetworkQualityEstimator(true);
             // Add quic hint
             builder.addQuicHint("github.com", 443, 443);
             builder.addQuicHint("githubusercontent.com", 443, 443);
