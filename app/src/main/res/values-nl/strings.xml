@@ -132,14 +132,14 @@
     <string name="dont_ask_again">Niet meer vragen</string>
     <string name="force_black_theme_pref">Forceer zwart thema</string>
     <string name="androidacy_repo_disabled">Deze pakketbeheerder is momenteel uitgeschakeld</string>
-    <string name="androidacy_repo_disabled_message">Deze build mist client-sleutels voor de Androidacy Repo. Download de GitHub-release als je gebruik wil maken van functies zoals modulebeoordelingen, automatische beveiligingscontroles en meer.</string>
+    <string name="androidacy_repo_disabled_message">Deze build mist client-sleutels voor de Androidacy-Pakketbeheerder. Download de GitHub-release als je gebruik wil maken van functies zoals modulebeoordelingen, automatische beveiligingscontroles en meer.</string>
     <string name="download_full_app">Volledige versie downloaden</string>
-    <string name="repo_update_failed">Sommige repo\'s kunnen niet worden bijgewerkt</string>
+    <string name="repo_update_failed">Sommige pakketbeheerders kunnen niet worden bijgewerkt</string>
     <string name="repo_update_failed_extended">Update van %1$s mislukt. Probeer het later opnieuw.</string>
     <string name="monet_disabled_summary">Monet is niet compatibel met transparante thema\'s.</string>
     <string name="blur_disabled_summary">Vervagen is niet compatibel met transparante thema\'s.</string>
     <string name="transparent_theme_dialogue_title">Je stelt een transparant thema in</string>
-    <string name="custom_repo_always_on">Aangepaste repo\'s zijn altijd ingeschakeld totdat je ze verwijdert.</string>
+    <string name="custom_repo_always_on">Gepersonaliseerde pakkerbeheerders zijn altijd ingeschakeld totdat je ze verwijdert.</string>
     <string name="sentry_dialogue_title">Oeps! Het lijkt erop dat de app onverwacht is afgesloten.</string>
     <string name="name">Je naam</string>
     <string name="androidacy_server_down">Kan geen contact maken met de Androidacy-server. Controleer je verbinding en probeer het opnieuw.</string>
@@ -149,7 +149,7 @@
     <string name="submit">Verzenden</string>
     <string name="sentry_dialogue_success">Feedback met succes verzonden. We zullen het zo snel mogelijk bekijken</string>
     <string name="sentry_dialogue_no_description">Kan geen feedback verzenden omdat er geen beschrijving is gegeven</string>
-    <string name="go_to_online_repo">Scroll naar online repo</string>
+    <string name="go_to_online_repo">Scroll naar online pakketbeheerder</string>
     <string name="pref_pkg_info_summary">%1$s v%2$s (%3$d) | %4$s Build</string>
     <string name="official">Officieel</string>
     <string name="unofficial">Niet-officieel</string>
@@ -157,15 +157,15 @@
     <string name="setup_message">Welkom! Deze app helpt je bij het installeren en beheren van Magisk-modules. Selecteer de onderstaande opties om aan de slag te gaan. Deze en meer kunnen later worden geconfigureerd vanuit de instellingen.</string>
     <string name="setup_button">Installatie voltooien</string>
     <string name="setup_background_update_check">Automatische controle op update</string>
-    <string name="setup_androidacy_repo">Schakel de Androidacy-repo in</string>
+    <string name="setup_androidacy_repo">Schakel de Androidacy-Pakketbeheerder in</string>
     <string name="setup_magisk_alt_repo">Schakel de Magisk Alt Repo in</string>
     <string name="setup_crash_reporting">Schakel Sentry in</string>
-    <string name="setup_custom_repos">U kunt later aangepaste repo\'s toevoegen in de instellingen.</string>
+    <string name="setup_custom_repos">U kunt later gepersonaliseerde pakketbeheerders toevoegen in de instellingen.</string>
     <string name="repos">Pakketbeheerders</string>
     <string name="misc">Allerlei</string>
     <string name="setup_button_skip">Overslaan</string>
     <string name="low_performance_device_dialogue_title">Vervaging inschakelen op een apparaat van mindere kwaliteit</string>
-    <string name="alt_repo_info">Deze repo heeft minder beperkingen en beoordelingen, wat kan leiden tot modules van lagere kwaliteit. Vrij basaal maar heeft veel modules.</string>
+    <string name="alt_repo_info">Deze pakketbeheerder heeft minder beperkingen en beoordelingen, wat kan leiden tot modules van lagere kwaliteit. Vrij basaal maar heeft veel modules.</string>
     <string name="app_name">Fox\'s Magisk Modulebeheerder</string>
     <string name="fail_root_magisk">Geen toegang tot Root en/of Magisk</string>
     <string name="failed_download">Kon bestand niet downloaden</string>
@@ -173,7 +173,7 @@
     <string name="favourite">Favoriet</string>
     <string name="require_android_12">Vereist Android 12+</string>
     <string name="module_needs_ramdisk_desc">Deze module vereist de aanwezigheid van een ramdisk</string>
-    <string name="manage_repos_pref">Beheerpakketten instellen</string>
+    <string name="manage_repos_pref">Pakketbeheerders instellen</string>
     <string name="show_incompatible_pref">Toon niet-compatibele modules</string>
     <string name="repo_main_desc">De pakketbeheerder van Magisk modules</string>
     <string name="repo_main_alt">Een alternatief voor de Magisk-Modules-Repo met minder beperkingen.</string>
@@ -185,12 +185,12 @@
 \nSchakel dit uit op eigen risico!</string>
     <string name="disable_extensions_desc">Schakel Fox\'s Mmm-extensies uit, zodat modules geen terminalextensies kunnen gebruiken.
 \nHandig als een module misbruik maakt van Fox\'s Mmm extensies.</string>
-    <string name="androidacy_repo_info">Deze repository kan een aantal niet-intrusieve reclameboodschappen weergeven om de server- en ontwikkelingskosten te dekken. Beschikt over beoordelingen, automatische virusscans en meer.</string>
+    <string name="androidacy_repo_info">Deze pakketbeheerder kan een aantal niet-intrusieve reclameboodschappen weergeven om de server- en ontwikkelingskosten te dekken. Beschikt over beoordelingen, automatische virusscans en meer.</string>
     <string name="notification_update_pref">Automatische updatecontrole van modules</string>
     <string name="language_support_outdated">Sommige vertalingen voor de huidige taal zijn niet up-to-date, overweeg om bij te dragen aan de app-vertalingen op GitHub</string>
     <string name="crash_reporting_desc">Als je dit uitschakelt, krijgt de ontwikkelaar geen automatische bugrapporten en dit kan het oplossen van problemen bemoeilijken</string>
     <string name="save_api_key">Valideren</string>
-    <string name="androidacy_test_mode_warning">Je stelt de app in om een niet-productie-eindpunt voor Androidacy te gebruiken. Dit kan leiden tot instabiliteit van de app en het niet laden van de online repo. Meld GEEN bugs als u deze schakelaar hebt ingeschakeld. De app wordt opnieuw gestart om repo\'s opnieuw te laden.</string>
+    <string name="androidacy_test_mode_warning">Je stelt de app in om een niet-productie-eindpunt voor Androidacy te gebruiken. Dit kan leiden tot instabiliteit van de app en het niet laden van de online pakketbeheerder. Meld GEEN bugs als u deze schakelaar hebt ingeschakeld. De app wordt opnieuw gestart om pakketbeheerders opnieuw te laden.</string>
     <string name="androidacy_failed_to_parse_token">Kan token niet ophalen van Androidacy. Probeer het later opnieuw.</string>
     <string name="api_key_restart">API-sleutel is gewijzigd. Start de app opnieuw om wijzigingen toe te passen.</string>
     <string name="permission_notification_message">We hebben de toestemming voor meldingen nodig om je op de hoogte te stellen van app- en module-updates. Als je deze machtiging niet verleent, worden er geen automatische controles van updates uitgevoerd.</string>
@@ -222,7 +222,7 @@
     <string name="setup_magisk_alt_repo_summary">Veel lakser dan het origineel. Heeft veel modules maar gaat ten koste van enige veiligheid.</string>
     <string name="setup_crash_reporting_summary">Crashrapportage en prestatiebewaking. Alle meldingen zijn strikt anoniem en vertrouwelijk.</string>
     <string name="debug_build">Dit is een debug build. Verwacht enkele bugs en slechtere prestaties.</string>
-    <string name="androidacy_repo_name">Androidacy Repo</string>
+    <string name="androidacy_repo_name">Androidacy-Pakketbeheerder</string>
     <string name="magisk_alt_repo_name">Magisk Alt Repo</string>
     <string name="finish">Beëindigen</string>
     <string name="pref_category_contributors">Bijdragers</string>
@@ -251,7 +251,7 @@
     <string name="theme_black">AMOLED Donker</string>
     <string name="theme_transparent_light">Licht (transparant)</string>
     <string name="theme_light">Licht</string>
-    <string name="repo_update_failed_message">De volgende repo\'s kunnen niet bijgewerkt worden:
+    <string name="repo_update_failed_message">De volgende pakketbeheerders kunnen niet bijgewerkt worden:
 \n
 \n%s</string>
     <string name="reset_api_key">API-sleutels opnieuw instellen</string>
@@ -291,7 +291,7 @@
     <string name="downloading_update">Update downloaden… %1$d%%</string>
     <string name="installing_update">Update installeren…</string>
     <string name="check_for_updates">Controleren op app-updates</string>
-    <string name="error_adding">Kan persoonlijke repo niet toevoegen</string>
+    <string name="error_adding">Kan persoonlijke pakketbeheerder niet toevoegen</string>
     <string name="api_key_mismatch">API-sleutel heeft een ongeldige indeling</string>
     <string name="theme_transparent_dark">Donker (transparant)</string>
     <string name="source_code_summary"><b>Opslaan</b> %1$s @ %2$s</string>
@@ -299,7 +299,7 @@
     <string name="zip_load_failed">Kan het zip-bestand niet laden</string>
     <string name="zip_intent_module_install">Ben je zeker dat je de module \"%1$s\" uit het ZIP-bestand \"%2$s\" wil installeren\?
 \n
-\n Zorg ervoor dat je de bron van deze module vertrouwt want modules zijn zeer krachtig en kunnen bijna alles.</string>
+\nZorg ervoor dat je de bron van deze module vertrouwt want modules zijn zeer krachtig en kunnen bijna alles.</string>
     <string name="androidacy_thanks">Mede ontwikkeld door Androidacy</string>
     <string name="warning_message">Deze module heeft aanwijzingen dat deze mogelijk zonder je medeweten is geïnstalleerd of probeert zichzelf te verbergen. 
 \n
@@ -313,8 +313,8 @@
     <string name="update_debug_download_pref">Controleren van het update download-mechanisme</string>
     <string name="changelog_none">Nog geen wijzigingen beschikbaar!</string>
     <string name="update_cancel_button">Update annuleren</string>
-    <string name="invalid_repo_url">De URL die je voor de repo hebt ingevoerd is ongeldig</string>
-    <string name="add_repo_message">Repo\'s moeten via HTTPS worden aangeboden en moeten voldoen aan de specificaties die in de documentatie worden beschreven.</string>
+    <string name="invalid_repo_url">De URL die je voor de pakketbeheerder hebt ingevoerd is ongeldig</string>
+    <string name="add_repo_message">Pakketbeheerders moeten via HTTPS worden aangeboden en moeten voldoen aan de specificaties die in de documentatie worden beschreven.</string>
     <string name="notification_update_summary">De volgende modules kunnen worden bijgewerkt:</string>
     <string name="notification_update_module_template">%1$s naar versie %2$s</string>
     <string name="notification_channel_background_update">Controleren op updates...</string>
@@ -329,7 +329,7 @@
     <string name="online">Online</string>
     <string name="safe">Veilig</string>
     <string name="safe_module">Geverifieerde veilige module</string>
-    <string name="safe_message">Deze module is door de repository geverifieerd als veilig, wat betekent dat deze aan bepaalde kwaliteits- en veiligheidsvereisten voldoet en gecontroleerd is op malware.</string>
+    <string name="safe_message">Deze module is door de pakketbeheerder geverifieerd als veilig, wat betekent dat deze aan bepaalde kwaliteits- en veiligheidsvereisten voldoet en gecontroleerd is op malware.</string>
     <string name="notification_update_app_desc">Schakel automatisch controleren op app-updates in. Updates worden niet automatisch gedownload.</string>
     <string name="notification_update_app_pref">Controleren op app-updates</string>
     <string name="notification_channel_category_app_update">App-updates</string>
@@ -344,7 +344,7 @@
     <string name="setup_background_update_check_summary">Laat ons toe op de achtergrond te controleren op module- en app-updates. Deze functie kan meer batterij en gegevens gebruiken.</string>
     <string name="install_terminal_reboot_now_message">U staat op het punt uw apparaat opnieuw op te starten. Als u uw werk hebt opgeslagen, drukt u op OK om door te gaan. Druk anders op annuleren.</string>
     <string name="install_terminal_config_missing">Pakket %s ontbreekt voor moduleconfiguratie, we kunnen het dus niet starten.</string>
-    <string name="repo_enabled_changed">Je hebt een repo in- of uitgeschakeld. Vernieuw de modulelijst of start de app opnieuw op.</string>
+    <string name="repo_enabled_changed">Je hebt een pakketbeheerder in- of uitgeschakeld. Vernieuw de modulelijst of start de app opnieuw op.</string>
     <string name="androidacy_update_needed">Deze app is verouderd.</string>
     <string name="androidacy_webview_update_required">Je webview is verouderd! Gelieve deze bij te werken.</string>
     <string name="setup_theme_title">Kies je thema</string>
