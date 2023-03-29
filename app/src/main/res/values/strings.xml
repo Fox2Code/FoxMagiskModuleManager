@@ -330,7 +330,7 @@
     <string name="title_activity_update">In-app Updater</string>
     <string name="update_title">Update app</string>
     <string name="update_message">Please wait while we check for and install updates to FoxMMM. This may take a few minutes</string>
-    <string name="update_button">Please wait...</string>
+    <string name="update_button">Please wait…</string>
     <string name="error_no_extras">ERROR: Invalid data received on launch</string>
     <string name="update_debug_warning">You appear to be running a debug build. Debug builds must be updated manually, and do not support in-app updates</string>
     <string name="error_no_action">ERROR: Invalid action specified. Refusing to continue.</string><string name="update_available">Update found</string>
@@ -350,7 +350,7 @@
     <string name="add_repo_message">Repos must be served over HTTPS, and must follow the spec outlined in the documentation.</string>
     <string name="notification_update_summary">The following modules can be updated:</string>
     <string name="notification_update_module_template">%1$s to version %2$s</string>
-    <string name="notification_channel_background_update">Checking for updates...</string>
+    <string name="notification_channel_background_update">Checking for updates…</string>
     <string name="notification_channel_background_update_description">FoxMMM is checking for updates in the background.</string>
     <string name="notification_channel_category_background_update">Background update status</string>
     <string name="notification_channel_category_background_update_description">Shows a notification while checking for updates so the system doesn\'t kill it</string>
@@ -380,4 +380,10 @@
     <string name="setup_background_update_check_require_wifi">Require wifi for update checks</string>
     <string name="setup_background_update_check_require_wifi_summary">Require wifi or an otherwise unmetered connection to do update checks</string>
     <string name="setup_app_analytics">Allow app analytics</string>
+    <string name="clear_app_cache">Clear app cache</string>
+    <string name="clear_app_cache_desc">This shouldn\'t be necessary normally but may help fix some issues.</string>
+    <string name="cache_cleared">Successfully cleared cache</string>
+    <string name="cache_clear_failed">Failed to clear cache</string>
+    <string name="clear_cache_dialogue_title">Clear app cache?</string>
+    <string name="clear_cache_dialogue_message">This will clear app cache. Your preferences will be saved, but the app may take longer to do some operations temporarily.</string>
 </resources>

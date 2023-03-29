@@ -3,6 +3,7 @@ package com.fox2code.mmm;
 import static com.fox2code.mmm.utils.IntentHelper.getActivity;
 
 import android.annotation.SuppressLint;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,11 +13,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.FragmentActivity;
 
 import com.fox2code.foxcompat.app.FoxActivity;
-import com.fox2code.mmm.androidacy.AndroidacyRepoData;
 import com.fox2code.mmm.databinding.ActivitySetupBinding;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.utils.realm.ReposList;
@@ -39,6 +40,7 @@ import timber.log.Timber;
 
 public class SetupActivity extends FoxActivity implements LanguageActivity {
     private int cachedTheme;
+    private boolean realmDatabasesCreated;
 
     @SuppressLint({"ApplySharedPref", "RestrictedApi"})
     @Override
@@ -154,25 +156,48 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         setupButton.setOnClickListener(v -> {
             Timber.i("Setup button clicked");
             // get instance of editor
+            Timber.d("Saving preferences");
             SharedPreferences.Editor editor = prefs.edit();
+            Timber.d("Got editor: %s", editor);
             // Set the Automatic update check pref
             editor.putBoolean("pref_background_update_check", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).isChecked());
             // Set the crash reporting pref
             editor.putBoolean("pref_crash_reporting", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).isChecked());
+            Timber.d("Saving preferences");
             // Set the repos in the ReposList realm db
-            RealmConfiguration realmConfig = new RealmConfiguration.Builder().name("ReposList.realm").directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).build();
+            RealmConfiguration realmConfig = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
             boolean androidacyRepo = ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_androidacy_repo))).isChecked();
             boolean magiskAltRepo = ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).isChecked();
             Realm realm = Realm.getInstance(realmConfig);
-            realm.beginTransaction();
-            Objects.requireNonNull(realm.where(ReposList.class).equalTo("id", "androidacy_repo").findFirst()).setEnabled(androidacyRepo);
-            Objects.requireNonNull(realm.where(ReposList.class).equalTo("id", "magisk_alt_repo").findFirst()).setEnabled(magiskAltRepo);
-            // commit the changes
-            realm.commitTransaction();
-            realm.close();
+            Timber.d("Realm instance: %s", realm);
+            if (realm.isInTransaction()) {
+                realm.commitTransaction();
+                Timber.d("Committed last unfinished transaction");
+            }
+            // check if instance has been closed
+            if (realm.isClosed()) {
+                Timber.d("Realm instance was closed, reopening");
+                realm = Realm.getInstance(realmConfig);
+            }
+            realm.executeTransactionAsync(r -> {
+                Timber.d("Realm transaction started");
+                Objects.requireNonNull(r.where(ReposList.class).equalTo("id", "androidacy_repo").findFirst()).setEnabled(androidacyRepo);
+                Objects.requireNonNull(r.where(ReposList.class).equalTo("id", "magisk_alt_repo").findFirst()).setEnabled(magiskAltRepo);
+                Timber.d("Realm transaction committing");
+                // commit the changes
+                r.commitTransaction();
+                r.close();
+                Timber.d("Realm transaction committed");
+            });
             editor.putString("last_shown_setup", "v1");
             // Commit the changes
             editor.commit();
+            // sleep to allow the realm transaction to finish
+            try {
+                Thread.sleep(250);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             // Log the changes
             Timber.d("Setup finished. Preferences: %s", prefs.getAll());
             Timber.d("Androidacy repo: %s", androidacyRepo);
@@ -181,23 +206,19 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             Timber.d("Last shown setup: %s", prefs.getString("last_shown_setup", "v0"));
             // Restart the activity
             MainActivity.doSetupRestarting = true;
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra("doSetupRestarting", true);
-            startActivity(intent);
-            finish();
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_IMMUTABLE);
+            try {
+                pendingIntent.send();
+            } catch (PendingIntent.CanceledException e) {
+                e.printStackTrace();
+            }
+            android.os.Process.killProcess(android.os.Process.myPid());
         });
         // Cancel button
         BottomNavigationItemView cancelButton = view.findViewById(R.id.cancel_setup);
         cancelButton.setOnClickListener(v -> {
             Timber.i("Cancel button clicked");
-            // Set first launch to false and restart the activity
-            prefs.edit().putString("last_shown_setup", "v1").commit();
-            MainActivity.doSetupRestarting = true;
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra("doSetupRestarting", true);
-            startActivity(intent);
+            // close the app
             finish();
         });
     }
@@ -252,55 +273,78 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
 
     // creates the realm database
     private void createRealmDatabase() {
+        if (realmDatabasesCreated) {
+            Timber.d("Realm databases already created");
+            return;
+        }
         Timber.d("Creating Realm databases");
         long startTime = System.currentTimeMillis();
         // create encryption key
-        // Timber.d("Creating encryption key");
+        Timber.d("Creating encryption key");
+        byte[] key = MainApplication.getINSTANCE().getNewKey();
         // create the realm database for ReposList
-        // next, create the realm database for ReposList
-        new Thread(() -> {
-            // create the realm database for ReposList
-            // create the realm configuration
-            RealmConfiguration config2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
-            // get the instance
-            Realm realm1 = Realm.getInstance(config2);
-            // create androidacy_repo and magisk_alt_repo if they don't exist under ReposList
-            // each has id, name, donate, website, support, enabled, and lastUpdate and name
-            // create androidacy_repo
-            realm1.beginTransaction();
-            if (realm1.where(ReposList.class).equalTo("id", "androidacy_repo").findFirst() == null) {
-                // cant use createObject because it crashes because reasons. use copyToRealm instead
-                ReposList androidacy_repo = realm1.createObject(ReposList.class, "androidacy_repo");
-                androidacy_repo.setName("Androidacy Repo");
-                androidacy_repo.setDonate(AndroidacyRepoData.getInstance().getDonate());
-                androidacy_repo.setSupport(AndroidacyRepoData.getInstance().getSupport());
-                androidacy_repo.setSubmitModule(AndroidacyRepoData.getInstance().getSubmitModule());
-                androidacy_repo.setUrl(RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT);
-                androidacy_repo.setEnabled(true);
-                androidacy_repo.setLastUpdate(0);
-                androidacy_repo.setWebsite(RepoManager.ANDROIDACY_MAGISK_REPO_HOMEPAGE);
-                // now copy the data from the data class to the realm object using copyToRealmOrUpdate
-                realm1.insertOrUpdate(androidacy_repo);
+        // create the realm configuration
+        RealmConfiguration config = new RealmConfiguration.Builder().name("ReposList.realm").directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).encryptionKey(key).build();
+        // get the instance
+        Realm.getInstanceAsync(config, new Realm.Callback() {
+            @Override
+            public void onSuccess(@NonNull Realm realm) {
+                Timber.d("Realm instance: %s", realm);
+                realm.beginTransaction();
+                // create the ReposList realm database
+                Timber.d("Creating ReposList realm database");
+                if (realm.where(ReposList.class).equalTo("id", "androidacy_repo").findFirst() == null) {
+                    Timber.d("Creating androidacy_repo");
+                    // create the androidacy_repo row
+                    // cant use createObject because it crashes because reasons. use copyToRealm instead
+                    ReposList androidacy_repo = realm.createObject(ReposList.class, "androidacy_repo");
+                    Timber.d("Created androidacy_repo object");
+                    androidacy_repo.setName("Androidacy Repo");
+                    Timber.d("Set androidacy_repo name");
+                    androidacy_repo.setDonate("https://www.androidacy.com/membership-account/membership-join/?utm_source=fox-app&utm_medium=app&utm_campaign=app");
+                    Timber.d("Set androidacy_repo donate");
+                    androidacy_repo.setSupport("https://t.me/androidacy_discussions");
+                    Timber.d("Set androidacy_repo support");
+                    androidacy_repo.setSubmitModule("https://www.androidacy.com/module-repository-applications/?utm_source=fox-app&utm_medium=app&utm_campaign=app");
+                    Timber.d("Set androidacy_repo submit module");
+                    androidacy_repo.setUrl(RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT);
+                    Timber.d("Set androidacy_repo url");
+                    androidacy_repo.setEnabled(true);
+                    Timber.d("Set androidacy_repo enabled");
+                    androidacy_repo.setLastUpdate(0);
+                    Timber.d("Set androidacy_repo last update");
+                    androidacy_repo.setWebsite(RepoManager.ANDROIDACY_MAGISK_REPO_HOMEPAGE);
+                    Timber.d("Set androidacy_repo website");
+                    // now copy the data from the data class to the realm object using copyToRealmOrUpdate
+                    Timber.d("Copying data to realm object");
+                    realm.copyToRealmOrUpdate(androidacy_repo);
+                    Timber.d("Created androidacy_repo");
+                }
+                // create magisk_alt_repo
+                if (realm.where(ReposList.class).equalTo("id", "magisk_alt_repo").findFirst() == null) {
+                    Timber.d("Creating magisk_alt_repo");
+                    ReposList magisk_alt_repo = realm.createObject(ReposList.class, "magisk_alt_repo");
+                    Timber.d("Created magisk_alt_repo object");
+                    magisk_alt_repo.setName("Magisk Alt Repo");
+                    magisk_alt_repo.setDonate(null);
+                    magisk_alt_repo.setWebsite(RepoManager.MAGISK_ALT_REPO_HOMEPAGE);
+                    magisk_alt_repo.setSupport(null);
+                    magisk_alt_repo.setEnabled(true);
+                    magisk_alt_repo.setUrl(RepoManager.MAGISK_ALT_REPO);
+                    magisk_alt_repo.setSubmitModule(RepoManager.MAGISK_ALT_REPO_HOMEPAGE + "/submission");
+                    magisk_alt_repo.setLastUpdate(0);
+                    // commit the changes
+                    Timber.d("Copying data to realm object");
+                    realm.copyToRealmOrUpdate(magisk_alt_repo);
+                    Timber.d("Created magisk_alt_repo");
+                }
+                realm.commitTransaction();
+                realmDatabasesCreated = true;
+                Timber.d("Realm transaction finished");
+                long endTime = System.currentTimeMillis();
+                Timber.d("Realm databases created in %d ms", endTime - startTime);
             }
-            // create magisk_alt_repo
-            if (realm1.where(ReposList.class).equalTo("id", "magisk_alt_repo").findFirst() == null) {
-                ReposList magisk_alt_repo = realm1.createObject(ReposList.class, "magisk_alt_repo");
-                magisk_alt_repo.setName("Magisk Alt Repo");
-                magisk_alt_repo.setDonate(null);
-                magisk_alt_repo.setWebsite(RepoManager.MAGISK_ALT_REPO_HOMEPAGE);
-                magisk_alt_repo.setSupport(null);
-                magisk_alt_repo.setEnabled(true);
-                magisk_alt_repo.setUrl(RepoManager.MAGISK_ALT_REPO);
-                magisk_alt_repo.setSubmitModule(RepoManager.MAGISK_ALT_REPO_HOMEPAGE + "/submission");
-                magisk_alt_repo.setLastUpdate(0);
-                // commit the changes
-                realm1.insertOrUpdate(magisk_alt_repo);
-            }
-            realm1.commitTransaction();
-            realm1.close();
-            long endTime = System.currentTimeMillis();
-            Timber.d("Realm databases created in %d ms", endTime - startTime);
-        }).start();
+        });
     }
 
     public void createFiles() {

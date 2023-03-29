@@ -10,9 +10,12 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.fox2code.mmm.MainApplication;
 import com.topjohnwu.superuser.io.SuFile;
 import com.topjohnwu.superuser.io.SuFileInputStream;
 import com.topjohnwu.superuser.io.SuFileOutputStream;
+
+import org.apache.commons.io.FileUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,6 +26,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -187,5 +192,56 @@ public enum Files {
         zipOutputStream.flush();
         zipOutputStream.close();
         zipInputStream.close();
+    }
+
+    public static void fixSourceArchiveShit(byte[] rawModule) {
+        // unzip the module, check if it has just one folder within. if so, switch to the folder and zip up contents, and replace the original file with that
+        try {
+            File tempDir = new File(MainApplication.getINSTANCE().getCacheDir(), "temp");
+            if (tempDir.exists()) {
+                FileUtils.deleteDirectory(tempDir);
+            }
+            tempDir.mkdirs();
+            File tempFile = new File(tempDir, "module.zip");
+            Files.write(tempFile, rawModule);
+            File tempUnzipDir = new File(tempDir, "unzip");
+            tempUnzipDir.mkdirs();
+            // unzip
+            try (ZipInputStream zipInputStream = new ZipInputStream(
+                    new ByteArrayInputStream(rawModule))) {
+                ZipEntry zipEntry;
+                while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+                    String name = zipEntry.getName();
+                    File file = new File(tempUnzipDir, name);
+                    if (zipEntry.isDirectory()) {
+                        file.mkdirs();
+                    } else {
+                        file.getParentFile().mkdirs();
+                        try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+                            int nRead;
+                            byte[] data = new byte[16384];
+                            while ((nRead = zipInputStream.read(data, 0, data.length)) != -1) {
+                                fileOutputStream.write(data, 0, nRead);
+                            }
+                            fileOutputStream.flush();
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                Timber.e(Log.getStackTraceString(e));
+            }
+            File[] files = tempUnzipDir.listFiles();
+            if (files != null && files.length == 1 && files[0].isDirectory()) {
+                File[] files2 = files[0].listFiles();
+                if (files2 != null && files2.length > 0) {
+                    File tempZipFile = new File(tempDir, "module2.zip");
+                    // TODO: zip the contents of the folder
+                    Files.write(tempFile, Files.read(tempZipFile));
+                }
+            }
+            rawModule = Files.read(tempFile);
+        } catch (Exception e) {
+            Timber.e(Log.getStackTraceString(e));
+        }
     }
 }

@@ -4,6 +4,7 @@
     <!-- cancel and finish setup -->
     <item
         android:id="@+id/cancel_setup"
+        android:checked="false"
         android:icon="@drawable/baseline_close_24"
         android:title="@string/cancel"
         app:showAsAction="ifRoom" />
@@ -11,6 +12,7 @@
     <!-- save and finish setup -->
     <item
         android:id="@+id/setup_finish"
+        android:checked="false"
         android:icon="@drawable/baseline_check_24"
         android:title="@string/finish"
         app:showAsAction="ifRoom" />

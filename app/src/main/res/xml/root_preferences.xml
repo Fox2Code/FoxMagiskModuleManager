@@ -190,6 +190,13 @@
             app:key="pref_clear_data"
             app:singleLineTitle="false"
             app:title="@string/clear_app_data" />
+        <!-- clear app cache -->
+        <Preference
+            app:icon="@drawable/ic_baseline_delete_24"
+            app:key="pref_clear_cache"
+            app:singleLineTitle="false"
+            app:title="@string/clear_app_cache"
+            app:summary="@string/clear_app_cache_desc" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/pref_category_info">

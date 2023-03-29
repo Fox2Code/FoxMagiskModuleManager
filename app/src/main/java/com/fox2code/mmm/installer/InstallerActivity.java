@@ -1,12 +1,14 @@
 package com.fox2code.mmm.installer;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -31,8 +33,8 @@ import com.fox2code.mmm.utils.FastException;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.fox2code.mmm.utils.io.Files;
 import com.fox2code.mmm.utils.io.Hashes;
-import com.fox2code.mmm.utils.io.net.Http;
 import com.fox2code.mmm.utils.io.PropUtils;
+import com.fox2code.mmm.utils.io.net.Http;
 import com.fox2code.mmm.utils.sentry.SentryBreadcrumb;
 import com.fox2code.mmm.utils.sentry.SentryMain;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -58,6 +60,7 @@ import java.util.zip.ZipInputStream;
 import timber.log.Timber;
 
 public class InstallerActivity extends FoxActivity {
+    private static final HashSet<String> extracted = new HashSet<>();
     public LinearProgressIndicator progressIndicator;
     public ExtendedFloatingActionButton rebootFloatingButton;
     public InstallerTerminal installerTerminal;
@@ -66,8 +69,7 @@ public class InstallerActivity extends FoxActivity {
     private boolean textWrap;
     private boolean canceled;
     private boolean warnReboot;
-
-    private static final HashSet<String> extracted = new HashSet<>();
+    private PowerManager.WakeLock wakeLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,9 +155,12 @@ public class InstallerActivity extends FoxActivity {
         installTerminal.setItemAnimator(null);
         this.progressIndicator.setVisibility(View.GONE);
         this.progressIndicator.setIndeterminate(true);
-        this.getWindow().setFlags( // Note: Doesn't require WAKELOCK permission
+        this.getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        // acquire wakelock
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Fox:Installer");
         this.progressIndicator.setVisibility(View.VISIBLE);
         if (urlMode) this.installerTerminal.addLine("- Downloading " + name);
         String finalTarget = target;
@@ -201,6 +206,8 @@ public class InstallerActivity extends FoxActivity {
                 }
                 if (this.canceled) return;
                 Files.fixJavaZipHax(rawModule);
+                // checks to make sure zip is not a source archive, and if it is, unzips the folder within, switches to it, and zips up the contents of it
+                Files.fixSourceArchiveShit(rawModule);
                 boolean noPatch = false;
                 boolean isModule = false;
                 boolean isAnyKernel3 = false;
@@ -219,7 +226,8 @@ public class InstallerActivity extends FoxActivity {
                             noPatch = true;
                             isModule = true;
                             break;
-                        } if (entryName.equals("META-INF/com/google/android/magisk/module.prop")) {
+                        }
+                        if (entryName.equals("META-INF/com/google/android/magisk/module.prop")) {
                             noPatch = true;
                             isInstallZipModule = true;
                             break;
@@ -318,14 +326,14 @@ public class InstallerActivity extends FoxActivity {
             }
             installerMonitor = new InstallerMonitor(installScript);
             installJob = Shell.cmd("export MMM_EXT_SUPPORT=1",
-                    "export MMM_USER_LANGUAGE=" + this.getResources()
-                            .getConfiguration().getLocales().get(0).toLanguageTag(),
-                    "export MMM_APP_VERSION=" + BuildConfig.VERSION_NAME,
-                    "export MMM_TEXT_WRAP=" + (this.textWrap ? "1" : "0"),
-                    AnsiConstants.ANSI_CMD_SUPPORT,
-                    "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
-                    "sh \"" + installScript.getAbsolutePath() + "\"" +
-                            " 3 0 \"" + file.getAbsolutePath() + "\"")
+                            "export MMM_USER_LANGUAGE=" + this.getResources()
+                                    .getConfiguration().getLocales().get(0).toLanguageTag(),
+                            "export MMM_APP_VERSION=" + BuildConfig.VERSION_NAME,
+                            "export MMM_TEXT_WRAP=" + (this.textWrap ? "1" : "0"),
+                            AnsiConstants.ANSI_CMD_SUPPORT,
+                            "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
+                            "sh \"" + installScript.getAbsolutePath() + "\"" +
+                                    " 3 0 \"" + file.getAbsolutePath() + "\"")
                     .to(installerController, installerMonitor);
         } else {
             String arch32 = "true"; // Do nothing by default
@@ -508,7 +516,8 @@ public class InstallerActivity extends FoxActivity {
         }
         boolean success = installJob.exec().isSuccess();
         // Wait one UI cycle before disabling controller or processing results
-        UiThreadHandler.runAndWait(() -> {}); // to avoid race conditions
+        UiThreadHandler.runAndWait(() -> {
+        }); // to avoid race conditions
         installerController.disable();
         String message = "- Install successful";
         if (!success) {
@@ -561,6 +570,11 @@ public class InstallerActivity extends FoxActivity {
         } else toDelete = null;
         this.runOnUiThread(() -> {
             this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, 0);
+            // release wakelock
+            if (wakeLock != null && wakeLock.isHeld()) {
+                wakeLock.release();
+                wakeLock = null;
+            }
             // Set the back press to finish the activity and return to the main activity
             this.setOnBackPressedCallback(a -> {
                 this.finishAndRemoveTask();
@@ -589,7 +603,6 @@ public class InstallerActivity extends FoxActivity {
                 }
             });
             this.rebootFloatingButton.setVisibility(View.VISIBLE);
-
             if (message != null && !message.isEmpty())
                 this.installerTerminal.addLine(message);
             if (optionalLink != null && !optionalLink.isEmpty()) {
@@ -670,7 +683,8 @@ public class InstallerActivity extends FoxActivity {
                     this.processCommand("showLoading 256");
                     this.processCommand("setLoading " + progressInt);
                     this.isRecoveryBar = true;
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
             } else {
                 this.terminal.addLine(s.replace(
                         this.moduleFile.getAbsolutePath(),

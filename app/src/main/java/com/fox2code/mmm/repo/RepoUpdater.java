@@ -49,11 +49,11 @@ public class RepoUpdater {
         if (!this.repoData.shouldUpdate()) {
             Timber.d("Fetching index from cache for %s", this.repoData.id);
             File cacheRoot = MainApplication.getINSTANCE().getDataDirWithPath("realms/repos/" + this.repoData.id);
-            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ModuleListCache.realm").schemaVersion(1).deleteRealmIfMigrationNeeded().allowWritesOnUiThread(true).allowQueriesOnUiThread(true).directory(cacheRoot).build();
+            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ModuleListCache.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).schemaVersion(1).deleteRealmIfMigrationNeeded().allowWritesOnUiThread(true).allowQueriesOnUiThread(true).directory(cacheRoot).build();
             Realm realm = Realm.getInstance(realmConfiguration);
             RealmResults<ModuleListCache> results = realm.where(ModuleListCache.class).equalTo("repoId", this.repoData.id).findAll();
             // reposlist realm
-            RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+            RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
             Realm realm2 = Realm.getInstance(realmConfiguration2);
             this.toUpdate = Collections.emptyList();
             this.toApply = new HashSet<>();
@@ -122,7 +122,7 @@ public class RepoUpdater {
                 // use realm to insert to
                 // props avail:
                 File cacheRoot = MainApplication.getINSTANCE().getDataDirWithPath("realms/repos/" + this.repoData.id);
-                RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ModuleListCache.realm").schemaVersion(1).deleteRealmIfMigrationNeeded().allowWritesOnUiThread(true).allowQueriesOnUiThread(true).directory(cacheRoot).build();
+                RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ModuleListCache.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).schemaVersion(1).deleteRealmIfMigrationNeeded().allowWritesOnUiThread(true).allowQueriesOnUiThread(true).directory(cacheRoot).build();
                 // array with module info default values
                 // supported properties for a module
                 //id=<string>
@@ -159,6 +159,9 @@ public class RepoUpdater {
                 }
                 Realm realm = Realm.getInstance(realmConfiguration);
                 // drop old data
+                if (realm.isInTransaction()) {
+                    realm.commitTransaction();
+                }
                 realm.beginTransaction();
                 realm.where(ModuleListCache.class).equalTo("repoId", this.repoData.id).findAll().deleteAllFromRealm();
                 realm.commitTransaction();
@@ -297,6 +300,9 @@ public class RepoUpdater {
                         }
                         // create a realm object and insert or update it
                         // add everything to the realm object
+                        if (realm.isInTransaction()) {
+                            realm.commitTransaction();
+                        }
                         realm.beginTransaction();
                         ModuleListCache moduleListCache = realm.createObject(ModuleListCache.class, id);
                         moduleListCache.setName(name);
@@ -333,7 +339,7 @@ public class RepoUpdater {
                 Timber.w("Failed to get module info from %s with error %s", this.repoData.id, e.getMessage());
             }
             this.indexRaw = null;
-            RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+            RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
             Realm realm2 = Realm.getInstance(realmConfiguration2);
             if (realm2.isInTransaction()) {
                 realm2.cancelTransaction();

@@ -52,8 +52,8 @@ public final class RepoManager extends SyncManager {
     private final MainApplication mainApplication;
     private final LinkedHashMap<String, RepoData> repoData;
     private final HashMap<String, RepoModule> modules;
-    private final AndroidacyRepoData androidacyRepoData;
-    private final CustomRepoManager customRepoManager;
+    private AndroidacyRepoData androidacyRepoData;
+    private CustomRepoManager customRepoManager;
     public String repoLastErrorName = null;
     private boolean hasInternet;
     private boolean initialized;
@@ -65,6 +65,10 @@ public final class RepoManager extends SyncManager {
         this.mainApplication = mainApplication;
         this.repoData = new LinkedHashMap<>();
         this.modules = new HashMap<>();
+        // refuse to load if setup is not complete
+        if (MainApplication.getPreferences("mmm").getString("last_shown_setup", "").equals("")) {
+            return;
+        }
         // We do not have repo list config yet.
         this.androidacyRepoData = this.addAndroidacyRepoData();
         RepoData altRepo = this.addRepoData(MAGISK_ALT_REPO, "Magisk Modules Alt Repo");

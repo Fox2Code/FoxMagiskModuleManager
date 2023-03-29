@@ -12,6 +12,9 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.SystemClock;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
+import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -36,6 +39,18 @@ import com.google.common.hash.Hashing;
 import com.topjohnwu.superuser.Shell;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SecureRandom;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -44,6 +59,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 
 import io.noties.markwon.Markwon;
 import io.noties.markwon.html.HtmlPlugin;
@@ -86,6 +109,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     private int managerThemeResId = R.style.Theme_MagiskModuleManager;
     private FoxThemeWrapper markwonThemeContext;
     private Markwon markwon;
+    private byte[] existingKey;
 
     public MainApplication() {
         if (INSTANCE != null && INSTANCE != this)
@@ -489,6 +513,172 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         } else {
             return false;
         }
+    }
+
+    // Create a key to encrypt a realm and save it securely in the keystore
+    public byte[] getNewKey() {
+        Timber.d("Creating a new key.");
+        // check if we have a key already
+        SharedPreferences sharedPreferences = MainApplication.getPreferences("realm_key");
+        if (sharedPreferences.contains("iv_and_encrypted_key")) {
+            Timber.v("Found a key in the keystore.");
+            return getExistingKey();
+        }
+        // open a connection to the android keystore
+        KeyStore keyStore;
+        try {
+            keyStore = KeyStore.getInstance("AndroidKeyStore");
+            keyStore.load(null);
+        } catch (KeyStoreException | NoSuchAlgorithmException
+                 | CertificateException | IOException e) {
+            Timber.v("Failed to open the keystore.");
+            throw new RuntimeException(e);
+        }
+        // create a securely generated random asymmetric RSA key
+        byte[] realmKey = new byte[Realm.ENCRYPTION_KEY_LENGTH];
+        new SecureRandom().nextBytes(realmKey);
+        // create a cipher that uses AES encryption -- we'll use this to encrypt our key
+        Cipher cipher;
+        try {
+            cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES
+                    + "/" + KeyProperties.BLOCK_MODE_CBC
+                    + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            Timber.e("Failed to create a cipher.");
+            throw new RuntimeException(e);
+        }
+        Timber.v("Cipher created.");
+        // generate secret key
+        KeyGenerator keyGenerator;
+        try {
+            keyGenerator = KeyGenerator.getInstance(
+                    KeyProperties.KEY_ALGORITHM_AES,
+                    "AndroidKeyStore");
+        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+            Timber.e("Failed to access the key generator.");
+            throw new RuntimeException(e);
+        }
+        KeyGenParameterSpec keySpec = new KeyGenParameterSpec.Builder(
+                "realm_key",
+                KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
+                .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
+                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
+                .build();
+        try {
+            keyGenerator.init(keySpec);
+        } catch (InvalidAlgorithmParameterException e) {
+            Timber.e("Failed to generate a secret key.");
+            throw new RuntimeException(e);
+        }
+        Timber.v("Secret key generated.");
+        keyGenerator.generateKey();
+        Timber.v("Secret key stored in the keystore.");
+        // access the generated key in the android keystore, then
+        // use the cipher to create an encrypted version of the key
+        byte[] initializationVector;
+        byte[] encryptedKeyForRealm;
+        try {
+            SecretKey secretKey =
+                    (SecretKey) keyStore.getKey("realm_key", null);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            encryptedKeyForRealm = cipher.doFinal(realmKey);
+            initializationVector = cipher.getIV();
+        } catch (InvalidKeyException | UnrecoverableKeyException
+                 | NoSuchAlgorithmException | KeyStoreException
+                 | BadPaddingException | IllegalBlockSizeException e) {
+            Timber.e("Failed encrypting the key with the secret key.");
+            throw new RuntimeException(e);
+        }
+        // keep the encrypted key in shared preferences
+        // to persist it across application runs
+        byte[] initializationVectorAndEncryptedKey =
+                new byte[Integer.BYTES +
+                        initializationVector.length +
+                        encryptedKeyForRealm.length];
+        ByteBuffer buffer = ByteBuffer.wrap(initializationVectorAndEncryptedKey);
+        buffer.order(ByteOrder.BIG_ENDIAN);
+        buffer.putInt(initializationVector.length);
+        buffer.put(initializationVector);
+        buffer.put(encryptedKeyForRealm);
+        Timber.d("Created all keys successfully.");
+        MainApplication.getPreferences("realm_key").edit()
+                .putString("iv_and_encrypted_key",
+                        Base64.encodeToString(initializationVectorAndEncryptedKey, Base64.NO_WRAP))
+                .apply();
+        Timber.d("Saved the encrypted key in shared preferences.");
+        return realmKey; // pass to a realm configuration via encryptionKey()
+    }
+
+    // Access the encrypted key in the keystore, decrypt it with the secret,
+    // and use it to open and read from the realm again
+    public byte[] getExistingKey() {
+        Timber.d("Accessing the existing key.");
+        // attempt to read the existingKey property
+        if (existingKey != null) {
+            Timber.v("Found an existing key in memory.");
+            return existingKey;
+        }
+        // open a connection to the android keystore
+        KeyStore keyStore;
+        try {
+            keyStore = KeyStore.getInstance("AndroidKeyStore");
+            keyStore.load(null);
+        } catch (KeyStoreException | NoSuchAlgorithmException
+                 | CertificateException | IOException e) {
+            Timber.e("Failed to open the keystore.");
+            throw new RuntimeException(e);
+        }
+        Timber.v("Keystore opened.");
+        // access the encrypted key that's stored in shared preferences
+        byte[] initializationVectorAndEncryptedKey = Base64.decode(MainApplication
+                .getPreferences("realm_key")
+                .getString("iv_and_encrypted_key", null), Base64.DEFAULT);
+        Timber.d("Retrieved the encrypted key from shared preferences. Key length: %d",
+                initializationVectorAndEncryptedKey.length);
+        ByteBuffer buffer = ByteBuffer.wrap(initializationVectorAndEncryptedKey);
+        buffer.order(ByteOrder.BIG_ENDIAN);
+        // extract the length of the initialization vector from the buffer
+        int initializationVectorLength = buffer.getInt();
+        // extract the initialization vector based on that length
+        byte[] initializationVector = new byte[initializationVectorLength];
+        buffer.get(initializationVector);
+        // extract the encrypted key
+        byte[] encryptedKey = new byte[initializationVectorAndEncryptedKey.length
+                - Integer.BYTES
+                - initializationVectorLength];
+        buffer.get(encryptedKey);
+        Timber.d("Got key from shared preferences.");
+        // create a cipher that uses AES encryption to decrypt our key
+        Cipher cipher;
+        try {
+            cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES
+                    + "/" + KeyProperties.BLOCK_MODE_CBC
+                    + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            Timber.e("Failed to create cipher.");
+            throw new RuntimeException(e);
+        }
+        // decrypt the encrypted key with the secret key stored in the keystore
+        byte[] decryptedKey;
+        try {
+            final SecretKey secretKey =
+                    (SecretKey) keyStore.getKey("realm_key", null);
+            final IvParameterSpec initializationVectorSpec =
+                    new IvParameterSpec(initializationVector);
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, initializationVectorSpec);
+            decryptedKey = cipher.doFinal(encryptedKey);
+        } catch (InvalidKeyException e) {
+            Timber.e("Failed to decrypt. Invalid key.");
+            throw new RuntimeException(e);
+        } catch (UnrecoverableKeyException | NoSuchAlgorithmException
+                 | BadPaddingException | KeyStoreException
+                 | IllegalBlockSizeException | InvalidAlgorithmParameterException e) {
+            Timber.e("Failed to decrypt the encrypted realm key with the secret key.");
+            throw new RuntimeException(e);
+        }
+        // set property on MainApplication to indicate that the key has been accessed
+        existingKey = decryptedKey;
+        return decryptedKey; // pass to a realm configuration via encryptionKey()
     }
 
     private static class ReleaseTree extends Timber.Tree {
