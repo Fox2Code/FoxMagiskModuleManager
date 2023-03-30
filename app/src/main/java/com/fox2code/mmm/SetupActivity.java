@@ -72,6 +72,8 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         View view = binding.getRoot();
         ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).setChecked(BuildConfig.ENABLE_AUTO_UPDATER);
         ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).setChecked(BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING);
+        // pref_crash_reporting_pii
+        ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting_pii))).setChecked(BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING_PII);
         // assert that both switches match the build config on debug builds
         if (BuildConfig.DEBUG) {
             assert ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).isChecked() == BuildConfig.ENABLE_AUTO_UPDATER;
@@ -84,6 +86,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         if (BuildConfig.DEBUG) {
             ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).setOnCheckedChangeListener((buttonView, isChecked) -> Timber.i("Automatic update Check: %s", isChecked));
             ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).setOnCheckedChangeListener((buttonView, isChecked) -> Timber.i("Crash Reporting: %s", isChecked));
+            ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting_pii))).setOnCheckedChangeListener((buttonView, isChecked) -> Timber.i("Crash Reporting PII: %s", isChecked));
             ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_androidacy_repo))).setOnCheckedChangeListener((buttonView, isChecked) -> Timber.i("Androidacy Repo: %s", isChecked));
             ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).setOnCheckedChangeListener((buttonView, isChecked) -> Timber.i("Magisk Alt Repo: %s", isChecked));
         }
@@ -163,6 +166,8 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             editor.putBoolean("pref_background_update_check", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).isChecked());
             // Set the crash reporting pref
             editor.putBoolean("pref_crash_reporting", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).isChecked());
+            // Set the crash reporting PII pref
+            editor.putBoolean("pref_crash_reporting_pii", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting_pii))).isChecked());
             Timber.d("Saving preferences");
             // Set the repos in the ReposList realm db
             RealmConfiguration realmConfig = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();

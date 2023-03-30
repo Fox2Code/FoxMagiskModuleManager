@@ -128,6 +128,10 @@ android {
             dimension "type"
             buildConfigField "boolean", "ENABLE_AUTO_UPDATER", "true"
             buildConfigField "boolean", "DEFAULT_ENABLE_CRASH_REPORTING", "true"
+            buildConfigField "boolean", "DEFAULT_ENABLE_CRASH_REPORTING_PII", "true"
+            buildConfigField "boolean", "DEFAULT_ENABLE_ANALYTICS", "true" // unused for now
+            buildConfigField "boolean", "DEFAULT_ENABLE_ANALYTICS_PII", "true" // unused for now
+            buildConfigField "boolean", "ENABLE_PROTECTION", "true"
             if (hasSentryConfig) {
                 Properties properties = new Properties()
                 try (FileInputStream fis = new FileInputStream(sentryConfigFile)) {
@@ -182,6 +186,8 @@ android {
 
             // Disable crash reporting for F-Droid flavor by default
             buildConfigField "boolean", "DEFAULT_ENABLE_CRASH_REPORTING", "false"
+            buildConfigField "boolean", "DEFAULT_ENABLE_CRASH_REPORTING_PII", "true"
+            buildConfigField "boolean", "ENABLE_PROTECTION", "true"
 
             if (hasSentryConfig) {
                 Properties properties = new Properties()

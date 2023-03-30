@@ -23,6 +23,7 @@ import com.fox2code.mmm.utils.io.Hashes;
 import com.fox2code.mmm.utils.io.net.Http;
 import com.fox2code.mmm.utils.io.PropUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -31,6 +32,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+
+import javax.net.ssl.SSLException;
 
 import timber.log.Timber;
 
@@ -338,11 +341,24 @@ public final class RepoManager extends SyncManager {
         // If we can't, we don't have internet connection
         Timber.d("Checking internet connection...");
         // this url is actually hosted by Cloudflare and is not dependent on Androidacy servers being up
-        byte[] resp = new byte[0];
+        byte[] resp;
         try {
             resp = Http.doHttpGet("https://production-api.androidacy.com/cdn-cgi/trace", false);
         } catch (Exception e) {
             Timber.e(e, "Failed to check internet connection. Assuming no internet connection.");
+            // check if it's a security or ssl exception
+            if (e instanceof SSLException || e instanceof SecurityException) {
+                // if it is, user installed a certificate that blocks the connection
+                // show a snackbar to inform the user
+                Activity context = MainApplication.getINSTANCE().getLastCompatActivity();
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    if (context != null) {
+                        Snackbar.make(context.findViewById(android.R.id.content), R.string.certificate_error, Snackbar.LENGTH_LONG).show();
+                    }
+                });
+            }
+            this.hasInternet = false;
+            return;
         }
         // get the response body
         String response = new String(resp, StandardCharsets.UTF_8);

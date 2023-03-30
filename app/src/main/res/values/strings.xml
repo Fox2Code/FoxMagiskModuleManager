@@ -386,4 +386,10 @@
     <string name="cache_clear_failed">Failed to clear cache</string>
     <string name="clear_cache_dialogue_title">Clear app cache?</string>
     <string name="clear_cache_dialogue_message">This will clear app cache. Your preferences will be saved, but the app may take longer to do some operations temporarily.</string>
+    <string name="certificate_error">The server certificate could not be verified. Please make sure nothing is intercepting HTTPS connections for FoxMMM.</string>
+    <string name="pref_category_privacy">Privacy</string>
+    <string name="crash_reporting_pii_desc">Allows sending additional information in crash reports, some of which may contain personally identifiable information such as IP address and device identifiers.</string>
+    <string name="crash_reporting_pii">Send additional information</string>
+    <string name="setup_crash_reporting_pii">Send additional info in crash reports.</string>
+    <string name="setup_crash_reporting_pii_summary"> This may include device identifiers and IP addresses. No data will be used for any other purpose besides analyzing crashes and improving performance.</string>
 </resources>

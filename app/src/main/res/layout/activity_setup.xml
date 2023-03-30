@@ -147,7 +147,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
-                android:text="@string/crash_reporting_headline"
+                android:text="@string/pref_category_privacy"
                 android:textAppearance="@android:style/TextAppearance.Material.Headline" />
 
             <com.google.android.material.materialswitch.MaterialSwitch
@@ -168,6 +168,27 @@
                 android:drawableStart="@drawable/ic_baseline_info_24"
                 android:drawablePadding="8dp"
                 android:text="@string/setup_crash_reporting_summary"
+                android:textAppearance="@android:style/TextAppearance.Material.Small" />
+
+            <!-- pii toggle -->
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/setup_crash_reporting_pii"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:checked="false"
+                android:key="pref_crash_reporting_pii"
+                android:text="@string/setup_crash_reporting_pii"
+                android:textSize="18sp" />
+
+            <!-- Small summary for above switch -->
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:drawableStart="@drawable/ic_baseline_info_24"
+                android:drawablePadding="8dp"
+                android:text="@string/setup_crash_reporting_pii_summary"
                 android:textAppearance="@android:style/TextAppearance.Material.Small" />
 
             <com.google.android.material.textview.MaterialTextView

@@ -23,7 +23,7 @@ public class SentryMain {
 
     /**
      * Initialize Sentry
-     * Sentry is used for crash reporting and performance monitoring. The SDK is explcitly configured not to send PII, and server side scrubbing of sensitive data is enabled (which also removes IP addresses)
+     * Sentry is used for crash reporting and performance monitoring.
      */
     @SuppressLint({"RestrictedApi", "UnspecifiedImmutableFlag"})
     public static void initialize(final MainApplication mainApplication) {
@@ -54,8 +54,11 @@ public class SentryMain {
         SentryAndroid.init(mainApplication, options -> {
             // If crash reporting is disabled, stop here.
             if (!MainApplication.isCrashReportingEnabled()) {
+                sentryEnabled = false; // Set sentry state to disabled
                 options.setDsn("");
             } else {
+                // get pref_crash_reporting_pii pref
+                boolean crashReportingPii = sharedPreferences.getBoolean("crashReportingPii", false);
                 sentryEnabled = true; // Set sentry state to enabled
                 options.addIntegration(new FragmentLifecycleIntegration(mainApplication, true, true));
                 // Enable automatic activity lifecycle breadcrumbs
@@ -71,15 +74,20 @@ public class SentryMain {
                 options.addInAppInclude("com.fox2code.mmm.debug");
                 options.addInAppInclude("com.fox2code.mmm.fdroid");
                 options.addInAppExclude("com.fox2code.mmm.utils.sentry.SentryMain");
-                // Sentry sends ABSOLUTELY NO Personally Identifiable Information (PII) by default.
-                // Already set to false by default, just set it again to make peoples feel safer.
-                options.setSendDefaultPii(false);
+                // Respect user preference for sending PII. default is true on non fdroid builds, false on fdroid builds
+                options.setSendDefaultPii(crashReportingPii);
+                options.enableAllAutoBreadcrumbs(true);
+                // in-app screenshots are only sent if the app crashes, and it only shows the last activity. so no, we won't see your, ahem, "private" stuff
+                options.setAttachScreenshot(true);
                 // It just tell if sentry should ping the sentry dsn to tell the app is running. Useful for performance and profiling.
                 options.setEnableAutoSessionTracking(true);
-                // A screenshot of the app itself is only sent if the app crashes, and it only shows the last activity
                 // Add a callback that will be used before the event is sent to Sentry.
                 // With this callback, you can modify the event or, when returning null, also discard the event.
                 options.setBeforeSend((event, hint) -> {
+                    // in the rare event that crash reporting has been disabled since we started the app, we don't want to send the crash report
+                    if (!MainApplication.isCrashReportingEnabled()) {
+                        return null;
+                    }
                     // Save lastEventId to private shared preferences
                     SharedPreferences sentryPrefs = MainApplication.getPreferences("sentry");
                     String lastEventId = Objects.requireNonNull(event.getEventId()).toString();

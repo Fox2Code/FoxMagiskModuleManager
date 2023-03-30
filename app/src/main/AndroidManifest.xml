@@ -60,6 +60,8 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="@bool/lang_support_rtl"
         android:testOnly="false"
+        android:appCategory="productivity"
+        android:memtagMode="async"
         android:theme="@style/Theme.MagiskModuleManager"
         android:usesCleartextTraffic="false"
         android:extractNativeLibs="true"

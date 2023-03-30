@@ -315,17 +315,6 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
 
     @Override
     public void onCreate() {
-        // init timber
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-        } else {
-            if (isCrashReportingEnabled()) {
-                //noinspection UnstableApiUsage
-                Timber.plant(new SentryTimberTree(Sentry.getCurrentHub(), SentryLevel.ERROR, SentryLevel.ERROR));
-            } else {
-                Timber.plant(new ReleaseTree());
-            }
-        }
         supportedLocales.add("ar");
         // supportedLocales.add("ar_SA");
         supportedLocales.add("bs");
@@ -356,26 +345,40 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         supportedLocales.add("en");
         if (INSTANCE == null) INSTANCE = this;
         relPackageName = this.getPackageName();
-        Timber.d("Starting FoxMMM version " + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + "), commit " + BuildConfig.COMMIT_HASH);
         super.onCreate();
+        SentryMain.initialize(this);
+        // init timber
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        } else {
+            if (isCrashReportingEnabled()) {
+                //noinspection UnstableApiUsage
+                Timber.plant(new SentryTimberTree(Sentry.getCurrentHub(), SentryLevel.ERROR, SentryLevel.ERROR));
+            } else {
+                Timber.plant(new ReleaseTree());
+            }
+        }
+        Timber.i("Starting FoxMMM version %s (%d) - commit %s", BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, BuildConfig.COMMIT_HASH);
         // Update SSL Ciphers if update is possible
         GMSProviderInstaller.installIfNeeded(this);
-        if (BuildConfig.DEBUG) {
-            Timber.d("Initializing FoxMMM");
-            Timber.d("Started from background: %s", !isInForeground());
-            Timber.d("FoxMMM is running in debug mode");
-            Timber.d("Initializing Realm");
-        }
+        Timber.d("Initializing FoxMMM");
+        Timber.d("Started from background: %s", !isInForeground());
+        Timber.d("FoxMMM is running in debug mode");
+        Timber.d("Initializing Realm");
         Realm.init(this);
         Timber.d("Initialized Realm");
         // Determine if this is an official build based on the signature
         try {
             // Get the signature of the key used to sign the app
-            @SuppressLint("PackageManagerGetSignatures") Signature[] signatures = this.getPackageManager().getPackageInfo(this.getPackageName(), PackageManager.GET_SIGNATURES).signatures;
-            @SuppressWarnings("SpellCheckingInspection") String[] officialSignatureHashArray = new String[]{"7bec7c4462f4aac616612d9f56a023ee3046e83afa956463b5fab547fd0a0be6", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"};
-            String ourSignatureHash = Hashing.sha256().hashBytes(signatures[0].toByteArray()).toString();
-            isOfficial = Arrays.asList(officialSignatureHashArray).contains(ourSignatureHash);
+            @SuppressLint("PackageManagerGetSignatures") Signature[] s = this.getPackageManager().getPackageInfo(this.getPackageName(), PackageManager.GET_SIGNATURES).signatures;
+            @SuppressWarnings("SpellCheckingInspection") String[] osh = new String[]{"7bec7c4462f4aac616612d9f56a023ee3046e83afa956463b5fab547fd0a0be6", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"};
+            String oosh = Hashing.sha256().hashBytes(s[0].toByteArray()).toString();
+            isOfficial = Arrays.asList(osh).contains(oosh);
         } catch (PackageManager.NameNotFoundException ignored) {
+        }
+        // hide this behind a buildconfig flag for now, but crash the app if it's not an official build and not debug
+        if (BuildConfig.ENABLE_PROTECTION && !isOfficial && !BuildConfig.DEBUG) {
+            throw new RuntimeException("This is not an official build of FoxMMM");
         }
         SharedPreferences sharedPreferences = MainApplication.getPreferences("mmm");
         // We are only one process so it's ok to do this
@@ -407,7 +410,6 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
                 Timber.i("Emoji compat loaded!");
             }, "Emoji compat init.").start();
         }
-        SentryMain.initialize(this);
         if (Objects.equals(BuildConfig.ANDROIDACY_CLIENT_ID, "")) {
             Timber.w("Androidacy client id is empty! Please set it in androidacy.properties. Will not enable Androidacy.");
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -529,8 +531,8 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         try {
             keyStore = KeyStore.getInstance("AndroidKeyStore");
             keyStore.load(null);
-        } catch (KeyStoreException | NoSuchAlgorithmException
-                 | CertificateException | IOException e) {
+        } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException |
+                 IOException e) {
             Timber.v("Failed to open the keystore.");
             throw new RuntimeException(e);
         }
@@ -540,9 +542,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         // create a cipher that uses AES encryption -- we'll use this to encrypt our key
         Cipher cipher;
         try {
-            cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES
-                    + "/" + KeyProperties.BLOCK_MODE_CBC
-                    + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
+            cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
             Timber.e("Failed to create a cipher.");
             throw new RuntimeException(e);
@@ -551,19 +551,12 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         // generate secret key
         KeyGenerator keyGenerator;
         try {
-            keyGenerator = KeyGenerator.getInstance(
-                    KeyProperties.KEY_ALGORITHM_AES,
-                    "AndroidKeyStore");
+            keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
         } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
             Timber.e("Failed to access the key generator.");
             throw new RuntimeException(e);
         }
-        KeyGenParameterSpec keySpec = new KeyGenParameterSpec.Builder(
-                "realm_key",
-                KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
-                .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
-                .build();
+        KeyGenParameterSpec keySpec = new KeyGenParameterSpec.Builder("realm_key", KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT).setBlockModes(KeyProperties.BLOCK_MODE_CBC).setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7).build();
         try {
             keyGenerator.init(keySpec);
         } catch (InvalidAlgorithmParameterException e) {
@@ -578,33 +571,25 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         byte[] initializationVector;
         byte[] encryptedKeyForRealm;
         try {
-            SecretKey secretKey =
-                    (SecretKey) keyStore.getKey("realm_key", null);
+            SecretKey secretKey = (SecretKey) keyStore.getKey("realm_key", null);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             encryptedKeyForRealm = cipher.doFinal(realmKey);
             initializationVector = cipher.getIV();
-        } catch (InvalidKeyException | UnrecoverableKeyException
-                 | NoSuchAlgorithmException | KeyStoreException
-                 | BadPaddingException | IllegalBlockSizeException e) {
+        } catch (InvalidKeyException | UnrecoverableKeyException | NoSuchAlgorithmException |
+                 KeyStoreException | BadPaddingException | IllegalBlockSizeException e) {
             Timber.e("Failed encrypting the key with the secret key.");
             throw new RuntimeException(e);
         }
         // keep the encrypted key in shared preferences
         // to persist it across application runs
-        byte[] initializationVectorAndEncryptedKey =
-                new byte[Integer.BYTES +
-                        initializationVector.length +
-                        encryptedKeyForRealm.length];
+        byte[] initializationVectorAndEncryptedKey = new byte[Integer.BYTES + initializationVector.length + encryptedKeyForRealm.length];
         ByteBuffer buffer = ByteBuffer.wrap(initializationVectorAndEncryptedKey);
         buffer.order(ByteOrder.BIG_ENDIAN);
         buffer.putInt(initializationVector.length);
         buffer.put(initializationVector);
         buffer.put(encryptedKeyForRealm);
         Timber.d("Created all keys successfully.");
-        MainApplication.getPreferences("realm_key").edit()
-                .putString("iv_and_encrypted_key",
-                        Base64.encodeToString(initializationVectorAndEncryptedKey, Base64.NO_WRAP))
-                .apply();
+        MainApplication.getPreferences("realm_key").edit().putString("iv_and_encrypted_key", Base64.encodeToString(initializationVectorAndEncryptedKey, Base64.NO_WRAP)).apply();
         Timber.d("Saved the encrypted key in shared preferences.");
         return realmKey; // pass to a realm configuration via encryptionKey()
     }
@@ -623,18 +608,15 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         try {
             keyStore = KeyStore.getInstance("AndroidKeyStore");
             keyStore.load(null);
-        } catch (KeyStoreException | NoSuchAlgorithmException
-                 | CertificateException | IOException e) {
+        } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException |
+                 IOException e) {
             Timber.e("Failed to open the keystore.");
             throw new RuntimeException(e);
         }
         Timber.v("Keystore opened.");
         // access the encrypted key that's stored in shared preferences
-        byte[] initializationVectorAndEncryptedKey = Base64.decode(MainApplication
-                .getPreferences("realm_key")
-                .getString("iv_and_encrypted_key", null), Base64.DEFAULT);
-        Timber.d("Retrieved the encrypted key from shared preferences. Key length: %d",
-                initializationVectorAndEncryptedKey.length);
+        byte[] initializationVectorAndEncryptedKey = Base64.decode(MainApplication.getPreferences("realm_key").getString("iv_and_encrypted_key", null), Base64.DEFAULT);
+        Timber.d("Retrieved the encrypted key from shared preferences. Key length: %d", initializationVectorAndEncryptedKey.length);
         ByteBuffer buffer = ByteBuffer.wrap(initializationVectorAndEncryptedKey);
         buffer.order(ByteOrder.BIG_ENDIAN);
         // extract the length of the initialization vector from the buffer
@@ -643,17 +625,13 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         byte[] initializationVector = new byte[initializationVectorLength];
         buffer.get(initializationVector);
         // extract the encrypted key
-        byte[] encryptedKey = new byte[initializationVectorAndEncryptedKey.length
-                - Integer.BYTES
-                - initializationVectorLength];
+        byte[] encryptedKey = new byte[initializationVectorAndEncryptedKey.length - Integer.BYTES - initializationVectorLength];
         buffer.get(encryptedKey);
         Timber.d("Got key from shared preferences.");
         // create a cipher that uses AES encryption to decrypt our key
         Cipher cipher;
         try {
-            cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES
-                    + "/" + KeyProperties.BLOCK_MODE_CBC
-                    + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
+            cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
             Timber.e("Failed to create cipher.");
             throw new RuntimeException(e);
@@ -661,18 +639,16 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         // decrypt the encrypted key with the secret key stored in the keystore
         byte[] decryptedKey;
         try {
-            final SecretKey secretKey =
-                    (SecretKey) keyStore.getKey("realm_key", null);
-            final IvParameterSpec initializationVectorSpec =
-                    new IvParameterSpec(initializationVector);
+            final SecretKey secretKey = (SecretKey) keyStore.getKey("realm_key", null);
+            final IvParameterSpec initializationVectorSpec = new IvParameterSpec(initializationVector);
             cipher.init(Cipher.DECRYPT_MODE, secretKey, initializationVectorSpec);
             decryptedKey = cipher.doFinal(encryptedKey);
         } catch (InvalidKeyException e) {
             Timber.e("Failed to decrypt. Invalid key.");
             throw new RuntimeException(e);
-        } catch (UnrecoverableKeyException | NoSuchAlgorithmException
-                 | BadPaddingException | KeyStoreException
-                 | IllegalBlockSizeException | InvalidAlgorithmParameterException e) {
+        } catch (UnrecoverableKeyException | NoSuchAlgorithmException | BadPaddingException |
+                 KeyStoreException | IllegalBlockSizeException |
+                 InvalidAlgorithmParameterException e) {
             Timber.e("Failed to decrypt the encrypted realm key with the secret key.");
             throw new RuntimeException(e);
         }

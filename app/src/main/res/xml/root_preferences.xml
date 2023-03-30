@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!-- Custom repos has been announced, check https://github.com/Fox2Code/FoxMagiskModuleManager/issues/131 -->
     <PreferenceCategory app:title="@string/pref_category_repos">
@@ -55,9 +56,9 @@
         <!-- require wifi -->
         <SwitchPreferenceCompat
             app:defaultValue="true"
+            app:dependency="pref_background_update_check"
             app:icon="@drawable/baseline_network_wifi_24"
             app:key="pref_background_update_check_wifi"
-            app:dependency="pref_background_update_check"
             app:singleLineTitle="false"
             app:summary="@string/notification_update_wifi_pref"
             app:title="@string/notification_update_wifi_desc" />
@@ -71,9 +72,9 @@
             app:title="@string/notification_update_ignore_pref" />
 
         <Preference
+            app:icon="@drawable/baseline_notification_important_24"
             app:key="pref_background_update_check_debug"
             app:singleLineTitle="false"
-            app:icon="@drawable/baseline_notification_important_24"
             app:title="@string/notification_update_debug_pref" />
 
         <!-- For debugging: launch update activity with download action -->
@@ -170,6 +171,8 @@
             app:singleLineTitle="false"
             app:summary="@string/prevent_reboot_desc"
             app:title="@string/prevent_reboot_pref" />
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/pref_category_privacy">
         <!-- Crash reporting -->
         <SwitchPreferenceCompat
             app:defaultValue="true"
@@ -178,6 +181,14 @@
             app:singleLineTitle="false"
             app:summary="@string/crash_reporting_desc"
             app:title="@string/crash_reporting" />
+        <!-- allow pii in crash reports -->
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:icon="@drawable/ic_baseline_bug_report_24"
+            app:key="pref_crash_reporting_pii"
+            app:singleLineTitle="false"
+            app:summary="@string/crash_reporting_pii_desc"
+            app:title="@string/crash_reporting_pii" />
         <!-- Purposely crash the app -->
         <Preference
             app:icon="@drawable/ic_baseline_bug_report_24"
@@ -195,8 +206,8 @@
             app:icon="@drawable/ic_baseline_delete_24"
             app:key="pref_clear_cache"
             app:singleLineTitle="false"
-            app:title="@string/clear_app_cache"
-            app:summary="@string/clear_app_cache_desc" />
+            app:summary="@string/clear_app_cache_desc"
+            app:title="@string/clear_app_cache" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/pref_category_info">
