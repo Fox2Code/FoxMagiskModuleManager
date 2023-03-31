@@ -302,7 +302,7 @@
     <string name="title_activity_update">アプリ内アップデータ</string>
     <string name="update_title">アプリをアップデート</string>
     <string name="update_message">FoxMMM のアップデートをインストールしてるよ。数分かかることがあるよ</string>
-    <string name="update_button">お待ちください...</string>
+    <string name="update_button">お待ちください…</string>
     <string name="error_no_extras">エラー: 起動時に無効なデータを受け取ったよ</string>
     <string name="update_debug_warning">デバッグビルドで実行してるよ。自動でアプリが更新されないので手動で更新してね</string>
     <string name="error_no_action">エラー: 無効なアクションが指定されたよ。無視して続けるね。</string>
@@ -327,7 +327,7 @@
     <string name="add_repo_message">リポジトリは HTTPS 対応 とドキュメントに書かれているスペックを満たしている必要があるよ。</string>
     <string name="notification_update_summary">以下のモジュールがアップデートされるよ:</string>
     <string name="notification_update_module_template">%1$s を %2$s へ</string>
-    <string name="notification_channel_background_update">アップデートを確認しています...</string>
+    <string name="notification_channel_background_update">アップデートを確認しています…</string>
     <string name="notification_channel_background_update_description">FoxMMM がバックグラウンドでアップデートを確認してるよ。</string>
     <string name="notification_channel_category_background_update">バックグラウンドアップデートステータス</string>
     <string name="notification_channel_category_background_update_description">通知を表示してアップデートの確認中にキルされないようにする</string>
@@ -350,4 +350,21 @@
     <string name="search">検索</string>
     <string name="yer_a_wizard_harry">あなたはハリーみたいな魔法使いだよ！</string>
     <string name="keep_tapping_to_enter_hogwarts">ホグワーツに入学したいならタップを続けてね！</string>
+    <string name="crash_reporting_headline">クラッシュレポート</string>
+    <string name="setup_update_check_headline">アップデート確認</string>
+    <string name="setup_background_update_check_require_wifi_summary">アップデートを確認するには Wi-Fi または無制限モバイル通信に接続してね</string>
+    <string name="setup_background_update_check_require_wifi">アップデートを確認するには Wi-Fi が必要だよ</string>
+    <string name="setup_app_analytics">アプリ解析を許可</string>
+    <string name="clear_app_cache">アプリキャッシュをクリア</string>
+    <string name="clear_app_cache_desc">これは通常必要ないけどいくつかの問題を解決するときに役に立つことがあるよ。</string>
+    <string name="cache_cleared">キャッシュをクリアできたよ</string>
+    <string name="cache_clear_failed">キャッシュをクリアできなかったよ</string>
+    <string name="pref_category_privacy">プライバシー</string>
+    <string name="crash_reporting_pii_desc">追加情報をクラッシュレポートに含めることを許可するよ。IP アドレスやデバイス情報などの個人情報が含まれることがあるよ。</string>
+    <string name="clear_cache_dialogue_title">アプリキャッシュをクリアする？</string>
+    <string name="clear_cache_dialogue_message">これはアプリキャッシュをクリアするよ。設定は残るけどいくつかの操作で時間がかかることがあるよ。</string>
+    <string name="certificate_error">サーバーの証明書が検証されてないよ。FoxMMM への HTTPS 接続が切断されていないか確認してね。</string>
+    <string name="crash_reporting_pii">追加情報を送信する</string>
+    <string name="setup_crash_reporting_pii">クラッシュレポートに追加情報を含めて送信するよ。</string>
+    <string name="setup_crash_reporting_pii_summary">これにはデバイス情報と IP アドレスが含まれることがあるよ。クラッシュの解析とパフォーマンスの向上以外に使用されることはないよ。</string>
 </resources>

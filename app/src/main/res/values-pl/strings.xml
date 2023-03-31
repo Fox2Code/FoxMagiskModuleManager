@@ -192,7 +192,7 @@
     <string name="sentry_dialogue_success">Pomyślnie przesłano opinię. Wkrótce to sprawdzimy</string>
     <string name="setup_title">Powitalna konfiguracja</string>
     <string name="setup_button">Zastosuj</string>
-    <string name="setup_background_update_check">Automatyczne sprawdzanie aktualizacji</string>
+    <string name="setup_background_update_check">Automatyczne sprawdzanie</string>
     <string name="setup_magisk_alt_repo">Repozytorium Magisk Alt</string>
     <string name="setup_crash_reporting">Raportowanie Sentry</string>
     <string name="setup_custom_repos">Możesz później dodać niestandardowe repozytoria w ustawieniach.</string>
@@ -302,7 +302,7 @@
     <string name="title_activity_update">Wbudowany aktualizator</string>
     <string name="update_title">Zaktualizuj aplikację</string>
     <string name="update_message">Proszę poczekać, aż sprawdzimy i zainstalujemy aktualizacje dla FoxMMM. Może to potrwać kilka minut</string>
-    <string name="update_button">Proszę czekać...</string>
+    <string name="update_button">Proszę czekać…</string>
     <string name="reset_app_confirmation">To całkowicie wyczysci dane aplikacji, ale moduły nie zostaną ruszone.</string>
     <string name="error_no_extras">BŁĄD: Nieprawidłowe dane otrzymane przy uruchomieniu</string>
     <string name="update_debug_warning">Wygląda na to, że używasz wersji debugowanej. Kompilacje debugowe muszą być aktualizowane ręcznie i nie obsługują aktualizacji w aplikacji</string>
@@ -331,7 +331,7 @@
     <string name="add_repo_message">Repozytoria muszą być obsługiwane przez HTTPS i muszą być zgodne ze specyfikacją przedstawioną w dokumentacji.</string>
     <string name="notification_update_summary">Następujące moduły mogą być uaktualnione:</string>
     <string name="notification_update_module_template">%1$s do wersji %2$s</string>
-    <string name="notification_channel_background_update">Wyszukiwanie uaktualnień...</string>
+    <string name="notification_channel_background_update">Wyszukiwanie uaktualnień…</string>
     <string name="notification_channel_background_update_description">FoxMMM sprawdza w tle aktualizacje.</string>
     <string name="notification_channel_category_background_update">Stan aktualizacji w tle</string>
     <string name="notification_update_wifi_desc">Sprawdzaj tylko na WiFi</string>
@@ -356,9 +356,21 @@
     <string name="search">Szukaj</string>
     <string name="yer_a_wizard_harry">Jesteś czarodziejem, Harry!</string>
     <string name="keep_tapping_to_enter_hogwarts">Stukaj dalej, aby zostać przyjętym do Hogwartu!</string>
-    <string name="setup_background_update_check_require_wifi">Wymagaj sieci WiFi do sprawdzania aktualizacji</string>
+    <string name="setup_background_update_check_require_wifi">Wymagaj sieci WiFi</string>
     <string name="setup_app_analytics">Pozwól na analizę aplikacji</string>
     <string name="crash_reporting_headline">Raportowanie błędów</string>
     <string name="setup_update_check_headline">Sprawdzanie aktualizacji</string>
     <string name="setup_background_update_check_require_wifi_summary">Wymagaj WiFi lub innego nieopomiarowanego połączenia, aby wykonać sprawdzanie aktualizacji</string>
+    <string name="clear_app_cache">Wyczyść pamięć podręczną</string>
+    <string name="clear_app_cache_desc">Może pomóc w naprawieniu niektórych problemów.</string>
+    <string name="cache_cleared">Pamięć podręczna została wyczyszczona</string>
+    <string name="cache_clear_failed">Nie udało się wyczyścić pamięci podręcznej</string>
+    <string name="pref_category_privacy">Prywatność</string>
+    <string name="crash_reporting_pii">Wysyłaj dodatkowe informacje</string>
+    <string name="setup_crash_reporting_pii_summary">Może to obejmować identyfikatory urządzenia i adresy IP. Żadne dane nie będą wykorzystywane do innych celów niż analiza awarii i poprawa wydajności.</string>
+    <string name="setup_crash_reporting_pii">Wysyłaj dodatkowe info w raportach</string>
+    <string name="clear_cache_dialogue_title">Wyczyścić pamięć podręczną\?</string>
+    <string name="clear_cache_dialogue_message">Spowoduje to wyczyszczenie pamięci podręcznej aplikacji. Twoje preferencje zostaną zachowane, ale aplikacja może potrzebować więcej czasu na wykonanie niektórych operacji.</string>
+    <string name="certificate_error">Certyfikat serwera nie mógł zostać zweryfikowany. Upewnij się, że nic nie przechwytuje połączeń HTTPS dla FoxMMM.</string>
+    <string name="crash_reporting_pii_desc">Umożliwia wysyłanie dodatkowych informacji w raportach o awariach, które mogą zawierać informacje umożliwiające identyfikację osoby, takie jak adres IP i ID urządzenia.</string>
 </resources>
