@@ -29,7 +29,10 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -362,17 +365,12 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         universalCookies2.add("is_foxmmm=true");
         cookiePrefs.edit().putStringSet("universal", universalCookies2).apply();
         // we literally only use these to create the http cache folders
-        File httpCacheDir = MainApplication.getINSTANCE().getDataDirWithPath("cache/WebView/Default/HTTP Cache/Code Cache/wasm");
-        File httpCacheDir2 = MainApplication.getINSTANCE().getDataDirWithPath("cache/WebView/Default/HTTP Cache/Code Cache/js");
-        if (!httpCacheDir.exists()) {
-            if (httpCacheDir.mkdirs()) {
-                Timber.d("Created http cache dir");
-            }
-        }
-        if (!httpCacheDir2.exists()) {
-            if (httpCacheDir2.mkdirs()) {
-                Timber.d("Created http cache dir");
-            }
+        try {
+            FileUtils.forceMkdir(new File(MainApplication.getINSTANCE().getDataDir() + "/cache/cronet"));
+            FileUtils.forceMkdir(new File(MainApplication.getINSTANCE().getDataDir() + "/cache/WebView/Default/HTTP Cache/Code Cache/wasm"));
+            FileUtils.forceMkdir(new File(MainApplication.getINSTANCE().getDataDir() + "/cache/WebView/Default/HTTP Cache/Code Cache/js"));
+        } catch (IOException e) {
+            Timber.e(e);
         }
         createRealmDatabase();
     }

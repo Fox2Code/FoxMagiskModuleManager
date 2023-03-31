@@ -81,6 +81,8 @@ import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -402,19 +404,14 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.clear_cache_dialogue_title).setMessage(R.string.clear_cache_dialogue_message).setPositiveButton(R.string.yes, (dialog, which) -> {
                     // Clear app cache
                     try {
-                        File cacheDir = requireContext().getCacheDir();
-                        for (File file : cacheDir.listFiles()) {
-                            if (file.isDirectory()) {
-                                for (File file2 : file.listFiles()) {
-                                    if (!file2.delete()) {
-                                        Timber.e("Failed to delete %s", file2.getAbsolutePath());
-                                    }
-                                }
-                            }
-                            if (!file.delete()) {
-                                Timber.e("Failed to delete %s", file.getAbsolutePath());
-                            }
-                        }
+                        // use apache commons IO to delete the cache
+                        FileUtils.deleteDirectory(requireContext().getCacheDir());
+                        // create a new cache dir
+                        FileUtils.forceMkdir(requireContext().getCacheDir());
+                        // create cache dirs for cronet and webview
+                        FileUtils.forceMkdir(new File(requireContext().getCacheDir(), "cronet"));
+                        FileUtils.forceMkdir(new File(MainApplication.getINSTANCE().getDataDir() + "/cache/WebView/Default/HTTP Cache/Code Cache/wasm"));
+                        FileUtils.forceMkdir(new File(MainApplication.getINSTANCE().getDataDir() + "/cache/WebView/Default/HTTP Cache/Code Cache/js"));
                         Toast.makeText(requireContext(), R.string.cache_cleared, Toast.LENGTH_SHORT).show();
                     } catch (Exception e) {
                         Timber.e(e);
