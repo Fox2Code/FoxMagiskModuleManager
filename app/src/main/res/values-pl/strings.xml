@@ -368,7 +368,7 @@
     <string name="pref_category_privacy">Prywatność</string>
     <string name="crash_reporting_pii">Wysyłaj dodatkowe informacje</string>
     <string name="setup_crash_reporting_pii_summary">Może to obejmować identyfikatory urządzenia i adresy IP. Żadne dane nie będą wykorzystywane do innych celów niż analiza awarii i poprawa wydajności.</string>
-    <string name="setup_crash_reporting_pii">Wysyłaj dodatkowe info w raportach</string>
+    <string name="setup_crash_reporting_pii">Wysyłaj dodatkowe informacje</string>
     <string name="clear_cache_dialogue_title">Wyczyścić pamięć podręczną\?</string>
     <string name="clear_cache_dialogue_message">Spowoduje to wyczyszczenie pamięci podręcznej aplikacji. Twoje preferencje zostaną zachowane, ale aplikacja może potrzebować więcej czasu na wykonanie niektórych operacji.</string>
     <string name="certificate_error">Certyfikat serwera nie mógł zostać zweryfikowany. Upewnij się, że nic nie przechwytuje połączeń HTTPS dla FoxMMM.</string>
