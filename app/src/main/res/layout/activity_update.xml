@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" tools:context=".UpdateActivity">
+    android:orientation="vertical"
+    tools:context=".UpdateActivity">
 
-  <!-- Activity used to download and install app updates -->
+    <!-- Activity used to download and install app updates -->
     <!-- first, upgrade icon -->
     <ImageView
-        android:id="@+id/updat_icon"
+        android:id="@+id/update_icon"
         android:layout_width="101dp"
         android:layout_height="93dp"
         android:layout_gravity="center"
@@ -53,31 +53,32 @@
         android:layout_marginTop="8dp"
         android:textAppearance="?attr/textAppearanceBody2" />
 
-  <LinearLayout
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="bottom|end"
-      android:layout_margin="4dp"
-      android:orientation="horizontal">
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/update_button"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/update_button"
-        android:visibility="invisible" />
+        android:layout_gravity="bottom|end"
+        android:layout_margin="4dp"
+        android:orientation="horizontal">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/update_cancel_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/update_cancel_button"
-        android:visibility="visible" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/update_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/update_button"
+            android:visibility="invisible" />
 
-  </LinearLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/update_cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/update_cancel_button"
+            android:visibility="visible" />
+
+    </LinearLayout>
 
     <!-- Invisible warning for debug builds -->
     <com.google.android.material.textview.MaterialTextView
@@ -97,25 +98,25 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-      <com.google.android.material.textview.MaterialTextView
-          android:id="@+id/changelog_title"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginHorizontal="16dp"
-          android:layout_marginTop="16dp"
-          android:text="@string/changelog"
-          android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall" />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/changelog_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/changelog"
+            android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall" />
 
-      <com.google.android.material.textview.MaterialTextView
-          android:id="@+id/update_changelog"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginHorizontal="16dp"
-          android:layout_marginTop="16dp"
-          android:scrollbars="vertical"
-          android:text="@string/changelog_none"
-          android:textAppearance="?attr/textAppearanceBody2" />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/update_changelog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:scrollbars="vertical"
+            android:text="@string/changelog_none"
+            android:textAppearance="?attr/textAppearanceBody2" />
 
     </LinearLayout>
 
-  </LinearLayout>
+</LinearLayout>

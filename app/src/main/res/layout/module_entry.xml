@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_marginHorizontal="8dp"
-              android:layout_marginVertical="3dp"
-              android:filterTouchesWhenObscured="true"
-              android:gravity="center_vertical"
-              android:orientation="vertical"
-              tools:ignore="RtlHardcoded,RtlSymmetry">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginVertical="3dp"
+    android:filterTouchesWhenObscured="true"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    tools:ignore="RtlHardcoded,RtlSymmetry">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_view"
+        style="?attr/materialCardViewElevatedStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="?attr/materialCardViewElevatedStyle">
+        android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -23,44 +23,43 @@
             android:orientation="vertical">
 
             <LinearLayout
-                app:layout_constraintTop_toTopOf="parent"
                 android:id="@+id/main_card_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="6dp">
+                android:padding="6dp"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <!-- Module components -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/invalid_module_props"
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
+                        android:layout_marginEnd="4dp"
                         android:text="@string/low_quality_module"
                         android:textSize="12sp"
-                        android:layout_marginEnd="4dp"
                         android:visibility="gone"
-                        app:chipStartPadding="4dp"
                         app:chipEndPadding="2dp"
+                        app:chipIcon="@drawable/ic_baseline_error_24"
                         app:chipIconSize="15dp"
-                        app:chipIcon="@drawable/ic_baseline_error_24" />
+                        app:chipStartPadding="4dp" />
 
                     <TextView
                         android:id="@+id/title_text"
-                        android:paddingStart="2dp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:maxLines="2"
+                        android:paddingStart="2dp"
                         android:text="@string/loading"
-                        android:textSize="16sp"
                         android:textAppearance="?attr/textAppearanceTitleMedium"
-                        />
+                        android:textSize="16sp" />
 
                     <com.google.android.material.materialswitch.MaterialSwitch
                         android:id="@+id/switch_action"
@@ -82,61 +81,60 @@
 
                 <TextView
                     android:id="@+id/credit_text"
-                    android:paddingStart="2dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingStart="2dp"
                     android:text="@string/loading"
-                    android:textSize="12sp"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:textColor="?android:attr/textColorSecondary"
-                    />
+                    android:textSize="12sp" />
+
                 <TextView
                     android:id="@+id/description_text"
-                    android:paddingStart="2dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
+                    android:paddingStart="2dp"
                     android:text="@string/loading"
-                    android:textSize="16sp"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:textColor="?android:attr/textColorSecondary"
-                    />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/updated_text"
-                    android:paddingStart="2dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginTop="8dp"
+                    android:paddingStart="2dp"
                     android:text="@string/loading"
                     android:textSize="12sp" />
 
             </LinearLayout>
 
             <TextView
-                app:layout_constraintTop_toBottomOf="@id/main_card_text"
-                android:visibility="gone"
+                android:id="@+id/module_layout_helper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/module_layout_helper"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/main_card_text">
 
             </TextView>
             <!-- Buttons -->
             <HorizontalScrollView
-                app:layout_constraintBottom_toBottomOf="@id/module_layout_helper"
-                android:visibility="gone"
                 android:id="@+id/module_options_holder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="none">
+                android:scrollbars="none"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/module_layout_helper">
 
                 <com.google.android.material.chip.ChipGroup
-                    android:animateLayoutChanges="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
+                    android:animateLayoutChanges="true"
                     android:paddingHorizontal="4dp"
                     app:singleLine="true">
 

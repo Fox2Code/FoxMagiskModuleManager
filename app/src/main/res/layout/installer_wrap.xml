@@ -10,6 +10,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/install_terminal"
+        android:fontFamily="@font/jetbrainsmono"
         android:background="@null"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -29,6 +29,8 @@
         <item name="colorBackgroundFloating">@color/light_colorBackgroundFloating</item>
         <item name="backgroundColor">@color/light_backgroundColor</item>
         <item name="chipStyle">@style/Widget.Material3.Chip.Choice.Light</item>
+        <!-- fonts -->
+        <item name="android:fontFamily">@font/inter</item>
     </style>
 
     <style name="Widget.Material3.Chip.Choice.Light" parent="Widget.Material3.Chip.Assist">
@@ -55,6 +57,8 @@
         <!-- Action bar -->
         <item name="actionBarStyle">@style/Widget.Material3.ActionBar.Solid</item>
         <item name="chipStyle">@style/Widget.Material3.Chip.Choice.Light</item>
+        <!-- fonts -->
+        <item name="android:fontFamily">@font/inter</item>
     </style>
     <style name="Theme.MagiskModuleManager.Dark" parent="Theme.Material3.Dark">
         <item name="android:isLightTheme"
@@ -85,7 +89,8 @@
         <item name="dialogCornerRadius">@dimen/card_corner_radius</item>
         <item name="colorBackgroundFloating">@color/dark_colorBackgroundFloating</item>
         <item name="backgroundColor">@color/dark_backgroundColor</item>
-        <item name="chipStyle">@style/Widget.Material.Chip.Choice.Dark</item>
+        <!-- fonts -->
+        <item name="android:fontFamily">@font/inter</item>
     </style>
 
     <!-- Black theme, which is just a dark theme with a black background -->

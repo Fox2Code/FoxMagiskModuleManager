@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent">
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/crash_scroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
         <!-- layout with crash_text header and crash_details body -->
 
         <!-- first, crash icon -->
@@ -37,21 +45,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <HorizontalScrollView android:layout_width="match_parent" android:layout_height="wrap_content">
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/crash_details"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="24dp"
-                android:fontFamily="monospace"
-                android:gravity="start"
-                android:minHeight="48dp"
-                android:padding="12dp"
-                android:scrollbars="vertical|horizontal"
-                android:scrollHorizontally="true"
-                android:text="@string/crash_details"
-                android:textIsSelectable="false"
-                android:textSize="16sp" />
+            <HorizontalScrollView
+                android:id="@+id/crash_details_scroll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/crash_details"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:fontFamily="monospace"
+                    android:gravity="start"
+                    android:minHeight="48dp"
+                    android:padding="12dp"
+                    android:scrollbars="vertical|horizontal"
+                    android:scrollHorizontally="true"
+                    android:text="@string/crash_details"
+                    android:textIsSelectable="false"
+                    android:textSize="16sp" />
             </HorizontalScrollView>
 
             <com.google.android.material.button.MaterialButton
@@ -72,7 +84,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-        <!-- feedback form header -->
+            <!-- feedback form header -->
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/feedback_text"
                 android:layout_width="match_parent"
@@ -82,76 +94,85 @@
                 android:text="@string/please_feedback"
                 android:textSize="18sp" />
 
-        <LinearLayout
-            android:id="@+id/feedback"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <!-- feedback form name -->
-            <EditText
-                android:id="@+id/feedback_name"
-                android:layout_width="320dp"
-                android:layout_height="48dp"
-                android:layout_margin="10dp"
-                android:hint="@string/feedback_name"
-                android:inputType="text" />
-
-            <!-- feedback form email -->
-            <EditText
-                android:id="@+id/feedback_email"
-                android:layout_width="320dp"
-                android:layout_height="48dp"
-                android:layout_margin="10dp"
-                android:hint="@string/feedback_email"
-                android:inputType="textEmailAddress" />
-
-            <!-- feedback form message -->
-            <EditText
-                android:id="@+id/feedback_message"
-                android:layout_width="320dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:hint="@string/feedback_message"
-                android:inputType="textMultiLine" />
-
-            <!-- button group for submit feedback & restart / restart only -->
             <LinearLayout
+                android:id="@+id/feedback"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <!-- submit feedback button -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/feedback_submit"
-                    android:layout_width="wrap_content"
+                <!-- feedback form name -->
+                <EditText
+                    android:id="@+id/feedback_name"
+                    android:layout_width="320dp"
+                    android:layout_height="48dp"
+                    android:layout_margin="10dp"
+                    android:hint="@string/feedback_name"
+                    android:inputType="text" />
+
+                <!-- feedback form email -->
+                <EditText
+                    android:id="@+id/feedback_email"
+                    android:layout_width="320dp"
+                    android:layout_height="48dp"
+                    android:layout_margin="10dp"
+                    android:hint="@string/feedback_email"
+                    android:inputType="textEmailAddress" />
+
+                <!-- feedback form message -->
+                <EditText
+                    android:id="@+id/feedback_message"
+                    android:layout_width="320dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:text="@string/feedback_submit" />
+                    android:hint="@string/feedback_message"
+                    android:inputType="textMultiLine" />
 
-                <!-- restart button -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/restart"
-                    android:layout_width="wrap_content"
+                <!-- button group for submit feedback & restart / restart only -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="@string/restart" />
+                    android:orientation="horizontal">
 
+                    <!-- submit feedback button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/feedback_submit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="@string/feedback_submit" />
+
+                    <!-- restart button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/restart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="@string/restart" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:gravity="fill"
+                        android:text="@string/reset_warning"
+                        android:textSize="16sp" />
+
+                    <!-- reset app button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/reset"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="@string/reset_app" />
+                </LinearLayout>
             </LinearLayout>
-
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-
-                <com.google.android.material.textview.MaterialTextView android:layout_width="match_parent" android:layout_height="match_parent" android:layout_margin="10dp" android:gravity="fill" android:text="@string/reset_warning" android:textSize="16sp" />
-
-                <!-- reset app button -->
-                <com.google.android.material.button.MaterialButton
-                android:id="@+id/reset"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="@string/reset_app" />
-            </LinearLayout>
-        </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

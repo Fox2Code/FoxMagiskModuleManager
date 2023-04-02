@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_container"
     android:layout_width="match_parent"
-    android:paddingVertical="0dp"
     android:layout_height="match_parent"
+    android:paddingVertical="0dp"
     app:fitsSystemWindowsInsets="start|end|bottom|top"
     tools:context=".MainActivity">
 
@@ -22,7 +22,7 @@
             android:id="@+id/blur_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="84dp" >
+            android:paddingBottom="84dp">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/module_list"
@@ -90,10 +90,10 @@
                 android:layout_height="24dp"
                 android:background="@null"
                 android:visibility="gone"
+                app:iconifiedByDefault="true"
                 app:layout_constraintBottom_toBottomOf="@id/bottom_navigation"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:iconifiedByDefault="true"
                 app:useDrawerArrowDrawable="true" />
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
@@ -103,8 +103,8 @@
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible"
         android:paddingBottom="0dp"
+        android:visibility="visible"
         app:compatShadowEnabled="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -21,6 +21,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/install_terminal"
             android:background="@null"
+            android:fontFamily="@font/jetbrainsmono"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textSize="16sp" />

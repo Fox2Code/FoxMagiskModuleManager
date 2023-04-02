@@ -12,6 +12,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.CookieManager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -33,9 +34,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -356,14 +355,8 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
     }
 
     public void createFiles() {
-        // create cookie prefs
-        SharedPreferences cookiePrefs = MainApplication.getPreferences("cookies");
-        // add is_foxmmm cookie to the universal cookie stringset
-        Set<String> universalCookies = cookiePrefs.getStringSet("universal", new HashSet<>());
-        // silence the warning by copying the set to a new set
-        Set<String> universalCookies2 = new HashSet<>(universalCookies);
-        universalCookies2.add("is_foxmmm=true");
-        cookiePrefs.edit().putStringSet("universal", universalCookies2).apply();
+        // use cookiemanager to create the cookie database
+        CookieManager.getInstance();
         // we literally only use these to create the http cache folders
         try {
             FileUtils.forceMkdir(new File(MainApplication.getINSTANCE().getDataDir() + "/cache/cronet"));
