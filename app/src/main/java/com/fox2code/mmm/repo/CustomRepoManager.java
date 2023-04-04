@@ -4,10 +4,14 @@ import android.content.SharedPreferences;
 
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.utils.io.PropUtils;
+import com.fox2code.mmm.utils.io.net.Http;
 import com.fox2code.mmm.utils.realm.ReposList;
+
+import org.json.JSONObject;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import timber.log.Timber;
 
 public class CustomRepoManager {
     public static final int MAX_CUSTOM_REPOS = 5;
@@ -82,6 +86,59 @@ public class CustomRepoManager {
         int i = 0;
         while (customRepos[i] != null) i++;
         customRepos[i] = repo;
+        // fetch that sweet sweet json
+        byte[] json;
+        try {
+            json = Http.doHttpGet(repo, false);
+        } catch (Exception e) {
+            Timber.e(e, "Failed to fetch json from repo");
+            return null;
+        }
+        // get website, support, donate, submitModule. all optional. name is required.
+        // parse json
+        JSONObject jsonObject;
+        try {
+            jsonObject = new JSONObject(new String(json));
+        } catch (Exception e) {
+            Timber.e(e, "Failed to parse json from repo");
+            return null;
+        }
+        // get name
+        String name;
+        try {
+            name = jsonObject.getString("name");
+        } catch (Exception e) {
+            Timber.e(e, "Failed to get name from json");
+            return null;
+        }
+        // get website
+        String website;
+        try {
+            website = jsonObject.getString("website");
+        } catch (Exception e) {
+            website = null;
+        }
+        // get support
+        String support;
+        try {
+            support = jsonObject.getString("support");
+        } catch (Exception e) {
+            support = null;
+        }
+        // get donate
+        String donate;
+        try {
+            donate = jsonObject.getString("donate");
+        } catch (Exception e) {
+            donate = null;
+        }
+        // get submitModule
+        String submitModule;
+        try {
+            submitModule = jsonObject.getString("submitModule");
+        } catch (Exception e) {
+            submitModule = null;
+        }
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
         Realm realm = Realm.getInstance(realmConfiguration);
         if (realm.isInTransaction()) {
@@ -94,6 +151,12 @@ public class CustomRepoManager {
             reposList = realm.createObject(ReposList.class, "repo_" + i);
         }
         reposList.setUrl(repo);
+        reposList.setName(name);
+        reposList.setWebsite(website);
+        reposList.setSupport(support);
+        reposList.setDonate(donate);
+        reposList.setSubmitModule(submitModule);
+        reposList.setEnabled(true);
         realm.commitTransaction();
         customReposCount++;
         this.dirty = true;

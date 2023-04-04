@@ -69,7 +69,6 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             case "transparent_light" ->
                     setTheme(R.style.Theme_MagiskModuleManager_Transparent_Light);
         }
-
         ActivitySetupBinding binding = ActivitySetupBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         View view = binding.getRoot();
@@ -159,6 +158,12 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         // Set up the buttons
         // Setup button
         BottomNavigationItemView setupButton = view.findViewById(R.id.setup_finish);
+        // enable finish button when user scrolls to the bottom
+        findViewById(R.id.setupNestedScrollView).setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (scrollY > oldScrollY) {
+                setupButton.setEnabled(true);
+            }
+        });
         setupButton.setOnClickListener(v -> {
             Timber.i("Setup button clicked");
             // get instance of editor
@@ -224,6 +229,8 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         });
         // Cancel button
         BottomNavigationItemView cancelButton = view.findViewById(R.id.cancel_setup);
+        // unselect the cancel button because it's selected by default
+        cancelButton.setSelected(false);
         cancelButton.setOnClickListener(v -> {
             Timber.i("Cancel button clicked");
             // close the app

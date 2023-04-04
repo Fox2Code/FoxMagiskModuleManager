@@ -357,8 +357,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
 
     private void cardIconifyUpdate() {
         boolean iconified = this.searchView.isIconified();
-        int backgroundAttr = iconified ? MainApplication.isMonetEnabled() ? R.attr.colorSecondaryContainer : // Monet is special...
-                R.attr.colorSecondary : R.attr.colorPrimarySurface;
+        int backgroundAttr = iconified ? MainApplication.isMonetEnabled() ? com.google.android.material.R.attr.colorSecondaryContainer : // Monet is special...
+                com.google.android.material.R.attr.colorSecondary : com.google.android.material.R.attr.colorPrimarySurface;
         Resources.Theme theme = this.searchCard.getContext().getTheme();
         TypedValue value = new TypedValue();
         theme.resolveAttribute(backgroundAttr, value, true);

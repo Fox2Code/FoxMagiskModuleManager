@@ -465,7 +465,7 @@ public class AndroidacyWebAPI {
     public int getAccentColor() {
         Resources.Theme theme = this.activity.getTheme();
         TypedValue typedValue = new TypedValue();
-        theme.resolveAttribute(R.attr.colorPrimary, typedValue, true);
+        theme.resolveAttribute(androidx.appcompat.R.attr.colorPrimary, typedValue, true);
         if (typedValue.type >= TypedValue.TYPE_FIRST_COLOR_INT && typedValue.type <= TypedValue.TYPE_LAST_COLOR_INT) {
             return typedValue.data;
         }
@@ -488,7 +488,7 @@ public class AndroidacyWebAPI {
     public int getBackgroundColor() {
         Resources.Theme theme = this.activity.getTheme();
         TypedValue typedValue = new TypedValue();
-        theme.resolveAttribute(R.attr.backgroundColor, typedValue, true);
+        theme.resolveAttribute(com.google.android.material.R.attr.backgroundColor, typedValue, true);
         if (typedValue.type >= TypedValue.TYPE_FIRST_COLOR_INT && typedValue.type <= TypedValue.TYPE_LAST_COLOR_INT) {
             return typedValue.data;
         }

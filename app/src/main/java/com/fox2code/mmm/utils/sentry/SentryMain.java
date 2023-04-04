@@ -16,6 +16,7 @@ import io.sentry.Sentry;
 import io.sentry.android.core.SentryAndroid;
 import io.sentry.android.fragment.FragmentLifecycleIntegration;
 import io.sentry.android.timber.SentryTimberIntegration;
+import timber.log.Timber;
 
 public class SentryMain {
     public static final boolean IS_SENTRY_INSTALLED = true;
@@ -27,16 +28,12 @@ public class SentryMain {
      */
     @SuppressLint({"RestrictedApi", "UnspecifiedImmutableFlag"})
     public static void initialize(final MainApplication mainApplication) {
-        // If first_launch pref is not false, refuse to initialize Sentry
-        SharedPreferences sharedPreferences = MainApplication.getPreferences("sentry");
-        if (!Objects.equals(sharedPreferences.getString("last_shown_setup", null), "v1")) {
-            return;
-        }
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
             SharedPreferences.Editor editor = MainApplication.getINSTANCE().getSharedPreferences("sentry", Context.MODE_PRIVATE).edit();
             editor.putString("lastExitReason", "crash");
             editor.putLong("lastExitTime", System.currentTimeMillis());
             editor.apply();
+            Timber.e(throwable, "Uncaught exception");
             // open crash handler and exit
             Intent intent = new Intent(mainApplication, CrashHandler.class);
             // pass the entire exception to the crash handler
@@ -47,10 +44,17 @@ public class SentryMain {
             intent.putExtra("lastEventId", String.valueOf(Sentry.getLastEventId()));
             intent.putExtra("crashReportingEnabled", isSentryEnabled());
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            Timber.e("Starting crash handler");
             mainApplication.startActivity(intent);
+            Timber.e("Exiting");
             android.os.Process.killProcess(android.os.Process.myPid());
             System.exit(10);
         });
+        // If first_launch pref is not false, refuse to initialize Sentry
+        SharedPreferences sharedPreferences = MainApplication.getPreferences("sentry");
+        if (!Objects.equals(MainApplication.getPreferences("mmm").getString("last_shown_setup", null), "v1")) {
+            return;
+        }
         SentryAndroid.init(mainApplication, options -> {
             // If crash reporting is disabled, stop here.
             if (!MainApplication.isCrashReportingEnabled()) {

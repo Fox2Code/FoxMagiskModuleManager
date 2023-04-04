@@ -35,13 +35,13 @@ import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class RepoData extends XRepo {
+    public final JSONObject supportedProperties = new JSONObject();
+    private final Object populateLock = new Object();
     public String url;
     public String id;
     public File cacheRoot;
     public SharedPreferences cachedPreferences;
     public HashMap<String, RepoModule> moduleHashMap;
-    public final JSONObject supportedProperties = new JSONObject();
-    private final Object populateLock = new Object();
     public JSONObject metaDataCache;
     public long lastUpdate;
     public String name, website, support, donate, submitModule;
@@ -108,12 +108,10 @@ public class RepoData extends XRepo {
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
         Realm realm = Realm.getInstance(realmConfiguration);
         ReposList reposList = realm.where(ReposList.class).equalTo("id", this.id).findFirst();
-        if (BuildConfig.DEBUG) {
-            if (reposList == null) {
-                Timber.d("RepoData for %s not found in database", this.id);
-            } else {
-                Timber.d("RepoData for %s found in database", this.id);
-            }
+        if (reposList == null) {
+            Timber.d("RepoData for %s not found in database", this.id);
+        } else {
+            Timber.d("RepoData for %s found in database", this.id);
         }
         Timber.d("RepoData: " + this.id + ". record in database: " + (reposList != null ? reposList.toString() : "none"));
         this.enabled = (!this.forceHide && reposList != null && reposList.isEnabled());
@@ -208,7 +206,7 @@ public class RepoData extends XRepo {
                 repoModule.propUrl = modulePropsUrl;
                 repoModule.zipUrl = moduleZipUrl;
                 repoModule.checksum = moduleChecksum;
-                // safety check must be overriden per repo. only androidacy repo has this flag currently
+                // safety check must be overridden per repo. only androidacy repo has this flag currently
                 // repoModule.safe = module.optBoolean("safe", false);
                 if (!moduleStars.isEmpty()) {
                     try {
@@ -315,13 +313,11 @@ public class RepoData extends XRepo {
         // reposlist realm
         RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
         Realm realm2 = Realm.getInstance(realmConfiguration2);
-        boolean dbEnabled;
+        boolean dbEnabled = false;
         try {
             dbEnabled = Objects.requireNonNull(realm2.where(ReposList.class).equalTo("id", this.id).findFirst()).isEnabled();
         } catch (Exception e) {
             Timber.e(e, "Error while updating enabled state for repo %s", this.id);
-            // for now, throw an exception
-            throw e;
         }
         this.enabled = (!this.forceHide) && dbEnabled;
     }
@@ -390,6 +386,7 @@ public class RepoData extends XRepo {
                 return diffMinutes > (BuildConfig.DEBUG ? 15 : 20);
             } else {
                 Timber.d("Repo " + this.id + " should update could not find repo in database");
+                Timber.d("This is probably an error, please report this to the developer");
                 return true;
             }
         }

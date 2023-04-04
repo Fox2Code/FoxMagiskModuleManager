@@ -29,14 +29,14 @@ interface NotificationTypeCst {
 }
 
 public enum NotificationType implements NotificationTypeCst {
-    DEBUG(R.string.debug_build, R.drawable.ic_baseline_bug_report_24, R.attr.colorSecondary, R.attr.colorOnSecondary) {
+    DEBUG(R.string.debug_build, R.drawable.ic_baseline_bug_report_24, com.google.android.material.R.attr.colorSecondary, com.google.android.material.R.attr.colorOnSecondary) {
         @Override
         public boolean shouldRemove() {
             return !BuildConfig.DEBUG;
         }
     },
     SHOWCASE_MODE(R.string.showcase_mode, R.drawable.ic_baseline_lock_24,
-            R.attr.colorPrimary, R.attr.colorOnPrimary) {
+            androidx.appcompat.R.attr.colorPrimary, com.google.android.material.R.attr.colorOnPrimary) {
         @Override
         public boolean shouldRemove() {
             return !MainApplication.isShowcaseMode();
@@ -98,7 +98,7 @@ public enum NotificationType implements NotificationTypeCst {
         }
     },
     UPDATE_AVAILABLE(R.string.app_update_available, R.drawable.ic_baseline_system_update_24,
-            R.attr.colorPrimary, R.attr.colorOnPrimary, v -> IntentHelper.openUrl(v.getContext(),
+            androidx.appcompat.R.attr.colorPrimary, com.google.android.material.R.attr.colorOnPrimary, v -> IntentHelper.openUrl(v.getContext(),
                     "https://github.com/Fox2Code/FoxMagiskModuleManager/releases"), false) {
         @Override
         public boolean shouldRemove() {
@@ -106,7 +106,7 @@ public enum NotificationType implements NotificationTypeCst {
         }
     },
     INSTALL_FROM_STORAGE(R.string.install_from_storage, R.drawable.ic_baseline_storage_24,
-            R.attr.colorBackgroundFloating, R.attr.colorOnBackground, v -> {
+            androidx.appcompat.R.attr.colorBackgroundFloating, com.google.android.material.R.attr.colorOnBackground, v -> {
         FoxActivity compatActivity = FoxActivity.getFoxActivity(v);
         final File module = new File(compatActivity.getCacheDir(),
                 "installer" + File.separator + "module.zip");
@@ -197,11 +197,11 @@ public enum NotificationType implements NotificationTypeCst {
     public final boolean special;
 
     NotificationType(@StringRes int textId, int iconId) {
-        this(textId, iconId, R.attr.colorError, R.attr.colorOnPrimary);
+        this(textId, iconId, androidx.appcompat.R.attr.colorError, com.google.android.material.R.attr.colorOnPrimary);
     }
 
     NotificationType(@StringRes int textId, int iconId, View.OnClickListener onClickListener) {
-        this(textId, iconId, R.attr.colorError, R.attr.colorOnPrimary, onClickListener);
+        this(textId, iconId, androidx.appcompat.R.attr.colorError, com.google.android.material.R.attr.colorOnPrimary, onClickListener);
     }
 
     NotificationType(@StringRes int textId, int iconId, int backgroundAttr, int foregroundAttr) {

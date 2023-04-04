@@ -315,8 +315,8 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 if (drawable == null) {
                     this.cardView.setBackground(this.background);
                 }
-                int backgroundAttr = R.attr.colorBackgroundFloating;
-                int foregroundAttr = R.attr.colorOnBackground;
+                int backgroundAttr = androidx.appcompat.R.attr.colorBackgroundFloating;
+                int foregroundAttr = com.google.android.material.R.attr.colorOnBackground;
                 if (type == ModuleHolder.Type.NOTIFICATION) {
                     foregroundAttr = moduleHolder.notificationType.foregroundAttr;
                     backgroundAttr = moduleHolder.notificationType.backgroundAttr;
@@ -352,7 +352,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
             } else {
                 Resources.Theme theme = this.titleText.getContext().getTheme();
                 TypedValue value = new TypedValue();
-                theme.resolveAttribute(R.attr.colorOnBackground, value, true);
+                theme.resolveAttribute(com.google.android.material.R.attr.colorOnBackground, value, true);
                 this.buttonAction.setColorFilter(value.data);
                 this.titleText.setTextColor(value.data);
                 this.cardView.setBackground(null);

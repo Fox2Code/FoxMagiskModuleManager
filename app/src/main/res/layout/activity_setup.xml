@@ -43,6 +43,15 @@
                 android:text="@string/setup_message"
                 android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
 
+            <!-- inform user that to finish setup, they need to scroll down -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/setup_scroll_down"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:text="@string/setup_scroll_down"
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
+
             <!-- Theme radio select. Options are system, light, dark, black, transparent_light -->
 
             <!-- Button to trigger theme selection, half width, and in container with language -->
