@@ -295,7 +295,7 @@
     <string name="notification_update_ignore_desc">Список модулів, які потрібно виключити з перевірки оновлень</string>
     <string name="title_activity_update">Внутрішній апдейтор</string>
     <string name="update_title">Оновити додаток</string>
-    <string name="update_button">Будь ласка, зачекайте...</string>
+    <string name="update_button">Будь ласка, зачекайте…</string>
     <string name="invalid_characters_message">Введений вами список модулів недійсний. Будь ласка, вводьте лише дійсні ідентифікатори модулів, розділені комами</string>
     <string name="background_update_check_excludes">Модулі, які потрібно виключити з автоматичних перевірок оновлень</string>
     <string name="update_message">Будь ласка, зачекайте поки ми перевіримо та встановимо оновлення для FoxMMM. Це може зайняти декілька хвилин</string>
@@ -322,7 +322,7 @@
     <string name="add_repo_message">Репозиторії повинні обслуговуватися за допомогою HTTPS і відповідати специфікаціям, викладеним у <a href="https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/docs/DEVELOPERS.md#custom-repo-format">документації</a>.</string>
     <string name="notification_update_summary">Наступні модулі можуть бути оновлені:</string>
     <string name="notification_update_module_template">%1$s до версії %2$s</string>
-    <string name="notification_channel_background_update">Перевірка оновлень...</string>
+    <string name="notification_channel_background_update">Перевірка оновлень…</string>
     <string name="notification_channel_category_background_update">Статус фонового оновлення</string>
     <string name="notification_update_wifi_desc">Перевіряти тільки по Wi-Fi</string>
     <string name="notification_update_wifi_pref">Вимагати Wi-Fi або безлімітну мережу для перевірки оновлень. Рекомендовано залишити увімкненим, якщо у вас обмежено мобільні дані.</string>
@@ -347,4 +347,21 @@
     <string name="search">Пошук</string>
     <string name="yer_a_wizard_harry">Ти чарівник, Гаррі!</string>
     <string name="no_browser">У вас не відсутній браузер. Щоб продовжити, встановіть його.</string>
+    <string name="crash_reporting_headline">Звіт про збої</string>
+    <string name="setup_update_check_headline">Перевірка оновлень</string>
+    <string name="setup_background_update_check_require_wifi">Вимагати Wi-Fi для перевірки оновлень</string>
+    <string name="setup_app_analytics">Дозволити аналітику</string>
+    <string name="clear_app_cache">Очистити кеш додатку</string>
+    <string name="cache_cleared">Кеш успішно очищено</string>
+    <string name="cache_clear_failed">Помилка очищення кешу</string>
+    <string name="clear_cache_dialogue_title">Очистити кеш додатку\?</string>
+    <string name="pref_category_privacy">Конфіденційність</string>
+    <string name="crash_reporting_pii">Надішліть додаткову інформацію</string>
+    <string name="setup_crash_reporting_pii">Надсилайте додаткову інформацію у звітах про збої.</string>
+    <string name="setup_crash_reporting_pii_summary">Це може включати ідентифікатори пристроїв та IP-адреси. Жодні дані не використовуватимуться для інших цілей, окрім аналізу збоїв і підвищення продуктивності.</string>
+    <string name="setup_background_update_check_require_wifi_summary">Для перевірки оновлень потрібен Wi-Fi або інше безлімітне з’єднання</string>
+    <string name="clear_app_cache_desc">Зазвичай це не потрібно, але може допомогти вирішити деякі проблеми.</string>
+    <string name="clear_cache_dialogue_message">Це очистить кеш додатку. Ваші налаштування буде збережено, але програмі може знадобитися більше часу для виконання деяких операцій.</string>
+    <string name="certificate_error">Не вдалося перевірити сертифікат сервера. Будь ласка, переконайтеся, що ніщо не перехоплює з’єднання HTTPs для FoxMMM.</string>
+    <string name="crash_reporting_pii_desc">Дозволяє надсилати додаткову інформацію у звітах про збої, деяка може містити особисту інформацію, наприклад IP-адресу та ідентифікатори пристрою.</string>
 </resources>
