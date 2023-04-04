@@ -1,14 +1,18 @@
 package com.fox2code.mmm.utils.io.net;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.system.ErrnoException;
 import android.system.Os;
 import android.webkit.CookieManager;
 import android.webkit.WebSettings;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,9 +20,11 @@ import androidx.annotation.Nullable;
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.R;
 import com.fox2code.mmm.androidacy.AndroidacyUtil;
 import com.fox2code.mmm.installer.InstallerInitializer;
 import com.fox2code.mmm.utils.io.Files;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.net.cronet.okhttptransport.CronetInterceptor;
 
 import org.chromium.net.CronetEngine;
@@ -40,6 +46,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.SSLException;
 
 import io.sentry.android.okhttp.SentryOkHttpInterceptor;
 import okhttp3.Cache;
@@ -93,6 +101,9 @@ public enum Http {
                 Exception t) {
             cookieManager = null;
             Timber.e(t, "No WebView support!");
+            // show a toast
+            Context context = mainApplication.getApplicationContext();
+            MainActivity.getFoxActivity(context).runOnUiThread(() -> Toast.makeText(mainApplication, R.string.error_creating_cookie_database, Toast.LENGTH_LONG).show());
         }
         hasWebView = cookieManager != null;
         OkHttpClient.Builder httpclientBuilder = new OkHttpClient.Builder();
@@ -424,6 +435,37 @@ public enum Http {
                 Timber.e("Failed to create webview cache dir");
             }
         }
+    }
+
+    public static boolean hasConnectivity() {
+        // Check if we have internet connection
+        // Attempt to contact connectivitycheck.gstatic.com/generate_204
+        // If we can't, we don't have internet connection
+        Timber.d("Checking internet connection...");
+        // this url is actually hosted by Cloudflare and is not dependent on Androidacy servers being up
+        byte[] resp;
+        try {
+            resp = Http.doHttpGet("https://production-api.androidacy.com/cdn-cgi/trace", false);
+        } catch (Exception e) {
+            Timber.e(e, "Failed to check internet connection. Assuming no internet connection.");
+            // check if it's a security or ssl exception
+            if (e instanceof SSLException || e instanceof SecurityException) {
+                // if it is, user installed a certificate that blocks the connection
+                // show a snackbar to inform the user
+                Activity context = MainApplication.getINSTANCE().getLastCompatActivity();
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    if (context != null) {
+                        Snackbar.make(context.findViewById(android.R.id.content), R.string.certificate_error, Snackbar.LENGTH_LONG).show();
+                    }
+                });
+            }
+            return false;
+        }
+        // get the response body
+        String response = new String(resp, StandardCharsets.UTF_8);
+        // check if the response body contains "visit_scheme=https" and "http/<some number>"
+        // if it does, we have internet connection
+        return response.contains("visit_scheme=https") && response.contains("http/");
     }
 
     public interface ProgressListener {

@@ -27,7 +27,6 @@ import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.XHooks;
-import com.fox2code.mmm.androidacy.AndroidacyUtil;
 import com.fox2code.mmm.module.ActionButtonType;
 import com.fox2code.mmm.utils.FastException;
 import com.fox2code.mmm.utils.IntentHelper;
@@ -45,17 +44,18 @@ import com.topjohnwu.superuser.Shell;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 import com.topjohnwu.superuser.io.SuFile;
 
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipFile;
+
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
 import timber.log.Timber;
 
@@ -131,12 +131,10 @@ public class InstallerActivity extends FoxActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setTitle(name);
         this.textWrap = MainApplication.isTextWrapEnabled();
-        setContentView(this.textWrap ?
-                R.layout.installer_wrap : R.layout.installer);
+        setContentView(this.textWrap ? R.layout.installer_wrap : R.layout.installer);
         int background;
         int foreground;
-        if (MainApplication.getINSTANCE().isLightTheme() &&
-                !MainApplication.isForceDarkTerminal()) {
+        if (MainApplication.getINSTANCE().isLightTheme() && !MainApplication.isForceDarkTerminal()) {
             background = Color.WHITE;
             foreground = Color.BLACK;
         } else {
@@ -147,17 +145,12 @@ public class InstallerActivity extends FoxActivity {
         RecyclerView installTerminal;
         this.progressIndicator = findViewById(R.id.progress_bar);
         this.rebootFloatingButton = findViewById(R.id.install_terminal_reboot_fab);
-        this.installerTerminal = new InstallerTerminal(
-                installTerminal = findViewById(R.id.install_terminal),
-                this.isLightTheme(), foreground, mmtReborn);
-        (horizontalScroller != null ? horizontalScroller : installTerminal)
-                .setBackground(new ColorDrawable(background));
+        this.installerTerminal = new InstallerTerminal(installTerminal = findViewById(R.id.install_terminal), this.isLightTheme(), foreground, mmtReborn);
+        (horizontalScroller != null ? horizontalScroller : installTerminal).setBackground(new ColorDrawable(background));
         installTerminal.setItemAnimator(null);
         this.progressIndicator.setVisibility(View.GONE);
         this.progressIndicator.setIndeterminate(true);
-        this.getWindow().setFlags(
-                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
-                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         // acquire wakelock
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Fox:Installer");
@@ -168,20 +161,16 @@ public class InstallerActivity extends FoxActivity {
             // ensure module cache is is in our cache dir
             if (urlMode && !moduleCache.getAbsolutePath().startsWith(MainApplication.getINSTANCE().getCacheDir().getAbsolutePath()))
                 throw new SecurityException("Module cache is not in cache dir!");
-            File moduleCache = this.toDelete = urlMode ?
-                    new File(this.moduleCache, "module.zip") : new File(finalTarget);
-            if (urlMode && moduleCache.exists() && !moduleCache.delete() &&
-                    !new SuFile(moduleCache.getAbsolutePath()).delete())
+            File moduleCache = this.toDelete = urlMode ? new File(this.moduleCache, "module.zip") : new File(finalTarget);
+            if (urlMode && moduleCache.exists() && !moduleCache.delete() && !new SuFile(moduleCache.getAbsolutePath()).delete())
                 Timber.e("Failed to delete module cache");
             String errMessage = "Failed to download module zip";
             // Set this to the error message if it's a HTTP error
             byte[] rawModule;
-            boolean androidacyBlame = false;
             try {
                 Timber.i("%s%s", (urlMode ? "Downloading: " : "Loading: "), finalTarget);
                 rawModule = urlMode ? Http.doHttpGet(finalTarget, (progress, max, done) -> {
-                    if (max <= 0 && this.progressIndicator.isIndeterminate())
-                        return;
+                    if (max <= 0 && this.progressIndicator.isIndeterminate()) return;
                     this.runOnUiThread(() -> {
                         this.progressIndicator.setIndeterminate(false);
                         this.progressIndicator.setMax(max);
@@ -193,14 +182,12 @@ public class InstallerActivity extends FoxActivity {
                     this.progressIndicator.setIndeterminate(true);
                 });
                 if (this.canceled) return;
-                androidacyBlame = urlMode && AndroidacyUtil.isAndroidacyFileUrl(finalTarget);
                 if (checksum != null && !checksum.isEmpty()) {
                     //noinspection UnnecessaryCallToStringValueOf
                     Timber.i("Checking for checksum: %s", String.valueOf(checksum));
                     this.runOnUiThread(() -> this.installerTerminal.addLine("- Checking file integrity"));
                     if (!Hashes.checkSumMatch(rawModule, checksum)) {
-                        this.setInstallStateFinished(false,
-                                "! File integrity check failed", "");
+                        this.setInstallStateFinished(false, "! File integrity check failed", "");
                         return;
                     }
                 }
@@ -213,11 +200,22 @@ public class InstallerActivity extends FoxActivity {
                 boolean isAnyKernel3 = false;
                 boolean isInstallZipModule = false;
                 errMessage = "File is not a valid zip file";
-                try (ZipInputStream zipInputStream = new ZipInputStream(
-                        new ByteArrayInputStream(rawModule))) {
-                    ZipEntry zipEntry;
-                    while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+                // use apache commons to unzip the zip file, with a try-with-resources to ensure it's closed
+                // write the zip file to a temporary file
+                File zipFileTemp = new File(this.getCacheDir(), "module.zip");
+                try (FileOutputStream fos = new FileOutputStream(zipFileTemp)) {
+                    fos.write(rawModule);
+                }
+                try (ZipFile zipFile = new ZipFile(zipFileTemp)) {
+                    // get the zip entries
+                    Enumeration<? extends ZipEntry> zipEntries = zipFile.getEntries();
+                    // iterate over the zip entries
+                    while (zipEntries.hasMoreElements()) {
+                        // get the next zip entry
+                        ZipEntry zipEntry = zipEntries.nextElement();
+                        // get the name of the zip entry
                         String entryName = zipEntry.getName();
+                        // check if the zip entry is a directory
                         if (entryName.equals("tools/ak3-core.sh")) {
                             noPatch = true;
                             isAnyKernel3 = true;
@@ -233,24 +231,21 @@ public class InstallerActivity extends FoxActivity {
                             break;
                         } else if (entryName.endsWith("/tools/ak3-core.sh")) {
                             isAnyKernel3 = true;
-                        } else if (entryName.endsWith(
-                                "/META-INF/com/google/android/magisk/module.prop")) {
+                        } else if (entryName.endsWith("/META-INF/com/google/android/update-binary")) {
                             isInstallZipModule = true;
                         } else if (entryName.endsWith("/module.prop")) {
                             isModule = true;
                         }
                     }
-                }
-                if (!isModule && !isAnyKernel3 && !isInstallZipModule) {
-                    if (androidacyBlame) {
-                        this.installerTerminal.addLine(
-                                "! Note: The following error is probably an Androidacy backend error");
-                    }
-                    this.setInstallStateFinished(false,
-                            "! File is not a valid Magisk module or AnyKernel3 zip", "");
+                } catch (IOException e) {
+                    Timber.e(e, "Failed to read zip file");
+                    this.setInstallStateFinished(false, errMessage, "");
                     return;
                 }
-                androidacyBlame = false;
+                if (!isModule && !isAnyKernel3 && !isInstallZipModule) {
+                    this.setInstallStateFinished(false, "! File is not a valid Magisk module or AnyKernel3 zip", "");
+                    return;
+                }
                 if (noPatch) {
                     if (urlMode) {
                         errMessage = "Failed to save module zip";
@@ -275,9 +270,6 @@ public class InstallerActivity extends FoxActivity {
                 this.doInstall(moduleCache, noExtensions, rootless);
             } catch (IOException e) {
                 Timber.e(e);
-                if (androidacyBlame) {
-                    errMessage += " (" + e.getLocalizedMessage() + ")";
-                }
                 this.setInstallStateFinished(false, errMessage, null);
             } catch (OutOfMemoryError e) {
                 //noinspection UnusedAssignment (Important to avoid OutOfMemoryError)
@@ -285,12 +277,12 @@ public class InstallerActivity extends FoxActivity {
                 if ("Failed to install module zip".equals(errMessage))
                     throw e; // Ignore if in installation state.
                 Timber.e(e);
-                this.setInstallStateFinished(false,
-                        "! Module is too large to be loaded on this device", "");
+                this.setInstallStateFinished(false, "! Module is too large to be loaded on this device", "");
             }
         }, "Module install Thread").start();
     }
 
+    @SuppressWarnings("SpellCheckingInspection")
     @Keep
     private void doInstall(File file, boolean noExtensions, boolean rootless) {
         if (this.canceled) return;
@@ -299,25 +291,21 @@ public class InstallerActivity extends FoxActivity {
             this.setDisplayHomeAsUpEnabled(false);
         });
         Timber.i("Installing: %s", moduleCache.getName());
-        InstallerController installerController = new InstallerController(
-                this.progressIndicator, this.installerTerminal,
-                file.getAbsoluteFile(), noExtensions);
+        InstallerController installerController = new InstallerController(this.progressIndicator, this.installerTerminal, file.getAbsoluteFile(), noExtensions);
         InstallerMonitor installerMonitor;
         Shell.Job installJob;
         if (rootless) { // rootless is only used for debugging
             File installScript = this.extractInstallScript("module_installer_test.sh");
             if (installScript == null) {
-                this.setInstallStateFinished(false,
-                        "! Failed to extract test install script", "");
+                this.setInstallStateFinished(false, "! Failed to extract test install script", "");
                 return;
             }
             this.installerTerminal.enableAnsi();
             // Extract customize.sh manually in rootless mode because unzip might not exists
             try (ZipFile zipFile = new ZipFile(file)) {
-                ZipEntry zipEntry = zipFile.getEntry("customize.sh");
+                ZipArchiveEntry zipEntry = zipFile.getEntry("customize.sh");
                 if (zipEntry != null) {
-                    try (FileOutputStream fileOutputStream = new FileOutputStream(
-                            new File(file.getParentFile(), "customize.sh"))) {
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(new File(file.getParentFile(), "customize.sh"))) {
                         Files.copy(zipFile.getInputStream(zipEntry), fileOutputStream);
                     }
                 }
@@ -325,16 +313,7 @@ public class InstallerActivity extends FoxActivity {
                 Timber.i(e);
             }
             installerMonitor = new InstallerMonitor(installScript);
-            installJob = Shell.cmd("export MMM_EXT_SUPPORT=1",
-                            "export MMM_USER_LANGUAGE=" + this.getResources()
-                                    .getConfiguration().getLocales().get(0).toLanguageTag(),
-                            "export MMM_APP_VERSION=" + BuildConfig.VERSION_NAME,
-                            "export MMM_TEXT_WRAP=" + (this.textWrap ? "1" : "0"),
-                            AnsiConstants.ANSI_CMD_SUPPORT,
-                            "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
-                            "sh \"" + installScript.getAbsolutePath() + "\"" +
-                                    " 3 0 \"" + file.getAbsolutePath() + "\"")
-                    .to(installerController, installerMonitor);
+            installJob = Shell.cmd("export MMM_EXT_SUPPORT=1", "export MMM_USER_LANGUAGE=" + this.getResources().getConfiguration().getLocales().get(0).toLanguageTag(), "export MMM_APP_VERSION=" + BuildConfig.VERSION_NAME, "export MMM_TEXT_WRAP=" + (this.textWrap ? "1" : "0"), AnsiConstants.ANSI_CMD_SUPPORT, "cd \"" + this.moduleCache.getAbsolutePath() + "\"", "sh \"" + installScript.getAbsolutePath() + "\"" + " 3 0 \"" + file.getAbsolutePath() + "\"").to(installerController, installerMonitor);
         } else {
             String arch32 = "true"; // Do nothing by default
             boolean needs32bit = false;
@@ -352,11 +331,9 @@ public class InstallerActivity extends FoxActivity {
             try (ZipFile zipFile = new ZipFile(file)) {
                 // Check if module is AnyKernel module
                 if (zipFile.getEntry("tools/ak3-core.sh") != null) {
-                    ZipEntry updateBinary = zipFile.getEntry(
-                            "META-INF/com/google/android/update-binary");
+                    ZipArchiveEntry updateBinary = zipFile.getEntry("META-INF/com/google/android/update-binary");
                     if (updateBinary != null) {
-                        BufferedReader bufferedReader = new BufferedReader(
-                                new InputStreamReader(zipFile.getInputStream(updateBinary)));
+                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(zipFile.getInputStream(updateBinary)));
                         String line;
                         while ((line = bufferedReader.readLine()) != null) {
                             if (line.contains("AnyKernel3")) {
@@ -368,43 +345,30 @@ public class InstallerActivity extends FoxActivity {
                     }
                 }
                 if ((zipFile.getEntry( // Check if module hard require 32bit support
-                        "common/addon/Volume-Key-Selector/tools/arm64/keycheck") == null &&
-                        zipFile.getEntry("common/addon/Volume-Key-Selector/install.sh") != null) ||
-                        (zipFile.getEntry("META-INF/zbin/keycheck_arm64") == null &&
-                                zipFile.getEntry("META-INF/zbin/keycheck_arm") != null)) {
+                        "common/addon/Volume-Key-Selector/tools/arm64/keycheck") == null && zipFile.getEntry("common/addon/Volume-Key-Selector/install.sh") != null) || (zipFile.getEntry("META-INF/zbin/keycheck_arm64") == null && zipFile.getEntry("META-INF/zbin/keycheck_arm") != null)) {
                     needs32bit = true;
                 }
-                ZipEntry moduleProp = zipFile.getEntry("module.prop");
+                ZipArchiveEntry moduleProp = zipFile.getEntry("module.prop");
                 magiskModule = moduleProp != null;
-                if (zipFile.getEntry("install.sh") == null &&
-                        zipFile.getEntry("customize.sh") == null &&
-                        zipFile.getEntry("setup.sh") != null && magiskModule) {
+                if (zipFile.getEntry("install.sh") == null && zipFile.getEntry("customize.sh") == null && zipFile.getEntry("setup.sh") != null && magiskModule) {
                     mmtReborn = true; // MMT-Reborn require a separate runtime
                 }
-                if (!magiskModule && (moduleProp = zipFile.getEntry(
-                        "META-INF/com/google/android/magisk/module.prop")) != null) {
+                if (!magiskModule && (moduleProp = zipFile.getEntry("META-INF/com/google/android/magisk/module.prop")) != null) {
                     installZipMagiskModule = true;
                 }
                 moduleId = PropUtils.readModuleId(zipFile.getInputStream(moduleProp));
             } catch (IOException ignored) {
             }
             int compatFlags = AppUpdateManager.getFlagsForModule(moduleId);
-            if ((compatFlags & AppUpdateManager.FLAG_COMPAT_NEED_32BIT) != 0)
-                needs32bit = true;
-            if ((compatFlags & AppUpdateManager.FLAG_COMPAT_NO_EXT) != 0)
-                noExtensions = true;
-            if (moduleId != null && (moduleId.isEmpty() ||
-                    moduleId.contains("/") || moduleId.contains("\0") ||
-                    (moduleId.startsWith(".") && moduleId.endsWith(".")))) {
-                this.setInstallStateFinished(false,
-                        "! This module contain a dangerous moduleId",
-                        null);
+            if ((compatFlags & AppUpdateManager.FLAG_COMPAT_NEED_32BIT) != 0) needs32bit = true;
+            if ((compatFlags & AppUpdateManager.FLAG_COMPAT_NO_EXT) != 0) noExtensions = true;
+            if (moduleId != null && (moduleId.isEmpty() || moduleId.contains("/") || moduleId.contains("\0") || (moduleId.startsWith(".") && moduleId.endsWith(".")))) {
+                this.setInstallStateFinished(false, "! This module contain a dangerous moduleId", null);
                 return;
             }
             if (magiskModule && moduleId == null && !anyKernel3) {
                 // Modules without module Ids are module installed by 3rd party software
-                this.setInstallStateFinished(false,
-                        "! Magisk modules require a moduleId", null);
+                this.setInstallStateFinished(false, "! Magisk modules require a moduleId", null);
                 return;
             }
             if (anyKernel3) {
@@ -425,47 +389,32 @@ public class InstallerActivity extends FoxActivity {
                 this.warnReboot = true; // We should probably re-flash magisk...
                 installExecutable = this.extractInstallScript("anykernel3_installer.sh");
                 if (installExecutable == null) {
-                    this.setInstallStateFinished(false,
-                            "! Failed to extract AnyKernel3 install script", "");
+                    this.setInstallStateFinished(false, "! Failed to extract AnyKernel3 install script", "");
                     return;
                 }
                 // "unshare -m" is needed to force mount namespace isolation.
                 // This allow AnyKernel to mess-up with mounts point without crashing the system!
-                installCommand = "unshare -m " + ASH + " \"" +
-                        installExecutable.getAbsolutePath() + "\"" +
-                        " 3 1 \"" + file.getAbsolutePath() + "\"";
-            } else if (installZipMagiskModule ||
-                    (compatFlags & AppUpdateManager.FLAG_COMPAT_ZIP_WRAPPER) != 0) {
+                installCommand = "unshare -m " + ASH + " \"" + installExecutable.getAbsolutePath() + "\"" + " 3 1 \"" + file.getAbsolutePath() + "\"";
+            } else if (installZipMagiskModule || (compatFlags & AppUpdateManager.FLAG_COMPAT_ZIP_WRAPPER) != 0) {
                 installExecutable = this.extractInstallScript("module_installer_wrapper.sh");
                 if (installExecutable == null) {
-                    this.setInstallStateFinished(false,
-                            "! Failed to extract Magisk module wrapper script", "");
+                    this.setInstallStateFinished(false, "! Failed to extract Magisk module wrapper script", "");
                     return;
                 }
-                installCommand = ASH + " \"" +
-                        installExecutable.getAbsolutePath() + "\"" +
-                        " 3 1 \"" + file.getAbsolutePath() + "\"";
-            } else if (InstallerInitializer.peekMagiskVersion() >=
-                    Constants.MAGISK_VER_CODE_INSTALL_COMMAND &&
-                    ((compatFlags & AppUpdateManager.FLAG_COMPAT_MAGISK_CMD) != 0 ||
-                            noExtensions || MainApplication.isUsingMagiskCommand())) {
+                installCommand = ASH + " \"" + installExecutable.getAbsolutePath() + "\"" + " 3 1 \"" + file.getAbsolutePath() + "\"";
+            } else if (InstallerInitializer.peekMagiskVersion() >= Constants.MAGISK_VER_CODE_INSTALL_COMMAND && ((compatFlags & AppUpdateManager.FLAG_COMPAT_MAGISK_CMD) != 0 || noExtensions || MainApplication.isUsingMagiskCommand())) {
                 installCommand = "magisk --install-module \"" + file.getAbsolutePath() + "\"";
-                installExecutable = new File(MAGISK_PATH.equals("/sbin") ?
-                        "/sbin/magisk" : "/system/bin/magisk");
+                installExecutable = new File(MAGISK_PATH.equals("/sbin") ? "/sbin/magisk" : "/system/bin/magisk");
                 magiskCmdLine = true;
             } else if (moduleId != null) {
                 installExecutable = this.extractInstallScript("module_installer_compat.sh");
                 if (installExecutable == null) {
-                    this.setInstallStateFinished(false,
-                            "! Failed to extract Magisk module install script", "");
+                    this.setInstallStateFinished(false, "! Failed to extract Magisk module install script", "");
                     return;
                 }
-                installCommand = ASH + " \"" +
-                        installExecutable.getAbsolutePath() + "\"" +
-                        " 3 1 \"" + file.getAbsolutePath() + "\"";
+                installCommand = ASH + " \"" + installExecutable.getAbsolutePath() + "\"" + " 3 1 \"" + file.getAbsolutePath() + "\"";
             } else {
-                this.setInstallStateFinished(false,
-                        "! Zip file is not a valid Magisk module or AnyKernel3 zip!", "");
+                this.setInstallStateFinished(false, "! Zip file is not a valid Magisk module or AnyKernel3 zip!", "");
                 return;
             }
             installerMonitor = new InstallerMonitor(installExecutable);
@@ -475,26 +424,12 @@ public class InstallerActivity extends FoxActivity {
                     this.installerTerminal.enableAnsi();
                 else this.installerTerminal.disableAnsi();
                 installJob = Shell.cmd(arch32, "export BOOTMODE=true", // No Extensions
-                        this.installerTerminal.isAnsiEnabled() ?
-                                AnsiConstants.ANSI_CMD_SUPPORT : "true",
-                        "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
-                        installCommand).to(installerController, installerMonitor);
+                        this.installerTerminal.isAnsiEnabled() ? AnsiConstants.ANSI_CMD_SUPPORT : "true", "cd \"" + this.moduleCache.getAbsolutePath() + "\"", installCommand).to(installerController, installerMonitor);
             } else {
                 if ((compatFlags & AppUpdateManager.FLAG_COMPAT_NO_ANSI) != 0)
                     this.installerTerminal.disableAnsi();
                 else this.installerTerminal.enableAnsi();
-                installJob = Shell.cmd(arch32, "export MMM_EXT_SUPPORT=1",
-                        "export MMM_USER_LANGUAGE=" + this.getResources()
-                                .getConfiguration().getLocales().get(0).toLanguageTag(),
-                        "export MMM_APP_VERSION=" + BuildConfig.VERSION_NAME,
-                        "export MMM_TEXT_WRAP=" + (this.textWrap ? "1" : "0"),
-                        this.installerTerminal.isAnsiEnabled() ?
-                                AnsiConstants.ANSI_CMD_SUPPORT : "true",
-                        mmtReborn ? "export MMM_MMT_REBORN=1" : "true",
-                        "export BOOTMODE=true", anyKernel3 ? "export AK3TMPFS=" +
-                                InstallerInitializer.peekMagiskPath() + "/ak3tmpfs" :
-                                "cd \"" + this.moduleCache.getAbsolutePath() + "\"",
-                        installCommand).to(installerController, installerMonitor);
+                installJob = Shell.cmd(arch32, "export MMM_EXT_SUPPORT=1", "export MMM_USER_LANGUAGE=" + this.getResources().getConfiguration().getLocales().get(0).toLanguageTag(), "export MMM_APP_VERSION=" + BuildConfig.VERSION_NAME, "export MMM_TEXT_WRAP=" + (this.textWrap ? "1" : "0"), this.installerTerminal.isAnsiEnabled() ? AnsiConstants.ANSI_CMD_SUPPORT : "true", mmtReborn ? "export MMM_MMT_REBORN=1" : "true", "export BOOTMODE=true", anyKernel3 ? "export AK3TMPFS=" + InstallerInitializer.peekMagiskPath() + "/ak3tmpfs" : "cd \"" + this.moduleCache.getAbsolutePath() + "\"", installCommand).to(installerController, installerMonitor);
             }
             // Note: Sentry only send this info on crash.
             if (MainApplication.isCrashReportingEnabled()) {
@@ -505,8 +440,7 @@ public class InstallerActivity extends FoxActivity {
                 breadcrumb.setData("isAnyKernel3", anyKernel3 ? "true" : "false");
                 breadcrumb.setData("noExtensions", noExtensions ? "true" : "false");
                 breadcrumb.setData("magiskCmdLine", magiskCmdLine ? "true" : "false");
-                breadcrumb.setData("ansi", this.installerTerminal
-                        .isAnsiEnabled() ? "enabled" : "disabled");
+                breadcrumb.setData("ansi", this.installerTerminal.isAnsiEnabled() ? "enabled" : "disabled");
                 breadcrumb.setCategory("app.action.install");
                 SentryMain.addSentryBreadcrumb(breadcrumb);
             }
@@ -528,21 +462,17 @@ public class InstallerActivity extends FoxActivity {
                 message = installerMonitor.doCleanUp();
             }
         }
-        this.setInstallStateFinished(success, message,
-                installerController.getSupportLink());
+        this.setInstallStateFinished(success, message, installerController.getSupportLink());
     }
 
     private File extractInstallScript(String script) {
         File compatInstallScript = new File(this.moduleCache, script);
-        if (!compatInstallScript.exists() || compatInstallScript.length() == 0 ||
-                !extracted.contains(script)) {
+        if (!compatInstallScript.exists() || compatInstallScript.length() == 0 || !extracted.contains(script)) {
             try {
-                Files.write(compatInstallScript, Files.readAllBytes(
-                        this.getAssets().open(script)));
+                Files.write(compatInstallScript, Files.readAllBytes(this.getAssets().open(script)));
                 extracted.add(script);
             } catch (IOException e) {
-                if (compatInstallScript.delete())
-                    extracted.remove(script);
+                if (compatInstallScript.delete()) extracted.remove(script);
                 Timber.e(e);
                 return null;
             }
@@ -553,8 +483,8 @@ public class InstallerActivity extends FoxActivity {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         int keyCode = event.getKeyCode();
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP ||
-                keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) return true;
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)
+            return true;
         return super.dispatchKeyEvent(event);
     }
 
@@ -564,8 +494,7 @@ public class InstallerActivity extends FoxActivity {
         this.installerTerminal.disableAnsi();
         if (success && toDelete != null && !toDelete.delete()) {
             SuFile suFile = new SuFile(toDelete.getAbsolutePath());
-            if (suFile.exists() && !suFile.delete())
-                Timber.w("Failed to delete zip file");
+            if (suFile.exists() && !suFile.delete()) Timber.w("Failed to delete zip file");
             else toDelete = null;
         } else toDelete = null;
         this.runOnUiThread(() -> {
@@ -588,33 +517,23 @@ public class InstallerActivity extends FoxActivity {
             String reboot_cmd = "/system/bin/svc power reboot || /system/bin/reboot || setprop sys.powerctl reboot";
             this.rebootFloatingButton.setOnClickListener(_view -> {
                 if (this.warnReboot || MainApplication.shouldPreventReboot()) {
-                    MaterialAlertDialogBuilder builder =
-                            new MaterialAlertDialogBuilder(this);
+                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
 
-                    builder
-                            .setTitle(R.string.install_terminal_reboot_now)
-                            .setMessage(R.string.install_terminal_reboot_now_message)
-                            .setCancelable(false)
-                            .setIcon(R.drawable.ic_reboot_24)
-                            .setPositiveButton(R.string.ok, (x, y) -> Shell.cmd(reboot_cmd).submit())
-                            .setNegativeButton(R.string.no, (x, y) -> x.dismiss()).show();
+                    builder.setTitle(R.string.install_terminal_reboot_now).setMessage(R.string.install_terminal_reboot_now_message).setCancelable(false).setIcon(R.drawable.ic_reboot_24).setPositiveButton(R.string.ok, (x, y) -> Shell.cmd(reboot_cmd).submit()).setNegativeButton(R.string.no, (x, y) -> x.dismiss()).show();
                 } else {
                     Shell.cmd(reboot_cmd).submit();
                 }
             });
             this.rebootFloatingButton.setVisibility(View.VISIBLE);
-            if (message != null && !message.isEmpty())
-                this.installerTerminal.addLine(message);
+            if (message != null && !message.isEmpty()) this.installerTerminal.addLine(message);
             if (optionalLink != null && !optionalLink.isEmpty()) {
-                this.setActionBarExtraMenuButton(ActionButtonType.supportIconForUrl(optionalLink),
-                        menu -> {
-                            IntentHelper.openUrl(this, optionalLink);
-                            return true;
-                        });
+                this.setActionBarExtraMenuButton(ActionButtonType.supportIconForUrl(optionalLink), menu -> {
+                    IntentHelper.openUrl(this, optionalLink);
+                    return true;
+                });
             } else if (success) {
                 final Intent intent = this.getIntent();
-                final String config = MainApplication.checkSecret(intent) ?
-                        intent.getStringExtra(Constants.EXTRA_INSTALL_CONFIG) : null;
+                final String config = MainApplication.checkSecret(intent) ? intent.getStringExtra(Constants.EXTRA_INSTALL_CONFIG) : null;
                 if (config != null && !config.isEmpty()) {
                     String configPkg = IntentHelper.getPackageOfConfig(config);
                     try {
@@ -624,11 +543,8 @@ public class InstallerActivity extends FoxActivity {
                             return true;
                         });
                     } catch (PackageManager.NameNotFoundException e) {
-                        Timber.w("Config package \"" +
-                                configPkg + "\" missing for installer view");
-                        this.installerTerminal.addLine(String.format(
-                                this.getString(R.string.install_terminal_config_missing),
-                                configPkg));
+                        Timber.w("Config package \"" + configPkg + "\" missing for installer view");
+                        this.installerTerminal.addLine(String.format(this.getString(R.string.install_terminal_config_missing), configPkg));
                     }
                 }
             }
@@ -640,13 +556,10 @@ public class InstallerActivity extends FoxActivity {
         private final InstallerTerminal terminal;
         private final File moduleFile;
         private final boolean noExtension;
-        private boolean enabled, useExt,
-                useRecovery, isRecoveryBar;
+        private boolean enabled, useExt, useRecovery, isRecoveryBar;
         private String supportLink = "";
 
-        private InstallerController(LinearProgressIndicator progressIndicator,
-                                    InstallerTerminal terminal, File moduleFile,
-                                    boolean noExtension) {
+        private InstallerController(LinearProgressIndicator progressIndicator, InstallerTerminal terminal, File moduleFile, boolean noExtension) {
             this.progressIndicator = progressIndicator;
             this.terminal = terminal;
             this.moduleFile = moduleFile;
@@ -686,9 +599,7 @@ public class InstallerActivity extends FoxActivity {
                 } catch (Exception ignored) {
                 }
             } else {
-                this.terminal.addLine(s.replace(
-                        this.moduleFile.getAbsolutePath(),
-                        this.moduleFile.getName()));
+                this.terminal.addLine(s.replace(this.moduleFile.getAbsolutePath(), this.moduleFile.getName()));
             }
         }
 
@@ -751,8 +662,7 @@ public class InstallerActivity extends FoxActivity {
                 case "setLoading":
                     this.isRecoveryBar = false;
                     try {
-                        this.progressIndicator.setProgressCompat(
-                                Short.parseShort(arg), true);
+                        this.progressIndicator.setProgressCompat(Short.parseShort(arg), true);
                     } catch (Exception ignored) {
                     }
                     break;
@@ -762,8 +672,7 @@ public class InstallerActivity extends FoxActivity {
                     break;
                 case "setSupportLink":
                     // Only set link if valid
-                    if (arg.isEmpty() || (arg.startsWith("https://") &&
-                            arg.indexOf('/', 8) > 8))
+                    if (arg.isEmpty() || (arg.startsWith("https://") && arg.indexOf('/', 8) > 8))
                         this.supportLink = arg;
                     break;
                 case "disableANSI":
@@ -779,8 +688,7 @@ public class InstallerActivity extends FoxActivity {
         public void disable() {
             this.enabled = false;
             if (this.isRecoveryBar) {
-                UiThreadHandler.runAndWait(() ->
-                        this.processCommand("setLoading 256"));
+                UiThreadHandler.runAndWait(() -> this.processCommand("setLoading 256"));
             }
         }
 
@@ -797,9 +705,7 @@ public class InstallerActivity extends FoxActivity {
 
         public InstallerMonitor(File installScript) {
             super(Runnable::run);
-            this.installScriptErr =
-                    installScript.getAbsolutePath() +
-                            ": /data/adb/modules_update/";
+            this.installScriptErr = installScript.getAbsolutePath() + ": /data/adb/modules_update/";
         }
 
         @Override
@@ -822,8 +728,7 @@ public class InstallerActivity extends FoxActivity {
                 String module = installScriptErr.substring(0, i);
                 SuFile moduleUpdate = new SuFile("/data/adb/modules_update/" + module);
                 if (moduleUpdate.exists()) {
-                    if (!moduleUpdate.deleteRecursive())
-                        Timber.e("Failed to delete failed update");
+                    if (!moduleUpdate.deleteRecursive()) Timber.e("Failed to delete failed update");
                     return "Error: " + installScriptErr.substring(i + 1);
                 }
             } else if (this.forCleanUp != null) {

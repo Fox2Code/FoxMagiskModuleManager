@@ -103,7 +103,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         // Ensure HTTP Cache directories are created
         Http.ensureCacheDirs(this);
         if (!urlFactoryInstalled) {
-            try (HttpResponseCache cache = HttpResponseCache.getInstalled()) {
+            try (HttpResponseCache cache =  HttpResponseCache.getInstalled()) {
                 if (cache == null) {
                     File cacheDir = new File(getCacheDir(), "http");
                     //noinspection ResultOfMethodCallIgnored
@@ -281,8 +281,12 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 swipeRefreshBlocker = System.currentTimeMillis() + 5_000L;
                 if (MainApplication.isShowcaseMode())
                     moduleViewListBuilder.addNotification(NotificationType.SHOWCASE_MODE);
-                if (!Http.hasWebView()) // Check Http for WebView availability
+                if (!Http.hasWebView()) {
+                    // Check Http for WebView availability
                     moduleViewListBuilder.addNotification(NotificationType.NO_WEB_VIEW);
+                    // disable online tab
+                    bottomNavigationView.getMenu().removeItem(R.id.online_menu_item);
+                }
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
                 runOnUiThread(() -> {
                     progressIndicator.setIndeterminate(false);
@@ -322,6 +326,14 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 if (!NotificationType.REPO_UPDATE_FAILED.shouldRemove()) {
                     moduleViewListBuilder.addNotification(NotificationType.REPO_UPDATE_FAILED);
                 } else {
+                    if (!Http.hasWebView()) {
+                        progressIndicator.setProgressCompat(PRECISION, true);
+                        progressIndicator.setVisibility(View.GONE);
+                        searchView.setEnabled(true);
+                        setActionBarBackground(null);
+                        updateScreenInsets(getResources().getConfiguration());
+                        return;
+                    }
                     // Compatibility data still needs to be updated
                     AppUpdateManager appUpdateManager = AppUpdateManager.getAppUpdateManager();
                     if (BuildConfig.DEBUG)

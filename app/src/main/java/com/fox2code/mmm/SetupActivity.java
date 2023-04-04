@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -356,7 +357,13 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
 
     public void createFiles() {
         // use cookiemanager to create the cookie database
-        CookieManager.getInstance();
+        try {
+            CookieManager.getInstance();
+        } catch (Exception e) {
+            Timber.e(e);
+            // show a toast
+            runOnUiThread(() -> Toast.makeText(this, R.string.error_creating_cookie_database, Toast.LENGTH_LONG).show());
+        }
         // we literally only use these to create the http cache folders
         try {
             FileUtils.forceMkdir(new File(MainApplication.getINSTANCE().getDataDir() + "/cache/cronet"));
