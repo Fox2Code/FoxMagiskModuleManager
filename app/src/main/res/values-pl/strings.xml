@@ -268,7 +268,7 @@
 \n%s</string>
     <string name="reset_api_key">Zresetuj klucze API</string>
     <string name="upgrade_androidacy_promo">Ulepsz do wersji premium</string>
-    <string name="upgrade_androidacy_promo_desc">Uaktualnienie do wersji premium usunie reklamy, captcha i pobieranie z repozytorium Androidacy, a także wesprze Androidacy i autorów modułów.</string>
+    <string name="upgrade_androidacy_promo_desc">Uaktualnienie do premium usunie reklamy, captche, pobrania dla Repozytorium Androidacy i wspomoże Androidacy oraz autorów modułów.</string>
     <string name="share_logs">Udostępnij logi</string>
     <string name="not_official_build">Używasz nieoficjalną wersję FoxMMM.</string>
     <string name="pref_category_contributors">Współtwórcy</string>
