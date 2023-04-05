@@ -367,4 +367,8 @@
     <string name="crash_reporting_pii">Отправить дополнительную информацию</string>
     <string name="setup_crash_reporting_pii">Отправляйте дополнительную информацию в отчеты о сбоях.</string>
     <string name="setup_crash_reporting_pii_summary">Это может включать идентификаторы устройств и IP-адреса. Никакие данные не будут использоваться для каких-либо других целей, кроме анализа сбоев и повышения производительности.</string>
+    <string name="empty_field">URL-адрес обязателен</string>
+    <string name="repo_already_added">Репозиторий уже существует.</string>
+    <string name="error_creating_cookie_database">Ошибка доступа к WebView. Функциональность может быть ограничена.</string>
+    <string name="setup_scroll_down">Чтобы отобразить кнопку завершения, прокрутите вниз и просмотрите все параметры.</string>
 </resources>

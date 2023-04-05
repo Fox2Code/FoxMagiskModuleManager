@@ -373,4 +373,8 @@
     <string name="clear_cache_dialogue_message">Spowoduje to wyczyszczenie pamięci podręcznej aplikacji. Twoje preferencje zostaną zachowane, ale aplikacja może potrzebować więcej czasu na wykonanie niektórych operacji.</string>
     <string name="certificate_error">Certyfikat serwera nie mógł zostać zweryfikowany. Upewnij się, że nic nie przechwytuje połączeń HTTPS dla FoxMMM.</string>
     <string name="crash_reporting_pii_desc">Umożliwia wysyłanie dodatkowych informacji w raportach o awariach, które mogą zawierać informacje umożliwiające identyfikację osoby, takie jak adres IP i ID urządzenia.</string>
+    <string name="error_creating_cookie_database">Błąd dostępu do WebView. Funkcjonalność może być utrudniona.</string>
+    <string name="setup_scroll_down">Aby odblokować przycisk „Zakończ”, przewiń w dół i przejrzyj wszystkie opcje.</string>
+    <string name="empty_field">URL jest wymagany</string>
+    <string name="repo_already_added">Repo już istnieje.</string>
 </resources>

@@ -364,4 +364,8 @@
     <string name="clear_cache_dialogue_message">Це очистить кеш додатку. Ваші налаштування буде збережено, але програмі може знадобитися більше часу для виконання деяких операцій.</string>
     <string name="certificate_error">Не вдалося перевірити сертифікат сервера. Будь ласка, переконайтеся, що ніщо не перехоплює з’єднання HTTPs для FoxMMM.</string>
     <string name="crash_reporting_pii_desc">Дозволяє надсилати додаткову інформацію у звітах про збої, деяка може містити особисту інформацію, наприклад IP-адресу та ідентифікатори пристрою.</string>
+    <string name="empty_field">URL-адреса обов\'язкова</string>
+    <string name="repo_already_added">Репозиторій вже існує.</string>
+    <string name="error_creating_cookie_database">Помилка доступу до WebView. Функціональність може бути обмежена.</string>
+    <string name="setup_scroll_down">Щоб показати кнопку завершення, прокрутіть вниз і перегляньте всі параметри.</string>
 </resources>
