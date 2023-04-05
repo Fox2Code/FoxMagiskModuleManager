@@ -394,4 +394,6 @@
     <string name="setup_crash_reporting_pii_summary"> This may include device identifiers and IP addresses. No data will be used for any other purpose besides analyzing crashes and improving performance.</string>
     <string name="error_creating_cookie_database">Error accessing WebView. Functionality may be impacted.</string>
     <string name="setup_scroll_down">To enable the finish button, please scroll down and view all the options.</string>
+    <string name="empty_field">URL is required</string>
+    <string name="repo_already_added">Repo already exists.</string>
 </resources>

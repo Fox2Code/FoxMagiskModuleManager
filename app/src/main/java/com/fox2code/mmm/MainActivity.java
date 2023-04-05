@@ -114,12 +114,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         BackgroundUpdateChecker.onMainActivityCreate(this);
         super.onCreate(savedInstanceState);
         // log all shared preferences that are present
-        // first, get every shared preference
-        Map<String, ?> allPrefs = MainApplication.getPreferences("mmm").getAll();
-        // then, log them
-        for (Map.Entry<String, ?> entry : allPrefs.entrySet()) {
-            Timber.d("Shared preference: %s = %s", entry.getKey(), entry.getValue());
-        }
         if (!isOfficial) {
             Timber.w("You may be running an untrusted build.");
             // Show a toast to warn the user

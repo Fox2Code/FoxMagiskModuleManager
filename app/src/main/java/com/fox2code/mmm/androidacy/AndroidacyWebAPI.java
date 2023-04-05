@@ -35,7 +35,7 @@ import java.nio.charset.StandardCharsets;
 
 import timber.log.Timber;
 
-@SuppressWarnings("SameReturnValue")
+@SuppressWarnings({"unused", "SameReturnValue"})
 @Keep
 public class AndroidacyWebAPI {
     public static final int COMPAT_UNSUPPORTED = 0;

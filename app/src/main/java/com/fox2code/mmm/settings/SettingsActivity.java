@@ -1169,7 +1169,22 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     input.setValidator(new AutoCompleteTextView.Validator() {
                         @Override
                         public boolean isValid(CharSequence charSequence) {
-                            return customRepoManager.canAddRepo(charSequence.toString());
+                            // show error if string is empty, does not start with https://, or contains spaces
+                            if (charSequence.toString().isEmpty()) {
+                                input.setError(getString(R.string.empty_field));
+                                return false;
+                            } else if (!charSequence.toString().matches("^https://.*")) {
+                                input.setError(getString(R.string.invalid_repo_url));
+                                return false;
+                            } else if (charSequence.toString().contains(" ")) {
+                                input.setError(getString(R.string.invalid_repo_url));
+                                return false;
+                            } else if (!customRepoManager.canAddRepo(charSequence.toString())) {
+                                input.setError(getString(R.string.repo_already_added));
+                                return false;
+                            } else {
+                                return true;
+                            }
                         }
 
                         @Override
