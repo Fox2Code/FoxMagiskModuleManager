@@ -28,7 +28,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
@@ -73,7 +72,6 @@ import com.fox2code.rosettax.LanguageActivity;
 import com.fox2code.rosettax.LanguageSwitcher;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.internal.TextWatcherAdapter;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -1118,7 +1116,6 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             if (initial) { // Custom repo add button part.
                 preference = findPreference("pref_custom_add_repo_button");
                 if (preference == null) return;
-                int finalCUSTOM_REPO_ENTRIES = CUSTOM_REPO_ENTRIES;
                 preference.setOnPreferenceClickListener(preference1 -> {
                     final Context context = this.requireContext();
                     MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
@@ -1188,14 +1185,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         }
 
                         @Override
-                        public CharSequence fixText(CharSequence charSequence) {
-                            return charSequence;
-                        }
-                    });
-                    input.addTextChangedListener(new TextWatcherAdapter() {
-                        @Override
-                        public void onTextChanged(@NonNull CharSequence charSequence, int i, int i1, int i2) {
-                            positiveButton.setEnabled(customRepoManager.canAddRepo(charSequence.toString()) && customRepoManager.getRepoCount() < finalCUSTOM_REPO_ENTRIES);
+                        public CharSequence fixText(CharSequence invalidText) {
+                            return null;
                         }
                     });
                     positiveButton.setEnabled(false);

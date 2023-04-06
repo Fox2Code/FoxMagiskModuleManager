@@ -1,7 +1,6 @@
 package com.fox2code.mmm.androidacy;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -18,9 +17,9 @@ import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.repo.RepoData;
 import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.repo.RepoModule;
+import com.fox2code.mmm.utils.io.PropUtils;
 import com.fox2code.mmm.utils.io.net.Http;
 import com.fox2code.mmm.utils.io.net.HttpException;
-import com.fox2code.mmm.utils.io.PropUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.topjohnwu.superuser.Shell;
 
@@ -55,7 +54,6 @@ public final class AndroidacyRepoData extends RepoData {
 
     @SuppressWarnings("unused")
     public final String ClientID = BuildConfig.ANDROIDACY_CLIENT_ID;
-    public final SharedPreferences cachedPreferences = MainApplication.getPreferences("androidacy");
     private final boolean testMode;
     private final String host;
     public String[][] userInfo = new String[][]{{"role", null}, {"permissions", null}};
@@ -158,7 +156,7 @@ public final class AndroidacyRepoData extends RepoData {
             if (e.getErrorCode() == 401) {
                 Timber.w("Invalid token, resetting...");
                 // Remove saved preference
-                SharedPreferences.Editor editor = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit();
+                SharedPreferences.Editor editor = MainApplication.getPreferences("androidacy").edit();
                 editor.remove("pref_androidacy_api_token");
                 editor.apply();
                 return false;
@@ -170,14 +168,14 @@ public final class AndroidacyRepoData extends RepoData {
             Timber.w("Invalid token, resetting...");
             Timber.w(e);
             // Remove saved preference
-            SharedPreferences.Editor editor = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit();
+            SharedPreferences.Editor editor = MainApplication.getPreferences("androidacy").edit();
             editor.remove("pref_androidacy_api_token");
             editor.apply();
             return false;
         }
     }
 
-    @SuppressLint("RestrictedApi")
+    @SuppressLint({"RestrictedApi", "BinaryOperationInTimber"})
     @Override
     protected boolean prepare() {
         // If ANDROIDACY_CLIENT_ID is not set or is empty, disable this repo and return
@@ -223,17 +221,18 @@ public final class AndroidacyRepoData extends RepoData {
         this.androidacyBlockade = time + 30_000L;
         try {
             if (token == null) {
-                token = this.cachedPreferences.getString("pref_androidacy_api_token", null);
+                token = MainApplication.getPreferences("androidacy").getString("pref_androidacy_api_token", null);
                 if (token != null && !this.isValidToken(token)) {
+                    Timber.i("Token expired or invalid, requesting new one...");
                     token = null;
                 } else {
                     Timber.i("Using cached token");
                 }
             } else if (!this.isValidToken(token)) {
-                if (BuildConfig.DEBUG) {
-                    throw new IllegalStateException("Invalid token: " + token);
-                }
+                Timber.i("Token expired, requesting new one...");
                 token = null;
+            } else {
+                Timber.i("Using validated cached token");
             }
         } catch (
                 IOException e) {
@@ -244,6 +243,7 @@ public final class AndroidacyRepoData extends RepoData {
             return false;
         }
         if (token == null) {
+            Timber.i("Token is null, requesting new one...");
             try {
                 Timber.i("Requesting new token...");
                 // POST json request to https://production-api.androidacy.com/auth/register
@@ -251,8 +251,10 @@ public final class AndroidacyRepoData extends RepoData {
                 // Parse token
                 try {
                     JSONObject jsonObject = new JSONObject(token);
-                    Timber.d("Token: %s", token);
+                    // log last four of token, replacing the rest with asterisks
                     token = jsonObject.getString("token");
+                    //noinspection SuspiciousRegexArgument
+                    Timber.d("Token: %s", token.substring(0, token.length() - 4).replaceAll(".", "*") + token.substring(token.length() - 4));
                     memberLevel = jsonObject.getString("role");
                 } catch (
                         JSONException e) {
@@ -271,11 +273,13 @@ public final class AndroidacyRepoData extends RepoData {
                     Handler handler = new Handler(mainLooper);
                     handler.post(() -> Toast.makeText(MainApplication.getINSTANCE(), R.string.androidacy_failed_to_validate_token, Toast.LENGTH_LONG).show());
                     return false;
+                } else {
+                    // Save token to shared preference
+                    SharedPreferences.Editor editor = MainApplication.getPreferences("androidacy").edit();
+                    editor.putString("pref_androidacy_api_token", token);
+                    editor.apply();
+                    Timber.i("Token saved to shared preference");
                 }
-                // Save token to shared preference
-                SharedPreferences.Editor editor = MainApplication.getINSTANCE().getSharedPreferences("androidacy", Context.MODE_PRIVATE).edit();
-                editor.putString("pref_androidacy_api_token", token);
-                editor.apply();
             } catch (
                     Exception e) {
                 if (HttpException.shouldTimeout(e)) {

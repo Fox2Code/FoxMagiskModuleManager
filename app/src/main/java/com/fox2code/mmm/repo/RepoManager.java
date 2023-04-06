@@ -311,7 +311,7 @@ public final class RepoManager extends SyncManager {
                             builder.setPositiveButton(android.R.string.ok, null);
                             if (repoUpdaters[finalI].repoData instanceof AndroidacyRepoData) {
                                 builder.setNeutralButton(R.string.reset_api_key, (dialog, which) -> {
-                                    SharedPreferences.Editor editor = MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit();
+                                    SharedPreferences.Editor editor = MainApplication.getPreferences("androidacy").edit();
                                     editor.putString("androidacy_api_key", "");
                                     editor.apply();
                                     Toast.makeText(context, R.string.api_key_removed, Toast.LENGTH_SHORT).show();

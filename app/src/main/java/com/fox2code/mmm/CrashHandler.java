@@ -64,8 +64,7 @@ public class CrashHandler extends FoxActivity {
             stacktrace = stacktrace.replace(",", "\n     ");
             crashDetails.setText(getString(R.string.crash_full_stacktrace, stacktrace));
         }
-        SharedPreferences preferences = getSharedPreferences("sentry", MODE_PRIVATE);
-        // get lastEventId from intent
+        SharedPreferences preferences = MainApplication.getPreferences("sentry");
         String lastEventId = getIntent().getStringExtra("lastEventId");
         Timber.d("CrashHandler.onCreate: lastEventId=%s, crashReportingEnabled=%s", lastEventId, crashReportingEnabled);
         if (lastEventId == null && crashReportingEnabled) {
