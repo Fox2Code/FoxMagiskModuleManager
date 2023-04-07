@@ -20,7 +20,7 @@ buildscript {
     dependencies {
         //noinspection AndroidGradlePluginVersion
         classpath 'com.android.tools.build:gradle:8.0.0-rc01'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.20"
         classpath "com.mikepenz.aboutlibraries.plugin:aboutlibraries-plugin:${latestAboutLibsRelease}"
 
         // NOTE: Do not place your application dependencies here; they belong

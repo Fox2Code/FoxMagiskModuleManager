@@ -342,7 +342,7 @@ dependencies {
     implementation 'com.github.Fox2Code:AndroidANSI:1.0.1'
 
     // sentry
-    implementation platform('io.sentry:sentry-bom:6.16.0')
+    implementation platform('io.sentry:sentry-bom:6.17.0')
     implementation "io.sentry:sentry-android"
     implementation "io.sentry:sentry-android-timber"
     implementation "io.sentry:sentry-android-fragment"
@@ -359,18 +359,18 @@ dependencies {
     implementation 'com.google.net.cronet:cronet-okhttp:0.1.0'
     implementation "com.caverock:androidsvg:1.4"
 
-    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.core:core-ktx:1.10.0'
 
     // timber
     implementation 'com.jakewharton.timber:timber:5.0.1'
 
     // ksp
-    implementation "com.google.devtools.ksp:symbol-processing-api:1.8.10-1.0.9"
+    implementation 'com.google.devtools.ksp:symbol-processing-api:1.8.20-1.0.10'
 
     implementation "androidx.security:security-crypto:1.1.0-alpha05"
 
     // some utils
-    implementation 'commons-io:commons-io:2.11.0'
+    implementation 'commons-io:commons-io:20030203.000550'
     implementation 'org.apache.commons:commons-compress:1.23.0'
 
 }
