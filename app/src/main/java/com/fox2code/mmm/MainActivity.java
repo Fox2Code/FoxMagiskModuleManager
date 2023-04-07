@@ -54,7 +54,6 @@ import com.google.android.material.progressindicator.LinearProgressIndicator;
 import org.chromium.net.CronetEngine;
 
 import java.net.URL;
-import java.util.Map;
 import java.util.Objects;
 
 import timber.log.Timber;
@@ -262,7 +261,10 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     // Check Http for WebView availability
                     moduleViewListBuilder.addNotification(NotificationType.NO_WEB_VIEW);
                     // disable online tab
-                    bottomNavigationView.getMenu().removeItem(R.id.online_menu_item);
+                    runOnUiThread(() -> {
+                        bottomNavigationView.getMenu().getItem(1).setEnabled(false);
+                        bottomNavigationView.setSelectedItemId(R.id.installed_menu_item);
+                    });
                 }
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
                 runOnUiThread(() -> {
@@ -291,21 +293,25 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 AppUpdateManager.getAppUpdateManager().checkUpdateCompat();
                 if (BuildConfig.DEBUG) Timber.i("Check Update");
                 // update repos
-                RepoManager.getINSTANCE().update(value -> runOnUiThread(max == 0 ? () -> progressIndicator.setProgressCompat((int) (value * PRECISION), true) : () -> progressIndicator.setProgressCompat((int) (value * PRECISION * 0.75F), true)));
+                if (Http.hasWebView()) {
+                    RepoManager.getINSTANCE().update(value -> runOnUiThread(max == 0 ? () -> progressIndicator.setProgressCompat((int) (value * PRECISION), true) : () -> progressIndicator.setProgressCompat((int) (value * PRECISION * 0.75F), true)));
+                }
                 // various notifications
                 NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
                 NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilderOnline);
                 NotificationType.DEBUG.autoAdd(moduleViewListBuilder);
                 NotificationType.DEBUG.autoAdd(moduleViewListBuilderOnline);
-                if (!NotificationType.REPO_UPDATE_FAILED.shouldRemove()) {
+                if (Http.hasWebView() && !NotificationType.REPO_UPDATE_FAILED.shouldRemove()) {
                     moduleViewListBuilder.addNotification(NotificationType.REPO_UPDATE_FAILED);
                 } else {
                     if (!Http.hasWebView()) {
-                        progressIndicator.setProgressCompat(PRECISION, true);
-                        progressIndicator.setVisibility(View.GONE);
-                        searchView.setEnabled(true);
-                        setActionBarBackground(null);
-                        updateScreenInsets(getResources().getConfiguration());
+                        runOnUiThread(() -> {
+                            progressIndicator.setProgressCompat(PRECISION, true);
+                            progressIndicator.setVisibility(View.GONE);
+                            searchView.setEnabled(true);
+                            setActionBarBackground(null);
+                            updateScreenInsets(getResources().getConfiguration());
+                        });
                         return;
                     }
                     // Compatibility data still needs to be updated

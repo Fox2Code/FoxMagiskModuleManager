@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.webkit.WebViewCompat;
 
 import com.fox2code.mmm.BuildConfig;
 import com.fox2code.mmm.MainActivity;
@@ -105,7 +107,26 @@ public enum Http {
             Context context = mainApplication.getApplicationContext();
             MainActivity.getFoxActivity(context).runOnUiThread(() -> Toast.makeText(mainApplication, R.string.error_creating_cookie_database, Toast.LENGTH_LONG).show());
         }
-        hasWebView = cookieManager != null;
+        // get webview version
+        String webviewVersion = "0.0.0";
+        PackageInfo pi = WebViewCompat.getCurrentWebViewPackage(mainApplication);
+        if (pi != null) {
+            webviewVersion = pi.versionName;
+        }
+        // webviewVersionMajor is the everything before the first dot
+        int webviewVersionCode;
+        // parse webview version
+        // get the first dot
+        int dot = webviewVersion.indexOf('.');
+        if (dot == -1) {
+            // no dot, use the whole string
+            webviewVersionCode = Integer.parseInt(webviewVersion);
+        } else {
+            // use the first dot
+            webviewVersionCode = Integer.parseInt(webviewVersion.substring(0, dot));
+        }
+        Timber.d("Webview version: %s (%d)", webviewVersion, webviewVersionCode);
+        hasWebView = cookieManager != null && webviewVersionCode >= 83; // 83 is the first version Androidacy supports due to errors in 82
         OkHttpClient.Builder httpclientBuilder = new OkHttpClient.Builder();
         // Default is 10, extend it a bit for slow mobile connections.
         httpclientBuilder.connectTimeout(5, TimeUnit.SECONDS);
