@@ -141,23 +141,27 @@ public class CustomRepoManager {
         }
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
         Realm realm = Realm.getInstance(realmConfiguration);
-        if (realm.isInTransaction()) {
-            realm.commitTransaction();
-        }
-        realm.beginTransaction();
-        // find the matching entry for repo_0, repo_1, etc.
-        ReposList reposList = realm.where(ReposList.class).equalTo("id", "repo_" + i).findFirst();
-        if (reposList == null) {
-            reposList = realm.createObject(ReposList.class, "repo_" + i);
-        }
-        reposList.setUrl(repo);
-        reposList.setName(name);
-        reposList.setWebsite(website);
-        reposList.setSupport(support);
-        reposList.setDonate(donate);
-        reposList.setSubmitModule(submitModule);
-        reposList.setEnabled(true);
-        realm.commitTransaction();
+        int finalI = i;
+        String finalWebsite = website;
+        String finalSupport = support;
+        String finalDonate = donate;
+        String finalSubmitModule = submitModule;
+        realm.executeTransaction(realm1 -> {
+            // find the matching entry for repo_0, repo_1, etc.
+            ReposList reposList = realm1.where(ReposList.class).equalTo("id", "repo_" + finalI).findFirst();
+            if (reposList == null) {
+                reposList = realm1.createObject(ReposList.class, "repo_" + finalI);
+            }
+            reposList.setUrl(repo);
+            reposList.setName(name);
+            reposList.setWebsite(finalWebsite);
+            reposList.setSupport(finalSupport);
+            reposList.setDonate(finalDonate);
+            reposList.setSubmitModule(finalSubmitModule);
+            reposList.setEnabled(true);
+            // save the object
+            realm1.copyToRealmOrUpdate(reposList);
+        });
         customReposCount++;
         this.dirty = true;
         CustomRepoData customRepoData = (CustomRepoData) this.repoManager.addOrGet(repo);

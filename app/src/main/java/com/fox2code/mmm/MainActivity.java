@@ -50,6 +50,7 @@ import com.fox2code.mmm.utils.io.net.Http;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.chromium.net.CronetEngine;
 
@@ -351,6 +352,11 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 Timber.i("Finished app opening state!");
             }
         }, true);
+        // if system lang is not in MainApplication.supportedLocales, show a snackbar to ask user to help translate
+        if (!MainApplication.supportedLocales.contains(this.getResources().getConfiguration().getLocales().get(0).getLanguage())) {
+            // call showWeblateSnackbar() with language code and language name
+            showWeblateSnackbar(this.getResources().getConfiguration().getLocales().get(0).getLanguage(), this.getResources().getConfiguration().getLocales().get(0).getDisplayLanguage());
+        }
         ExternalHelper.INSTANCE.refreshHelper(this);
         this.initMode = false;
     }
@@ -725,5 +731,21 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             return true;
         }
         return doSetupRestarting;
+    }
+
+    /**
+     * Shows a snackbar offering to take users to Weblate if their language is not available.
+     * @param language The language code.
+     * @param languageName The language name.
+     */
+    @SuppressLint("RestrictedApi")
+    private void showWeblateSnackbar(String language, String languageName) {
+        Snackbar snackbar = Snackbar.make(findViewById(R.id.root_container), getString(R.string.language_not_available, languageName), Snackbar.LENGTH_LONG);
+        snackbar.setAction(R.string.ok, v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("https://translate.nift4.org/engage/foxmmm/?language=" + language));
+            startActivity(intent);
+        });
+        snackbar.show();
     }
 }

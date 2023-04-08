@@ -396,4 +396,5 @@
     <string name="setup_scroll_down">To enable the finish button, please scroll down and view all the options.</string>
     <string name="empty_field">URL is required</string>
     <string name="repo_already_added">Repo already exists.</string>
+    <string name="language_not_available">Language %s has not been translated. Help translate it?</string>
 </resources>
