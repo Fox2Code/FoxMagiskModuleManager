@@ -139,6 +139,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         this.moduleListOnline = findViewById(R.id.module_list_online);
         this.searchCard = findViewById(R.id.search_card);
         this.searchView = findViewById(R.id.search_bar);
+        this.searchView.setIconified(true);
         this.moduleViewAdapter = new ModuleViewAdapter();
         this.moduleViewAdapterOnline = new ModuleViewAdapter();
         this.moduleList.setAdapter(this.moduleViewAdapter);
@@ -207,8 +208,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                         MainActivity.this.moduleListOnline.setVisibility(View.GONE);
                     }
                 });
-                // set search view to be disabled
-                this.searchView.setEnabled(false);
+                // set search view to be enabled
+                this.searchView.setEnabled(true);
                 this.searchView.setVisibility(View.GONE);
             }
             // update the padding of blur_frame to match the new bottom nav height
@@ -309,7 +310,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                         runOnUiThread(() -> {
                             progressIndicator.setProgressCompat(PRECISION, true);
                             progressIndicator.setVisibility(View.GONE);
-                            searchView.setEnabled(true);
+                            searchView.setEnabled(false);
                             setActionBarBackground(null);
                             updateScreenInsets(getResources().getConfiguration());
                         });
@@ -553,7 +554,18 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         this.searchView.clearFocus();
         if (this.initMode) return false;
         if (this.moduleViewListBuilder.setQueryChange(query)) {
-            new Thread(() -> this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter), "Query update thread").start();
+            // figure out if we are on online or offline list and apply to that
+            if (this.moduleList.getVisibility() == View.VISIBLE) {
+                Timber.i("Query submit: %s on offline list", query);
+                new Thread(() -> this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter), "Query update thread").start();
+            } else if (this.moduleListOnline.getVisibility() == View.VISIBLE) {
+                Timber.i("Query submit: %s on online list", query);
+                new Thread(() -> this.moduleViewListBuilderOnline.applyTo(moduleListOnline, moduleViewAdapterOnline), "Query update thread").start();
+            } else {
+                Timber.e("Query submit: %s on unknown list", query);
+                return false;
+            }
+            // sa
         }
         return true;
     }

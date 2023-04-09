@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingVertical="0dp"
-    app:fitsSystemWindowsInsets="start|end|bottom|top"
     tools:context=".MainActivity">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -53,17 +52,15 @@
 
     <LinearLayout
         android:id="@+id/search_container"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="12dp"
         android:layout_marginVertical="8dp"
         android:filterTouchesWhenObscured="true"
-        android:gravity="bottom|start"
-        android:visibility="gone"
+        android:gravity="bottom|end"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_fitsSystemWindowsInsets="bottom"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="RtlHardcoded">
         <!--
         setting high app:cardCornerRadius is not supported on some versions
@@ -73,8 +70,7 @@
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/search_card"
             android:layout_width="wrap_content"
-            android:layout_height="65dp"
-            android:layout_gravity="center"
+            android:layout_height="wrap_content"
             android:background="@null"
             android:shape="ring"
             android:visibility="visible"
@@ -86,14 +82,12 @@
 
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/search_bar"
-                android:layout_width="300dp"
-                android:layout_height="24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
                 android:background="@null"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:iconifiedByDefault="true"
-                app:layout_constraintBottom_toBottomOf="@id/bottom_navigation"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
                 app:useDrawerArrowDrawable="true" />
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
