@@ -377,4 +377,5 @@
     <string name="setup_scroll_down">Aby odblokować przycisk „Zakończ”, przewiń w dół i przejrzyj wszystkie opcje.</string>
     <string name="empty_field">URL jest wymagany</string>
     <string name="repo_already_added">Repo już istnieje.</string>
+    <string name="language_not_available">Język %s nie został przetłumaczony. Pomożesz\?</string>
 </resources>
