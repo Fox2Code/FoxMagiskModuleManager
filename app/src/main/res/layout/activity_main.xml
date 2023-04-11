@@ -5,7 +5,8 @@
     android:id="@+id/root_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingVertical="0dp"
+    android:padding="0dp"
+    app:fitsSystemWindowsInsets="start|end|bottom|top"
     tools:context=".MainActivity">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -26,15 +27,13 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/module_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:edgeToEdge="true" />
+                android:layout_height="wrap_content" />
             <!-- online modules -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/module_list_online"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:edgeToEdge="true" />
+                android:visibility="gone" />
         </FrameLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

@@ -30,47 +30,26 @@ public class CustomRepoManager {
         if (MainApplication.getPreferences("mmm").getString("last_shown_setup", "").equals("")) {
             return;
         }
-        SharedPreferences sharedPreferences = this.getSharedPreferences();
-        int lastFilled = 0;
-        for (int i = 0; i < MAX_CUSTOM_REPOS; i++) {
-            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
-            Realm realm = Realm.getInstance(realmConfiguration);
-            if (realm.isInTransaction()) {
-                realm.commitTransaction();
-            }
-            realm.beginTransaction();
-            // find the matching entry for repo_0, repo_1, etc.
-            ReposList reposList = realm.where(ReposList.class).equalTo("id", "repo_" + i).findFirst();
-            if (reposList == null) {
-                continue;
-            }
-            String repo = reposList.getUrl();
-            if (!PropUtils.isNullString(repo) && !RepoManager.isBuiltInRepo(repo)) {
-                lastFilled = i;
-                int index = AUTO_RECOMPILE ? this.customReposCount : i;
-                this.customRepos[index] = repo;
-                this.customReposCount++;
-                ((CustomRepoData) this.repoManager.addOrGet(repo)).override = "custom_repo_" + index;
-            }
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+        Realm realm = Realm.getInstance(realmConfiguration);
+        if (realm.isInTransaction()) {
+            realm.commitTransaction();
         }
-        if (AUTO_RECOMPILE && (lastFilled + 1) != this.customReposCount) {
-            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
-            Realm realm = Realm.getInstance(realmConfiguration);
-            if (realm.isInTransaction()) {
-                realm.commitTransaction();
-            }
-            realm.beginTransaction();
-            for (int i = 0; i < MAX_CUSTOM_REPOS; i++) {
-                if (this.customRepos[i] != null) {
-                    // find the matching entry for repo_0, repo_1, etc.
-                    ReposList reposList = realm.where(ReposList.class).equalTo("id", "repo_" + i).findFirst();
-                    if (reposList == null) {
-                        continue;
-                    }
-                    reposList.setUrl(this.customRepos[i]);
+        int i = 0;
+        @SuppressWarnings("MismatchedReadAndWriteOfArray") final int[] lastFilled = {0};
+        realm.executeTransaction(realm1 -> {
+            // find all repos that are not built-in
+            for (ReposList reposList : realm1.where(ReposList.class).notEqualTo("id", "androidacy_repo").and().notEqualTo("id", "magisk_alt_repo").and().notEqualTo("id", "magisk_official_repo").findAll()) {
+                String repo = reposList.getUrl();
+                if (!PropUtils.isNullString(repo) && !RepoManager.isBuiltInRepo(repo)) {
+                    lastFilled[0] = i;
+                    int index = AUTO_RECOMPILE ? this.customReposCount : i;
+                    this.customRepos[index] = repo;
+                    this.customReposCount++;
+                    ((CustomRepoData) this.repoManager.addOrGet(repo)).override = "custom_repo_" + index;
                 }
             }
-        }
+        });
     }
 
     private SharedPreferences getSharedPreferences() {
