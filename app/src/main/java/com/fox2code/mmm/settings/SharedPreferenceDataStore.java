@@ -1,47 +1,28 @@
 package com.fox2code.mmm.settings;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceDataStore;
-import androidx.security.crypto.EncryptedSharedPreferences;
-import androidx.security.crypto.MasterKey;
 
-import com.fox2code.mmm.MainApplication;
-
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.Set;
 
-public class EncryptedPreferenceDataStore extends PreferenceDataStore {
+import timber.log.Timber;
 
-    private static final String CONFIG_FILE_NAME = "mmm";
-    @SuppressLint("StaticFieldLeak")
-    private static EncryptedPreferenceDataStore mInstance;
-    private SharedPreferences mSharedPreferences;
+public class SharedPreferenceDataStore extends PreferenceDataStore {
 
-    EncryptedPreferenceDataStore(Context context) {
-        try {
-            MasterKey mainKeyAlias;
-            try {
-                mainKeyAlias = new MasterKey.Builder(MainApplication.getINSTANCE().getApplicationContext()).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build();
-            } catch (GeneralSecurityException | IOException e) {
-                throw new RuntimeException(e);
-            }
-            mSharedPreferences = EncryptedSharedPreferences.create(MainApplication.getINSTANCE().getApplicationContext(), "mmm", mainKeyAlias, EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV, EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM);
-        } catch (Exception e) {
-            // Fallback
-            mSharedPreferences = context.getSharedPreferences(CONFIG_FILE_NAME, Context.MODE_PRIVATE);
-        }
+    private final SharedPreferences mSharedPreferences;
+
+    public SharedPreferenceDataStore(@NonNull SharedPreferences sharedPreferences) {
+        Timber.d("SharedPreferenceDataStore: %s", sharedPreferences);
+        mSharedPreferences = sharedPreferences;
     }
 
-    public static PreferenceDataStore getInstance() {
-        if (mInstance == null) {
-            mInstance = new EncryptedPreferenceDataStore(MainApplication.getINSTANCE().getApplicationContext());
-        }
-        return mInstance;
+    @NonNull
+    public SharedPreferences getSharedPreferences() {
+        Timber.d("getSharedPreferences: %s", mSharedPreferences);
+        return mSharedPreferences;
     }
 
     @Override

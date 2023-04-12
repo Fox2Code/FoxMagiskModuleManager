@@ -12,7 +12,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,7 +28,6 @@ import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.ColorUtils;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -74,7 +72,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     private long swipeRefreshBlocker = 0;
     private int overScrollInsetTop;
     private int overScrollInsetBottom;
-    private ColorDrawable actionBarBackground;
     private RecyclerView moduleList;
     private RecyclerView moduleListOnline;
     private CardView searchCard;
@@ -129,7 +126,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
             this.getWindow().setAttributes(layoutParams);
         }
-        this.actionBarBackground = new ColorDrawable(Color.TRANSPARENT);
         this.progressIndicator = findViewById(R.id.progress_bar);
         this.swipeRefreshLayout = findViewById(R.id.swipe_refresh);
         this.swipeRefreshLayoutOrigStartOffset = this.swipeRefreshLayout.getProgressViewStartOffset();
@@ -148,6 +144,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         this.moduleListOnline.setLayoutManager(new LinearLayoutManager(this));
         this.moduleList.setItemViewCacheSize(4); // Default is 2
         this.swipeRefreshLayout.setOnRefreshListener(this);
+        // add background blur if enabled
+        this.updateBlurState();
         hideActionBar();
         this.updateBlurState();
         checkShowInitialSetup();
@@ -397,18 +395,13 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     }
 
     private void updateBlurState() {
-        boolean isLightMode = this.isLightTheme();
-        int colorBackground;
-        try {
-            colorBackground = this.getColorCompat(android.R.attr.windowBackground);
-        } catch (Resources.NotFoundException e) {
-            colorBackground = this.getColorCompat(isLightMode ? R.color.white : R.color.black);
-        }
         if (MainApplication.isBlurEnabled()) {
-            this.actionBarBackground.setColor(ColorUtils.setAlphaComponent(colorBackground, 0x02));
-            this.actionBarBackground.setColor(Color.TRANSPARENT);
-        } else {
-            this.actionBarBackground.setColor(colorBackground);
+            // set bottom navigation bar color to transparent blur
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+            bottomNavigationView.setBackgroundColor(Color.TRANSPARENT);
+            bottomNavigationView.setAlpha(0.8F);
+            // set dialogs to have transparent blur
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
         }
     }
 

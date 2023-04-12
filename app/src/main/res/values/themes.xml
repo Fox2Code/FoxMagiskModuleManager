@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+
     <style name="Theme.MagiskModuleManager.Light" parent="Theme.Material3.Light">
-        <item name="android:isLightTheme"
-              tools:targetApi="q">true</item>
+        <item name="android:isLightTheme" tools:targetApi="q">true</item>
         <item name="isLightTheme">true</item>
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/orange_200</item>
@@ -31,6 +31,7 @@
         <item name="chipStyle">@style/Widget.Material3.Chip.Choice.Light</item>
         <!-- fonts -->
         <item name="android:fontFamily">@font/inter</item>
+        <item name="windowActionBar">false</item>
     </style>
 
     <style name="Widget.Material3.Chip.Choice.Light" parent="Widget.Material3.Chip.Assist">
@@ -59,10 +60,11 @@
         <item name="chipStyle">@style/Widget.Material3.Chip.Choice.Light</item>
         <!-- fonts -->
         <item name="android:fontFamily">@font/inter</item>
+        <item name="windowActionBar">false</item>
     </style>
+
     <style name="Theme.MagiskModuleManager.Dark" parent="Theme.Material3.Dark">
-        <item name="android:isLightTheme"
-              tools:targetApi="q">false</item>
+        <item name="android:isLightTheme" tools:targetApi="q">false</item>
         <item name="isLightTheme">false</item>
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/orange_200</item>
@@ -91,6 +93,7 @@
         <item name="backgroundColor">@color/dark_backgroundColor</item>
         <!-- fonts -->
         <item name="android:fontFamily">@font/inter</item>
+        <item name="windowActionBar">false</item>
     </style>
 
     <!-- Black theme, which is just a dark theme with a black background -->
@@ -113,6 +116,7 @@
         <item name="android:colorBackgroundCacheHint">@null</item>
         <!-- chips should be dark, not black -->
         <item name="chipStyle">@style/Widget.Material.Chip.Choice.Dark</item>
+        <item name="windowActionBar">false</item>
     </style>
 
     <style name="Widget.Material.Chip.Choice.Dark" parent="Widget.MaterialComponents.Chip.Action">
@@ -134,14 +138,17 @@
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
     </style>
 
-    <style name="Theme.MagiskModuleManager"
-           parent="Theme.MagiskModuleManager.Light" />
-  <style name="Theme.MagiskModuleManager.NoActionBar">
-  <item name="windowActionBar">false</item>
-  <item name="windowNoTitle">true</item>
-</style>
-  <style name="Theme.MagiskModuleManager.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-  <style name="Theme.MagiskModuleManager.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.MagiskModuleManager" parent="Theme.MagiskModuleManager.Light" />
+
+    <style name="Theme.MagiskModuleManager.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.MagiskModuleManager.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.MagiskModuleManager.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.realm.Realm;
@@ -327,7 +326,6 @@ public class RepoUpdater {
                         moduleListCache.setStats(downloads);
                         realm.copyToRealmOrUpdate(moduleListCache);
                         realm.commitTransaction();
-                        Timber.d("Inserted module %s to realm. New record is %s", id, Objects.requireNonNull(realm.where(ModuleListCache.class).equalTo("codename", id).findFirst()).toString());
                     } catch (
                             Exception e) {
                         Timber.w("Failed to get module info from module " + module + " in repo " + this.repoData.id + " with error " + e.getMessage());

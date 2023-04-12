@@ -122,6 +122,7 @@
             app:icon="@drawable/ic_baseline_blur_on_24"
             app:key="pref_enable_blur"
             app:singleLineTitle="false"
+            app:summary="@string/blur_desc"
             app:title="@string/enable_blur_pref" />
 
         <SwitchPreferenceCompat

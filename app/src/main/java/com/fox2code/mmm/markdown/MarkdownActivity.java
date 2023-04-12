@@ -3,9 +3,7 @@ package com.fox2code.mmm.markdown;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -15,16 +13,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.core.graphics.ColorUtils;
 
 import com.fox2code.foxcompat.app.FoxActivity;
 import com.fox2code.mmm.Constants;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.XHooks;
-import com.fox2code.mmm.utils.BlurUtils;
 import com.fox2code.mmm.utils.IntentHelper;
 import com.fox2code.mmm.utils.io.net.Http;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -34,17 +31,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
-import eightbitlab.com.blurview.BlurView;
 import timber.log.Timber;
 
 public class MarkdownActivity extends FoxActivity {
     private static final HashMap<String, String> redirects = new HashMap<>(4);
-    private static final String[] variants = new String[]{
-            "readme.md", "README.MD", ".github/README.md"
-    };
-    private TextView actionBarPadding;
-    private ColorDrawable actionBarBackground;
-    private BlurView actionBarBlur;
+    private static final String[] variants = new String[]{"readme.md", "README.MD", ".github/README.md"};
     private TextView header;
     private TextView footer;
 
@@ -57,8 +48,7 @@ public class MarkdownActivity extends FoxActivity {
             return Http.doHttpGet(url, true);
         } catch (IOException e) {
             // Workaround GitHub README.md case sensitivity issue
-            if (url.startsWith("https://raw.githubusercontent.com/") &&
-                    url.endsWith("/README.md")) {
+            if (url.startsWith("https://raw.githubusercontent.com/") && url.endsWith("/README.md")) {
                 String prefix = url.substring(0, url.length() - 9);
                 for (String suffix : variants) {
                     newUrl = prefix + suffix;
@@ -84,28 +74,19 @@ public class MarkdownActivity extends FoxActivity {
             this.forceBackPressed();
             return;
         }
-        String url = intent.getExtras()
-                .getString(Constants.EXTRA_MARKDOWN_URL);
-        String title = intent.getExtras()
-                .getString(Constants.EXTRA_MARKDOWN_TITLE);
-        String config = intent.getExtras()
-                .getString(Constants.EXTRA_MARKDOWN_CONFIG);
-        boolean change_boot = intent.getExtras()
-                .getBoolean(Constants.EXTRA_MARKDOWN_CHANGE_BOOT);
-        boolean needs_ramdisk = intent.getExtras()
-                .getBoolean(Constants.EXTRA_MARKDOWN_NEEDS_RAMDISK);
-        int min_magisk = intent.getExtras()
-                .getInt(Constants.EXTRA_MARKDOWN_MIN_MAGISK);
-        int min_api = intent.getExtras()
-                .getInt(Constants.EXTRA_MARKDOWN_MIN_API);
-        int max_api = intent.getExtras()
-                .getInt(Constants.EXTRA_MARKDOWN_MAX_API);
+        String url = intent.getExtras().getString(Constants.EXTRA_MARKDOWN_URL);
+        String title = intent.getExtras().getString(Constants.EXTRA_MARKDOWN_TITLE);
+        String config = intent.getExtras().getString(Constants.EXTRA_MARKDOWN_CONFIG);
+        boolean change_boot = intent.getExtras().getBoolean(Constants.EXTRA_MARKDOWN_CHANGE_BOOT);
+        boolean needs_ramdisk = intent.getExtras().getBoolean(Constants.EXTRA_MARKDOWN_NEEDS_RAMDISK);
+        int min_magisk = intent.getExtras().getInt(Constants.EXTRA_MARKDOWN_MIN_MAGISK);
+        int min_api = intent.getExtras().getInt(Constants.EXTRA_MARKDOWN_MIN_API);
+        int max_api = intent.getExtras().getInt(Constants.EXTRA_MARKDOWN_MAX_API);
         if (title != null && !title.isEmpty()) {
             this.setTitle(title);
         }
         setActionBarBackground(null);
-        this.getWindow().setFlags(
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, 0);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, 0);
         if (config != null && !config.isEmpty()) {
             String configPkg = IntentHelper.getPackageOfConfig(config);
             try {
@@ -115,8 +96,7 @@ public class MarkdownActivity extends FoxActivity {
                     return true;
                 });
             } catch (PackageManager.NameNotFoundException e) {
-                Timber.w("Config package \"" +
-                        configPkg + "\" missing for markdown view");
+                Timber.w("Config package \"" + configPkg + "\" missing for markdown view");
             }
         }
         // validate the url won't crash the app
@@ -130,13 +110,8 @@ public class MarkdownActivity extends FoxActivity {
         setContentView(R.layout.markdown_view);
         final ViewGroup markdownBackground = findViewById(R.id.markdownBackground);
         final TextView textView = findViewById(R.id.markdownView);
-        this.actionBarPadding = findViewById(R.id.markdown_action_bar_padding);
-        this.actionBarBackground = new ColorDrawable(Color.TRANSPARENT);
-        this.actionBarBlur = findViewById(R.id.markdown_action_bar_blur);
         this.header = findViewById(R.id.markdownHeader);
         this.footer = findViewById(R.id.markdownFooter);
-        this.actionBarBlur.setBackground(this.actionBarBackground);
-        BlurUtils.setupBlur(this.actionBarBlur, this, markdownBackground);
         this.updateBlurState();
         UiThreadHandler.handler.post(() -> // Fix header/footer height
                 this.updateScreenInsets(this.getResources().getConfiguration()));
@@ -157,57 +132,40 @@ public class MarkdownActivity extends FoxActivity {
                 String markdown = new String(rawMarkdown, StandardCharsets.UTF_8);
                 Timber.i("Done!");
                 runOnUiThread(() -> {
-                    findViewById(R.id.markdownFooter)
-                            .setMinimumHeight(this.getNavigationBarHeight());
-                    MainApplication.getINSTANCE().getMarkwon().setMarkdown(
-                            textView, MarkdownUrlLinker.urlLinkify(markdown));
+                    findViewById(R.id.markdownFooter).setMinimumHeight(this.getNavigationBarHeight());
+                    MainApplication.getINSTANCE().getMarkwon().setMarkdown(textView, MarkdownUrlLinker.urlLinkify(markdown));
                     if (markdownBackground != null) {
                         markdownBackground.setClickable(true);
                     }
                 });
             } catch (Exception e) {
                 Timber.e(e);
-                runOnUiThread(() -> Toast.makeText(this, R.string.failed_download,
-                        Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Toast.makeText(this, R.string.failed_download, Toast.LENGTH_SHORT).show());
             }
         }, "Markdown load thread").start();
     }
 
     private void updateBlurState() {
-        boolean isLightMode = this.isLightTheme();
-        int colorBackground;
-        try {
-            colorBackground = this.getColorCompat(
-                    android.R.attr.windowBackground);
-        } catch (Resources.NotFoundException e) {
-            colorBackground = this.getColorCompat(isLightMode ?
-                    R.color.white : R.color.black);
-        }
         if (MainApplication.isBlurEnabled()) {
-            this.actionBarBlur.setBlurEnabled(true);
-            this.actionBarBackground.setColor(ColorUtils
-                    .setAlphaComponent(colorBackground, 0x02));
-            this.actionBarBackground.setColor(Color.TRANSPARENT);
-        } else {
-            this.actionBarBlur.setBlurEnabled(false);
-            this.actionBarBlur.setOverlayColor(Color.TRANSPARENT);
-            this.actionBarBackground.setColor(colorBackground);
+            // set bottom navigation bar color to transparent blur
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+            bottomNavigationView.setBackgroundColor(Color.TRANSPARENT);
+            bottomNavigationView.setAlpha(0.8F);
+            // set dialogs to have transparent blur
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
         }
     }
 
     private void updateScreenInsets() {
-        this.runOnUiThread(() -> this.updateScreenInsets(
-                this.getResources().getConfiguration()));
+        this.runOnUiThread(() -> this.updateScreenInsets(this.getResources().getConfiguration()));
     }
 
     private void updateScreenInsets(Configuration configuration) {
-        boolean landscape = configuration.orientation ==
-                Configuration.ORIENTATION_LANDSCAPE;
+        boolean landscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE;
         int bottomInset = (landscape ? 0 : this.getNavigationBarHeight());
         int statusBarHeight = getStatusBarHeight();
         int actionBarHeight = getActionBarHeight();
         int combinedBarsHeight = statusBarHeight + actionBarHeight;
-        this.actionBarPadding.setMinHeight(combinedBarsHeight);
         this.header.setMinHeight(combinedBarsHeight);
         this.footer.setMinHeight(bottomInset);
         //this.actionBarBlur.invalidate();
@@ -226,8 +184,7 @@ public class MarkdownActivity extends FoxActivity {
     }
 
     private void addChip(MarkdownChip markdownChip) {
-        this.makeChip(this.getString(markdownChip.title),
-                markdownChip.desc == 0 ? null : this.getString(markdownChip.desc));
+        this.makeChip(this.getString(markdownChip.title), markdownChip.desc == 0 ? null : this.getString(markdownChip.desc));
     }
 
     private void addChip(MarkdownChip markdownChip, String extra) {
@@ -237,8 +194,7 @@ public class MarkdownActivity extends FoxActivity {
         } else {
             title = title + " " + extra;
         }
-        this.makeChip(title, markdownChip.desc == 0 ?
-                null : this.getString(markdownChip.desc));
+        this.makeChip(title, markdownChip.desc == 0 ? null : this.getString(markdownChip.desc));
     }
 
     private void makeChip(String title, String message) {
@@ -248,14 +204,9 @@ public class MarkdownActivity extends FoxActivity {
         chip.setVisibility(View.VISIBLE);
         if (message != null) {
             chip.setOnClickListener(_view -> {
-                MaterialAlertDialogBuilder builder =
-                        new MaterialAlertDialogBuilder(this);
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
 
-                builder
-                        .setTitle(title)
-                        .setMessage(message)
-                        .setCancelable(true)
-                        .setPositiveButton(R.string.ok, (x, y) -> x.dismiss()).show();
+                builder.setTitle(title).setMessage(message).setCancelable(true).setPositiveButton(R.string.ok, (x, y) -> x.dismiss()).show();
 
             });
         }

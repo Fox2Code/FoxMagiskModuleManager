@@ -57,18 +57,4 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <eightbitlab.com.blurview.BlurView
-        android:id="@+id/markdown_action_bar_blur"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/markdown_action_bar_padding"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </eightbitlab.com.blurview.BlurView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

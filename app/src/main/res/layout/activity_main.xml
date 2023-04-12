@@ -5,7 +5,7 @@
     android:id="@+id/root_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="0dp"
+    android:padding="4dp"
     app:fitsSystemWindowsInsets="start|end|bottom|top"
     tools:context=".MainActivity">
 
@@ -24,16 +24,16 @@
             android:layout_height="match_parent"
             android:paddingBottom="84dp">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/module_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-            <!-- online modules -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/module_list_online"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/module_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <!-- online modules -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/module_list_online"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
         </FrameLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -83,8 +83,8 @@
                 android:id="@+id/search_bar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="2dp"
                 android:background="@null"
+                android:padding="2dp"
                 android:visibility="visible"
                 app:iconifiedByDefault="true"
                 app:useDrawerArrowDrawable="true" />

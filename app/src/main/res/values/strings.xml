@@ -397,4 +397,6 @@
     <string name="empty_field">URL is required</string>
     <string name="repo_already_added">Repo already exists.</string>
     <string name="language_not_available">Language %s has not been translated. Help translate it?</string>
+    <string name="blur_desc">Creates a blur effect behind some dialogs and elements. Note that blur may not perform well on some devices and may not work for everyone.</string>
+    <string name="error_encrypted_shared_preferences">An error occurred reading shared preferences. Please reset the app.</string>
 </resources>

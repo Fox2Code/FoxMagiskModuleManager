@@ -109,7 +109,6 @@ public class ModuleViewListBuilder {
                 Timber.i("A2: %s", repoManager.getModules().size());
                 boolean no32bitSupport = Build.SUPPORTED_32_BIT_ABIS.length == 0;
                 for (RepoModule repoModule : repoManager.getModules().values()) {
-                    Timber.i("Module id %s from repo %s", repoModule.id, (repoModule.repoData == null ? "null" : repoModule.repoData.id));
                     // if repoData is null, something is wrong
                     if (repoModule.repoData == null) {
                         Timber.w("RepoData is null for module %s", repoModule.id);

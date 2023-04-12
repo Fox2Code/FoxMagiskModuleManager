@@ -20,12 +20,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.StringRes;
@@ -41,6 +39,8 @@ import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreferenceCompat;
 import androidx.preference.TwoStatePreference;
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKey;
 
 import com.fox2code.foxcompat.app.FoxActivity;
 import com.fox2code.foxcompat.view.FoxDisplay;
@@ -193,9 +193,23 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         @Override
         @SuppressWarnings("ConstantConditions")
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            String name = "mmm";
+            Context context = requireContext();
+            MasterKey masterKey;
             PreferenceManager preferenceManager = getPreferenceManager();
-            preferenceManager.setPreferenceDataStore(new EncryptedPreferenceDataStore(this.getContext()));
-            preferenceManager.setSharedPreferencesName("mmm");
+            SharedPreferenceDataStore dataStore;
+            SharedPreferences.Editor editor;
+            try {
+                masterKey = new MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build();
+                dataStore = new SharedPreferenceDataStore(EncryptedSharedPreferences.create(context, name, masterKey, EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV, EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM));
+                preferenceManager.setPreferenceDataStore(dataStore);
+                preferenceManager.setSharedPreferencesName("mmm");
+                editor = dataStore.getSharedPreferences().edit();
+            } catch (Exception e) {
+                Timber.e(e, "Failed to create encrypted shared preferences");
+                throw new RuntimeException(getString(R.string.error_encrypted_shared_preferences));
+            }
+            assert preferenceManager != null;
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
             applyMaterial3(getPreferenceScreen());
             // add bottom navigation bar to the settings
@@ -216,7 +230,6 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 findPreference("pref_enable_monet").setEnabled(false);
                 // Toggle monet off
                 ((TwoStatePreference) findPreference("pref_enable_monet")).setChecked(false);
-                SharedPreferences.Editor editor = getPreferenceManager().getSharedPreferences().edit();
                 editor.putBoolean("pref_enable_monet", false).apply();
                 // Set summary
                 findPreference("pref_enable_monet").setSummary(R.string.monet_disabled_summary);
@@ -231,8 +244,6 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 // You need to reboot your device at least once to be able to access dev-mode
                 if (devModeStepFirstBootIgnore || !MainApplication.isFirstBoot()) devModeStep = 1;
                 Timber.d("refreshing activity. New value: %s", newValue);
-                // Immediately save
-                SharedPreferences.Editor editor = getPreferenceManager().getSharedPreferences().edit();
                 editor.putString("pref_theme", (String) newValue).apply();
                 // If theme contains "transparent" then disable monet
                 if (newValue.toString().contains("transparent")) {
@@ -317,14 +328,12 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.low_performance_device_dialogue_title).setMessage(R.string.low_performance_device_dialogue_message).setPositiveButton(R.string.ok, (dialog, which) -> {
                             // Toggle blur on
                             ((TwoStatePreference) findPreference("pref_enable_blur")).setChecked(true);
-                            SharedPreferences.Editor editor = getPreferenceManager().getSharedPreferences().edit();
                             editor.putBoolean("pref_enable_blur", true).apply();
                             // Set summary
                             findPreference("pref_enable_blur").setSummary(R.string.blur_disabled_summary);
                         }).setNegativeButton(R.string.cancel, (dialog, which) -> {
                             // Revert to blur on
                             ((TwoStatePreference) findPreference("pref_enable_blur")).setChecked(false);
-                            SharedPreferences.Editor editor = getPreferenceManager().getSharedPreferences().edit();
                             editor.putBoolean("pref_enable_blur", false).apply();
                             // Set summary
                             findPreference("pref_enable_blur").setSummary(null);
@@ -1160,33 +1169,42 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         startActivity(intent);
                     });
                     AlertDialog alertDialog = builder.show();
-                    //make message clickable
-                    ((TextView) Objects.requireNonNull(alertDialog.findViewById(android.R.id.message))).setMovementMethod(LinkMovementMethod.getInstance());
                     final Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
                     input.setValidator(new AutoCompleteTextView.Validator() {
                         @Override
                         public boolean isValid(CharSequence charSequence) {
+                            Timber.i("checking repo url validity");
                             // show error if string is empty, does not start with https://, or contains spaces
                             if (charSequence.toString().isEmpty()) {
                                 input.setError(getString(R.string.empty_field));
+                                Timber.d("No input for repo");
+                                positiveButton.setEnabled(false);
                                 return false;
                             } else if (!charSequence.toString().matches("^https://.*")) {
                                 input.setError(getString(R.string.invalid_repo_url));
+                                Timber.d("Non https link for repo");
                                 return false;
                             } else if (charSequence.toString().contains(" ")) {
                                 input.setError(getString(R.string.invalid_repo_url));
+                                Timber.d("Repo url has space");
+                                positiveButton.setEnabled(false);
                                 return false;
                             } else if (!customRepoManager.canAddRepo(charSequence.toString())) {
                                 input.setError(getString(R.string.repo_already_added));
+                                Timber.d("Could not add repo for misc reason");
+                                positiveButton.setEnabled(false);
                                 return false;
                             } else {
+                                // enable ok button
+                                Timber.d("Repo URL is ok");
+                                positiveButton.setEnabled(true);
                                 return true;
                             }
                         }
 
                         @Override
                         public CharSequence fixText(CharSequence invalidText) {
-                            return null;
+                            return invalidText;
                         }
                     });
                     positiveButton.setEnabled(false);
