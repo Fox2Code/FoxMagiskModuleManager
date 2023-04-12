@@ -262,7 +262,7 @@
     <string name="background_update_check_excludes">Modulos a excluir das verificações de atualizações automáticas</string>
     <string name="title_activity_update">Atualizador do app</string>
     <string name="update_title">Atualizar app</string>
-    <string name="update_button">Por favor aguarde...</string>
+    <string name="update_button">Por favor aguarde…</string>
     <string name="fox2code_thanks">Criador por Fox2Code</string>
     <string name="save_logs">Salvar registros na memória e compartilhar</string>
     <string name="error_saving_logs">Não foi possível salvar os registros</string>
@@ -342,7 +342,7 @@
     <string name="add_repo_message">Repositórios devem ser servidos via HTTPS, e devem seguir a especificação escrita na documentação.</string>
     <string name="notification_update_summary">Os seguintes módulos podem ser atualizados:</string>
     <string name="notification_update_module_template">%1$s para a versão %2$s</string>
-    <string name="notification_channel_background_update">Procurando por atualizações...</string>
+    <string name="notification_channel_background_update">Procurando por atualizações…</string>
     <string name="notification_channel_background_update_description">FoxMMM está procurando atualizações em segundo plano.</string>
     <string name="notification_channel_category_background_update">Status da atualização</string>
     <string name="notification_update_wifi_desc">Apenas checar via WiFi</string>
@@ -363,4 +363,28 @@
     <string name="zip_intent_module_install">Você realmente quer instalar o módulo \"%1$s\" do arquivo zip \"%2$s\"\?
 \n
 \nTenha certeza de que você confia na fonte deste módulo, já que os módulos são muito poderosos e podem fazer quase tudo.</string>
+    <string name="setup_update_check_headline">Busca por atualizações</string>
+    <string name="setup_app_analytics">Habilitar coleta de dados analíticos</string>
+    <string name="clear_app_cache_desc">Isso normalmente não é necessário, mas pode ajudar a consertar alguns problemas.</string>
+    <string name="cache_clear_failed">Falha ao limpar cache</string>
+    <string name="cache_cleared">Cache limpo com sucesso</string>
+    <string name="clear_cache_dialogue_title">Limpar cache do aplicativo\?</string>
+    <string name="clear_app_cache">Limpar cache do aplicativo</string>
+    <string name="pref_category_privacy">Privacidade</string>
+    <string name="crash_reporting_pii">Enviar informações adicionais</string>
+    <string name="setup_crash_reporting_pii">Enviar informações adicionais em relatórios de falhas.</string>
+    <string name="empty_field">Uma URL é necessária</string>
+    <string name="repo_already_added">Repositório já existente.</string>
+    <string name="language_not_available">O idioma %s não foi traduzido. Gostaria de ajudar a traduzi-lo\?</string>
+    <string name="error_encrypted_shared_preferences">Um erro ocorreu ao carregar as preferências compartilhadas. Por favor, limpe os dados do aplicativo.</string>
+    <string name="crash_reporting_headline">Relatório de falhas</string>
+    <string name="crash_reporting_pii_desc">Permite enviar informações adicionais em relatórios de falhas, as quais podem conter informações pessoais indentificáveis como endereço IP e identificadores de dispositivo.</string>
+    <string name="setup_crash_reporting_pii_summary">Isso pode incluir identificadores de dispositivo e endereços IP. Nenhuma informação será utilizada para qualquer outro propósito além de analisar falhas e melhoras na performance.</string>
+    <string name="error_creating_cookie_database">Erro ao acessar o WebView. A Funcionalidade pode ser afetada.</string>
+    <string name="setup_scroll_down">Para habilitar o botão concluir, por favor, deslize para baixo e veja todas as opções.</string>
+    <string name="setup_background_update_check_require_wifi">Exigir wifi para buscar por atualizações</string>
+    <string name="certificate_error">O certificado do servidor não pôde ser verificado. Por favor, verifique se não há nada interceptando as conexões HTTPS do FoxMMM.</string>
+    <string name="blur_desc">Adiciona um efeito de borrão atrás de alguns diálogos e elementos. Perceba que o borrão pode funcionar incorretamente em alguns dispositivos e pode não funcionar para todos.</string>
+    <string name="setup_background_update_check_require_wifi_summary">Exigir wifi ou uma conexão ilimitada para buscar por atualizações</string>
+    <string name="clear_cache_dialogue_message">Isso irá limpar o cache do aplicativo. Suas preferências serão salvas, mas o aplicativo poderá demorar para realizar algumas operações temporariamente.</string>
 </resources>
