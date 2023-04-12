@@ -378,4 +378,6 @@
     <string name="empty_field">URL jest wymagany</string>
     <string name="repo_already_added">Repo już istnieje.</string>
     <string name="language_not_available">Język %s nie został przetłumaczony. Pomożesz\?</string>
+    <string name="blur_desc">Tworzy efekt rozmycia za niektórymi oknami dialogowymi i elementami. Zauważ, że rozmycie może nie działać dobrze na niektórych urządzeniach i może nie działać dla wszystkich.</string>
+    <string name="error_encrypted_shared_preferences">Wystąpił błąd podczas odczytywania preferencji współdzielonych. Proszę zresetować aplikację.</string>
 </resources>
