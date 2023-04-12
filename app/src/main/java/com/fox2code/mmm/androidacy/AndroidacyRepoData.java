@@ -43,6 +43,7 @@ import timber.log.Timber;
 
 @SuppressWarnings("KotlinInternalInJava")
 public final class AndroidacyRepoData extends RepoData {
+    public static String ANDROIDACY_DEVICE_ID = null;
     public static String token = MainApplication.getPreferences("androidacy").getString("pref_androidacy_api_token", null);
 
     static {
@@ -86,10 +87,15 @@ public final class AndroidacyRepoData extends RepoData {
     // Generates a unique device ID. This is used to identify the device in the API for rate
     // limiting and fraud detection.
     public static String generateDeviceId() {
+        // first, check if ANDROIDACY_DEVICE_ID is already set
+        if (ANDROIDACY_DEVICE_ID != null) {
+            return ANDROIDACY_DEVICE_ID;
+        }
         // Try to get the device ID from the shared preferences
         SharedPreferences sharedPreferences = MainApplication.getPreferences("androidacy");
         String deviceIdPref = sharedPreferences.getString("device_id", null);
         if (deviceIdPref != null) {
+            ANDROIDACY_DEVICE_ID = deviceIdPref;
             return deviceIdPref;
         } else {
             // Really not that scary - just hashes some device info. We can't even get the info
@@ -119,6 +125,7 @@ public final class AndroidacyRepoData extends RepoData {
                 digest = MessageDigest.getInstance("SHA-256");
             } catch (NoSuchAlgorithmException ignored) {
                 // This should never happen so we can just return the original device ID
+                ANDROIDACY_DEVICE_ID = deviceId;
                 return deviceId;
             }
             byte[] hash = digest.digest(deviceId.getBytes());
@@ -135,6 +142,8 @@ public final class AndroidacyRepoData extends RepoData {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("device_id", hexString.toString());
             editor.apply();
+            // Set ANDROIDACY_DEVICE_ID
+            ANDROIDACY_DEVICE_ID = hexString.toString();
             // Return it
             return hexString.toString();
         }
@@ -151,8 +160,7 @@ public final class AndroidacyRepoData extends RepoData {
             // set role and permissions on userInfo property
             userInfo = new String[][]{{"role", memberLevel}, {"permissions", String.valueOf(memberPermissions)}};
             return true;
-        } catch (
-                HttpException e) {
+        } catch (HttpException e) {
             if (e.getErrorCode() == 401) {
                 Timber.w("Invalid token, resetting...");
                 // Remove saved preference
@@ -162,8 +170,7 @@ public final class AndroidacyRepoData extends RepoData {
                 return false;
             }
             throw e;
-        } catch (
-                JSONException e) {
+        } catch (JSONException e) {
             // response is not JSON
             Timber.w("Invalid token, resetting...");
             Timber.w(e);
@@ -185,8 +192,7 @@ public final class AndroidacyRepoData extends RepoData {
             editor.apply();
             return false;
         }
-        if (Http.needCaptchaAndroidacy())
-            return false;
+        if (Http.needCaptchaAndroidacy()) return false;
         // Implementation details discussed on telegram
         // First, ping the server to check if it's alive
         try {
@@ -208,15 +214,13 @@ public final class AndroidacyRepoData extends RepoData {
                 }
                 return false;
             }
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             Timber.e(e, "Failed to ping server");
             return false;
         }
         String deviceId = generateDeviceId();
         long time = System.currentTimeMillis();
-        if (this.androidacyBlockade > time)
-            return true; // fake it till you make it. Basically,
+        if (this.androidacyBlockade > time) return true; // fake it till you make it. Basically,
         // don't fail just because we're rate limited. API and web rate limits are different.
         this.androidacyBlockade = time + 30_000L;
         try {
@@ -234,8 +238,7 @@ public final class AndroidacyRepoData extends RepoData {
             } else {
                 Timber.i("Using validated cached token");
             }
-        } catch (
-                IOException e) {
+        } catch (IOException e) {
             if (HttpException.shouldTimeout(e)) {
                 Timber.e(e, "We are being rate limited!");
                 this.androidacyBlockade = time + 3_600_000L;
@@ -256,8 +259,7 @@ public final class AndroidacyRepoData extends RepoData {
                     //noinspection SuspiciousRegexArgument
                     Timber.d("Token: %s", token.substring(0, token.length() - 4).replaceAll(".", "*") + token.substring(token.length() - 4));
                     memberLevel = jsonObject.getString("role");
-                } catch (
-                        JSONException e) {
+                } catch (JSONException e) {
                     Timber.e(e, "Failed to parse token");
                     // Show a toast
                     Looper mainLooper = Looper.getMainLooper();
@@ -280,8 +282,7 @@ public final class AndroidacyRepoData extends RepoData {
                     editor.apply();
                     Timber.i("Token saved to shared preference");
                 }
-            } catch (
-                    Exception e) {
+            } catch (Exception e) {
                 if (HttpException.shouldTimeout(e)) {
                     Timber.e(e, "We are being rate limited!");
                     this.androidacyBlockade = time + 3_600_000L;
@@ -384,8 +385,7 @@ public final class AndroidacyRepoData extends RepoData {
                     moduleInfo.minMagisk = // Allow 24.1 to mean 24100
                             (Integer.parseInt(minMagisk.substring(0, c)) * 1000) + (Integer.parseInt(minMagisk.substring(c + 1)) * 100);
                 }
-            } catch (
-                    Exception e) {
+            } catch (Exception e) {
                 moduleInfo.minMagisk = 0;
             }
             moduleInfo.needRamdisk = jsonObject.optBoolean("needRamdisk", false);
@@ -437,8 +437,7 @@ public final class AndroidacyRepoData extends RepoData {
 
     private String injectToken(String url) {
         // Do not inject token for non Androidacy urls
-        if (!AndroidacyUtil.isAndroidacyLink(url))
-            return url;
+        if (!AndroidacyUtil.isAndroidacyLink(url)) return url;
         if (this.testMode) {
             if (url.startsWith("https://production-api.androidacy.com/")) {
                 Timber.e("Got non test mode url: %s", AndroidacyUtil.hideToken(url));

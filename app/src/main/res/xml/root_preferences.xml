@@ -156,7 +156,9 @@
             app:singleLineTitle="false"
             app:summary="@string/dns_over_https_desc"
             app:title="@string/dns_over_https_pref" />
-        <!-- Note: Lockdown mode used to be called showcase mode -->
+
+        <!-- TO DO: figure out why the f*** we need a showcase mode -->
+        <!-- like seriously, why? -->
         <SwitchPreferenceCompat
             app:defaultValue="false"
             app:icon="@drawable/ic_baseline_lock_24"

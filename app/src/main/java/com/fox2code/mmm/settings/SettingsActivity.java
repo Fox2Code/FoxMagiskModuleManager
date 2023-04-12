@@ -361,6 +361,42 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 return true;
             });
 
+            // handle restart required for showcase mode
+            findPreference("pref_showcase_mode").setOnPreferenceChangeListener((p, v) -> {
+                if (v.equals(true)) {
+                    new MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.restart).setMessage(R.string.showcase_mode_dialogue_message).setPositiveButton(R.string.ok, (dialog, which) -> {
+                        // Toggle showcase mode on
+                        ((TwoStatePreference) findPreference("pref_showcase_mode")).setChecked(true);
+                        editor.putBoolean("pref_showcase_mode", true).apply();
+                        // restart app
+                        Intent mStartActivity = new Intent(requireContext(), MainActivity.class);
+                        mStartActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        int mPendingIntentId = 123456;
+                        PendingIntent mPendingIntent;
+                        mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                        AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+                        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+                        Timber.d("Restarting app to save showcase mode preference: %s", v);
+                        System.exit(0); // Exit app process
+                    }).setNegativeButton(R.string.cancel, (dialog, which) -> {
+                        // Revert to showcase mode on
+                        ((TwoStatePreference) findPreference("pref_showcase_mode")).setChecked(false);
+                        editor.putBoolean("pref_showcase_mode", false).apply();
+                        // restart app
+                        Intent mStartActivity = new Intent(requireContext(), MainActivity.class);
+                        mStartActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        int mPendingIntentId = 123456;
+                        PendingIntent mPendingIntent;
+                        mPendingIntent = PendingIntent.getActivity(requireContext(), mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                        AlarmManager mgr = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+                        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+                        Timber.d("Restarting app to save showcase mode preference: %s", v);
+                        System.exit(0); // Exit app process
+                    }).show();
+                }
+                return true;
+            });
+
             Preference languageSelector = findPreference("pref_language_selector");
             languageSelector.setOnPreferenceClickListener(preference -> {
                 LanguageSwitcher ls = new LanguageSwitcher(getActivity());

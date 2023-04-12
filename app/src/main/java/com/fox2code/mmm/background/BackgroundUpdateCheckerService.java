@@ -6,16 +6,17 @@ import static com.fox2code.mmm.background.BackgroundUpdateChecker.postNotificati
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.IBinder;
 
 import androidx.core.app.NotificationChannelCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
-import com.fox2code.foxcompat.app.internal.FoxIntentActivity;
 import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
@@ -31,7 +32,7 @@ import java.util.HashMap;
 import timber.log.Timber;
 
 @SuppressLint("RestrictedApi")
-public class BackgroundUpdateCheckerService extends FoxIntentActivity {
+public class BackgroundUpdateCheckerService extends Service {
     public static final String NOTIFICATION_CHANNEL_ID = "background_update";
     public static final String NOTIFICATION_CHANNEL_ID_APP = "background_update_app";
     public static final String ACTION_START_FOREGROUND_SERVICE = "ACTION_START_FOREGROUND_SERVICE";
@@ -68,83 +69,81 @@ public class BackgroundUpdateCheckerService extends FoxIntentActivity {
         }
     }
 
-    public void onCreate() {
+    @Override
+    public IBinder onBind(Intent intent) {
         Context context = MainApplication.getINSTANCE().getApplicationContext();
-        // check if action is ACTION_START_FOREGROUND_SERVICE, bail out if not
-        if (!ACTION_START_FOREGROUND_SERVICE.equals(getIntent().getAction())) {
-            return;
-        }
-        Timber.d("Starting background update checker service");
-        // acquire lock
-        synchronized (lock) {
-            // post checking notification if notofiications are enabled
-            if (ContextCompat.checkSelfPermission(MainApplication.getINSTANCE(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-                notificationManager.createNotificationChannel(new NotificationChannelCompat.Builder(NOTIFICATION_CHANNEL_ID_ONGOING, NotificationManagerCompat.IMPORTANCE_MIN).setName(context.getString(R.string.notification_channel_category_background_update)).setDescription(context.getString(R.string.notification_channel_category_background_update_description)).setGroup(NOTFIICATION_GROUP).build());
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID);
-                builder.setSmallIcon(R.drawable.ic_baseline_update_24);
-                builder.setPriority(NotificationCompat.PRIORITY_MIN);
-                builder.setCategory(NotificationCompat.CATEGORY_SERVICE);
-                builder.setShowWhen(false);
-                builder.setOnlyAlertOnce(true);
-                builder.setOngoing(true);
-                builder.setAutoCancel(false);
-                builder.setGroup("update");
-                builder.setContentTitle(context.getString(R.string.notification_channel_background_update));
-                builder.setContentText(context.getString(R.string.notification_channel_background_update_description));
-                notificationManager.notify(NOTIFICATION_ID_ONGOING, builder.build());
-            } else {
-                Timber.d("Not posting notification because of missing permission");
-            }
-            Thread.currentThread().setPriority(2);
-            ModuleManager.getINSTANCE().scanAsync();
-            RepoManager.getINSTANCE().update(null);
-            ModuleManager.getINSTANCE().runAfterScan(() -> {
-                int moduleUpdateCount = 0;
-                HashMap<String, RepoModule> repoModules = RepoManager.getINSTANCE().getModules();
-                // hasmap of updateable modules names
-                HashMap<String, String> updateableModules = new HashMap<>();
-                for (LocalModuleInfo localModuleInfo : ModuleManager.getINSTANCE().getModules().values()) {
-                    if ("twrp-keep".equals(localModuleInfo.id)) continue;
-                    // exclude all modules with id's stored in the pref pref_background_update_check_excludes
+        // check if ACTION_START_FOREGROUND_SERVICE was called
+        if (intent.getAction() != null && intent.getAction().equals(ACTION_START_FOREGROUND_SERVICE)) {
+            synchronized (lock) {
+                // post checking notification if notifications are enabled
+                if (ContextCompat.checkSelfPermission(MainApplication.getINSTANCE(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                    notificationManager.createNotificationChannel(new NotificationChannelCompat.Builder(NOTIFICATION_CHANNEL_ID_ONGOING, NotificationManagerCompat.IMPORTANCE_MIN).setName(context.getString(R.string.notification_channel_category_background_update)).setDescription(context.getString(R.string.notification_channel_category_background_update_description)).setGroup(NOTFIICATION_GROUP).build());
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID);
+                    builder.setSmallIcon(R.drawable.ic_baseline_update_24);
+                    builder.setPriority(NotificationCompat.PRIORITY_MIN);
+                    builder.setCategory(NotificationCompat.CATEGORY_SERVICE);
+                    builder.setShowWhen(false);
+                    builder.setOnlyAlertOnce(true);
+                    builder.setOngoing(true);
+                    builder.setAutoCancel(false);
+                    builder.setGroup("update_bg");
+                    builder.setContentTitle(context.getString(R.string.notification_channel_background_update));
+                    builder.setContentText(context.getString(R.string.notification_channel_background_update_description));
+                    notificationManager.notify(NOTIFICATION_ID_ONGOING, builder.build());
+                } else {
+                    Timber.d("Not posting notification because of missing permission");
+                }
+                ModuleManager.getINSTANCE().scanAsync();
+                RepoManager.getINSTANCE().update(null);
+                ModuleManager.getINSTANCE().runAfterScan(() -> {
+                    int moduleUpdateCount = 0;
+                    HashMap<String, RepoModule> repoModules = RepoManager.getINSTANCE().getModules();
+                    // hashmap of updateable modules names
+                    HashMap<String, String> updateableModules = new HashMap<>();
+                    for (LocalModuleInfo localModuleInfo : ModuleManager.getINSTANCE().getModules().values()) {
+                        if ("twrp-keep".equals(localModuleInfo.id)) continue;
+                        // exclude all modules with id's stored in the pref pref_background_update_check_excludes
+                        try {
+                            if (MainApplication.getPreferences("mmm").getStringSet("pref_background_update_check_excludes", null).contains(localModuleInfo.id))
+                                continue;
+                        } catch (Exception ignored) {
+                        }
+                        RepoModule repoModule = repoModules.get(localModuleInfo.id);
+                        localModuleInfo.checkModuleUpdate();
+                        if (localModuleInfo.updateVersionCode > localModuleInfo.versionCode && !PropUtils.isNullString(localModuleInfo.updateVersion)) {
+                            moduleUpdateCount++;
+                            updateableModules.put(localModuleInfo.name, localModuleInfo.version);
+                        } else if (repoModule != null && repoModule.moduleInfo.versionCode > localModuleInfo.versionCode && !PropUtils.isNullString(repoModule.moduleInfo.version)) {
+                            moduleUpdateCount++;
+                            updateableModules.put(localModuleInfo.name, localModuleInfo.version);
+                        }
+                    }
+                    if (moduleUpdateCount != 0) {
+                        Timber.d("Found %d updates", moduleUpdateCount);
+                        postNotification(context, updateableModules, moduleUpdateCount, false);
+                    }
+                });
+                // check for app updates
+                if (MainApplication.getPreferences("mmm").getBoolean("pref_background_update_check_app", false)) {
                     try {
-                        if (MainApplication.getPreferences("mmm").getStringSet("pref_background_update_check_excludes", null).contains(localModuleInfo.id))
-                            continue;
-                    } catch (Exception ignored) {
-                    }
-                    RepoModule repoModule = repoModules.get(localModuleInfo.id);
-                    localModuleInfo.checkModuleUpdate();
-                    if (localModuleInfo.updateVersionCode > localModuleInfo.versionCode && !PropUtils.isNullString(localModuleInfo.updateVersion)) {
-                        moduleUpdateCount++;
-                        updateableModules.put(localModuleInfo.name, localModuleInfo.version);
-                    } else if (repoModule != null && repoModule.moduleInfo.versionCode > localModuleInfo.versionCode && !PropUtils.isNullString(repoModule.moduleInfo.version)) {
-                        moduleUpdateCount++;
-                        updateableModules.put(localModuleInfo.name, localModuleInfo.version);
+                        boolean shouldUpdate = AppUpdateManager.getAppUpdateManager().checkUpdate(true);
+                        if (shouldUpdate) {
+                            Timber.d("Found app update");
+                            postNotificationForAppUpdate(context);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
-                if (moduleUpdateCount != 0) {
-                    Timber.d("Found %d updates", moduleUpdateCount);
-                    postNotification(context, updateableModules, moduleUpdateCount, false);
+                // remove checking notification
+                if (ContextCompat.checkSelfPermission(MainApplication.getINSTANCE(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                    Timber.d("Removing notification");
+                    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                    notificationManager.cancel(NOTIFICATION_ID_ONGOING);
                 }
-            });
-            // check for app updates
-            if (MainApplication.getPreferences("mmm").getBoolean("pref_background_update_check_app", false)) {
-                try {
-                    boolean shouldUpdate = AppUpdateManager.getAppUpdateManager().checkUpdate(true);
-                    if (shouldUpdate) {
-                        Timber.d("Found app update");
-                        postNotificationForAppUpdate(context);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            // remove checking notification
-            if (ContextCompat.checkSelfPermission(MainApplication.getINSTANCE(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                Timber.d("Removing notification");
-                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-                notificationManager.cancel(NOTIFICATION_ID_ONGOING);
             }
         }
+        return null;
     }
 }

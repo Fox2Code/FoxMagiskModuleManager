@@ -52,6 +52,7 @@ import java.security.SecureRandom;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -89,6 +90,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     @SuppressLint("RestrictedApi")
     // Use FoxProcess wrapper helper.
     private static final boolean wrapped = !FoxProcessExt.isRootLoader();
+    private static boolean SHOWCASE_MODE_TRUE = false;
     public static boolean isOfficial = false;
     private static long secret;
     private static Locale timeFormatLocale = Resources.getSystem().getConfiguration().getLocales().get(0);
@@ -98,6 +100,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     private static MainApplication INSTANCE;
     private static boolean firstBoot;
     private static HashMap<Object, Object> mSharedPrefs;
+    private static final ArrayList<String> callers = new ArrayList<>();
 
     static {
         Shell.setDefaultBuilder(shellBuilder = Shell.Builder.create().setFlags(Shell.FLAG_REDIRECT_STDERR).setTimeout(10).setInitializers(InstallerInitializer.class));
@@ -140,6 +143,24 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
             Timber.d("Creating shared prefs map");
             mSharedPrefs = new HashMap<>();
         }
+        /*
+          this part is only here because with added encryption, parts of code that were previously calling this over and over again or on each invocation of a method are causing performance issues.
+         */
+        if (BuildConfig.DEBUG) {
+            // get file, function, and line number
+            StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+            // get the caller of this method
+            StackTraceElement caller = stackTrace[3];
+            Timber.d("Shared prefs file: %s, caller: %s:%d", name, caller.getMethodName(), caller.getLineNumber());
+            // add the caller to an array. if the last 3 callers are the same, then we are in a loop, log at error level
+            callers.add(name + ":" + caller.getLineNumber() + ":" + caller.getMethodName());
+            // get the last 3 callers
+            List<String> last3 = callers.subList(Math.max(callers.size() - 3, 0), callers.size());
+            // if the last 3 callers are the same, then we are in a loop, log at error level
+            if (last3.size() == 3 && last3.get(0).equals(last3.get(1)) && last3.get(1).equals(last3.get(2))) {
+                Timber.e("Shared prefs loop detected. File: %s, caller: %s:%d", name, caller.getMethodName(), caller.getLineNumber());
+            }
+        }
         if (mSharedPrefs.containsKey(name)) {
             Timber.d("Returning cached shared prefs");
             return (SharedPreferences) mSharedPrefs.get(name);
@@ -167,7 +188,10 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     }
 
     public static boolean isShowcaseMode() {
-        return getPreferences("mmm").getBoolean("pref_showcase_mode", false);
+        if (SHOWCASE_MODE_TRUE) return true;
+        boolean showcaseMode = getPreferences("mmm").getBoolean("pref_showcase_mode", false);
+        SHOWCASE_MODE_TRUE = showcaseMode;
+        return showcaseMode;
     }
 
     public static boolean shouldPreventReboot() {

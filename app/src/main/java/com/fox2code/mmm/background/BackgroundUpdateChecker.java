@@ -51,10 +51,10 @@ public class BackgroundUpdateChecker extends Worker {
         if (!MainApplication.getPreferences("mmm").getBoolean("pref_background_update_check", false)) {
             return;
         }
-        if (MainApplication.getINSTANCE().isInForeground()) {
+        //if (MainApplication.getINSTANCE().isInForeground()) {
             // don't check if app is in foreground, this is a background check
-            return;
-        }
+         //   return;
+        //}
         // next, check if user requires wifi
         if (MainApplication.getPreferences("mmm").getBoolean("pref_background_update_check_wifi", true)) {
             // check if wifi is connected
@@ -68,7 +68,7 @@ public class BackgroundUpdateChecker extends Worker {
         // start foreground service
         Intent intent = new Intent(context, BackgroundUpdateCheckerService.class);
         intent.setAction(BackgroundUpdateCheckerService.ACTION_START_FOREGROUND_SERVICE);
-        ContextCompat.startForegroundService(context, intent);
+        context.startService(intent);
     }
 
     public static void postNotification(Context context, HashMap<String, String> updateable, int updateCount, boolean test) {
