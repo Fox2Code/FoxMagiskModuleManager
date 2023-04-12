@@ -31,7 +31,11 @@
         <item name="chipStyle">@style/Widget.Material3.Chip.Choice.Light</item>
         <!-- fonts -->
         <item name="android:fontFamily">@font/inter</item>
+        <item name="font">@font/inter</item>
         <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
     <style name="Widget.Material3.Chip.Choice.Light" parent="Widget.Material3.Chip.Assist">
@@ -60,7 +64,11 @@
         <item name="chipStyle">@style/Widget.Material3.Chip.Choice.Light</item>
         <!-- fonts -->
         <item name="android:fontFamily">@font/inter</item>
+        <item name="font">@font/inter</item>
         <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
     <style name="Theme.MagiskModuleManager.Dark" parent="Theme.Material3.Dark">
@@ -93,7 +101,11 @@
         <item name="backgroundColor">@color/dark_backgroundColor</item>
         <!-- fonts -->
         <item name="android:fontFamily">@font/inter</item>
+        <item name="font">@font/inter</item>
         <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
     <!-- Black theme, which is just a dark theme with a black background -->
@@ -116,7 +128,13 @@
         <item name="android:colorBackgroundCacheHint">@null</item>
         <!-- chips should be dark, not black -->
         <item name="chipStyle">@style/Widget.Material.Chip.Choice.Dark</item>
+        <!-- fonts -->
+        <item name="android:fontFamily">@font/inter</item>
+        <item name="font">@font/inter</item>
         <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
     <style name="Widget.Material.Chip.Choice.Dark" parent="Widget.MaterialComponents.Chip.Action">
@@ -130,22 +148,28 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowAnimationStyle">@android:style/Animation</item>
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <!-- fonts -->
+        <item name="android:fontFamily">@font/inter</item>
+        <item name="font">@font/inter</item>
     </style>
 
     <style name="Theme.MagiskModuleManager" parent="Theme.MagiskModuleManager.Light" />
 
-    <style name="Theme.MagiskModuleManager.NoActionBar">
+    <style name="Theme.MagiskModuleManager.NoActionBar" parent="Theme.MagiskModuleManager" >
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
     <style name="Theme.MagiskModuleManager.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

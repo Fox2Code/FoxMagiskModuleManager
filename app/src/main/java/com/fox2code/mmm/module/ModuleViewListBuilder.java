@@ -188,6 +188,7 @@ public class ModuleViewListBuilder {
                 moduleHolders = new ArrayList<>(Math.min(64,
                         this.mappedModuleHolders.size() + 5));
                 int special = 0;
+                // add notifications
                 Iterator<NotificationType> notificationTypeIterator = this.notifications.iterator();
                 while (notificationTypeIterator.hasNext()) {
                     NotificationType notificationType = notificationTypeIterator.next();

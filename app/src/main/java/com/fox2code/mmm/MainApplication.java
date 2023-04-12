@@ -54,6 +54,7 @@ import java.security.cert.CertificateException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -96,6 +97,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     @SuppressLint("StaticFieldLeak")
     private static MainApplication INSTANCE;
     private static boolean firstBoot;
+    private static HashMap<Object, Object> mSharedPrefs;
 
     static {
         Shell.setDefaultBuilder(shellBuilder = Shell.Builder.create().setFlags(Shell.FLAG_REDIRECT_STDERR).setTimeout(10).setInitializers(InstallerInitializer.class));
@@ -133,13 +135,24 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
 
     public static SharedPreferences getPreferences(String name) {
         // encryptedSharedPreferences is used
-        Context context = getINSTANCE();
+        Context mContext = getINSTANCE();
+        if (mSharedPrefs == null) {
+            Timber.d("Creating shared prefs map");
+            mSharedPrefs = new HashMap<>();
+        }
+        if (mSharedPrefs.containsKey(name)) {
+            Timber.d("Returning cached shared prefs");
+            return (SharedPreferences) mSharedPrefs.get(name);
+        }
         try {
-            MasterKey masterKey = new MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build();
-            return EncryptedSharedPreferences.create(context, name, masterKey, EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV, EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM);
+            Timber.d("Creating encrypted shared prefs");
+            MasterKey masterKey = new MasterKey.Builder(mContext).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build();
+            SharedPreferences sharedPreferences = EncryptedSharedPreferences.create(mContext, name, masterKey, EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV, EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM);
+            mSharedPrefs.put(name, sharedPreferences);
+            return sharedPreferences;
         } catch (Exception e) {
             Timber.e(e, "Failed to create encrypted shared preferences");
-            return context.getSharedPreferences(name, Context.MODE_PRIVATE);
+            return mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
         }
     }
 

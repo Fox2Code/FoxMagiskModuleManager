@@ -71,11 +71,13 @@
         tools:targetApi="tiramisu">
         <activity
             android:name=".UpdateActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.MagiskModuleManager.NoActionBar" />
         <activity
             android:name=".CrashHandler"
             android:exported="false"
-            android:process=":crash" />
+            android:process=":crash"
+            android:theme="@style/Theme.MagiskModuleManager.NoActionBar" />
         <activity
             android:name=".SetupActivity"
             android:exported="false"
@@ -104,7 +106,8 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name_short"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.MagiskModuleManager.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -130,7 +133,7 @@
         <activity
             android:name=".utils.ZipFileOpener"
             android:exported="true"
-            android:theme="@style/Theme.MagiskModuleManager">
+            android:theme="@style/Theme.MagiskModuleManager.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -146,13 +149,13 @@
             android:name=".markdown.MarkdownActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/Theme.MagiskModuleManager" />
+            android:theme="@style/Theme.MagiskModuleManager.NoActionBar" />
 
         <activity
             android:name=".androidacy.AndroidacyActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/Theme.MagiskModuleManager">
+            android:theme="@style/Theme.MagiskModuleManager.NoActionBar" >
 
             <!--
             <intent-filter>

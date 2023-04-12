@@ -16,7 +16,6 @@ import android.webkit.CookieManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.FragmentActivity;
 
 import com.fox2code.foxcompat.app.FoxActivity;
@@ -51,11 +50,11 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         super.onCreate(savedInstanceState);
         this.setTitle(R.string.setup_title);
         // set action bar
-        ActionBar actionBar = getSupportActionBar();
+        /**ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             // back button is close button
             actionBar.hide();
-        }
+        }*/
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, 0);
         createFiles();
         disableUpdateActivityForFdroidFlavor();

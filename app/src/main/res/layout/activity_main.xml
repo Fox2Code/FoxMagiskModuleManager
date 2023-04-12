@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="4dp"
-    app:fitsSystemWindowsInsets="start|end|bottom|top"
+    app:layout_constraintTop_toTopOf="parent"
     tools:context=".MainActivity">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

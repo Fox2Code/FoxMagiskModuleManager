@@ -57,7 +57,8 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
         this.footerPx = -1;
     }
 
-    public ModuleHolder(int footerPx,boolean header) {
+    @SuppressWarnings("unused")
+    public ModuleHolder(int footerPx, boolean header) {
         this.moduleId = "";
         this.notificationType = null;
         this.separator = null;

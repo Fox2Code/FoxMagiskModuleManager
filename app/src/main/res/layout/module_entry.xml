@@ -9,17 +9,20 @@
     android:filterTouchesWhenObscured="true"
     android:gravity="center_vertical"
     android:orientation="vertical"
+    android:padding="1dp"
     tools:ignore="RtlHardcoded,RtlSymmetry">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_view"
         style="?attr/materialCardViewElevatedStyle"
         android:layout_width="match_parent"
+        android:padding="0dp"
         android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="4dp"
             android:orientation="vertical">
 
             <LinearLayout
@@ -27,14 +30,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="6dp"
+                android:padding="2dp"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <!-- Module components -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
+                    android:gravity="fill"
                     android:orientation="horizontal">
 
                     <com.google.android.material.chip.Chip
@@ -56,10 +59,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:maxLines="2"
-                        android:paddingStart="2dp"
+                        android:paddingStart="4dp"
+                        android:layout_gravity="center_vertical"
                         android:text="@string/loading"
-                        android:textAppearance="?attr/textAppearanceTitleMedium"
-                        android:textSize="16sp" />
+                        android:textSize="19sp" />
 
                     <com.google.android.material.materialswitch.MaterialSwitch
                         android:id="@+id/switch_action"
@@ -83,7 +86,7 @@
                     android:id="@+id/credit_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingStart="2dp"
+                    android:paddingStart="4dp"
                     android:text="@string/loading"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:textColor="?android:attr/textColorSecondary"
@@ -91,10 +94,10 @@
 
                 <TextView
                     android:id="@+id/description_text"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:paddingStart="2dp"
+                    android:layout_marginVertical="4dp"
+                    android:padding="4dp"
                     android:text="@string/loading"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:textColor="?android:attr/textColorSecondary"
@@ -106,7 +109,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginTop="8dp"
-                    android:paddingStart="2dp"
+                    android:paddingStart="4dp"
                     android:text="@string/loading"
                     android:textSize="12sp" />
 
@@ -127,6 +130,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scrollbars="none"
+                android:layout_marginHorizontal="2dp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@id/module_layout_helper">
 

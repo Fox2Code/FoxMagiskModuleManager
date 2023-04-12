@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
@@ -119,7 +120,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         setContentView(R.layout.activity_main);
         this.setTitle(R.string.app_name);
         this.getWindow().setFlags(WindowManager.LayoutParams.FIRST_APPLICATION_WINDOW, WindowManager.LayoutParams.FIRST_APPLICATION_WINDOW);
-        setActionBarBackground(null);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             WindowManager.LayoutParams layoutParams = this.getWindow().getAttributes();
             layoutParams.layoutInDisplayCutoutMode = // Support cutout in Android 9
@@ -146,8 +146,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         this.swipeRefreshLayout.setOnRefreshListener(this);
         // add background blur if enabled
         this.updateBlurState();
-        hideActionBar();
-        this.updateBlurState();
+        //hideActionBar();
         checkShowInitialSetup();
         this.moduleList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -208,10 +207,18 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 // set search view to cleared
                 this.searchView.setQuery("", false);
             }
-            // update the padding of blur_frame to match the new bottom nav height
-            View blurFrame = findViewById(R.id.blur_frame);
-            blurFrame.setPadding(blurFrame.getPaddingLeft(), blurFrame.getPaddingTop(), blurFrame.getPaddingRight(), bottomNavigationView.getHeight());
             return true;
+        });
+        // update the padding of blur_frame to match the new bottom nav height
+        View blurFrame = findViewById(R.id.blur_frame);
+        blurFrame.post(() -> blurFrame.setPadding(blurFrame.getPaddingLeft(), blurFrame.getPaddingTop(), blurFrame.getPaddingRight(), bottomNavigationView.getHeight()));
+        // for some reason, root_container has a margin at the top. remove it.
+        View rootContainer = findViewById(R.id.root_container);
+        rootContainer.post(() -> {
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rootContainer.getLayoutParams();
+            params.topMargin = 0;
+            rootContainer.setLayoutParams(params);
+            rootContainer.setY(0F);
         });
         InstallerInitializer.tryGetMagiskPathAsync(new InstallerInitializer.Callback() {
             @Override
@@ -272,12 +279,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     updateScreenInsets(getResources().getConfiguration());
                 });
 
-                // On every preferences change, log the change if debug is enabled
-                if (BuildConfig.DEBUG) {
-                    // Log all preferences changes
-                    MainApplication.getPreferences("mmm").registerOnSharedPreferenceChangeListener((prefs, key) -> Timber.i("onSharedPreferenceChanged: " + key + " = " + prefs.getAll().get(key)));
-                }
-
                 Timber.i("Scanning for modules!");
                 if (BuildConfig.DEBUG) Timber.i("Initialize Update");
                 final int max = ModuleManager.getINSTANCE().getUpdatableModuleCount();
@@ -307,7 +308,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                             progressIndicator.setProgressCompat(PRECISION, true);
                             progressIndicator.setVisibility(View.GONE);
                             searchView.setEnabled(false);
-                            setActionBarBackground(null);
                             updateScreenInsets(getResources().getConfiguration());
                         });
                         return;
@@ -339,7 +339,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     progressIndicator.setProgressCompat(PRECISION, true);
                     progressIndicator.setVisibility(View.GONE);
                     searchView.setEnabled(true);
-                    setActionBarBackground(null);
                     updateScreenInsets(getResources().getConfiguration());
                 });
                 if (BuildConfig.DEBUG) Timber.i("Apply");
@@ -377,17 +376,15 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         boolean landscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE;
         int bottomInset = (landscape ? 0 : this.getNavigationBarHeight());
         int statusBarHeight = getStatusBarHeight() + FoxDisplay.dpToPixel(2);
-        int actionBarHeight = getActionBarHeight();
-        int combinedBarsHeight = statusBarHeight + actionBarHeight;
-        this.swipeRefreshLayout.setProgressViewOffset(false, swipeRefreshLayoutOrigStartOffset + combinedBarsHeight, swipeRefreshLayoutOrigEndOffset + combinedBarsHeight);
-        this.moduleViewListBuilder.setHeaderPx(Math.max(statusBarHeight, combinedBarsHeight));
-        this.moduleViewListBuilderOnline.setHeaderPx(Math.max(statusBarHeight, combinedBarsHeight));
+        this.swipeRefreshLayout.setProgressViewOffset(false, swipeRefreshLayoutOrigStartOffset + statusBarHeight, swipeRefreshLayoutOrigEndOffset + statusBarHeight);
+        this.moduleViewListBuilder.setHeaderPx(statusBarHeight);
+        this.moduleViewListBuilderOnline.setHeaderPx(statusBarHeight);
         this.moduleViewListBuilder.setFooterPx(FoxDisplay.dpToPixel(4) + bottomInset + this.searchCard.getHeight());
         this.moduleViewListBuilderOnline.setFooterPx(FoxDisplay.dpToPixel(4) + bottomInset + this.searchCard.getHeight());
         this.searchCard.setRadius(this.searchCard.getHeight() / 2F);
         this.moduleViewListBuilder.updateInsets();
         //this.actionBarBlur.invalidate();
-        this.overScrollInsetTop = combinedBarsHeight;
+        this.overScrollInsetTop = statusBarHeight;
         this.overScrollInsetBottom = bottomInset;
         // set root_container to have zero padding
         findViewById(R.id.root_container).setPadding(0, statusBarHeight, 0, 0);

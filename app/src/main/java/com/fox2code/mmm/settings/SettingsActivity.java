@@ -163,7 +163,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
         setTitle(R.string.app_name);
-        hideActionBar();
+        //hideActionBar();
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(onItemSelectedListener);
         if (savedInstanceState == null) {
@@ -194,7 +194,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         @SuppressWarnings("ConstantConditions")
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             String name = "mmm";
-            Context context = requireContext();
+            Context context = MainApplication.getINSTANCE();
             MasterKey masterKey;
             PreferenceManager preferenceManager = getPreferenceManager();
             SharedPreferenceDataStore dataStore;

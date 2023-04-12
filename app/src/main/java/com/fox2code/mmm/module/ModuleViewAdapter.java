@@ -226,7 +226,7 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 } else if (moduleHolder.moduleId.equals("hosts")) {
                     this.updateText.setVisibility(View.VISIBLE);
                     this.updateText.setText(R.string.magisk_builtin_module);
-                } else if (moduleHolder.moduleId.equals("substratum")) {
+                } else if (moduleHolder.moduleId.contains("substratum")) {
                     this.updateText.setVisibility(View.VISIBLE);
                     this.updateText.setText(R.string.substratum_builtin_module);
                 } else {
@@ -292,6 +292,8 @@ public final class ModuleViewAdapter extends RecyclerView.Adapter<ModuleViewAdap
                 if (type == ModuleHolder.Type.NOTIFICATION) {
                     NotificationType notificationType = moduleHolder.notificationType;
                     this.titleText.setText(notificationType.textId);
+                    // set title text appearance
+                    this.titleText.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyLarge);
                     this.buttonAction.setImageResource(notificationType.iconId);
                     this.cardView.setClickable(notificationType.onClickListener != null || moduleHolder.onClickListener != null);
                     this.titleText.setTypeface(notificationType.special ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT);

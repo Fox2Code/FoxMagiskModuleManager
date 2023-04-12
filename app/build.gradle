@@ -330,9 +330,9 @@ dependencies {
     // logging interceptor
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.10'
     // Chromium cronet from androidacy
-    implementation 'com.androidacy:cronet-common:111.0.5563.75'
-    implementation 'com.androidacy:cronet-native:111.0.5563.75'
-    implementation 'com.androidacy:cronet-api:111.0.5563.75'
+    implementation 'com.androidacy:cronet-common:112.0.5615.62'
+    implementation 'com.androidacy:cronet-native:112.0.5615.62'
+    implementation 'com.androidacy:cronet-api:112.0.5615.62'
     // protobuf - fixes a crash on some devices
     implementation 'com.google.protobuf:protobuf-javalite:3.22.2'
 
