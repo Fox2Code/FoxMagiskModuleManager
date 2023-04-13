@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Gestionnaire de modules Magisk de Fox</string>
     <string name="app_name_short">Gestionnaire de Fox</string>
     <string name="fail_root_magisk">Échec de l\’accès à la racine ou à Magisk</string>
@@ -16,7 +15,7 @@
     <string name="no_web_view">Impossible d\’ouvrir le WebView du système</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="app_update_available">Mis-à-jour de l\’application disponible</string>
-    <string name="app_update">MàJ l\'application</string>
+    <string name="app_update">MàJ l\’application</string>
     <string name="no_desc_found">Aucune description trouvée.</string>
     <string name="download_module">Mode téléchargement</string>
     <string name="install_module">Installation du module</string>
@@ -39,10 +38,11 @@
     <string name="require_android_12">Requière Android 12+</string>
     <string name="install_terminal_reboot_now">Redémarrer</string>
     <string name="language">Langue</string>
-    <string name="yes" translatable="false">Oui</string>
-    <string name="no" translatable="false">Non</string>
-    <string name="ok" translatable="false">@android:string/ok</string>
-    <string name="cancel" translatable="false">Annuler</string>
+    <string name="yes" translatable="false">@android:string/Oui</string>
+    <string name="no" translatable="false">@android:string/Non</string>
+    <string name="ok" translatable="false">@android:string/Ok</string>
+    <string name="cancel" translatable="false">@android:string/Annuler</string>
+    
     <!-- Module section translation -->
     <string name="module_last_update">Dernière mis-à-jour :</string>
     <string name="module_repo">Dépôt :</string>
@@ -56,6 +56,7 @@
     <string name="module_min_magisk_chip">Magisk min. "%s"</string>
     <string name="module_min_sdk_chip">Android Min.</string>
     <string name="module_max_sdk_chip">Android Max.</string>
+    
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="manage_repos_pref">Gestion des dépôts</string>
@@ -104,8 +105,10 @@
     <string name="dev_mode_disabled">Mode développeur désactivé</string>
     <string name="force_english_pref">Forcer la langue Anglaise</string>
     <string name="disable_low_quality_module_filter_pref">Désactiver le filtre de module de basse qualité</string>
-    <string name="disable_low_quality_module_filter_desc">Certains modules ne déclarent pas leur métadonnées correctement, causant des bugs visuels, et/ou indiquant une mauvaise qualité du module.
-\nÀ activer à vos risques et périls!</string>
+    <string name="disable_low_quality_module_filter_desc">
+        Certains modules ne déclarent pas leur métadonnées correctement, causant des bugs visuels,
+        et/ou indiquant une mauvaise qualité du module.\nÀ activer à vos risques et périls!
+    </string>
     <string name="dns_over_https_pref">DNS sur https</string>
     <string name="dns_over_https_desc">
         Pourrait corriger les problèmes de connexions dans certains cas.
@@ -134,7 +137,8 @@
     <string name="restore_module_list">Restaurer les modules</string>
     <string name="require_internet">Cette opération requière une connexion internet</string>
     <string name="androidacy_test_mode_pref">Mode test Androidacy</string>
-    <string name="androidacy_test_mode_desc">Utiliser la mise à disposition Androidacy de test au lieu du point de terminaison stable. (Nécessite le redémarrage du processus d\’application)</string>
+    <string name="androidacy_test_mode_desc">Utiliser la mise à disposition Androidacy de test au lieu du point de terminaison stable. (Redémarrera l\’application)</string>
+    
     <!-- Background Notification translation -->
     <string name="notification_update_title">%1$d mise(s) à jour de module(s) trouvée(s)</string>
     <string name="notification_update_title_easter_egg">%i mises à jours de module camouflée</string>
@@ -142,6 +146,7 @@
     <string name="notification_update_pref">Vérification automatique de mise à jour pour les modules</string>
     <string name="notification_update_desc">Peut améliorer l\’usage de la batterie</string>
     <string name="notification_update_debug_pref">Test de notification</string>
+    
     <!-- Set to true in translation file if your language is right to left -->
     <bool name="lang_support_rtl">false</bool>
     <!-- Always copy language_support_level when translating -->
@@ -179,7 +184,7 @@
     <string name="api_key_restart">La clé d\’API à été changée. Redémarrer l\’application pour appliquer les changements.</string>
     <string name="api_key_unchanged">La clé d\’API que vous avez entré est la même que celle étant déjà utilisée.</string>
     <string name="permission_notification_title">Autoriser les notifications?</string>
-    <string name="permission_notification_message">Nous avons de l\'accès aux notifications pour vous avertir des mises à jour de l\'application et des modules. Si vous n\'autorisez pas cette permission, la vérification des mises à jours en arrière-plan ne fonctionnera pas.</string>
+    <string name="permission_notification_message">Nous avons de l\’accès aux notifications pour vous avertir des mises à jour de l\’application et des modules. Si vous n\’autorisez pas cette permission, la vérification des mises à jours en arrière-plan ne fonctionnera pas.</string>
     <string name="permission_notification_grant">Accorder la permission</string>
     <string name="background_update_check_permission_required">Merci d\’activer les notifications pour activer cette option.</string>
     <string name="dont_ask_again">Ne plus demander</string>
@@ -275,16 +280,14 @@
     <string name="androidacy_thanks">Développé en partit par Androidacy</string>
     <string name="androidacy_thanks_desc">Un grand merci à Androidacy pour son intégration et ses contributions à l\’application.</string>
     <string name="contributors">Et bien-sûr, merci à tous les contributeurs, que ce soit des traductions, du code, ou bien juste le fait d\’être agréable à fréquenter! Nous vous adorons tous et toutes.</string>
-    <string name="zip_unpacking">Inspection du module…</string>
+        <string name="zip_unpacking">Inspection du module…</string>
     <string name="warning_message">Ce module a des indicateurs qui peuvent avoir été installés à votre insu, ou qu\’il peut tenter de cacher.\n\nSa désinstallation est hautement recommandée.</string>
     <string name="understand">Je comprends</string>
     <string name="setup_theme_title">Choisir un thème</string>
     <string name="setup_language_button">Choisir un language</string>
     <string name="title_activity_setup">Assistant de configuration</string>
     <string name="action_settings">Réglages</string>
-    <string name="repo_update_failed_message">Échec de MàJ pour les dépôts suivants:
-\n
-\n%s</string>
+    <string name="repo_update_failed_message">Échec de MàJ pour les dépôts suivants:\n\n%s</string>
     <string name="reset_api_key">Réinitialiser les clés d\’API</string>
     <string name="upgrade_androidacy_promo">MàJ vers l\’offre payante</string>
     <string name="upgrade_androidacy_promo_desc">MàJ vers l\’offre supprimera les pubs, les captchas, les téléchargements pour le dépôt Androidacy, leur support et les autheurs des modules.</string>
@@ -321,8 +324,7 @@
     <string name="api_key_mismatch">La clé d\’API n\’est pas dans un format valide</string>
     <string name="notification_update_ignore_desc">Liste des modules à exclure des vérifications de MàJ</string>
     <string name="notification_update_ignore_pref">Modules exclus</string>
-    <string name="pref_category_updates">MàJ</string>
-    <string name="invalid_excludes">Saisie invalide</string>
+    <string name="pref_category_updates">MàJ</string><string name="invalid_excludes">Saisie invalide</string>
     <string name="invalid_characters_message">La liste de modules que vous avez saisie est invalide. Veuillez n\’entrer que des ID de noms de modules valides séparés par des virgules</string>
     <string name="background_update_check_excludes">Modules à exclure des vérifications de MàJ automatiques</string>
     <string name="title_activity_update">MàJ dans l\’application</string>
@@ -331,8 +333,7 @@
     <string name="update_button">Merci de patienter...</string>
     <string name="error_no_extras">ERREURE: Donnée invalides reçues au lancement</string>
     <string name="update_debug_warning">Il semblerait que vous soyez en train d\’utiliser une fabrication de débuggage. Les fabrications de débuggage doivent être MàJ manuellement, et les MàJ incorporées ne sont pas supportées</string>
-    <string name="error_no_action">ERREURE: Action spécifiée invalide. Refus de continuer.</string>
-    <string name="update_available">MàJ trouvée</string>
+    <string name="error_no_action">ERREURE: Action spécifiée invalide. Refus de continuer.</string><string name="update_available">MàJ trouvée</string>
     <string name="checking_for_update">Vérification des MàJ…</string>
     <string name="no_update_available">Vous êtes à jour!</string>
     <string name="download_update">Téléchargement de la MàJ</string>
@@ -374,4 +375,29 @@
     <string name="modules">Modules</string>
     <string name="no_browser">Vous n\’avez pas de navigateur installé. Merci d\’en installer un pour continuer.</string>
     <string name="search">Rechercher</string>
+    <string name="crash_reporting_headline">Signaler le plantage</string>
+    <string name="setup_update_check_headline">Vérification de MàJ</string>
+    <string name="setup_background_update_check_require_wifi">Requière le wifi pour les vérifications de MàJ</string>
+    <string name="setup_background_update_check_require_wifi_summary">Requière le wifi ou de n\’importe quelle autre connexion non facturée pour éffectuer des vérifications de MàJ</string>
+    <string name="setup_app_analytics">Autoriser l\’analyse de l\’application</string>
+    <string name="clear_app_cache">Éffacer le cache de l\’application</string>
+    <string name="clear_app_cache_desc">Celà ne devrait en principe pas être nécessaire mais pourrait corriger certains problèmes.</string>
+    <string name="cache_cleared">Cache effacé avec succès</string>
+    <string name="cache_clear_failed">Échec de l\’effacement du cache</string>
+    <string name="clear_cache_dialogue_title">Éffacer le cache de l\’application?</string>
+    <string name="clear_cache_dialogue_message">Celà effacera le cache de l\’application. Vos réglages seront sauvegardés, mais l\’application pourrait prendre temporairement plus de temps pour effectuer certaines tâches.</string>
+    <string name="certificate_error">Le certificat du serveur n\’a pas pu être vérifié. Veuillez vous assurer que rien n\’intercepte les connexions HTTPS pour FoxMMM.</string>
+    <string name="pref_category_privacy">Confidentialité</string>
+    <string name="crash_reporting_pii_desc">Permettre l\’envoie additionnel d\’information dans les rapports de plantages, certaines d\’entre elles pourraient contenir des informations personelles identifiables telles que les adresses IP et les identifiants du périphérique.</string>
+    <string name="crash_reporting_pii">Envoyer les informations additionelles</string>
+    <string name="setup_crash_reporting_pii">Envoyer les informations additionelles dans les rapports de plantages.</string>
+    <string name="setup_crash_reporting_pii_summary">Ceci pourrait inclure les identifiants du périphérique et les adresses IP. Aucune donnée ne sera utilisée à d\’autres fins que l\’analyse des accidents et l\’amélioration des performances.</string>
+    <string name="error_creating_cookie_database">Erreur lors de l\’accès à WebView. La fonctionnalité pourrait être impactée.</string>
+    <string name="setup_scroll_down">Pour activer le boutton terminer, Merci de faire défiler vers le bas et voir toutes les options.</string>
+    <string name="empty_field">L\’URL est requise</string>
+    <string name="repo_already_added">Le dépôt éxiste déjà.</string>
+    <string name="language_not_available">Le language %s n\’a pas de traduction. Aider à traduire ?</string>
+    <string name="blur_desc">Créer un effet de blure entre certaines fenêtres et éléments. Noter que ce blure pourrait ne pas parfaitement fonctionner sur certains périphériques et ne pas fonctionner du tout pour tout le monde.</string>
+    <string name="error_encrypted_shared_preferences">Une erreure est survenue lors de la lecture des réglages partagés. Merci de réinitialiser l\’application.</string>
+    <string name="showcase_mode_dialogue_message">Un redémarrage de l\’application est requis pour activer le mode vitrine.</string>
 </resources>
