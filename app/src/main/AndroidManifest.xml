@@ -218,10 +218,6 @@
         <meta-data
             android:name="io.sentry.attach-stacktrace"
             android:value="true" />
-        <!-- Don't send PII, this is actually default but let's be explicit -->
-        <meta-data
-            android:name="io.sentry.sendDefaultPii"
-            android:value="false" />
         <!-- Performance profiling -->
         <meta-data
             android:name="io.sentry.traces.profiling.sample-rate"

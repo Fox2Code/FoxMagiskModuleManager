@@ -143,6 +143,8 @@ public class BackgroundUpdateCheckerService extends Service {
                     notificationManager.cancel(NOTIFICATION_ID_ONGOING);
                 }
             }
+        } else {
+            Timber.d("No action found");
         }
         return null;
     }

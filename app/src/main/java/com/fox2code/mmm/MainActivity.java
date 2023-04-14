@@ -119,7 +119,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         }
         setContentView(R.layout.activity_main);
         this.setTitle(R.string.app_name);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FIRST_APPLICATION_WINDOW, WindowManager.LayoutParams.FIRST_APPLICATION_WINDOW);
+        // set window flags to ignore status bar
+        this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             WindowManager.LayoutParams layoutParams = this.getWindow().getAttributes();
             layoutParams.layoutInDisplayCutoutMode = // Support cutout in Android 9
