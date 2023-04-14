@@ -13,7 +13,7 @@
     <string name="fail_internet">Verbindung mit dem Internet fehlgeschlagen</string>
     <string name="title_activity_settings">Aktivitätseinstellungen</string>
     <string name="app_update_available">Anwendungsaktualisierung verfügbar</string>
-    <string name="app_update">Update app</string>
+    <string name="app_update">Update die App</string>
     <!-- Module section translation -->
     <string name="module_last_update">Letzte Aktualisierung:</string>
     <string name="module_repo">Repo:</string>
@@ -50,10 +50,8 @@
     <string name="dev_mode_enabled">Entwicklermodus aktiviert</string>
     <string name="force_english_pref">Englische Sprache erzwingen</string>
     <string name="disable_low_quality_module_filter_pref">Modulfilter niedriger Qualität deaktivieren</string>
-    <string name="disable_low_quality_module_filter_desc">Some modules do not declare their metadata properly, causing visual glitches, and/or indicating poor module quality.
-\nTurn this on at your own risk!
-\nTurn this on at your own risk!
-\nDeaktivieren auf eigene Gefahr!</string>
+    <string name="disable_low_quality_module_filter_desc">Einige Module deklarieren ihre Metadaten nicht richtig, was zu visuellen Störungen führt und/oder eine schlechte Modulqualität anzeigt.
+\nAktiviere diese Funktion auf eigene Gefahr!</string>
     <string name="no_web_view">System WebView konnte nicht geöffnet werden</string>
     <string name="no_desc_found">Keine Beschreibung gefunden.</string>
     <string name="download_module">Module herunterladen</string>
@@ -284,4 +282,12 @@
     <string name="crash_text">Fehler!</string>
     <string name="feedback_message">Bitte gib uns mehr Details, was du gerade getan hast, als das passiert ist. Je mehr, desto besser!</string>
     <string name="more_details">Weitere Details können unten gefunden werden.</string>
+    <string name="upgraded">Premium aktiv</string>
+    <string name="reset_app_message">Dadurch werden alle App-Daten vollständig entfernt und die App geschlossen. Die Module werden nicht deinstalliert.</string>
+    <string name="reset">Zurücksetzen</string>
+    <string name="crash_details_copied">Stacktrace in die Zwischenablage kopiert!</string>
+    <string name="reset_app">Die App zurücksetzen</string>
+    <string name="upgraded_summary">Du bist echt Klasse! Sieht so aus, als hättest Du Dein Abonnement bereits aktualisiert und unterstützt Androidacy</string>
+    <string name="sentry_enable_nag">Es sieht so aus, als sei die Absturz-Meldung deaktiviert. Bitte aktiviere sie, um Feedback zu übermitteln.</string>
+    <string name="reset_warning">Wenn Du diesen Bildschirm immer wieder siehst, kann das Zurücksetzen der App helfen. Dadurch werden die Daten der App gelöscht, aber die installierten Module werden nicht beeinflusst.</string>
 </resources>
