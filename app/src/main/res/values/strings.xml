@@ -400,4 +400,7 @@
     <string name="blur_desc">Creates a blur effect behind some dialogs and elements. Note that blur may not perform well on some devices and may not work for everyone.</string>
     <string name="error_encrypted_shared_preferences">An error occurred reading shared preferences. Please reset the app.</string>
     <string name="showcase_mode_dialogue_message">An app restart is required to enable showcase mode.</string>
+    <string name="other_section">Other</string>
+    <string name="license_lgpl">This app is licensed under the LGPL-3.0, found at https://www.gnu.org/licenses/lgpl-3.0.en.html</string>
+    <string name="eula_agree">By using this app, you are agreeing to the EULA in addition to the terms set forth in the LGPL, found at https://www.androidacy.com/foxmmm-eula/</string>
 </resources>
