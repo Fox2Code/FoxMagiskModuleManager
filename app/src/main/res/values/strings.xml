@@ -333,7 +333,8 @@
     <string name="update_button">Please wait…</string>
     <string name="error_no_extras">ERROR: Invalid data received on launch</string>
     <string name="update_debug_warning">You appear to be running a debug build. Debug builds must be updated manually, and do not support in-app updates</string>
-    <string name="error_no_action">ERROR: Invalid action specified. Refusing to continue.</string><string name="update_available">Update found</string>
+    <string name="error_no_action">ERROR: Invalid action specified. Refusing to continue.</string>
+    <string name="update_available">Update found</string>
     <string name="checking_for_update">Checking for updates…</string>
     <string name="no_update_available">You\'re up to date!</string>
     <string name="download_update">Download update</string>
@@ -401,6 +402,5 @@
     <string name="error_encrypted_shared_preferences">An error occurred reading shared preferences. Please reset the app.</string>
     <string name="showcase_mode_dialogue_message">An app restart is required to enable showcase mode.</string>
     <string name="other_section">Other</string>
-    <string name="license_lgpl">This app is licensed under the LGPL-3.0, found at https://www.gnu.org/licenses/lgpl-3.0.en.html</string>
-    <string name="eula_agree">By using this app, you are agreeing to the EULA in addition to the terms set forth in the LGPL, found at https://www.androidacy.com/foxmmm-eula/</string>
+    <string name="eula_agree">By clicking "finish", you are agreeing to be bound by the LGPL-3.0 (https://www.gnu.org/licenses/lgpl-3.0.en.html) license and the EULA (https://www.androidacy.com/foxmmm-eula/)</string>
 </resources>
