@@ -90,7 +90,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     @SuppressLint("RestrictedApi")
     // Use FoxProcess wrapper helper.
     private static final boolean wrapped = !FoxProcessExt.isRootLoader();
-    private static boolean SHOWCASE_MODE_TRUE = false;
+    private static String SHOWCASE_MODE_TRUE = null;
     public static boolean isOfficial = false;
     private static long secret;
     private static Locale timeFormatLocale = Resources.getSystem().getConfiguration().getLocales().get(0);
@@ -101,6 +101,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     private static boolean firstBoot;
     private static HashMap<Object, Object> mSharedPrefs;
     private static final ArrayList<String> callers = new ArrayList<>();
+    public boolean modulesHaveUpdates = false;
 
     static {
         Shell.setDefaultBuilder(shellBuilder = Shell.Builder.create().setFlags(Shell.FLAG_REDIRECT_STDERR).setTimeout(10).setInitializers(InstallerInitializer.class));
@@ -109,6 +110,8 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
             secret = random.nextLong();
         } while (secret == 0);
     }
+
+    public int updateModuleCount = 0;
 
     @StyleRes
     private int managerThemeResId = R.style.Theme_MagiskModuleManager;
@@ -188,9 +191,12 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     }
 
     public static boolean isShowcaseMode() {
-        if (SHOWCASE_MODE_TRUE) return true;
+        if (SHOWCASE_MODE_TRUE != null) {
+            // convert from String to boolean
+            return Boolean.parseBoolean(SHOWCASE_MODE_TRUE);
+        }
         boolean showcaseMode = getPreferences("mmm").getBoolean("pref_showcase_mode", false);
-        SHOWCASE_MODE_TRUE = showcaseMode;
+        SHOWCASE_MODE_TRUE = String.valueOf(showcaseMode);
         return showcaseMode;
     }
 

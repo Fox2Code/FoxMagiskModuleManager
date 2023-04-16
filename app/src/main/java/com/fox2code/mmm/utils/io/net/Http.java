@@ -192,6 +192,7 @@ public enum Http {
         // for debug builds, add a logging interceptor
         // this spams the logcat, so it's disabled by default and hidden behind a build config flag
         if (BuildConfig.DEBUG && BuildConfig.DEBUG_HTTP) {
+            Timber.w("HTTP logging is enabled. Performance may be impacted.");
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             httpclientBuilder.addInterceptor(loggingInterceptor);
@@ -460,8 +461,6 @@ public enum Http {
 
     public static boolean hasConnectivity() {
         // Check if we have internet connection
-        // Attempt to contact connectivitycheck.gstatic.com/generate_204
-        // If we can't, we don't have internet connection
         Timber.d("Checking internet connection...");
         // this url is actually hosted by Cloudflare and is not dependent on Androidacy servers being up
         byte[] resp;

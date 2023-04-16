@@ -15,8 +15,8 @@ import com.fox2code.mmm.manager.LocalModuleInfo;
 import com.fox2code.mmm.manager.ModuleInfo;
 import com.fox2code.mmm.repo.RepoModule;
 import com.fox2code.mmm.utils.IntentHelper;
-import com.fox2code.mmm.utils.io.net.Http;
 import com.fox2code.mmm.utils.io.PropUtils;
+import com.fox2code.mmm.utils.io.net.Http;
 
 import java.util.Comparator;
 import java.util.List;
@@ -145,6 +145,10 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
         } else if (this.moduleInfo.versionCode < this.moduleInfo.updateVersionCode ||
                 (this.repoModule != null && this.moduleInfo.versionCode <
                         this.repoModule.moduleInfo.versionCode)) {
+            Timber.d("Module %s has update", this.moduleId);
+            MainApplication.getINSTANCE().modulesHaveUpdates = true;
+            MainApplication.getINSTANCE().updateModuleCount++;
+            Timber.d("modulesHaveUpdates = %s, updateModuleCount = %s", MainApplication.getINSTANCE().modulesHaveUpdates, MainApplication.getINSTANCE().updateModuleCount);
             return Type.UPDATABLE;
         } else {
             return Type.INSTALLED;

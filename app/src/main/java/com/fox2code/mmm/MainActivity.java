@@ -346,6 +346,17 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilderOnline::appendRemoteModules);
 
                 moduleViewListBuilderOnline.applyTo(moduleListOnline, moduleViewAdapterOnline);
+                // logic to handle updateable modules
+                moduleViewListBuilder.applyTo(moduleListOnline, moduleViewAdapterOnline);
+                // if moduleViewListBuilderOnline has the upgradeable notification, show a badge on the online repo nav item
+                if (MainApplication.getINSTANCE().modulesHaveUpdates) {
+                    runOnUiThread(() -> {
+                        final var badge = bottomNavigationView.getOrCreateBadge(1);
+                        badge.setVisible(true);
+                        badge.setNumber(MainApplication.getINSTANCE().updateModuleCount);
+                        bottomNavigationView.setSelectedItemId(R.id.installed_menu_item);
+                    });
+                }
                 Timber.i("Finished app opening state!");
             }
         }, true);
