@@ -381,4 +381,6 @@
     <string name="blur_desc">Tworzy efekt rozmycia za niektórymi oknami dialogowymi i elementami. Zauważ, że rozmycie może nie działać dobrze na niektórych urządzeniach i może nie działać dla wszystkich.</string>
     <string name="error_encrypted_shared_preferences">Wystąpił błąd podczas odczytywania preferencji współdzielonych. Proszę zresetować aplikację.</string>
     <string name="showcase_mode_dialogue_message">Aby włączyć tryb blokady, wymagany jest restart aplikacji.</string>
+    <string name="other_section">Inne</string>
+    <string name="eula_agree">Poprzez kliknięcie przycisku „Zakończ” akceptujesz warunki licencji LGPL-3.0 (https://www.gnu.org/licenses/lgpl-3.0.en.html) oraz EULA (https://www.androidacy.com/foxmmm-eula/)</string>
 </resources>

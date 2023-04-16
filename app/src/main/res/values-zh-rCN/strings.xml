@@ -287,7 +287,7 @@
     <string name="background_update_check_excludes">从自动更新检查中排除的模块</string>
     <string name="title_activity_update">应用内更新程序</string>
     <string name="update_title">更新应用</string>
-    <string name="update_button">请稍等...</string>
+    <string name="update_button">请稍等…</string>
     <string name="yer_a_wizard_harry">你是个巫师, Harry!</string>
     <string name="keep_tapping_to_enter_hogwarts">继续点击以进入霍格沃茨!</string>
     <string name="modules">模块</string>
@@ -332,7 +332,7 @@
     <string name="invalid_excludes">输入无效</string>
     <string name="update_cancel_button">取消更新</string>
     <string name="invalid_repo_url">您输入的存储库 URL 无效</string>
-    <string name="notification_channel_background_update">检查更新...</string>
+    <string name="notification_channel_background_update">检查更新…</string>
     <string name="notification_channel_category_background_update">后台更新状态</string>
     <string name="notification_channel_category_background_update_description">在检查更新时显示通知，以让系统就不会杀死它</string>
     <string name="notification_update_wifi_desc">仅在WiFi连接时检查</string>
@@ -362,4 +362,29 @@
     <string name="safe_message">该模块已被存储库验证为安全的，这意味着它通过了特定的质量和安全阈值，并检查了恶意软件。</string>
     <string name="notification_update_app_desc">启用自动检查应用更新。 更新不会自动下载。</string>
     <string name="no_browser">您没有安装浏览器。 请安装一个以继续。</string>
+    <string name="setup_update_check_headline">更新检查</string>
+    <string name="setup_background_update_check_require_wifi_summary">需要 wifi 或不按流量计费的连接来进行更新检查</string>
+    <string name="setup_app_analytics">允许软件分析</string>
+    <string name="clear_app_cache">清除应用缓存</string>
+    <string name="clear_app_cache_desc">这通常不是必需的，但可能有助于解决一些问题。</string>
+    <string name="cache_cleared">成功清除缓存</string>
+    <string name="cache_clear_failed">清除缓存失败</string>
+    <string name="clear_cache_dialogue_title">清除应用缓存？</string>
+    <string name="pref_category_privacy">隐私</string>
+    <string name="crash_reporting_pii_desc">允许在崩溃报告中发送附加信息，其中一些可能包含个人身份信息，例如 IP 地址和设备标识符。</string>
+    <string name="setup_crash_reporting_pii">在崩溃报告中发送附加信息。</string>
+    <string name="error_creating_cookie_database">访问 WebView 时出错。 功能可能会受到影响。</string>
+    <string name="empty_field">URL 为必填项</string>
+    <string name="repo_already_added">仓库已经存在。</string>
+    <string name="showcase_mode_dialogue_message">需要重新启动应用程序才能启用展示模式。</string>
+    <string name="crash_reporting_headline">崩溃报告</string>
+    <string name="setup_background_update_check_require_wifi">需要 wifi 进行更新检查</string>
+    <string name="clear_cache_dialogue_message">这将清除应用缓存。 您的偏好设置将被保存，但一些操作应用程序可能需要更长的时间来临时执行。</string>
+    <string name="certificate_error">无法验证服务器证书。 请确保没有任何东西拦截 FoxMMM 的 HTTPS 连接。</string>
+    <string name="crash_reporting_pii">发送附加信息</string>
+    <string name="setup_crash_reporting_pii_summary">这可能包括设备标识符和 IP 地址。 除了分析崩溃和提高性能外，不会将任何数据用于任何其他目的。</string>
+    <string name="setup_scroll_down">要启用完成按钮，请向下滚动并查看所有选项。</string>
+    <string name="language_not_available">%s 尚未被翻译。 帮忙翻译一下\?</string>
+    <string name="blur_desc">在某些对话框和元素后面创建模糊效果。 请注意，模糊可能在某些设备上表现不佳并且可能不适用于所有人。</string>
+    <string name="error_encrypted_shared_preferences">读取共享首选项时出错。 请重置应用程序。</string>
 </resources>

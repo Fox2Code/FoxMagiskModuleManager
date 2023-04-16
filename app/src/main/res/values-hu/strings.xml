@@ -10,7 +10,7 @@
     <string name="fail_internet">Nincs internet hozzáférés</string>
     <string name="no_web_view">Nem sikerült megnyitni a WebView-t</string>
     <string name="app_update_available">Új alkalmazásverzió érhető el</string>
-    <string name="app_update">Frissítés</string>
+    <string name="app_update">Az alkalmazás frissítése</string>
     <string name="no_desc_found">Nincs leírás.</string>
     <string name="download_module">Modul letöltése</string>
     <string name="install_module">Modul telepítése</string>
@@ -25,8 +25,8 @@
     <string name="magisk_builtin_module">Magisk beépített modul</string>
     <string name="file_picker_wierd">A fájlválasztó egy nem elvárt választ küldött.</string>
     <string name="disable_low_quality_module_filter_pref">Alacsony minőségű modulok mutatása</string>
-    <string name="disable_low_quality_module_filter_desc">A nem megfelelő metaadattal rendelkező, vizuális hibákat okozó alacsony minőségű modulok megjelenítése.
-\nCsak saját felelősségedre kapcsold ki!</string>
+    <string name="disable_low_quality_module_filter_desc">Vannak modulok, amelyek metaadata nem megfelelő, amely vizuális hibákhoz vezet és/vagy a modul gyenge minőségét okozza.
+\nCsak saját felelősségedre kapcsold be!</string>
     <string name="backup_module_list">Modulok mentése</string>
     <string name="require_internet">Ehhez a művelethez internetkapcsolat szükséges</string>
     <string name="language_support_outdated">Néhány fordítás a jelenlegi nyelvnél nem naprakész. Fontold meg a fordításban való közreműködést GitHub-on</string>
@@ -117,9 +117,9 @@
     <string name="link_copied">Link másolva</string>
     <string name="custom_url">Egyedi URL</string>
     <string name="restore_module_list">Modulok visszaállítása</string>
-    <string name="notification_update_title">%i modulfrissítés található</string>
+    <string name="notification_update_title">%1$d modulfrissítés található</string>
     <string name="notification_update_subtitle">Bökj ide az app megnyitásához</string>
-    <string name="notification_update_pref">Modulfrissítés keresése a háttérben</string>
+    <string name="notification_update_pref">A modulfrissítések automatikus keresése</string>
     <string name="notification_update_desc">Növelheti az energiafogyasztást</string>
     <string name="notification_update_debug_pref">Értesítés tesztelése</string>
     <string name="language_translated_by">Fordította Toldy Zoltán Roland</string>
