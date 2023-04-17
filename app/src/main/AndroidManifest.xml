@@ -196,7 +196,7 @@
             android:value="false" />
         <meta-data
             android:name="io.sentry.dsn"
-            android:value="https://198c68516cb0412b9832204631a3fac8@o993586.ingest.sentry.io/4504069942804480" />
+            android:value="https://f35f7f369a254b2ca854cf9593c99da2@sentry.androidacy.com/7" />
         <!-- Sane value, but feel free to lower it -->
         <meta-data
             android:name="io.sentry.traces.sample-rate"

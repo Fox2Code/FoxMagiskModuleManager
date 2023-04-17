@@ -32,8 +32,10 @@ public class SentryMain {
             SharedPreferences.Editor editor = MainApplication.getINSTANCE().getSharedPreferences("sentry", Context.MODE_PRIVATE).edit();
             editor.putString("lastExitReason", "crash");
             editor.putLong("lastExitTime", System.currentTimeMillis());
+            editor.putString("lastExitReason", "crash");
+            editor.putString("lastExitId", String.valueOf(Sentry.getLastEventId()));
             editor.apply();
-            Timber.e(throwable, "Uncaught exception");
+            Timber.e("Uncaught exception with sentry ID %s and stacktrace %s", Sentry.getLastEventId(), throwable.getStackTrace());
             // open crash handler and exit
             Intent intent = new Intent(mainApplication, CrashHandler.class);
             // pass the entire exception to the crash handler

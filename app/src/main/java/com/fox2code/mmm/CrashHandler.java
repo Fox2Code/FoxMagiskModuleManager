@@ -15,6 +15,7 @@ import com.fox2code.foxcompat.app.FoxApplication;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textview.MaterialTextView;
 
+import org.chromium.net.CronetEngine;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -99,17 +100,20 @@ public class CrashHandler extends FoxActivity {
                 final String[] emailString = {email.getText().toString().equals("") ? "Anonymous" : email.getText().toString()};
                 // Prevent strict mode violation
                 // create sentry userFeedback request
+                try {
+                    URL.setURLStreamHandlerFactory(new CronetEngine.Builder(this).build().createURLStreamHandlerFactory());
+                } catch (Error ignored) {
+                    // Ignore
+                }
                 new Thread(() -> {
                     try {
-                        HttpURLConnection connection = (HttpURLConnection) new URL("https" + "://sentry.io/api/0/projects/androidacy-i6/foxmmm/user-feedback/").openConnection();
+                        HttpURLConnection connection = (HttpURLConnection) new URL("https" + "://sentry.androidacy.com/api/0/projects/sentry/foxmmm/user-feedback/").openConnection();
                         connection.setRequestMethod("POST");
                         connection.setRequestProperty("Content-Type", "application/json");
                         connection.setRequestProperty("Authorization", "Bearer " + BuildConfig.SENTRY_TOKEN);
                         // Setups the JSON body
-                        if (nameString[0].equals(""))
-                            nameString[0] = "Anonymous";
-                        if (emailString[0].equals(""))
-                            emailString[0] = "Anonymous";
+                        if (nameString[0].equals("")) nameString[0] = "Anonymous";
+                        if (emailString[0].equals("")) emailString[0] = "Anonymous";
                         JSONObject body = new JSONObject();
                         body.put("event_id", lastEventId);
                         body.put("name", nameString[0]);
@@ -121,22 +125,27 @@ public class CrashHandler extends FoxActivity {
                         outputStream.write(body.toString().getBytes());
                         outputStream.flush();
                         outputStream.close();
+                        // get response body
+                        byte[] response;
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                            response = connection.getInputStream().readAllBytes();
+                            // convert response to string
+                            String responseBody = new String(response);
+                            // log the response body
+                            Timber.d("Response Body: %s", responseBody);
+                        }
                         // close and disconnect the connection
                         connection.getInputStream().close();
                         connection.disconnect();
                         // For debug builds, log the response code and response body
-                        if (BuildConfig.DEBUG) {
-                            Timber.d("Response Code: %s", connection.getResponseCode());
-                        }
+                        Timber.d("Response Code: %s", connection.getResponseCode());
                         // Check if the request was successful
                         if (connection.getResponseCode() == 200) {
                             runOnUiThread(() -> Toast.makeText(this, R.string.sentry_dialogue_success, Toast.LENGTH_LONG).show());
                         } else {
                             runOnUiThread(() -> Toast.makeText(this, R.string.sentry_dialogue_failed_toast, Toast.LENGTH_LONG).show());
                         }
-                    } catch (
-                            JSONException |
-                            IOException ignored) {
+                    } catch (JSONException | IOException ignored) {
                         // Show a toast if the user feedback could not be submitted
                         runOnUiThread(() -> Toast.makeText(this, R.string.sentry_dialogue_failed_toast, Toast.LENGTH_LONG).show());
                     }
@@ -185,7 +194,7 @@ public class CrashHandler extends FoxActivity {
             builder.setMessage(R.string.reset_app_confirmation);
             builder.setPositiveButton(R.string.reset, (dialog, which) -> {
                 // reset the app
-               MainApplication.getINSTANCE().resetApp();
+                MainApplication.getINSTANCE().resetApp();
             });
             builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
                 // do nothing
@@ -207,8 +216,7 @@ public class CrashHandler extends FoxActivity {
         new Thread(() -> {
             try {
                 Thread.sleep(1000);
-            } catch (
-                    InterruptedException e) {
+            } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
             runOnUiThread(() -> view.setBackgroundResource(R.drawable.baseline_copy_all_24));
