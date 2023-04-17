@@ -36,18 +36,16 @@ public enum AndroidacyUtil {
 
     // Avoid logging token
     public static String hideToken(@NonNull String url) {
-        int i = url.lastIndexOf("token=");
-        if (i == -1)
-            return url;
-        int i2 = url.indexOf('&', i);
-        int i3 = url.indexOf(' ', i);
-        if (i3 != -1 && i3 < i2)
-            i2 = i3;
-        if (i2 == -1) {
-            return url.substring(0, i + 6) + "<token>";
-        } else {
-            return url.substring(0, i + 6) + "<token>" + url.substring(i2);
-        }
+        // for token, device_id, and client_id, replace with <hidden> by using replaceAll to match until the next non-alphanumeric character or end
+        // Also, URL decode
+        url = Uri.decode(url);
+        url = url + "&";
+        url = url.replaceAll("token=[^&]*", "token=<hidden>");
+        url = url.replaceAll("device_id=[^&]*", "device_id=<hidden>");
+        url = url.replaceAll("client_id=[^&]*", "client_id=<hidden>");
+        // remove last & added at the end
+        url = url.substring(0, url.length() - 1);
+        return url;
     }
 
     public static String getModuleId(String moduleUrl) {

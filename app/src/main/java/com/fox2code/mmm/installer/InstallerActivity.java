@@ -27,6 +27,7 @@ import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.R;
 import com.fox2code.mmm.XHooks;
+import com.fox2code.mmm.androidacy.AndroidacyUtil;
 import com.fox2code.mmm.module.ActionButtonType;
 import com.fox2code.mmm.utils.FastException;
 import com.fox2code.mmm.utils.IntentHelper;
@@ -168,7 +169,7 @@ public class InstallerActivity extends FoxActivity {
             // Set this to the error message if it's a HTTP error
             byte[] rawModule;
             try {
-                Timber.i("%s%s", (urlMode ? "Downloading: " : "Loading: "), finalTarget);
+                Timber.i("%s%s", (urlMode ? "Downloading: " : "Loading: "), AndroidacyUtil.hideToken(finalTarget));
                 rawModule = urlMode ? Http.doHttpGet(finalTarget, (progress, max, done) -> {
                     if (max <= 0 && this.progressIndicator.isIndeterminate()) return;
                     this.runOnUiThread(() -> {

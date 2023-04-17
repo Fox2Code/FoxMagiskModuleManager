@@ -15,6 +15,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.util.TypedValue;
 import android.view.View;
@@ -221,6 +223,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             rootContainer.setLayoutParams(params);
             rootContainer.setY(0F);
         });
+        // reset update module and update module Count in mainapplication
+        MainApplication.getINSTANCE().resetUpdateModule();
         InstallerInitializer.tryGetMagiskPathAsync(new InstallerInitializer.Callback() {
             @Override
             public void onPathReceived(String path) {
@@ -344,17 +348,18 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 });
                 if (BuildConfig.DEBUG) Timber.i("Apply");
                 RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilderOnline::appendRemoteModules);
-
-                moduleViewListBuilderOnline.applyTo(moduleListOnline, moduleViewAdapterOnline);
                 // logic to handle updateable modules
                 moduleViewListBuilder.applyTo(moduleListOnline, moduleViewAdapterOnline);
+                moduleViewListBuilderOnline.applyTo(moduleListOnline, moduleViewAdapterOnline);
                 // if moduleViewListBuilderOnline has the upgradeable notification, show a badge on the online repo nav item
                 if (MainApplication.getINSTANCE().modulesHaveUpdates) {
-                    runOnUiThread(() -> {
-                        final var badge = bottomNavigationView.getOrCreateBadge(1);
+                    Timber.i("Applying badge");
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        final var badge = bottomNavigationView.getOrCreateBadge(R.id.online_menu_item);
                         badge.setVisible(true);
                         badge.setNumber(MainApplication.getINSTANCE().updateModuleCount);
-                        bottomNavigationView.setSelectedItemId(R.id.installed_menu_item);
+                        badge.applyTheme(MainApplication.getInitialApplication().getTheme());
+                        Timber.i("Badge applied");
                     });
                 }
                 Timber.i("Finished app opening state!");
@@ -546,6 +551,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             RepoManager.getINSTANCE().updateEnabledStates();
             RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilderOnline::appendRemoteModules);
             this.moduleViewListBuilderOnline.applyTo(moduleListOnline, moduleViewAdapterOnline);
+            this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
         }, "Repo update thread").start();
     }
 

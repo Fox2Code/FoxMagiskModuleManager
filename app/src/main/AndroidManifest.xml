@@ -191,11 +191,6 @@
                 android:resource="@xml/shared_file_paths" />
         </provider>
 
-        <service
-            android:name=".background.BackgroundUpdateCheckerService"
-            android:exported="false"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-
         <meta-data
             android:name="io.sentry.auto-init"
             android:value="false" />

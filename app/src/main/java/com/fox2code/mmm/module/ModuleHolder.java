@@ -147,7 +147,10 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
                         this.repoModule.moduleInfo.versionCode)) {
             Timber.d("Module %s has update", this.moduleId);
             MainApplication.getINSTANCE().modulesHaveUpdates = true;
-            MainApplication.getINSTANCE().updateModuleCount++;
+            if (!MainApplication.getINSTANCE().updateModules.contains(this.moduleId)) {
+                MainApplication.getINSTANCE().updateModules.add(this.moduleId);
+                MainApplication.getINSTANCE().updateModuleCount++;
+            }
             Timber.d("modulesHaveUpdates = %s, updateModuleCount = %s", MainApplication.getINSTANCE().modulesHaveUpdates, MainApplication.getINSTANCE().updateModuleCount);
             return Type.UPDATABLE;
         } else {

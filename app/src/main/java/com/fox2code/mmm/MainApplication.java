@@ -112,6 +112,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     }
 
     public int updateModuleCount = 0;
+    public List<String> updateModules = new  ArrayList<>();
 
     @StyleRes
     private int managerThemeResId = R.style.Theme_MagiskModuleManager;
@@ -697,6 +698,12 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         // set property on MainApplication to indicate that the key has been accessed
         existingKey = decryptedKey;
         return decryptedKey; // pass to a realm configuration via encryptionKey()
+    }
+
+    public void resetUpdateModule() {
+        modulesHaveUpdates = false;
+        updateModuleCount = 0;
+        updateModules = new ArrayList<>();
     }
 
     private static class ReleaseTree extends Timber.Tree {

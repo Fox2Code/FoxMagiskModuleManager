@@ -321,7 +321,7 @@ dependencies {
     implementation 'com.github.KieronQuinn:MonetCompat:0.4.1'
     implementation 'com.github.Fox2Code:FoxCompat:0.2.0'
     // Update the version code in the root build.gradle
-    implementation 'com.mikepenz:aboutlibraries:10.6.1'
+    implementation 'com.mikepenz:aboutlibraries:10.6.2'
 
     // Utils
     implementation 'androidx.work:work-runtime:2.8.1'
@@ -402,7 +402,7 @@ android {
         jvmTarget = JavaVersion.VERSION_17
     }
     //noinspection GrDeprecatedAPIUsage
-    buildToolsVersion '34.0.0 rc2'
+    buildToolsVersion '34.0.0 rc3'
 }
 
 
