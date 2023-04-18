@@ -2,7 +2,6 @@ package com.fox2code.mmm;
 
 import android.annotation.SuppressLint;
 import android.content.ClipboardManager;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -15,16 +14,10 @@ import com.fox2code.foxcompat.app.FoxApplication;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textview.MaterialTextView;
 
-import org.chromium.net.CronetEngine;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.StringWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
+import io.sentry.Sentry;
+import io.sentry.UserFeedback;
 import timber.log.Timber;
 
 public class CrashHandler extends FoxActivity {
@@ -65,7 +58,6 @@ public class CrashHandler extends FoxActivity {
             stacktrace = stacktrace.replace(",", "\n     ");
             crashDetails.setText(getString(R.string.crash_full_stacktrace, stacktrace));
         }
-        SharedPreferences preferences = MainApplication.getPreferences("sentry");
         String lastEventId = getIntent().getStringExtra("lastEventId");
         Timber.d("CrashHandler.onCreate: lastEventId=%s, crashReportingEnabled=%s", lastEventId, crashReportingEnabled);
         if (lastEventId == null && crashReportingEnabled) {
@@ -75,11 +67,6 @@ public class CrashHandler extends FoxActivity {
         } else {
             // if lastEventId is not null, show the feedback button
             findViewById(R.id.feedback).setVisibility(View.VISIBLE);
-            // set the name and email fields to the saved values
-            EditText name = findViewById(R.id.feedback_name);
-            EditText email = findViewById(R.id.feedback_email);
-            name.setText(preferences.getString("name", ""));
-            email.setText(preferences.getString("email", ""));
         }
         // disable feedback if sentry is disabled
         //noinspection ConstantConditions
@@ -98,67 +85,33 @@ public class CrashHandler extends FoxActivity {
                 // if email or name is empty, use "Anonymous"
                 final String[] nameString = {name.getText().toString().equals("") ? "Anonymous" : name.getText().toString()};
                 final String[] emailString = {email.getText().toString().equals("") ? "Anonymous" : email.getText().toString()};
-                // Prevent strict mode violation
-                // create sentry userFeedback request
-                try {
-                    URL.setURLStreamHandlerFactory(new CronetEngine.Builder(this).build().createURLStreamHandlerFactory());
-                } catch (Error ignored) {
-                    // Ignore
-                }
+                // get sentryException passed in intent
+                Throwable sentryException = (Throwable) getIntent().getSerializableExtra("sentryException");
                 new Thread(() -> {
                     try {
-                        HttpURLConnection connection = (HttpURLConnection) new URL("https" + "://sentry.androidacy.com/api/0/projects/sentry/foxmmm/user-feedback/").openConnection();
-                        connection.setRequestMethod("POST");
-                        connection.setRequestProperty("Content-Type", "application/json");
-                        connection.setRequestProperty("Authorization", "Bearer " + BuildConfig.SENTRY_TOKEN);
+                        UserFeedback userFeedback = new UserFeedback(Sentry.captureException(sentryException));
                         // Setups the JSON body
                         if (nameString[0].equals("")) nameString[0] = "Anonymous";
                         if (emailString[0].equals("")) emailString[0] = "Anonymous";
-                        JSONObject body = new JSONObject();
-                        body.put("event_id", lastEventId);
-                        body.put("name", nameString[0]);
-                        body.put("email", emailString[0]);
-                        body.put("comments", description.getText().toString());
-                        // Send the request
-                        connection.setDoOutput(true);
-                        OutputStream outputStream = connection.getOutputStream();
-                        outputStream.write(body.toString().getBytes());
-                        outputStream.flush();
-                        outputStream.close();
-                        // get response body
-                        byte[] response;
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                            response = connection.getInputStream().readAllBytes();
-                            // convert response to string
-                            String responseBody = new String(response);
-                            // log the response body
-                            Timber.d("Response Body: %s", responseBody);
-                        }
-                        // close and disconnect the connection
-                        connection.getInputStream().close();
-                        connection.disconnect();
-                        // For debug builds, log the response code and response body
-                        Timber.d("Response Code: %s", connection.getResponseCode());
-                        // Check if the request was successful
-                        if (connection.getResponseCode() == 200) {
-                            runOnUiThread(() -> Toast.makeText(this, R.string.sentry_dialogue_success, Toast.LENGTH_LONG).show());
-                        } else {
-                            runOnUiThread(() -> Toast.makeText(this, R.string.sentry_dialogue_failed_toast, Toast.LENGTH_LONG).show());
-                        }
-                    } catch (JSONException | IOException ignored) {
+                        userFeedback.setName(nameString[0]);
+                        userFeedback.setEmail(emailString[0]);
+                        userFeedback.setComments(description.getText().toString());
+                        Sentry.captureUserFeedback(userFeedback);
+                        Timber.i("Submitted user feedback: name %s email %s comment %s", nameString[0], emailString[0], description.getText().toString());
+                        runOnUiThread(() -> Toast.makeText(this, R.string.sentry_dialogue_success, Toast.LENGTH_LONG).show());
+                        // Close the activity
+                        finish();
+                        // start the main activity
+                        startActivity(getPackageManager().getLaunchIntentForPackage(getPackageName()));
+                    } catch (Exception e) {
+                        Timber.e(e, "Failed to submit user feedback");
                         // Show a toast if the user feedback could not be submitted
                         runOnUiThread(() -> Toast.makeText(this, R.string.sentry_dialogue_failed_toast, Toast.LENGTH_LONG).show());
                     }
                 }).start();
-                // Close the activity
-                finish();
-                // start the main activity
-                startActivity(getPackageManager().getLaunchIntentForPackage(getPackageName()));
             });
             // get restart button
             findViewById(R.id.restart).setOnClickListener(v -> {
-                // Save the user's name and email
-                preferences.edit().putString("name", name.getText().toString()).putString("email", email.getText().toString()).apply();
                 // Restart the app
                 finish();
                 startActivity(getPackageManager().getLaunchIntentForPackage(getPackageName()));

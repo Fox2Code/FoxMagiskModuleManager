@@ -80,6 +80,7 @@ import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
 import org.apache.commons.io.FileUtils;
+import org.matomo.sdk.extra.TrackHelper;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -112,6 +113,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
     private final NavigationBarView.OnItemSelectedListener onItemSelectedListener = item -> {
         int itemId = item.getItemId();
         if (itemId == R.id.back) {
+            TrackHelper.track().event("view_list", "main_modules").with(MainApplication.getINSTANCE().getTracker());
             startActivity(new Intent(this, MainActivity.class));
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             finish();
@@ -161,6 +163,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
     protected void onCreate(Bundle savedInstanceState) {
         devModeStep = 0;
         super.onCreate(savedInstanceState);
+        TrackHelper.track().screen(this).with(MainApplication.getINSTANCE().getTracker());
         setContentView(R.layout.settings_activity);
         setTitle(R.string.app_name);
         //hideActionBar();
@@ -936,6 +939,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     ReposList reposList1 = realm2.where(ReposList.class).equalTo("id", "magisk_alt_repo").findFirst();
                     if (reposList1 != null) {
                         reposList1.setEnabled(Boolean.parseBoolean(String.valueOf(newValue)));
+                    } else {
+                        Timber.e("Alt Repo not found in realm db");
                     }
                 });
                 return true;

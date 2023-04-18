@@ -22,6 +22,7 @@ public class ModuleInfo {
 
     public static final int FLAG_METADATA_INVALID = 0x80000000;
     public static final int FLAG_CUSTOM_INTERNAL = 0x40000000;
+    public static final int FLAG_MM_REMOTE_MODULE = 0x20000000;
     private static final int FLAG_FENCE = 0x10000000; // Should never be set
 
     // Magisk standard

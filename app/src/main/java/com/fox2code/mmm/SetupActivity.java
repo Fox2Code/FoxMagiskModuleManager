@@ -49,12 +49,6 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setTitle(R.string.setup_title);
-        // set action bar
-        /**ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            // back button is close button
-            actionBar.hide();
-        }*/
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, 0);
         createFiles();
         disableUpdateActivityForFdroidFlavor();
@@ -75,6 +69,8 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).setChecked(BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING);
         // pref_crash_reporting_pii
         ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting_pii))).setChecked(BuildConfig.DEFAULT_ENABLE_CRASH_REPORTING_PII);
+        // pref_analytics_enabled
+        ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_app_analytics))).setChecked(BuildConfig.DEFAULT_ENABLE_ANALYTICS);
         // assert that both switches match the build config on debug builds
         if (BuildConfig.DEBUG) {
             assert ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).isChecked() == BuildConfig.ENABLE_AUTO_UPDATER;
@@ -175,6 +171,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             editor.putBoolean("pref_crash_reporting", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).isChecked());
             // Set the crash reporting PII pref
             editor.putBoolean("pref_crash_reporting_pii", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting_pii))).isChecked());
+            editor.putBoolean("pref_analytics_enabled", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_app_analytics))).isChecked());
             Timber.d("Saving preferences");
             // Set the repos in the ReposList realm db
             RealmConfiguration realmConfig = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
@@ -375,6 +372,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             FileUtils.forceMkdir(new File(MainApplication.getINSTANCE().getDataDir() + "/cache/cronet"));
             FileUtils.forceMkdir(new File(MainApplication.getINSTANCE().getDataDir() + "/cache/WebView/Default/HTTP Cache/Code Cache/wasm"));
             FileUtils.forceMkdir(new File(MainApplication.getINSTANCE().getDataDir() + "/cache/WebView/Default/HTTP Cache/Code Cache/js"));
+            FileUtils.forceMkdir(new File(MainApplication.getINSTANCE().getDataDir() + "/repos/magisk_alt_repo"));
         } catch (IOException e) {
             Timber.e(e);
         }

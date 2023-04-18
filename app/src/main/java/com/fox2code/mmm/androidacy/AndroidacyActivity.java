@@ -37,6 +37,8 @@ import com.fox2code.mmm.utils.IntentHelper;
 import com.fox2code.mmm.utils.io.net.Http;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
+import org.matomo.sdk.extra.TrackHelper;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -72,6 +74,7 @@ public final class AndroidacyActivity extends FoxActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         this.moduleFile = new File(this.getCacheDir(), "module.zip");
         super.onCreate(savedInstanceState);
+        TrackHelper.track().screen(this).with(MainApplication.getINSTANCE().getTracker());
         Intent intent = this.getIntent();
         Uri uri;
         if (!MainApplication.checkSecret(intent) || (uri = intent.getData()) == null) {

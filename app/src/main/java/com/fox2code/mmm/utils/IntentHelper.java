@@ -68,6 +68,7 @@ public enum IntentHelper {
     }
 
     public static void openUrl(Context context, String url, boolean forceBrowser) {
+        Timber.d("Opening url: %s, forced browser %b", url, forceBrowser);
         try {
             Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             myIntent.setFlags(FLAG_GRANT_URI_PERMISSION);
@@ -76,12 +77,14 @@ public enum IntentHelper {
             }
             startActivity(context, myIntent, false);
         } catch (ActivityNotFoundException e) {
+            Timber.d(e, "Could not find suitable activity to handle url");
             Toast.makeText(context, FoxActivity.getFoxActivity(context).getString(
                     R.string.no_browser), Toast.LENGTH_LONG).show();
         }
     }
 
     public static void openCustomTab(Context context, String url) {
+        Timber.d("Opening url: %s in custom tab", url);
         try {
             Intent viewIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             viewIntent.setFlags(FLAG_GRANT_URI_PERMISSION);
@@ -90,6 +93,7 @@ public enum IntentHelper {
             tabIntent.addCategory(Intent.CATEGORY_BROWSABLE);
             startActivityEx(context, tabIntent, viewIntent);
         } catch (ActivityNotFoundException e) {
+            Timber.d(e, "Could not find suitable activity to handle url");
             Toast.makeText(context, FoxActivity.getFoxActivity(context).getString(
                     R.string.no_browser), Toast.LENGTH_LONG).show();
         }

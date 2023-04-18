@@ -25,7 +25,7 @@ public class LocalModuleInfo extends ModuleInfo {
     }
 
     public void checkModuleUpdate() {
-        if (this.updateJson != null) {
+        if (this.updateJson != null && (this.flags & FLAG_MM_REMOTE_MODULE) == 0) {
             try {
                 JSONObject jsonUpdate = new JSONObject(new String(Http.doHttpGet(
                         this.updateJson, true), StandardCharsets.UTF_8));

@@ -200,6 +200,28 @@
                 android:text="@string/setup_crash_reporting_pii_summary"
                 android:textAppearance="@android:style/TextAppearance.Material.Small" />
 
+
+
+            <!-- Placeholder for future settings -->
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/setup_app_analytics"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:checked="false"
+                android:key="pref_app_analytics"
+                android:text="@string/setup_app_analytics"
+                android:textSize="18sp"
+                android:visibility="visible" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:text="@string/analytics_desc"
+                android:drawableStart="@drawable/ic_baseline_info_24"
+                android:drawablePadding="8dp" />
+
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -249,18 +271,6 @@
                 android:text="@string/setup_background_update_check_require_wifi_summary"
                 android:textAppearance="@android:style/TextAppearance.Material.Small"
                 app:icon="@drawable/ic_baseline_info_24" />
-
-            <!-- Placeholder for future settings -->
-            <com.google.android.material.materialswitch.MaterialSwitch
-                android:id="@+id/setup_app_analytics"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:checked="false"
-                android:key="pref_app_analytics"
-                android:text="@string/setup_app_analytics"
-                android:textAppearance="@android:style/TextAppearance.Material.Small"
-                android:visibility="gone" />
 
             <!-- licenses, disclaimers, and EULA -->
             <com.google.android.material.textview.MaterialTextView

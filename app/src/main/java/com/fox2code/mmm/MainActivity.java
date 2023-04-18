@@ -1,6 +1,7 @@
 package com.fox2code.mmm;
 
 import static com.fox2code.mmm.MainApplication.isOfficial;
+import static com.fox2code.mmm.manager.ModuleInfo.FLAG_MM_REMOTE_MODULE;
 
 import android.Manifest;
 import android.animation.Animator;
@@ -48,16 +49,20 @@ import com.fox2code.mmm.repo.RepoManager;
 import com.fox2code.mmm.settings.SettingsActivity;
 import com.fox2code.mmm.utils.ExternalHelper;
 import com.fox2code.mmm.utils.io.net.Http;
+import com.fox2code.mmm.utils.realm.ReposList;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.chromium.net.CronetEngine;
+import org.matomo.sdk.extra.TrackHelper;
 
 import java.net.URL;
 import java.util.Objects;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import timber.log.Timber;
 
 public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, OverScrollManager.OverScrollHelper {
@@ -113,6 +118,20 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         }
         BackgroundUpdateChecker.onMainActivityCreate(this);
         super.onCreate(savedInstanceState);
+        TrackHelper.track().screen(this).with(MainApplication.getINSTANCE().getTracker());
+        // track enabled repos
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).build();
+        Realm realm = Realm.getInstance(realmConfig);
+        StringBuilder enabledRepos = new StringBuilder();
+        realm.executeTransaction(r -> {
+            for (ReposList r2 : r.where(ReposList.class).equalTo("enabled", true).findAll()) {
+                enabledRepos.append(r2.getUrl()).append(":").append(r2.getName()).append(",");
+            }
+        });
+        if (enabledRepos.length() > 0) {
+            enabledRepos.setLength(enabledRepos.length() - 1);
+        }
+        TrackHelper.track().event("enabled_repos", enabledRepos.toString()).with(MainApplication.getINSTANCE().getTracker());
         // log all shared preferences that are present
         if (!isOfficial) {
             Timber.w("You may be running an untrusted build.");
@@ -180,10 +199,12 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.settings_menu_item) {
+                TrackHelper.track().event("view_list", "settings").with(MainApplication.getINSTANCE().getTracker());
                 startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 finish();
             } else if (item.getItemId() == R.id.online_menu_item) {
+                TrackHelper.track().event("view_list", "online_modules").with(MainApplication.getINSTANCE().getTracker());
                 // set module_list_online as visible and module_list as gone. fade in/out
                 this.moduleListOnline.setAlpha(0F);
                 this.moduleListOnline.setVisibility(View.VISIBLE);
@@ -197,6 +218,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 // clear search view
                 this.searchView.setQuery("", false);
             } else if (item.getItemId() == R.id.installed_menu_item) {
+                TrackHelper.track().event("view_list", "installed_modules").with(MainApplication.getINSTANCE().getTracker());
                 // set module_list_online as gone and module_list as visible. fade in/out
                 this.moduleList.setAlpha(0F);
                 this.moduleList.setVisibility(View.VISIBLE);
@@ -223,7 +245,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             rootContainer.setLayoutParams(params);
             rootContainer.setY(0F);
         });
-        // reset update module and update module Count in mainapplication
+        // reset update module and update module count in main application
         MainApplication.getINSTANCE().resetUpdateModule();
         InstallerInitializer.tryGetMagiskPathAsync(new InstallerInitializer.Callback() {
             @Override
@@ -326,7 +348,11 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     if (max != 0) {
                         int current = 0;
                         for (LocalModuleInfo localModuleInfo : ModuleManager.getINSTANCE().getModules().values()) {
-                            if (localModuleInfo.updateJson != null) {
+                            // if it has updateJson and FLAG_MM_REMOTE_MODULE is not set on flags, check for json update
+                            // this is a dirty hack until we better store if it's a remote module
+                            // the reasoning is that remote repos are considered "validated" while local modules are not
+                            // for instance, a potential attacker could hijack a perfectly legitimate module and inject an updateJson with a malicious update - thereby bypassing any checks repos may have, without anyone noticing until it's too late
+                            if (localModuleInfo.updateJson != null && (localModuleInfo.flags & FLAG_MM_REMOTE_MODULE) == 0) {
                                 if (BuildConfig.DEBUG) Timber.i(localModuleInfo.id);
                                 try {
                                     localModuleInfo.checkModuleUpdate();
@@ -528,7 +554,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 if (max != 0) {
                     int current = 0;
                     for (LocalModuleInfo localModuleInfo : ModuleManager.getINSTANCE().getModules().values()) {
-                        if (localModuleInfo.updateJson != null) {
+                        if (localModuleInfo.updateJson != null && (localModuleInfo.flags & FLAG_MM_REMOTE_MODULE) == 0) {
                             if (BuildConfig.DEBUG) Timber.i(localModuleInfo.id);
                             try {
                                 localModuleInfo.checkModuleUpdate();
@@ -559,6 +585,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     public boolean onQueryTextSubmit(final String query) {
         this.searchView.clearFocus();
         if (this.initMode) return false;
+        TrackHelper.track().event("search", query).with(MainApplication.getINSTANCE().getTracker());
         if (this.moduleViewListBuilder.setQueryChange(query)) {
             Timber.i("Query submit: %s on offline list", query);
             new Thread(() -> this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter), "Query update thread").start();
@@ -574,6 +601,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     @Override
     public boolean onQueryTextChange(String query) {
         if (this.initMode) return false;
+        TrackHelper.track().event("search_type", query).with(MainApplication.getINSTANCE().getTracker());
         if (this.moduleViewListBuilder.setQueryChange(query)) {
             Timber.i("Query submit: %s on offline list", query);
             new Thread(() -> this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter), "Query update thread").start();

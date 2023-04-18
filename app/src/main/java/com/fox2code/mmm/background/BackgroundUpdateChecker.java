@@ -48,11 +48,15 @@ public class BackgroundUpdateChecker extends Worker {
     public static final String NOTIFICATION_CHANNEL_ID = "background_update";
     public static final int NOTIFICATION_ID = 1;
     public static final String NOTFIICATION_GROUP = "updates";
-    static final Object lock = new Object(); // Avoid concurrency issuespublic static final String NOTIFICATION_CHANNEL_ID = "background_update";
     public static final String NOTIFICATION_CHANNEL_ID_APP = "background_update_app";
+    static final Object lock = new Object(); // Avoid concurrency issuespublic static final String NOTIFICATION_CHANNEL_ID = "background_update";
     private static final int NOTIFICATION_ID_ONGOING = 2;
     private static final String NOTIFICATION_CHANNEL_ID_ONGOING = "mmm_background_update";
     private static final int NOTIFICATION_ID_APP = 3;
+
+    public BackgroundUpdateChecker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+        super(context, workerParams);
+    }
 
     @SuppressLint("RestrictedApi")
     private static void postNotificationForAppUpdate(Context context) {
@@ -82,25 +86,21 @@ public class BackgroundUpdateChecker extends Worker {
         }
     }
 
-    public BackgroundUpdateChecker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
-        super(context, workerParams);
-    }
-
     static void doCheck(Context context) {
         // first, check if the user has enabled background update checking
         if (!MainApplication.getPreferences("mmm").getBoolean("pref_background_update_check", false)) {
             return;
         }
-        //if (MainApplication.getINSTANCE().isInForeground()) {
+        if (MainApplication.getINSTANCE().isInForeground()) {
             // don't check if app is in foreground, this is a background check
-         //   return;
-        //}
+            return;
+        }
         // next, check if user requires wifi
         if (MainApplication.getPreferences("mmm").getBoolean("pref_background_update_check_wifi", true)) {
             // check if wifi is connected
             ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             Network networkInfo = connectivityManager.getActiveNetwork();
-            if (networkInfo == null || !connectivityManager.getNetworkCapabilities(networkInfo).hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+            if (networkInfo == null || !connectivityManager.getNetworkCapabilities(networkInfo).hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED)) {
                 Timber.w("Background update check: wifi not connected but required");
                 return;
             }
@@ -110,7 +110,7 @@ public class BackgroundUpdateChecker extends Worker {
             if (ContextCompat.checkSelfPermission(MainApplication.getINSTANCE(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
                 notificationManager.createNotificationChannel(new NotificationChannelCompat.Builder(NOTIFICATION_CHANNEL_ID_ONGOING, NotificationManagerCompat.IMPORTANCE_MIN).setName(context.getString(R.string.notification_channel_category_background_update)).setDescription(context.getString(R.string.notification_channel_category_background_update_description)).setGroup(NOTFIICATION_GROUP).build());
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID);
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_ONGOING);
                 builder.setSmallIcon(R.drawable.ic_baseline_update_24);
                 builder.setPriority(NotificationCompat.PRIORITY_MIN);
                 builder.setCategory(NotificationCompat.CATEGORY_SERVICE);
@@ -224,6 +224,11 @@ public class BackgroundUpdateChecker extends Worker {
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
         notificationManagerCompat.createNotificationChannel(new NotificationChannelCompat.Builder(NOTIFICATION_CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_HIGH).setShowBadge(true).setName(context.getString(R.string.notification_update_pref)).setDescription(context.getString(R.string.auto_updates_notifs)).setGroup(NOTFIICATION_GROUP).build());
         notificationManagerCompat.cancel(BackgroundUpdateChecker.NOTIFICATION_ID);
+        // now for the ongoing notification
+        notificationManagerCompat.createNotificationChannel(new NotificationChannelCompat.Builder(NOTIFICATION_CHANNEL_ID_ONGOING, NotificationManagerCompat.IMPORTANCE_MIN).setShowBadge(true).setName(context.getString(R.string.notification_update_pref)).setDescription(context.getString(R.string.auto_updates_notifs)).setGroup(NOTFIICATION_GROUP).build());
+        notificationManagerCompat.cancel(BackgroundUpdateChecker.NOTIFICATION_ID_ONGOING);
+        // schedule periodic check for updates every 6 hours (6 * 60 * 60 = 21600)
+        Timber.d("Scheduling periodic background check");
         WorkManager.getInstance(context).enqueueUniquePeriodicWork("background_checker", ExistingPeriodicWorkPolicy.UPDATE, new PeriodicWorkRequest.Builder(BackgroundUpdateChecker.class, 6, TimeUnit.HOURS).setConstraints(new Constraints.Builder().setRequiresBatteryNotLow(true).build()).build());
     }
 

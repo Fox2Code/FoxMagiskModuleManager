@@ -27,6 +27,8 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
+import org.matomo.sdk.extra.TrackHelper;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -67,6 +69,7 @@ public class MarkdownActivity extends FoxActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TrackHelper.track().screen(this).with(MainApplication.getINSTANCE().getTracker());
         this.setDisplayHomeAsUpEnabled(true);
         Intent intent = this.getIntent();
         if (!MainApplication.checkSecret(intent)) {

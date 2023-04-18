@@ -27,6 +27,7 @@ buildscript {
         // in the individual module build.gradle files
         //noinspection GradleDependency
         classpath "io.realm:realm-gradle-plugin:10.13.3-transformer-api"
+        classpath 'io.sentry:sentry-android-gradle-plugin:3.4.2'
     }
 }
 

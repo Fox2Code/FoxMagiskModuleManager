@@ -35,6 +35,7 @@ public final class ModuleManager extends SyncManager {
     private static final int FLAGS_KEEP_INIT = FLAG_MM_UNPROCESSED | ModuleInfo.FLAGS_MODULE_ACTIVE | ModuleInfo.FLAG_MODULE_UPDATING_ONLY;
     private static final int FLAGS_RESET_UPDATE = FLAG_MM_INVALID | FLAG_MM_UNPROCESSED;
     private static final ModuleManager INSTANCE = new ModuleManager();
+    private static final int FLAG_MM_REMOTE_MODULE = ModuleInfo.FLAG_MM_REMOTE_MODULE;
     private final HashMap<String, LocalModuleInfo> moduleInfos;
     private final SharedPreferences bootPrefs;
     private int updatableModuleCount = 0;
@@ -88,7 +89,6 @@ public final class ModuleManager extends SyncManager {
                 // get all dirs under the realms/repos/ dir under app's data dir
                 File cacheRoot = new File(MainApplication.getINSTANCE().getDataDirWithPath("realms/repos/").toURI());
                 ModuleListCache moduleListCache;
-                boolean foundCache = false;
                 for (File dir : Objects.requireNonNull(cacheRoot.listFiles())) {
                     if (dir.isDirectory()) {
                         // if the dir name matches the module name, use it as the cache dir
@@ -99,18 +99,18 @@ public final class ModuleManager extends SyncManager {
                         Timber.d("Looking for cache for %s out of %d", module, realm.where(ModuleListCache.class).count());
                         moduleListCache = realm.where(ModuleListCache.class).equalTo("codename", module).findFirst();
                         if (moduleListCache != null) {
-                            foundCache = true;
                             Timber.d("Found cache for %s", module);
                             // get module info from cache
                             if (moduleInfo == null) {
                                 moduleInfo = new LocalModuleInfo(module);
                             }
-                            moduleInfo.name = moduleListCache.getName();
-                            moduleInfo.description = moduleListCache.getDescription() + " (cached)";
-                            moduleInfo.author = moduleListCache.getAuthor();
-                            moduleInfo.safe = moduleListCache.isSafe();
-                            moduleInfo.support = moduleListCache.getSupport();
-                            moduleInfo.donate = moduleListCache.getDonate();
+                            moduleInfo.name = !Objects.equals(moduleListCache.getName(), "") ? moduleListCache.getName() : module;
+                            moduleInfo.description = !Objects.equals(moduleListCache.getDescription(), "") ? moduleListCache.getDescription() : null;
+                            moduleInfo.author = !Objects.equals(moduleListCache.getAuthor(), "") ? moduleListCache.getAuthor() : null;
+                            moduleInfo.safe = Objects.equals(moduleListCache.isSafe(), true);
+                            moduleInfo.support = !Objects.equals(moduleListCache.getSupport(), "") ? moduleListCache.getSupport() : null;
+                            moduleInfo.donate = !Objects.equals(moduleListCache.getDonate(), "") ? moduleListCache.getDonate() : null;
+                            moduleInfo.flags |= FLAG_MM_REMOTE_MODULE;
                             moduleInfos.put(module, moduleInfo);
                             realm.close();
                             break;
@@ -185,7 +185,7 @@ public final class ModuleManager extends SyncManager {
                 moduleInfoIterator.remove();
                 continue; // Don't process fallbacks if unreferenced
             }
-            if (moduleInfo.updateJson != null) {
+            if (moduleInfo.updateJson != null && (moduleInfo.flags & FLAG_MM_REMOTE_MODULE) == 0) {
                 this.updatableModuleCount++;
             } else {
                 moduleInfo.updateVersion = null;

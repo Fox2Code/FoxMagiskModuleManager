@@ -2,7 +2,7 @@ import io.sentry.android.gradle.extensions.InstrumentationFeature
 
 plugins {
     // Gradle doesn't allow conditionally enabling/disabling plugins
-    id "io.sentry.android.gradle" version "3.4.2"
+    id "io.sentry.android.gradle"
     id 'com.android.application'
     id 'com.mikepenz.aboutlibraries.plugin'
     id 'org.jetbrains.kotlin.android'
@@ -129,8 +129,14 @@ android {
             buildConfigField "boolean", "ENABLE_AUTO_UPDATER", "true"
             buildConfigField "boolean", "DEFAULT_ENABLE_CRASH_REPORTING", "true"
             buildConfigField "boolean", "DEFAULT_ENABLE_CRASH_REPORTING_PII", "true"
-            buildConfigField "boolean", "DEFAULT_ENABLE_ANALYTICS", "true" // unused for now
-            buildConfigField "boolean", "DEFAULT_ENABLE_ANALYTICS_PII", "true" // unused for now
+            buildConfigField "boolean", "DEFAULT_ENABLE_ANALYTICS", "true"
+            Properties propertiesL = new Properties()
+            if (project.rootProject.file('local.properties').exists()) {
+                // grab matomo.url
+                buildConfigField "String", "ANALYTICS_ENDPOINT", '"' + propertiesL.getProperty("matomo.url", "https://s-api.androidacy.com/matomo.php") + '"'
+            } else {
+                buildConfigField "String", "ANALYTICS_ENDPOINT", "https://s-api.androidacy.com/matomo.php"
+            }
             buildConfigField "boolean", "ENABLE_PROTECTION", "true"
             if (hasSentryConfig) {
                 Properties properties = new Properties()
@@ -186,7 +192,15 @@ android {
 
             // Disable crash reporting for F-Droid flavor by default
             buildConfigField "boolean", "DEFAULT_ENABLE_CRASH_REPORTING", "false"
-            buildConfigField "boolean", "DEFAULT_ENABLE_CRASH_REPORTING_PII", "true"
+            buildConfigField "boolean", "DEFAULT_ENABLE_CRASH_REPORTING_PII", "false"
+            buildConfigField "boolean", "DEFAULT_ENABLE_ANALYTICS", "false"
+            Properties propertiesL = new Properties()
+            if (project.rootProject.file('local.properties').exists()) {
+                // grab matomo.url
+                buildConfigField "String", "ANALYTICS_ENDPOINT", '"' + propertiesL.getProperty("matomo.url", "https://s-api.androidacy.com/matomo.php") + '"'
+            } else {
+                buildConfigField "String", "ANALYTICS_ENDPOINT", "https://s-api.androidacy.com/matomo.php"
+            }
             buildConfigField "boolean", "ENABLE_PROTECTION", "true"
 
             if (hasSentryConfig) {
@@ -223,7 +237,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
-    
+
     lint {
         disable 'MissingTranslation'
     }
@@ -371,6 +385,9 @@ dependencies {
     // some utils
     implementation 'commons-io:commons-io:20030203.000550'
     implementation 'org.apache.commons:commons-compress:1.23.0'
+
+    // analytics
+    implementation 'com.github.matomo-org:matomo-sdk-android:4.1.4'
 
 }
 

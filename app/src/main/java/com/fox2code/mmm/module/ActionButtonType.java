@@ -25,9 +25,12 @@ import com.fox2code.mmm.utils.IntentHelper;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import org.matomo.sdk.extra.TrackHelper;
+
 import io.noties.markwon.Markwon;
 import timber.log.Timber;
 
+@SuppressWarnings("ReplaceNullCheck")
 @SuppressLint("UseCompatLoadingForDrawables")
 public enum ActionButtonType {
     INFO() {
@@ -39,6 +42,13 @@ public enum ActionButtonType {
 
         @Override
         public void doAction(Chip button, ModuleHolder moduleHolder) {
+            String name;
+            if (moduleHolder.moduleInfo != null) {
+                name = moduleHolder.moduleInfo.name;
+            } else {
+                name = moduleHolder.repoModule.moduleInfo.name;
+            }
+            TrackHelper.track().event("view_notes", name).with(MainApplication.getINSTANCE().getTracker());
             String notesUrl = moduleHolder.repoModule.notesUrl;
             if (AndroidacyUtil.isAndroidacyLink(notesUrl)) {
                 IntentHelper.openUrlAndroidacy(button.getContext(), notesUrl, false, moduleHolder.repoModule.moduleInfo.name, moduleHolder.getMainModuleConfig());
@@ -70,6 +80,14 @@ public enum ActionButtonType {
             ModuleInfo moduleInfo = moduleHolder.getMainModuleInfo();
             if (moduleInfo == null)
                 return;
+
+            String name;
+            if (moduleHolder.moduleInfo != null) {
+                name = moduleHolder.moduleInfo.name;
+            } else {
+                name = moduleHolder.repoModule.moduleInfo.name;
+            }
+            TrackHelper.track().event("view_update_install", name).with(MainApplication.getINSTANCE().getTracker());
             String updateZipUrl = moduleHolder.getUpdateZipUrl();
             if (updateZipUrl == null)
                 return;
@@ -132,6 +150,13 @@ public enum ActionButtonType {
                 doActionLong(button, moduleHolder);
                 return;
             }
+            String name;
+            if (moduleHolder.moduleInfo != null) {
+                name = moduleHolder.moduleInfo.name;
+            } else {
+                name = moduleHolder.repoModule.moduleInfo.name;
+            }
+            TrackHelper.track().event("uninstall_module", name).with(MainApplication.getINSTANCE().getTracker());
             Timber.i(Integer.toHexString(moduleHolder.moduleInfo.flags));
             if (!ModuleManager.getINSTANCE().setUninstallState(moduleHolder.moduleInfo, !moduleHolder.hasFlag(ModuleInfo.FLAG_MODULE_UNINSTALLING))) {
                 Timber.e("Failed to switch uninstalled state!");
@@ -174,6 +199,14 @@ public enum ActionButtonType {
             String config = moduleHolder.getMainModuleConfig();
             if (config == null)
                 return;
+
+            String name;
+            if (moduleHolder.moduleInfo != null) {
+                name = moduleHolder.moduleInfo.name;
+            } else {
+                name = moduleHolder.repoModule.moduleInfo.name;
+            }
+            TrackHelper.track().event("config_module", name).with(MainApplication.getINSTANCE().getTracker());
             if (AndroidacyUtil.isAndroidacyLink(config)) {
                 IntentHelper.openUrlAndroidacy(button.getContext(), config, true);
             } else {
@@ -190,6 +223,14 @@ public enum ActionButtonType {
 
         @Override
         public void doAction(Chip button, ModuleHolder moduleHolder) {
+
+            String name;
+            if (moduleHolder.moduleInfo != null) {
+                name = moduleHolder.moduleInfo.name;
+            } else {
+                name = moduleHolder.repoModule.moduleInfo.name;
+            }
+            TrackHelper.track().event("support_module", name).with(MainApplication.getINSTANCE().getTracker());
             IntentHelper.openUrl(button.getContext(), moduleHolder.getMainModuleInfo().support);
         }
     }, DONATE() {
@@ -202,6 +243,13 @@ public enum ActionButtonType {
 
         @Override
         public void doAction(Chip button, ModuleHolder moduleHolder) {
+            String name;
+            if (moduleHolder.moduleInfo != null) {
+                name = moduleHolder.moduleInfo.name;
+            } else {
+                name = moduleHolder.repoModule.moduleInfo.name;
+            }
+            TrackHelper.track().event("donate_module", name).with(MainApplication.getINSTANCE().getTracker());
             IntentHelper.openUrl(button.getContext(), moduleHolder.getMainModuleInfo().donate);
         }
     }, WARNING() {
@@ -213,6 +261,13 @@ public enum ActionButtonType {
 
         @Override
         public void doAction(Chip button, ModuleHolder moduleHolder) {
+            String name;
+            if (moduleHolder.moduleInfo != null) {
+                name = moduleHolder.moduleInfo.name;
+            } else {
+                name = moduleHolder.repoModule.moduleInfo.name;
+            }
+            TrackHelper.track().event("warning_module", name).with(MainApplication.getINSTANCE().getTracker());
             new MaterialAlertDialogBuilder(button.getContext()).setTitle(R.string.warning).setMessage(R.string.warning_message).setPositiveButton(R.string.understand, (v, i) -> {
             }).create().show();
         }
@@ -226,6 +281,13 @@ public enum ActionButtonType {
 
         @Override
         public void doAction(Chip button, ModuleHolder moduleHolder) {
+            String name;
+            if (moduleHolder.moduleInfo != null) {
+                name = moduleHolder.moduleInfo.name;
+            } else {
+                name = moduleHolder.repoModule.moduleInfo.name;
+            }
+            TrackHelper.track().event("safe_module", name).with(MainApplication.getINSTANCE().getTracker());
             new MaterialAlertDialogBuilder(button.getContext()).setTitle(R.string.safe_module).setMessage(R.string.safe_message).setPositiveButton(R.string.understand, (v, i) -> {
             }).create().show();
         }

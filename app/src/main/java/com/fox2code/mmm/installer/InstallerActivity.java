@@ -47,6 +47,7 @@ import com.topjohnwu.superuser.io.SuFile;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
+import org.matomo.sdk.extra.TrackHelper;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -79,6 +80,7 @@ public class InstallerActivity extends FoxActivity {
         if (!this.moduleCache.exists() && !this.moduleCache.mkdirs())
             Timber.e("Failed to mkdir module cache dir!");
         super.onCreate(savedInstanceState);
+        TrackHelper.track().screen(this).with(MainApplication.getINSTANCE().getTracker());
         this.setDisplayHomeAsUpEnabled(true);
         setActionBarBackground(null);
         this.setOnBackPressedCallback(a -> {

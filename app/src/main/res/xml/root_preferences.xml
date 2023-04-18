@@ -192,6 +192,14 @@
             app:singleLineTitle="false"
             app:summary="@string/crash_reporting_pii_desc"
             app:title="@string/crash_reporting_pii" />
+        <!-- analytics enabled -->
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:icon="@drawable/ic_baseline_info_24"
+            app:singleLineTitle="false"
+            app:key="pref_analytics_enabled"
+            app:summary="@string/analytics_desc"
+            app:title="@string/setup_app_analytics" />
         <!-- Purposely crash the app -->
         <Preference
             app:icon="@drawable/ic_baseline_bug_report_24"

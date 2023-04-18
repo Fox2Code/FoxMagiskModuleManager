@@ -6,12 +6,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.webkit.WebView;
 
 import androidx.core.content.FileProvider;
 
 import com.fox2code.foxcompat.app.FoxActivity;
-import com.fox2code.foxcompat.app.FoxApplication;
 import com.fox2code.mmm.utils.io.net.Http;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
@@ -20,6 +18,7 @@ import com.google.android.material.textview.MaterialTextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.matomo.sdk.extra.TrackHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,6 +34,9 @@ public class UpdateActivity extends FoxActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (MainApplication.getINSTANCE().isMatomoAllowed) {
+            TrackHelper.track().screen(this).with(MainApplication.getINSTANCE().getTracker());
+        }
         setContentView(R.layout.activity_update);
         // Get the progress bar and make it indeterminate for now
         LinearProgressIndicator progressIndicator = findViewById(R.id.update_progress);

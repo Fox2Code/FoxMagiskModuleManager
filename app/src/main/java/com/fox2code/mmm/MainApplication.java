@@ -38,6 +38,11 @@ import com.fox2code.rosettax.LanguageSwitcher;
 import com.google.common.hash.Hashing;
 import com.topjohnwu.superuser.Shell;
 
+import org.matomo.sdk.Matomo;
+import org.matomo.sdk.Tracker;
+import org.matomo.sdk.TrackerBuilder;
+import org.matomo.sdk.extra.TrackHelper;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -90,8 +95,9 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     @SuppressLint("RestrictedApi")
     // Use FoxProcess wrapper helper.
     private static final boolean wrapped = !FoxProcessExt.isRootLoader();
-    private static String SHOWCASE_MODE_TRUE = null;
+    private static final ArrayList<String> callers = new ArrayList<>();
     public static boolean isOfficial = false;
+    private static String SHOWCASE_MODE_TRUE = null;
     private static long secret;
     private static Locale timeFormatLocale = Resources.getSystem().getConfiguration().getLocales().get(0);
     private static SimpleDateFormat timeFormat = new SimpleDateFormat(timeFormatString, timeFormatLocale);
@@ -100,8 +106,6 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     private static MainApplication INSTANCE;
     private static boolean firstBoot;
     private static HashMap<Object, Object> mSharedPrefs;
-    private static final ArrayList<String> callers = new ArrayList<>();
-    public boolean modulesHaveUpdates = false;
 
     static {
         Shell.setDefaultBuilder(shellBuilder = Shell.Builder.create().setFlags(Shell.FLAG_REDIRECT_STDERR).setTimeout(10).setInitializers(InstallerInitializer.class));
@@ -111,14 +115,16 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         } while (secret == 0);
     }
 
+    public boolean modulesHaveUpdates = false;
     public int updateModuleCount = 0;
-    public List<String> updateModules = new  ArrayList<>();
-
+    public List<String> updateModules = new ArrayList<>();
+    public boolean isMatomoAllowed;
     @StyleRes
     private int managerThemeResId = R.style.Theme_MagiskModuleManager;
     private FoxThemeWrapper markwonThemeContext;
     private Markwon markwon;
     private byte[] existingKey;
+    private Tracker tracker;
 
     public MainApplication() {
         if (INSTANCE != null && INSTANCE != this)
@@ -356,6 +362,16 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         return !this.isLightTheme();
     }
 
+    @SuppressWarnings("UnusedReturnValue")
+    public synchronized Tracker getTracker() {
+        if (tracker == null) {
+            tracker = TrackerBuilder.createDefault(BuildConfig.ANALYTICS_ENDPOINT, 1).build(Matomo.getInstance(this));
+            tracker.setDispatchTimeout(10);
+            tracker.setDispatchInterval(1000);
+        }
+        return tracker;
+    }
+
     @Override
     public void onCreate() {
         supportedLocales.add("ar");
@@ -410,6 +426,31 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         Timber.d("Initializing Realm");
         Realm.init(this);
         Timber.d("Initialized Realm");
+        // analytics
+        Timber.d("Initializing matomo");
+        isMatomoAllowed = isMatomoAllowed();
+        // add preference listener to set isMatomoAllowed
+        getPreferences("mmm").registerOnSharedPreferenceChangeListener((sharedPreferences, key) -> {
+            if (key.equals("pref_analytics_enabled")) {
+                isMatomoAllowed = sharedPreferences.getBoolean(key, false);
+                tracker.setOptOut(isMatomoAllowed);
+                Timber.d("Matomo is allowed change: %s", isMatomoAllowed);
+            }
+        });
+        getTracker();
+        if (!isMatomoAllowed) {
+            Timber.d("Matomo is not allowed");
+            tracker.setOptOut(true);
+        } else {
+            tracker.setOptOut(false);
+        }
+        if (getPreferences("matomo").getBoolean("install_tracked", false)) {
+            TrackHelper.track().download().with(MainApplication.getINSTANCE().getTracker());
+            Timber.d("Sent install event to matomo");
+            getPreferences("matomo").edit().putBoolean("install_tracked", true).apply();
+        } else {
+            Timber.d("Matomo already has install");
+        }
         // Determine if this is an official build based on the signature
         try {
             // Get the signature of the key used to sign the app
@@ -459,6 +500,10 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
             editor.putBoolean("pref_androidacy_repo_enabled", false);
             editor.apply();
         }
+    }
+
+    private boolean isMatomoAllowed() {
+        return getPreferences("mmm").getBoolean("pref_analytics_enabled", BuildConfig.DEFAULT_ENABLE_ANALYTICS);
     }
 
     @SuppressWarnings("unused")

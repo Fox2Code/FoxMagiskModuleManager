@@ -10,6 +10,8 @@ import com.fox2code.mmm.CrashHandler;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.androidacy.AndroidacyUtil;
 
+import org.matomo.sdk.extra.TrackHelper;
+
 import java.util.Objects;
 
 import io.sentry.Sentry;
@@ -20,6 +22,7 @@ import timber.log.Timber;
 
 public class SentryMain {
     public static final boolean IS_SENTRY_INSTALLED = true;
+    public static boolean isCrashing = false;
     private static boolean sentryEnabled = false;
 
     /**
@@ -29,6 +32,8 @@ public class SentryMain {
     @SuppressLint({"RestrictedApi", "UnspecifiedImmutableFlag"})
     public static void initialize(final MainApplication mainApplication) {
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
+            isCrashing = true;
+            TrackHelper.track().exception(throwable).with(MainApplication.getINSTANCE().getTracker());
             SharedPreferences.Editor editor = MainApplication.getINSTANCE().getSharedPreferences("sentry", Context.MODE_PRIVATE).edit();
             editor.putString("lastExitReason", "crash");
             editor.putLong("lastExitTime", System.currentTimeMillis());
@@ -44,19 +49,28 @@ public class SentryMain {
             intent.putExtra("stacktrace", throwable.getStackTrace());
             // put lastEventId in intent (get from preferences)
             intent.putExtra("lastEventId", String.valueOf(Sentry.getLastEventId()));
+            // serialize Sentry.captureException and pass it to the crash handler
+            intent.putExtra("sentryException", throwable);
+            // pass crashReportingEnabled to crash handler
             intent.putExtra("crashReportingEnabled", isSentryEnabled());
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             Timber.e("Starting crash handler");
             mainApplication.startActivity(intent);
             Timber.e("Exiting");
             android.os.Process.killProcess(android.os.Process.myPid());
-            System.exit(10);
         });
         // If first_launch pref is not false, refuse to initialize Sentry
-        SharedPreferences sharedPreferences = MainApplication.getPreferences("sentry");
-        if (!Objects.equals(MainApplication.getPreferences("mmm").getString("last_shown_setup", null), "v1")) {
+        SharedPreferences sharedPreferences = MainApplication.getPreferences("mmm");
+        if (!Objects.equals(sharedPreferences.getString("last_shown_setup", null), "v1")) {
             return;
         }
+        sentryEnabled = sharedPreferences.getBoolean("pref_crash_reporting_enabled", false);
+        // set sentryEnabled on preference change of pref_crash_reporting_enabled
+        sharedPreferences.registerOnSharedPreferenceChangeListener((sharedPreferences1, s) -> {
+            if (s.equals("pref_crash_reporting_enabled")) {
+                sentryEnabled = sharedPreferences1.getBoolean(s, false);
+            }
+        });
         SentryAndroid.init(mainApplication, options -> {
             // If crash reporting is disabled, stop here.
             if (!MainApplication.isCrashReportingEnabled()) {
@@ -87,28 +101,25 @@ public class SentryMain {
                 options.setAttachScreenshot(true);
                 // It just tell if sentry should ping the sentry dsn to tell the app is running. Useful for performance and profiling.
                 options.setEnableAutoSessionTracking(true);
+                // disable crash tracking - we handle that ourselves
+                options.setEnableUncaughtExceptionHandler(false);
                 // Add a callback that will be used before the event is sent to Sentry.
                 // With this callback, you can modify the event or, when returning null, also discard the event.
                 options.setBeforeSend((event, hint) -> {
                     // in the rare event that crash reporting has been disabled since we started the app, we don't want to send the crash report
-                    if (!MainApplication.isCrashReportingEnabled()) {
+                    if (!sentryEnabled) {
                         return null;
                     }
-                    // Save lastEventId to private shared preferences
-                    SharedPreferences sentryPrefs = MainApplication.getPreferences("sentry");
-                    String lastEventId = Objects.requireNonNull(event.getEventId()).toString();
-                    SharedPreferences.Editor editor = sentryPrefs.edit();
-                    editor.putString("lastEventId", lastEventId);
-                    editor.apply();
+                    if (isCrashing) {
+                        return null;
+                    }
                     return event;
                 });
                 // Filter breadcrumb content from crash report.
                 options.setBeforeBreadcrumb((breadcrumb, hint) -> {
                     String url = (String) breadcrumb.getData("url");
-                    if (url == null || url.isEmpty())
-                        return breadcrumb;
-                    if ("cloudflare-dns.com".equals(Uri.parse(url).getHost()))
-                        return null;
+                    if (url == null || url.isEmpty()) return breadcrumb;
+                    if ("cloudflare-dns.com".equals(Uri.parse(url).getHost())) return null;
                     if (AndroidacyUtil.isAndroidacyLink(url)) {
                         breadcrumb.setData("url", AndroidacyUtil.hideToken(url));
                     }
