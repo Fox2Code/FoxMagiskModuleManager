@@ -607,11 +607,9 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
 
     // Create a key to encrypt a realm and save it securely in the keystore
     public byte[] getNewKey() {
-        Timber.d("Creating a new key.");
         // check if we have a key already
         SharedPreferences sharedPreferences = MainApplication.getPreferences("realm_key");
         if (sharedPreferences.contains("iv_and_encrypted_key")) {
-            Timber.v("Found a key in the keystore.");
             return getExistingKey();
         }
         // open a connection to the android keystore
@@ -685,10 +683,8 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     // Access the encrypted key in the keystore, decrypt it with the secret,
     // and use it to open and read from the realm again
     public byte[] getExistingKey() {
-        Timber.d("Accessing the existing key.");
         // attempt to read the existingKey property
         if (existingKey != null) {
-            Timber.v("Found an existing key in memory.");
             return existingKey;
         }
         // open a connection to the android keystore

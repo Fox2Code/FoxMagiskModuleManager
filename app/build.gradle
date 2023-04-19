@@ -1,4 +1,5 @@
 import io.sentry.android.gradle.extensions.InstrumentationFeature
+import com.android.build.OutputFile
 
 plugins {
     // Gradle doesn't allow conditionally enabling/disabling plugins
@@ -249,6 +250,41 @@ android {
     }
 }
 
+ext.abiCodes = ['armeabi-v7a':1, x86:2, x86_64:3, 'arm64-v8a':4]
+
+// For per-density APKs, create a similar map:
+// ext.densityCodes = ['mdpi': 1, 'hdpi': 2, 'xhdpi': 3]
+
+// For each APK output variant, override versionCode with a combination of
+// ext.abiCodes * 1000 + variant.versionCode. In this example, variant.versionCode
+// is equal to defaultConfig.versionCode. If you configure product flavors that
+// define their own versionCode, variant.versionCode uses that value instead.
+android.applicationVariants.all { variant ->
+
+    // Assigns a different version code for each output APK
+    // other than the universal APK.
+    variant.outputs.each { output ->
+
+        // Stores the value of ext.abiCodes that is associated with the ABI for this variant.
+        def baseAbiVersionCode =
+                // Determines the ABI for this variant and returns the mapped value.
+                project.ext.abiCodes.get(output.getFilter(OutputFile.ABI))
+
+        // Because abiCodes.get() returns null for ABIs that are not mapped by ext.abiCodes,
+        // the following code doesn't override the version code for universal APKs.
+        // However, because you want universal APKs to have the lowest version code,
+        // this outcome is desirable.
+        if (baseAbiVersionCode != null) {
+
+            // Assigns the new version code to versionCodeOverride, which changes the
+            // version code for only the output APK, not for the variant itself. Skipping
+            // this step causes Gradle to use the value of variant.versionCode for the APK.
+            output.versionCodeOverride =
+                    baseAbiVersionCode * 1000 + variant.versionCode
+        }
+    }
+}
+
 aboutLibraries {
     additionalLicenses = ["LGPL_3_0_only", "Apache_2_0"]
 }
@@ -261,8 +297,9 @@ configurations {
 // "true" is not allowed inside this block, use "hasSentryConfig" instead.
 // This is because gradle doesn't allow to enable/disable plugins conditionally
 sentry {
-    // Disable sentry on F-Droid flavor
     ignoredFlavors = []
+
+    // All the symbol upload logic has to be disabled for f-droid flavor, as we don't have a way to provide an auth token to f-droid
 
     // Disables or enables the handling of Proguard mapping for Sentry.
     // If enabled the plugin will generate a UUID and will take care of
@@ -298,7 +335,7 @@ sentry {
     // Does auto instrumentation for specified features through bytecode manipulation.
     // Default is enabled.
     tracingInstrumentation {
-        enabled = hasSentryConfig
+        enabled = true
         features = EnumSet.allOf(InstrumentationFeature)
     }
 
@@ -320,7 +357,6 @@ configurations {
 dependencies {
     // UI
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    //noinspection GradleDependency
     implementation 'androidx.activity:activity-ktx:1.7.0'
     implementation 'androidx.emoji2:emoji2:1.3.0'
     implementation 'androidx.emoji2:emoji2-views-helper:1.3.0'
@@ -334,7 +370,6 @@ dependencies {
     implementation "dev.rikka.rikkax.insets:insets:1.3.0"
     implementation 'com.github.KieronQuinn:MonetCompat:0.4.1'
     implementation 'com.github.Fox2Code:FoxCompat:0.2.0'
-    // Update the version code in the root build.gradle
     implementation 'com.mikepenz:aboutlibraries:10.6.2'
 
     // Utils
@@ -350,7 +385,7 @@ dependencies {
     // protobuf - fixes a crash on some devices
     implementation 'com.google.protobuf:protobuf-javalite:3.22.2'
 
-    implementation 'com.github.topjohnwu.libsu:io:5.0.1'
+    implementation 'com.github.topjohnwu.libsu:io:5.0.5'
     implementation 'com.github.Fox2Code:RosettaX:1.0.9'
     implementation 'com.github.Fox2Code:AndroidANSI:1.0.1'
 

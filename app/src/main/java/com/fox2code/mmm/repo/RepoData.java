@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -282,7 +283,24 @@ public class RepoData extends XRepo {
 
     @Override
     public boolean isEnabled() {
-        return this.enabled;
+        RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+        Realm realm2 = Realm.getInstance(realmConfiguration2);
+        AtomicBoolean dbEnabled = new AtomicBoolean(false);
+        realm2.executeTransaction(realm -> {
+            ReposList reposList = realm.where(ReposList.class).equalTo("id", this.id).findFirst();
+            if (reposList != null) {
+                dbEnabled.set(reposList.isEnabled());
+            } else {
+                // should never happen but for safety
+                dbEnabled.set(false);
+            }
+        });
+        realm2.close();
+        if (dbEnabled.get()) {
+            return !this.forceHide;
+        } else {
+            return false;
+        }
     }
 
     @Override

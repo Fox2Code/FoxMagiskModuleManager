@@ -404,4 +404,6 @@
     <string name="other_section">Other</string>
     <string name="eula_agree">By clicking "finish", you are agreeing to be bound by the LGPL-3.0 (https://www.gnu.org/licenses/lgpl-3.0.en.html) license and the EULA (https://www.androidacy.com/foxmmm-eula/)</string>
     <string name="analytics_desc">Allow us to track app usage and installs. Fully GDPR compliant and uses Matomo, hosted by Androidacy.</string>
+    <string name="debug_cat">Debugging</string>
+    <string name="announcements">News and updates</string>
 </resources>

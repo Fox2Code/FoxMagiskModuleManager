@@ -215,6 +215,30 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             assert preferenceManager != null;
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
             applyMaterial3(getPreferenceScreen());
+
+            // track enabled prefs
+            dataStore.getSharedPreferences().registerOnSharedPreferenceChangeListener((sharedPreferences, key) -> {
+                // use trackHelper to log key and value
+                // get key and value first
+                String value = sharedPreferences.getString(key, null);
+                // then log
+                if (value != null) {
+                    TrackHelper.track().event("pref_changed", key + "=" + value).with(MainApplication.getINSTANCE().getTracker());
+                }
+            });
+            // track all non empty values
+            SharedPreferences sharedPreferences = dataStore.getSharedPreferences();
+            // disabled until EncryptedSharedPreferences fixes getAll()
+           /* StringBuilder keys = new StringBuilder();
+            for (String key : sharedPreferences.getAll().keySet()) {
+                String value = sharedPreferences.getString(key, null);
+                if (value != null) {
+                    keys.append(key).append(",");
+                }
+            }
+            if (keys.length() > 0) {
+                TrackHelper.track().event("prefs_all", keys.toString()).with(MainApplication.getINSTANCE().getTracker());
+            }*/
             // add bottom navigation bar to the settings
             BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_navigation);
             if (bottomNavigationView != null) {
@@ -566,7 +590,6 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     int i = 0;
                     for (LocalModuleInfo localModuleInfo : localModuleInfos) {
                         moduleNames[i] = localModuleInfo.name;
-                        SharedPreferences sharedPreferences = MainApplication.getPreferences("mmm");
                         // get the stringset pref_background_update_check_excludes
                         Set<String> stringSet = sharedPreferences.getStringSet("pref_background_update_check_excludes", new HashSet<>());
                         // Stringset uses id, we show name
@@ -576,7 +599,6 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     }
                     new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.background_update_check_excludes).setMultiChoiceItems(moduleNames, checkedItems, (dialog, which, isChecked) -> {
                         // get the stringset pref_background_update_check_excludes
-                        SharedPreferences sharedPreferences = MainApplication.getPreferences("mmm");
                         Set<String> stringSet = new HashSet<>(sharedPreferences.getStringSet("pref_background_update_check_excludes", new HashSet<>()));
                         // get id from name
                         String id;
@@ -787,6 +809,19 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             linkClickable.setOnPreferenceLongClickListener(p -> {
                 String toastText = requireContext().getString(R.string.link_copied);
                 clipboard.setPrimaryClip(ClipData.newPlainText(toastText, "https://t.me/Fox2Code_Chat"));
+                Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
+                return true;
+            });
+            // pref_announcements to https://t.me/androidacy
+            linkClickable = findPreference("pref_announcements");
+            linkClickable.setOnPreferenceClickListener(p -> {
+                devModeStep = 0;
+                IntentHelper.openUrl(p.getContext(), "https://t.me/androidacy");
+                return true;
+            });
+            linkClickable.setOnPreferenceLongClickListener(p -> {
+                String toastText = requireContext().getString(R.string.link_copied);
+                clipboard.setPrimaryClip(ClipData.newPlainText(toastText, "https://t.me/androidacy"));
                 Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
                 return true;
             });

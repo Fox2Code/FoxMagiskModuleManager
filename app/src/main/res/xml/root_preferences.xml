@@ -187,6 +187,7 @@
         <!-- allow pii in crash reports -->
         <SwitchPreferenceCompat
             app:defaultValue="false"
+            app:dependency="pref_crash_reporting"
             app:icon="@drawable/ic_baseline_bug_report_24"
             app:key="pref_crash_reporting_pii"
             app:singleLineTitle="false"
@@ -200,6 +201,9 @@
             app:key="pref_analytics_enabled"
             app:summary="@string/analytics_desc"
             app:title="@string/setup_app_analytics" />
+
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/debug_cat">
         <!-- Purposely crash the app -->
         <Preference
             app:icon="@drawable/ic_baseline_bug_report_24"
@@ -219,15 +223,15 @@
             app:singleLineTitle="false"
             app:summary="@string/clear_app_cache_desc"
             app:title="@string/clear_app_cache" />
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/pref_category_info">
         <!-- Save logs -->
         <Preference
             app:icon="@drawable/baseline_save_24"
             app:key="pref_save_logs"
             app:singleLineTitle="false"
             app:title="@string/save_logs" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/pref_category_info">
         <com.fox2code.mmm.settings.LongClickablePreference
             app:icon="@drawable/ic_baseline_bug_report_24"
             app:key="pref_report_bug"
@@ -243,6 +247,11 @@
             app:key="pref_support"
             app:singleLineTitle="false"
             app:title="@string/support" />
+        <com.fox2code.mmm.settings.LongClickablePreference
+            app:icon="@drawable/ic_baseline_telegram_24"
+            app:key="pref_announcements"
+            app:singleLineTitle="false"
+            app:title="@string/announcements" />
         <Preference
             app:icon="@drawable/ic_baseline_info_24"
             app:key="pref_show_licenses"

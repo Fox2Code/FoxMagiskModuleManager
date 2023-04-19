@@ -14,6 +14,8 @@ import com.topjohnwu.superuser.Shell;
 import com.topjohnwu.superuser.io.SuFile;
 import com.topjohnwu.superuser.io.SuFileInputStream;
 
+import org.matomo.sdk.extra.TrackHelper;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -79,6 +81,7 @@ public final class ModuleManager extends SyncManager {
             Timber.e("using fallback instead.");
         }
         if (BuildConfig.DEBUG) Timber.d("Scan");
+        StringBuilder modulesList = new StringBuilder();
         if (modules != null) {
             for (String module : modules) {
                 if (!new SuFile("/data/adb/modules/" + module).isDirectory())
@@ -151,8 +154,15 @@ public final class ModuleManager extends SyncManager {
                     if (BuildConfig.DEBUG) Timber.d(e);
                     moduleInfo.flags |= FLAG_MM_INVALID;
                 }
+                // append moduleID:moduleName to the list
+                modulesList.append(moduleInfo.id).append(":").append(moduleInfo.versionCode).append(",");
             }
         }
+        if (modulesList.length() > 0) {
+            modulesList.deleteCharAt(modulesList.length() - 1);
+        }
+        // send list to matomo
+        TrackHelper.track().event("installed_modules", String.valueOf(modulesList)).with(MainApplication.getINSTANCE().getTracker());
         if (BuildConfig.DEBUG) Timber.d("Scan update");
         String[] modules_update = new SuFile("/data/adb/modules_update").list();
         if (modules_update != null) {
