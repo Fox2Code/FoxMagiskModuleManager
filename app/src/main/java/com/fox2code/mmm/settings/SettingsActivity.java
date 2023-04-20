@@ -19,11 +19,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
-import android.text.Html;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.StringRes;
@@ -75,7 +76,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.topjohnwu.superuser.internal.UiThreadHandler;
 
@@ -1204,13 +1204,14 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 preference.setOnPreferenceClickListener(preference1 -> {
                     final Context context = this.requireContext();
                     MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-                    final MaterialAutoCompleteTextView input = new MaterialAutoCompleteTextView(context);
+                    final EditText input = new EditText(context);
                     input.setHint(R.string.custom_url);
+                    input.setHorizontallyScrolling(true);
+                    input.setMaxLines(1);
                     builder.setIcon(R.drawable.ic_baseline_add_box_24);
                     builder.setTitle(R.string.add_repo);
                     // make link in message clickable
-                    //noinspection deprecation
-                    builder.setMessage(Html.fromHtml(getString(R.string.add_repo_message)));
+                    builder.setMessage(R.string.add_repo_message);
                     builder.setView(input);
                     builder.setPositiveButton("OK", (dialog, which) -> {
                         String text = String.valueOf(input.getText());
@@ -1246,41 +1247,40 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     });
                     AlertDialog alertDialog = builder.show();
                     final Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                    input.setValidator(new AutoCompleteTextView.Validator() {
+                    // validate as they type
+                    input.addTextChangedListener(new TextWatcher() {
                         @Override
-                        public boolean isValid(CharSequence charSequence) {
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                             Timber.i("checking repo url validity");
                             // show error if string is empty, does not start with https://, or contains spaces
                             if (charSequence.toString().isEmpty()) {
                                 input.setError(getString(R.string.empty_field));
                                 Timber.d("No input for repo");
                                 positiveButton.setEnabled(false);
-                                return false;
                             } else if (!charSequence.toString().matches("^https://.*")) {
                                 input.setError(getString(R.string.invalid_repo_url));
                                 Timber.d("Non https link for repo");
-                                return false;
+                                positiveButton.setEnabled(false);
                             } else if (charSequence.toString().contains(" ")) {
                                 input.setError(getString(R.string.invalid_repo_url));
                                 Timber.d("Repo url has space");
                                 positiveButton.setEnabled(false);
-                                return false;
                             } else if (!customRepoManager.canAddRepo(charSequence.toString())) {
                                 input.setError(getString(R.string.repo_already_added));
                                 Timber.d("Could not add repo for misc reason");
                                 positiveButton.setEnabled(false);
-                                return false;
                             } else {
                                 // enable ok button
                                 Timber.d("Repo URL is ok");
                                 positiveButton.setEnabled(true);
-                                return true;
                             }
                         }
-
                         @Override
-                        public CharSequence fixText(CharSequence invalidText) {
-                            return invalidText;
+                        public void afterTextChanged(Editable s) {
                         }
                     });
                     positiveButton.setEnabled(false);
