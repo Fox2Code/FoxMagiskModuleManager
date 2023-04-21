@@ -132,7 +132,7 @@ android {
             // rate limited to 30 requests per minute
             if (project.rootProject.file("androidacy.properties").exists()) {
                 propertiesA.load(project.rootProject.file("androidacy.properties").inputStream())
-                properties.setProperty("client_id", "\"" + propertiesA.getProperty("client_id") + "\"")
+                properties.setProperty("client_id", "\"" + propertiesA.getProperty("client_id", "5KYccdYxWB2RxMq5FTbkWisXi2dS6yFN9R7RVlFCG98FRdz6Mf5ojY2fyJCUlXJZ") + "\"")
             } else {
                 properties.setProperty("client_id", "5KYccdYxWB2RxMq5FTbkWisXi2dS6yFN9R7RVlFCG98FRdz6Mf5ojY2fyJCUlXJZ")
             }
@@ -140,7 +140,7 @@ android {
             // If client ID is empty, disable androidacy
             if (propertiesA.getProperty("client_id").isEmpty()) {
                 buildConfigField("java.util.List<String>",
-                        "ENABLED_REPOS", "java.util.Arrays.asList(\"magisk_alt_repo\")")
+                        "ENABLED_REPOS", "java.util.Arrays.asList(\"\")")
             } else {
                 buildConfigField("java.util.List<String>",
                         "ENABLED_REPOS",
@@ -192,7 +192,7 @@ android {
             // to 50 requests per minute
             if (project.rootProject.file("androidacy.properties").exists()) {
                 propertiesA.load(project.rootProject.file("androidacy.properties").inputStream())
-                buildConfigField("String", "ANDROIDACY_CLIENT_ID", propertiesA.getProperty("client_id"))
+                buildConfigField("String", "ANDROIDACY_CLIENT_ID", propertiesA.getProperty("client_id", "dQ1p7X8bF14PVJ7wAU6ORVjPB2IeTinsuAZ8Uos6tQiyUdUyIjSyZSmN54QBbaTy"))
             } else {
                 properties.setProperty("client_id", "dQ1p7X8bF14PVJ7wAU6ORVjPB2IeTinsuAZ8Uos6tQiyUdUyIjSyZSmN54QBbaTy")
             }
