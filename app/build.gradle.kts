@@ -134,7 +134,7 @@ android {
                 propertiesA.load(project.rootProject.file("androidacy.properties").inputStream())
                 properties.setProperty("client_id", "\"" + propertiesA.getProperty("client_id", "5KYccdYxWB2RxMq5FTbkWisXi2dS6yFN9R7RVlFCG98FRdz6Mf5ojY2fyJCUlXJZ") + "\"")
             } else {
-                properties.setProperty("client_id", "5KYccdYxWB2RxMq5FTbkWisXi2dS6yFN9R7RVlFCG98FRdz6Mf5ojY2fyJCUlXJZ")
+                properties.setProperty("client_id", "\"5KYccdYxWB2RxMq5FTbkWisXi2dS6yFN9R7RVlFCG98FRdz6Mf5ojY2fyJCUlXJZ\"")
             }
             buildConfigField("String", "ANDROIDACY_CLIENT_ID", "\"" + propertiesA.getProperty("client_id") + "\"")
             // If client ID is empty, disable androidacy
@@ -169,9 +169,9 @@ android {
             val properties = Properties()
             if (project.rootProject.file("local.properties").exists()) {
                 // grab matomo.url
-                buildConfigField("String", "ANALYTICS_ENDPOINT", properties.getProperty("matomo.url", "https://s-api.androidacy.com/matomo.php"))
+                buildConfigField("String", "ANALYTICS_ENDPOINT", "\"" + properties.getProperty("matomo.url", "https://s-api.androidacy.com/matomo.php") + "\"")
             } else {
-                buildConfigField("String", "ANALYTICS_ENDPOINT", "https://s-api.androidacy.com/matomo.php")
+                buildConfigField("String", "ANALYTICS_ENDPOINT", "\"https://s-api.androidacy.com/matomo.php\"")
             }
             buildConfigField("boolean", "ENABLE_PROTECTION", "true")
 
@@ -187,9 +187,9 @@ android {
             // to 50 requests per minute
             if (project.rootProject.file("androidacy.properties").exists()) {
                 propertiesA.load(project.rootProject.file("androidacy.properties").inputStream())
-                buildConfigField("String", "ANDROIDACY_CLIENT_ID", propertiesA.getProperty("client_id", "dQ1p7X8bF14PVJ7wAU6ORVjPB2IeTinsuAZ8Uos6tQiyUdUyIjSyZSmN54QBbaTy"))
+                buildConfigField("String", "ANDROIDACY_CLIENT_ID", "\"" + propertiesA.getProperty("client_id", "dQ1p7X8bF14PVJ7wAU6ORVjPB2IeTinsuAZ8Uos6tQiyUdUyIjSyZSmN54QBbaTy") + "\"")
             } else {
-                properties.setProperty("client_id", "dQ1p7X8bF14PVJ7wAU6ORVjPB2IeTinsuAZ8Uos6tQiyUdUyIjSyZSmN54QBbaTy")
+                properties.setProperty("client_id", "\"dQ1p7X8bF14PVJ7wAU6ORVjPB2IeTinsuAZ8Uos6tQiyUdUyIjSyZSmN54QBbaTy\"")
             }
             versionNameSuffix = "-froid"
         }
