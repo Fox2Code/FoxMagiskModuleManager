@@ -16,7 +16,7 @@
     <string name="no_web_view">No se pudo abrir el WebView del sistema</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="app_update_available">Actualización disponible</string>
-    <string name="app_update">Actualizar</string>
+    <string name="app_update">Actualizar aplicación</string>
     <string name="no_desc_found">Sin descripción.</string>
     <string name="download_module">Descargar módulo</string>
     <string name="install_module">Instalar módulo</string>
@@ -126,7 +126,7 @@
     <string name="add_repo">Añadir Repositorio</string>
     <string name="remove_repo">Eliminar Repositorio</string>
     <string name="custom_url">URL Personalizado</string>
-    <string name="androidacy_repo_info">Este repositorio puede mostrar algunos anuncios no intrusivos para cubrir los costos del servidor y del desarrollo.</string>
+    <string name="androidacy_repo_info">Este repositorio puede mostrar algunos anuncios no intrusivos para cubrir los costos del servidor y del desarrollo. Reseñas de funciones, escaneos automáticos de virus,y más.</string>
     <string name="backup_module_list">Hacer copia de seguridad de los módulos</string>
     <string name="restore_module_list">Restaurar módulos</string>
     <string name="require_internet">Esta operación requiere una conexión a Internet</string>
@@ -168,4 +168,18 @@
     <string name="crash_reporting_restart_message">La aplicación necesita ser reiniciada para que los cambios sean aplicados</string>
     <string name="restart">Reiniciar</string>
     <string name="androidacy_test_mode_disable_warning">La aplicación se reiniciará para deshabilitar el canal de prueba</string>
+    <string name="email">Tu correo</string>
+    <string name="permission_notification_title">Permitir notificaciones\?</string>
+    <string name="permission_notification_grant">Conceder permiso</string>
+    <string name="repos">Repositorios</string>
+    <string name="setup_button_skip">Omitir</string>
+    <string name="finish">Finalizar</string>
+    <string name="misc">Misceláneos</string>
+    <string name="link_copied">Enlace copiado</string>
+    <string name="force_black_theme_pref">Forzar tema oscuro</string>
+    <string name="androidacy_repo_disabled">Este repositorio esta actualmente desactivado</string>
+    <string name="name">Tu nombre</string>
+    <string name="additional_info">Dinos que sucedió</string>
+    <string name="setup_magisk_alt_repo">Activar el Magisk Alt Repositorio</string>
+    <string name="setup_theme_dark">Tema oscuro</string>
 </resources>
