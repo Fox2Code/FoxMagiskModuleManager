@@ -138,14 +138,9 @@ android {
             }
             buildConfigField("String", "ANDROIDACY_CLIENT_ID", "\"" + propertiesA.getProperty("client_id") + "\"")
             // If client ID is empty, disable androidacy
-            if (propertiesA.getProperty("client_id").isEmpty()) {
-                buildConfigField("java.util.List<String>",
-                        "ENABLED_REPOS", "java.util.Arrays.asList(\"\")")
-            } else {
-                buildConfigField("java.util.List<String>",
-                        "ENABLED_REPOS",
-                        "java.util.Arrays.asList(\"androidacy_repo\")",)
-            }
+            buildConfigField("java.util.List<String>",
+                "ENABLED_REPOS",
+                "java.util.Arrays.asList(\"androidacy_repo\")",)
 
         }
 
