@@ -31,6 +31,7 @@ import com.fox2code.foxcompat.app.FoxApplication;
 import com.fox2code.foxcompat.app.internal.FoxProcessExt;
 import com.fox2code.foxcompat.view.FoxThemeWrapper;
 import com.fox2code.mmm.installer.InstallerInitializer;
+import com.fox2code.mmm.utils.TimberUtils;
 import com.fox2code.mmm.utils.io.GMSProviderInstaller;
 import com.fox2code.mmm.utils.io.net.Http;
 import com.fox2code.mmm.utils.sentry.SentryMain;
@@ -80,9 +81,6 @@ import io.noties.markwon.html.HtmlPlugin;
 import io.noties.markwon.image.ImagesPlugin;
 import io.noties.markwon.image.network.OkHttpNetworkSchemeHandler;
 import io.realm.Realm;
-import io.sentry.Sentry;
-import io.sentry.SentryLevel;
-import io.sentry.android.timber.SentryTimberTree;
 import timber.log.Timber;
 
 @SuppressWarnings("CommentedOutCode")
@@ -96,7 +94,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     // Use FoxProcess wrapper helper.
     private static final boolean wrapped = !FoxProcessExt.isRootLoader();
     private static final ArrayList<String> callers = new ArrayList<>();
-    public static boolean isOfficial = false;
+    public static boolean Iof = false;
     private static String SHOWCASE_MODE_TRUE = null;
     private static long secret;
     private static Locale timeFormatLocale = Resources.getSystem().getConfiguration().getLocales().get(0);
@@ -125,6 +123,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     private Markwon markwon;
     private byte[] existingKey;
     private Tracker tracker;
+    private boolean makingNewKey = false;
 
     public MainApplication() {
         if (INSTANCE != null && INSTANCE != this)
@@ -406,20 +405,13 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         relPackageName = this.getPackageName();
         super.onCreate();
         SentryMain.initialize(this);
-        // init timber
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-        } else {
-            if (isCrashReportingEnabled()) {
-                //noinspection UnstableApiUsage
-                Timber.plant(new SentryTimberTree(Sentry.getCurrentHub(), SentryLevel.ERROR, SentryLevel.ERROR));
-            } else {
-                Timber.plant(new ReleaseTree());
-            }
-        }
+        // dirty workaround so timber doesn't bitch at us
+        TimberUtils.configTimber();
         Timber.i("Starting FoxMMM version %s (%d) - commit %s", BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, BuildConfig.COMMIT_HASH);
         // Update SSL Ciphers if update is possible
         GMSProviderInstaller.installIfNeeded(this);
+        Http.ensureCacheDirs();
+        Http.ensureURLHandler(this);
         Timber.d("Initializing FoxMMM");
         Timber.d("Started from background: %s", !isInForeground());
         Timber.d("FoxMMM is running in debug mode");
@@ -451,17 +443,16 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         } else {
             Timber.d("Matomo already has install");
         }
-        // Determine if this is an official build based on the signature
         try {
-            // Get the signature of the key used to sign the app
             @SuppressLint("PackageManagerGetSignatures") Signature[] s = this.getPackageManager().getPackageInfo(this.getPackageName(), PackageManager.GET_SIGNATURES).signatures;
             @SuppressWarnings("SpellCheckingInspection") String[] osh = new String[]{"7bec7c4462f4aac616612d9f56a023ee3046e83afa956463b5fab547fd0a0be6", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"};
+            //noinspection SpellCheckingInspection
             String oosh = Hashing.sha256().hashBytes(s[0].toByteArray()).toString();
-            isOfficial = Arrays.asList(osh).contains(oosh);
+            Iof = Arrays.asList(osh).contains(oosh);
         } catch (PackageManager.NameNotFoundException ignored) {
         }
         // hide this behind a buildconfig flag for now, but crash the app if it's not an official build and not debug
-        if (BuildConfig.ENABLE_PROTECTION && !isOfficial && !BuildConfig.DEBUG) {
+        if (BuildConfig.ENABLE_PROTECTION && !Iof && !BuildConfig.DEBUG) {
             throw new RuntimeException("This is not an official build of FoxMMM");
         }
         SharedPreferences sharedPreferences = MainApplication.getPreferences("mmm");
@@ -606,11 +597,26 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     }
 
     // Create a key to encrypt a realm and save it securely in the keystore
-    public byte[] getNewKey() {
+    public byte[] getKey() {
+        if (makingNewKey) {
+            // sleep until the key is made
+            while (makingNewKey) try {
+                //noinspection BusyWait
+                Thread.sleep(100);
+            } catch (InterruptedException ignored) {
+                // silence is bliss
+            }
+        }
+        // attempt to read the existingKey property
+        if (existingKey != null) {
+            return existingKey;
+        }
         // check if we have a key already
         SharedPreferences sharedPreferences = MainApplication.getPreferences("realm_key");
         if (sharedPreferences.contains("iv_and_encrypted_key")) {
             return getExistingKey();
+        } else {
+            makingNewKey = true;
         }
         // open a connection to the android keystore
         KeyStore keyStore;
@@ -677,6 +683,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         Timber.d("Created all keys successfully.");
         MainApplication.getPreferences("realm_key").edit().putString("iv_and_encrypted_key", Base64.encodeToString(initializationVectorAndEncryptedKey, Base64.NO_WRAP)).apply();
         Timber.d("Saved the encrypted key in shared preferences.");
+        makingNewKey = false;
         return realmKey; // pass to a realm configuration via encryptionKey()
     }
 
@@ -747,7 +754,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         updateModules = new ArrayList<>();
     }
 
-    private static class ReleaseTree extends Timber.Tree {
+    public static class ReleaseTree extends Timber.Tree {
         @Override
         protected void log(int priority, String tag, @NonNull String message, Throwable t) {
             // basically silently drop all logs below error, and write the rest to logcat

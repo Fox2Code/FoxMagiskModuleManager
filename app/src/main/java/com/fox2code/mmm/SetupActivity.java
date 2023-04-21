@@ -174,7 +174,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             editor.putBoolean("pref_analytics_enabled", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_app_analytics))).isChecked());
             Timber.d("Saving preferences");
             // Set the repos in the ReposList realm db
-            RealmConfiguration realmConfig = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+            RealmConfiguration realmConfig = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getKey()).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
             boolean androidacyRepo = ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_androidacy_repo))).isChecked();
             boolean magiskAltRepo = ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_magisk_alt_repo))).isChecked();
             Realm realm = Realm.getInstance(realmConfig);
@@ -292,7 +292,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         long startTime = System.currentTimeMillis();
         // create encryption key
         Timber.d("Creating encryption key");
-        byte[] key = MainApplication.getINSTANCE().getNewKey();
+        byte[] key = MainApplication.getINSTANCE().getKey();
         // create the realm database for ReposList
         // create the realm configuration
         RealmConfiguration config = new RealmConfiguration.Builder().name("ReposList.realm").directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).encryptionKey(key).build();

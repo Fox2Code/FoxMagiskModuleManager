@@ -101,7 +101,8 @@
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
+                android:layout_marginHorizontal="4dp"
+                android:layout_marginVertical="12dp"
                 android:text="@string/repos"
                 android:textAppearance="@android:style/TextAppearance.Material.Headline" />
 
@@ -109,7 +110,7 @@
                 android:id="@+id/setup_androidacy_repo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
+                android:layout_margin="5dp"
                 android:checked="false"
                 android:key="pref_androidacy_repo_enabled"
                 android:text="@string/setup_androidacy_repo"
@@ -119,7 +120,7 @@
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
+                android:layout_margin="5dp"
                 android:drawableStart="@drawable/ic_baseline_info_24"
                 android:drawablePadding="8dp"
                 android:text="@string/setup_androidacy_repo_summary"
@@ -155,7 +156,8 @@
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
+                android:layout_marginHorizontal="4dp"
+                android:layout_marginVertical="12dp"
                 android:text="@string/pref_category_privacy"
                 android:textAppearance="@android:style/TextAppearance.Material.Headline" />
 
@@ -163,7 +165,7 @@
                 android:id="@+id/setup_crash_reporting"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
+                android:layout_margin="5dp"
                 android:checked="false"
                 android:key="pref_crash_reporting_enabled"
                 android:text="@string/setup_crash_reporting"
@@ -184,7 +186,7 @@
                 android:id="@+id/setup_crash_reporting_pii"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
+                android:layout_margin="5dp"
                 android:checked="false"
                 android:key="pref_crash_reporting_pii"
                 android:text="@string/setup_crash_reporting_pii"
@@ -207,7 +209,7 @@
                 android:id="@+id/setup_app_analytics"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
+                android:layout_margin="5dp"
                 android:checked="false"
                 android:key="pref_app_analytics"
                 android:text="@string/setup_app_analytics"
@@ -225,7 +227,8 @@
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
+                android:layout_marginHorizontal="4dp"
+                android:layout_marginVertical="12dp"
                 android:text="@string/setup_update_check_headline"
                 android:textAppearance="@android:style/TextAppearance.Material.Headline" />
 
@@ -233,7 +236,7 @@
                 android:id="@+id/setup_background_update_check"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
+                android:layout_margin="5dp"
                 android:checked="false"
                 android:key="pref_background_update_check"
                 android:text="@string/setup_background_update_check"
@@ -255,7 +258,7 @@
                 android:id="@+id/setup_background_update_check_require_wifi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
+                android:layout_margin="5dp"
                 android:checked="true"
                 android:key="pref_background_update_check_require_wifi"
                 android:text="@string/setup_background_update_check_require_wifi"
@@ -276,7 +279,8 @@
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="2dp"
+                android:layout_marginHorizontal="4dp"
+                android:layout_marginVertical="12dp"
                 android:text="@string/other_section"
                 android:textAppearance="@android:style/TextAppearance.Material.Headline" />
 

@@ -30,7 +30,7 @@ public class CustomRepoManager {
         if (MainApplication.getPreferences("mmm").getString("last_shown_setup", "").equals("")) {
             return;
         }
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
         Realm realm = Realm.getInstance(realmConfiguration);
         if (realm.isInTransaction()) {
             realm.commitTransaction();
@@ -118,7 +118,7 @@ public class CustomRepoManager {
         } catch (Exception e) {
             submitModule = null;
         }
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
         Realm realm = Realm.getInstance(realmConfiguration);
         int finalI = i;
         String finalWebsite = website;

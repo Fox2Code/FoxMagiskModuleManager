@@ -835,7 +835,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             String flavor = BuildConfig.FLAVOR;
             String type = BuildConfig.BUILD_TYPE;
             // Set the summary of pref_pkg_info to something like default-debug v1.0 (123) (Official)
-            String pkgInfo = getString(R.string.pref_pkg_info_summary, flavor + "-" + type, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, MainApplication.isOfficial ? getString(R.string.official) : getString(R.string.unofficial));
+            String pkgInfo = getString(R.string.pref_pkg_info_summary, flavor + "-" + type, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, MainApplication.Iof ? getString(R.string.official) : getString(R.string.unofficial));
             findPreference("pref_pkg_info").setSummary(pkgInfo);
             // special easter egg :)
             var ref = new Object() {
@@ -957,7 +957,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 });
             }
             // Get magisk_alt_repo enabled state from realm db
-            RealmConfiguration realmConfig = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+            RealmConfiguration realmConfig = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
             Realm realm1 = Realm.getInstance(realmConfig);
             ReposList reposList = realm1.where(ReposList.class).equalTo("id", "magisk_alt_repo").findFirst();
             if (reposList != null) {
@@ -994,7 +994,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     SwitchPreferenceCompat switchPreferenceCompat = (SwitchPreferenceCompat) androidacyRepoEnabled;
                     switchPreferenceCompat.setChecked(false);
                     // Disable in realm db
-                    RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+                    RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
                     Realm realm = Realm.getInstance(realmConfiguration);
                     realm.executeTransaction(realm2 -> {
                         ReposList repoRealmResults = realm2.where(ReposList.class).equalTo("id", "androidacy_repo").findFirst();
@@ -1007,7 +1007,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 });
             }
             // get if androidacy repo is enabled from realm db
-            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
             Realm realm = Realm.getInstance(realmConfiguration);
             ReposList repoRealmResults = realm.where(ReposList.class).equalTo("id", "androidacy_repo").findFirst();
             if (repoRealmResults == null) {
@@ -1164,7 +1164,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
 
         @SuppressLint("RestrictedApi")
         public void updateCustomRepoList(boolean initial) {
-            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+            RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
             Realm realm = Realm.getInstance(realmConfiguration);
             // get all repos that are not built-in
             int CUSTOM_REPO_ENTRIES = 0;
@@ -1304,7 +1304,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             if (preference == null) return;
             if (!preferenceName.contains("androidacy") && !preferenceName.contains("magisk_alt_repo")) {
                 if (repoData != null) {
-                    RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+                    RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
                     Realm realm = Realm.getInstance(realmConfiguration);
                     RealmResults<ReposList> repoDataRealmResults = realm.where(ReposList.class).equalTo("id", repoData.id).findAll();
                     Timber.d("Setting preference " + preferenceName + " because it is not the Androidacy repo or the Magisk Alt Repo");

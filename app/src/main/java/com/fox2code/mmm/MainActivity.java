@@ -1,6 +1,6 @@
 package com.fox2code.mmm;
 
-import static com.fox2code.mmm.MainApplication.isOfficial;
+import static com.fox2code.mmm.MainApplication.Iof;
 import static com.fox2code.mmm.manager.ModuleInfo.FLAG_MM_REMOTE_MODULE;
 
 import android.Manifest;
@@ -55,10 +55,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.chromium.net.CronetEngine;
 import org.matomo.sdk.extra.TrackHelper;
 
-import java.net.URL;
 import java.util.Objects;
 
 import io.realm.Realm;
@@ -85,7 +83,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     private CardView searchCard;
     private SearchView searchView;
     private boolean initMode;
-    private boolean urlFactoryInstalled = false;
 
     public MainActivity() {
         this.moduleViewListBuilder = new ModuleViewListBuilder(this);
@@ -103,16 +100,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.initMode = true;
-        // Ensure HTTP Cache directories are created
-        Http.ensureCacheDirs(this);
-        if (!urlFactoryInstalled) {
-            urlFactoryInstalled = true;
-            try {
-                URL.setURLStreamHandlerFactory(new CronetEngine.Builder(this).build().createURLStreamHandlerFactory());
-            } catch (Error ignored) {
-                // Ignore
-            }
-        }
         if (doSetupRestarting) {
             doSetupRestarting = false;
         }
@@ -120,7 +107,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         super.onCreate(savedInstanceState);
         TrackHelper.track().screen(this).with(MainApplication.getINSTANCE().getTracker());
         // track enabled repos
-        RealmConfiguration realmConfig = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).build();
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getKey()).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).build();
         Realm realm = Realm.getInstance(realmConfig);
         StringBuilder enabledRepos = new StringBuilder();
         realm.executeTransaction(r -> {
@@ -133,7 +120,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         }
         TrackHelper.track().event("enabled_repos", enabledRepos.toString()).with(MainApplication.getINSTANCE().getTracker());
         // log all shared preferences that are present
-        if (!isOfficial) {
+        if (!Iof) {
             Timber.w("You may be running an untrusted build.");
             // Show a toast to warn the user
             Toast.makeText(this, R.string.not_official_build, Toast.LENGTH_LONG).show();

@@ -39,6 +39,7 @@ public class RepoData extends XRepo {
     public final JSONObject supportedProperties = new JSONObject();
     private final Object populateLock = new Object();
     public String url;
+
     public String id;
     public File cacheRoot;
     public SharedPreferences cachedPreferences;
@@ -106,7 +107,7 @@ public class RepoData extends XRepo {
         this.defaultName = url; // Set url as default name
         this.forceHide = AppUpdateManager.shouldForceHide(this.id);
         // this.enable is set from the database
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
         Realm realm = Realm.getInstance(realmConfiguration);
         ReposList reposList = realm.where(ReposList.class).equalTo("id", this.id).findFirst();
         if (reposList == null) {
@@ -283,7 +284,7 @@ public class RepoData extends XRepo {
 
     @Override
     public boolean isEnabled() {
-        RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+        RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
         Realm realm2 = Realm.getInstance(realmConfiguration2);
         AtomicBoolean dbEnabled = new AtomicBoolean(false);
         realm2.executeTransaction(realm -> {
@@ -307,7 +308,7 @@ public class RepoData extends XRepo {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled && !this.forceHide;
         // reposlist realm
-        RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+        RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
         Realm realm2 = Realm.getInstance(realmConfiguration2);
         realm2.executeTransaction(realm -> {
             ReposList reposList = realm.where(ReposList.class).equalTo("id", this.id).findFirst();
@@ -327,9 +328,10 @@ public class RepoData extends XRepo {
             Timber.e("Repo ID is null");
             return;
         }
+        // if repo starts with repo_, it's always enabled bc custom repos can't be disabled without being deleted.
         this.forceHide = AppUpdateManager.shouldForceHide(this.id);
         // reposlist realm
-        RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+        RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
         Realm realm2 = Realm.getInstance(realmConfiguration2);
         boolean dbEnabled = false;
         try {
@@ -386,12 +388,12 @@ public class RepoData extends XRepo {
     // should update (lastUpdate > 15 minutes)
     public boolean shouldUpdate() {
         Timber.d("Repo " + this.id + " should update check called");
-        RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
+        RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
         Realm realm2 = Realm.getInstance(realmConfiguration2);
         ReposList repo = realm2.where(ReposList.class).equalTo("id", this.id).findFirst();
         // Make sure ModuleListCache for repoId is not null
         File cacheRoot = MainApplication.getINSTANCE().getDataDirWithPath("realms/repos/" + this.id);
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ModuleListCache.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).schemaVersion(1).deleteRealmIfMigrationNeeded().allowWritesOnUiThread(true).allowQueriesOnUiThread(true).directory(cacheRoot).build();
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ModuleListCache.realm").encryptionKey(MainApplication.getINSTANCE().getKey()).schemaVersion(1).deleteRealmIfMigrationNeeded().allowWritesOnUiThread(true).allowQueriesOnUiThread(true).directory(cacheRoot).build();
         Realm realm = Realm.getInstance(realmConfiguration);
         RealmResults<ModuleListCache> moduleListCache = realm.where(ModuleListCache.class).equalTo("repoId", this.id).findAll();
         if (repo != null) {

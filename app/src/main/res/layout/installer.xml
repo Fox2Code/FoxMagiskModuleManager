@@ -36,16 +36,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/install_terminal_reboot_fab"
-        android:text="@string/install_terminal_reboot_now"
-        android:visibility="gone"
-        android:layout_width="wrap_content"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:textColor="@android:color/white"
-        app:iconTint="@android:color/white"
-        app:icon="@drawable/ic_reboot_24"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/bottom_nav_install" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

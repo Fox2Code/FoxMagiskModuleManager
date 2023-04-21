@@ -37,8 +37,8 @@ import com.fox2code.mmm.utils.io.PropUtils;
 import com.fox2code.mmm.utils.io.net.Http;
 import com.fox2code.mmm.utils.sentry.SentryBreadcrumb;
 import com.fox2code.mmm.utils.sentry.SentryMain;
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.topjohnwu.superuser.CallbackList;
 import com.topjohnwu.superuser.Shell;
@@ -57,6 +57,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 
 import timber.log.Timber;
@@ -64,7 +65,8 @@ import timber.log.Timber;
 public class InstallerActivity extends FoxActivity {
     private static final HashSet<String> extracted = new HashSet<>();
     public LinearProgressIndicator progressIndicator;
-    public ExtendedFloatingActionButton rebootFloatingButton;
+    public BottomNavigationItemView rebootFloatingButton;
+    public BottomNavigationItemView cancelFloatingButton;
     public InstallerTerminal installerTerminal;
     private File moduleCache;
     private File toDelete;
@@ -102,7 +104,7 @@ public class InstallerActivity extends FoxActivity {
                 return;
             }
             // ensure the intent is from our app, and is either a url or within our directory. replace all instances of .. and url encoded ..
-            target = intent.getStringExtra(Constants.EXTRA_INSTALL_PATH).trim().replaceAll("\\.\\.", "").replaceAll("%2e%2e", "");
+            target = Objects.requireNonNull(intent.getStringExtra(Constants.EXTRA_INSTALL_PATH)).trim().replaceAll("\\.\\.", "").replaceAll("%2e%2e", "");
             if (target.isEmpty() || !target.startsWith(MainApplication.getINSTANCE().getDataDir().getAbsolutePath()) && !target.startsWith("https://")) {
                 this.forceBackPressed();
                 return;
@@ -148,6 +150,7 @@ public class InstallerActivity extends FoxActivity {
         RecyclerView installTerminal;
         this.progressIndicator = findViewById(R.id.progress_bar);
         this.rebootFloatingButton = findViewById(R.id.install_terminal_reboot_fab);
+        this.cancelFloatingButton = findViewById(R.id.back_installer);
         this.installerTerminal = new InstallerTerminal(installTerminal = findViewById(R.id.install_terminal), this.isLightTheme(), foreground, mmtReborn);
         (horizontalScroller != null ? horizontalScroller : installTerminal).setBackground(new ColorDrawable(background));
         installTerminal.setItemAnimator(null);
@@ -528,6 +531,8 @@ public class InstallerActivity extends FoxActivity {
                 }
             });
             this.rebootFloatingButton.setVisibility(View.VISIBLE);
+            // handle back button
+            this.cancelFloatingButton.setOnClickListener(_view -> this.finishAndRemoveTask());
             if (message != null && !message.isEmpty()) this.installerTerminal.addLine(message);
             if (optionalLink != null && !optionalLink.isEmpty()) {
                 this.setActionBarExtraMenuButton(ActionButtonType.supportIconForUrl(optionalLink), menu -> {
@@ -618,25 +623,13 @@ public class InstallerActivity extends FoxActivity {
                 command = rawCommand;
             }
             switch (command) {
-                case "useRecovery":
-                    this.useRecovery = true;
-                    break;
-                case "addLine":
-                    this.terminal.addLine(arg);
-                    break;
-                case "setLastLine":
-                    this.terminal.setLastLine(arg);
-                    break;
-                case "clearTerminal":
-                    this.terminal.clearTerminal();
-                    break;
-                case "scrollUp":
-                    this.terminal.scrollUp();
-                    break;
-                case "scrollDown":
-                    this.terminal.scrollDown();
-                    break;
-                case "showLoading":
+                case "useRecovery" -> this.useRecovery = true;
+                case "addLine" -> this.terminal.addLine(arg);
+                case "setLastLine" -> this.terminal.setLastLine(arg);
+                case "clearTerminal" -> this.terminal.clearTerminal();
+                case "scrollUp" -> this.terminal.scrollUp();
+                case "scrollDown" -> this.terminal.scrollDown();
+                case "showLoading" -> {
                     this.isRecoveryBar = false;
                     if (!arg.isEmpty()) {
                         try {
@@ -661,26 +654,24 @@ public class InstallerActivity extends FoxActivity {
                         this.progressIndicator.setIndeterminate(true);
                     }
                     this.progressIndicator.setVisibility(View.VISIBLE);
-                    break;
-                case "setLoading":
+                }
+                case "setLoading" -> {
                     this.isRecoveryBar = false;
                     try {
                         this.progressIndicator.setProgressCompat(Short.parseShort(arg), true);
                     } catch (Exception ignored) {
                     }
-                    break;
-                case "hideLoading":
+                }
+                case "hideLoading" -> {
                     this.isRecoveryBar = false;
                     this.progressIndicator.setVisibility(View.GONE);
-                    break;
-                case "setSupportLink":
+                }
+                case "setSupportLink" -> {
                     // Only set link if valid
                     if (arg.isEmpty() || (arg.startsWith("https://") && arg.indexOf('/', 8) > 8))
                         this.supportLink = arg;
-                    break;
-                case "disableANSI":
-                    this.terminal.disableAnsi();
-                    break;
+                }
+                case "disableANSI" -> this.terminal.disableAnsi();
             }
         }
 

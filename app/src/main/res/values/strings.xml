@@ -406,4 +406,5 @@
     <string name="analytics_desc">Allow us to track app usage and installs. Fully GDPR compliant and uses Matomo, hosted by Androidacy.</string>
     <string name="debug_cat">Debugging</string>
     <string name="announcements">News and updates</string>
+    <string name="back">Go back</string>
 </resources>

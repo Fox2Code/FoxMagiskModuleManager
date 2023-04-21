@@ -29,6 +29,7 @@ import com.fox2code.mmm.utils.io.Files;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.net.cronet.okhttptransport.CronetInterceptor;
 
+import org.apache.commons.io.FileUtils;
 import org.chromium.net.CronetEngine;
 
 import java.io.ByteArrayOutputStream;
@@ -37,6 +38,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.Proxy;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -247,6 +249,8 @@ public enum Http {
         doh = MainApplication.isDohEnabled();
     }
 
+    private static boolean urlFactoryInstalled;
+
     private static OkHttpClient.Builder followRedirects(OkHttpClient.Builder builder, boolean followRedirects) {
         return builder.followRedirects(followRedirects).followSslRedirects(followRedirects);
     }
@@ -411,50 +415,23 @@ public enum Http {
         return hasWebView;
     }
 
-    public static void ensureCacheDirs(MainActivity mainActivity) {
-        // Recursively ensure cache dirs for webview exist under our cache dir
-        File cacheDir = mainActivity.getCacheDir();
-        File webviewCacheDir = new File(cacheDir, "WebView");
-        if (!webviewCacheDir.exists()) {
-            if (!webviewCacheDir.mkdirs()) {
-                Timber.e("Failed to create webview cache dir");
-            }
+    public static void ensureCacheDirs()  {
+        try {
+            FileUtils.forceMkdir(new File((MainApplication.getINSTANCE().getDataDir() + "/cache/WebView/Default/HTTP Cache/Code Cache/wasm").replaceAll("//", "/")));
+            FileUtils.forceMkdir(new File((MainApplication.getINSTANCE().getDataDir() + "/cache/WebView/Default/HTTP Cache/Code Cache/js").replaceAll("//", "/")));
+            FileUtils.forceMkdir(new File((MainApplication.getINSTANCE().getDataDir() + "/cache/cronet").replaceAll("//", "/")));
+        } catch (IOException e) {
+            Timber.e("Could not create cache dirs");
         }
-        File webviewCacheDirCache = new File(webviewCacheDir, "Default");
-        if (!webviewCacheDirCache.exists()) {
-            if (!webviewCacheDirCache.mkdirs()) {
-                Timber.e("Failed to create webview cache dir");
-            }
-        }
-        File webviewCacheDirCacheCodeCache = new File(webviewCacheDirCache, "HTTP Cache");
-        if (!webviewCacheDirCacheCodeCache.exists()) {
-            if (!webviewCacheDirCacheCodeCache.mkdirs()) {
-                Timber.e("Failed to create webview cache dir");
-            }
-        }
-        File webviewCacheDirCacheCodeCacheIndex = new File(webviewCacheDirCacheCodeCache, "Code Cache");
-        if (!webviewCacheDirCacheCodeCacheIndex.exists()) {
-            if (!webviewCacheDirCacheCodeCacheIndex.mkdirs()) {
-                Timber.e("Failed to create webview cache dir");
-            }
-        }
-        File webviewCacheDirCacheCodeCacheIndexIndex = new File(webviewCacheDirCacheCodeCacheIndex, "Index");
-        if (!webviewCacheDirCacheCodeCacheIndexIndex.exists()) {
-            if (!webviewCacheDirCacheCodeCacheIndexIndex.mkdirs()) {
-                Timber.e("Failed to create webview cache dir");
-            }
-        }
-        // Create the js and wasm dirs
-        File webviewCacheDirCacheCodeCacheIndexIndexJs = new File(webviewCacheDirCacheCodeCache, "js");
-        if (!webviewCacheDirCacheCodeCacheIndexIndexJs.exists()) {
-            if (!webviewCacheDirCacheCodeCacheIndexIndexJs.mkdirs()) {
-                Timber.e("Failed to create webview cache dir");
-            }
-        }
-        File webviewCacheDirCacheCodeCacheIndexIndexWasm = new File(webviewCacheDirCacheCodeCache, "wasm");
-        if (!webviewCacheDirCacheCodeCacheIndexIndexWasm.exists()) {
-            if (!webviewCacheDirCacheCodeCacheIndexIndexWasm.mkdirs()) {
-                Timber.e("Failed to create webview cache dir");
+    }
+
+    public static void ensureURLHandler(Context context) {
+        if (!urlFactoryInstalled) {
+            try {
+                URL.setURLStreamHandlerFactory(new CronetEngine.Builder(context).build().createURLStreamHandlerFactory());
+                urlFactoryInstalled = true;
+            } catch (Error ignored) {
+                // Ignore
             }
         }
     }

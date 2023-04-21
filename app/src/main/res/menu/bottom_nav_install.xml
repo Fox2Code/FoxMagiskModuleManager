@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/back_installer"
+        android:icon="@drawable/baseline_arrow_back_24"
+        android:title="@string/back"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/install_terminal_reboot_fab"
+        android:icon="@drawable/ic_reboot_24"
+        android:title="@string/install_terminal_reboot_now"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/install_terminal_config"
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:title="@string/config"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+
+</menu>

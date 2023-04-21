@@ -97,7 +97,7 @@ public final class ModuleManager extends SyncManager {
                         // if the dir name matches the module name, use it as the cache dir
                         File tempCacheRoot = new File(dir.toString());
                         Timber.d("Looking for cache in %s", tempCacheRoot);
-                        realmConfiguration = new RealmConfiguration.Builder().name("ModuleListCache.realm").encryptionKey(MainApplication.getINSTANCE().getExistingKey()).schemaVersion(1).deleteRealmIfMigrationNeeded().allowWritesOnUiThread(true).allowQueriesOnUiThread(true).directory(tempCacheRoot).build();
+                        realmConfiguration = new RealmConfiguration.Builder().name("ModuleListCache.realm").encryptionKey(MainApplication.getINSTANCE().getKey()).schemaVersion(1).deleteRealmIfMigrationNeeded().allowWritesOnUiThread(true).allowQueriesOnUiThread(true).directory(tempCacheRoot).build();
                         Realm realm = Realm.getInstance(realmConfiguration);
                         Timber.d("Looking for cache for %s out of %d", module, realm.where(ModuleListCache.class).count());
                         moduleListCache = realm.where(ModuleListCache.class).equalTo("codename", module).findFirst();
