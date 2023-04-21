@@ -405,7 +405,16 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         relPackageName = this.getPackageName();
         super.onCreate();
         SentryMain.initialize(this);
-        // dirty workaround so timber doesn't bitch at us
+        // Initialize Timber
+        /*if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        } else {
+            if (isCrashReportingEnabled()) {
+                Timber.plant(new SentryTimberTree(Sentry.getCurrentHub(), SentryLevel.ERROR, SentryLevel.ERROR));
+            } else {
+                Timber.plant(new ReleaseTree());
+            }
+        }*/
         TimberUtils.configTimber();
         Timber.i("Starting FoxMMM version %s (%d) - commit %s", BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, BuildConfig.COMMIT_HASH);
         // Update SSL Ciphers if update is possible

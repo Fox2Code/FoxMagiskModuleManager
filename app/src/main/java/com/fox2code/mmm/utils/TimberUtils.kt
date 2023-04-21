@@ -19,7 +19,13 @@ object TimberUtils {
             plant(Timber.DebugTree())
         } else {
             if (MainApplication.isCrashReportingEnabled()) {
-                plant(SentryTimberTree(Sentry.getCurrentHub(), SentryLevel.ERROR, SentryLevel.ERROR))
+                plant(
+                    SentryTimberTree(
+                        Sentry.getCurrentHub(),
+                        SentryLevel.ERROR,
+                        SentryLevel.ERROR
+                    )
+                )
             } else {
                 plant(ReleaseTree())
             }

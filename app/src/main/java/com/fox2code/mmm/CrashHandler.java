@@ -70,7 +70,7 @@ public class CrashHandler extends FoxActivity {
         }
         // disable feedback if sentry is disabled
         //noinspection ConstantConditions
-        if (crashReportingEnabled && !BuildConfig.SENTRY_TOKEN.equals("") && lastEventId != null) {
+        if (crashReportingEnabled && lastEventId != null) {
             // get name, email, and message fields
             EditText name = findViewById(R.id.feedback_name);
             EditText email = findViewById(R.id.feedback_email);
@@ -89,14 +89,17 @@ public class CrashHandler extends FoxActivity {
                 Throwable sentryException = (Throwable) getIntent().getSerializableExtra("sentryException");
                 new Thread(() -> {
                     try {
-                        UserFeedback userFeedback = new UserFeedback(Sentry.captureException(sentryException));
-                        // Setups the JSON body
-                        if (nameString[0].equals("")) nameString[0] = "Anonymous";
-                        if (emailString[0].equals("")) emailString[0] = "Anonymous";
-                        userFeedback.setName(nameString[0]);
-                        userFeedback.setEmail(emailString[0]);
-                        userFeedback.setComments(description.getText().toString());
-                        Sentry.captureUserFeedback(userFeedback);
+                        UserFeedback userFeedback;
+                        if (sentryException != null) {
+                            userFeedback = new UserFeedback(Sentry.captureException(sentryException));
+                            // Setups the JSON body
+                            if (nameString[0].equals("")) nameString[0] = "Anonymous";
+                            if (emailString[0].equals("")) emailString[0] = "Anonymous";
+                            userFeedback.setName(nameString[0]);
+                            userFeedback.setEmail(emailString[0]);
+                            userFeedback.setComments(description.getText().toString());
+                            Sentry.captureUserFeedback(userFeedback);
+                        }
                         Timber.i("Submitted user feedback: name %s email %s comment %s", nameString[0], emailString[0], description.getText().toString());
                         runOnUiThread(() -> Toast.makeText(this, R.string.sentry_dialogue_success, Toast.LENGTH_LONG).show());
                         // Close the activity
