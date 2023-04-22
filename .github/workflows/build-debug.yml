@@ -1,3 +1,4 @@
+#file: noinspection SpellCheckingInspection
 name: Generate APK Debug
 
 on:
@@ -39,6 +40,9 @@ jobs:
 
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
+
+      - name: Gradle Cache
+        uses: burrunan/gradle-cache-action@v1
 
       # temporary disabled
       # - name: Run tests
