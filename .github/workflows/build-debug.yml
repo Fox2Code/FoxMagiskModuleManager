@@ -62,28 +62,28 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: FoxMMM-default-arm64-v8a-debug
-          path: app/build/outputs/apk/default/debug/FoxMMM-v*-default-arm64-v8a-debug.apk
+          path: app/build/outputs/apk/default/debug/*-default-arm64-v8a-debug.apk
 
       - name: Upload FoxMMM-default-armeabi-v7a-debug
         uses: actions/upload-artifact@v3
         with:
           name: FoxMMM-default-armeabi-v7a-debug
-          path: app/build/outputs/apk/default/debug/FoxMMM-v*-default-armeabi-v7a-debug.apk
+          path: app/build/outputs/apk/default/debug/*-default-armeabi-v7a-debug.apk
 
       - name: Upload FoxMMM-default-universal-debug
         uses: actions/upload-artifact@v3
         with:
           name: FoxMMM-default-universal-debug
-          path: app/build/outputs/apk/default/debug/FoxMMM-v*-default-universal-debug.apk
+          path: app/build/outputs/apk/default/debug/*-default-universal-debug.apk
 
       - name: Upload FoxMMM-default-x86-debug
         uses: actions/upload-artifact@v3
         with:
           name: FoxMMM-default-x86-debug
-          path: app/build/outputs/apk/default/debug/FoxMMM-v*-default-x86-debug.apk
+          path: app/build/outputs/apk/default/debug/*-default-x86-debug.apk
 
       - name: Upload FoxMMM-default-x86_64-debug
         uses: actions/upload-artifact@v3
         with:
           name: FoxMMM-default-x86_64-debug
-          path: app/build/outputs/apk/default/debug/FoxMMM-v*-default-x86_64-debug.apk
+          path: app/build/outputs/apk/default/debug/*-default-x86_64-debug.apk
