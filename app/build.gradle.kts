@@ -134,7 +134,7 @@ android {
                 propertiesA.load(project.rootProject.file("androidacy.properties").inputStream())
                 properties.setProperty("client_id", "\"" + propertiesA.getProperty("client_id", "5KYccdYxWB2RxMq5FTbkWisXi2dS6yFN9R7RVlFCG98FRdz6Mf5ojY2fyJCUlXJZ") + "\"")
             } else {
-                properties.setProperty("client_id", "\"5KYccdYxWB2RxMq5FTbkWisXi2dS6yFN9R7RVlFCG98FRdz6Mf5ojY2fyJCUlXJZ\"")
+                properties.setProperty("client_id", "5KYccdYxWB2RxMq5FTbkWisXi2dS6yFN9R7RVlFCG98FRdz6Mf5ojY2fyJCUlXJZ")
             }
             buildConfigField("String", "ANDROIDACY_CLIENT_ID", "\"" + propertiesA.getProperty("client_id") + "\"")
             // If client ID is empty, disable androidacy
@@ -188,7 +188,7 @@ android {
             if (project.rootProject.file("androidacy.properties").exists()) {
                 propertiesA.load(project.rootProject.file("androidacy.properties").inputStream())
             } else {
-                propertiesA.setProperty("client_id", "\"dQ1p7X8bF14PVJ7wAU6ORVjPB2IeTinsuAZ8Uos6tQiyUdUyIjSyZSmN54QBbaTy\"")
+                propertiesA.setProperty("client_id", "dQ1p7X8bF14PVJ7wAU6ORVjPB2IeTinsuAZ8Uos6tQiyUdUyIjSyZSmN54QBbaTy")
             }
             buildConfigField("String", "ANDROIDACY_CLIENT_ID", "\"" + propertiesA.getProperty("client_id", "dQ1p7X8bF14PVJ7wAU6ORVjPB2IeTinsuAZ8Uos6tQiyUdUyIjSyZSmN54QBbaTy") + "\"")
             versionNameSuffix = "-froid"
