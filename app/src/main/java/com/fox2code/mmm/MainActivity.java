@@ -385,6 +385,23 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         }
         ExternalHelper.INSTANCE.refreshHelper(this);
         this.initMode = false;
+        // add preference listener to set isMatomoAllowed
+        SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, key) -> {
+            if (key.equals("pref_analytics_enabled")) {
+                MainApplication.getINSTANCE().isMatomoAllowed = sharedPreferences.getBoolean(key, false);
+                MainApplication.getINSTANCE().getTracker().setOptOut(MainApplication.getINSTANCE().isMatomoAllowed);
+                Timber.d("Matomo is allowed change: %s", MainApplication.getINSTANCE().isMatomoAllowed);
+            }
+            if (MainApplication.getINSTANCE().isMatomoAllowed) {
+                String value = sharedPreferences.getString(key, null);
+                // then log
+                if (value != null) {
+                    TrackHelper.track().event("pref_changed", key + "=" + value).with(MainApplication.getINSTANCE().getTracker());
+                }
+            }
+            Timber.d("Preference changed: %s", key);
+        };
+        MainApplication.getPreferences("mmm").registerOnSharedPreferenceChangeListener(listener);
     }
 
     private void cardIconifyUpdate() {

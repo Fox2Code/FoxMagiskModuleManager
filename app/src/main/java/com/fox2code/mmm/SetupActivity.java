@@ -167,6 +167,8 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             Timber.d("Got editor: %s", editor);
             // Set the Automatic update check pref
             editor.putBoolean("pref_background_update_check", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check))).isChecked());
+            // require wifi pref
+            editor.putBoolean("pref_background_update_check_wifi", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_background_update_check_require_wifi))).isChecked());
             // Set the crash reporting pref
             editor.putBoolean("pref_crash_reporting", ((MaterialSwitch) Objects.requireNonNull(view.findViewById(R.id.setup_crash_reporting))).isChecked());
             // Set the crash reporting PII pref

@@ -215,17 +215,6 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             assert preferenceManager != null;
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
             applyMaterial3(getPreferenceScreen());
-
-            // track enabled prefs
-            dataStore.getSharedPreferences().registerOnSharedPreferenceChangeListener((sharedPreferences, key) -> {
-                // use trackHelper to log key and value
-                // get key and value first
-                String value = sharedPreferences.getString(key, null);
-                // then log
-                if (value != null) {
-                    TrackHelper.track().event("pref_changed", key + "=" + value).with(MainApplication.getINSTANCE().getTracker());
-                }
-            });
             // track all non empty values
             SharedPreferences sharedPreferences = dataStore.getSharedPreferences();
             // disabled until EncryptedSharedPreferences fixes getAll()

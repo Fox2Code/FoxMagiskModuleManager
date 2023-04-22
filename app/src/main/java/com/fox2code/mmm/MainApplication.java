@@ -430,14 +430,6 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         // analytics
         Timber.d("Initializing matomo");
         isMatomoAllowed = isMatomoAllowed();
-        // add preference listener to set isMatomoAllowed
-        getPreferences("mmm").registerOnSharedPreferenceChangeListener((sharedPreferences, key) -> {
-            if (key.equals("pref_analytics_enabled")) {
-                isMatomoAllowed = sharedPreferences.getBoolean(key, false);
-                tracker.setOptOut(isMatomoAllowed);
-                Timber.d("Matomo is allowed change: %s", isMatomoAllowed);
-            }
-        });
         getTracker();
         if (!isMatomoAllowed) {
             Timber.d("Matomo is not allowed");
