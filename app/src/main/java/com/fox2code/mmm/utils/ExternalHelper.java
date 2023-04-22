@@ -37,7 +37,7 @@ public final class ExternalHelper {
     public void refreshHelper(Context context) {
         Intent intent = new Intent(FOX_MMM_OPEN_EXTERNAL, Uri.parse("https://fox2code.com/module.zip"));
         List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentActivities(intent, PackageManager.GET_RESOLVED_FILTER);
-        if (resolveInfos == null || resolveInfos.isEmpty()) {
+        if (resolveInfos.isEmpty()) {
             Timber.i("No external provider installed!");
             label = TEST_MODE ? "External" : null;
             multi = TEST_MODE;

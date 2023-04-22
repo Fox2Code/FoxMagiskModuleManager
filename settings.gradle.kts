@@ -9,5 +9,10 @@ dependencyResolutionManagement {
         maven { setUrl("https://jitpack.io") }
     }
 }
+buildCache {
+    local {
+        isEnabled = true
+    }
+}
 rootProject.name = "MagiskModuleManager"
 include(":app")

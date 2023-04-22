@@ -1,11 +1,15 @@
 # Fox's Magisk Module Manager
 
+### Sponsored by and developed with Androidacy. Find them on the web [here](https://www.androidacy.com/?utm_source=fox-readme&utm_medium=web&utm_campagin=github).
+
 <details>
 <summary>
-  Important news
+  Important news about Fox2Code
 </summary>
 
-I have health problems that made me work slow on everything. I don't like sharing my health problmes
+**Tl;Dr: Fox2Code is temporarily less involved with development and support due to health issues. Androidacy is happy to take on both in his absence, and will continue to provide both upon his return.**
+
+I have health problems that made me work slow on everything. I don't like sharing my health problems
 but it has been to much recently for me to keep it for myself.
 
 This has been too much for me recently, so my moderators (same that on telegram)
@@ -97,21 +101,24 @@ and download and install the latest `.apk` on your device.
 
 ## Repositories Available
 
-The app currently use these two repos as module sources, each with their own benefits and
-drawbacks:  
-(Note: Each module repo can be disabled in the settings of the app)  
-(Note²: I do not own or actively monitor any of the repos or modules, **download at your own risk**)
+#### Please note that we reserve the right to add, remove, and change default repos at any time, and the inclusion of any repo does not equate endorsement or any agreement with or of said repo.
 
-#### [https://www.androidacy.com/modules-repo/](https://www.androidacy.com/modules-repo/)
+The app currently use the below repos as module sources, each with their own benefits and
+drawbacks. Note that the app developers do not actively monitor any repos, and downloading or
+installing from them is at the user's own risk. Default repos can be enabled or disabled in-app.
 
-- Accepting new modules [here](https://www.androidacy.com/module-repository-applications/)
+#### [Androidacy](https://www.androidacy.com/magisk-modules-repository/?utm_source=fox-readme&utm_medium=web&utm_campagin=github)
+
+- Accepting new
+  modules [here](https://www.androidacy.com/module-repository-applications/?utm_source=fox-readme&utm_medium=web&utm_campagin=github)
 - Modules downloadable easily outside the app
 - Rigorously reviewed and tested modules
 - Officially supported by Fox's mmm
-- May show ads to help cover infrastrcture costs.
-    - [Read more](https://www.androidacycom/doing-it-alone-the-what-the-how-and-the-why/)
-      | [Privacy policy](https://www.androidacy.com/privacy/)
-- Added features like module reviews, automatic VirusTotal scans, and more
+- May show ads to help cover infrastructure costs.
+    - [Read more](https://www.androidacycom/doing-it-alone-the-what-the-how-and-the-why/?utm_source=fox-readme&utm_medium=web&utm_campagin=github)
+      | [Privacy policy](https://www.androidacy.com/privacy/?utm_source=fox-readme&utm_medium=web&utm_campagin=github)
+- Added features like module reviews, automatic VirusTotal scans, and more.
+    - Pays module developers for their work as part of the Revenue Sharing Program
 
 Support:
 
@@ -121,12 +128,16 @@ Support:
 
 - Accepting new modules [here](https://github.com/Magisk-Modules-Alt-Repo/submission)
 - Less restrictive than the original repo
-    - May have lower quality, untested, or otherwise broken modules due to this
+    - May have lower quality, untested, or otherwise broken modules due to their policies or lack
+      thereof.
 - Officially supported by Fox's mmm
 
 Support:
 
 [![GitHub issues](https://img.shields.io/github/issues/Magisk-Modules-Alt-Repo/submission)](https://github.com/Magisk-Modules-Alt-Repo/submission/issues)
+
+**Please do not use GitHub issues for help or questions. GitHub issues are specifically for bug
+reporting and general app feedback.**
 
 If a module is in multiple repos, the manager will just pick the most up to date version of the
 module, if a module is in multiple repos it will just use first registered repo.
@@ -149,7 +160,7 @@ It allow module developers to have a more customizable install experience
 
 For more information please check the [developer documentation](docs/DEVELOPERS.md)
 
-## For translators
+## Help us make our app more accessible!
 
 **We need your help!** The app has started lagging behind in translations, and we need your help to
 catch up! As a reminder, translations are required to be at 60% or more to be included in the app.
@@ -179,10 +190,16 @@ See [the documentation](docs/add-repo.md).
 If you have a problem with a repo, please contact the repo owner **first**. If you are unable to
 reach them or they are not willing to help, you can contact us as a last resort.
 
+_The developers of this app are unable to help with any issues arising from use or installation of
+modules, and may be of limited help with issues arising from a specific repo._
+
 Default repo owners:
 
 - Androidacy: [Telegram](https://telegram.dog/androidacy_discussions)
 - Magisk-Modules-Alt-Repo: [GitHub](https://github.com/Magisk-Modules-Alt-Repo/submission/issues)
+
+Custom repos may have their own support channels, and we are unable to provide any support
+whatsoever for them, outside of direct implementation bugs.
 
 ## License
 
@@ -192,17 +209,18 @@ later portions of the code are copyright
 2022-present [Androidacy](https://www.androidacy.com/?utm_source=fox-repo&utm_medium=web). See
 [LICENSE](LICENCE) for details. Library licenses can be found in the licenses section of the app.
 
-Modules and their files, names, and other assets are not covered by this license, please check the
-license of each module before using it.
+Modules and their files, names, and other assets are not covered by this license or other
+agreements, and are not warranted, checked, or otherwise guaranteed by the authors of this app.
 
-Some third party backend services may be proprietary or have additional terms, please check their
+Some third party backend services may have additional terms, please check their
 terms of service before
 using them.
 
 ## EULA
 
 The EULA can be found [here](https://www.androidacy.com/foxmmm-eula/). By downloading, installing,
-or using this app you agree to the terms of the EULA. Under no circumstances shall the EULA override
-the LGPL-3.0 license, and in the event of a conflict between the EULA and the LGPL-3.0 license, the LGPL-3.0 shall take precedence.
+or using this app you agree to the supplemental terms of the EULA.
 
-`IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.`
+**IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR AN CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.**

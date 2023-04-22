@@ -32,6 +32,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import timber.log.Timber;
 
@@ -100,7 +101,11 @@ public class AndroidacyWebAPI {
             }
             final String fModuleUrl = moduleUrl, fTitle = title, fConfig = config, fChecksum = checksum;
             final boolean fMMTReborn = mmtReborn;
-            builder.setPositiveButton(hasUpdate ? R.string.update_module : R.string.install_module, (x, y) -> IntentHelper.openInstaller(this.activity, fModuleUrl, fTitle, fConfig, fChecksum, fMMTReborn));
+            builder.setPositiveButton(hasUpdate ? R.string.update_module : R.string.install_module, (x, y) -> {
+                IntentHelper.openInstaller(this.activity, fModuleUrl, fTitle, fConfig, fChecksum, fMMTReborn);
+                // close activity
+                this.activity.runOnUiThread(this.activity::finishAndRemoveTask);
+            });
         }
         builder.setOnCancelListener(dialogInterface -> {
             if (!this.activity.backOnResume)
@@ -173,7 +178,7 @@ public class AndroidacyWebAPI {
         this.downloadMode = false;
         if (BuildConfig.DEBUG)
             Timber.d("Received openUrl request: %s", url);
-        if (Uri.parse(url).getScheme().equals("https")) {
+        if (Objects.equals(Uri.parse(url).getScheme(), "https")) {
             IntentHelper.openUrl(this.activity, url);
         }
     }
@@ -189,7 +194,7 @@ public class AndroidacyWebAPI {
         this.downloadMode = false;
         if (BuildConfig.DEBUG)
             Timber.d("Received openCustomTab request: %s", url);
-        if (Uri.parse(url).getScheme().equals("https")) {
+        if (Objects.equals(Uri.parse(url).getScheme(), "https")) {
             IntentHelper.openCustomTab(this.activity, url);
         }
     }

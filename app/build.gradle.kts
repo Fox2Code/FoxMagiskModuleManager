@@ -4,7 +4,6 @@ import com.android.build.api.dsl.Packaging
 import io.sentry.android.gradle.extensions.InstrumentationFeature
 import io.sentry.android.gradle.instrumentation.logcat.LogcatLevel
 import com.android.build.api.variant.FilterConfiguration.FilterType.*
-import java.io.ByteArrayOutputStream
 import java.util.Properties
 import java.io.File
 
@@ -22,30 +21,15 @@ apply(plugin = "realm-android")
 val hasSentryConfig = File(rootProject.projectDir, "sentry.properties").exists()
 android {
     // functions to get git info: gitCommitHash, gitBranch, gitRemote
-    val gitCommitHash by lazy {
-        val stdout = ByteArrayOutputStream()
-        rootProject.exec {
-            commandLine("git", "rev-parse", "--short", "HEAD")
-            standardOutput = stdout
-        }
-        stdout.toString().trim()
-    }
-    val gitBranch by lazy {
-        val stdout = ByteArrayOutputStream()
-        rootProject.exec {
-            commandLine("git", "rev-parse", "--abbrev-ref", "HEAD")
-            standardOutput = stdout
-        }
-        stdout.toString().trim()
-    }
-    val gitRemote by lazy {
-        val stdout = ByteArrayOutputStream()
-        rootProject.exec {
-            commandLine("git", "config", "--get", "remote.origin.url")
-            standardOutput = stdout
-        }
-        stdout.toString().trim()
-    }
+    val gitCommitHash = providers.exec {
+        commandLine("git", "rev-parse", "--short", "HEAD")
+    }.standardOutput.asText.get().toString().trim()
+    val gitBranch = providers.exec {
+        commandLine("git", "rev-parse", "--abbrev-ref", "HEAD")
+    }.standardOutput.asText.get().toString().trim()
+    val gitRemote = providers.exec {
+        commandLine("git", "config", "--get", "remote.origin.url")
+    }.standardOutput.asText.get().toString().trim()
     namespace = "com.fox2code.mmm"
     compileSdk = 33
     ndkVersion = "25.2.9519653"
@@ -107,11 +91,11 @@ android {
             // debug http requests. do not set this to true if you care about performance!!!!!
             buildConfigField("boolean", "DEBUG_HTTP", "false")
             // Latest commit hash as BuildConfig.COMMIT_HASH
-            buildConfigField("String", "COMMIT_HASH", "\"" + gitCommitHash + "\"")
+            buildConfigField("String", "COMMIT_HASH", "\"$gitCommitHash\"")
             // Get the current branch name as BuildConfig.BRANCH_NAME
-            buildConfigField("String", "BRANCH_NAME", "\"" + gitBranch + "\"")
+            buildConfigField("String", "BRANCH_NAME", "\"$gitBranch\"")
             // Get remote url as BuildConfig.REMOTE_URL
-            buildConfigField("String", "REMOTE_URL", "\"" + gitRemote + "\"")
+            buildConfigField("String", "REMOTE_URL", "\"$gitRemote\"")
             dimension = "type"
             buildConfigField("boolean", "ENABLE_AUTO_UPDATER", "true")
             buildConfigField("boolean", "DEFAULT_ENABLE_CRASH_REPORTING", "true")
@@ -151,11 +135,11 @@ android {
             buildConfigField("boolean", "DEBUG_HTTP", "false")
 
             // Latest commit hash as BuildConfig.COMMIT_HASH
-            buildConfigField("String", "COMMIT_HASH", "\"" + gitCommitHash + "\"")
+            buildConfigField("String", "COMMIT_HASH", "\"$gitCommitHash\"")
             // Get the current branch name as BuildConfig.BRANCH_NAME
-            buildConfigField("String", "BRANCH_NAME", "\"" + gitBranch + "\"")
+            buildConfigField("String", "BRANCH_NAME", "\"$gitBranch\"")
             // Get remote url as BuildConfig.REMOTE_URL
-            buildConfigField("String", "REMOTE_URL", "\"" + gitRemote + "\"")
+            buildConfigField("String", "REMOTE_URL", "\"$gitRemote\"")
 
             // Need to disable auto-updater for F-Droid flavor because their inclusion policy
             // forbids downloading blobs from third-party websites (and F-Droid APK isn"t signed

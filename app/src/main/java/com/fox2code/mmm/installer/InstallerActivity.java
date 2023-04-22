@@ -532,7 +532,7 @@ public class InstallerActivity extends FoxActivity {
             });
             this.rebootFloatingButton.setVisibility(View.VISIBLE);
             // handle back button
-            this.cancelFloatingButton.setOnClickListener(_view -> this.finishAndRemoveTask());
+            this.cancelFloatingButton.setOnClickListener(_view -> this.forceBackPressed());
             if (message != null && !message.isEmpty()) this.installerTerminal.addLine(message);
             if (optionalLink != null && !optionalLink.isEmpty()) {
                 this.setActionBarExtraMenuButton(ActionButtonType.supportIconForUrl(optionalLink), menu -> {
