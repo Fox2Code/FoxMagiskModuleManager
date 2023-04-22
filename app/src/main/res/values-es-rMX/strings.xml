@@ -96,18 +96,12 @@
     <string name="remote_install_title">Instalación remota</string>
     <string name="file_picker_wierd">Su administrador de archivos retorno una respuesta no esperada.</string>
     <string name="use_magisk_install_command_pref">Usa el siguiente comando: \"magisk —install-module\"</string>
-    <string name="use_magisk_install_command_desc">
-        Durante las pruebas causó problemas a la herramienta de diagnóstico de errores de instalación de módulo,
-        así que escondí esta opción en el modo desarrollador, activala bajo tu propio riesgo!
-  </string>
+    <string name="use_magisk_install_command_desc">Durante las pruebas causó problemas a la herramienta de diagnóstico de errores de instalación de módulo, así que escondí esta opción en el modo desarrollador, actívala bajo tu propio riesgo!</string>
     <string name="dev_mode_enabled">Modo desarrollador activado</string>
     <string name="dev_mode_disabled">Modo desarrollador desactivado</string>
     <string name="force_english_pref">Forzar el idioma al Inglés</string>
     <string name="disable_low_quality_module_filter_pref">Desactivar el filtro de módulos de baja calidad</string>
-    <string name="disable_low_quality_module_filter_desc">
-        Algunos módulos no declaran de manera adecuada sus metadatos causando errores visuales
-        y/o indicando una mala calidad del módulo, desactivalo bajo su propio riesgo!
-  </string>
+    <string name="disable_low_quality_module_filter_desc">Algunos módulos no declaran de manera adecuada sus metadatos causando errores visuales y/o indicando una mala calidad del módulo, actívalo bajo su propio riesgo!</string>
     <string name="dns_over_https_desc">
         En algunos casos puede solucionar problemas de conexión
         (No se aplica al WebView)
@@ -133,10 +127,10 @@
     <string name="androidacy_test_mode_pref">Modo de prueba de Androidacy</string>
     <string name="androidacy_test_mode_desc">Usa el canal de prueba en vez del canal estable de Androidacy. (Se reiniciará la aplicación)</string>
     <!-- Background Notification translation -->
-    <string name="notification_update_title">Se encontraron %i actualizaciones de modulos</string>
+    <string name="notification_update_title">Se encontraron %1$d actualizaciones de módulos</string>
     <string name="notification_update_title_easter_egg">Se detectaron %i actualizaciones</string>
     <string name="notification_update_subtitle">Abrir en la aplicación</string>
-    <string name="notification_update_pref">Comprobación de actualización de módulos en segundo plano</string>
+    <string name="notification_update_pref">Comprobación automática de actualización de módulos en segundo plano</string>
     <string name="notification_update_desc">Puede aumentar el consumo de la bateria</string>
     <string name="notification_update_debug_pref">Notificación de prueba</string>
     <!-- Set to true in translation file if your language is right to left -->
@@ -145,7 +139,7 @@
     <integer name="language_support_level">1</integer>
     <string name="language_support_outdated">Algunas traducciones del lenguaje seleccionado no están actualizadas, por favor considera contribuir con las traducciones de la aplicación en GitHub</string>
     <!-- Replace with your own username when translating // Staging y non-production endpoint = canal de prueba, release endpoint = Canal estable (quizas se cambie la traducción en futuras actualizaciones) -->
-    <string name="language_translated_by">Traducido por Leshu7w7</string>
+    <string name="language_translated_by">Traducido por Leshu7w7, Sebastián</string>
     <string name="crash_reporting">Informa automáticamente de errores y rendimiento a los desarrolladores</string>
     <string name="crash_reporting_desc">Si desactivas esto, el desarrollador no tendrá informes automáticos de errores, y esto puede dificultar la resolución de problemas</string>
     <string name="api_key">Clave API de Androidacy</string>
@@ -182,4 +176,79 @@
     <string name="additional_info">Dinos que sucedió</string>
     <string name="setup_magisk_alt_repo">Activar el Magisk Alt Repositorio</string>
     <string name="setup_theme_dark">Tema oscuro</string>
+    <string name="go_to_online_repo">Desplácese al repositorio en linea</string>
+    <string name="setup_button">Terminar configuración</string>
+    <string name="official">Oficial</string>
+    <string name="unofficial">No oficial</string>
+    <string name="zip_unpacking">Inspeccionando módulo…</string>
+    <string name="androidacy_thanks">Desarrollado en parte por Androidacy</string>
+    <string name="language_cta">No ves tu idioma\?</string>
+    <string name="dns_over_https_pref">DNS sobre HTTPS</string>
+    <string name="dont_ask_again">No volver a preguntar</string>
+    <string name="download_full_app">Descargar la versión completa</string>
+    <string name="pref_category_contributors">Contribuyentes</string>
+    <string name="fox2code_thanks_desc">Fox2Code es el creador original de esta aplicación.Sin el, esto nunca hubiera sido posible.</string>
+    <string name="fox2code_thanks">Creado por Fox2Code</string>
+    <string name="search">Buscar</string>
+    <string name="setup_androidacy_repo">Activar el repositorio Androidacy</string>
+    <string name="androidacy_repo_name">Repositorio Androidacy</string>
+    <string name="setup_theme">Elige un tema</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme">Tema</string>
+    <string name="theme_system">Sistema</string>
+    <string name="theme_dark">Oscuro</string>
+    <string name="theme_transparent_light">Claro (transparencia)</string>
+    <string name="download_update">Descargar actualización</string>
+    <string name="checking_for_update">Comprobando actualización…</string>
+    <string name="update_available">Actualización encontrada</string>
+    <string name="no_update_available">Estás al día!</string>
+    <string name="installing_update">Instalando actualización…</string>
+    <string name="no_file_found">ERROR: No se pudo encontrar el paquete de actualización.</string>
+    <string name="feedback_email">Correo (opcional)</string>
+    <string name="copy_button">Copiar texto</string>
+    <string name="crash_details">Causa desconocida</string>
+    <string name="reset_app">Reiniciar la aplicación</string>
+    <string name="reset">Reiniciar</string>
+    <string name="understand">Entiendo</string>
+    <string name="setup_theme_title">Elige un tema</string>
+    <string name="setup_language_button">Elige idioma</string>
+    <string name="title_activity_setup">Asistente de configuración</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="pref_category_updates">Actualizaciones</string>
+    <string name="update_title">Actualizar aplicación</string>
+    <string name="notification_update_summary">Los siguientes módulos pueden ser actualizados:</string>
+    <string name="notification_channel_background_update">Comprobando actualización…</string>
+    <string name="background_update_check_excludes_no_modules">No hay módulos instalados en el dispositivo</string>
+    <string name="online">En linea</string>
+    <string name="auto_updates_notifs">Notifica cuando se encuentran actualizaciones de módulos</string>
+    <string name="notification_group_updates">Actualizaciones</string>
+    <string name="safe_module">Módulo seguro verificado</string>
+    <string name="notification_channel_background_update_app">Actualización de la aplicación disponible!</string>
+    <string name="cache_clear_failed">No se pudo borrar la caché</string>
+    <string name="clear_cache_dialogue_title">Borrar la caché\?</string>
+    <string name="pref_category_privacy">Privacidad</string>
+    <string name="repo_already_added">El repositorio ya existe.</string>
+    <string name="other_section">Otro</string>
+    <string name="debug_cat">Depuración</string>
+    <string name="announcements">Noticias y actualizaciones</string>
+    <string name="back">Regresa</string>
+    <string name="notification_update_ignore_pref">Excluir módulos</string>
+    <string name="update_button">Por favor espere…</string>
+    <string name="update_cancel_button">Cancelar actualización</string>
+    <string name="changelog_none">No hay cambios todavía!</string>
+    <string name="safe">Seguro</string>
+    <string name="modules">Módulos</string>
+    <string name="monet_disabled_summary">Monet no es compatible con tema transparente.</string>
+    <string name="setup_background_update_check">Comprobación automática de actualizaciones</string>
+    <string name="setup_theme_button">Elige un tema</string>
+    <string name="theme_transparent_dark">Oscuro (transparencia)</string>
+    <string name="androidacy_update_needed">Esta aplicación esta desactualizada.</string>
+    <string name="androidacy_update_needed_message">Por favor actualice esta aplicación a la ultima versión.</string>
+    <string name="feedback_name">Nombre (opcional)</string>
+    <string name="more_details">Más detalles se pueden encontrar a continuación.</string>
+    <string name="notification_channel_category_app_update">Actualizaciones de aplicaciones</string>
+    <string name="notification_channel_category_app_update_description">Notifica cuando una actualización de la aplicación está disponible</string>
+    <string name="no_browser">No tienes un navegador instalado. Por favor instala uno para continuar.</string>
+    <string name="clear_app_cache_desc">Normalmente no debería ser necesario pero puede ayudar a solucionar algunos problemas.</string>
+    <string name="crash_reporting_pii">Enviar información adicional</string>
 </resources>
