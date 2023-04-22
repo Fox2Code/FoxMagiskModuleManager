@@ -3,11 +3,14 @@ package com.fox2code.mmm.repo;
 import android.content.SharedPreferences;
 
 import com.fox2code.mmm.MainApplication;
+import com.fox2code.mmm.utils.io.Hashes;
 import com.fox2code.mmm.utils.io.PropUtils;
 import com.fox2code.mmm.utils.io.net.Http;
 import com.fox2code.mmm.utils.realm.ReposList;
 
 import org.json.JSONObject;
+
+import java.nio.charset.StandardCharsets;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -118,6 +121,7 @@ public class CustomRepoManager {
         } catch (Exception e) {
             submitModule = null;
         }
+        String id = "repo_" + Hashes.hashSha256(repo.getBytes(StandardCharsets.UTF_8));
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
         Realm realm = Realm.getInstance(realmConfiguration);
         int finalI = i;
@@ -127,7 +131,7 @@ public class CustomRepoManager {
         String finalSubmitModule = submitModule;
         realm.executeTransaction(realm1 -> {
             // find the matching entry for repo_0, repo_1, etc.
-            ReposList reposList = realm1.where(ReposList.class).equalTo("id", "repo_" + finalI).findFirst();
+            ReposList reposList = realm1.where(ReposList.class).equalTo("id", "repo_" + id).findFirst();
             if (reposList == null) {
                 reposList = realm1.createObject(ReposList.class, "repo_" + finalI);
             }
@@ -144,7 +148,13 @@ public class CustomRepoManager {
         customReposCount++;
         this.dirty = true;
         CustomRepoData customRepoData = (CustomRepoData) this.repoManager.addOrGet(repo);
-        customRepoData.override = "custom_repo_" + i;
+        customRepoData.override = "repo_" + id;
+        customRepoData.id = id;
+        customRepoData.website = website;
+        customRepoData.support = support;
+        customRepoData.donate = donate;
+        customRepoData.submitModule = submitModule;
+        customRepoData.name = name;
         // Set the enabled state to true
         customRepoData.setEnabled(true);
         customRepoData.updateEnabledState();

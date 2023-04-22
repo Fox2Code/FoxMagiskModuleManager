@@ -351,8 +351,7 @@ public final class RepoManager extends SyncManager {
     private RepoData addRepoData(String url, String fallBackName) {
         String id = internalIdOfUrl(url);
         File cacheRoot = new File(this.mainApplication.getDataDir(), "repos/" + id);
-        SharedPreferences sharedPreferences = MainApplication.getPreferences("mmm_" + id);
-        RepoData repoData = id.startsWith("repo_") ? new CustomRepoData(url, cacheRoot, sharedPreferences) : new RepoData(url, cacheRoot, sharedPreferences);
+        RepoData repoData = id.startsWith("repo_") ? new CustomRepoData(url, cacheRoot) : new RepoData(url, cacheRoot);
         if (fallBackName != null && !fallBackName.isEmpty()) {
             repoData.defaultName = fallBackName;
             if (repoData instanceof CustomRepoData) {
@@ -374,8 +373,7 @@ public final class RepoManager extends SyncManager {
     private AndroidacyRepoData addAndroidacyRepoData() {
         // cache dir is actually under app data
         File cacheRoot = this.mainApplication.getDataDirWithPath("realms/repos/androidacy_repo");
-        SharedPreferences sharedPreferences = MainApplication.getPreferences("mmm_androidacy_repo");
-        AndroidacyRepoData repoData = new AndroidacyRepoData(cacheRoot, sharedPreferences, MainApplication.isAndroidacyTestMode());
+        AndroidacyRepoData repoData = new AndroidacyRepoData(cacheRoot, MainApplication.isAndroidacyTestMode());
         this.repoData.put(ANDROIDACY_MAGISK_REPO_ENDPOINT, repoData);
         this.repoData.put(ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT, repoData);
         return repoData;

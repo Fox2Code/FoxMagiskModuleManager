@@ -1,6 +1,5 @@
 package com.fox2code.mmm.repo;
 
-import android.content.SharedPreferences;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
@@ -38,11 +37,11 @@ import timber.log.Timber;
 public class RepoData extends XRepo {
     public final JSONObject supportedProperties = new JSONObject();
     private final Object populateLock = new Object();
+
     public String url;
 
     public String id;
     public File cacheRoot;
-    public SharedPreferences cachedPreferences;
     public HashMap<String, RepoModule> moduleHashMap;
     public JSONObject metaDataCache;
     public long lastUpdate;
@@ -72,7 +71,7 @@ public class RepoData extends XRepo {
     //installedVersionCode=<int> (only if installed)
     private boolean forceHide, enabled; // Cache for speed
 
-    public RepoData(String url, File cacheRoot, SharedPreferences cachedPreferences) {
+    public RepoData(String url, File cacheRoot) {
         // setup supportedProperties
         try {
             supportedProperties.put("id", "");
@@ -100,7 +99,6 @@ public class RepoData extends XRepo {
         this.url = url;
         this.id = RepoManager.internalIdOfUrl(url);
         this.cacheRoot = cacheRoot;
-        this.cachedPreferences = cachedPreferences;
         // metadata cache is a realm database from ModuleListCache
         this.metaDataCache = null;
         this.moduleHashMap = new HashMap<>();

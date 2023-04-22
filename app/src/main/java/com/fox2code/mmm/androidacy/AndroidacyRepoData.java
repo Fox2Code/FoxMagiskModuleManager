@@ -62,8 +62,8 @@ public final class AndroidacyRepoData extends RepoData {
     // Avoid spamming requests to Androidacy
     private long androidacyBlockade = 0;
 
-    public AndroidacyRepoData(File cacheRoot, SharedPreferences cachedPreferences, boolean testMode) {
-        super(testMode ? RepoManager.ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT : RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT, cacheRoot, cachedPreferences);
+    public AndroidacyRepoData(File cacheRoot, boolean testMode) {
+        super(testMode ? RepoManager.ANDROIDACY_TEST_MAGISK_REPO_ENDPOINT : RepoManager.ANDROIDACY_MAGISK_REPO_ENDPOINT, cacheRoot);
         this.defaultName = "Androidacy Modules Repo";
         this.defaultWebsite = RepoManager.ANDROIDACY_MAGISK_REPO_HOMEPAGE;
         this.defaultSupport = "https://t.me/androidacy_discussions";

@@ -1,7 +1,5 @@
 package com.fox2code.mmm.repo;
 
-import android.content.SharedPreferences;
-
 import com.fox2code.mmm.utils.io.net.Http;
 
 import org.json.JSONException;
@@ -15,8 +13,8 @@ public final class CustomRepoData extends RepoData {
     boolean loadedExternal;
     String override;
 
-    CustomRepoData(String url, File cacheRoot, SharedPreferences cachedPreferences) {
-        super(url, cacheRoot, cachedPreferences);
+    CustomRepoData(String url, File cacheRoot) {
+        super(url, cacheRoot);
     }
 
     @Override

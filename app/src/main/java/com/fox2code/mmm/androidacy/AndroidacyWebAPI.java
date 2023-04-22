@@ -244,7 +244,7 @@ public class AndroidacyWebAPI {
         }
         checksum = Hashes.checkSumFormat(checksum);
         if (checksum == null || checksum.isEmpty()) {
-            Timber.w("Androidacy WebView didn't provided a checksum!");
+            Timber.w("Androidacy didn't provided a checksum!");
         } else if (!Hashes.checkSumValid(checksum)) {
             this.forceQuitRaw("Androidacy didn't provided a valid checksum");
             return;

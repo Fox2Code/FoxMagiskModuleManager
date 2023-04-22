@@ -75,6 +75,7 @@ public class InstallerActivity extends FoxActivity {
     private boolean warnReboot;
     private PowerManager.WakeLock wakeLock;
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.warnReboot = false;
@@ -151,6 +152,9 @@ public class InstallerActivity extends FoxActivity {
         this.progressIndicator = findViewById(R.id.progress_bar);
         this.rebootFloatingButton = findViewById(R.id.install_terminal_reboot_fab);
         this.cancelFloatingButton = findViewById(R.id.back_installer);
+        // disable both
+        this.rebootFloatingButton.setEnabled(false);
+        this.cancelFloatingButton.setEnabled(false);
         this.installerTerminal = new InstallerTerminal(installTerminal = findViewById(R.id.install_terminal), this.isLightTheme(), foreground, mmtReborn);
         (horizontalScroller != null ? horizontalScroller : installTerminal).setBackground(new ColorDrawable(background));
         installTerminal.setItemAnimator(null);
@@ -530,7 +534,8 @@ public class InstallerActivity extends FoxActivity {
                     Shell.cmd(reboot_cmd).submit();
                 }
             });
-            this.rebootFloatingButton.setVisibility(View.VISIBLE);
+            this.rebootFloatingButton.setEnabled(true);
+            this.cancelFloatingButton.setEnabled(true);
             // handle back button
             this.cancelFloatingButton.setOnClickListener(_view -> this.forceBackPressed());
             if (message != null && !message.isEmpty()) this.installerTerminal.addLine(message);

@@ -160,7 +160,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
             StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
             // get the caller of this method
             StackTraceElement caller = stackTrace[3];
-            Timber.d("Shared prefs file: %s, caller: %s:%d", name, caller.getMethodName(), caller.getLineNumber());
+            Timber.d("Shared prefs file: %s, caller: %s:%d in %s", name, caller.getFileName(), caller.getLineNumber(), caller.getMethodName());
             // add the caller to an array. if the last 3 callers are the same, then we are in a loop, log at error level
             callers.add(name + ":" + caller.getLineNumber() + ":" + caller.getMethodName());
             // get the last 3 callers
