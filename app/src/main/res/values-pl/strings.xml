@@ -383,4 +383,8 @@
     <string name="showcase_mode_dialogue_message">Aby włączyć tryb blokady, wymagany jest restart aplikacji.</string>
     <string name="other_section">Inne</string>
     <string name="eula_agree">Poprzez kliknięcie przycisku „Zakończ” akceptujesz warunki licencji LGPL-3.0 (https://www.gnu.org/licenses/lgpl-3.0.en.html) oraz EULA (https://www.androidacy.com/foxmmm-eula/)</string>
+    <string name="analytics_desc">Pozwól nam śledzić wykorzystanie aplikacji i instalacje. W pełni zgodne z GDPR i używa Matomo, hostowanego przez Androidacy.</string>
+    <string name="announcements">Wiadomości i aktualizacje</string>
+    <string name="back">Wróć</string>
+    <string name="debug_cat">Debugowanie</string>
 </resources>

@@ -251,4 +251,14 @@
     <string name="no_browser">No tienes un navegador instalado. Por favor instala uno para continuar.</string>
     <string name="clear_app_cache_desc">Normalmente no debería ser necesario pero puede ayudar a solucionar algunos problemas.</string>
     <string name="crash_reporting_pii">Enviar información adicional</string>
+    <string name="sentry_dialogue_title">Oops! Parece que la aplicación se cerró inesperadamente.</string>
+    <string name="zip_prop_load_failed">No se puede cargar las propiedades del módulo</string>
+    <string name="zip_security_warning">Instalar %s\?</string>
+    <string name="zip_load_failed">No se puede cargar el archivo zip</string>
+    <string name="background_update_check_permission_required">Por favor activa las notificaciones para esta opción.</string>
+    <string name="repo_update_failed">Algunos repositorios han fallado al actualizarse</string>
+    <string name="setup_custom_repos">Puedes agregar repositorios customizados después en ajustes.</string>
+    <string name="setup_theme_header">Elige un tema</string>
+    <string name="setup_theme_light">Tema claro</string>
+    <string name="theme_black">AMOLED Negro</string>
 </resources>
