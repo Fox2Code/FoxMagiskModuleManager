@@ -110,6 +110,13 @@ public class RepoData extends XRepo {
         ReposList reposList = realm.where(ReposList.class).equalTo("id", this.id).findFirst();
         if (reposList == null) {
             Timber.d("RepoData for %s not found in database", this.id);
+            // log every repo in db
+            Object[] fullList = realm.where(ReposList.class).findAll().toArray();
+            Timber.d("RepoData: " + this.id + ". repos in database: " + fullList.length);
+            for (Object repo : fullList) {
+                ReposList r = (ReposList) repo;
+                Timber.d("RepoData: " + this.id + ". repo: " + r.getId() + " " + r.getName() + " " + r.getWebsite() + " " + r.getSupport() + " " + r.getDonate() + " " + r.getSubmitModule() + " " + r.isEnabled());
+            }
         } else {
             Timber.d("RepoData for %s found in database", this.id);
         }

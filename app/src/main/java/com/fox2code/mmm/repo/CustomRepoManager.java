@@ -1,7 +1,5 @@
 package com.fox2code.mmm.repo;
 
-import android.content.SharedPreferences;
-
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.utils.io.Hashes;
 import com.fox2code.mmm.utils.io.PropUtils;
@@ -53,10 +51,6 @@ public class CustomRepoManager {
                 }
             }
         });
-    }
-
-    private SharedPreferences getSharedPreferences() {
-        return MainApplication.getPreferences("mmm_custom_repos");
     }
 
     public CustomRepoData addRepo(String repo) {
@@ -124,16 +118,15 @@ public class CustomRepoManager {
         String id = "repo_" + Hashes.hashSha256(repo.getBytes(StandardCharsets.UTF_8));
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
         Realm realm = Realm.getInstance(realmConfiguration);
-        int finalI = i;
         String finalWebsite = website;
         String finalSupport = support;
         String finalDonate = donate;
         String finalSubmitModule = submitModule;
         realm.executeTransaction(realm1 -> {
             // find the matching entry for repo_0, repo_1, etc.
-            ReposList reposList = realm1.where(ReposList.class).equalTo("id", "repo_" + id).findFirst();
+            ReposList reposList = realm1.where(ReposList.class).equalTo("id", id).findFirst();
             if (reposList == null) {
-                reposList = realm1.createObject(ReposList.class, "repo_" + finalI);
+                reposList = realm1.createObject(ReposList.class, id);
             }
             reposList.setUrl(repo);
             reposList.setName(name);
@@ -161,10 +154,8 @@ public class CustomRepoManager {
         return customRepoData;
     }
 
-    public CustomRepoData getRepo(int index) {
-        if (index >= MAX_CUSTOM_REPOS) return null;
-        String repo = customRepos[index];
-        return repo == null ? null : (CustomRepoData) this.repoManager.get(repo);
+    public CustomRepoData getRepo(String id) {
+        return (CustomRepoData) this.repoManager.get(id);
     }
 
     public void removeRepo(int index) {
@@ -177,7 +168,6 @@ public class CustomRepoManager {
                 customRepoData.setEnabled(false);
                 customRepoData.override = null;
             }
-            this.getSharedPreferences().edit().remove("repo_" + index).apply();
             this.dirty = true;
         }
     }

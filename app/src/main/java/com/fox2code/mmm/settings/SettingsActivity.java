@@ -88,6 +88,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1157,15 +1158,19 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             Realm realm = Realm.getInstance(realmConfiguration);
             // get all repos that are not built-in
             int CUSTOM_REPO_ENTRIES = 0;
+            // array of custom repos
+            ArrayList<String> customRepos = new ArrayList<>();
             RealmResults<ReposList> customRepoDataDB = realm.where(ReposList.class).findAll();
             for (ReposList repo : customRepoDataDB) {
                 if (!repo.getId().equals("androidacy") && !repo.getId().equals("magisk_alt_repo")) {
                     CUSTOM_REPO_ENTRIES++;
+                    customRepos.add(repo.getId());
                 }
             }
             final CustomRepoManager customRepoManager = RepoManager.getINSTANCE().getCustomRepoManager();
             for (int i = 0; i < CUSTOM_REPO_ENTRIES; i++) {
-                CustomRepoData repoData = customRepoManager.getRepo(i);
+                // get the id of the repo at current index in customRepos
+                CustomRepoData repoData = customRepoManager.getRepo(customRepos.get(i));
                 setRepoData(repoData, "pref_custom_repo_" + i);
                 if (initial) {
                     Preference preference = findPreference("pref_custom_repo_" + i + "_delete");
@@ -1268,6 +1273,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                 positiveButton.setEnabled(true);
                             }
                         }
+
                         @Override
                         public void afterTextChanged(Editable s) {
                         }
