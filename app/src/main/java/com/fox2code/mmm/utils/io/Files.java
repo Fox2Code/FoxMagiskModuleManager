@@ -37,6 +37,7 @@ import java.util.zip.ZipOutputStream;
 
 import timber.log.Timber;
 
+/** @noinspection ResultOfMethodCallIgnored*/
 public enum Files {
     ;
     private static final boolean is64bit = Build.SUPPORTED_64_BIT_ABIS.length > 0;
@@ -44,7 +45,7 @@ public enum Files {
     // stolen from https://stackoverflow.com/a/25005243
     public static @NonNull String getFileName(Context context, Uri uri) {
         String result = null;
-        if (uri.getScheme().equals("content")) {
+        if (Objects.equals(uri.getScheme(), "content")) {
             try (Cursor cursor = context.getContentResolver().query(uri, null, null, null, null)) {
                 if (cursor != null && cursor.moveToFirst()) {
                     int index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
@@ -56,7 +57,7 @@ public enum Files {
         }
         if (result == null) {
             result = uri.getPath();
-            int cut = result.lastIndexOf('/');
+            int cut = Objects.requireNonNull(result).lastIndexOf('/');
             if (cut != -1) {
                 result = result.substring(cut + 1);
             }
@@ -69,10 +70,10 @@ public enum Files {
         Long result = null;
         try {
             String scheme = uri.getScheme();
-            if (scheme.equals("content")) {
+            if (Objects.equals(scheme, "content")) {
                 Cursor returnCursor = context.getContentResolver().
                         query(uri, null, null, null, null);
-                int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+                int sizeIndex = Objects.requireNonNull(returnCursor).getColumnIndex(OpenableColumns.SIZE);
                 returnCursor.moveToFirst();
 
                 long size = returnCursor.getLong(sizeIndex);
@@ -80,8 +81,8 @@ public enum Files {
 
                 result = size;
             }
-            if (scheme.equals("file")) {
-                result = new File(uri.getPath()).length();
+            if (Objects.equals(scheme, "file")) {
+                result = new File(Objects.requireNonNull(uri.getPath())).length();
             }
         } catch (Exception e) {
             Timber.e(Log.getStackTraceString(e));
@@ -91,6 +92,8 @@ public enum Files {
     }
 
     public static void write(File file, byte[] bytes) throws IOException {
+        // make the dir if necessary
+        Objects.requireNonNull(file.getParentFile()).mkdirs();
         try (OutputStream outputStream = new FileOutputStream(file)) {
             outputStream.write(bytes);
             outputStream.flush();
@@ -104,6 +107,8 @@ public enum Files {
     }
 
     public static void writeSU(File file, byte[] bytes) throws IOException {
+        // make the dir if necessary
+        Objects.requireNonNull(file.getParentFile()).mkdirs();
         try (OutputStream outputStream = SuFileOutputStream.open(file)) {
             outputStream.write(bytes);
             outputStream.flush();

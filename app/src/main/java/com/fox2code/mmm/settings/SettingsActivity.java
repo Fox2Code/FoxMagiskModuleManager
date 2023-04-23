@@ -1162,15 +1162,18 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             ArrayList<String> customRepos = new ArrayList<>();
             RealmResults<ReposList> customRepoDataDB = realm.where(ReposList.class).findAll();
             for (ReposList repo : customRepoDataDB) {
-                if (!repo.getId().equals("androidacy") && !repo.getId().equals("magisk_alt_repo")) {
+                if (!repo.getId().equals("androidacy_repo") && !repo.getId().equals("magisk_alt_repo")) {
                     CUSTOM_REPO_ENTRIES++;
-                    customRepos.add(repo.getId());
+                    customRepos.add(repo.getUrl());
                 }
             }
+            Timber.d("%d repos: %s", CUSTOM_REPO_ENTRIES, customRepos);
             final CustomRepoManager customRepoManager = RepoManager.getINSTANCE().getCustomRepoManager();
             for (int i = 0; i < CUSTOM_REPO_ENTRIES; i++) {
                 // get the id of the repo at current index in customRepos
                 CustomRepoData repoData = customRepoManager.getRepo(customRepos.get(i));
+                assert repoData != null;
+                Timber.d("RepoData for %d is %s", i, repoData.toString());
                 setRepoData(repoData, "pref_custom_repo_" + i);
                 if (initial) {
                     Preference preference = findPreference("pref_custom_repo_" + i + "_delete");
@@ -1185,8 +1188,27 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         realm.commitTransaction();
                         customRepoManager.removeRepo(index);
                         updateCustomRepoList(false);
+                        preference1.setVisible(false);
                         return true;
                     });
+                }
+            }
+            // any custom repo prefs larger than the number of custom repos need to be hidden. max is 5
+            // loop up until 5, and for each that's greater than the number of custom repos, hide it. we start at 0
+            // if custom repos is zero, just hide them all
+            if (CUSTOM_REPO_ENTRIES == 0) {
+                for (int i = 0; i < 5; i++) {
+                    Preference preference = findPreference("pref_custom_repo_" + i);
+                    if (preference == null) continue;
+                    preference.setVisible(false);
+                }
+            } else {
+                for (int i = 0; i < 5; i++) {
+                    Preference preference = findPreference("pref_custom_repo_" + i);
+                    if (preference == null) continue;
+                    if (i >= CUSTOM_REPO_ENTRIES) {
+                        preference.setVisible(false);
+                    }
                 }
             }
             Preference preference = findPreference("pref_custom_add_repo");

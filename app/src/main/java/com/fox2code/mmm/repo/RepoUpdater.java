@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.realm.Realm;
@@ -45,13 +46,13 @@ public class RepoUpdater {
             return 0;
         }
         // if we shouldn't update, get the values from the ModuleListCache realm
-        if (!this.repoData.shouldUpdate()) {
+        if (!this.repoData.shouldUpdate() && Objects.equals(this.repoData.id, "androidacy_repo")) { // for now, only enable cache reading for androidacy repo, until we handle storing module prop file values in cache
             Timber.d("Fetching index from cache for %s", this.repoData.id);
             File cacheRoot = MainApplication.getINSTANCE().getDataDirWithPath("realms/repos/" + this.repoData.id);
             RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ModuleListCache.realm").encryptionKey(MainApplication.getINSTANCE().getKey()).schemaVersion(1).deleteRealmIfMigrationNeeded().allowWritesOnUiThread(true).allowQueriesOnUiThread(true).directory(cacheRoot).build();
             Realm realm = Realm.getInstance(realmConfiguration);
             RealmResults<ModuleListCache> results = realm.where(ModuleListCache.class).equalTo("repoId", this.repoData.id).findAll();
-            // reposlist realm
+            // repos-list realm
             RealmConfiguration realmConfiguration2 = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();
             Realm realm2 = Realm.getInstance(realmConfiguration2);
             this.toUpdate = Collections.emptyList();
