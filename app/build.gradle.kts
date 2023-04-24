@@ -6,6 +6,7 @@ import io.sentry.android.gradle.instrumentation.logcat.LogcatLevel
 import com.android.build.api.variant.FilterConfiguration.FilterType.*
 import java.util.Properties
 import java.io.File
+import java.io.ByteArrayOutputStream
 
 plugins {
     // Gradle doesn't allow conditionally enabling/disabling plugins
@@ -21,15 +22,30 @@ apply(plugin = "realm-android")
 val hasSentryConfig = File(rootProject.projectDir, "sentry.properties").exists()
 android {
     // functions to get git info: gitCommitHash, gitBranch, gitRemote
-    val gitCommitHash = providers.exec {
-        commandLine("git", "rev-parse", "--short", "HEAD")
-    }.standardOutput.asText.get().toString().trim()
-    val gitBranch = providers.exec {
-        commandLine("git", "rev-parse", "--abbrev-ref", "HEAD")
-    }.standardOutput.asText.get().toString().trim()
-    val gitRemote = providers.exec {
-        commandLine("git", "config", "--get", "remote.origin.url")
-    }.standardOutput.asText.get().toString().trim()
+    val gitCommitHash by lazy {
+        val stdout = ByteArrayOutputStream()
+        rootProject.exec {
+            commandLine("git", "rev-parse", "--short", "HEAD")
+            standardOutput = stdout
+        }
+        stdout.toString().trim()
+    }
+    val gitBranch by lazy {
+        val stdout = ByteArrayOutputStream()
+        rootProject.exec {
+            commandLine("git", "rev-parse", "--abbrev-ref", "HEAD")
+            standardOutput = stdout
+        }
+        stdout.toString().trim()
+    }
+    val gitRemote by lazy {
+        val stdout = ByteArrayOutputStream()
+        rootProject.exec {
+            commandLine("git", "config", "--get", "remote.origin.url")
+            standardOutput = stdout
+        }
+        stdout.toString().trim()
+    }
     namespace = "com.fox2code.mmm"
     compileSdk = 33
     ndkVersion = "25.2.9519653"
