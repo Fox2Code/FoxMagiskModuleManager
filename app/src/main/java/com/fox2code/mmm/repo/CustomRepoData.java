@@ -42,4 +42,18 @@ public final class CustomRepoData extends RepoData {
         this.donate = jsonObject.optString("donate");
         this.submitModule = jsonObject.optString("submitModule");
     }
+
+    public Object toJSON() {
+        try {
+            return new JSONObject()
+                    .put("id", this.id)
+                    .put("name", this.name)
+                    .put("website", this.website)
+                    .put("support", this.support)
+                    .put("donate", this.donate)
+                    .put("submitModule", this.submitModule);
+        } catch (JSONException ignored) {
+            return null;
+        }
+    }
 }

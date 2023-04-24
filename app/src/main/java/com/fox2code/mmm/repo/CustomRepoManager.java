@@ -198,5 +198,4 @@ public class CustomRepoManager {
         if (needUpdate) this.dirty = false;
         return needUpdate;
     }
-
 }

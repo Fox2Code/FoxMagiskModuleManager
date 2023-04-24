@@ -1023,7 +1023,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         prefAndroidacyRepoApiD.setIcon(R.drawable.baseline_check_24);
                     }
                 }
-                String[] originalApiKeyRef = new String[]{MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).getString("pref_androidacy_api_token", "")};
+                String[] originalApiKeyRef = new String[]{MainApplication.getPreferences("androidacy").getString("pref_androidacy_api_token", "")};
                 // Get the dummy pref_androidacy_repo_api_token preference with id pref_androidacy_repo_api_token
                 // we have to use the id because the key is different
                 EditTextPreference prefAndroidacyRepoApiKey = Objects.requireNonNull(findPreference("pref_androidacy_repo_api_token"));
@@ -1069,7 +1069,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     new Thread(() -> {
                         // If key is empty, just remove it and change the text of the snack bar
                         if (apiKey.isEmpty()) {
-                            MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit().remove("pref_androidacy_api_token").apply();
+                            MainApplication.getPreferences("androidacy").edit().remove("pref_androidacy_api_token").apply();
                             new Handler(Looper.getMainLooper()).post(() -> {
                                 Snackbar.make(requireView(), R.string.api_key_removed, BaseTransientBottomBar.LENGTH_SHORT).show();
                                 // Show dialog to restart app with ok button
@@ -1093,7 +1093,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                 new Handler(Looper.getMainLooper()).post(() -> {
                                     Snackbar.make(requireView(), R.string.api_key_invalid, BaseTransientBottomBar.LENGTH_SHORT).show();
                                     // Save the original key
-                                    MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit().putString("pref_androidacy_api_token", originalApiKeyRef[0]).apply();
+                                    MainApplication.getPreferences(
+                                            "androidacy").edit().putString("pref_androidacy_api_token", originalApiKeyRef[0]).apply();
                                     // Re-show the dialog with an error
                                     prefAndroidacyRepoApiKey.performClick();
                                     // Show error
@@ -1114,7 +1115,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                 if (valid) {
                                     originalApiKeyRef[0] = apiKey;
                                     RepoManager.getINSTANCE().getAndroidacyRepoData().setToken(apiKey);
-                                    MainApplication.getINSTANCE().getSharedPreferences("androidacy", 0).edit().putString("pref_androidacy_api_token", apiKey).apply();
+                                    MainApplication.getPreferences("androidacy").edit().putString("pref_androidacy_api_token", apiKey).apply();
                                     // Snackbar with success and restart button
                                     new Handler(Looper.getMainLooper()).post(() -> {
                                         Snackbar.make(requireView(), R.string.api_key_valid, BaseTransientBottomBar.LENGTH_SHORT).show();
@@ -1173,7 +1174,8 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 // get the id of the repo at current index in customRepos
                 CustomRepoData repoData = customRepoManager.getRepo(customRepos.get(i));
                 assert repoData != null;
-                Timber.d("RepoData for %d is %s", i, repoData.toString());
+                // convert repoData to a json string for logging
+                Timber.d("RepoData for %d is %s", i, repoData.toJSON());
                 setRepoData(repoData, "pref_custom_repo_" + i);
                 if (initial) {
                     Preference preference = findPreference("pref_custom_repo_" + i + "_delete");
@@ -1213,7 +1215,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             }
             Preference preference = findPreference("pref_custom_add_repo");
             if (preference == null) return;
-            preference.setVisible(customRepoManager.canAddRepo() && customRepoManager.getRepoCount() < CUSTOM_REPO_ENTRIES);
+            preference.setVisible(customRepoManager.canAddRepo() && customRepoManager.getRepoCount() < 5);
             if (initial) { // Custom repo add button part.
                 preference = findPreference("pref_custom_add_repo_button");
                 if (preference == null) return;
@@ -1334,6 +1336,39 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         Timber.d("Showing preference %s because the forceHide status is %s and the RealmResults is %s", preferenceName, repoData.isForceHide(), repoDataRealmResults.toString());
                         preference.setTitle(repoData.getName());
                         preference.setVisible(true);
+                        // set website, support, and submitmodule as well as donate
+                        if (repoData.getWebsite() != null) {
+                            findPreference(preferenceName + "_website").setOnPreferenceClickListener((preference1 -> {
+                                IntentHelper.openUrl(getFoxActivity(this), repoData.getWebsite());
+                                return true;
+                            }));
+                        } else {
+                            findPreference(preferenceName + "_website").setVisible(false);
+                        }
+                        if (repoData.getSupport() != null) {
+                            findPreference(preferenceName + "_support").setOnPreferenceClickListener((preference1 -> {
+                                IntentHelper.openUrl(getFoxActivity(this), repoData.getSupport());
+                                return true;
+                            }));
+                        } else {
+                            findPreference(preferenceName + "_support").setVisible(false);
+                        }
+                        if (repoData.getSubmitModule() != null) {
+                            findPreference(preferenceName + "_submit").setOnPreferenceClickListener((preference1 -> {
+                                IntentHelper.openUrl(getFoxActivity(this), repoData.getSubmitModule());
+                                return true;
+                            }));
+                        } else {
+                            findPreference(preferenceName + "_submit").setVisible(false);
+                        }
+                        if (repoData.getDonate() != null) {
+                            findPreference(preferenceName + "_donate").setOnPreferenceClickListener((preference1 -> {
+                                IntentHelper.openUrl(getFoxActivity(this), repoData.getDonate());
+                                return true;
+                            }));
+                        } else {
+                            findPreference(preferenceName + "_donate").setVisible(false);
+                        }
                     }
                 } else {
                     Timber.d("Hiding preference " + preferenceName + " because it's data is null");
