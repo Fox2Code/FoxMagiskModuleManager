@@ -65,7 +65,6 @@
         android:theme="@style/Theme.MagiskModuleManager"
         android:usesCleartextTraffic="false"
         android:forceDarkAllowed="false"
-        android:extractNativeLibs="true"
         tools:ignore="ManifestResource"
         tools:replace="android:supportsRtl"
         tools:targetApi="tiramisu">

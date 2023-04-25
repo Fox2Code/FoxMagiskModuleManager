@@ -1,12 +1,9 @@
 @file:Suppress("UnstableApiUsage", "SpellCheckingInspection")
 
-import com.android.build.api.dsl.Packaging
+import com.android.build.api.variant.FilterConfiguration.FilterType.ABI
 import io.sentry.android.gradle.extensions.InstrumentationFeature
 import io.sentry.android.gradle.instrumentation.logcat.LogcatLevel
-import com.android.build.api.variant.FilterConfiguration.FilterType.*
 import java.util.Properties
-import java.io.File
-import java.io.ByteArrayOutputStream
 
 plugins {
     // Gradle doesn't allow conditionally enabling/disabling plugins
@@ -22,30 +19,16 @@ apply(plugin = "realm-android")
 val hasSentryConfig = File(rootProject.projectDir, "sentry.properties").exists()
 android {
     // functions to get git info: gitCommitHash, gitBranch, gitRemote
-    val gitCommitHash by lazy {
-        val stdout = ByteArrayOutputStream()
-        rootProject.exec {
-            commandLine("git", "rev-parse", "--short", "HEAD")
-            standardOutput = stdout
-        }
-        stdout.toString().trim()
-    }
-    val gitBranch by lazy {
-        val stdout = ByteArrayOutputStream()
-        rootProject.exec {
-            commandLine("git", "rev-parse", "--abbrev-ref", "HEAD")
-            standardOutput = stdout
-        }
-        stdout.toString().trim()
-    }
-    val gitRemote by lazy {
-        val stdout = ByteArrayOutputStream()
-        rootProject.exec {
-            commandLine("git", "config", "--get", "remote.origin.url")
-            standardOutput = stdout
-        }
-        stdout.toString().trim()
-    }
+    val gitCommitHash = providers.exec {
+        commandLine("git", "rev-parse", "--short", "HEAD")
+    }.standardOutput.asText.get().toString().trim()
+    val gitBranch = providers.exec {
+        commandLine("git", "rev-parse", "--abbrev-ref", "HEAD")
+    }.standardOutput.asText.get().toString().trim()
+    val gitRemote = providers.exec {
+        commandLine("git", "config", "--get", "remote.origin.url")
+    }.standardOutput.asText.get().toString().trim()
+
     namespace = "com.fox2code.mmm"
     compileSdk = 33
     ndkVersion = "25.2.9519653"
@@ -88,7 +71,9 @@ android {
         getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            )
         }
         getByName("debug") {
             applicationIdSuffix = ".debug"
@@ -120,9 +105,15 @@ android {
             val properties = Properties()
             if (project.rootProject.file("local.properties").exists()) {
                 // grab matomo.url
-                buildConfigField("String", "ANALYTICS_ENDPOINT", "\"" + properties.getProperty("matomo.url", "https://s-api.androidacy.com/matomo.php" + "\""))
+                buildConfigField(
+                    "String", "ANALYTICS_ENDPOINT", "\"" + properties.getProperty(
+                        "matomo.url", "https://s-api.androidacy.com/matomo.php" + "\""
+                    )
+                )
             } else {
-                buildConfigField("String", "ANALYTICS_ENDPOINT", "\"https://s-api.androidacy.com/matomo.php\"")
+                buildConfigField(
+                    "String", "ANALYTICS_ENDPOINT", "\"https://s-api.androidacy.com/matomo.php\""
+                )
             }
             buildConfigField("boolean", "ENABLE_PROTECTION", "true")
             // Get the androidacy client ID from the androidacy.properties
@@ -132,15 +123,26 @@ android {
             // rate limited to 30 requests per minute
             if (project.rootProject.file("androidacy.properties").exists()) {
                 propertiesA.load(project.rootProject.file("androidacy.properties").inputStream())
-                properties.setProperty("client_id", "\"" + propertiesA.getProperty("client_id", "5KYccdYxWB2RxMq5FTbkWisXi2dS6yFN9R7RVlFCG98FRdz6Mf5ojY2fyJCUlXJZ") + "\"")
+                properties.setProperty(
+                    "client_id", "\"" + propertiesA.getProperty(
+                        "client_id",
+                        "5KYccdYxWB2RxMq5FTbkWisXi2dS6yFN9R7RVlFCG98FRdz6Mf5ojY2fyJCUlXJZ"
+                    ) + "\""
+                )
             } else {
-                properties.setProperty("client_id", "5KYccdYxWB2RxMq5FTbkWisXi2dS6yFN9R7RVlFCG98FRdz6Mf5ojY2fyJCUlXJZ")
+                properties.setProperty(
+                    "client_id", "5KYccdYxWB2RxMq5FTbkWisXi2dS6yFN9R7RVlFCG98FRdz6Mf5ojY2fyJCUlXJZ"
+                )
             }
-            buildConfigField("String", "ANDROIDACY_CLIENT_ID", "\"" + propertiesA.getProperty("client_id") + "\"")
+            buildConfigField(
+                "String", "ANDROIDACY_CLIENT_ID", "\"" + propertiesA.getProperty("client_id") + "\""
+            )
             // If client ID is empty, disable androidacy
-            buildConfigField("java.util.List<String>",
+            buildConfigField(
+                "java.util.List<String>",
                 "ENABLED_REPOS",
-                "java.util.Arrays.asList(\"androidacy_repo\")",)
+                "java.util.Arrays.asList(\"androidacy_repo\")",
+            )
 
         }
 
@@ -169,17 +171,25 @@ android {
             val properties = Properties()
             if (project.rootProject.file("local.properties").exists()) {
                 // grab matomo.url
-                buildConfigField("String", "ANALYTICS_ENDPOINT", "\"" + properties.getProperty("matomo.url", "https://s-api.androidacy.com/matomo.php") + "\"")
+                buildConfigField(
+                    "String", "ANALYTICS_ENDPOINT", "\"" + properties.getProperty(
+                        "matomo.url", "https://s-api.androidacy.com/matomo.php"
+                    ) + "\""
+                )
             } else {
-                buildConfigField("String", "ANALYTICS_ENDPOINT", "\"https://s-api.androidacy.com/matomo.php\"")
+                buildConfigField(
+                    "String", "ANALYTICS_ENDPOINT", "\"https://s-api.androidacy.com/matomo.php\""
+                )
             }
             buildConfigField("boolean", "ENABLE_PROTECTION", "true")
 
             // Repo with ads or tracking feature are disabled by default for the
             // F-Droid flavor. at the same time, the alt repo isn"t particularly trustworthy
-            buildConfigField("java.util.List<String>",
-                    "ENABLED_REPOS",
-                    "java.util.Arrays.asList(\"\")",)
+            buildConfigField(
+                "java.util.List<String>",
+                "ENABLED_REPOS",
+                "java.util.Arrays.asList(\"\")",
+            )
 
             // Get the androidacy client ID from the androidacy.properties
             val propertiesA = Properties()
@@ -188,9 +198,15 @@ android {
             if (project.rootProject.file("androidacy.properties").exists()) {
                 propertiesA.load(project.rootProject.file("androidacy.properties").inputStream())
             } else {
-                propertiesA.setProperty("client_id", "dQ1p7X8bF14PVJ7wAU6ORVjPB2IeTinsuAZ8Uos6tQiyUdUyIjSyZSmN54QBbaTy")
+                propertiesA.setProperty(
+                    "client_id", "dQ1p7X8bF14PVJ7wAU6ORVjPB2IeTinsuAZ8Uos6tQiyUdUyIjSyZSmN54QBbaTy"
+                )
             }
-            buildConfigField("String", "ANDROIDACY_CLIENT_ID", "\"" + propertiesA.getProperty("client_id", "dQ1p7X8bF14PVJ7wAU6ORVjPB2IeTinsuAZ8Uos6tQiyUdUyIjSyZSmN54QBbaTy") + "\"")
+            buildConfigField(
+                "String", "ANDROIDACY_CLIENT_ID", "\"" + propertiesA.getProperty(
+                    "client_id", "dQ1p7X8bF14PVJ7wAU6ORVjPB2IeTinsuAZ8Uos6tQiyUdUyIjSyZSmN54QBbaTy"
+                ) + "\""
+            )
             versionNameSuffix = "-froid"
         }
     }
@@ -202,13 +218,6 @@ android {
 
     lint {
         disable.add("MissingTranslation")
-    }
-
-    @Suppress("UNUSED_EXPRESSION")
-    fun Packaging.() {
-        jniLibs {
-            useLegacyPackaging = true
-        }
     }
 }
 
@@ -227,7 +236,14 @@ sentry {
     tracingInstrumentation {
         enabled.set(true)
 
-        features.set(setOf(InstrumentationFeature.DATABASE, InstrumentationFeature.FILE_IO, InstrumentationFeature.OKHTTP, InstrumentationFeature.COMPOSE))
+        features.set(
+            setOf(
+                InstrumentationFeature.DATABASE,
+                InstrumentationFeature.FILE_IO,
+                InstrumentationFeature.OKHTTP,
+                InstrumentationFeature.COMPOSE
+            )
+        )
 
         logcat {
             enabled.set(true)
@@ -254,30 +270,29 @@ val abiCodes = mapOf("armeabi-v7a" to 1, "x86" to 2, "x86_64" to 3)
 // abiCodes * 1000 + variant.versionCode. In this example, variant.versionCode
 // is equal to defaultConfig.versionCode. If you configure product flavors that
 // define their own versionCode, variant.versionCode uses that value instead.
-        androidComponents {
-            onVariants { variant ->
+androidComponents {
+    onVariants { variant ->
 
-                // Assigns a different version code for each output APK
-                // other than the universal APK.
-                variant.outputs.forEach { output ->
-                    val name = output.filters.find { it.filterType == ABI }?.identifier
+        // Assigns a different version code for each output APK
+        // other than the universal APK.
+        variant.outputs.forEach { output ->
+            val name = output.filters.find { it.filterType == ABI }?.identifier
 
-                    // Stores the value of abiCodes that is associated with the ABI for this variant.
-                    val baseAbiCode = abiCodes[name]
-                    // Because abiCodes.get() returns null for ABIs that are not mapped by ext.abiCodes,
-                    // the following code doesn't override the version code for universal APKs.
-                    // However, because you want universal APKs to have the lowest version code,
-                    // this outcome is desirable.
-                    if (baseAbiCode != null) {
-                        // Assigns the new version code to output.versionCode, which changes the version code
-                        // for only the output APK, not for the variant itself.
-                        @Suppress("USELESS_CAST")
-                        val versioCode = output.versionCode.get() as Int
-                        output.versionCode.set(baseAbiCode * 1000 + versioCode)
-                    }
-                }
+            // Stores the value of abiCodes that is associated with the ABI for this variant.
+            val baseAbiCode = abiCodes[name]
+            // Because abiCodes.get() returns null for ABIs that are not mapped by ext.abiCodes,
+            // the following code doesn't override the version code for universal APKs.
+            // However, because you want universal APKs to have the lowest version code,
+            // this outcome is desirable.
+            if (baseAbiCode != null) {
+                // Assigns the new version code to output.versionCode, which changes the version code
+                // for only the output APK, not for the variant itself.
+                val versioCode = output.versionCode.get() as Int
+                output.versionCode.set(baseAbiCode * 1000 + versioCode)
             }
         }
+    }
+}
 
 aboutLibraries {
     // Specify the additional licenses
@@ -383,6 +398,12 @@ android {
     }
     //noinspection GrDeprecatedAPIUsage
     buildToolsVersion = "34.0.0 rc3"
+    @Suppress("DEPRECATION")
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
 }
 
 
