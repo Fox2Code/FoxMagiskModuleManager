@@ -16,7 +16,7 @@ buildscript {
     dependencies {
         classpath("com.android.tools.build:gradle:8.1.0-beta01")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.20")
-        classpath("com.mikepenz.aboutlibraries.plugin:aboutlibraries-plugin:10.6.1")
+        classpath("com.mikepenz.aboutlibraries.plugin:aboutlibraries-plugin:10.6.2")
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -34,4 +34,11 @@ afterEvaluate {
         sourceCompatibility = JavaVersion.VERSION_17.toString()
         targetCompatibility = JavaVersion.VERSION_17.toString()
     }
+}
+val service = project.extensions.getByType<JavaToolchainService>()
+val customLauncher = service.launcherFor {
+    languageVersion.set(JavaLanguageVersion.of(17))
+}5
+project.tasks.withType<UsesKotlinJavaToolchain>().configureEach {
+    kotlinJavaToolchain.toolchain.use(customLauncher)
 }
