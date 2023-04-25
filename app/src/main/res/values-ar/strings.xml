@@ -26,7 +26,7 @@
     <string name="official">رسمي</string>
     <string name="unofficial">غير رسميه</string>
     <string name="setup_button">إنهاء الإعداد</string>
-    <string name="setup_background_update_check">التحقق من التحديث في الخلفية</string>
+    <string name="setup_background_update_check">التحقق من التحديث تلقائياً</string>
     <string name="setup_androidacy_repo">تفعيل الريبو Androidacy</string>
     <string name="setup_crash_reporting">تفعيل الحارس</string>
     <string name="androidacy_update_needed">هذا التطبيق قديم.</string>
@@ -51,7 +51,7 @@
     <string name="no_web_view">تعذر فتح عرض ويب النظام</string>
     <string name="title_activity_settings">أنشطة الأعدادات</string>
     <string name="app_update_available">يتوفر إصدار جديد من التطبيق</string>
-    <string name="app_update">تحديث</string>
+    <string name="app_update">تحديث التطبيق</string>
     <string name="no_desc_found">لا يحتوي على وصف</string>
     <string name="download_module">تحميل الإضافة</string>
     <string name="install_module">تثبيت الإضافة</string>
@@ -133,7 +133,7 @@
     <string name="restore_module_list">استرجاع الإضافات</string>
     <string name="require_internet">هذه العملية تتطلب اتصال بالإنترنت</string>
     <string name="androidacy_test_mode_pref">وضع الاختبار Androidacy</string>
-    <string name="notification_update_title">تم العثور على تحديثات الإضافة %i</string>
+    <string name="notification_update_title">‫تم العثور على تحديثات الإضافة %1$d</string>
     <string name="notification_update_title_easter_egg">استنشاق تحديثات الإضافة %i</string>
     <string name="notification_update_subtitle">انقر لفتح التطبيق</string>
     <string name="notification_update_debug_pref">إشعار الاختبار</string>
@@ -146,7 +146,7 @@
     <string name="enable_blur_pref">التمويه</string>
     <string name="link_copied">تم نسخ الرابط</string>
     <string name="backup_module_list">نسخ احتياطي للأضافات</string>
-    <string name="notification_update_pref">التحقق من التحديث الخاص بالإضافات في الخلفية</string>
+    <string name="notification_update_pref">التحقق من التحديث التلقائي للأضافات</string>
     <string name="language_translated_by">تُرجِم بواسطة Fox2Code (@BN_LOS)</string>
     <string name="api_key_invalid">تعذر التحقق من صحة مفتاح API. يرجى التحقق من ذلك والمحاولة مرة أخرى.</string>
     <string name="checking_api_key">التحقق من صحة مفتاح API …</string>
@@ -175,7 +175,7 @@
     <string name="api_key_removed">تم إعادة تعيين مفتاح API بنجاح</string>
     <string name="repo_update_failed">فشل تحديث بعض الريبوات</string>
     <string name="disable_low_quality_module_filter_desc">لا تعلن بعض الإضافات عن بياناتها الوصفية بشكل صحيح ، مما يتسبب في حدوث خلل مرئي و / أو يشير إلى جودة الإضافة الرديئة.
-\nقم بإيقاف تشغيل هذا على مسؤوليتك الخاصة!</string>
+\nقم بتشغيل هذا على مسؤوليتك الخاصة!</string>
     <string name="wrap_text_desc">إظهار النص على أسطر متعددة بدلا من وضع كل النص على نفس السطر عند تثبيت الإضافة.</string>
     <string name="androidacy_test_mode_desc">استخدم نقطة نهاية Androidacy المرحلية بدلا من نقطة نهاية الإصدار. (سيتم إعادة تشغيل التطبيق)</string>
     <string name="install_terminal_reboot_now_message">أنت على وشك إعادة تشغيل جهازك. إذا قمت بحفظ عملك ، فاضغط على موافق للمتابعة. خلاف ذلك ، اضغط على إلغاء.</string>
@@ -191,7 +191,7 @@
     <string name="androidacy_test_mode_disable_warning">سيتم إعادة تشغيل التطبيق لتعطيل نقطة النهاية المرحلية</string>
     <string name="androidacy_failed_to_validate_token">تعذر التحقق من صحة الرمز المميز لنظام Androidacy. يرجى إعادة المحاولة لاحقا.</string>
     <string name="api_key_unchanged">مفتاح API الذي تدخله هو نفسه المفتاح المستخدم بالفعل.</string>
-    <string name="permission_notification_message">نحتاج إلى إذن الإشعارات لإعلامك بتحديثات التطبيق و الإضافات. إذا لم تمنح هذا الإذن، فلن يتم التحقق من التحديثات في الخلفية.</string>
+    <string name="permission_notification_message">نحتاج إلى إذن الإشعارات لإعلامك بتحديثات التطبيق و الإضافات. إذا لم تمنح هذا الإذن، فلن يتم تشغيل عمليات التحقق من التحديث التلقائي.</string>
     <string name="androidacy_repo_disabled_message">يفتقد هذا الإصدار إلى مفاتيح العميل لنظام Androidacy Repo. يرجى تنزيل إصدار GitHub إذا كنت ترغب في الاستفادة من ميزات مثل مراجعات الإضافات وفحوصات الأمان التلقائية والمزيد.</string>
     <string name="repo_update_failed_extended">فشل تحديث %1$s. يرجى إعادة المحاولة لاحقا.</string>
     <string name="blur_disabled_summary">التمويه غير متوافق مع الخلفيات الشفافة.</string>
@@ -239,4 +239,96 @@
     <string name="theme_light">فاتح</string>
     <string name="validating_api_key">التحقق من صحة مفتاح API …</string>
     <string name="androidacy_repo_info">قد يعرض الريبو هذا بعض الإعلانات غير المتطفلة لتغطية تكاليف الخادم والتطوير. يتميز بالمراجعات والمسح التلقائي للفيروسات والمزيد.</string>
+    <string name="zip_security_warning">تثبيت %s ؟</string>
+    <string name="zip_unpacking">يتم فحص الإضافة…</string>
+    <string name="understand">أعي ذلك</string>
+    <string name="setup_theme_title">اختيار خلفية</string>
+    <string name="action_settings">الإعدادات</string>
+    <string name="update_debug_warning">يبدو انك تستخدم اصدار تصحيح. الإصدارات التصحيحية يتوجب تحديثها يدوياً، و لا يدعمها المحدث داخل التطبيق</string>
+    <string name="error_no_action">خطأ: تم تحديد إجراء غير صالح. رفض الاستمرار.</string>
+    <string name="update_available">تم العثور على التحديث</string>
+    <string name="checking_for_update">جاري التحقق من وجود تحديثات…</string>
+    <string name="no_update_available">أنت محدث!</string>
+    <string name="error_download_update">حدث خطأ أثناء تنزيل معلومات التحديث.</string>
+    <string name="error_no_asset">خطأ: فشل تحليل معلومات التحديث</string>
+    <string name="installing_update">تثبيت التحديث…</string>
+    <string name="pref_category_contributors">الداعمون</string>
+    <string name="fox2code_thanks">تم الإنشاء بواسطة Fox2Code</string>
+    <string name="error_saving_logs">تعذر حفظ السجلات</string>
+    <string name="share_logs">مشاركة سجلات FoxMMM</string>
+    <string name="downloading_update">جاري تنزيل التحديث... %1$d%%</string>
+    <string name="update_debug_download_pref">آلية تنزيل التحديثات الاختبارية</string>
+    <string name="reset_api_key">إعادة تعيين مفاتيح API</string>
+    <string name="upgrade_androidacy_promo">الترقية إلى مميز</string>
+    <string name="feedback_submit">إرسال وإعادة تشغيل</string>
+    <string name="please_feedback">الرجاء مساعدتنا من خلال إخبارنا بما كنت تحاول القيام به عندما حدث هذا.</string>
+    <string name="feedback_name">الاسم (اختياري)</string>
+    <string name="feedback_email">البريد الإلكتروني (اختياري)</string>
+    <string name="crash_icon">أيقونة العطل</string>
+    <string name="copy_button">نسخ النص</string>
+    <string name="crash_details">سبب غير معروف</string>
+    <string name="more_details">يمكن العثور على مزيد من التفاصيل أدناه.</string>
+    <string name="crash_details_copied">تم نسخ الستاكترايس إلى الحافظة!</string>
+    <string name="crash_full_stacktrace">الستاكترايس:
+\n%1$s</string>
+    <string name="reset_app">إعادة تعيين التطبيق</string>
+    <string name="upgraded_summary">أنت رائع جدا! يبدو أنك قمت بالفعل بترقية اشتراكك و تقوم بدعم Androidacy.</string>
+    <string name="upgraded">الإصدار المميز مفعل</string>
+    <string name="reset_app_message">سيؤدي هذا إلى إزالة جميع بيانات التطبيق تماما وإغلاق التطبيق. لن يتم إلغاء تثبيت الإضافات.</string>
+    <string name="reset">اعاده تعيين</string>
+    <string name="error_adding">فشل إضافة الريبو المخصص</string>
+    <string name="api_key_mismatch">مفتاح API بتنسيق غير صالح</string>
+    <string name="setup_language_button">اختيار لغة</string>
+    <string name="title_activity_setup">الإعداد</string>
+    <string name="notification_update_ignore_pref">استبعاد الإضافات</string>
+    <string name="pref_category_updates">التحديثات</string>
+    <string name="invalid_excludes">إدخال غير صالح</string>
+    <string name="title_activity_update">المحدث داخل التطبيق</string>
+    <string name="update_title">تحديث التطبيق</string>
+    <string name="update_message">يرجى الانتظار بينما نتحقق من وجود تحديثات ل FoxMMM وتثبيتها. قد يستغرق هذا بضع دقائق</string>
+    <string name="update_button">الرجاء الانتظار…</string>
+    <string name="update_cancel_button">إلغاء التحديث</string>
+    <string name="notification_update_summary">يمكن تحديث الإضافات التالية:</string>
+    <string name="notification_update_module_template">من الإصدار %1$s إلى الإصدار %2$s</string>
+    <string name="notification_channel_background_update">جاري التحقق من وجود تحديثات…</string>
+    <string name="notification_channel_category_background_update">حالة التحديث في الخلفية</string>
+    <string name="notification_update_wifi_desc">تحقق فقط من شبكة WiFi</string>
+    <string name="notification_update_wifi_pref">مطلوب شبكة wi-fi أو شبكة غير محدودة لعمليات التحقق من التحديث. يوصى بالمغادرة إذا كان لديك بيانات جوال محدودة.</string>
+    <string name="background_update_check_excludes_no_modules">لا توجد إضافات مثبتة على الجهاز</string>
+    <string name="auto_updates_notifs">الأشعار عند العثور على تحديثات الإضافات</string>
+    <string name="notification_group_updates">تحديثات</string>
+    <string name="theme_transparent_dark">الداكن (الشفاف)</string>
+    <string name="zip_prop_load_failed">تعذر تحميل خصائص الإضافة</string>
+    <string name="zip_intent_module_install">هل تريد حقا تثبيت الإضافة \"%1$s\" من الملف المضغوط \"%2$s\" ؟
+\n
+\nتأكد من أنك تثق في مصدر هذه الإضافة، لأن الإضافات قوية جدا ويمكنها فعل أي شيء تقريبا.</string>
+    <string name="warning_message">تحتوي هذه الإضافة على مؤشرات ربما تم تثبيتها دون علمك ، أو ربما تحاول إخفاء نفسها.
+\n
+\nيوصى بشدة بإلغاء التثبيت.</string>
+    <string name="repo_update_failed_message">فشل تحديث الريبوات التالية:
+\n
+\n%s</string>
+    <string name="upgrade_androidacy_promo_desc">ستؤدي الترقية إلى الإصدار المميز إلى إزالة الإعلانات ورموز التحقق والتنزيلات للريبو الخاص ب Androidacy ودعم Androidacy وصناع الإضافات.</string>
+    <string name="fox2code_thanks_desc">Fox2Code هو المنشئ الأصلي للتطبيق. بدونه ، لم يكن هذا ممكنا أبدا.</string>
+    <string name="save_logs">حفظ السجلات في مساحة التخزين و مشاركتها</string>
+    <string name="not_official_build">هذا الإصدار من FoxMMM غير رسمي.</string>
+    <string name="crash_text">أوه لا، لقد تعثرنا.</string>
+    <string name="feedback_message">أعطنا المزيد من التفاصيل حول ما كنت تفعله عندما حدث هذا. أكثر ، وأكثر مرحا!</string>
+    <string name="sentry_dialogue_disabled">‌تم تعطيل الإبلاغ عن الأعطال. أعد تشغيله لإرسال الملاحظات.</string>
+    <string name="sentry_dialogue_empty_message">لم تعطي تعليقات إضافية.</string>
+    <string name="sentry_enable_nag">يبدو أنه تم تعطيل الإبلاغ عن الأعطال. يرجى تشغيله من اجل إرسال الملاحظات.</string>
+    <string name="reset_warning">إذا استمررت برؤية هذه الشاشة ، فقد تساعدك إعادة تعيين التطبيق. سيؤدي هذا إلى مسح بيانات التطبيق ولكنه لن يؤثر على الإضافات المثبتة.</string>
+    <string name="reset_app_confirmation">سيؤدي هذا إلى مسح بيانات التطبيق تماما ، ولكنه لن يؤثر على الإضافات.</string>
+    <string name="notification_update_ignore_desc">قائمة الإضافات التي ستستبعد من عمليات التحقق من التحديث</string>
+    <string name="invalid_characters_message">قائمة الإضافات التي أدخلتها غير صالحة. يرجى إدخال الإضافات الصالحة مفصولا بفواصل</string>
+    <string name="background_update_check_excludes">الإضافات التي ستستبعد من عمليات التحقق من التحديث التلقائية</string>
+    <string name="error_no_extras">خطأ: البيانات التي تم تلقيها عند التشغيل غير صالحة</string>
+    <string name="download_update">تنزيل التحديث</string>
+    <string name="no_file_found">خطأ: تعذر العثور على حزمة التحديث.</string>
+    <string name="check_for_updates">التحقق من وجود تحديثات للتطبيق</string>
+    <string name="changelog_none">لا تغييرات حتى الآن!</string>
+    <string name="invalid_repo_url">عنوان URL الذي أدخلته للريبو غير صالح</string>
+    <string name="add_repo_message">يجب تقديم الريبوز عبر HTTPS ، ويجب أن تتبع المواصفات الموضحة في الوثائق.</string>
+    <string name="notification_channel_background_update_description">يقوم FoxMMM بالتحقق من وجود تحديثات في الخلفية.</string>
+    <string name="notification_channel_category_background_update_description">عرض إشعار أثناء التحقق من وجود تحديثات حتى لا يتم قتلها بواسطة النظام</string>
 </resources>

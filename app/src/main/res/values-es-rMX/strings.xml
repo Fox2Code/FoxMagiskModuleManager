@@ -261,4 +261,12 @@
     <string name="setup_theme_header">Elige un tema</string>
     <string name="setup_theme_light">Tema claro</string>
     <string name="theme_black">AMOLED Negro</string>
+    <string name="setup_title">Configuración inicial</string>
+    <string name="language_cta_desc">Ayúdanos traduciéndolo! Pulsa aquí para averiguar más.</string>
+    <string name="install_terminal_reboot_now_message">Estas a punto de reiniciar tu dispositivo. Si guardaste tu trabajo, pulsa OK para continuar.
+\nDe lo contrario, pulsa cancelar.</string>
+    <string name="setup_theme_system">Seguir al sistema</string>
+    <string name="repo_update_failed_message">Los siguientes repositorios han fallado al actualizarse.
+\n%s</string>
+    <string name="androidacy_webview_update_required">Tu webview está desactualizado! Por favor actualízalo.</string>
 </resources>
