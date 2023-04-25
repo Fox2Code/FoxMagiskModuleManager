@@ -67,7 +67,7 @@ public final class AndroidacyRepoData extends RepoData {
         this.defaultName = "Androidacy Modules Repo";
         this.defaultWebsite = RepoManager.ANDROIDACY_MAGISK_REPO_HOMEPAGE;
         this.defaultSupport = "https://t.me/androidacy_discussions";
-        this.defaultDonate = "https://www.androidacy.com/membership-account/membership-checkout/?level=2&discount_code=FOXWINTER2&utm_souce=foxmmm&utm_medium=android-app&utm_campaign=fox-upgrade-promo";
+        this.defaultDonate = "https://www.androidacy.com/membership-account/membership-checkout/?level=2&discount_code=FOX2CODE&utm_souce=foxmmm&utm_medium=android-app&utm_campaign=fox-upgrade-promo";
         this.defaultSubmitModule = "https://www.androidacy.com/module-repository-applications/";
         this.host = testMode ? "staging-api.androidacy.com" : "production-api.androidacy.com";
         this.testMode = testMode;

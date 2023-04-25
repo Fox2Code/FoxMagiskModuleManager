@@ -104,6 +104,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     private static MainApplication INSTANCE;
     private static boolean firstBoot;
     private static HashMap<Object, Object> mSharedPrefs;
+    public static String updateCheckBg;
 
     static {
         Shell.setDefaultBuilder(shellBuilder = Shell.Builder.create().setFlags(Shell.FLAG_REDIRECT_STDERR).setTimeout(10).setInitializers(InstallerInitializer.class));
@@ -248,7 +249,13 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     }
 
     public static boolean isBackgroundUpdateCheckEnabled() {
-        return !wrapped && getPreferences("mmm").getBoolean("pref_background_update_check", true);
+        if (updateCheckBg != null) {
+            return Boolean.parseBoolean(updateCheckBg);
+        }
+        boolean wrapped = isWrapped();
+        boolean updateCheckBgTemp = !wrapped && getPreferences("mmm").getBoolean("pref_background_update_check", true);
+        updateCheckBg = String.valueOf(updateCheckBgTemp);
+        return Boolean.parseBoolean(updateCheckBg);
     }
 
     public static boolean isAndroidacyTestMode() {

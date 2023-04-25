@@ -43,6 +43,7 @@ android {
             useSupportLibrary = true
         }
         multiDexEnabled = true
+        resourceConfigurations += setOf()
     }
 
     splits {
@@ -74,10 +75,14 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
+            renderscriptOptimLevel = 3
         }
         getByName("debug") {
             applicationIdSuffix = ".debug"
             isDebuggable = true
+            versionNameSuffix = "-debug"
+            isJniDebuggable = true
+            isRenderscriptDebuggable = true
 
             // ONLY FOR TESTING SENTRY
             // minifyEnabled true
@@ -137,11 +142,70 @@ android {
             buildConfigField(
                 "String", "ANDROIDACY_CLIENT_ID", "\"" + propertiesA.getProperty("client_id") + "\""
             )
-            // If client ID is empty, disable androidacy
+
             buildConfigField(
                 "java.util.List<String>",
                 "ENABLED_REPOS",
                 "java.util.Arrays.asList(\"androidacy_repo\")",
+            )
+
+        }
+
+        // play variant. pretty similiar to default, but with an empty inital online repo list, and use play_client_id instead of client_id
+        create("play") {
+            // debug http requests. do not set this to true if you care about performance!!!!!
+            buildConfigField("boolean", "DEBUG_HTTP", "false")
+            // Latest commit hash as BuildConfig.COMMIT_HASH
+            buildConfigField("String", "COMMIT_HASH", "\"$gitCommitHash\"")
+            // Get the current branch name as BuildConfig.BRANCH_NAME
+            buildConfigField("String", "BRANCH_NAME", "\"$gitBranch\"")
+            // Get remote url as BuildConfig.REMOTE_URL
+            buildConfigField("String", "REMOTE_URL", "\"$gitRemote\"")
+            dimension = "type"
+            buildConfigField("boolean", "ENABLE_AUTO_UPDATER", "false")
+            buildConfigField("boolean", "DEFAULT_ENABLE_CRASH_REPORTING", "true")
+            buildConfigField("boolean", "DEFAULT_ENABLE_CRASH_REPORTING_PII", "true")
+            buildConfigField("boolean", "DEFAULT_ENABLE_ANALYTICS", "true")
+            val properties = Properties()
+            if (project.rootProject.file("local.properties").exists()) {
+                // grab matomo.url
+                buildConfigField(
+                    "String", "ANALYTICS_ENDPOINT", "\"" + properties.getProperty(
+                        "matomo.url", "https://s-api.androidacy.com/matomo.php" + "\""
+                    )
+                )
+            } else {
+                buildConfigField(
+                    "String", "ANALYTICS_ENDPOINT", "\"https://s-api.androidacy.com/matomo.php\""
+                )
+            }
+            buildConfigField("boolean", "ENABLE_PROTECTION", "true")
+            // Get the androidacy client ID from the androidacy.properties
+
+            val propertiesA = Properties()
+            // If androidacy.properties doesn"t exist, use the default client ID which is heavily
+            // rate limited to 30 requests per minute
+            if (project.rootProject.file("androidacy.properties").exists()) {
+                propertiesA.load(project.rootProject.file("androidacy.properties").inputStream())
+                properties.setProperty(
+                    "client_id", "\"" + propertiesA.getProperty(
+                        "play_client_id",
+                        "5KYccdYxWB2RxMq5FTbkWisXi2dS6yFN9R7RVlFCG98FRdz6Mf5ojY2fyJCUlXJZ"
+                    ) + "\""
+                )
+            } else {
+                properties.setProperty(
+                    "client_id", "5KYccdYxWB2RxMq5FTbkWisXi2dS6yFN9R7RVlFCG98FRdz6Mf5ojY2fyJCUlXJZ"
+                )
+            }
+            buildConfigField(
+                "String", "ANDROIDACY_CLIENT_ID", "\"" + propertiesA.getProperty("client_id") + "\""
+            )
+
+            buildConfigField(
+                "java.util.List<String>",
+                "ENABLED_REPOS",
+                "java.util.Arrays.asList(\"\")",
             )
 
         }

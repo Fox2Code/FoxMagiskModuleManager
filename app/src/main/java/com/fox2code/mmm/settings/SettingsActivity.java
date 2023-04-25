@@ -846,6 +846,40 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 }
                 return true;
             });
+
+            LongClickablePreference pref_donate_fox = findPreference("pref_donate_fox");
+            pref_donate_fox.setOnPreferenceClickListener(p -> {
+                // open fox
+                IntentHelper.openUrl(getFoxActivity(this), "https://paypal.me/fox2code");
+                return true;
+            });
+            // handle long click on pref_donate_fox
+            pref_donate_fox.setOnPreferenceLongClickListener(p -> {
+                // copy to clipboard
+                String toastText = requireContext().getString(R.string.link_copied);
+                clipboard.setPrimaryClip(ClipData.newPlainText(toastText, "https://paypal.me/fox2code"));
+                Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
+                return true;
+            });
+            // now handle pref_donate_androidacy
+            LongClickablePreference pref_donate_androidacy = findPreference("pref_donate_androidacy");
+            pref_donate_androidacy.setOnPreferenceClickListener(p -> {
+                // copy FOX2CODE promo code to clipboard and toast user that they can use it for half off any subscription
+                String toastText = requireContext().getString(R.string.promo_code_copied);
+                clipboard.setPrimaryClip(ClipData.newPlainText(toastText, "FOX2CODE"));
+                Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
+                // open androidacy
+                IntentHelper.openUrl(getFoxActivity(this), "https://www.androidacy.com/membership-join/?utm_source=foxmmm&utm_medium=app&utm_campaign=donate");
+                return true;
+            });
+            // handle long click on pref_donate_androidacy
+            pref_donate_androidacy.setOnPreferenceLongClickListener(p -> {
+                // copy to clipboard
+                String toastText = requireContext().getString(R.string.link_copied);
+                clipboard.setPrimaryClip(ClipData.newPlainText(toastText, "https://www.androidacy.com/membership-join/?utm_source=foxmmm&utm_medium=app&utm_campaign=donate"));
+                Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
+                return true;
+            });
         }
 
         private void openFragment(Fragment fragment, @StringRes int title) {
@@ -1015,12 +1049,17 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 if (userInfo != null) {
                     String userRole = userInfo[0][1];
                     if (Objects.nonNull(userRole) && !Objects.equals(userRole, "Guest")) {
-                        // Disable the pref_androidacy_repo_api_token preference
+                        // Disable the pref_androidacy_repo_api_donate preference
                         LongClickablePreference prefAndroidacyRepoApiD = Objects.requireNonNull(findPreference("pref_androidacy_repo_donate"));
                         prefAndroidacyRepoApiD.setEnabled(false);
                         prefAndroidacyRepoApiD.setSummary(R.string.upgraded_summary);
                         prefAndroidacyRepoApiD.setTitle(R.string.upgraded);
                         prefAndroidacyRepoApiD.setIcon(R.drawable.baseline_check_24);
+                    } else if (BuildConfig.FLAVOR.equals("play")) {
+                        // Disable the pref_androidacy_repo_api_token preference and hide the donate button
+                        LongClickablePreference prefAndroidacyRepoApiD = Objects.requireNonNull(findPreference("pref_androidacy_repo_donate"));
+                        prefAndroidacyRepoApiD.setEnabled(false);
+                        prefAndroidacyRepoApiD.setVisible(false);
                     }
                 }
                 String[] originalApiKeyRef = new String[]{MainApplication.getPreferences("androidacy").getString("pref_androidacy_api_token", "")};
@@ -1093,8 +1132,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                 new Handler(Looper.getMainLooper()).post(() -> {
                                     Snackbar.make(requireView(), R.string.api_key_invalid, BaseTransientBottomBar.LENGTH_SHORT).show();
                                     // Save the original key
-                                    MainApplication.getPreferences(
-                                            "androidacy").edit().putString("pref_androidacy_api_token", originalApiKeyRef[0]).apply();
+                                    MainApplication.getPreferences("androidacy").edit().putString("pref_androidacy_api_token", originalApiKeyRef[0]).apply();
                                     // Re-show the dialog with an error
                                     prefAndroidacyRepoApiKey.performClick();
                                     // Show error

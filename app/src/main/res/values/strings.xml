@@ -202,7 +202,7 @@
     <string name="monet_disabled_summary">Monet is not compatible with transparent themes.</string>
     <string name="blur_disabled_summary">Blur is not compatible with transparent themes.</string>
     <string name="transparent_theme_dialogue_title">You are setting a transparent theme</string>
-    <string name="transparent_theme_dialogue_message">Transparent themes may have some inconsistencies and may not work on all ROMs. In additon, monet and blur will be disabled. You can change back at any time.</string>
+    <string name="transparent_theme_dialogue_message">Transparent themes may have some inconsistencies and may not work on all ROMs. In addition, monet and blur will be disabled. You can change back at any time.</string>
     <string name="custom_repo_always_on">Custom repos are always on until you remove them.</string>
     <string name="sentry_dialogue_message">We encountered an error! Please help us improve the app
         by adding some information about the error below.\nName and email are optional but will
@@ -233,14 +233,14 @@
     <string name="setup_magisk_alt_repo">Enable the Magisk Alt Repo</string>
     <string name="setup_magisk_alt_repo_summary">Much more lax than the original. Has a lot of modules at the cost of some safety.</string>
     <string name="setup_crash_reporting">Enable Sentry</string>
-    <string name="setup_crash_reporting_summary">Crash reporting and performance monitoring. All reports are striclty anonymous and confidential.</string>
+    <string name="setup_crash_reporting_summary">Crash reporting and performance monitoring. All reports are strictly anonymous and confidential.</string>
     <string name="setup_custom_repos">You can add custom repos later in settings.</string>
     <string name="repos">Repos</string>
     <string name="misc">Miscellaneous</string>
     <string name="setup_button_skip">Skip</string>
     <string name="low_performance_device_dialogue_title">Enabling blur on lower-end device</string>
     <string name="low_performance_device_dialogue_message">You are trying to enable blur on a device that may not perform well with it.\nYou may enable it, but this may lead to a poor user experience and we recommend you don\'t.</string>
-    <string name="alt_repo_info">This repo has less restrictions and reviews, which may lead to lower quality modules. Pretty barebones but has a lot of modules.</string>
+    <string name="alt_repo_info">This repo has less restrictions and reviews, which may lead to lower quality modules. Pretty bare bones but has a lot of modules.</string>
     <string name="install_terminal_reboot_now_message">You are about to reboot your device. If you\'ve saved your work, hit OK to continue. Otherwise, hit cancel.</string>
     <string name="install_terminal_config_missing">Package %s is missing for module config, so we cannot launch it.</string>
     <string name="clear_app_data">Clear app data</string>
@@ -392,7 +392,7 @@
     <string name="crash_reporting_pii_desc">Allows sending additional information in crash reports, some of which may contain personally identifiable information such as IP address and device identifiers.</string>
     <string name="crash_reporting_pii">Send additional information</string>
     <string name="setup_crash_reporting_pii">Send additional info in crash reports.</string>
-    <string name="setup_crash_reporting_pii_summary"> This may include device identifiers and IP addresses. No data will be used for any other purpose besides analyzing crashes and improving performance.</string>
+    <string name="setup_crash_reporting_pii_summary">This may include device identifiers and IP addresses. No data will be used for any other purpose besides analyzing crashes and improving performance.</string>
     <string name="error_creating_cookie_database">Error accessing WebView. Functionality may be impacted.</string>
     <string name="setup_scroll_down">To enable the finish button, please scroll down and view all the options.</string>
     <string name="empty_field">URL is required</string>
@@ -407,4 +407,9 @@
     <string name="debug_cat">Debugging</string>
     <string name="announcements">News and updates</string>
     <string name="back">Go back</string>
+    <string name="donate_fox">Donate to Fox2Code</string>
+    <string name="donate_androidacy">Donate to Androidacy</string>
+    <string name="donate_androidacy_sum">Buy a premium subscription to Androidacy to support the app and the repo.</string>
+    <string name="promo_code_copied">Use the copied code for half off your first month!</string>
+    <string name="warning_pls_restart">Please note that some settings may not take effect until you restart the app.</string>
 </resources>

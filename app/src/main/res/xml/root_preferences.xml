@@ -1,6 +1,15 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <PreferenceCategory>
+        <Preference
+            app:icon="@drawable/ic_baseline_info_24"
+            app:key="pref_warning_restart"
+            app:enabled="false"
+            app:singleLineTitle="false"
+            app:title="@string/warning_pls_restart" />
+    </PreferenceCategory>
+
     <!-- Custom repos has been announced, check https://github.com/Fox2Code/FoxMagiskModuleManager/issues/131 -->
     <PreferenceCategory app:title="@string/pref_category_repos">
         <Preference
@@ -197,8 +206,8 @@
         <SwitchPreferenceCompat
             app:defaultValue="false"
             app:icon="@drawable/ic_baseline_info_24"
-            app:singleLineTitle="false"
             app:key="pref_analytics_enabled"
+            app:singleLineTitle="false"
             app:summary="@string/analytics_desc"
             app:title="@string/setup_app_analytics" />
 
@@ -232,6 +241,18 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/pref_category_info">
+        <!-- donate buttons for fox2code and androidacy -->
+        <com.fox2code.mmm.settings.LongClickablePreference
+            app:icon="@drawable/ic_baseline_monetization_on_24"
+            app:key="pref_donate_fox"
+            app:singleLineTitle="false"
+            app:title="@string/donate_fox" />
+        <com.fox2code.mmm.settings.LongClickablePreference
+            app:icon="@drawable/ic_baseline_monetization_on_24"
+            app:key="pref_donate_androidacy"
+            app:singleLineTitle="false"
+            app:summary="@string/donate_androidacy_sum"
+            app:title="@string/donate_androidacy" />
         <com.fox2code.mmm.settings.LongClickablePreference
             app:icon="@drawable/ic_baseline_bug_report_24"
             app:key="pref_report_bug"
