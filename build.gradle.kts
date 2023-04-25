@@ -35,10 +35,4 @@ afterEvaluate {
         targetCompatibility = JavaVersion.VERSION_17.toString()
     }
 }
-val service = project.extensions.getByType<JavaToolchainService>()
-val customLauncher = service.launcherFor {
-    languageVersion.set(JavaLanguageVersion.of(17))
-}
-project.tasks.withType<UsesKotlinJavaToolchain>().configureEach {
-    kotlinJavaToolchain.toolchain.use(customLauncher)
-}
+
