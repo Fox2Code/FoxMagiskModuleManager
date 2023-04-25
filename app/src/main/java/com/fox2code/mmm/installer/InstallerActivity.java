@@ -166,6 +166,7 @@ public class InstallerActivity extends FoxActivity {
         wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Fox:Installer");
         this.progressIndicator.setVisibility(View.VISIBLE);
         if (urlMode) this.installerTerminal.addLine("- Downloading " + name);
+        TrackHelper.track().event("installer_start", name).with(MainApplication.getINSTANCE().getTracker());
         String finalTarget = target;
         new Thread(() -> {
             // ensure module cache is is in our cache dir

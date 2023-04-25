@@ -591,7 +591,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     public boolean onQueryTextSubmit(final String query) {
         this.searchView.clearFocus();
         if (this.initMode) return false;
-        TrackHelper.track().event("search", query).with(MainApplication.getINSTANCE().getTracker());
+        TrackHelper.track().search(query).with(MainApplication.getINSTANCE().getTracker());
         if (this.moduleViewListBuilder.setQueryChange(query)) {
             Timber.i("Query submit: %s on offline list", query);
             new Thread(() -> this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter), "Query update thread").start();
@@ -607,7 +607,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     @Override
     public boolean onQueryTextChange(String query) {
         if (this.initMode) return false;
-        TrackHelper.track().event("search_type", query).with(MainApplication.getINSTANCE().getTracker());
+        TrackHelper.track().search(query).with(MainApplication.getINSTANCE().getTracker());
         if (this.moduleViewListBuilder.setQueryChange(query)) {
             Timber.i("Query submit: %s on offline list", query);
             new Thread(() -> this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter), "Query update thread").start();

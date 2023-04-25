@@ -372,7 +372,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     public synchronized Tracker getTracker() {
         if (tracker == null) {
             tracker = TrackerBuilder.createDefault(BuildConfig.ANALYTICS_ENDPOINT, 1).build(Matomo.getInstance(this));
-            tracker.setDispatchTimeout(10);
+            tracker.startNewSession();
             tracker.setDispatchInterval(1000);
         }
         return tracker;
