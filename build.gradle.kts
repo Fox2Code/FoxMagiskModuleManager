@@ -38,7 +38,7 @@ afterEvaluate {
 val service = project.extensions.getByType<JavaToolchainService>()
 val customLauncher = service.launcherFor {
     languageVersion.set(JavaLanguageVersion.of(17))
-}5
+}
 project.tasks.withType<UsesKotlinJavaToolchain>().configureEach {
     kotlinJavaToolchain.toolchain.use(customLauncher)
 }
