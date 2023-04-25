@@ -14,7 +14,7 @@ buildscript {
         set("sentryVersion", "6.17.0")
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:8.1.0-beta01")
+        classpath("com.android.tools.build:gradle:8.0.0")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.20")
         classpath("com.mikepenz.aboutlibraries.plugin:aboutlibraries-plugin:10.6.2")
 
@@ -29,6 +29,7 @@ buildscript {
 tasks.register("clean", Delete::class) {
     delete(rootProject.buildDir)
 }
+
 afterEvaluate {
     tasks.withType<JavaCompile>().configureEach {
         sourceCompatibility = JavaVersion.VERSION_17.toString()

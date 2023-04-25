@@ -4,6 +4,9 @@
 /.idea/
 .DS_Store
 /build
+/app/build
+/app/default
+/app/fdroid
 /captures
 .externalNativeBuild
 .cxx
