@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.net.http.SslError;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.ConsoleMessage;
 import android.webkit.CookieManager;
+import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
@@ -249,6 +251,13 @@ public final class AndroidacyActivity extends FoxActivity {
                 if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_RESOURCE_ERROR_GET_CODE)) {
                     this.onReceivedError(request.getUrl().toString(), error.getErrorCode());
                 }
+            }
+
+            @Override
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                super.onReceivedSslError(view, handler, error);
+                // log the error and url of its request
+                Timber.tag("JSLog").e(error.toString());
             }
         });
         // logic for swipe to refresh

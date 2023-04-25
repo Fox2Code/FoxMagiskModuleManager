@@ -848,38 +848,46 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             });
 
             LongClickablePreference pref_donate_fox = findPreference("pref_donate_fox");
-            pref_donate_fox.setOnPreferenceClickListener(p -> {
-                // open fox
-                IntentHelper.openUrl(getFoxActivity(this), "https://paypal.me/fox2code");
-                return true;
-            });
-            // handle long click on pref_donate_fox
-            pref_donate_fox.setOnPreferenceLongClickListener(p -> {
-                // copy to clipboard
-                String toastText = requireContext().getString(R.string.link_copied);
-                clipboard.setPrimaryClip(ClipData.newPlainText(toastText, "https://paypal.me/fox2code"));
-                Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
-                return true;
-            });
+            if (BuildConfig.FLAVOR.equals("play")) {
+                pref_donate_fox.setOnPreferenceClickListener(p -> {
+                    // open fox
+                    IntentHelper.openUrl(getFoxActivity(this), "https://paypal.me/fox2code");
+                    return true;
+                });
+                // handle long click on pref_donate_fox
+                pref_donate_fox.setOnPreferenceLongClickListener(p -> {
+                    // copy to clipboard
+                    String toastText = requireContext().getString(R.string.link_copied);
+                    clipboard.setPrimaryClip(ClipData.newPlainText(toastText, "https://paypal.me/fox2code"));
+                    Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
+                    return true;
+                });
+            } else {
+                pref_donate_fox.setVisible(false);
+            }
             // now handle pref_donate_androidacy
             LongClickablePreference pref_donate_androidacy = findPreference("pref_donate_androidacy");
-            pref_donate_androidacy.setOnPreferenceClickListener(p -> {
-                // copy FOX2CODE promo code to clipboard and toast user that they can use it for half off any subscription
-                String toastText = requireContext().getString(R.string.promo_code_copied);
-                clipboard.setPrimaryClip(ClipData.newPlainText(toastText, "FOX2CODE"));
-                Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
-                // open androidacy
-                IntentHelper.openUrl(getFoxActivity(this), "https://www.androidacy.com/membership-join/?utm_source=foxmmm&utm_medium=app&utm_campaign=donate");
-                return true;
-            });
-            // handle long click on pref_donate_androidacy
-            pref_donate_androidacy.setOnPreferenceLongClickListener(p -> {
-                // copy to clipboard
-                String toastText = requireContext().getString(R.string.link_copied);
-                clipboard.setPrimaryClip(ClipData.newPlainText(toastText, "https://www.androidacy.com/membership-join/?utm_source=foxmmm&utm_medium=app&utm_campaign=donate"));
-                Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
-                return true;
-            });
+            if (BuildConfig.FLAVOR.equals("play")) {
+                pref_donate_androidacy.setOnPreferenceClickListener(p -> {
+                    // copy FOX2CODE promo code to clipboard and toast user that they can use it for half off any subscription
+                    String toastText = requireContext().getString(R.string.promo_code_copied);
+                    clipboard.setPrimaryClip(ClipData.newPlainText(toastText, "FOX2CODE"));
+                    Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
+                    // open androidacy
+                    IntentHelper.openUrl(getFoxActivity(this), "https://www.androidacy.com/membership-join/?utm_source=foxmmm&utm_medium=app&utm_campaign=donate");
+                    return true;
+                });
+                // handle long click on pref_donate_androidacy
+                pref_donate_androidacy.setOnPreferenceLongClickListener(p -> {
+                    // copy to clipboard
+                    String toastText = requireContext().getString(R.string.link_copied);
+                    clipboard.setPrimaryClip(ClipData.newPlainText(toastText, "https://www.androidacy.com/membership-join/?utm_source=foxmmm&utm_medium=app&utm_campaign=donate"));
+                    Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
+                    return true;
+                });
+            } else {
+                pref_donate_androidacy.setVisible(false);
+            }
         }
 
         private void openFragment(Fragment fragment, @StringRes int title) {

@@ -204,6 +204,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 });
                 // clear search view
                 this.searchView.setQuery("", false);
+                this.searchView.clearFocus();
             } else if (item.getItemId() == R.id.installed_menu_item) {
                 TrackHelper.track().event("view_list", "installed_modules").with(MainApplication.getINSTANCE().getTracker());
                 // set module_list_online as gone and module_list as visible. fade in/out
@@ -218,6 +219,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 });
                 // set search view to cleared
                 this.searchView.setQuery("", false);
+                this.searchView.clearFocus();
             }
             return true;
         });
@@ -435,7 +437,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         this.overScrollInsetBottom = bottomInset;
         // set root_container to have zero padding
         findViewById(R.id.root_container).setPadding(0, statusBarHeight, 0, 0);
-        Timber.i("(" + this.searchCard.getHeight() + ")");
     }
 
     private void updateBlurState() {

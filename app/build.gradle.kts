@@ -432,6 +432,7 @@ dependencies {
     // ksp
     implementation("com.google.devtools.ksp:symbol-processing-api:1.8.20-1.0.10")
 
+    // encryption
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
     // some utils
@@ -443,6 +444,9 @@ dependencies {
 
     // annotations
     implementation("org.jetbrains:annotations-java5:24.0.1")
+
+    // debugging
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.10")
 }
 
 android {
