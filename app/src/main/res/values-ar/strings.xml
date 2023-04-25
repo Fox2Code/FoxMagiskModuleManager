@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">فوكس مدير إضافات Magisk</string>
+    <string name="app_name">فوكس مدير إضافات ماجيستك</string>
     <string name="fail_root_denied">تم رفض الوصول إلى الروت عبر تطبيق Magisk</string>
     <string name="failed_download">فشل في تحميل الملف</string>
     <string name="fail_root_magisk">تعذر الوصول إلى الروت أو Magisk</string>
@@ -8,7 +8,7 @@
     <string name="loading">جاري التحميل…</string>
     <string name="updatable">قابل للترقية</string>
     <string name="installed">مثبت</string>
-    <string name="online_repo">الريبو اون لاين</string>
+    <string name="online_repo">الريبو متصل</string>
     <string name="showcase_mode">التطبيق في وضع القفل</string>
     <string name="fail_internet">فشل في الإتصال بالإنترنت</string>
     <string name="custom_repo_always_on">تكون الريبوات المخصصة مفعلة دائما حتى تقوم بإزالتها.</string>
@@ -175,7 +175,7 @@
     <string name="api_key_removed">تم إعادة تعيين مفتاح API بنجاح</string>
     <string name="repo_update_failed">فشل تحديث بعض الريبوات</string>
     <string name="disable_low_quality_module_filter_desc">لا تعلن بعض الإضافات عن بياناتها الوصفية بشكل صحيح ، مما يتسبب في حدوث خلل مرئي و / أو يشير إلى جودة الإضافة الرديئة.
-\nقم بتشغيل هذا على مسؤوليتك الخاصة!</string>
+\nقم بإيقاف تشغيل هذا الخيار على مسؤوليتك الخاصة!</string>
     <string name="wrap_text_desc">إظهار النص على أسطر متعددة بدلا من وضع كل النص على نفس السطر عند تثبيت الإضافة.</string>
     <string name="androidacy_test_mode_desc">استخدم نقطة نهاية Androidacy المرحلية بدلا من نقطة نهاية الإصدار. (سيتم إعادة تشغيل التطبيق)</string>
     <string name="install_terminal_reboot_now_message">أنت على وشك إعادة تشغيل جهازك. إذا قمت بحفظ عملك ، فاضغط على موافق للمتابعة. خلاف ذلك ، اضغط على إلغاء.</string>
@@ -312,7 +312,7 @@
     <string name="fox2code_thanks_desc">Fox2Code هو المنشئ الأصلي للتطبيق. بدونه ، لم يكن هذا ممكنا أبدا.</string>
     <string name="save_logs">حفظ السجلات في مساحة التخزين و مشاركتها</string>
     <string name="not_official_build">هذا الإصدار من FoxMMM غير رسمي.</string>
-    <string name="crash_text">أوه لا، لقد تعثرنا.</string>
+    <string name="crash_text">أوه-لا، لقد تعثرنا!</string>
     <string name="feedback_message">أعطنا المزيد من التفاصيل حول ما كنت تفعله عندما حدث هذا. أكثر ، وأكثر مرحا!</string>
     <string name="sentry_dialogue_disabled">‌تم تعطيل الإبلاغ عن الأعطال. أعد تشغيله لإرسال الملاحظات.</string>
     <string name="sentry_dialogue_empty_message">لم تعطي تعليقات إضافية.</string>
@@ -331,4 +331,51 @@
     <string name="add_repo_message">يجب تقديم الريبوز عبر HTTPS ، ويجب أن تتبع المواصفات الموضحة في الوثائق.</string>
     <string name="notification_channel_background_update_description">يقوم FoxMMM بالتحقق من وجود تحديثات في الخلفية.</string>
     <string name="notification_channel_category_background_update_description">عرض إشعار أثناء التحقق من وجود تحديثات حتى لا يتم قتلها بواسطة النظام</string>
+    <string name="yer_a_wizard_harry">يا ساحر ، هاري!</string>
+    <string name="keep_tapping_to_enter_hogwarts">استمر في النقر للقبول في هوجورتس!</string>
+    <string name="modules">الوحدات</string>
+    <string name="no_browser">ليس لديك متصفح مثبت. الرجاء تثبيت واحد للمتابعة.</string>
+    <string name="online">متصل</string>
+    <string name="safe">آمن</string>
+    <string name="safe_module">وحدة آمنة تم التحقق منها</string>
+    <string name="notification_update_app_pref">تحقق من وجود تحديثات للتطبيق</string>
+    <string name="notification_channel_category_app_update">تحديثات التطبيق</string>
+    <string name="notification_channel_background_update_app">تحديث التطبيق متاح!</string>
+    <string name="notification_channel_background_update_app_description">يتوفر تحديث لـ FoxMMM. انقر هنا للتحديث.</string>
+    <string name="setup_update_check_headline">تحقق من التحديث</string>
+    <string name="setup_app_analytics">السماح بتحليلات التطبيق</string>
+    <string name="cache_cleared">تم مسح ذاكرة التخزين المؤقت بنجاح</string>
+    <string name="cache_clear_failed">فشل مسح ذاكرة التخزين المؤقت</string>
+    <string name="clear_cache_dialogue_title">مسح ذاكرة التخزين المؤقت للتطبيق؟</string>
+    <string name="pref_category_privacy">خصوصية</string>
+    <string name="crash_reporting_pii">أرسل معلومات إضافية</string>
+    <string name="setup_crash_reporting_pii">إرسال معلومات إضافية في تقارير الأعطال.</string>
+    <string name="setup_scroll_down">لتمكين زر الإنهاء ، يرجى التمرير لأسفل وعرض جميع الخيارات.</string>
+    <string name="empty_field">مطلوب URL</string>
+    <string name="repo_already_added">الريبو موجود بالفعل.</string>
+    <string name="showcase_mode_dialogue_message">يلزم إعادة تشغيل التطبيق لتمكين وضع العرض.</string>
+    <string name="other_section">آخر</string>
+    <string name="debug_cat">تصحيح</string>
+    <string name="announcements">الأخبار والتحديثات</string>
+    <string name="back">عُد</string>
+    <string name="low_quality_module_desc">تحتوي هذه الوحدة على بيانات وصفية إما غير صالحة أو تعتبر علامة لوحدة نمطية منخفضة الجودة. يوصى بإلغاء التثبيت.</string>
+    <string name="safe_message">تم التحقق من هذه الوحدة بواسطة المستودع على أنها آمنة ، مما يعني أنها تتجاوز عتبات معينة للجودة والأمان ، ويتم فحصها بحثًا عن برامج ضارة.</string>
+    <string name="notification_update_app_desc">قم بتمكين البحث التلقائي عن تحديثات التطبيق. لن يتم تنزيل التحديثات تلقائيًا.</string>
+    <string name="notification_channel_category_app_update_description">إشعار عندما يتوفر تحديث التطبيق</string>
+    <string name="search">بحث</string>
+    <string name="crash_reporting_headline">الإبلاغ عن الأعطال</string>
+    <string name="setup_background_update_check_require_wifi">طلب واي فاي للتحقق من التحديثات</string>
+    <string name="setup_background_update_check_require_wifi_summary">طلب واي فاي أو اتصالاً غير محدود بأي طريقة أخرى لإجراء عمليات التحقق من التحديثات</string>
+    <string name="clear_app_cache">مسح ذاكرة التخزين المؤقت للتطبيق</string>
+    <string name="clear_app_cache_desc">لا يجب أن يكون هذا ضروريًا بشكل طبيعي ولكنه قد يساعد في إصلاح بعض المشكلات.</string>
+    <string name="clear_cache_dialogue_message">سيؤدي هذا إلى مسح ذاكرة التخزين المؤقت للتطبيق. سيتم حفظ تفضيلاتك ، ولكن قد يستغرق التطبيق وقتًا أطول لإجراء بعض العمليات مؤقتًا.</string>
+    <string name="certificate_error">تعذر التحقق من شهادة الخادم. الرجاء التأكد من عدم وجود شيء يعترض اتصالات HTTPS لـ FoxMMM.</string>
+    <string name="crash_reporting_pii_desc">يسمح بإرسال معلومات إضافية في تقارير الأعطال ، والتي قد يحتوي بعضها على معلومات تعريف شخصية مثل عنوان IP ومعرفات الجهاز.</string>
+    <string name="setup_crash_reporting_pii_summary">قد يشمل ذلك معرفات الجهاز وعناوين IP. لن يتم استخدام أي بيانات لأي غرض آخر بخلاف تحليل الأعطال وتحسين الأداء.</string>
+    <string name="error_creating_cookie_database">خطأ في الوصول إلى WebView. قد تتأثر الوظيفة.</string>
+    <string name="eula_agree">بالنقر فوق إنهاء ، فإنك توافق على الالتزام بترخيص LGPL-3.0 (https://www.gnu.org/licenses/lgpl-3.0.en.html) واتفاقية ترخيص المستخدم النهائي (https://www.androidacy.com) / foxmmm-eula /)</string>
+    <string name="analytics_desc">اسمح لنا بتتبع استخدام التطبيقات وعمليات التثبيت. متوافق تمامًا مع إجمالي الناتج المحلي ويستخدم Matomo ، الذي تستضيفه Androidacy.</string>
+    <string name="language_not_available">لم تتم ترجمة اللغة%s. ساعد في ترجمته؟</string>
+    <string name="blur_desc">ينشئ تأثير تمويه خلف بعض الحوارات والعناصر. لاحظ أن التمويه قد لا يعمل بشكل جيد على بعض الأجهزة وقد لا يعمل مع الجميع.</string>
+    <string name="error_encrypted_shared_preferences">حدث خطأ أثناء قراءة التفضيلات المشتركة. الرجاء إعادة تعيين التطبيق.</string>
 </resources>

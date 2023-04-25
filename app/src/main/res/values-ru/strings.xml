@@ -375,4 +375,10 @@
     <string name="blur_desc">Создает эффект размытия позади некоторых диалогов и элементов. Обратите внимание, что размытие может работать неэффективно на некоторых устройствах и не во всех местах.</string>
     <string name="error_encrypted_shared_preferences">Произошла ошибка при чтении общих настроек. Пожалуйста, перезагрузите приложение.</string>
     <string name="showcase_mode_dialogue_message">Для включения режима демонстрации требуется перезапуск приложения.</string>
+    <string name="other_section">Другое</string>
+    <string name="analytics_desc">Разрешите нам отслеживать использование и установки приложения. Полностью соответствует GDPR и использует Matomo, размещенный на Androidacy.</string>
+    <string name="debug_cat">Отладка</string>
+    <string name="announcements">Новости и обновления</string>
+    <string name="back">Назад</string>
+    <string name="eula_agree">Нажимая завершить, вы соглашаетесь с лицензией LGPL-3.0 (https://www.gnu.org/licenses/lgpl-3.0.en.html) и лицензионным соглашением (https://www.androidacy.com). /foxmmm-eula/)</string>
 </resources>
