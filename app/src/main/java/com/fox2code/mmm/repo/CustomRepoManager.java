@@ -151,6 +151,7 @@ public class CustomRepoManager {
         // Set the enabled state to true
         customRepoData.setEnabled(true);
         customRepoData.updateEnabledState();
+        realm.close();
         return customRepoData;
     }
 

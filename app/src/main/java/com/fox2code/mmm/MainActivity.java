@@ -119,6 +119,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             enabledRepos.setLength(enabledRepos.length() - 1);
         }
         TrackHelper.track().event("enabled_repos", enabledRepos.toString()).with(MainApplication.getINSTANCE().getTracker());
+        realm.close();
         // log all shared preferences that are present
         if (!Iof) {
             Timber.w("You may be running an untrusted build.");

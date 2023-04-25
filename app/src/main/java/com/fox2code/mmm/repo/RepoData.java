@@ -344,6 +344,7 @@ public class RepoData extends XRepo {
         } catch (Exception e) {
             Timber.e(e, "Error while updating enabled state for repo %s", this.id);
         }
+        realm2.close();
         this.enabled = (!this.forceHide) && dbEnabled;
     }
 
@@ -408,12 +409,16 @@ public class RepoData extends XRepo {
                 long diff = currentTime - lastUpdate;
                 long diffMinutes = diff / (60 * 1000) % 60;
                 Timber.d("Repo " + this.id + " updated: " + diffMinutes + " minutes ago");
+                realm.close();
                 return diffMinutes > (BuildConfig.DEBUG ? 15 : 20);
             } else {
                 Timber.d("Repo " + this.id + " should update could not find repo in database");
                 Timber.d("This is probably an error, please report this to the developer");
+                realm.close();
                 return true;
             }
+        } else {
+            realm.close();
         }
         return true;
     }

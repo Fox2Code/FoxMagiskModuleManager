@@ -117,6 +117,8 @@ public final class ModuleManager extends SyncManager {
                             moduleInfos.put(module, moduleInfo);
                             realm.close();
                             break;
+                        } else {
+                            realm.close();
                         }
                     }
                 }

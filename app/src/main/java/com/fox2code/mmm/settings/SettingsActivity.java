@@ -1416,6 +1416,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                             findPreference(preferenceName + "_donate").setVisible(false);
                         }
                     }
+                    realm.close();
                 } else {
                     Timber.d("Hiding preference " + preferenceName + " because it's data is null");
                     hideRepoData(preferenceName);

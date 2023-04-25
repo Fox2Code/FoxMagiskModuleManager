@@ -356,6 +356,7 @@ public class RepoUpdater {
                     Timber.w("Failed to update lastUpdate for repo %s", this.repoData.id);
                 }
             });
+            realm2.close();
         } else {
             success.set(true); // assume we're reading from cache. this may be unsafe but it's better than nothing
         }

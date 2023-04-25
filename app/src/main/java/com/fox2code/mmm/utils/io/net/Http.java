@@ -331,8 +331,6 @@ public enum Http {
 
     @SuppressWarnings("resource")
     private static Object doHttpPostRaw(String url, String data, boolean allowCache) throws IOException {
-        if (BuildConfig.DEBUG)
-            Timber.i("POST " + url + " " + data);
         Response response;
         response = (allowCache ? getHttpClientWithCache() : getHttpClient()).newCall(new Request.Builder().url(url).post(JsonRequestBody.from(data)).header("Content-Type", "application/json").build()).execute();
         if (response.isRedirect()) {
@@ -340,7 +338,7 @@ public enum Http {
         }
         // 200/204 == success, 304 == cache valid
         if (response.code() != 200 && response.code() != 204 && (response.code() != 304 || !allowCache)) {
-            if (BuildConfig.DEBUG)
+            if (BuildConfig.DEBUG_HTTP)
                 Timber.e("Failed to fetch " + url + ", code: " + response.code() + ", body: " + response.body().string());
             checkNeedCaptchaAndroidacy(url, response.code());
             throw new HttpException(response.code());
@@ -356,8 +354,6 @@ public enum Http {
     }
 
     public static byte[] doHttpGet(String url, ProgressListener progressListener) throws IOException {
-        if (BuildConfig.DEBUG)
-            Timber.i("GET %s", url.split("\\?")[0]);
         Response response = getHttpClient().newCall(new Request.Builder().url(url).get().build()).execute();
         if (response.code() != 200 && response.code() != 204) {
             Timber.e("Failed to fetch " + url + ", code: " + response.code());

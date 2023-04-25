@@ -434,4 +434,16 @@ public final class AndroidacyActivity extends FoxActivity {
         this.downloadMode = false;
         return FileProvider.getUriForFile(this, this.getPackageName() + ".file-provider", this.moduleFile);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (webView != null) {
+            SwipeRefreshLayout parent = (SwipeRefreshLayout) webView.getParent();
+            parent.removeView(webView);
+            webView.removeAllViews();
+            webView.destroy(); // fix memory leak
+        }
+        Timber.i("onDestroy for %s", this);
+    }
 }

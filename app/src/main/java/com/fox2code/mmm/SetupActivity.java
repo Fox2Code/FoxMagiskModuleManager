@@ -352,6 +352,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                     Timber.d("Created magisk_alt_repo");
                 }
                 realm.commitTransaction();
+                realm.close();
                 realmDatabasesCreated = true;
                 Timber.d("Realm transaction finished");
                 long endTime = System.currentTimeMillis();
