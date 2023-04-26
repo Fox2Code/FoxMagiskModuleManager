@@ -83,7 +83,6 @@ import io.noties.markwon.image.network.OkHttpNetworkSchemeHandler;
 import io.realm.Realm;
 import timber.log.Timber;
 
-@SuppressWarnings("CommentedOutCode")
 public class MainApplication extends FoxApplication implements androidx.work.Configuration.Provider {
     // Warning! Locales that don't exist will crash the app
     // Anything that is commented out is supported but the translation is not complete to at least 60%
@@ -380,51 +379,12 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
 
     @Override
     public void onCreate() {
-        supportedLocales.add("ar");
-        // supportedLocales.add("ar_SA");
-        supportedLocales.add("bs");
-        supportedLocales.add("cs");
-        supportedLocales.add("de");
-        // supportedLocales.add("el");
-        // supportedLocales.add("es");
-        supportedLocales.add("es-rMX");
-        // supportedLocales.add("et");
-        supportedLocales.add("fr");
-        supportedLocales.add("hu");
-        // supportedLocales.add("hi");
-        supportedLocales.add("id");
-        supportedLocales.add("it");
-        supportedLocales.add("ja");
-        // supportedLocales.add("ko");
-        // supportedLocales.add("nb-rNO");
-        // supportedLocales.add("ne");
-        supportedLocales.add("pl");
-        supportedLocales.add("pt-rBR");
-        // supportedLocales.add("pt-rPT");
-        supportedLocales.add("ro");
-        supportedLocales.add("ru");
-        supportedLocales.add("sk");
-        supportedLocales.add("tr");
-        // supportedLocales.add("th");
-        supportedLocales.add("uk");
-        // supportedLocales.add("vi");
-        supportedLocales.add("zh-rCN");
-        supportedLocales.add("zh-rTW");
-        supportedLocales.add("en");
+        supportedLocales.addAll(Arrays.asList("ar", "bs", "de", "es-rMX", "fr", "hu", "id", "ja", "nl", "pl", "pt", "pt-rBR", "ro", "ru", "tr", "uk", "zh-rCN", "zh-rTW", "en"));
         if (INSTANCE == null) INSTANCE = this;
         relPackageName = this.getPackageName();
         super.onCreate();
         SentryMain.initialize(this);
         // Initialize Timber
-        /*if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-        } else {
-            if (isCrashReportingEnabled()) {
-                Timber.plant(new SentryTimberTree(Sentry.getCurrentHub(), SentryLevel.ERROR, SentryLevel.ERROR));
-            } else {
-                Timber.plant(new ReleaseTree());
-            }
-        }*/
         TimberUtils.configTimber();
         Timber.i("Starting FoxMMM version %s (%d) - commit %s", BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, BuildConfig.COMMIT_HASH);
         // Update SSL Ciphers if update is possible
@@ -500,6 +460,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
             Timber.w("Androidacy client id is empty! Please set it in androidacy.properties. Will not enable Androidacy.");
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("pref_androidacy_repo_enabled", false);
+            Timber.w("ANDROIDACY_CLIENT_ID is empty, disabling AndroidacyRepoData 1");
             editor.apply();
         }
     }

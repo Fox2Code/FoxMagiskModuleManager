@@ -190,6 +190,7 @@ public final class AndroidacyRepoData extends RepoData {
             SharedPreferences.Editor editor = MainApplication.getPreferences("mmm").edit();
             editor.putBoolean("pref_androidacy_repo_enabled", false);
             editor.apply();
+            Timber.w("ANDROIDACY_CLIENT_ID is empty, disabling AndroidacyRepoData 2");
             return false;
         }
         if (Http.needCaptchaAndroidacy()) return false;

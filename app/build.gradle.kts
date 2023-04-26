@@ -37,13 +37,13 @@ android {
         applicationId = "com.fox2code.mmm"
         minSdk = 24
         targetSdk = 33
-        versionCode = 65
+        versionCode = 66
         versionName = "2.0.0"
         vectorDrawables {
             useSupportLibrary = true
         }
         multiDexEnabled = true
-        resourceConfigurations += setOf()
+        resourceConfigurations.addAll(listOf("ar", "bs", "de", "es-rMX", "fr", "hu", "id", "ja", "nl", "pl", "pt", "pt-rBR", "ro", "ru", "tr", "uk", "zh-rCN", "zh-rTW", "en"))
     }
 
     splits {
@@ -94,6 +94,7 @@ android {
     flavorDimensions.add("type")
     productFlavors {
         create("default") {
+            dimension = "type"
             // debug http requests. do not set this to true if you care about performance!!!!!
             buildConfigField("boolean", "DEBUG_HTTP", "false")
             // Latest commit hash as BuildConfig.COMMIT_HASH
@@ -102,18 +103,18 @@ android {
             buildConfigField("String", "BRANCH_NAME", "\"$gitBranch\"")
             // Get remote url as BuildConfig.REMOTE_URL
             buildConfigField("String", "REMOTE_URL", "\"$gitRemote\"")
-            dimension = "type"
             buildConfigField("boolean", "ENABLE_AUTO_UPDATER", "true")
             buildConfigField("boolean", "DEFAULT_ENABLE_CRASH_REPORTING", "true")
             buildConfigField("boolean", "DEFAULT_ENABLE_CRASH_REPORTING_PII", "true")
             buildConfigField("boolean", "DEFAULT_ENABLE_ANALYTICS", "true")
             val properties = Properties()
             if (project.rootProject.file("local.properties").exists()) {
+                properties.load(project.rootProject.file("local.properties").reader())
                 // grab matomo.url
                 buildConfigField(
                     "String", "ANALYTICS_ENDPOINT", "\"" + properties.getProperty(
-                        "matomo.url", "https://s-api.androidacy.com/matomo.php" + "\""
-                    )
+                        "matomo.url", "https://s-api.androidacy.com/matomo.php"
+                    ) + "\""
                 )
             } else {
                 buildConfigField(
@@ -127,7 +128,7 @@ android {
             // If androidacy.properties doesn"t exist, use the default client ID which is heavily
             // rate limited to 30 requests per minute
             if (project.rootProject.file("androidacy.properties").exists()) {
-                propertiesA.load(project.rootProject.file("androidacy.properties").inputStream())
+                propertiesA.load(project.rootProject.file("androidacy.properties").reader())
                 properties.setProperty(
                     "client_id", "\"" + propertiesA.getProperty(
                         "client_id",
@@ -153,6 +154,8 @@ android {
 
         // play variant. pretty similiar to default, but with an empty inital online repo list, and use play_client_id instead of client_id
         create("play") {
+            dimension = "type"
+            applicationIdSuffix = ".play"
             // debug http requests. do not set this to true if you care about performance!!!!!
             buildConfigField("boolean", "DEBUG_HTTP", "false")
             // Latest commit hash as BuildConfig.COMMIT_HASH
@@ -161,18 +164,18 @@ android {
             buildConfigField("String", "BRANCH_NAME", "\"$gitBranch\"")
             // Get remote url as BuildConfig.REMOTE_URL
             buildConfigField("String", "REMOTE_URL", "\"$gitRemote\"")
-            dimension = "type"
             buildConfigField("boolean", "ENABLE_AUTO_UPDATER", "false")
             buildConfigField("boolean", "DEFAULT_ENABLE_CRASH_REPORTING", "true")
             buildConfigField("boolean", "DEFAULT_ENABLE_CRASH_REPORTING_PII", "true")
             buildConfigField("boolean", "DEFAULT_ENABLE_ANALYTICS", "true")
             val properties = Properties()
             if (project.rootProject.file("local.properties").exists()) {
+                properties.load(project.rootProject.file("local.properties").reader())
                 // grab matomo.url
                 buildConfigField(
                     "String", "ANALYTICS_ENDPOINT", "\"" + properties.getProperty(
-                        "matomo.url", "https://s-api.androidacy.com/matomo.php" + "\""
-                    )
+                        "matomo.url", "https://s-api.androidacy.com/matomo.php"
+                    ) + "\""
                 )
             } else {
                 buildConfigField(
@@ -186,7 +189,7 @@ android {
             // If androidacy.properties doesn"t exist, use the default client ID which is heavily
             // rate limited to 30 requests per minute
             if (project.rootProject.file("androidacy.properties").exists()) {
-                propertiesA.load(project.rootProject.file("androidacy.properties").inputStream())
+                propertiesA.load(project.rootProject.file("androidacy.properties").reader())
                 properties.setProperty(
                     "client_id", "\"" + propertiesA.getProperty(
                         "play_client_id",
@@ -234,6 +237,7 @@ android {
             buildConfigField("boolean", "DEFAULT_ENABLE_ANALYTICS", "false")
             val properties = Properties()
             if (project.rootProject.file("local.properties").exists()) {
+                properties.load(project.rootProject.file("local.properties").reader())
                 // grab matomo.url
                 buildConfigField(
                     "String", "ANALYTICS_ENDPOINT", "\"" + properties.getProperty(
@@ -463,8 +467,7 @@ android {
     }
     //noinspection GrDeprecatedAPIUsage
     buildToolsVersion = "34.0.0 rc3"
-    @Suppress("DEPRECATION")
-    packagingOptions {
+    @Suppress("DEPRECATION") packagingOptions {
         jniLibs {
             useLegacyPackaging = true
         }
