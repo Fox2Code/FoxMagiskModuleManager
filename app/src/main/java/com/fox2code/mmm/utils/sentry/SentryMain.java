@@ -89,7 +89,6 @@ public class SentryMain {
                 options.setAttachThreads(true);
                 options.setAttachStacktrace(true);
                 options.setEnableNdk(true);
-                // Intercept okhttp requests to add sentry headers
                 options.addInAppInclude("com.fox2code.mmm");
                 options.addInAppInclude("com.fox2code.mmm.debug");
                 options.addInAppInclude("com.fox2code.mmm.fdroid");

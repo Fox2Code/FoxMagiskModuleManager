@@ -53,7 +53,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLException;
 
-import io.sentry.android.okhttp.SentryOkHttpInterceptor;
 import okhttp3.Cache;
 import okhttp3.Dns;
 import okhttp3.HttpUrl;
@@ -79,6 +78,7 @@ public enum Http {
     private static final boolean hasWebView;
     private static String needCaptchaAndroidacyHost;
     private static boolean doh;
+    private static boolean urlFactoryInstalled;
 
     static {
         MainApplication mainApplication = MainApplication.getINSTANCE();
@@ -90,8 +90,7 @@ public enum Http {
             System.err.flush();
             try {
                 Os.kill(Os.getpid(), 9);
-            } catch (
-                    ErrnoException e) {
+            } catch (ErrnoException e) {
                 System.exit(9);
             }
             throw error;
@@ -101,8 +100,7 @@ public enum Http {
             cookieManager = CookieManager.getInstance();
             cookieManager.setAcceptCookie(true);
             cookieManager.flush(); // Make sure the instance work
-        } catch (
-                Exception t) {
+        } catch (Exception t) {
             cookieManager = null;
             Timber.e(t, "No WebView support!");
             // show a toast
@@ -148,9 +146,7 @@ public enum Http {
             WebkitCookieManagerProxy cookieJar = new WebkitCookieManagerProxy();
             httpclientBuilder.cookieJar(cookieJar);
             dns = new DnsOverHttps.Builder().client(httpclientBuilder.build()).url(Objects.requireNonNull(HttpUrl.parse("https://cloudflare-dns.com/dns-query"))).bootstrapDnsHosts(cloudflareBootstrap).resolvePrivateAddresses(true).build();
-        } catch (
-                UnknownHostException |
-                RuntimeException e) {
+        } catch (UnknownHostException | RuntimeException e) {
             Timber.e(e, "Failed to init DoH");
         }
         // User-Agent format was agreed on telegram
@@ -186,10 +182,6 @@ public enum Http {
             request.header("Sec-CH-UA-Bitness", Build.SUPPORTED_64_BIT_ABIS.length > 0 ? "64" : "32");
             return chain.proceed(request.build());
         });
-        // add sentry interceptor
-        if (MainApplication.isCrashReportingEnabled()) {
-            httpclientBuilder.addInterceptor(new SentryOkHttpInterceptor());
-        }
 
         // for debug builds, add a logging interceptor
         // this spams the logcat, so it's disabled by default and hidden behind a build config flag
@@ -204,7 +196,7 @@ public enum Http {
         // init cronet
         try {
             // Load the cronet library
-            CronetEngine.Builder builder = new CronetEngine.Builder(mainApplication);
+            CronetEngine.Builder builder = new CronetEngine.Builder(mainApplication.getApplicationContext());
             builder.enableBrotli(true);
             builder.enableHttp2(true);
             builder.enableQuic(true);
@@ -218,7 +210,6 @@ public enum Http {
             }
             builder.setStoragePath(mainApplication.getCacheDir().getAbsolutePath() + "/cronet");
             builder.enableHttpCache(CronetEngine.Builder.HTTP_CACHE_DISK_NO_HTTP, 10 * 1024 * 1024);
-            builder.enableNetworkQualityEstimator(true);
             // Add quic hint
             builder.addQuicHint("github.com", 443, 443);
             builder.addQuicHint("githubusercontent.com", 443, 443);
@@ -227,8 +218,7 @@ public enum Http {
             builder.addQuicHint("sentry.io", 443, 443);
             CronetEngine engine = builder.build();
             httpclientBuilder.addInterceptor(CronetInterceptor.newBuilder(engine).build());
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             Timber.e(e, "Failed to init cronet");
             // Gracefully fallback to okhttp
         }
@@ -248,8 +238,6 @@ public enum Http {
         Timber.i("Initialized Http successfully!");
         doh = MainApplication.isDohEnabled();
     }
-
-    private static boolean urlFactoryInstalled;
 
     private static OkHttpClient.Builder followRedirects(OkHttpClient.Builder builder, boolean followRedirects) {
         return builder.followRedirects(followRedirects).followSslRedirects(followRedirects);
@@ -316,8 +304,7 @@ public enum Http {
         // Use cache api if used cached response
         if (response.code() == 304) {
             response = response.cacheResponse();
-            if (response != null)
-                responseBody = response.body();
+            if (response != null) responseBody = response.body();
         }
         if (BuildConfig.DEBUG_HTTP) {
             Timber.d("doHttpGet: returning " + responseBody.contentLength() + " bytes");
@@ -347,8 +334,7 @@ public enum Http {
         // Use cache api if used cached response
         if (response.code() == 304) {
             response = response.cacheResponse();
-            if (response != null)
-                responseBody = response.body();
+            if (response != null) responseBody = response.body();
         }
         return responseBody.bytes();
     }
@@ -377,8 +363,7 @@ public enum Http {
         progressListener.onUpdate(0, (int) (target / divider), false);
         while (true) {
             int read = inputStream.read(buff);
-            if (read == -1)
-                break;
+            if (read == -1) break;
             byteArrayOutputStream.write(buff, 0, read);
             downloaded += read;
             currentUpdate = System.currentTimeMillis();
@@ -411,7 +396,7 @@ public enum Http {
         return hasWebView;
     }
 
-    public static void ensureCacheDirs()  {
+    public static void ensureCacheDirs() {
         try {
             FileUtils.forceMkdir(new File((MainApplication.getINSTANCE().getDataDir() + "/cache/WebView/Default/HTTP Cache/Code Cache/wasm").replaceAll("//", "/")));
             FileUtils.forceMkdir(new File((MainApplication.getINSTANCE().getDataDir() + "/cache/WebView/Default/HTTP Cache/Code Cache/js").replaceAll("//", "/")));
@@ -487,22 +472,19 @@ public enum Http {
 
         @NonNull
         private static String toString(@NonNull List<InetAddress> inetAddresses) {
-            if (inetAddresses.isEmpty())
-                return "";
+            if (inetAddresses.isEmpty()) return "";
             Iterator<InetAddress> inetAddressIterator = inetAddresses.iterator();
             StringBuilder stringBuilder = new StringBuilder();
             while (true) {
                 stringBuilder.append(inetAddressIterator.next().getHostAddress());
-                if (!inetAddressIterator.hasNext())
-                    return stringBuilder.toString();
+                if (!inetAddressIterator.hasNext()) return stringBuilder.toString();
                 stringBuilder.append("|");
             }
         }
 
         @NonNull
         private static List<InetAddress> fromString(@NonNull String string) throws UnknownHostException {
-            if (string.isEmpty())
-                return Collections.emptyList();
+            if (string.isEmpty()) return Collections.emptyList();
             String[] strings = string.split("\\|");
             ArrayList<InetAddress> inetAddresses = new ArrayList<>(strings.length);
             for (String address : strings) {
@@ -518,24 +500,20 @@ public enum Http {
                 List<InetAddress> addresses;
                 synchronized (this.fallbackCache) {
                     addresses = this.fallbackCache.get(s);
-                    if (addresses != null)
-                        return addresses;
+                    if (addresses != null) return addresses;
                     try {
                         addresses = this.parent.lookup(s);
                         if (addresses.isEmpty() || addresses.get(0).isLoopbackAddress())
                             throw new UnknownHostException(s);
                         this.fallbackCache.put(s, addresses);
                         this.sharedPreferences.edit().putString(s.replace('.', '_'), toString(addresses)).apply();
-                    } catch (
-                            UnknownHostException e) {
+                    } catch (UnknownHostException e) {
                         String key = this.sharedPreferences.getString(s.replace('.', '_'), "");
-                        if (key.isEmpty())
-                            throw e;
+                        if (key.isEmpty()) throw e;
                         try {
                             addresses = fromString(key);
                             this.fallbackCache.put(s, addresses);
-                        } catch (
-                                UnknownHostException e2) {
+                        } catch (UnknownHostException e2) {
                             this.sharedPreferences.edit().remove(s.replace('.', '_')).apply();
                             throw e;
                         }

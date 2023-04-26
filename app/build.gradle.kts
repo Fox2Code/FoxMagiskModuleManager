@@ -304,7 +304,6 @@ sentry {
             setOf(
                 InstrumentationFeature.DATABASE,
                 InstrumentationFeature.FILE_IO,
-                InstrumentationFeature.OKHTTP,
                 InstrumentationFeature.COMPOSE
             )
         )
@@ -367,7 +366,6 @@ configurations {
     // Access all imported libraries
     all {
         // Exclude all libraries with the following group and module
-        exclude(group = "org.chromium.net", module = "cronet-api")
         exclude(group = "org.jetbrains", module = "annotations-java5")
     }
 }
@@ -397,11 +395,10 @@ dependencies {
     // logging interceptor
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.10")
     // Chromium cronet from androidacy
-    implementation("com.androidacy:cronet-common:112.0.5615.62")
-    implementation("com.androidacy:cronet-native:112.0.5615.62")
-    implementation("com.androidacy:cronet-api:112.0.5615.62")
+    implementation("org.chromium.net:cronet-embedded:108.5359.79")
+
     // protobuf - fixes a crash on some devices
-    implementation("com.google.protobuf:protobuf-javalite:3.22.2")
+    // implementation("com.google.protobuf:protobuf-javalite:3.22.2")
 
     implementation("com.github.topjohnwu.libsu:io:5.0.5")
     implementation("com.github.Fox2Code:RosettaX:1.0.9")
@@ -466,12 +463,6 @@ android {
     }
     //noinspection GrDeprecatedAPIUsage
     buildToolsVersion = "34.0.0 rc3"
-    @Suppress("DEPRECATION")
-    packagingOptions {
-        jniLibs {
-            useLegacyPackaging = true
-        }
-    }
 }
 
 

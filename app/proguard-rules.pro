@@ -188,8 +188,12 @@
 }
 
 # Keep all of Cronet API and google's internal classes
--keep class org.chromium.net.** { *; }
 -keep class org.chromium.** { *; }
+-keep class org.chromium.net.** { *; }
+
+-keepclassmembers class kotlin.SafePublicationLazyImpl {
+    java.lang.Object _value;
+}
 
 # Silence some warnings
 -dontwarn android.os.SystemProperties

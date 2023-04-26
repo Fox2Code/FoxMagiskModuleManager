@@ -430,7 +430,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         // Update SSL Ciphers if update is possible
         GMSProviderInstaller.installIfNeeded(this);
         Http.ensureCacheDirs();
-        Http.ensureURLHandler(this);
+        Http.ensureURLHandler(getApplicationContext());
         Timber.d("Initializing FoxMMM");
         Timber.d("Started from background: %s", !isInForeground());
         Timber.d("FoxMMM is running in debug mode");
