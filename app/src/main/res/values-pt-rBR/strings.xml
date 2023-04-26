@@ -384,4 +384,11 @@
     <string name="blur_desc">Adiciona um efeito de desfoque atrás de alguns diálogos e elementos. Perceba que o desfoque pode funcionar incorretamente em alguns dispositivos e pode não funcionar para todos.</string>
     <string name="setup_background_update_check_require_wifi_summary">Exigir wifi ou uma conexão ilimitada para buscar por atualizações</string>
     <string name="clear_cache_dialogue_message">Isso irá limpar o cache do aplicativo. Suas preferências serão salvas, mas o aplicativo poderá demorar para realizar algumas operações temporariamente.</string>
+    <string name="showcase_mode_dialogue_message">Uma reinicialização é necessária para ativar o modo showcase.</string>
+    <string name="other_section">Outro</string>
+    <string name="analytics_desc">Nós permite analizar dados de uso e instalação do app. Totalmente conforme o GDPR e usa Matomo, hospedado pela Androidacy.</string>
+    <string name="debug_cat">Depuração</string>
+    <string name="announcements">Novidades e atualizações</string>
+    <string name="back">Voltar</string>
+    <string name="eula_agree">Ao tocar finalizar, você está concordando a ser vinculado a licensa LGPL-3.0 (https://www.gnu.org/licenses/lgpl-3.0.en.html) e sua EULA (https://www.androidacy.com/foxmmm-eula/)</string>
 </resources>

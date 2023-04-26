@@ -1,4 +1,4 @@
 Aplikasi ini tidak didukung secara resmi oleh Magisk atau oleh para pengembang Magisk.
 
-Modul-modul yang ditampilkan dalam aplikasi ini tidak memiliki afiliasi terhadap aplikasi ini. Mohon kontak
+Modul-modul yang ditampilkan dalam aplikasi ini tidak memiliki afiliasi terhadap aplikasi ini. Mohon hubungi
 pemilik repo saja.

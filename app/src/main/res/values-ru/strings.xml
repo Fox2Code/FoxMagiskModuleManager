@@ -170,7 +170,7 @@
     <string name="repo_update_failed">Некоторые репо не обновлены</string>
     <string name="sentry_dialogue_no_description">Не удалось отправить отзыв, так как не было предоставлено описание</string>
     <string name="setup_message">Добро пожаловать! Это приложение поможет вам установить модули Magisk и управлять ими. Чтобы начать, выберите параметры ниже. Эти и другие параметры можно настроить позже.</string>
-    <string name="alt_repo_info">Данный репозиторий имеет меньше отзывов и ограничений (может способствовать ухудшению качества модулей). Довольно прост, не содержит рекламы и имеет много модулей.</string>
+    <string name="alt_repo_info">Данный репозиторий имеет меньше отзывов и ограничений (может способствовать ухудшению качества модулей). Довольно прост, но содержит много модулей.</string>
     <string name="clear_data_dialogue_message">Вы собираетесь очистить данные приложения. Пожалуйста, подтвердите это действие.</string>
     <string name="androidacy_update_needed">Это приложение устарело.</string>
     <string name="androidacy_update_needed_message">Пожалуйста, обновите приложение до последней версии.</string>
@@ -179,7 +179,7 @@
     <string name="monet_disabled_summary">Monet не совместим с прозрачными темами.</string>
     <string name="blur_disabled_summary">Эффект размытия не совместим с прозрачными темами.</string>
     <string name="transparent_theme_dialogue_title">Вы устанавливаете прозрачную тему</string>
-    <string name="transparent_theme_dialogue_message">Прозрачные темы могут иметь некоторые несоответствия и могут работать не на всех прошивках. Кроме того, Monet и эффект размытия будут отключены. Можно изменить обратно в любое время.</string>
+    <string name="transparent_theme_dialogue_message">Прозрачные темы могут иметь некоторые несоответствия и могут работать не на всех прошивках. Кроме того, моне и размытие будут отключены. Можно изменить обратно в любое время.</string>
     <string name="custom_repo_always_on">Пользовательские репозитории всегда включены, пока вы их не удалите.</string>
     <string name="sentry_dialogue_message">Мы столкнулись с ошибкой! Пожалуйста, помогите нам улучшить приложение, добавив информацию об ошибке ниже.
 \nИмя и адрес электронной почты не являются обязательными, но они позволят нам связаться с вами, если это необходимо для получения дополнительной информации.</string>
@@ -381,4 +381,9 @@
     <string name="announcements">Новости и обновления</string>
     <string name="back">Назад</string>
     <string name="eula_agree">Нажимая завершить, вы соглашаетесь с лицензией LGPL-3.0 (https://www.gnu.org/licenses/lgpl-3.0.en.html) и лицензионным соглашением (https://www.androidacy.com). /foxmmm-eula/)</string>
+    <string name="donate_fox">Пожертвовать Fox2Code</string>
+    <string name="donate_androidacy">Пожертвовать Androidacy</string>
+    <string name="donate_androidacy_sum">Купите премиальную подписку на Androidacy, чтобы поддерживать приложение и репозиторий.</string>
+    <string name="promo_code_copied">Используйте скопированный код и получите половину скидки на первый месяц!</string>
+    <string name="warning_pls_restart">Обратите внимание, что некоторые настройки могут не вступить в силу, пока вы не перезапустите приложение.</string>
 </resources>
