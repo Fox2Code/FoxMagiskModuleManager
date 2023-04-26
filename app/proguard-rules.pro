@@ -190,7 +190,7 @@
 # Keep all of Cronet API and google's internal classes
 -keep class org.chromium.** { *; }
 -keep class org.chromium.net.** { *; }
-
+-keep class com.google.common.util.concurrent.** { *; }
 -keepclassmembers class kotlin.SafePublicationLazyImpl {
     java.lang.Object _value;
 }

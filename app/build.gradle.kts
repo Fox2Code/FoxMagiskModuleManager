@@ -463,6 +463,12 @@ android {
     }
     //noinspection GrDeprecatedAPIUsage
     buildToolsVersion = "34.0.0 rc3"
+    @Suppress("DEPRECATION")
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
 }
 
 
