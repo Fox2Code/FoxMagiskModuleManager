@@ -43,7 +43,7 @@ android {
             useSupportLibrary = true
         }
         multiDexEnabled = true
-        resourceConfigurations.addAll(listOf("ar", "bs", "de", "es-rMX", "fr", "hu", "id", "ja", "nl", "pl", "pt", "pt-rBR", "ro", "ru", "tr", "uk", "zh-rCN", "zh-rTW", "en"))
+        resourceConfigurations.addAll(listOf("ar", "bs", "de", "es-rMX", "fr", "hu", "id", "ja", "nl", "pl", "pt", "pt-rBR", "ro", "ru", "tr", "uk", "zh", "zh-rTW", "en"))
     }
 
     splits {
