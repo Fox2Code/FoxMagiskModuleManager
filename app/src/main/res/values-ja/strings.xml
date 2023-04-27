@@ -39,7 +39,7 @@
     <string name="source_code">ソースコード</string>
     <string name="dev_mode_enabled">開発者モードが有効</string>
     <string name="force_english_pref">英語のアプリ言語</string>
-    <string name="app_name">フォックスのマギスクモジュールマネージャー</string>
+    <string name="app_name">Fox\'s Magisk Module Manager</string>
     <string name="app_name_short">Fox\'s Mmm</string>
     <string name="fail_root_denied">Magisk アプリでルートアクセスが拒否されたよ</string>
     <string name="slow_modules">モジュールの起動に時間がかかりすぎてるよ、モジュールの無効化を試してみてね</string>

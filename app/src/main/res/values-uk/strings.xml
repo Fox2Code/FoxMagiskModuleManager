@@ -378,4 +378,9 @@
     <string name="announcements">Новини та оновлення</string>
     <string name="back">Назад</string>
     <string name="analytics_desc">Дозвольте нам відстежувати використання та встановлення додатку. Повністю відповідає GDPR і використовує Matomo, розміщений на Androidacy.</string>
+    <string name="donate_fox">Донат на Fox2Code</string>
+    <string name="donate_androidacy">Дотан на Androidacy</string>
+    <string name="donate_androidacy_sum">Придбайте преміальну підписку на Androidacy, щоб підтримувати додаток і репозиторій.</string>
+    <string name="promo_code_copied">Використовуйте скопійований код, щоб отримати половину знижки за перший місяць!</string>
+    <string name="warning_pls_restart">Зверніть увагу, що деякі налаштування можуть не робити, доки ви не перезавантажите додаток.</string>
 </resources>
