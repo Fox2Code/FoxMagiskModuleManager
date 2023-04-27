@@ -21,7 +21,7 @@ buildscript {
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
         //noinspection GradleDependency
-        classpath("io.realm:realm-gradle-plugin:10.14.0-transformer-api")
+        classpath("io.realm:realm-gradle-plugin:10.15.1")
         classpath("io.sentry:sentry-android-gradle-plugin:3.5.0")
     }
 }

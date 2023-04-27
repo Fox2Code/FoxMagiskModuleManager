@@ -139,6 +139,7 @@ public class InstallerInitializer extends Shell.Initializer {
     @Override
     public boolean onInit(@NonNull Context context, @NonNull Shell shell) {
         if (!shell.isRoot()) {
+            Timber.w("No root access!");
             return false;
         }
         // switch to global namespace
@@ -148,11 +149,13 @@ public class InstallerInitializer extends Shell.Initializer {
             // switch to local namespace
             // first check if nsenter is available
             if (!shell.newJob().add("which nsenter").exec().isSuccess()) {
-                return true; // just return, some modules will break but oh fucking well
+                Timber.w("nsenter cmd unavailable");
+                return shell.newJob().add("export ASH_STANDALONE=1; /data/local/tmp/busybox ash").exec().isSuccess();
             } else {
                 return shell.newJob().add("export ASH_STANDALONE=1; nsenter -t 1 -m -u /data/local/tmp/busybox ash").exec().isSuccess();
             }
         } else {
+            Timber.w("Could not copy bb");
             return false;
         }
     }
