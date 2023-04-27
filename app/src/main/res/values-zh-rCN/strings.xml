@@ -217,7 +217,7 @@
     <string name="low_performance_device_dialogue_title">在低配设备上启用模糊</string>
     <string name="low_performance_device_dialogue_message">您正在尝试在可能无法正常运行的设备上启用模糊。
 \n启用它可能会导致糟糕的用户体验，我们建议您不要这样做。</string>
-    <string name="alt_repo_info">仓库的限制和审核较少，因而导致模块质量较低。虽然系统较为简单，但模块数量较多。</string>
+    <string name="alt_repo_info">仓库的限制和审核较少，因而导致模块质量较低，但模块数量很多。</string>
     <string name="install_terminal_reboot_now_message">您即将重启您的设备。如果你已经准备好了，点击确定继续重启。 否则，请点击取消。</string>
     <string name="install_terminal_config_missing">包 %s 缺少模块的配置，因此我们无法运行它。</string>
     <string name="clear_app_data">清除应用数据</string>
@@ -387,4 +387,15 @@
     <string name="language_not_available">%s 尚未被翻译。 帮忙翻译一下\?</string>
     <string name="blur_desc">在某些对话框和元素后面创建模糊效果。 请注意，模糊可能在某些设备上表现不佳并且可能不适用于所有人。</string>
     <string name="error_encrypted_shared_preferences">读取共享首选项时出错。 请重置应用程序。</string>
+    <string name="other_section">其它</string>
+    <string name="eula_agree">单击完成，即表示您同意受 LGPL-3 的约束(https://www.gnu.org/licenses/lgpl-3.0.en.html) license and the EULA (https://www.androidacy.com/foxmmm-eula/)</string>
+    <string name="analytics_desc">允许我们跟踪应用程序的使用和安装。完全符合 GDPR 并使用由 Androidacy 托管的 Matomo。</string>
+    <string name="debug_cat">调试</string>
+    <string name="announcements">新的和更新</string>
+    <string name="back">返回</string>
+    <string name="donate_fox">向 Fox2Code 捐赠</string>
+    <string name="donate_androidacy">向 Androidacy 捐赠</string>
+    <string name="donate_androidacy_sum">购买 Androidacy premium 订阅以支持应用和仓库。</string>
+    <string name="promo_code_copied">使用复制的代码，第一个月可享受半价优惠！</string>
+    <string name="warning_pls_restart">请注意，某些设置可能在您重新启动应用程序后才会生效。</string>
 </resources>
