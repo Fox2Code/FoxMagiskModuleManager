@@ -19,7 +19,7 @@
     <string name="install">स्थापित गर्ने</string>
     <string name="updatable">अध्यावाधिक गर्न योग्य</string>
     <string name="pref_category_security">सुरक्षा</string>
-    <string name="install_terminal_reboot_now">पुनः शुरुगर्ने</string>
+    <string name="install_terminal_reboot_now">पुनः शुरु गर्ने</string>
     <string name="module_stars">ताराहरू:</string>
     <string name="pref_category_info">जानकारी</string>
     <string name="master_delete_no">राख्ने</string>
@@ -58,5 +58,23 @@
     <string name="zip_security_warning">%s स्थापित गर्ने\?</string>
     <string name="update_button">कृपया पर्खनुहोस् …</string>
     <string name="repo_update_failed_extended">%1$s को अध्यावधिक सफल भएन । कृपया पछि पुनः प्रयास गर्नुहोस् ।</string>
-    <string name="sentry_dialogue_success">प्रतिकृया सफलतापूर्वक बुझाईयो। हामी छिटै पुनरावृति गर्नेछौं ।</string>
+    <string name="sentry_dialogue_success">प्रतिकृया सफलतापूर्वक बुझाईयो । हामी छिटै पुनरावृति गर्नेछौं</string>
+    <string name="other_section">अन्य</string>
+    <string name="pref_category_general">सामान्य</string>
+    <string name="please_wait">कृपया पर्खनुहोस्</string>
+    <string name="warning">चेतावनि!</string>
+    <string name="sentry_dialogue_no_description">कुनै विवरण उपलब्ध नभएकाले प्रतिकृया वुझाउन सकिएन</string>
+    <string name="official">वैधानिक</string>
+    <string name="unofficial">अवैधानिक</string>
+    <string name="update_available">अध्यावधिक भेटियो</string>
+    <string name="pref_category_updates">अध्यावधिकहरु</string>
+    <string name="pref_category_privacy">गोपनियता</string>
+    <string name="setup_update_check_headline">अध्यावधिक जांचहरू</string>
+    <string name="notification_channel_category_app_update">एप अध्यावधिकहरु</string>
+    <string name="notification_group_updates">अध्यावधिकहरू</string>
+    <string name="notification_update_app_pref">एप अध्यावधिकहरु जाँच गर्नुहोस्</string>
+    <string name="notification_channel_background_update">अध्यावधिक हरुको लागि जाँच गर्दै …</string>
+    <string name="download_update">अध्यावधिक डाउनलोड गर्ने</string>
+    <string name="error_download_update">अध्यावधिकको जानकारी डाउनलोड गर्दा एउटा त्रुटि भयो ।</string>
+    <string name="notification_update_subtitle">एप खोल्न क्लिकगर्नुहोस्</string>
 </resources>

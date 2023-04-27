@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="fail_root_magisk">Root または Magisk にアクセスできないよ</string>
+    <string name="fail_root_magisk">Root または Magisk にアクセスできません</string>
     <string name="loading">読み込み中…</string>
     <string name="updatable">アップデート可能</string>
     <string name="installed">インストール済</string>
     <string name="online_repo">オンラインのリポジトリ</string>
-    <string name="showcase_mode">アプリは現在ロックダウンモードだよ</string>
-    <string name="failed_download">ファイルのダウンロードに失敗したよ</string>
-    <string name="fail_internet">インターネットに接続できないよ</string>
-    <string name="app_update_available">アプリの新しいバージョンがあるよ</string>
+    <string name="showcase_mode">アプリは現在ロックダウンモードです</string>
+    <string name="failed_download">ファイルのダウンロードに失敗しました</string>
+    <string name="fail_internet">インターネットに接続できません</string>
+    <string name="app_update_available">アプリの最新版があります</string>
     <string name="app_update">アプリをアップデート</string>
     <!-- Module section translation -->
     <string name="module_last_update">最終更新:</string>
@@ -17,39 +17,39 @@
     <!-- Preference Titles -->
     <!-- Note: Lockdown mode used to be called showcase mode -->
     <string name="showcase_mode_pref">ロックダウンモード</string>
-    <string name="showcase_mode_desc">ロックダウンモードはモジュールが処理を実行することを禁止するよ</string>
+    <string name="showcase_mode_desc">ロックダウンモードはモジュールの処理の実行を禁止します</string>
     <string name="pref_category_settings">設定</string>
     <string name="pref_category_info">情報</string>
     <string name="show_licenses">ライセンスを表示</string>
     <string name="licenses">ライセンス</string>
-    <string name="show_incompatible_pref">互換性のないモジュールも表示</string>
-    <string name="show_incompatible_desc">メタデータを基に、この端末に互換性がないモジュールも表示</string>
+    <string name="show_incompatible_pref">互換性のないモジュールを表示</string>
+    <string name="show_incompatible_desc">メタデータを基に、このデバイスに互換性がないモジュールも表示します</string>
     <string name="pref_category_repos">リポジトリ</string>
     <string name="repo_main_desc">Magisk モジュールを管理しているリポジトリ</string>
-    <string name="repo_main_alt">いくつかの制約がある Magisk-Modules-Repo の代替だよ。</string>
-    <string name="master_delete">モジュールファイルを削除する？</string>
+    <string name="repo_main_alt">制限の少ない Magisk-Modules-Repo の代替になります。</string>
+    <string name="master_delete">モジュールファイルを削除しますか\?</string>
     <string name="master_delete_no">保持</string>
     <string name="master_delete_yes">削除</string>
-    <string name="master_delete_fail">モジュールファイル削除に失敗したよ</string>
+    <string name="master_delete_fail">モジュールファイル削除に失敗しました</string>
     <string name="theme_pref">テーマ</string>
     <string name="module_id_prefix">モジュール ID:</string>
     <string name="install_from_storage">ストレージからモジュールをインストール</string>
-    <string name="invalid_format">選択されたモジュールは不正なフォーマットだよ</string>
+    <string name="invalid_format">選択されたモジュールは不正なフォーマットです</string>
     <string name="local_install_title">ローカルインストール</string>
     <string name="source_code">ソースコード</string>
     <string name="dev_mode_enabled">開発者モードが有効</string>
     <string name="force_english_pref">英語のアプリ言語</string>
     <string name="app_name">Fox\'s Magisk Module Manager</string>
     <string name="app_name_short">Fox\'s Mmm</string>
-    <string name="fail_root_denied">Magisk アプリでルートアクセスが拒否されたよ</string>
-    <string name="slow_modules">モジュールの起動に時間がかかりすぎてるよ、モジュールの無効化を試してみてね</string>
-    <string name="no_web_view">システム WebView を開けないよ</string>
+    <string name="fail_root_denied">Magisk アプリでRoot アクセスが拒否されました</string>
+    <string name="slow_modules">モジュールの起動に時間がかかっています、モジュールの無効化をしてみてください</string>
+    <string name="no_web_view">システム WebView を開けません</string>
     <string name="title_activity_settings">アクティビティの設定</string>
-    <string name="no_desc_found">概要はないよ。</string>
+    <string name="no_desc_found">概要はありません。</string>
     <string name="download_module">モジュールをダウンロード</string>
     <string name="install_module">モジュールをインストール</string>
     <string name="update_module">モジュールをアップグレード</string>
-    <string name="changelog">更新ログ</string>
+    <string name="changelog">更新履歴</string>
     <string name="website">ウェブサイト</string>
     <string name="support">サポート</string>
     <string name="donate">寄付</string>
@@ -59,15 +59,15 @@
     <string name="config">設定</string>
     <string name="favourite">お気に入り</string>
     <string name="report_bugs">バグを報告</string>
-    <string name="sniffed_modules">見つけたモジュール</string>
+    <string name="sniffed_modules">発見したモジュール</string>
     <string name="submit_modules">モジュールを送信</string>
-    <string name="require_android_6">Android 6.0 以上が必要だよ</string>
-    <string name="require_android_12">Android 12 以上が必要だよ</string>
+    <string name="require_android_6">Android 6.0 以降が必要です</string>
+    <string name="require_android_12">Android 12 以降が必要です</string>
     <string name="install_terminal_reboot_now">再起動</string>
     <string name="module_downloads">ダウンロード数:</string>
     <string name="module_stars">スター:</string>
-    <string name="module_can_change_boot">boot を変更する可能性があるよ</string>
-    <string name="module_can_change_boot_desc">このモジュールは boot イメージを変更することがあるよ</string>
+    <string name="module_can_change_boot">boot を変更する可能性があります</string>
+    <string name="module_can_change_boot_desc">このモジュールは boot イメージを変更することあります</string>
     <string name="module_min_magisk_chip">最小 Magisk %s</string>
     <string name="module_min_sdk_chip">最小 Android</string>
     <string name="module_max_sdk_chip">最大 Android</string>
@@ -78,34 +78,34 @@
     <string name="pref_category_security">セキュリティ</string>
     <string name="pref_category_appearance">外観</string>
     <string name="pref_category_general">一般</string>
-    <string name="magisk_outdated">Magisk の新しいバージョンがあるよ！</string>
+    <string name="magisk_outdated">Magisk の最新版があります!</string>
     <string name="theme_mode_pref">テーマモード</string>
-    <string name="low_quality_module">低品質モジュール</string>
-    <string name="substratum_builtin_module">基盤内蔵モジュール</string>
+    <string name="low_quality_module">低品質なモジュール</string>
+    <string name="substratum_builtin_module">Substratum 内蔵モジュール</string>
     <string name="force_dark_terminal_title">ダークターミナル</string>
     <string name="remote_install_title">リモートインストール</string>
-    <string name="file_picker_wierd">使ってるファイルピッカーが普通ではない応答をしたよ。</string>
-    <string name="use_magisk_install_command_pref" tools:ignore="TypographyDashes">\"magisk --install-module\" コマンドを使ってね</string>
+    <string name="file_picker_wierd">使用中のファイルピッカーが通常ではない応答をしました。</string>
+    <string name="use_magisk_install_command_pref" tools:ignore="TypographyDashes">\"magisk --install-module\" コマンドを使用してください</string>
     <string name="dev_mode_disabled">開発者モードが無効</string>
-    <string name="disable_low_quality_module_filter_pref">低品質のモジュールを表示</string>
+    <string name="disable_low_quality_module_filter_pref">低品質なモジュールを表示</string>
     <string name="dns_over_https_pref">DNS over HTTPS</string>
-    <string name="dns_over_https_desc">接続の問題を解決することがあるよ（Webview に対しては効果がないよ）</string>
+    <string name="dns_over_https_desc">接続の問題が解決する可能性があります。（WebView には適用されません）</string>
     <string name="disable_extensions_pref">Mmm なし</string>
-    <string name="disable_extensions_desc">モジュールがターミナルの拡張機能を使えるように Fox\'s Mmm の拡張機能をオフにするよ。 
-\nMmm の拡張機能を間違って使うことを防ぐのに便利だよ。</string>
-    <string name="wrap_text_pref">テキスト折り返し</string>
-    <string name="fail_magisk_missing">このデバイスに Magisk がインストールされてないよ</string>
+    <string name="disable_extensions_desc">モジュールがターミナルの拡張機能を使用できるようにするため Fox\'s Mmm の拡張機能を無効化します。
+\nMmm の拡張機能の誤用を防ぐ事ができます。</string>
+    <string name="wrap_text_pref">テキストの折り返し</string>
+    <string name="fail_magisk_missing">このデバイスに Magisk がインストールされていません</string>
     <string name="description">詳細</string>
     <string name="sniffing_modules">モジュールを探しています</string>
     <string name="language">言語</string>
-    <string name="module_needs_ramdisk">ramdisk が必要だよ</string>
-    <string name="module_needs_ramdisk_desc">このモジュールをインストールするには ramdisk を起動する必要があるよ</string>
+    <string name="module_needs_ramdisk">ramdisk が必要です</string>
+    <string name="module_needs_ramdisk_desc">このモジュールをインストールするには ramdisk を起動する必要があります</string>
     <string name="magisk_builtin_module">Magisk 内蔵モジュール</string>
-    <string name="file_picker_failure">使ってるファイルピッカーではファイルにアクセスできないよ。</string>
-    <string name="use_magisk_install_command_desc">テスト中にエラー診断ツールで問題が発生したので、このオプションは開発者モードに隠されたよ。
-\n自己責任でオンにしてね！</string>
-    <string name="disable_low_quality_module_filter_desc">いくつかのモジュールは metadata が十分なものでなかったりするため、不具合が発生することがあるよ。 
-\n自己責任でオンにしてね！</string>
+    <string name="file_picker_failure">使用中のファイルピッカーではファイルにアクセスできません。</string>
+    <string name="use_magisk_install_command_desc">テスト中にモジュールインストールエラーの診断ツールに問題が発生したため、このオプションは開発者モードに隠されています。
+\n自己責任でこの機能を有効化してください!</string>
+    <string name="disable_low_quality_module_filter_desc">いくつかのモジュールは metadata が不充分な物が存在します。モジュールによる不具合やモジュールが低品質な可能性があります。
+\n自己責任で有効化してください!</string>
     <string name="api_key_summary">Androidacy にカスタム API キーを使うよ。サブスクリプションを使ってたり広告除去機能などを使ってるときに便利だよ。</string>
     <string name="androidacy_repo_disabled_message">このビルドには Androidacy リポジトリのクライアントキーがないよ。モジュールをレビューしたり、セキュリティチェックなどをするには GitHub リリースをダウンロードしてね。</string>
     <string name="go_to_online_repo">スクロールしてリポジトリをオンラインにする</string>
@@ -122,13 +122,13 @@
     <string name="language_cta_desc">翻訳に協力してください！ここをタップして詳細を確認できます。</string>
     <string name="androidacy_thanks_desc">このアプリへの貢献に対して、Androidacy にとても感謝します。</string>
     <string name="contributors">もちろん、翻訳者、プログラマ、その他貢献者にも感謝しています！いつもありがとうございます。</string>
-    <string name="wrap_text_desc">モジュールのインストール時にテキストを複数の行に分けて表示するよ。</string>
-    <string name="enable_blur_pref">ブラー</string>
+    <string name="wrap_text_desc">モジュールのインストール時にテキストを複数の行に分けて表示します。</string>
+    <string name="enable_blur_pref">ぼかし</string>
     <string name="disable_chips_in_description">概要のチップを無効化</string>
-    <string name="repo_enabled">リポジトリオン</string>
-    <string name="repo_disabled">リポジトリオフ</string>
-    <string name="add_repo">リポジトリ追加</string>
-    <string name="remove_repo">リポジトリ削除</string>
+    <string name="repo_enabled">リポジトリ ON</string>
+    <string name="repo_disabled">リポジトリ OFF</string>
+    <string name="add_repo">リポジトリを追加</string>
+    <string name="remove_repo">リポジトリを削除</string>
     <string name="custom_url">カスタムURL</string>
     <string name="backup_module_list">モジュールをバックアップ</string>
     <string name="api_key_not_set">Androidacy API キーが空だよ</string>
@@ -144,7 +144,7 @@
     <string name="blur_disabled_summary">ブラーは透過テーマとは互換性がないよ。</string>
     <string name="transparent_theme_dialogue_title">透過テーマを設定するよ</string>
     <string name="transparent_theme_dialogue_message">透過テーマはいくつかの ROM では動かないことがあるよ。また、Monet とブラーの設定は無効化されるよ。設定はいつでも元に戻せるよ。</string>
-    <string name="androidacy_repo_info">このリポジトリにはレビューや自動ウイルススキャンなどの広告が含まれていることがあるよ。</string>
+    <string name="androidacy_repo_info">このリポジトリにはサーバーや開発のコストをカバーする為に広告の表示がされる場合があります。リポジトリにはレビューと自動ウィルススキャンなどの機能があります。</string>
     <string name="custom_repo_always_on">カスタムリポジトリは削除されるまで常に有効だよ。</string>
     <string name="sentry_dialogue_message">エラーが発生しました！下記のエラーに情報を追加してアプリの改善に協力してね。 
 \n名前とメールアドレスは必須ではないですが返信を受け取りたい場合は入力してね。</string>
@@ -185,18 +185,18 @@
     <string name="androidacy_failed_to_validate_token">Androidacy に使うトークンを検証できなかったよ。もう一度試してみてね。</string>
     <string name="androidacy_server_down">Androidacy サーバーに接続できなかったよ。接続を確認してもう一度試してみてね。</string>
     <string name="androidacy_need_captcha">Captcha によって Androidacy のアップデートがブロックされてるよ</string>
-    <string name="link_copied">リンクをコピーしたよ</string>
+    <string name="link_copied">リンクをコピーしました</string>
     <string name="restore_module_list">モジュールを復元</string>
-    <string name="require_internet">その操作をするにはインターネットに接続されている必要があるよ</string>
+    <string name="require_internet">その操作をする為にはインターネット接続が必要です</string>
     <string name="androidacy_test_mode_pref">Androidacy テストモード</string>
-    <string name="androidacy_test_mode_desc">Androidacy のリリースエンドポイントの代わりにステージングエンドポイントを使うよ。（再起動が必要だよ）</string>
-    <string name="notification_update_title">%1$d 個のモジュールアップデートが見つかったよ</string>
-    <string name="notification_update_title_easter_egg">%i 個のモジュールアップデートを見つけたよ</string>
-    <string name="notification_update_subtitle">クリックしてアプリを開く</string>
+    <string name="androidacy_test_mode_desc">"リリースエンドポイントの代わりにステージング Androidacy エンドポイントを使用する  (再起動が必要です)"</string>
+    <string name="notification_update_title">%1$d 個のモジュールのアップデートがあります</string>
+    <string name="notification_update_title_easter_egg">%i 個のモジュールのアップデートを発見しました</string>
+    <string name="notification_update_subtitle">クリックをしてアプリを開く</string>
     <string name="notification_update_pref">自動でモジュールのアップデートを確認</string>
-    <string name="notification_update_desc">バッテリーの消耗が大きくなることがあるよ</string>
+    <string name="notification_update_desc">バッテリーの消耗が増加する可能性があります</string>
     <string name="notification_update_debug_pref">通知をテスト</string>
-    <string name="language_support_outdated">いくつかの言語の翻訳は最新ではないことがあるよ。GitHub で翻訳に協力してね</string>
+    <string name="language_support_outdated">現在の言語の翻訳は一部最新ではありません。GitHub にあるアプリの翻訳にご協力ください。</string>
     <string name="language_translated_by">Fox2Code による翻訳（Suu）</string>
     <string name="crash_reporting">自動でバグとパフォーマンスをデベロッパーに送信する</string>
     <string name="api_key">Androidacy API キー</string>
