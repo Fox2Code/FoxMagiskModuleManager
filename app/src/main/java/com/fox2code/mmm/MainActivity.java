@@ -252,8 +252,9 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
 
             @Override
             public void onFailure(int error) {
-                Timber.i("Failed to get magisk path!");
+                Timber.e("Failed to get magisk path!");
                 moduleViewListBuilder.addNotification(InstallerInitializer.getErrorNotification());
+                moduleViewListBuilderOnline.addNotification(InstallerInitializer.getErrorNotification());
                 this.commonNext();
             }
 
@@ -490,7 +491,9 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
 
             @Override
             public void onFailure(int error) {
+                Timber.e("Error: %s", error);
                 moduleViewListBuilder.addNotification(InstallerInitializer.getErrorNotification());
+                moduleViewListBuilderOnline.addNotification(InstallerInitializer.getErrorNotification());
                 this.commonNext();
             }
 

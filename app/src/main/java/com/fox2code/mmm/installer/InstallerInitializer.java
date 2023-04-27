@@ -18,33 +18,21 @@ import java.util.ArrayList;
 import timber.log.Timber;
 
 public class InstallerInitializer extends Shell.Initializer {
-    private static final File MAGISK_SBIN =
-            new File("/sbin/magisk");
-    private static final File MAGISK_SYSTEM =
-            new File("/system/bin/magisk");
-    private static final File MAGISK_SYSTEM_EX =
-            new File("/system/xbin/magisk");
-    private static final boolean HAS_MAGISK = MAGISK_SBIN.exists() ||
-            MAGISK_SYSTEM.exists() || MAGISK_SYSTEM_EX.exists();
+    public static final int ERROR_NO_PATH = 1;
+    public static final int ERROR_NO_SU = 2;
+    public static final int ERROR_OTHER = 3;
+    private static final File MAGISK_SBIN = new File("/sbin/magisk");
+    private static final File MAGISK_SYSTEM = new File("/system/bin/magisk");
+    private static final File MAGISK_SYSTEM_EX = new File("/system/xbin/magisk");
+    private static final boolean HAS_MAGISK = MAGISK_SBIN.exists() || MAGISK_SYSTEM.exists() || MAGISK_SYSTEM_EX.exists();
     private static String MAGISK_PATH;
     private static int MAGISK_VERSION_CODE;
     private static boolean HAS_RAMDISK;
 
-    public static final int ERROR_NO_PATH = 1;
-    public static final int ERROR_NO_SU = 2;
-    public static final int ERROR_OTHER = 3;
-
-    public interface Callback {
-        void onPathReceived(String path);
-
-        void onFailure(int error);
-    }
-
     @Nullable
     public static NotificationType getErrorNotification() {
         Boolean hasRoot = Shell.isAppGrantedRoot();
-        if (MAGISK_PATH != null &&
-                hasRoot != Boolean.FALSE) {
+        if (MAGISK_PATH != null && hasRoot != Boolean.FALSE) {
             return null;
         }
         if (!HAS_MAGISK) {
@@ -60,13 +48,11 @@ public class InstallerInitializer extends Shell.Initializer {
     }
 
     public static String peekMirrorPath() {
-        return InstallerInitializer.MAGISK_PATH == null ? null :
-                InstallerInitializer.MAGISK_PATH + "/.magisk/mirror";
+        return InstallerInitializer.MAGISK_PATH == null ? null : InstallerInitializer.MAGISK_PATH + "/.magisk/mirror";
     }
 
     public static String peekModulesPath() {
-        return InstallerInitializer.MAGISK_PATH == null ? null :
-                InstallerInitializer.MAGISK_PATH + "/.magisk/modules";
+        return InstallerInitializer.MAGISK_PATH == null ? null : InstallerInitializer.MAGISK_PATH + "/.magisk/modules";
     }
 
     public static int peekMagiskVersion() {
@@ -81,7 +67,7 @@ public class InstallerInitializer extends Shell.Initializer {
         tryGetMagiskPathAsync(callback, false);
     }
 
-    public static void tryGetMagiskPathAsync(Callback callback,boolean forceCheck) {
+    public static void tryGetMagiskPathAsync(Callback callback, boolean forceCheck) {
         final String MAGISK_PATH = InstallerInitializer.MAGISK_PATH;
         Thread thread = new Thread("Magisk GetPath Thread") {
             @Override
@@ -126,12 +112,9 @@ public class InstallerInitializer extends Shell.Initializer {
         boolean HAS_RAMDISK = InstallerInitializer.HAS_RAMDISK;
         if (MAGISK_PATH != null && !forceCheck) return MAGISK_PATH;
         ArrayList<String> output = new ArrayList<>();
-        if(!Shell.cmd("if grep ' / ' /proc/mounts | grep -q '/dev/root' &> /dev/null; " +
-                        "then echo true; else echo false; fi", "magisk -V", "magisk --path")
-                .to(output).exec().isSuccess()) {
+        if (!Shell.cmd("if grep ' / ' /proc/mounts | grep -q '/dev/root' &> /dev/null; " + "then echo true; else echo false; fi", "magisk -V", "magisk --path").to(output).exec().isSuccess()) {
             if (output.size() != 0) {
-                HAS_RAMDISK = "false".equals(output.get(0)) ||
-                        "true".equalsIgnoreCase(System.getProperty("ro.build.ab_update"));
+                HAS_RAMDISK = "false".equals(output.get(0)) || "true".equalsIgnoreCase(System.getProperty("ro.build.ab_update"));
             }
             InstallerInitializer.HAS_RAMDISK = HAS_RAMDISK;
             return null;
@@ -140,9 +123,7 @@ public class InstallerInitializer extends Shell.Initializer {
         Timber.i("Magisk runtime path: %s", MAGISK_PATH);
         MAGISK_VERSION_CODE = Integer.parseInt(output.get(1));
         Timber.i("Magisk version code: %s", MAGISK_VERSION_CODE);
-        if (MAGISK_VERSION_CODE >= Constants.MAGISK_VER_CODE_FLAT_MODULES &&
-                MAGISK_VERSION_CODE < Constants.MAGISK_VER_CODE_PATH_SUPPORT &&
-                (MAGISK_PATH.isEmpty() || !new File(MAGISK_PATH).exists())) {
+        if (MAGISK_VERSION_CODE >= Constants.MAGISK_VER_CODE_FLAT_MODULES && MAGISK_VERSION_CODE < Constants.MAGISK_VER_CODE_PATH_SUPPORT && (MAGISK_PATH.isEmpty() || !new File(MAGISK_PATH).exists())) {
             MAGISK_PATH = "/sbin";
         }
         if (MAGISK_PATH.length() != 0 && Files.existsSU(new File(MAGISK_PATH))) {
@@ -157,9 +138,28 @@ public class InstallerInitializer extends Shell.Initializer {
 
     @Override
     public boolean onInit(@NonNull Context context, @NonNull Shell shell) {
-        if (!shell.isRoot())
-            return true;
+        if (!shell.isRoot()) {
+            return false;
+        }
         // switch to global namespace
-        return shell.newJob().add("export ASH_STANDALONE=1; nsenter -t 1 -m -u /data/adb/magisk/busybox ash").exec().isSuccess();
+        // first, try to copy /data/adb/magisk/busybox to /data/local/tmp
+        // if that fails, return false
+        if (shell.newJob().add("cp -f /data/adb/magisk/busybox /data/local/tmp").exec().isSuccess()) {
+            // switch to local namespace
+            // first check if nsenter is available
+            if (!shell.newJob().add("which nsenter").exec().isSuccess()) {
+                return true; // just return, some modules will break but oh fucking well
+            } else {
+                return shell.newJob().add("export ASH_STANDALONE=1; nsenter -t 1 -m -u /data/local/tmp/busybox ash").exec().isSuccess();
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public interface Callback {
+        void onPathReceived(String path);
+
+        void onFailure(int error);
     }
 }

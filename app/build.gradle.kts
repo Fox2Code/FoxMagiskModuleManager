@@ -404,6 +404,9 @@ dependencies {
     // protobuf - fixes a crash on some devices
     // implementation("com.google.protobuf:protobuf-javalite:3.22.2")
 
+    // google guava, maybe fix a bug
+    implementation("com.google.guava:guava:31.1-android")
+
     implementation("com.github.topjohnwu.libsu:io:5.0.5")
     implementation("com.github.Fox2Code:RosettaX:1.0.9")
     implementation("com.github.Fox2Code:AndroidANSI:1.0.1")
