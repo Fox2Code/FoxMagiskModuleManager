@@ -342,7 +342,7 @@
     <string name="notification_channel_background_update">Buscando por atualizações…</string>
     <string name="notification_channel_background_update_description">FoxMMM está buscando por atualizações em segundo plano.</string>
     <string name="notification_channel_category_background_update">Estado da atualização em segundo plano</string>
-    <string name="notification_update_wifi_desc">Apenas verificar via WiFi</string>
+    <string name="notification_update_wifi_desc">Buscar somente via WiFi</string>
     <string name="notification_update_wifi_pref">Exigir wi-fi ou uma conexão ilimitada para buscar por atualizações. É recomendado manter ativo se você possui dados móveis limitados.</string>
     <string name="background_update_check_excludes_no_modules">Nenhum módulo instalado no dispositivo</string>
     <string name="auto_updates_notifs">Notifica quando atualizações de módulos forem encontradas</string>
@@ -385,10 +385,15 @@
     <string name="setup_background_update_check_require_wifi_summary">Exigir wifi ou uma conexão ilimitada para buscar por atualizações</string>
     <string name="clear_cache_dialogue_message">Isso irá limpar o cache do aplicativo. Suas preferências serão salvas, mas o aplicativo poderá demorar para realizar algumas operações temporariamente.</string>
     <string name="showcase_mode_dialogue_message">Uma reinicialização é necessária para ativar o modo showcase.</string>
-    <string name="other_section">Outro</string>
-    <string name="analytics_desc">Nós permite analizar dados de uso e instalação do app. Totalmente conforme o GDPR e usa Matomo, hospedado pela Androidacy.</string>
+    <string name="other_section">Outros</string>
+    <string name="analytics_desc">Nos permite monitorar o uso e instalação do app. Totalmente conforme o GDPR, utilizando Matomo, hospedado pelo Androidacy.</string>
     <string name="debug_cat">Depuração</string>
     <string name="announcements">Novidades e atualizações</string>
     <string name="back">Voltar</string>
-    <string name="eula_agree">Ao tocar finalizar, você está concordando a ser vinculado a licensa LGPL-3.0 (https://www.gnu.org/licenses/lgpl-3.0.en.html) e sua EULA (https://www.androidacy.com/foxmmm-eula/)</string>
+    <string name="eula_agree">Ao clicar em finalizar, você está concordando com os termos da licença LGPL-3.0 (https://www.gnu.org/licenses/lgpl-3.0.en.html) e sua EULA (https://www.androidacy.com/foxmmm-eula/)</string>
+    <string name="donate_fox">Doar para Fox2Code</string>
+    <string name="donate_androidacy">Doar para Androidacy</string>
+    <string name="donate_androidacy_sum">Comprar uma assinatura premium do Androidacy para dar suporte ao aplicativo e ao repositório.</string>
+    <string name="promo_code_copied">Utilize o código copiado para obter um desconto de 50% no seu primeiro mês!</string>
+    <string name="warning_pls_restart">Por favor, lembre-se que algumas configurações não terão efeito até que reinicie o aplicativo.</string>
 </resources>

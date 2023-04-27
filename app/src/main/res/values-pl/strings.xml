@@ -60,7 +60,7 @@
     <string name="prevent_reboot_pref">Uniemożliwiaj restart</string>
     <string name="prevent_reboot_desc">Zapobiega niespodziewanym restartom urządzenia po instalacji modułu</string>
     <string name="pref_category_settings">Ustawienia</string>
-    <string name="enable_monet">Wygląd Material You</string>
+    <string name="enable_monet">Włącz Monet</string>
     <string name="pref_category_info">Informacje</string>
     <string name="show_licenses">Pokaż licencje</string>
     <string name="licenses">Licencje</string>
@@ -175,7 +175,7 @@
     <string name="permission_notification_message">Jeżeli nie udzielisz tego uprawnienia, to nie otrzymasz informacji o nowych wersjach aplikacji i modułów.</string>
     <string name="androidacy_repo_disabled_message">W tej kompilacji brakuje kluczy klienckich dla repo Androidacy. Pobierz wydanie GitHub, jeżeli chcesz skorzystać z tego repozytorium.</string>
     <string name="repo_update_failed_extended">Aktualizacja %1$s nie powiodła się. Proszę spróbować ponownie później.</string>
-    <string name="monet_disabled_summary">Wygląd Material You nie jest kompatybilny z przezroczystymi motywami.</string>
+    <string name="monet_disabled_summary">Monet nie jest kompatybilny z przezroczystymi motywami.</string>
     <string name="blur_disabled_summary">Rozmycie nie jest kompatybilne z przezroczystymi motywami.</string>
     <string name="transparent_theme_dialogue_title">Ustawiasz przezroczysty motyw</string>
     <string name="custom_repo_always_on">Niestandardowe repozytoria są zawsze włączone, dopóki ich nie usuniesz.</string>
@@ -201,7 +201,7 @@
     <string name="setup_button_skip">Pomiń</string>
     <string name="low_performance_device_dialogue_title">Włączanie rozmycia na słabszych urządzeniach</string>
     <string name="alt_repo_info">To repo ma mniej ograniczeń i recenzji, co może prowadzić do niższej jakości modułów. Baza modułów jest znacznie większa.</string>
-    <string name="transparent_theme_dialogue_message">Przezroczyste motywy mogą wykazywać pewne niespójności i mogą nie działać na wszystkich ROM-ach. Dodatkowo, wygląd Material You i rozmycie zostaną wyłączone. Możesz je przywrócić w dowolnym momencie.</string>
+    <string name="transparent_theme_dialogue_message">Przezroczyste motywy mogą wykazywać pewne niespójności i mogą nie działać na wszystkich ROM-ach. Monet i rozmycie zostaną wyłączone. Możesz je przywrócić w dowolnym momencie.</string>
     <string name="sentry_dialogue_message">Napotkaliśmy błąd! Prosimy o pomoc w ulepszeniu aplikacji poprzez dodanie informacji o błędzie poniżej.
 \nImię i e-mail są opcjonalne, ale pozwolą nam skontaktować się z Tobą w razie potrzeby uzyskania dodatkowych informacji.</string>
     <string name="unofficial">Nieoficjalna</string>
@@ -231,7 +231,7 @@
     <string name="setup_theme_system">Zgodny z systemem</string>
     <string name="setup_theme_light">Jasny</string>
     <string name="setup_theme_black">Czarny</string>
-    <string name="setup_theme_transparent_light">Przezroczysty (jasny) - Wyłączy Material You i rozmycie!</string>
+    <string name="setup_theme_transparent_light">Przezroczysty (jasny) - Wyłączy Monet i rozmycie!</string>
     <string name="theme">Motyw</string>
     <string name="theme_system">Zgodny z systemem</string>
     <string name="theme_black">Czarny</string>
@@ -387,4 +387,9 @@
     <string name="announcements">Wiadomości i aktualizacje</string>
     <string name="back">Wróć</string>
     <string name="debug_cat">Debugowanie</string>
+    <string name="donate_fox">Wesprzyj Fox2Code</string>
+    <string name="donate_androidacy">Wesprzyj Androidacy</string>
+    <string name="donate_androidacy_sum">Kup subskrypcję premium na Androidacy, aby wspierać aplikację i repo.</string>
+    <string name="promo_code_copied">Użyj skopiowanego kodu, aby uzyskać połowę zniżki na swój pierwszy miesiąc!</string>
+    <string name="warning_pls_restart">Pamiętaj, że niektóre ustawienia mogą nie zacząć działać do momentu ponownego uruchomienia aplikacji.</string>
 </resources>

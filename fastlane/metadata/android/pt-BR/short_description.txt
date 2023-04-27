@@ -1,1 +1,1 @@
-Um gerenciador de módulos para Magisk, pois o aplicativo oficial removeu esta função.
+Um gerenciador de módulos do Magisk, pois o app oficial removeu esta função.
