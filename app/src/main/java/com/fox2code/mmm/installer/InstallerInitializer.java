@@ -112,18 +112,18 @@ public class InstallerInitializer extends Shell.Initializer {
         boolean HAS_RAMDISK = InstallerInitializer.HAS_RAMDISK;
         if (MAGISK_PATH != null && !forceCheck) return MAGISK_PATH;
         ArrayList<String> output = new ArrayList<>();
-        if (!Shell.cmd("if grep ' / ' /proc/mounts | grep -q '/dev/root' &> /dev/null; " + "then echo true; else echo false; fi", "magisk -V", "magisk --path").to(output).exec().isSuccess()) {
+        if (!Shell.cmd("magisk -V", "magisk --path").to(output).exec().isSuccess()) {
             if (output.size() != 0) {
                 HAS_RAMDISK = "false".equals(output.get(0)) || "true".equalsIgnoreCase(System.getProperty("ro.build.ab_update"));
             }
             InstallerInitializer.HAS_RAMDISK = HAS_RAMDISK;
             return null;
         }
-        MAGISK_PATH = output.size() < 3 ? "" : output.get(2);
+        MAGISK_PATH = output.size() < 2 ? "" : output.get(1);
         Timber.i("Magisk runtime path: %s", MAGISK_PATH);
-        MAGISK_VERSION_CODE = Integer.parseInt(output.get(1));
+        MAGISK_VERSION_CODE = Integer.parseInt(output.get(0));
         Timber.i("Magisk version code: %s", MAGISK_VERSION_CODE);
-        if (MAGISK_VERSION_CODE >= Constants.MAGISK_VER_CODE_FLAT_MODULES && MAGISK_VERSION_CODE < Constants.MAGISK_VER_CODE_PATH_SUPPORT && (MAGISK_PATH.isEmpty() || !new File(MAGISK_PATH).exists())) {
+        if (MAGISK_VERSION_CODE >= Constants.MAGISK_VER_CODE_FLAT_MODULES && MAGISK_VERSION_CODE < Constants.MAGISK_VER_CODE_PATH_SUPPORT && (MAGISK_PATH.isEmpty() || !Files.existsSU(new File(MAGISK_PATH)))) {
             MAGISK_PATH = "/sbin";
         }
         if (MAGISK_PATH.length() != 0 && Files.existsSU(new File(MAGISK_PATH))) {
