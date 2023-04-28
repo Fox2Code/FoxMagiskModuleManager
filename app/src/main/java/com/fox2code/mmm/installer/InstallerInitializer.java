@@ -138,7 +138,9 @@ public class InstallerInitializer extends Shell.Initializer {
 
     @Override
     public boolean onInit(@NonNull Context context, @NonNull Shell shell) {
-        if (!shell.isRoot()) {
+        // open a new shell
+        shell.newJob().add("id").exec().getOut();
+        if (!Boolean.TRUE.equals(Shell.isAppGrantedRoot())) {
             Timber.w("No root access!");
             return false;
         }

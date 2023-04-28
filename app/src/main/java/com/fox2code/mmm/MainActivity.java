@@ -57,6 +57,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import org.matomo.sdk.extra.TrackHelper;
 
+import java.sql.Timestamp;
 import java.util.Objects;
 
 import io.realm.Realm;
@@ -120,11 +121,20 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         }
         TrackHelper.track().event("enabled_repos", enabledRepos.toString()).with(MainApplication.getINSTANCE().getTracker());
         realm.close();
-        // log all shared preferences that are present
-        if (!Iof) {
+        // hide this behind a buildconfig flag for now, but crash the app if it's not an official build and not debug
+        if (BuildConfig.ENABLE_PROTECTION && !Iof && !BuildConfig.DEBUG) {
+            throw new RuntimeException("This is not an official build of FoxMMM");
+        } else if (!Iof && !BuildConfig.DEBUG) {
             Timber.w("You may be running an untrusted build.");
             // Show a toast to warn the user
             Toast.makeText(this, R.string.not_official_build, Toast.LENGTH_LONG).show();
+        }
+        Timestamp ts = new Timestamp(System.currentTimeMillis() - (30L * 24 * 60 * 60 * 1000));
+        // check if this build has expired
+        Timestamp buildTime = new Timestamp(BuildConfig.BUILD_TIME);
+        // if the build time is more than 30 days ago, throw an exception
+        if (ts.getTime() < buildTime.getTime()) {
+            throw new IllegalStateException("This build has expired. Please download a stable build or update to the latest version.");
         }
         setContentView(R.layout.activity_main);
         this.setTitle(R.string.app_name);

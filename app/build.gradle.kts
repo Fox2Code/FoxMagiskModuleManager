@@ -28,6 +28,7 @@ android {
     val gitRemote = providers.exec {
         commandLine("git", "config", "--get", "remote.origin.url")
     }.standardOutput.asText.get().toString().trim()
+    val timestamp = System.currentTimeMillis()
 
     namespace = "com.fox2code.mmm"
     compileSdk = 33
@@ -95,6 +96,8 @@ android {
     productFlavors {
         create("default") {
             dimension = "type"
+            // current timestamp of build
+            buildConfigField("long", "BUILD_TIME", "$timestamp")
             // debug http requests. do not set this to true if you care about performance!!!!!
             buildConfigField("boolean", "DEBUG_HTTP", "false")
             // Latest commit hash as BuildConfig.COMMIT_HASH
@@ -156,6 +159,8 @@ android {
         create("play") {
             dimension = "type"
             applicationIdSuffix = ".play"
+            // current timestamp of build
+            buildConfigField("long", "BUILD_TIME", "$timestamp")
             // debug http requests. do not set this to true if you care about performance!!!!!
             buildConfigField("boolean", "DEBUG_HTTP", "false")
             // Latest commit hash as BuildConfig.COMMIT_HASH
@@ -216,6 +221,8 @@ android {
         create("fdroid") {
             dimension = "type"
             applicationIdSuffix = ".fdroid"
+            // current timestamp of build
+            buildConfigField("long", "BUILD_TIME", "$timestamp")
             // debug http requests. do not set this to true if you care about performance!!!!!
             buildConfigField("boolean", "DEBUG_HTTP", "false")
 
@@ -308,6 +315,7 @@ sentry {
             setOf(
                 InstrumentationFeature.DATABASE,
                 InstrumentationFeature.FILE_IO,
+                InstrumentationFeature.OKHTTP,
                 InstrumentationFeature.COMPOSE
             )
         )

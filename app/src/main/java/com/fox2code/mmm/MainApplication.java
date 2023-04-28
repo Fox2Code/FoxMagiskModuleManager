@@ -422,10 +422,6 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
             Iof = Arrays.asList(osh).contains(oosh);
         } catch (PackageManager.NameNotFoundException ignored) {
         }
-        // hide this behind a buildconfig flag for now, but crash the app if it's not an official build and not debug
-        if (BuildConfig.ENABLE_PROTECTION && !Iof && !BuildConfig.DEBUG) {
-            throw new RuntimeException("This is not an official build of FoxMMM");
-        }
         SharedPreferences sharedPreferences = MainApplication.getPreferences("mmm");
         // We are only one process so it's ok to do this
         SharedPreferences bootPrefs = MainApplication.getPreferences("mmm_boot");
