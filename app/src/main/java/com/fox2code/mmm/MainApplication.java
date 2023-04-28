@@ -124,6 +124,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     private byte[] existingKey;
     private Tracker tracker;
     private boolean makingNewKey = false;
+    private boolean isCrashHandler;
 
     public MainApplication() {
         if (INSTANCE != null && INSTANCE != this)
@@ -291,6 +292,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     }
 
     public Markwon getMarkwon() {
+        if (isCrashHandler) return null;
         if (this.markwon != null) return this.markwon;
         FoxThemeWrapper contextThemeWrapper = this.markwonThemeContext;
         if (contextThemeWrapper == null) {
@@ -389,8 +391,18 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
         Timber.i("Starting FoxMMM version %s (%d) - commit %s", BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, BuildConfig.COMMIT_HASH);
         // Update SSL Ciphers if update is possible
         GMSProviderInstaller.installIfNeeded(this);
-        Http.ensureCacheDirs();
-        Http.ensureURLHandler(getApplicationContext());
+        // detect if we're launching the crashhandler
+        // get intent that started the crashhandler
+        Intent intent = getIntent();
+        if (intent != null) {
+            if (intent.getClass().getName().equals("com.fox2code.mmm.CrashHandler")) {
+                isCrashHandler = true;
+            }
+        }
+        if (!isCrashHandler) {
+            Http.ensureCacheDirs();
+            Http.ensureURLHandler(getApplicationContext());
+        }
         Timber.d("Initializing FoxMMM");
         Timber.d("Started from background: %s", !isInForeground());
         Timber.d("FoxMMM is running in debug mode");

@@ -11,6 +11,7 @@ import com.fox2code.foxcompat.app.FoxActivity;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textview.MaterialTextView;
 
+import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import io.sentry.Sentry;
@@ -27,6 +28,7 @@ public class CrashHandler extends FoxActivity {
         Timber.d("CrashHandler.onCreate: intent=%s", getIntent());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crash_handler);
+        // unlock webview
         // set crash_details MaterialTextView to the exception passed in the intent or unknown if null
         // convert stacktrace from array to string, and pretty print it (first line is the exception, the rest is the stacktrace, with each line indented by 4 spaces)
         MaterialTextView crashDetails = findViewById(R.id.crash_details);
@@ -42,7 +44,7 @@ public class CrashHandler extends FoxActivity {
             // if the exception is not null, set the crash details to the exception and stacktrace
             // stacktrace is an StacktraceElement, so convert it to a string and replace the commas with newlines
             StringWriter stringWriter = new StringWriter();
-            exception.printStackTrace(new java.io.PrintWriter(stringWriter));
+            exception.printStackTrace(new PrintWriter(stringWriter));
             String stacktrace = stringWriter.toString();
             stacktrace = stacktrace.replace(",", "\n     ");
             crashDetails.setText(getString(R.string.crash_full_stacktrace, stacktrace));
