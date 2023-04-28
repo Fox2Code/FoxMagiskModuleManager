@@ -140,8 +140,21 @@ public class InstallerInitializer extends Shell.Initializer {
     public boolean onInit(@NonNull Context context, @NonNull Shell shell) {
         // open a new shell
         shell.newJob().add("id").exec().getOut();
-        if (!Boolean.TRUE.equals(Shell.isAppGrantedRoot())) {
-            Timber.w("No root access!");
+        // if Shell.isAppGrantedRoot() returns null, loop until it doesn't
+        if (Shell.isAppGrantedRoot() == null) {
+            Timber.w("Waiting for root access...");
+            while (Shell.isAppGrantedRoot() == null) {
+                try {
+                    //noinspection BusyWait
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Timber.e(e);
+                }
+            }
+        }
+        boolean hasRoot = Boolean.TRUE.equals(Shell.isAppGrantedRoot());
+        if (!hasRoot) {
+            Timber.w("No root access, or libsu is misreporting");
             return false;
         }
         // switch to global namespace

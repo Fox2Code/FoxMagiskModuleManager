@@ -288,8 +288,8 @@ android {
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_20
+        targetCompatibility = JavaVersion.VERSION_20
     }
 
     lint {
@@ -416,7 +416,17 @@ dependencies {
     // google guava, maybe fix a bug
     implementation("com.google.guava:guava:31.1-android")
 
-    implementation("com.github.topjohnwu.libsu:io:5.0.5")
+
+    val libsuVersion = "5.0.5"
+    // The core module that provides APIs to a shell
+    implementation("com.github.topjohnwu.libsu:core:${libsuVersion}")
+
+    // Optional: APIs for creating root services. Depends on ":core"
+    implementation("com.github.topjohnwu.libsu:service:${libsuVersion}")
+
+    // Optional: Provides remote file system support
+    implementation("com.github.topjohnwu.libsu:io:${libsuVersion}")
+
     implementation("com.github.Fox2Code:RosettaX:1.0.9")
     implementation("com.github.Fox2Code:AndroidANSI:1.0.1")
 
@@ -441,9 +451,6 @@ dependencies {
 
     // timber
     implementation("com.jakewharton.timber:timber:5.0.1")
-
-    // ksp
-    implementation("com.google.devtools.ksp:symbol-processing-api:1.8.20-1.0.10")
 
     // encryption
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
@@ -475,11 +482,6 @@ android {
         viewBinding = true
         buildConfig = true
     }
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "17"
-        }
-    }
     //noinspection GrDeprecatedAPIUsage
     buildToolsVersion = "34.0.0 rc3"
     @Suppress("DEPRECATION") packagingOptions {
@@ -489,15 +491,8 @@ android {
     }
 }
 
-
-kotlin {
-    jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
-}
-
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(20))
     }
 }

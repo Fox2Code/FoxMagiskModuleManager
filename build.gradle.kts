@@ -15,7 +15,7 @@ buildscript {
     }
     dependencies {
         classpath("com.android.tools.build:gradle:8.0.0")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.20")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.21")
         classpath("com.mikepenz.aboutlibraries.plugin:aboutlibraries-plugin:10.6.2")
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -32,8 +32,8 @@ tasks.register("clean", Delete::class) {
 
 afterEvaluate {
     tasks.withType<JavaCompile>().configureEach {
-        sourceCompatibility = JavaVersion.VERSION_17.toString()
-        targetCompatibility = JavaVersion.VERSION_17.toString()
+        sourceCompatibility = JavaVersion.VERSION_20.toString()
+        targetCompatibility = JavaVersion.VERSION_20.toString()
     }
 }
 
