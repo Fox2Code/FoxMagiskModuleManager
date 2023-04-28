@@ -133,7 +133,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         // check if this build has expired
         Timestamp buildTime = new Timestamp(BuildConfig.BUILD_TIME);
         // if the build time is more than 30 days ago, throw an exception
-        if (ts.getTime() < buildTime.getTime()) {
+        if (ts.getTime() >= buildTime.getTime()) {
             throw new IllegalStateException("This build has expired. Please download a stable build or update to the latest version.");
         }
         setContentView(R.layout.activity_main);
