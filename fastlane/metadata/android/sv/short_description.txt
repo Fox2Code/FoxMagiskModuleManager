@@ -1,0 +1,1 @@
+En modulhanterare för Magisk eftersom den officiella appen inte längre har stöd för det.
