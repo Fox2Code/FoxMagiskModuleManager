@@ -28,7 +28,7 @@ public class CustomRepoManager {
         this.customRepos = new String[MAX_CUSTOM_REPOS];
         this.customReposCount = 0;
         // refuse to load if setup is not complete
-        if (MainApplication.getPreferences("mmm").getString("last_shown_setup", "").equals("")) {
+        if (MainApplication.getSharedPreferences("mmm").getString("last_shown_setup", "").equals("")) {
             return;
         }
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().name("ReposList.realm").encryptionKey(MainApplication.getINSTANCE().getKey()).allowQueriesOnUiThread(true).allowWritesOnUiThread(true).directory(MainApplication.getINSTANCE().getDataDirWithPath("realms")).schemaVersion(1).build();

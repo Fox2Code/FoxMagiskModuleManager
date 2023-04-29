@@ -65,7 +65,7 @@ public final class RepoManager extends SyncManager {
         this.repoData = new LinkedHashMap<>();
         this.modules = new HashMap<>();
         // refuse to load if setup is not complete
-        if (MainApplication.getPreferences("mmm").getString("last_shown_setup", "").equals("")) {
+        if (MainApplication.getSharedPreferences("mmm").getString("last_shown_setup", "").equals("")) {
             return;
         }
         // We do not have repo list config yet.
@@ -150,7 +150,7 @@ public final class RepoManager extends SyncManager {
     @SuppressWarnings("StatementWithEmptyBody")
     private void populateDefaultCache(RepoData repoData) {
         // if last_shown_setup is not "v1", them=n refuse to continue
-        if (!MainApplication.getPreferences("mmm").getString("last_shown_setup", "").equals("v1")) {
+        if (!MainApplication.getSharedPreferences("mmm").getString("last_shown_setup", "").equals("v1")) {
             return;
         }
         // make sure repodata is not null
@@ -311,7 +311,7 @@ public final class RepoManager extends SyncManager {
                             builder.setPositiveButton(android.R.string.ok, null);
                             if (repoUpdaters[finalI].repoData instanceof AndroidacyRepoData) {
                                 builder.setNeutralButton(R.string.reset_api_key, (dialog, which) -> {
-                                    SharedPreferences.Editor editor = MainApplication.getPreferences("androidacy").edit();
+                                    SharedPreferences.Editor editor = MainApplication.getSharedPreferences("androidacy").edit();
                                     editor.putString("androidacy_api_key", "");
                                     editor.apply();
                                     Toast.makeText(context, R.string.api_key_removed, Toast.LENGTH_SHORT).show();

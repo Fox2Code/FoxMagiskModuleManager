@@ -415,7 +415,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             }
             Timber.d("Preference changed: %s", key);
         };
-        MainApplication.getPreferences("mmm").registerOnSharedPreferenceChangeListener(listener);
+        MainApplication.getSharedPreferences("mmm").registerOnSharedPreferenceChangeListener(listener);
     }
 
     private void cardIconifyUpdate() {
@@ -760,7 +760,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     private void checkShowInitialSetup() {
         if (BuildConfig.DEBUG) Timber.i("Checking if we need to run setup");
         // Check if this is the first launch using prefs and if doSetupRestarting was passed in the intent
-        SharedPreferences prefs = MainApplication.getPreferences("mmm");
+        SharedPreferences prefs = MainApplication.getSharedPreferences("mmm");
         boolean firstLaunch = !Objects.equals(prefs.getString("last_shown_setup", null), "v1");
         // First launch
         // this is intentionally separate from the above if statement, because it needs to be checked even if the first launch check is true due to some weird edge cases

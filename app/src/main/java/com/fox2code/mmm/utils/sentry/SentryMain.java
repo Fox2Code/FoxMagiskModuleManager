@@ -60,7 +60,7 @@ public class SentryMain {
             android.os.Process.killProcess(android.os.Process.myPid());
         });
         // If first_launch pref is not false, refuse to initialize Sentry
-        SharedPreferences sharedPreferences = MainApplication.getPreferences("mmm");
+        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences("mmm");
         if (!Objects.equals(sharedPreferences.getString("last_shown_setup", null), "v1")) {
             return;
         }

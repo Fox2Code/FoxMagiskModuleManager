@@ -44,7 +44,7 @@ import timber.log.Timber;
 @SuppressWarnings("KotlinInternalInJava")
 public final class AndroidacyRepoData extends RepoData {
     public static String ANDROIDACY_DEVICE_ID = null;
-    public static String token = MainApplication.getPreferences("androidacy").getString("pref_androidacy_api_token", null);
+    public static String token = MainApplication.getSharedPreferences("androidacy").getString("pref_androidacy_api_token", null);
 
     static {
         HttpUrl.Builder OK_HTTP_URL_BUILDER = new HttpUrl.Builder().scheme("https");
@@ -92,7 +92,7 @@ public final class AndroidacyRepoData extends RepoData {
             return ANDROIDACY_DEVICE_ID;
         }
         // Try to get the device ID from the shared preferences
-        SharedPreferences sharedPreferences = MainApplication.getPreferences("androidacy");
+        SharedPreferences sharedPreferences = MainApplication.getSharedPreferences("androidacy");
         String deviceIdPref = sharedPreferences.getString("device_id", null);
         if (deviceIdPref != null) {
             ANDROIDACY_DEVICE_ID = deviceIdPref;
@@ -164,7 +164,7 @@ public final class AndroidacyRepoData extends RepoData {
             if (e.getErrorCode() == 401) {
                 Timber.w("Invalid token, resetting...");
                 // Remove saved preference
-                SharedPreferences.Editor editor = MainApplication.getPreferences("androidacy").edit();
+                SharedPreferences.Editor editor = MainApplication.getSharedPreferences("androidacy").edit();
                 editor.remove("pref_androidacy_api_token");
                 editor.apply();
                 return false;
@@ -175,7 +175,7 @@ public final class AndroidacyRepoData extends RepoData {
             Timber.w("Invalid token, resetting...");
             Timber.w(e);
             // Remove saved preference
-            SharedPreferences.Editor editor = MainApplication.getPreferences("androidacy").edit();
+            SharedPreferences.Editor editor = MainApplication.getSharedPreferences("androidacy").edit();
             editor.remove("pref_androidacy_api_token");
             editor.apply();
             return false;
@@ -187,7 +187,7 @@ public final class AndroidacyRepoData extends RepoData {
     protected boolean prepare() {
         // If ANDROIDACY_CLIENT_ID is not set or is empty, disable this repo and return
         if (Objects.equals(BuildConfig.ANDROIDACY_CLIENT_ID, "")) {
-            SharedPreferences.Editor editor = MainApplication.getPreferences("mmm").edit();
+            SharedPreferences.Editor editor = MainApplication.getSharedPreferences("mmm").edit();
             editor.putBoolean("pref_androidacy_repo_enabled", false);
             editor.apply();
             Timber.w("ANDROIDACY_CLIENT_ID is empty, disabling AndroidacyRepoData 2");
@@ -226,7 +226,7 @@ public final class AndroidacyRepoData extends RepoData {
         this.androidacyBlockade = time + 30_000L;
         try {
             if (token == null) {
-                token = MainApplication.getPreferences("androidacy").getString("pref_androidacy_api_token", null);
+                token = MainApplication.getSharedPreferences("androidacy").getString("pref_androidacy_api_token", null);
                 if (token != null && !this.isValidToken(token)) {
                     Timber.i("Token expired or invalid, requesting new one...");
                     token = null;
@@ -278,7 +278,7 @@ public final class AndroidacyRepoData extends RepoData {
                     return false;
                 } else {
                     // Save token to shared preference
-                    SharedPreferences.Editor editor = MainApplication.getPreferences("androidacy").edit();
+                    SharedPreferences.Editor editor = MainApplication.getSharedPreferences("androidacy").edit();
                     editor.putString("pref_androidacy_api_token", token);
                     editor.apply();
                     Timber.i("Token saved to shared preference");

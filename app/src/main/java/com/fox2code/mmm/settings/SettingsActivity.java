@@ -543,7 +543,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     // set the box to unchecked
                     ((SwitchPreferenceCompat) backgroundUpdateCheck).setChecked(false);
                     // ensure that the preference is false
-                    MainApplication.getPreferences("mmm").edit().putBoolean("pref_background_update_check", false).apply();
+                    MainApplication.getSharedPreferences("mmm").edit().putBoolean("pref_background_update_check", false).apply();
                     new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.permission_notification_title).setMessage(R.string.permission_notification_message).setPositiveButton(R.string.ok, (dialog, which) -> {
                         // Open the app settings
                         Intent intent = new Intent();
@@ -676,11 +676,11 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 if (devModeStep == 2) {
                     devModeStep = 0;
                     if (MainApplication.isDeveloper() && !BuildConfig.DEBUG) {
-                        MainApplication.getPreferences("mmm").edit().putBoolean("developer", false).apply();
+                        MainApplication.getSharedPreferences("mmm").edit().putBoolean("developer", false).apply();
                         Toast.makeText(getContext(), // Tell the user something changed
                                 R.string.dev_mode_disabled, Toast.LENGTH_SHORT).show();
                     } else {
-                        MainApplication.getPreferences("mmm").edit().putBoolean("developer", true).apply();
+                        MainApplication.getSharedPreferences("mmm").edit().putBoolean("developer", true).apply();
                         Toast.makeText(getContext(), // Tell the user something changed
                                 R.string.dev_mode_enabled, Toast.LENGTH_SHORT).show();
                     }
@@ -948,7 +948,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         // Use MaterialAlertDialogBuilder
                         new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.warning).setCancelable(false).setMessage(R.string.androidacy_test_mode_warning).setPositiveButton(android.R.string.ok, (dialog, which) -> {
                             // User clicked OK button
-                            MainApplication.getPreferences("mmm").edit().putBoolean("androidacy_test_mode", true).apply();
+                            MainApplication.getSharedPreferences("mmm").edit().putBoolean("androidacy_test_mode", true).apply();
                             // Check the switch
                             Intent mStartActivity = new Intent(requireContext(), MainActivity.class);
                             mStartActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -966,10 +966,10 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                             SwitchPreferenceCompat switchPreferenceCompat = (SwitchPreferenceCompat) androidacyTestMode;
                             switchPreferenceCompat.setChecked(false);
                             // There's probably a better way to do this than duplicate code but I'm too lazy to figure it out
-                            MainApplication.getPreferences("mmm").edit().putBoolean("androidacy_test_mode", false).apply();
+                            MainApplication.getSharedPreferences("mmm").edit().putBoolean("androidacy_test_mode", false).apply();
                         }).show();
                     } else {
-                        MainApplication.getPreferences("mmm").edit().putBoolean("androidacy_test_mode", false).apply();
+                        MainApplication.getSharedPreferences("mmm").edit().putBoolean("androidacy_test_mode", false).apply();
                         // Show dialog to restart app with ok button
                         new MaterialAlertDialogBuilder(this.requireContext()).setTitle(R.string.warning).setCancelable(false).setMessage(R.string.androidacy_test_mode_disable_warning).setNeutralButton(android.R.string.ok, (dialog, which) -> {
                             // User clicked OK button
@@ -1076,7 +1076,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                             prefAndroidacyRepoApiD.setVisible(false);
                         }
                     }
-                    String[] originalApiKeyRef = new String[]{MainApplication.getPreferences("androidacy").getString("pref_androidacy_api_token", "")};
+                    String[] originalApiKeyRef = new String[]{MainApplication.getSharedPreferences("androidacy").getString("pref_androidacy_api_token", "")};
                     // Get the dummy pref_androidacy_repo_api_token preference with id pref_androidacy_repo_api_token
                     // we have to use the id because the key is different
                     EditTextPreference prefAndroidacyRepoApiKey = Objects.requireNonNull(findPreference("pref_androidacy_repo_api_token"));
@@ -1122,7 +1122,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                         new Thread(() -> {
                             // If key is empty, just remove it and change the text of the snack bar
                             if (apiKey.isEmpty()) {
-                                MainApplication.getPreferences("androidacy").edit().remove("pref_androidacy_api_token").apply();
+                                MainApplication.getSharedPreferences("androidacy").edit().remove("pref_androidacy_api_token").apply();
                                 new Handler(Looper.getMainLooper()).post(() -> {
                                     Snackbar.make(requireView(), R.string.api_key_removed, BaseTransientBottomBar.LENGTH_SHORT).show();
                                     // Show dialog to restart app with ok button
@@ -1146,7 +1146,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                     new Handler(Looper.getMainLooper()).post(() -> {
                                         Snackbar.make(requireView(), R.string.api_key_invalid, BaseTransientBottomBar.LENGTH_SHORT).show();
                                         // Save the original key
-                                        MainApplication.getPreferences("androidacy").edit().putString("pref_androidacy_api_token", originalApiKeyRef[0]).apply();
+                                        MainApplication.getSharedPreferences("androidacy").edit().putString("pref_androidacy_api_token", originalApiKeyRef[0]).apply();
                                         // Re-show the dialog with an error
                                         prefAndroidacyRepoApiKey.performClick();
                                         // Show error
@@ -1167,7 +1167,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                                     if (valid) {
                                         originalApiKeyRef[0] = apiKey;
                                         RepoManager.getINSTANCE().getAndroidacyRepoData().setToken(apiKey);
-                                        MainApplication.getPreferences("androidacy").edit().putString("pref_androidacy_api_token", apiKey).apply();
+                                        MainApplication.getSharedPreferences("androidacy").edit().putString("pref_androidacy_api_token", apiKey).apply();
                                         // Snackbar with success and restart button
                                         new Handler(Looper.getMainLooper()).post(() -> {
                                             Snackbar.make(requireView(), R.string.api_key_valid, BaseTransientBottomBar.LENGTH_SHORT).show();

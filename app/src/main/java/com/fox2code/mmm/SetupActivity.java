@@ -53,7 +53,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         createFiles();
         disableUpdateActivityForFdroidFlavor();
         // Set theme
-        SharedPreferences prefs = MainApplication.getPreferences("mmm");
+        SharedPreferences prefs = MainApplication.getSharedPreferences("mmm");
         switch (prefs.getString("theme", "system")) {
             case "light" -> setTheme(R.style.Theme_MagiskModuleManager_Monet_Light);
             case "dark" -> setTheme(R.style.Theme_MagiskModuleManager_Monet_Dark);
@@ -245,7 +245,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
             return theme;
         }
         // Set the theme
-        SharedPreferences prefs = MainApplication.getPreferences("mmm");
+        SharedPreferences prefs = MainApplication.getSharedPreferences("mmm");
         String themePref = prefs.getString("pref_theme", "system");
         switch (themePref) {
             case "light" -> {
