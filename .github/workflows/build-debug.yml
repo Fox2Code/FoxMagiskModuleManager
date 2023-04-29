@@ -28,10 +28,10 @@ jobs:
         with:
           submodules: true
 
-      - name: Set up Java 20
+      - name: Set up Java 19
         uses: actions/setup-java@v3
         with:
-          java-version: 20
+          java-version: 19
           distribution: 'temurin'
 
       - name: Setup Android SDK

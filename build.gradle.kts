@@ -32,8 +32,8 @@ tasks.register("clean", Delete::class) {
 
 afterEvaluate {
     tasks.withType<JavaCompile>().configureEach {
-        sourceCompatibility = JavaVersion.VERSION_20.toString()
-        targetCompatibility = JavaVersion.VERSION_20.toString()
+        sourceCompatibility = JavaVersion.VERSION_19.toString()
+        targetCompatibility = JavaVersion.VERSION_19.toString()
     }
 }
 
