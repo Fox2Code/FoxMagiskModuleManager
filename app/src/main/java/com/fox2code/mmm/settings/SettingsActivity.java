@@ -197,7 +197,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
         @Override
         @SuppressWarnings("ConstantConditions")
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-            String name = "mmm";
+            String name = "mmmx";
             Context context = MainApplication.getINSTANCE();
             MasterKey masterKey;
             PreferenceManager preferenceManager = getPreferenceManager();
