@@ -65,7 +65,7 @@
     <string name="show_licenses">Pokaż licencje</string>
     <string name="licenses">Licencje</string>
     <string name="show_incompatible_pref">Pokaż niekompatybilne moduły</string>
-    <string name="show_incompatible_desc">Wyświetla niekompatybilne moduły z tym urządzeniem na podstawie ich metadanych</string>
+    <string name="show_incompatible_desc">Wyświetl moduły niezgodne z tym urządzeniem na podstawie ich metadanych</string>
     <string name="magisk_outdated">Pojawiła się nowa wersja Magiska do zainstalowania!</string>
     <string name="pref_category_repos">Repozytoria</string>
     <string name="pref_category_security">Zabezpieczenia</string>
@@ -124,7 +124,7 @@
     <string name="notification_update_title">Dostępne są nowe wersje modułów: %1$d</string>
     <string name="notification_update_title_easter_egg">Wywęszono nowe wersje modułów: %i</string>
     <string name="notification_update_subtitle">Kliknij, aby otworzyć aplikację</string>
-    <string name="notification_update_pref">Sprawdzanie aktualizacji modułów</string>
+    <string name="notification_update_pref">Sprawdzaj aktualizacje modułów</string>
     <string name="notification_update_desc">Może zwiększyć użycie baterii</string>
     <string name="notification_update_debug_pref">Powiadomienie testowe</string>
     <!-- Set to true in translation file if your language is right to left -->
@@ -142,7 +142,7 @@
     <string name="api_key_set">Bieżący klucz API Androidacy</string>
     <string name="api_key_invalid">Nie można zweryfikować klucza API. Proszę sprawdzić i spróbować ponownie.</string>
     <string name="api_key_valid">Klucz API jest prawidłowy.</string>
-    <string name="checking_api_key">Sprawdzanie klucza API…</string>
+    <string name="checking_api_key">Weryfikacja klucza API…</string>
     <string name="validating_api_key">Weryfikacja klucza API…</string>
     <string name="please_wait">Proszę czekać</string>
     <string name="api_key_removed">Zresetowano klucz API</string>
@@ -391,5 +391,5 @@
     <string name="donate_androidacy">Wesprzyj Androidacy</string>
     <string name="donate_androidacy_sum">Kup subskrypcję premium na Androidacy, aby wspierać aplikację i repo.</string>
     <string name="promo_code_copied">Użyj skopiowanego kodu, aby uzyskać połowę zniżki na swój pierwszy miesiąc!</string>
-    <string name="warning_pls_restart">Pamiętaj, że niektóre ustawienia mogą nie zacząć działać do momentu ponownego uruchomienia aplikacji.</string>
+    <string name="warning_pls_restart">Niektóre ustawienia zadziałają dopiero po restarcie aplikacji.</string>
 </resources>
