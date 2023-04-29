@@ -101,7 +101,8 @@
     <string name="dev_mode_disabled">Modo desarrollador desactivado</string>
     <string name="force_english_pref">Forzar el idioma al Inglés</string>
     <string name="disable_low_quality_module_filter_pref">Desactivar el filtro de módulos de baja calidad</string>
-    <string name="disable_low_quality_module_filter_desc">Algunos módulos no declaran de manera adecuada sus metadatos causando errores visuales y/o indicando una mala calidad del módulo, actívalo bajo su propio riesgo!</string>
+    <string name="disable_low_quality_module_filter_desc">Algunos módulos no declaran de manera adecuada sus metadatos causando errores visuales y/o indicando una mala calidad del módulo. 
+\nActívalo bajo tu propio riesgo!</string>
     <string name="dns_over_https_desc">
         En algunos casos puede solucionar problemas de conexión
         (No se aplica al WebView)
@@ -204,7 +205,7 @@
     <string name="no_update_available">Estás al día!</string>
     <string name="installing_update">Instalando actualización…</string>
     <string name="no_file_found">ERROR: No se pudo encontrar el paquete de actualización.</string>
-    <string name="feedback_email">Correo (opcional)</string>
+    <string name="feedback_email">Correo electrónico (opcional)</string>
     <string name="copy_button">Copiar texto</string>
     <string name="crash_details">Causa desconocida</string>
     <string name="reset_app">Reiniciar la aplicación</string>
@@ -257,7 +258,7 @@
     <string name="zip_load_failed">No se puede cargar el archivo zip</string>
     <string name="background_update_check_permission_required">Por favor activa las notificaciones para esta opción.</string>
     <string name="repo_update_failed">Algunos repositorios han fallado al actualizarse</string>
-    <string name="setup_custom_repos">Puedes agregar repositorios customizados después en ajustes.</string>
+    <string name="setup_custom_repos">Puedes agregar repositorios personalizados después en ajustes.</string>
     <string name="setup_theme_header">Elige un tema</string>
     <string name="setup_theme_light">Tema claro</string>
     <string name="theme_black">AMOLED Negro</string>
@@ -269,4 +270,37 @@
     <string name="repo_update_failed_message">Los siguientes repositorios han fallado al actualizarse.
 \n%s</string>
     <string name="androidacy_webview_update_required">Tu webview está desactualizado! Por favor actualízalo.</string>
+    <string name="submit">Enviar</string>
+    <string name="setup_message">Bienvenido! Esta aplicación lo ayudará a instalar y administrar módulos Magisk. Para empezar, por favor seleccione las opciones debajo. Estos y más pueden ser configurados en los ajustes más adelante.</string>
+    <string name="contributors">Y por supuesto, gracias a todos nuestros colaboradores, ya sean traducciones, código, o simplemente pasar el rato con ellos! Los queremos a todos.</string>
+    <string name="no_file_provided">No se proporcionó ningún archivo al intentar abrir el zip.</string>
+    <string name="api_key_unchanged">La clave API que ingresa ya está en uso.</string>
+    <string name="androidacy_need_captcha">Actualización de Androidacy bloqueada por Captcha</string>
+    <string name="clear_app_data">Borrar datos de la aplicación</string>
+    <string name="magisk_alt_repo_name">Magisk Repositorio Alternativo</string>
+    <string name="clear_data_dialogue_title">Borrar datos de la aplicación\?</string>
+    <string name="clear_data_dialogue_message">Estás a punto de borrar los datos de la aplicación. Por favor confirma esta acción.</string>
+    <string name="debug_build">Esta es una compilación de depuración. Espere algunos errores y un peor rendimiento.</string>
+    <string name="repo_enabled_changed">Ha activado o desactivado un repositorio. Por favor actualice la lista de módulos o reinicie la aplicación.</string>
+    <string name="setup_theme_black">AMOLED Tema negro</string>
+    <string name="check_for_updates">Buscar actualizaciones de aplicaciones</string>
+    <string name="error_download_update">Ocurrió un error al descargar la información de actualización.</string>
+    <string name="feedback_submit">Enviar y reiniciar</string>
+    <string name="sentry_dialogue_empty_message">No especificó comentarios adicionales.</string>
+    <string name="crash_details_copied">Stacktrace copiado al portapapeles!</string>
+    <string name="upgraded">Premium activo</string>
+    <string name="reset_app_confirmation">Esto borrará por completo los datos de la aplicación, pero no afectará a los módulos.</string>
+    <string name="error_adding">No se pudo agregar el repositorio personalizado</string>
+    <string name="update_debug_download_pref">Probar el mecanismo de descarga de actualizaciones</string>
+    <string name="invalid_excludes">Entrada inválida</string>
+    <string name="background_update_check_excludes">Módulos para excluir de las comprobaciones de actualizaciones automáticas</string>
+    <string name="title_activity_update">Actualizador en la aplicación</string>
+    <string name="invalid_repo_url">La URL que ingresó para el repositorio es inválida</string>
+    <string name="clear_app_cache">Borrar caché de la aplicación</string>
+    <string name="cache_cleared">Caché borrado con éxito</string>
+    <string name="empty_field">Se requiere URL</string>
+    <string name="donate_androidacy">Donar a Androidacy</string>
+    <string name="reset_app_message">Esto eliminará por completo todos los datos de la aplicación y la cerrará. Los módulos no se desinstalarán.</string>
+    <string name="donate_fox">Donar a Fox2Code</string>
+    <string name="error_encrypted_shared_preferences">Ocurrió un error al leer las preferencias compartidas. Por favor reinicie la aplicación.</string>
 </resources>
