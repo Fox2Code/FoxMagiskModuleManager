@@ -106,7 +106,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
     public static String updateCheckBg;
 
     static {
-        Shell.setDefaultBuilder(shellBuilder = Shell.Builder.create().setFlags(Shell.FLAG_REDIRECT_STDERR).setTimeout(10).setContext(MainApplication.getINSTANCE().getApplicationContext()).setInitializers(InstallerInitializer.class));
+        Shell.setDefaultBuilder(shellBuilder = Shell.Builder.create().setFlags(Shell.FLAG_REDIRECT_STDERR).setTimeout(10).setContext(this).setInitializers(InstallerInitializer.class));
         Random random = new Random();
         do {
             secret = random.nextLong();

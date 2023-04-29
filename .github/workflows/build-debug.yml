@@ -53,7 +53,7 @@ jobs:
       #  run: ./gradlew test
 
       - name: Build apk debug
-        run: ./gradlew app:assembleDefaultDebug
+        run: ./gradlew app:assembleDefaultDebug --console=verbose
 
       # will not upload, just build to check if it builds
       - name: Build apk fdroid-debug
