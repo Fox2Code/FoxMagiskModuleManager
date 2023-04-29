@@ -109,17 +109,26 @@ public class InstallerInitializer extends Shell.Initializer {
     private static String tryGetMagiskPath(boolean forceCheck) {
         String MAGISK_PATH = InstallerInitializer.MAGISK_PATH;
         int MAGISK_VERSION_CODE;
-        boolean HAS_RAMDISK = InstallerInitializer.HAS_RAMDISK;
+        boolean HAS_RAMDISK;
         if (MAGISK_PATH != null && !forceCheck) return MAGISK_PATH;
         ArrayList<String> output = new ArrayList<>();
         if (!Shell.cmd("magisk -V", "magisk --path").to(output).exec().isSuccess()) {
-            if (output.size() != 0) {
-                HAS_RAMDISK = "false".equals(output.get(0)) || "true".equalsIgnoreCase(System.getProperty("ro.build.ab_update"));
+            // log the output of each command
+            if (output.size() > 0) {
+                for (String line : output) {
+                    Timber.w("Could not run magisk: %s", line);
+                }
+            } else {
+                Timber.w("Could not run magisk");
             }
-            InstallerInitializer.HAS_RAMDISK = HAS_RAMDISK;
             return null;
         }
-        MAGISK_PATH = output.size() < 2 ? "" : output.get(1);
+        if (output.size() != 2) {
+            return null;
+        }
+        HAS_RAMDISK = "true".equalsIgnoreCase(System.getProperty("ro.build.ab_update"));
+        InstallerInitializer.HAS_RAMDISK = HAS_RAMDISK;
+        MAGISK_PATH = output.get(1);
         Timber.i("Magisk runtime path: %s", MAGISK_PATH);
         MAGISK_VERSION_CODE = Integer.parseInt(output.get(0));
         Timber.i("Magisk version code: %s", MAGISK_VERSION_CODE);
