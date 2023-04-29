@@ -32,7 +32,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 19
-          distribution: 'temurin'
+          distribution: 'oracle'
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
@@ -53,7 +53,7 @@ jobs:
       #  run: ./gradlew test
 
       - name: Build apk debug
-        run: ./gradlew app:assembleDefaultDebug --console=verbose
+        run: ./gradlew app:assembleDefaultDebug
 
       # will not upload, just build to check if it builds
       - name: Build apk fdroid-debug
