@@ -59,11 +59,19 @@ public class InstallerInitializer extends Shell.Initializer {
         return InstallerInitializer.MAGISK_PATH;
     }
 
+    /**
+     * Note: All mirrors are read only on latest magisk
+     */
     public static String peekMirrorPath() {
         return InstallerInitializer.MAGISK_PATH == null ? null :
                 InstallerInitializer.MAGISK_PATH + "/.magisk/mirror";
     }
 
+    /**
+     * Note: Used to detect which modules are currently loaded.
+     * <p>
+     * For read/write only "/data/adb/modules" should be used
+     */
     public static String peekModulesPath() {
         return InstallerInitializer.MAGISK_PATH == null ? null :
                 InstallerInitializer.MAGISK_PATH + "/.magisk/modules";

@@ -163,7 +163,7 @@
     <string name="crash_reporting_restart_message">La aplicación necesita ser reiniciada para que los cambios sean aplicados</string>
     <string name="restart">Reiniciar</string>
     <string name="androidacy_test_mode_disable_warning">La aplicación se reiniciará para deshabilitar el canal de prueba</string>
-    <string name="email">Tu correo</string>
+    <string name="email">Tu correo electrónico</string>
     <string name="permission_notification_title">Permitir notificaciones\?</string>
     <string name="permission_notification_grant">Conceder permiso</string>
     <string name="repos">Repositorios</string>
@@ -264,10 +264,10 @@
     <string name="theme_black">AMOLED Negro</string>
     <string name="setup_title">Configuración inicial</string>
     <string name="language_cta_desc">Ayúdanos traduciéndolo! Pulsa aquí para averiguar más.</string>
-    <string name="install_terminal_reboot_now_message">Estas a punto de reiniciar tu dispositivo. Si guardaste tu trabajo, pulsa OK para continuar.
-\nDe lo contrario, pulsa cancelar.</string>
+    <string name="install_terminal_reboot_now_message">Estas a punto de reiniciar tu dispositivo. Si guardaste tu trabajo, pulsa OK para continuar. De lo contrario, pulsa cancelar.</string>
     <string name="setup_theme_system">Seguir al sistema</string>
-    <string name="repo_update_failed_message">Los siguientes repositorios han fallado al actualizarse.
+    <string name="repo_update_failed_message">Los siguientes repositorios han fallado al actualizarse:
+\n
 \n%s</string>
     <string name="androidacy_webview_update_required">Tu webview está desactualizado! Por favor actualízalo.</string>
     <string name="submit">Enviar</string>
@@ -303,4 +303,33 @@
     <string name="reset_app_message">Esto eliminará por completo todos los datos de la aplicación y la cerrará. Los módulos no se desinstalarán.</string>
     <string name="donate_fox">Donar a Fox2Code</string>
     <string name="error_encrypted_shared_preferences">Ocurrió un error al leer las preferencias compartidas. Por favor reinicie la aplicación.</string>
+    <string name="sentry_dialogue_no_description">No se pudo enviar comentarios por que no se proporcionó una descripción</string>
+    <string name="sentry_dialogue_failed_toast">No se pudo enviar el comentario debido a un error</string>
+    <string name="sentry_dialogue_success">Comentario enviado exitosamente. Lo revisaremos en breve</string>
+    <string name="custom_repo_always_on">Los repositorios personalizados siempre están activos hasta que los elimine.</string>
+    <string name="transparent_theme_dialogue_title">Esta configurando un tema transparente</string>
+    <string name="androidacy_thanks_desc">Un gran agradecimiento a Androidacy por su integración y contribuciones a la aplicación.</string>
+    <string name="share_logs">Compartir registros de FoxMMM</string>
+    <string name="not_official_build">Esta aplicación es una compilación no oficial de FoxMMM.</string>
+    <string name="error_saving_logs">No se pudieron guardar los registros</string>
+    <string name="save_logs">Guardar registros en el almacenamiento y compartir</string>
+    <string name="setup_background_update_check_summary">Permítanos buscar actualizaciones de módulos y aplicaciones en segundo plano. Esta característica puede usar más batería y datos.</string>
+    <string name="install_terminal_config_missing">Falta el paquete %s para configuración del módulo, por lo que no podemos iniciarlo.</string>
+    <string name="setup_crash_reporting_summary">Reporte de fallos y monitoreo del rendimiento. Todos los reportes son estrictamente anónimos y confidenciales.</string>
+    <string name="low_performance_device_dialogue_title">Activar desenfoque en dispositivo de gama baja</string>
+    <string name="setup_theme_transparent_light">Tema transparente claro - desactivará monet y desenfoque!</string>
+    <string name="error_no_action">ERROR: Acción inválida especificada. Negarse a continuar.</string>
+    <string name="error_no_asset">ERROR: No se pudo analizar la información de actualización</string>
+    <string name="reset_api_key">Restablecer claves API</string>
+    <string name="upgrade_androidacy_promo">Mejora a premium</string>
+    <string name="feedback_message">Danos más detalles sobre lo que estabas haciendo cuando esto sucedió. ¡Cuanto más, mejor!</string>
+    <string name="please_feedback">Por favor ayúdanos diciéndonos qué estabas tratando de hacer cuando esto sucedió.</string>
+    <string name="sentry_dialogue_disabled">El reporte de fallos está desactivado. Actívelo para enviar comentarios.</string>
+    <string name="reset_warning">Si sigues viendo esta pantalla, reiniciar la aplicación puede ayudar. Esto borrará los datos de la aplicación pero no afectará a los módulos instalados.</string>
+    <string name="notification_update_ignore_desc">Lista de módulos para excluir de las comprobaciones de actualización</string>
+    <string name="notification_channel_category_background_update">Estado de actualización en segundo plano</string>
+    <string name="notification_channel_background_update_description">FoxMMM comprobando actualizaciones en segundo plano.</string>
+    <string name="notification_update_app_pref">Comprobar actualizaciones de la aplicación</string>
+    <string name="setup_app_analytics">Permitir análisis de aplicación</string>
+    <string name="notification_update_app_desc">Active la comprobación automática de las actualizaciones de aplicaciones. Las actualizaciones no se descargarán automáticamente.</string>
 </resources>
