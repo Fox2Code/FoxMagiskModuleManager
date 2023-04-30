@@ -18,21 +18,33 @@ import java.util.ArrayList;
 import timber.log.Timber;
 
 public class InstallerInitializer extends Shell.Initializer {
-    public static final int ERROR_NO_PATH = 1;
-    public static final int ERROR_NO_SU = 2;
-    public static final int ERROR_OTHER = 3;
-    private static final File MAGISK_SBIN = new File("/sbin/magisk");
-    private static final File MAGISK_SYSTEM = new File("/system/bin/magisk");
-    private static final File MAGISK_SYSTEM_EX = new File("/system/xbin/magisk");
-    private static final boolean HAS_MAGISK = MAGISK_SBIN.exists() || MAGISK_SYSTEM.exists() || MAGISK_SYSTEM_EX.exists();
+    private static final File MAGISK_SBIN =
+            new File("/sbin/magisk");
+    private static final File MAGISK_SYSTEM =
+            new File("/system/bin/magisk");
+    private static final File MAGISK_SYSTEM_EX =
+            new File("/system/xbin/magisk");
+    private static final boolean HAS_MAGISK = MAGISK_SBIN.exists() ||
+            MAGISK_SYSTEM.exists() || MAGISK_SYSTEM_EX.exists();
     private static String MAGISK_PATH;
     private static int MAGISK_VERSION_CODE;
     private static boolean HAS_RAMDISK;
 
+    public static final int ERROR_NO_PATH = 1;
+    public static final int ERROR_NO_SU = 2;
+    public static final int ERROR_OTHER = 3;
+
+    public interface Callback {
+        void onPathReceived(String path);
+
+        void onFailure(int error);
+    }
+
     @Nullable
     public static NotificationType getErrorNotification() {
         Boolean hasRoot = Shell.isAppGrantedRoot();
-        if (MAGISK_PATH != null && hasRoot != Boolean.FALSE) {
+        if (MAGISK_PATH != null &&
+                hasRoot != Boolean.FALSE) {
             return null;
         }
         if (!HAS_MAGISK) {
@@ -48,11 +60,13 @@ public class InstallerInitializer extends Shell.Initializer {
     }
 
     public static String peekMirrorPath() {
-        return InstallerInitializer.MAGISK_PATH == null ? null : InstallerInitializer.MAGISK_PATH + "/.magisk/mirror";
+        return InstallerInitializer.MAGISK_PATH == null ? null :
+                InstallerInitializer.MAGISK_PATH + "/.magisk/mirror";
     }
 
     public static String peekModulesPath() {
-        return InstallerInitializer.MAGISK_PATH == null ? null : InstallerInitializer.MAGISK_PATH + "/.magisk/modules";
+        return InstallerInitializer.MAGISK_PATH == null ? null :
+                InstallerInitializer.MAGISK_PATH + "/.magisk/modules";
     }
 
     public static int peekMagiskVersion() {
@@ -67,7 +81,7 @@ public class InstallerInitializer extends Shell.Initializer {
         tryGetMagiskPathAsync(callback, false);
     }
 
-    public static void tryGetMagiskPathAsync(Callback callback, boolean forceCheck) {
+    public static void tryGetMagiskPathAsync(Callback callback,boolean forceCheck) {
         final String MAGISK_PATH = InstallerInitializer.MAGISK_PATH;
         Thread thread = new Thread("Magisk GetPath Thread") {
             @Override
@@ -109,30 +123,26 @@ public class InstallerInitializer extends Shell.Initializer {
     private static String tryGetMagiskPath(boolean forceCheck) {
         String MAGISK_PATH = InstallerInitializer.MAGISK_PATH;
         int MAGISK_VERSION_CODE;
-        boolean HAS_RAMDISK;
+        boolean HAS_RAMDISK = InstallerInitializer.HAS_RAMDISK;
         if (MAGISK_PATH != null && !forceCheck) return MAGISK_PATH;
         ArrayList<String> output = new ArrayList<>();
-        if (!Shell.cmd("magisk -V", "magisk --path").to(output).exec().isSuccess()) {
-            // log the output of each command
-            if (output.size() > 0) {
-                for (String line : output) {
-                    Timber.w("Could not run magisk: %s", line);
-                }
-            } else {
-                Timber.w("Could not run magisk");
+        if(!Shell.cmd("if grep ' / ' /proc/mounts | grep -q '/dev/root' &> /dev/null; " +
+                        "then echo true; else echo false; fi", "magisk -V", "magisk --path")
+                .to(output).exec().isSuccess()) {
+            if (output.size() != 0) {
+                HAS_RAMDISK = "false".equals(output.get(0)) ||
+                        "true".equalsIgnoreCase(System.getProperty("ro.build.ab_update"));
             }
+            InstallerInitializer.HAS_RAMDISK = HAS_RAMDISK;
             return null;
         }
-        if (output.size() != 2) {
-            return null;
-        }
-        HAS_RAMDISK = "true".equalsIgnoreCase(System.getProperty("ro.build.ab_update"));
-        InstallerInitializer.HAS_RAMDISK = HAS_RAMDISK;
-        MAGISK_PATH = output.get(1);
+        MAGISK_PATH = output.size() < 3 ? "" : output.get(2);
         Timber.i("Magisk runtime path: %s", MAGISK_PATH);
-        MAGISK_VERSION_CODE = Integer.parseInt(output.get(0));
+        MAGISK_VERSION_CODE = Integer.parseInt(output.get(1));
         Timber.i("Magisk version code: %s", MAGISK_VERSION_CODE);
-        if (MAGISK_VERSION_CODE >= Constants.MAGISK_VER_CODE_FLAT_MODULES && MAGISK_VERSION_CODE < Constants.MAGISK_VER_CODE_PATH_SUPPORT && (MAGISK_PATH.isEmpty() || !Files.existsSU(new File(MAGISK_PATH)))) {
+        if (MAGISK_VERSION_CODE >= Constants.MAGISK_VER_CODE_FLAT_MODULES &&
+                MAGISK_VERSION_CODE < Constants.MAGISK_VER_CODE_PATH_SUPPORT &&
+                (MAGISK_PATH.isEmpty() || !new File(MAGISK_PATH).exists())) {
             MAGISK_PATH = "/sbin";
         }
         if (MAGISK_PATH.length() != 0 && Files.existsSU(new File(MAGISK_PATH))) {
@@ -147,46 +157,8 @@ public class InstallerInitializer extends Shell.Initializer {
 
     @Override
     public boolean onInit(@NonNull Context context, @NonNull Shell shell) {
-        // open a new shell
-        shell.newJob().add("id").exec().getOut();
-        // if Shell.isAppGrantedRoot() returns null, loop until it doesn't
-        if (Shell.isAppGrantedRoot() == null) {
-            Timber.w("Waiting for root access...");
-            while (Shell.isAppGrantedRoot() == null) {
-                try {
-                    //noinspection BusyWait
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    Timber.e(e);
-                }
-            }
-        }
-        boolean hasRoot = Boolean.TRUE.equals(Shell.isAppGrantedRoot());
-        if (!hasRoot) {
-            Timber.w("No root access, or libsu is misreporting");
-            return false;
-        }
-        // switch to global namespace
-        // first, try to copy /data/adb/magisk/busybox to /data/local/tmp
-        // if that fails, return false
-        if (shell.newJob().add("cp -f /data/adb/magisk/busybox /data/local/tmp").exec().isSuccess()) {
-            // switch to local namespace
-            // first check if nsenter is available
-            if (!shell.newJob().add("which nsenter").exec().isSuccess()) {
-                Timber.w("nsenter cmd unavailable");
-                return shell.newJob().add("export ASH_STANDALONE=1; /data/local/tmp/busybox ash").exec().isSuccess();
-            } else {
-                return shell.newJob().add("export ASH_STANDALONE=1; nsenter -t 1 -m -u /data/local/tmp/busybox ash").exec().isSuccess();
-            }
-        } else {
-            Timber.w("Could not copy bb");
-            return false;
-        }
-    }
-
-    public interface Callback {
-        void onPathReceived(String path);
-
-        void onFailure(int error);
+        if (!shell.isRoot())
+            return true;
+        return shell.newJob().add("export ASH_STANDALONE=1").exec().isSuccess();
     }
 }
