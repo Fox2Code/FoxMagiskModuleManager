@@ -42,11 +42,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:indeterminate="true"
-        android:scaleY="2"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/swipe_refresh"
+        app:layout_constraintTop_toTopOf="@+id/root_container"
         app:showAnimationBehavior="outward" />
 
     <LinearLayout

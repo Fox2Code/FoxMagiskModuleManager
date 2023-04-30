@@ -257,6 +257,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     moduleViewListBuilder.addNotification(NotificationType.INSTALL_FROM_STORAGE);
                 ModuleManager.getINSTANCE().scan();
                 ModuleManager.getINSTANCE().runAfterScan(moduleViewListBuilder::appendInstalledModules);
+                ModuleManager.getINSTANCE().runAfterScan(moduleViewListBuilderOnline::appendRemoteModules);
                 this.commonNext();
             }
 
@@ -276,6 +277,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 NotificationType.NO_INTERNET.autoAdd(moduleViewListBuilderOnline);
                 // hide progress bar is repo-manager says we have no internet
                 if (!RepoManager.getINSTANCE().hasConnectivity()) {
+                    Timber.i("No connection, hiding progress");
                     runOnUiThread(() -> {
                         progressIndicator.setVisibility(View.GONE);
                         progressIndicator.setIndeterminate(false);
@@ -300,12 +302,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                     });
                 }
                 moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
-                runOnUiThread(() -> {
-                    progressIndicator.setIndeterminate(false);
-                    progressIndicator.setMax(PRECISION);
-                    // Fix insets not being accounted for correctly
-                    updateScreenInsets(getResources().getConfiguration());
-                });
 
                 Timber.i("Scanning for modules!");
                 if (BuildConfig.DEBUG) Timber.i("Initialize Update");
@@ -367,16 +363,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                         }
                     }
                 }
-                runOnUiThread(() -> {
-                    progressIndicator.setProgressCompat(PRECISION, true);
-                    progressIndicator.setVisibility(View.GONE);
-                    searchView.setEnabled(true);
-                    updateScreenInsets(getResources().getConfiguration());
-                });
                 if (BuildConfig.DEBUG) Timber.i("Apply");
                 RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilderOnline::appendRemoteModules);
-                // logic to handle updateable modules
-                moduleViewListBuilder.applyTo(moduleListOnline, moduleViewAdapterOnline);
                 moduleViewListBuilderOnline.applyTo(moduleListOnline, moduleViewAdapterOnline);
                 // if moduleViewListBuilderOnline has the upgradeable notification, show a badge on the online repo nav item
                 if (MainApplication.getINSTANCE().modulesHaveUpdates) {
@@ -389,6 +377,12 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                         Timber.i("Badge applied");
                     });
                 }
+                runOnUiThread(() -> {
+                    progressIndicator.setProgressCompat(PRECISION, true);
+                    progressIndicator.setVisibility(View.GONE);
+                    searchView.setEnabled(true);
+                    updateScreenInsets(getResources().getConfiguration());
+                });
                 Timber.i("Finished app opening state!");
             }
         }, true);

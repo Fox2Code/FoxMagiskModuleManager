@@ -134,6 +134,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
     }
 
     public Type getType() {
+        Timber.d("Getting type for %s", this.moduleId);
         if (this.footerPx != -1) {
             return Type.FOOTER;
         } else if (this.separator != null) {
@@ -141,6 +142,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
         } else if (this.notificationType != null) {
             return Type.NOTIFICATION;
         } else if (this.moduleInfo == null) {
+            Timber.d("Module %s is not installed", this.moduleId);
             return Type.INSTALLABLE;
         } else if (this.moduleInfo.versionCode < this.moduleInfo.updateVersionCode ||
                 (this.repoModule != null && this.moduleInfo.versionCode <
@@ -152,8 +154,10 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
                 MainApplication.getINSTANCE().updateModuleCount++;
             }
             Timber.d("modulesHaveUpdates = %s, updateModuleCount = %s", MainApplication.getINSTANCE().modulesHaveUpdates, MainApplication.getINSTANCE().updateModuleCount);
+            Timber.d("Module %s has update", this.moduleId);
             return Type.UPDATABLE;
         } else {
+            Timber.d("Module %s is installed", this.moduleId);
             return Type.INSTALLED;
         }
     }
