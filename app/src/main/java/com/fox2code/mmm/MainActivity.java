@@ -46,6 +46,7 @@ import com.fox2code.mmm.manager.ModuleManager;
 import com.fox2code.mmm.module.ModuleViewAdapter;
 import com.fox2code.mmm.module.ModuleViewListBuilder;
 import com.fox2code.mmm.repo.RepoManager;
+import com.fox2code.mmm.repo.RepoModule;
 import com.fox2code.mmm.settings.SettingsActivity;
 import com.fox2code.mmm.utils.ExternalHelper;
 import com.fox2code.mmm.utils.io.net.Http;
@@ -58,6 +59,8 @@ import com.google.android.material.snackbar.Snackbar;
 import org.matomo.sdk.extra.TrackHelper;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import io.realm.Realm;
@@ -84,6 +87,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     private CardView searchCard;
     private SearchView searchView;
     private boolean initMode;
+    public static List<LocalModuleInfo> localModuleInfoList = new ArrayList<>();
+    public static List<RepoModule> onlineModuleInfoList = new ArrayList<>();
 
     public MainActivity() {
         this.moduleViewListBuilder = new ModuleViewListBuilder(this);
@@ -365,6 +370,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 }
                 if (BuildConfig.DEBUG) Timber.i("Apply");
                 RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilderOnline::appendRemoteModules);
+                moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
+                moduleViewListBuilder.applyTo(moduleListOnline, moduleViewAdapterOnline);
                 moduleViewListBuilderOnline.applyTo(moduleListOnline, moduleViewAdapterOnline);
                 // if moduleViewListBuilderOnline has the upgradeable notification, show a badge on the online repo nav item
                 if (MainApplication.getINSTANCE().modulesHaveUpdates) {
@@ -589,8 +596,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
             RepoManager.getINSTANCE().updateEnabledStates();
             RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilderOnline::appendRemoteModules);
-            this.moduleViewListBuilderOnline.applyTo(moduleListOnline, moduleViewAdapterOnline);
             this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
+            this.moduleViewListBuilderOnline.applyTo(moduleListOnline, moduleViewAdapterOnline);
         }, "Repo update thread").start();
     }
 

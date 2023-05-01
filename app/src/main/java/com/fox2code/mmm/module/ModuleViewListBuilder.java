@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fox2code.mmm.AppUpdateManager;
 import com.fox2code.mmm.BuildConfig;
+import com.fox2code.mmm.MainActivity;
 import com.fox2code.mmm.MainApplication;
 import com.fox2code.mmm.NotificationType;
 import com.fox2code.mmm.installer.InstallerInitializer;
@@ -84,6 +85,8 @@ public class ModuleViewListBuilder {
             moduleManager.runAfterScan(() -> {
                 Timber.i("A1: %s", moduleManager.getModules().size());
                 for (LocalModuleInfo moduleInfo : moduleManager.getModules().values()) {
+                    // add the local module to the list in MainActivity
+                    MainActivity.localModuleInfoList.add(moduleInfo);
                     ModuleHolder moduleHolder = this.mappedModuleHolders.get(moduleInfo.id);
                     if (moduleHolder == null) {
                         this.mappedModuleHolders.put(moduleInfo.id,
@@ -109,6 +112,8 @@ public class ModuleViewListBuilder {
                 Timber.i("A2: %s", repoManager.getModules().size());
                 boolean no32bitSupport = Build.SUPPORTED_32_BIT_ABIS.length == 0;
                 for (RepoModule repoModule : repoManager.getModules().values()) {
+                    // add the remote module to the list in MainActivity
+                    MainActivity.onlineModuleInfoList.add(repoModule);
                     // if repoData is null, something is wrong
                     if (repoModule.repoData == null) {
                         Timber.w("RepoData is null for module %s", repoModule.id);
@@ -138,6 +143,14 @@ public class ModuleViewListBuilder {
                                 moduleHolder = new ModuleHolder(repoModule.id));
                     }
                     moduleHolder.repoModule = repoModule;
+                    // check if local module is installed
+                    // iterate over MainActivity.localModuleInfoList until we hit the module with the same id
+                    for (LocalModuleInfo localModuleInfo : MainActivity.localModuleInfoList) {
+                        if (localModuleInfo.id.equals(repoModule.id)) {
+                            moduleHolder.moduleInfo = localModuleInfo;
+                            break;
+                        }
+                    }
                 }
             });
         }
@@ -174,7 +187,7 @@ public class ModuleViewListBuilder {
         return false;
     }
 
-    public void applyTo(final RecyclerView moduleList,final ModuleViewAdapter moduleViewAdapter) {
+    public void applyTo(final RecyclerView moduleList, final ModuleViewAdapter moduleViewAdapter) {
         if (this.updating) return;
         this.updating = true;
         ModuleManager.getINSTANCE().afterScan();

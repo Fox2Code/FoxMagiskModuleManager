@@ -35,6 +35,7 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="cornerRadius">@dimen/card_corner_radius</item>
     </style>
 
     <style name="Widget.Material3.Chip.Choice.Light" parent="Widget.Material3.Chip.Assist">
@@ -68,6 +69,8 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="cornerRadius">@dimen/card_corner_radius</item>
+        <item name="alertDialogTheme">@style/Theme.MagiskModuleManager.AlertDialog</item>
     </style>
 
     <style name="Theme.MagiskModuleManager.Dark" parent="Theme.Material3.Dark">
@@ -104,6 +107,8 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="cornerRadius">@dimen/card_corner_radius</item>
+        <item name="alertDialogTheme">@style/Theme.MagiskModuleManager.AlertDialog</item>
     </style>
 
     <!-- Black theme, which is just a dark theme with a black background -->
@@ -118,7 +123,6 @@
         <item name="colorPrimaryVariant">@color/orange_700</item>
         <item name="colorSecondary">@color/orange_500</item>
         <item name="colorSecondaryVariant">@color/orange_700</item>
-        <!-- Fix some unthemed dialogs -->
         <item name="android:colorAccent">@color/orange_200</item>
         <item name="android:colorBackground">@color/black</item>
         <item name="android:colorForeground">@color/white</item>
@@ -133,6 +137,8 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="cornerRadius">@dimen/card_corner_radius</item>
+        <item name="alertDialogTheme">@style/Theme.MagiskModuleManager.AlertDialog</item>
     </style>
 
     <style name="Widget.Material.Chip.Choice.Dark" parent="Widget.MaterialComponents.Chip.Action">
@@ -159,6 +165,8 @@
         <!-- fonts -->
         <item name="android:fontFamily">@font/inter</item>
         <item name="font">@font/inter</item>
+        <item name="cornerRadius">@dimen/card_corner_radius</item>
+        <item name="alertDialogTheme">@style/Theme.MagiskModuleManager.AlertDialog</item>
     </style>
 
     <style name="Theme.MagiskModuleManager" parent="Theme.MagiskModuleManager.Light" />
@@ -173,4 +181,13 @@
     <style name="Theme.MagiskModuleManager.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.MagiskModuleManager.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+
+    <style name="Theme.MagiskModuleManager.AlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="dialogCornerRadius">28dp</item>
+        <item name="cornerFamily">rounded</item>
+        <item name="android:colorBackground">?attr/colorSurface</item>
+        <item name="android:layout" tools:ignore="PrivateResource">@layout/m3_alert_dialog</item>
+    </style>
 </resources>

@@ -32,6 +32,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
     public final Type separator;
     public int footerPx;
     public View.OnClickListener onClickListener;
+
     public LocalModuleInfo moduleInfo;
     public RepoModule repoModule;
     public int filterLevel;

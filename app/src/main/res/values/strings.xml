@@ -412,4 +412,5 @@
     <string name="donate_androidacy_sum">Buy a premium subscription to Androidacy to support the app and the repo.</string>
     <string name="promo_code_copied">Use the copied code for half off your first month!</string>
     <string name="warning_pls_restart">Please note that some settings may not take effect until you restart the app.</string>
+    <string name="reinstall">Reinstall</string>
 </resources>

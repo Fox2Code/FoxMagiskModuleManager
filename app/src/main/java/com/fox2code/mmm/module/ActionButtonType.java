@@ -27,6 +27,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.matomo.sdk.extra.TrackHelper;
 
+import java.util.Objects;
+
 import io.noties.markwon.Markwon;
 import timber.log.Timber;
 
@@ -66,20 +68,24 @@ public enum ActionButtonType {
     }, UPDATE_INSTALL() {
         @Override
         public void update(Chip button, ModuleHolder moduleHolder) {
-            int icon = moduleHolder.hasUpdate() ? R.drawable.ic_baseline_update_24 : R.drawable.ic_baseline_system_update_24;
-            button.setChipIcon(button.getContext().getDrawable(icon));
+            int icon;
             if (moduleHolder.hasUpdate()) {
+                icon = R.drawable.ic_baseline_update_24;
                 button.setText(R.string.update);
+            } else if (moduleHolder.moduleInfo != null) {
+                icon = R.drawable.ic_baseline_refresh_24;
+                button.setText(R.string.reinstall);
             } else {
+                icon = R.drawable.ic_baseline_system_update_24;
                 button.setText(R.string.install);
             }
+            button.setChipIcon(button.getContext().getDrawable(icon));
         }
 
         @Override
         public void doAction(Chip button, ModuleHolder moduleHolder) {
             ModuleInfo moduleInfo = moduleHolder.getMainModuleInfo();
-            if (moduleInfo == null)
-                return;
+            if (moduleInfo == null) return;
 
             String name;
             if (moduleHolder.moduleInfo != null) {
@@ -89,8 +95,7 @@ public enum ActionButtonType {
             }
             TrackHelper.track().event("view_update_install", name).with(MainApplication.getINSTANCE().getTracker());
             String updateZipUrl = moduleHolder.getUpdateZipUrl();
-            if (updateZipUrl == null)
-                return;
+            if (updateZipUrl == null) return;
             // Androidacy manage the selection between download and install
             if (AndroidacyUtil.isAndroidacyLink(updateZipUrl)) {
                 IntentHelper.openUrlAndroidacy(button.getContext(), updateZipUrl, true, moduleInfo.name, moduleInfo.config);
@@ -132,7 +137,7 @@ public enum ActionButtonType {
                 }
             }
             if (markwon != null) {
-                TextView messageView = alertDialog.getWindow().findViewById(android.R.id.message);
+                TextView messageView = Objects.requireNonNull(alertDialog.getWindow()).findViewById(android.R.id.message);
                 markwon.setParsedMarkdown(messageView, (Spanned) desc);
             }
         }
@@ -197,8 +202,7 @@ public enum ActionButtonType {
         @Override
         public void doAction(Chip button, ModuleHolder moduleHolder) {
             String config = moduleHolder.getMainModuleConfig();
-            if (config == null)
-                return;
+            if (config == null) return;
 
             String name;
             if (moduleHolder.moduleInfo != null) {
