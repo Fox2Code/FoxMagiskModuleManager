@@ -44,6 +44,7 @@ jobs:
             caches
             notifications
             jdks
+            ${{ github.workspace }}/.gradle/configuration-cache
 
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
