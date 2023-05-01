@@ -1,8 +1,11 @@
-name: build
+name: Dependencies
 on:
   push:
     branches:
-      - develop # run the action on your projects default branch
+      - master # run the action on your projects default branch
+  pull_request:
+    branches:
+      - master # run the action on your projects default branch
 
 jobs:
   build:
