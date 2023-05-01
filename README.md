@@ -1,70 +1,39 @@
-# Fox's Magisk Module Manager
+# Androidacy Module Manager
 
-### Sponsored by and developed with Androidacy. Find them on the web [here](https://www.androidacy.com/?utm_source=fox-readme&utm_medium=web&utm_campagin=github).
+### Developed by Androidacy. Find us on the web [here](https://www.androidacy.com/?utm_source=fox-readme&utm_medium=web&utm_campagin=github).
 
-<details>
-<summary>
-  Important news about Fox2Code
-</summary>
+## About
 
-**Tl;Dr: Fox2Code is temporarily less involved with development and support due to health issues. Androidacy is happy to take on both in his absence, and will continue to provide both upon his return.**
+The official Magisk Manager app has dropped it's support for downloading online modules, leaving users without a way to easily search for and download them. This app was created to help users download and install modules, and manage their own modules.
 
-I have health problems that made me work slow on everything. I don't like sharing my health problems
-but it has been to much recently for me to keep it for myself.
+**This app is not officially supported by Magisk or its developers**
 
-This has been too much for me recently, so my moderators (same that on telegram)
-will be handling the project for me for a while.
+**The modules shown in this app are not affiliated with this app or Magisk**.
 
-I had theses problems even before I started FoxMMM, the only reason no one noticed is because I can
-work or go to any school because of how much pain and exhaustion I feel everyday.
+_If you're seeing this at the Fox2Code repo, the new repo is at [Androidacy/AndroidacyModuleManager](https://github.com/Androidacy/AndroidacyModuleManager)!_
 
-The only two thing that helped me reduce the pain is making code and playing with friends.
-
-Even tho I'm very slow at doing anything, the only thing that made me look like I was working on
-this project at a normal speed like someone that work is because 75% of my time was on this project.
-
-There was also some times I couldn't work on this projects for multiple days because of my health,
-sometimes I was forcing myself to change one line of code from this project because doing nothing
-was more painful that trying something while in pain.
-
-Spending time with my friend and working on this project was a sort of pain killer for me.
-
-Even tho I received money from my parent and the government for my health problems, I didn't know
-what to do with it cause anything I could have bought had no use for me because my extreme pain made
-me unable to use anything (even play video games).
-
-My health issues also prevented me to do any project of greater complexity that this, and without
-community support I would have been physically unable to continue this project.
-
-There was clues of my health problems, right on this project, and theses are the following:
-
-- My commit time of day being random proving I have no jobs.
-- Me not committing for entire week, or having only committed one line in a week.
-- Me taking too much time to publish release after I did the release commit.
-- Me missing obvious bugs and being able to do simple task properly
-  (Well maybe this last one is harder to prove via commit history)
-
-But since many people are faking health issues for clout, if any data-scientist want to do an
-analysis to prove what it would make my day, and I would be happy to give money if someone does
-that because I don't know what do to with my money at this point.
-
-This is really sickening peoples need to give proof for their mental/health issues because some
-peoples fake having those issues for clout.
-
-If you want to use my health problems for clout, I don't care as long as you are respectful, at
-least you won't be hurting peoples with mental/health issues by faking having those issues.
-
-I'll probably delete this section once my health would be gotten better, or at least good enough for
-me to not be stuck in my bed at least once a day because of pain.
-
-</details>
+## Features
+- Download and install modules
+- Manage your own modules
+- Search for and download modules
+- Supports custom repos
+- Separate lists of local and remote modules
+- Check for module updates automatically
+- Monet theming
+- Fully MD3 themed 
+- (Coming soon) Repo creation wizard
+- (Coming soon) Module creator
 
 ## Community
 
-[![Telegram Group](https://img.shields.io/endpoint?color=neon&style=flat&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2FFox2Code_Chat)](https://telegram.dog/Fox2Code_Chat)
+[![Telegram Group](https://img.shields.io/endpoint?color=neon&style=flat&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fandroidacy_discussions)](https://telegram.dog/androidacy_discussions)
 <a href="https://translate.nift4.org/engage/foxmmm/">
 <img src="https://translate.nift4.org/widgets/foxmmm/-/foxmmm/svg-badge.svg" alt="Translation status" />
 </a>
+
+### We'd like to thank Fox2Code for his initial work on the app.
+
+This app was previously known as Fox's Magisk Module Manager (FoxMMM) and may still be referred to as that. Androidacy thanks Fox2Code for their initial work on this app, and wishes him the best in his future endeavours.
 
 ## Screenshots
 
@@ -74,30 +43,20 @@ Main activity:
 |:-----------------------------------------------------------------------------:|:-------------------------------------------------------------------------------:|
 | [<img src="docs/screenshot-dark.jpg" width="250"/>](docs/screenshot-dark.jpg) | [<img src="docs/screenshot-light.jpg" width="250"/>](docs/screenshot-light.jpg) |
 
-## What is this?
-
-The official Magisk has dropped support to download online modules, so I made Fox's Magisk Module
-Manager to help you download and install Magisk modules.
-
-**This app is not officially supported by Magisk or its developers**
-
-**The modules shown in this app are not affiliated with this app or Magisk**  
-(Please contact repo owners instead)
-
 ## Requirements
 
 ### Minimum / Recommended:
 
-- Android 6.0+ / Android 7.0+
+- Android 7.0+ / Android 8.0+
 - Magisk 19.0+ / Magisk 21.2+
 - An internet connection / A stable wifi connection
 
 Note: This app may require the use of a VPN in countries with a state wide firewall.
 
-## For users
+## Installation
 
-To install the app go to [releases](https://github.com/Fox2Code/FoxMagiskModuleManager/releases),
-and download and install the latest `.apk` on your device.
+To install the app go to [our website](https://www.androidacy.com/downloads/?view=FoxMMM),
+and download and install the latest `.apk` for your architecture on your device.
 
 ## Repositories Available
 
@@ -118,11 +77,11 @@ installing from them is at the user's own risk. Default repos can be enabled or 
     - [Read more](https://www.androidacycom/doing-it-alone-the-what-the-how-and-the-why/?utm_source=fox-readme&utm_medium=web&utm_campagin=github)
       | [Privacy policy](https://www.androidacy.com/privacy/?utm_source=fox-readme&utm_medium=web&utm_campagin=github)
 - Added features like module reviews, automatic VirusTotal scans, and more.
-    - Pays module developers for their work as part of the Revenue Sharing Program
+    - Pays module developers for their work as part of the Revenue Sharing Program 
 
-Support:
+**Support:**
 
-[![Telegram Group](https://img.shields.io/endpoint?color=neon&style=flat&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fandroidacy_discussions)](https://telegram.dog/androidacy_discussions)
+&emsp; [![Telegram Group](https://img.shields.io/endpoint?color=neon&style=flat&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fandroidacy_discussions)](https://telegram.dog/androidacy_discussions)
 
 #### [Magisk Alt Repo](https://github.com/Magisk-Modules-Alt-Repo)
 
@@ -131,10 +90,11 @@ Support:
     - May have lower quality, untested, or otherwise broken modules due to their policies or lack
       thereof.
 - Officially supported by Fox's mmm
+- Disabled by default and no longer recommended. Kept as an alternative for those who want it
 
-Support:
+**Support:**
 
-[![GitHub issues](https://img.shields.io/github/issues/Magisk-Modules-Alt-Repo/submission)](https://github.com/Magisk-Modules-Alt-Repo/submission/issues)
+&emsp; [![GitHub issues](https://img.shields.io/github/issues/Magisk-Modules-Alt-Repo/submission)](https://github.com/Magisk-Modules-Alt-Repo/submission/issues)
 
 **Please do not use GitHub issues for help or questions. GitHub issues are specifically for bug
 reporting and general app feedback.**
@@ -142,13 +102,9 @@ reporting and general app feedback.**
 If a module is in multiple repos, the manager will just pick the most up to date version of the
 module, if a module is in multiple repos it will just use first registered repo.
 
-Note: If you or a friend uploaded a module and it doesn't appear in your module list you can disable
-the low quality filter in the app settings.  
-Go to the [developer documentation](docs/DEVELOPERS.md) for more info.
-
 ## For developers
 
-The manager can read new meta keys to allow modules to customize their own entry
+The manager can read a few new meta keys to allow modules to customize their own entry
 
 It also use `minApi`, `maxApi` and `minMagisk` in the `module.prop` to detect compatibility  
 And support the `support` and `donate` properties to allow them to add their own support links  
@@ -156,7 +112,10 @@ And if you want to be event fancier you can setup `config` to your own config ap
 (Note: the manager use fallback values for some modules, see developer documentation for more info)
 
 It also add new ways to control the installer ui via a new `#!` command system  
-It allow module developers to have a more customizable install experience
+It allows module developers to craft a more customizable install experience.
+
+If you created and uploaded a module and it doesn't appear in your module list you can disable
+the low quality filter in the app settings after enabling developer mode. **Ideally, we recommend you to fix your module metadata rather than disabling that filter.**
 
 For more information please check the [developer documentation](docs/DEVELOPERS.md)
 
@@ -203,14 +162,14 @@ whatsoever for them, outside of direct implementation bugs.
 
 ## License
 
-Fox's Magisk Manager, the icon, and names are copyright
-2021-present [Fox2Code](https://github.com/Fox2Code). The Androidacy name, logo, integration, and
+Fox's Magisk Module Manager, the icon, and names are copyright
+2021-present [Fox2Code](https://github.com/Fox2Code). The Androidacy name(s), logo, integration, and
 later portions of the code are copyright
 2022-present [Androidacy](https://www.androidacy.com/?utm_source=fox-repo&utm_medium=web). See
 [LICENSE](LICENCE) for details. Library licenses can be found in the licenses section of the app.
 
 Modules and their files, names, and other assets are not covered by this license or other
-agreements, and are not warranted, checked, or otherwise guaranteed by the authors of this app.
+agreements, and are not warranted, checked, or otherwise guaranteed by the authors of this app, and may have their own licenses, agreements, and terms, of which the author(s) of this app do not check or have any responsibility for.
 
 Some third party backend services may have additional terms, please check their
 terms of service before
