@@ -1,14 +1,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory>
-        <Preference
-            app:icon="@drawable/ic_baseline_info_24"
-            app:key="pref_warning_restart"
-            app:enabled="false"
-            app:singleLineTitle="false"
-            app:title="@string/warning_pls_restart" />
-    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/warning_pls_restart" app:icon="@drawable/ic_baseline_info_24"/>
 
     <!-- Custom repos has been announced, check https://github.com/Fox2Code/FoxMagiskModuleManager/issues/131 -->
     <PreferenceCategory app:title="@string/pref_category_repos">
