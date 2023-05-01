@@ -532,6 +532,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
                 if (BuildConfig.DEBUG) Timber.i("Apply");
                 RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilderOnline::appendRemoteModules);
                 Timber.i("Common Before applyTo");
+                moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
                 moduleViewListBuilderOnline.applyTo(moduleListOnline, moduleViewAdapterOnline);
                 Timber.i("Common After");
             }

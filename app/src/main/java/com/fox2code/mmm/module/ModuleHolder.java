@@ -72,30 +72,19 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
     }
 
     public ModuleInfo getMainModuleInfo() {
-        return this.repoModule != null && (this.moduleInfo == null ||
-                this.moduleInfo.versionCode < this.repoModule.moduleInfo.versionCode)
-                ? this.repoModule.moduleInfo : this.moduleInfo;
+        return this.repoModule != null && (this.moduleInfo == null || this.moduleInfo.versionCode < this.repoModule.moduleInfo.versionCode) ? this.repoModule.moduleInfo : this.moduleInfo;
     }
 
     public String getUpdateZipUrl() {
-        return this.moduleInfo == null || (this.repoModule != null &&
-                this.moduleInfo.updateVersionCode <
-                        this.repoModule.moduleInfo.versionCode) ?
-                this.repoModule.zipUrl : this.moduleInfo.updateZipUrl;
+        return this.moduleInfo == null || (this.repoModule != null && this.moduleInfo.updateVersionCode < this.repoModule.moduleInfo.versionCode) ? this.repoModule.zipUrl : this.moduleInfo.updateZipUrl;
     }
 
     public String getUpdateZipRepo() {
-        return this.moduleInfo == null || (this.repoModule != null &&
-                this.moduleInfo.updateVersionCode <
-                        this.repoModule.moduleInfo.versionCode) ?
-                this.repoModule.repoData.id : "update_json";
+        return this.moduleInfo == null || (this.repoModule != null && this.moduleInfo.updateVersionCode < this.repoModule.moduleInfo.versionCode) ? this.repoModule.repoData.id : "update_json";
     }
 
     public String getUpdateZipChecksum() {
-        return this.moduleInfo == null || (this.repoModule != null &&
-                this.moduleInfo.updateVersionCode <
-                        this.repoModule.moduleInfo.versionCode) ?
-                this.repoModule.checksum : this.moduleInfo.updateChecksum;
+        return this.moduleInfo == null || (this.repoModule != null && this.moduleInfo.updateVersionCode < this.repoModule.moduleInfo.versionCode) ? this.repoModule.checksum : this.moduleInfo.updateChecksum;
     }
 
     public String getMainModuleName() {
@@ -121,8 +110,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
     public String getUpdateTimeText() {
         if (this.repoModule == null) return "";
         long timeStamp = this.repoModule.lastUpdated;
-        return timeStamp <= 0 ? "" :
-                MainApplication.formatTime(timeStamp);
+        return timeStamp <= 0 ? "" : MainApplication.formatTime(timeStamp);
     }
 
     public String getRepoName() {
@@ -135,19 +123,19 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
     }
 
     public Type getType() {
-        Timber.d("Getting type for %s", this.moduleId);
         if (this.footerPx != -1) {
+            Timber.i("Module %s is footer", this.moduleId);
             return Type.FOOTER;
         } else if (this.separator != null) {
+            Timber.i("Module %s is separator", this.moduleId);
+            Thread.dumpStack();
             return Type.SEPARATOR;
         } else if (this.notificationType != null) {
+            Timber.i("Module %s is notification", this.moduleId);
             return Type.NOTIFICATION;
         } else if (this.moduleInfo == null) {
-            Timber.d("Module %s is not installed", this.moduleId);
             return Type.INSTALLABLE;
-        } else if (this.moduleInfo.versionCode < this.moduleInfo.updateVersionCode ||
-                (this.repoModule != null && this.moduleInfo.versionCode <
-                        this.repoModule.moduleInfo.versionCode)) {
+        } else if (this.moduleInfo.versionCode < this.moduleInfo.updateVersionCode || (this.repoModule != null && this.moduleInfo.versionCode < this.repoModule.moduleInfo.versionCode)) {
             Timber.d("Module %s has update", this.moduleId);
             MainApplication.getINSTANCE().modulesHaveUpdates = true;
             if (!MainApplication.getINSTANCE().updateModules.contains(this.moduleId)) {
@@ -158,7 +146,6 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
             Timber.d("Module %s has update", this.moduleId);
             return Type.UPDATABLE;
         } else {
-            Timber.d("Module %s is installed", this.moduleId);
             return Type.INSTALLED;
         }
     }
@@ -166,8 +153,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
     public Type getCompareType(Type type) {
         if (this.separator != null) {
             return this.separator;
-        } else if (this.notificationType != null &&
-                this.notificationType.special) {
+        } else if (this.notificationType != null && this.notificationType.special) {
             return Type.SPECIAL_NOTIFICATIONS;
         } else {
             return type;
@@ -175,11 +161,12 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
     }
 
     public boolean shouldRemove() {
-        return this.notificationType != null ? this.notificationType.shouldRemove() :
-                this.footerPx == -1 && this.moduleInfo == null &&
-                        (this.repoModule == null || !this.repoModule.repoData.isEnabled() ||
-                                (PropUtils.isLowQualityModule(this.repoModule.moduleInfo) &&
-                                        !MainApplication.isDisableLowQualityModuleFilter()));
+        // okay so this is quite possibly the hackiest fucking piece of code i've ever written
+        // basically, if we have a repomodule that has moduleinfo but no update, remove it-
+        if (this.repoModule != null && this.moduleInfo != null && !hasUpdate()) {
+            return true;
+        }
+        return this.notificationType != null ? this.notificationType.shouldRemove() : this.footerPx == -1 && this.moduleInfo == null && (this.repoModule == null || !this.repoModule.repoData.isEnabled() || (PropUtils.isLowQualityModule(this.repoModule.moduleInfo) && !MainApplication.isDisableLowQualityModuleFilter()));
     }
 
     public void getButtons(Context context, List<ActionButtonType> buttonTypeList, boolean showcaseMode) {
@@ -195,8 +182,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
         if (this.repoModule != null && this.repoModule.notesUrl != null) {
             buttonTypeList.add(ActionButtonType.INFO);
         }
-        if ((this.repoModule != null || (localModuleInfo != null &&
-                localModuleInfo.updateZipUrl != null))) {
+        if ((this.repoModule != null || (localModuleInfo != null && localModuleInfo.updateZipUrl != null))) {
             buttonTypeList.add(ActionButtonType.UPDATE_INSTALL);
         }
         String config = this.getMainModuleConfig();
@@ -209,8 +195,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
                     XHooks.checkConfigTargetExists(context, pkg, config);
                     buttonTypeList.add(ActionButtonType.CONFIG);
                 } catch (PackageManager.NameNotFoundException e) {
-                    Timber.w("Config package \"" + pkg +
-                            "\" missing for module \"" + this.moduleId + "\"");
+                    Timber.w("Config package \"" + pkg + "\" missing for module \"" + this.moduleId + "\"");
                 }
             }
         }
@@ -233,8 +218,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
     }
 
     public boolean hasUpdate() {
-        return this.moduleInfo != null && this.repoModule != null &&
-                this.moduleInfo.versionCode < this.repoModule.moduleInfo.versionCode;
+        return this.moduleInfo != null && this.repoModule != null && this.moduleInfo.versionCode < this.repoModule.moduleInfo.versionCode;
     }
 
     @Override
@@ -245,29 +229,30 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
         Type selfType = this.getCompareType(selfTypeReal);
         Type otherType = o.getCompareType(otherTypeReal);
         int compare = selfType.compareTo(otherType);
-        return compare != 0 ? compare :
-                selfTypeReal == otherTypeReal ?
-                        selfTypeReal.compare(this, o) :
-                selfTypeReal.compareTo(otherTypeReal);
+        return compare != 0 ? compare : selfTypeReal == otherTypeReal ? selfTypeReal.compare(this, o) : selfTypeReal.compareTo(otherTypeReal);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "ModuleHolder{" + "moduleId='" + moduleId + '\'' + ", notificationType=" + notificationType + ", separator=" + separator + ", footerPx=" + footerPx + '}';
     }
 
     public enum Type implements Comparator<ModuleHolder> {
-        HEADER(R.string.loading, false, false),
-        SEPARATOR(R.string.loading, false, false) {
+        HEADER(R.string.loading, false, false), SEPARATOR(R.string.loading, false, false) {
             @Override
             @SuppressWarnings("ConstantConditions")
             public int compare(ModuleHolder o1, ModuleHolder o2) {
                 return o1.separator.compareTo(o2.separator);
             }
-        },
-        NOTIFICATION(R.string.loading, true, false) {
+        }, NOTIFICATION(R.string.loading, true, false) {
             @Override
             @SuppressWarnings("ConstantConditions")
             public int compare(ModuleHolder o1, ModuleHolder o2) {
+                Thread.dumpStack();
                 return o1.notificationType.compareTo(o2.notificationType);
             }
-        },
-        UPDATABLE(R.string.updatable, true, true) {
+        }, UPDATABLE(R.string.updatable, true, true) {
             @Override
             public int compare(ModuleHolder o1, ModuleHolder o2) {
                 int cmp = Integer.compare(o1.filterLevel, o2.filterLevel);
@@ -278,18 +263,15 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
                 if (cmp != 0) return cmp;
                 return o1.getMainModuleName().compareTo(o2.getMainModuleName());
             }
-        },
-        INSTALLED(R.string.installed, true, true) {
+        }, INSTALLED(R.string.installed, true, true) {
+            // get stacktrace for debugging
             @Override
             public int compare(ModuleHolder o1, ModuleHolder o2) {
                 int cmp = Integer.compare(o1.filterLevel, o2.filterLevel);
                 if (cmp != 0) return cmp;
-                return o1.getMainModuleNameLowercase()
-                        .compareTo(o2.getMainModuleNameLowercase());
+                return o1.getMainModuleNameLowercase().compareTo(o2.getMainModuleNameLowercase());
             }
-        },
-        SPECIAL_NOTIFICATIONS(R.string.loading, true, false),
-        INSTALLABLE(R.string.online_repo, true, true) {
+        }, SPECIAL_NOTIFICATIONS(R.string.loading, true, false), INSTALLABLE(R.string.online_repo, true, true) {
             @Override
             public int compare(ModuleHolder o1, ModuleHolder o2) {
                 int cmp = Integer.compare(o1.filterLevel, o2.filterLevel);
@@ -300,8 +282,7 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
                 if (cmp != 0) return cmp;
                 return o1.getMainModuleName().compareTo(o2.getMainModuleName());
             }
-        },
-        FOOTER(R.string.loading, false, false);
+        }, FOOTER(R.string.loading, false, false);
 
         @StringRes
         public final int title;
@@ -327,16 +308,5 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
                 return o1.moduleId.compareTo(o2.moduleId);
             }
         }
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return "ModuleHolder{" +
-                "moduleId='" + moduleId + '\'' +
-                ", notificationType=" + notificationType +
-                ", separator=" + separator +
-                ", footerPx=" + footerPx +
-                '}';
     }
 }
