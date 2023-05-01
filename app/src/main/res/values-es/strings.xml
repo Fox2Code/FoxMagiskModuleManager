@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Fox Magisk Modulo Manager</string>
+    <string name="app_name">Gestor de módulos Magisk de Fox</string>
     <string name="app_name_short">Fox Mmm</string>
     <string name="fail_root_magisk">No se pudo acceder a Root o Magisk</string>
-    <string name="fail_root_denied">Root negado a través de la aplicación Magisk</string>
+    <string name="fail_root_denied">Root ha sido denegado a través de la aplicación Magisk</string>
     <string name="fail_magisk_missing">Magisk no está instalado en este dispositivo</string>
     <string name="loading">Cargando…</string>
     <string name="updatable">Actualizable</string>
@@ -192,4 +192,54 @@
     <string name="setup_background_update_check_summary">Permitir la actualización de la aplicación y módulos, en segundo plano. Esta característica podría usar más batería y datos.</string>
     <string name="setup_message">¡Bienvenidx! Esta aplicación le ayudará a gestionar e instalar módulos de Magisk. Para empezar, por favor seleccione las siguientes opciones. Estas y más podrán ser configuradas más tarde.</string>
     <string name="setup_magisk_alt_repo">Activar el repositorio de Magisk Alt</string>
+    <string name="androidacy_update_needed">Esta aplicación está desactualizada.</string>
+    <string name="androidacy_update_needed_message">Por favor actualiza la aplicación a la última versión.</string>
+    <string name="zip_prop_load_failed">No se han podido cargar las propiedades del módulo</string>
+    <string name="zip_security_warning">¿Instalar %s\?</string>
+    <string name="zip_intent_module_install">¿Realmente desea instalar el módulo \"%1$s\" del archivo ZIP \"%2$s\"\?
+\n
+\nAsegúrate de que confías en la fuente de este módulo, ya que los módulos son muy potentes y pueden hacer casi cualquier cosa.</string>
+    <string name="language_cta_desc">¡Ayúdenos traduciéndolo! Pulse aquí para obtener más información.</string>
+    <string name="zip_load_failed">No se ha podido cargar el archivo zip</string>
+    <string name="clear_app_data">Borrar datos de la aplicación</string>
+    <string name="install_terminal_reboot_now_message">Estás a punto de reiniciar tu dispositivo. Si has guardado tu trabajo, pulsa OK para continuar. De lo contrario, pulsa cancelar.</string>
+    <string name="install_terminal_config_missing">Falta el paquete %s para la configuración del módulo, por lo que no podemos ejecutarlo.</string>
+    <string name="setup_androidacy_repo_summary">Incluye reseñas de usuarios, análisis antivirus automáticos, actualizaciones rápidas, una amplia selección y está respaldado por Androidacy.</string>
+    <string name="setup_magisk_alt_repo_summary">Mucho más laxo que el original. Tiene muchos módulos a costa de cierta seguridad.</string>
+    <string name="setup_crash_reporting_summary">Informes sobre crasheos y control del rendimiento. Todos los informes son estrictamente anónimos y confidenciales.</string>
+    <string name="setup_custom_repos">Puedes añadir repositorios personalizados más tarde en la configuración.</string>
+    <string name="repos">Repositorios</string>
+    <string name="misc">Varios</string>
+    <string name="setup_button_skip">Omitir</string>
+    <string name="low_performance_device_dialogue_title">Activar el desenfoque en un dispositivo de gama baja</string>
+    <string name="clear_data_dialogue_message">Estás a punto de borrar los datos de la aplicación. Por favor, confirma esta acción.</string>
+    <string name="debug_build">Esta es una versión de depuración. Espere algunos errores y peor rendimiento.</string>
+    <string name="androidacy_repo_name">Repositorio de Androidacy</string>
+    <string name="magisk_alt_repo_name">Repositorio de Magisk Alt</string>
+    <string name="finish">Finalizó</string>
+    <string name="theme_light">Claro</string>
+    <string name="setup_theme">Elige un tema</string>
+    <string name="setup_theme_header">Elige un tema</string>
+    <string name="setup_theme_system">Tema del sistema</string>
+    <string name="setup_theme_light">Tema claro</string>
+    <string name="setup_theme_dark">Tema oscuro</string>
+    <string name="setup_theme_black">Tema negro AMOLED</string>
+    <string name="setup_theme_transparent_light">Tema claro transparente - ¡Deshabilitará monet y el desenfoque!</string>
+    <string name="setup_theme_button">Elige un tema</string>
+    <string name="theme">Tema</string>
+    <string name="theme_system">Sistema</string>
+    <string name="theme_dark">Oscuro</string>
+    <string name="theme_black">Negro AMOLED</string>
+    <string name="theme_transparent_light">Claro (transparencia)</string>
+    <string name="theme_transparent_dark">Oscuro (transparencia)</string>
+    <string name="androidacy_thanks">Desarrollado en parte por Androidacy</string>
+    <string name="androidacy_webview_update_required">¡WebView no está actualizado! Por favor, actualícelo.</string>
+    <string name="alt_repo_info">Este repositorio tiene menos restricciones y revisiones, lo que puede dar lugar a módulos de menor calidad. Bastante básico, pero tiene un montón de módulos.</string>
+    <string name="clear_data_dialogue_title">¿Borrar datos de la aplicación\?</string>
+    <string name="repo_enabled_changed">Ha activado o desactivado un repositorio. Actualiza la lista de módulos o reinicia la aplicación.</string>
+    <string name="language_cta">¿No ves tu idioma\?</string>
+    <string name="no_file_provided">No se proporcionó ningún archivo al intentar abrir el zip.</string>
+    <string name="low_performance_device_dialogue_message">Estás intentando activar el desenfoque en un dispositivo que puede no funcionar bien con él. 
+\nPuedes activarlo, pero esto puede dar lugar a una mala experiencia de usuario y te recomendamos que no lo hagas.</string>
+    <string name="androidacy_thanks_desc">Un gran agradecimiento a Androidacy por su integración y contribuciones a la aplicación.</string>
 </resources>

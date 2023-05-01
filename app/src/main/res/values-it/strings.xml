@@ -14,7 +14,7 @@
     <string name="no_web_view">Impossibile aprire il WebView di sistema</string>
     <string name="title_activity_settings">Impostazione attività</string>
     <string name="app_update_available">Aggiornamento disponibile</string>
-    <string name="app_update">Aggiornamento</string>
+    <string name="app_update">Aggiornamento app</string>
     <string name="no_desc_found">Nessuna descrizione trovata.</string>
     <string name="download_module">Scarica modulo</string>
     <string name="install_module">Installa modulo</string>
@@ -43,7 +43,7 @@
     <string name="cancel" translatable="false">@android:string/cancel</string>
     <!-- Traduzione della sezione del modulo -->
     <string name="module_last_update">Ultimo aggiornamento:</string>
-    <string name="module_repo">Repo:</string>
+    <string name="module_repo">Repository:</string>
     <string name="module_by">da</string>
     <string name="module_downloads">Scaricamenti:</string>
     <string name="module_stars">Preferiti:</string>
@@ -74,7 +74,7 @@
     <string name="pref_category_appearance">Aspetto</string>
     <string name="pref_category_general">Generale</string>
     <string name="repo_main_desc">La repository che fornisce i moduli Magisk</string>
-    <string name="repo_main_alt">Un\'alternativa alla Repository di default con meno restrizioni</string>
+    <string name="repo_main_alt">Un\'alternativa a Magisk-Modules-Repo con meno restrizioni.</string>
     <string name="master_delete">Rimuovere i dati del modulo?</string>
     <string name="master_delete_no">Mantieni i dati</string>
     <string name="master_delete_yes">Rimuovi i dati</string>
@@ -90,22 +90,17 @@
     <string name="magisk_builtin_module">Modulo di Magisk integrato</string>
     <string name="substratum_builtin_module">Modulo di Substratum integrato</string>
     <string name="force_dark_terminal_title">Forza il terminale in modalità scura</string>
-    <string name="file_picker_failure">Il tuo gestore file non ha potuto accedere ai dati sul dispositivo</string>
+    <string name="file_picker_failure">Il tuo gestore file non ha potuto accedere al file.</string>
     <string name="remote_install_title">Installazione remota</string>
-    <string name="file_picker_wierd">Il tuo gestore file ha fornito una risposta non valida</string>
+    <string name="file_picker_wierd">Il tuo gestore file ha fornito una risposta non valida.</string>
     <string name="use_magisk_install_command_pref">Usa il comando di installazione del modulo magisk</string>
-    <string name="use_magisk_install_command_desc">
-        Questo ha causato dei problemi durante i test per l\'installazione dei moduli,
-        per questo l\'opzione è disponibile solo in modalità sviluppatore, abilita a tuo rischio e pericolo!
-    </string>
+    <string name="use_magisk_install_command_desc">Questo ha causato dei problemi durante i test per l\'installazione dei moduli, per questo l\'opzione è disponibile solo in modalità sviluppatore. Abilitala a tuo rischio e pericolo!</string>
     <string name="dev_mode_enabled">Modalità sviluppatore attivata</string>
     <string name="dev_mode_disabled">Modalità sviluppatore disattivata</string>
     <string name="force_english_pref">Forza la lingua inglese</string>
     <string name="disable_low_quality_module_filter_pref">Disabilita il filtro qualità per i moduli</string>
-    <string name="disable_low_quality_module_filter_desc">
-        Alcuni moduli non forniscono correttamente i loro metadati,causando errori grafici,
-        e/o indicando bassa qualità.\nDisabilita a tuo rischio e pericolo!
-    </string>
+    <string name="disable_low_quality_module_filter_desc">Alcuni moduli non forniscono correttamente i loro metadati, causando errori grafici, e/o indicando bassa qualità.
+\nAbilita a tuo rischio e pericolo!</string>
     <string name="dns_over_https_pref">DNS sostituisce HTTPS</string>
     <string name="dns_over_https_desc">
         Potrebbe risolvere problemi di connessione in alcuni casi.
@@ -117,8 +112,7 @@
         le estensioni per il terminale.\nUtile se un modulo abusa le estensioni di Fox Mmm.
     </string>
     <string name="wrap_text_pref">Testo a capo</string>
-    <string name="wrap_text_desc">
-        Mostra il testo su più righe\nEvita di mettere tutto il testo in una sola riga quando si installa un modulo.</string>
+    <string name="wrap_text_desc">Mostra il testo su più righe invece di mettere tutto il testo in una sola riga quando si installa un modulo.</string>
     <string name="enable_blur_pref">Sfocatura</string>
     <string name="disable_chips_in_description">Disabilita i chip nella descrizione</string>
     <string name="repo_enabled">Repository attiva</string>
@@ -130,10 +124,10 @@
     <string name="restore_module_list">Ripristina moduli</string>
     <string name="require_internet">Questa operazione richiede una connessione ad internet</string>
     <!-- Traduzione della notifica in background -->
-    <string name="notification_update_title">Trovato %i aggiornamenti del modulo</string>
+    <string name="notification_update_title">Trovati aggiornamenti per %1$d moduli</string>
     <string name="notification_update_title_easter_egg">Aggiornamenti del modulo %i rilevati</string>
     <string name="notification_update_subtitle">Fare clic per aprire l\'app</string>
-    <string name="notification_update_pref">Controllo aggiornamento moduli in background</string>
+    <string name="notification_update_pref">Controllo aggiornamento moduli in automatico</string>
     <string name="notification_update_desc">Può aumentare il consumo della batteria</string>
     <string name="notification_update_debug_pref">Notifica di prova</string>
     <!-- Imposta su true nel file di traduzione se la tua lingua è da destra a sinistra -->
@@ -151,11 +145,11 @@
     <string name="api_key_unchanged">La chiave API che inserisci è la stessa di quella già in uso.</string>
     <string name="permission_notification_title">Consentire le notifiche\?</string>
     <string name="fail_magisk_missing">Magisk non è installato su questo dispositivo</string>
-    <string name="androidacy_repo_info">Questo repository può mostrare pubblicità non intrusiva per coprire i costi del server e di sviluppo. Funzionalità recensioni, scansioni antivirus automatiche e altro ancora.</string>
+    <string name="androidacy_repo_info">Questo repository può mostrare pubblicità non intrusiva per coprire i costi del server e di sviluppo. Recensioni delle funzionalità, scansioni antivirus automatiche e altro ancora.</string>
     <string name="checking_api_key">Convalida della chiave API…</string>
     <string name="androidacy_test_mode_warning">Stai impostando l\'app in modo che utilizzi un endpoint non di produzione per Androidacy. Ciò potrebbe comportare l\'instabilità dell\'app e il mancato caricamento del repository online. NON segnalare bug se hai attivato questo interruttore. L\'app verrà riavviata per ricaricare i repository.</string>
     <string name="api_key_restart">La chiave API è stata modificata. Riavvia l\'app per applicare le modifiche.</string>
-    <string name="permission_notification_message">Abbiamo bisogno dell\'autorizzazione per le notifiche per informarti sugli aggiornamenti di app e moduli. Se non concedi questa autorizzazione, i controlli degli aggiornamenti in background non verranno eseguiti.</string>
+    <string name="permission_notification_message">Abbiamo bisogno dell\'autorizzazione per le notifiche per informarti sugli aggiornamenti di app e moduli. Se non concedi questa autorizzazione, i controlli automatici degli aggiornamenti non verranno eseguiti.</string>
     <string name="androidacy_failed_to_parse_token">Impossibile recuperare il token da Androidacy. Per favore riprova più tardi.</string>
     <string name="androidacy_failed_to_validate_token">Impossibile convalidare il token per Androidacy. Per favore riprova più tardi.</string>
     <string name="androidacy_server_down">Impossibile contattare il server Androidacy. Controlla la connessione e riprova.</string>
@@ -185,8 +179,7 @@
     <string name="monet_disabled_summary">Monet non è compatibile con i temi trasparenti.</string>
     <string name="blur_disabled_summary">La sfocatura non è compatibile con i temi trasparenti.</string>
     <string name="transparent_theme_dialogue_title">Stai impostando un tema trasparente</string>
-    <string name="transparent_theme_dialogue_message">I temi trasparenti possono presentare alcune incoerenze e potrebbero non funzionare su tutte le ROM. Inoltre, monet e blur saranno disabilitati.
-\nPuoi tornare indietro in qualsiasi momento.</string>
+    <string name="transparent_theme_dialogue_message">I temi trasparenti possono presentare alcune incoerenze e potrebbero non funzionare su tutte le ROM. Inoltre, monet e blur saranno disabilitati. Puoi tornare indietro in qualsiasi momento.</string>
     <string name="custom_repo_always_on">I repository personalizzati sono sempre attivi fino a quando non li rimuovi.</string>
     <string name="sentry_dialogue_message">Abbiamo riscontrato un errore! Aiutaci a migliorare l\'app aggiungendo alcune informazioni sull\'errore di seguito
 \nIl nome e l\'e-mail sono facoltativi ma ci permetteranno di contattarti se necessario per ulteriori informazioni.</string>
@@ -204,7 +197,7 @@
     <string name="unofficial">Non ufficiale</string>
     <string name="setup_title">Configurazione per la prima volta</string>
     <string name="setup_button">Termina la configurazione</string>
-    <string name="setup_background_update_check">Controllo degli aggiornamenti in background</string>
+    <string name="setup_background_update_check">Controllo automatico degli aggiornamenti</string>
     <string name="setup_androidacy_repo">Abilita il repository Androidacy</string>
     <string name="permission_notification_grant">Concedere l\'autorizzazione</string>
     <string name="background_update_check_permission_required">Abilita le notifiche per abilitare questa opzione.</string>
@@ -237,7 +230,7 @@
     <string name="repos">Repó</string>
     <string name="misc">Varie</string>
     <string name="setup_button_skip">Saltare</string>
-    <string name="alt_repo_info">Questo repository ha meno restrizioni e revisioni, il che può portare a moduli di qualità inferiore. Abbastanza scarno ma ha molti moduli.</string>
+    <string name="alt_repo_info">Questo repository ha meno restrizioni e revisioni, il che può portare a moduli di qualità inferiore. Piuttosto scarno ma ha molti moduli.</string>
     <string name="debug_build">Questa è una build di debug. Aspettatevi alcuni bug e prestazioni peggiori.</string>
     <string name="androidacy_repo_name">Repo Androidacy</string>
     <string name="magisk_alt_repo_name">Magic Alt Repo</string>
@@ -255,4 +248,157 @@
     <string name="theme_black">AMOLED nero</string>
     <string name="theme_transparent_light">Luce (trasparenza)</string>
     <string name="theme_light">Luce</string>
+    <string name="title_activity_update">Aggiornamento in-app</string>
+    <string name="update_title">Aggiorna l\'app</string>
+    <string name="zip_prop_load_failed">Impossibile caricare le proprietà del modulo</string>
+    <string name="zip_security_warning">Installare %s\?</string>
+    <string name="zip_unpacking">Controllando il modulo…</string>
+    <string name="warning_message">Questo modulo potrebbe essere stato installato senza che tu lo sappia oppure sta provando a nascondersi.
+\n
+\nConsigliamo di disinstallarlo.</string>
+    <string name="understand">Ho capito</string>
+    <string name="language_cta_desc">Aiutaci a tradurre! Clicca qui per scoprire di più.</string>
+    <string name="androidacy_thanks">Sviluppato in parte da Androidacy</string>
+    <string name="zip_load_failed">Impossibile caricare il file zip</string>
+    <string name="source_code_summary"><b>Commit</b> %1$s @ %2$s</string>
+    <string name="no_file_provided">Nessun file fornito mentre si prova ad aprire il file zip.</string>
+    <string name="update_button">Perfavore aspetta…</string>
+    <string name="pref_category_contributors">Collaboratori</string>
+    <string name="fox2code_thanks_desc">Fox2Code è il creatore originale dell\'app. Senza di lui, questo non sarebbe mai stato possibile.</string>
+    <string name="fox2code_thanks">Creato da Fox2Code</string>
+    <string name="save_logs">Salva i log sul dispositivo e condividili</string>
+    <string name="error_saving_logs">Impossibile salvare i log</string>
+    <string name="share_logs">Condividi i log di FoxMMM</string>
+    <string name="repo_update_failed_message">Non sono riuscito ad aggiornare i seguenti repository:
+\n
+\n%s</string>
+    <string name="reset_api_key">Reimposta le chiavi API</string>
+    <string name="upgrade_androidacy_promo">Passa a premium</string>
+    <string name="crash_text">Abbiamo avuto un problema!</string>
+    <string name="feedback_submit">Invia e riavvia</string>
+    <string name="please_feedback">Perfavore aiutaci dicendoci cosa stavi facendo quando è accaduto.</string>
+    <string name="sentry_dialogue_disabled">La segnalazione degli arresti anomali è disattivata. Abilitala per inviarci dei feedback.</string>
+    <string name="feedback_name">Nome (opzionale)</string>
+    <string name="feedback_email">Email (opzionale)</string>
+    <string name="sentry_dialogue_empty_message">Non hai specificato un feedback aggiuntivo.</string>
+    <string name="crash_icon">Icona di crash</string>
+    <string name="copy_button">Copia testo</string>
+    <string name="crash_details">Causa sconosciuta</string>
+    <string name="crash_details_copied">Copiata la stacktrace negli appunti!</string>
+    <string name="crash_full_stacktrace">Stacktrace:
+\n%1$s</string>
+    <string name="error_no_extras">ERRORE: Dati non validi ricevuti al lancio</string>
+    <string name="update_debug_warning">Sembra che tu stia eseguendo una build di debug. Le build di debug devono essere aggiornate manualmente e non supportano gli aggiornamenti in-app</string>
+    <string name="error_no_action">ERRORE: Azione non valida specificata. Non continuo.</string>
+    <string name="update_available">Aggiornamento trovato</string>
+    <string name="no_update_available">L\'app è aggiornata!</string>
+    <string name="download_update">Scarica l\'aggiornamento</string>
+    <string name="error_download_update">Errore nel download delle informazioni dell\'aggiornamento.</string>
+    <string name="error_no_asset">ERRORE: Impossibile analizzare le informazioni dell\'aggiornamento</string>
+    <string name="downloading_update">Download dell\'aggiornamento… %1$d%%</string>
+    <string name="reset_app">Reimposta l\'app</string>
+    <string name="installing_update">Installando l\'aggiornamento…</string>
+    <string name="no_file_found">ERRORE: Impossibile trovare il pacchetto dell\'aggiornamento.</string>
+    <string name="check_for_updates">Cerca aggiornamenti</string>
+    <string name="upgraded_summary">Sei davvero fantastico! Sembra che tu abbia già aggiornato il tuo abbonamento e stia supportando Androidacy.</string>
+    <string name="upgraded">Premium attivo</string>
+    <string name="reset_warning">Se continui a visualizzare questa schermata, il ripristino dell\'applicazione potrebbe essere utile. Questa operazione cancella i dati dell\'app ma non influisce sui moduli installati.</string>
+    <string name="reset_app_message">Questa operazione rimuoverà tutti i dati dell\'applicazione e la chiuderà. I moduli non verranno disinstallati.</string>
+    <string name="reset">Reimposta</string>
+    <string name="error_adding">Errore nell\'aggiunta del repository personalizzato</string>
+    <string name="api_key_mismatch">La chiave API è in un formato non valido</string>
+    <string name="theme_transparent_dark">Scuro (trasparente)</string>
+    <string name="androidacy_thanks_desc">Un grande ringraziamento a Androidacy per l\'integrazione e il contributo all\'app.</string>
+    <string name="contributors">E naturalmente, grazie a tutti i nostri collaboratori, che si tratti di traduzioni, codice o semplicemente di essere divertenti da frequentare! Vi vogliamo bene.</string>
+    <string name="setup_theme_title">Scegli il tema</string>
+    <string name="setup_language_button">Scegli lingua</string>
+    <string name="title_activity_setup">Installazione guidata</string>
+    <string name="action_settings">Impostazioni</string>
+    <string name="notification_update_ignore_desc">Lista dei moduli da escludere dal controllo degli aggiornamenti</string>
+    <string name="notification_update_ignore_pref">Escludi moduli</string>
+    <string name="pref_category_updates">Aggiornamenti</string>
+    <string name="invalid_excludes">Input non valido</string>
+    <string name="language_cta">Non trovi la tua lingua\?</string>
+    <string name="zip_intent_module_install">Sicuro di voler installare il modulo \"%1$s\" dal file ZIP \"%2$s\"\?
+\n
+\nAssicurati di fidarti della fonte di questo modulo, i moduli sono molto potenti e possono fare quasi tutto.</string>
+    <string name="upgrade_androidacy_promo_desc">Passare a premium rimuoverà le pubblicità, i captcha e i download per il Repository di Androidacy, e supporta Androidacy e gli autori dei moduli.</string>
+    <string name="not_official_build">Quest\'app è una build non ufficiale di FoxMMM.</string>
+    <string name="feedback_message">Dacci più dettagli su cosa stavi facendo quando è accaduto. Più sappiamo, meglio è!</string>
+    <string name="more_details">Più dettagli potrebbero essere qua sotto.</string>
+    <string name="sentry_enable_nag">Sembra che la segnalazione degli arresti anomali sia disabilitata. Perfavore attivala per inviare feedback.</string>
+    <string name="reset_app_confirmation">Questa operazione cancellerà completamente i dati delle app, ma non avrà effetto sui moduli.</string>
+    <string name="invalid_characters_message">L\'elenco dei moduli inseriti non è valido. Inserire solo id di moduli validi separati da virgole</string>
+    <string name="background_update_check_excludes">Moduli da escludere dal controllo automatica degli aggiornamenti</string>
+    <string name="update_message">Si prega di attendere mentre controlliamo e installiamo gli aggiornamenti di FoxMMM. L\'operazione potrebbe richiedere alcuni minuti</string>
+    <string name="checking_for_update">Cercando aggiornamenti…</string>
+    <string name="yer_a_wizard_harry">Sei un mago, Harry!</string>
+    <string name="keep_tapping_to_enter_hogwarts">Continua a premere per essere ammesso ad Hogwarts!</string>
+    <string name="modules">Moduli</string>
+    <string name="no_browser">Non hai un browser installato.
+\nInstallane uno per continuare.</string>
+    <string name="search">Cerca</string>
+    <string name="update_cancel_button">Cancella aggiornamento</string>
+    <string name="invalid_repo_url">L\'URL della repo non è corretto</string>
+    <string name="add_repo_message">Le repository devono essere su protocollo HTTPS, e devono seguire le specifiche della documentazione.</string>
+    <string name="notification_update_module_template">%1$s alla versione %2$s</string>
+    <string name="notification_channel_background_update">Controllo aggiornamenti…</string>
+    <string name="notification_channel_background_update_description">FoxMMM sta controllando gli aggiornamenti in background.</string>
+    <string name="notification_channel_category_background_update">Stato aggiornamento in background</string>
+    <string name="notification_update_wifi_desc">Controlla solo su WiFi</string>
+    <string name="notification_update_wifi_pref">Richiede una connessione Wi-Fi o una connessione senza limiti per la ricerca di aggiornamenti. Si consiglia di lasciarlo attivo se hai un piano dati limitato.</string>
+    <string name="background_update_check_excludes_no_modules">Nessun modulo installato sul dispositivo</string>
+    <string name="auto_updates_notifs">Notifica se c\'è un aggiornamento di un modulo</string>
+    <string name="notification_group_updates">Aggiornamenti</string>
+    <string name="online">Online</string>
+    <string name="safe">Sicuro</string>
+    <string name="safe_module">Verifica modulo sicuro</string>
+    <string name="notification_update_app_desc">Abilita la ricerca automatica di aggiornamenti dell\'app. Gli aggiornamenti non verranno scaricati automaticamente.</string>
+    <string name="notification_update_app_pref">Controlla aggiornamenti app</string>
+    <string name="notification_channel_category_app_update">Aggiornamenti app</string>
+    <string name="notification_channel_category_app_update_description">Notifica quando un aggiornamento dell\'app è disponibile</string>
+    <string name="notification_channel_background_update_app">Aggiornamento app disponibile!</string>
+    <string name="notification_channel_background_update_app_description">Un aggiornamento per FoxMMM è disponibile. Clicca qui per aggiornare.</string>
+    <string name="crash_reporting_headline">Segnalazione crash</string>
+    <string name="setup_update_check_headline">Ricerca aggiornamenti</string>
+    <string name="setup_background_update_check_require_wifi">Ricerca aggiornamenti solo su rete wifi</string>
+    <string name="setup_background_update_check_require_wifi_summary">Richiede una rete wifi o una connessione senza limiti per cercare aggiornamenti</string>
+    <string name="setup_app_analytics">Consenti l\'invio di statistiche dell\'app</string>
+    <string name="clear_app_cache_desc">Normalmente non è necessario, ma può aiutare a risolvere alcuni problemi.</string>
+    <string name="clear_app_cache">Pulisci cache dell\'app</string>
+    <string name="cache_cleared">Cache pulita con successo</string>
+    <string name="cache_clear_failed">Impossibile pulire la cache</string>
+    <string name="clear_cache_dialogue_title">Pulire la cache dell\'app\?</string>
+    <string name="clear_cache_dialogue_message">Questo pulirà la cache dell\'app. Le preferenze saranno salvate, ma l\'app potrebbe momentamente richiedere più tempo a fare alcune operazioni.</string>
+    <string name="notification_update_summary">I seguenti moduli possono essere aggiornati:</string>
+    <string name="notification_channel_category_background_update_description">Mostra una notifica durante la ricerca di aggiornamenti cosicché il sistema non lo interrompa</string>
+    <string name="low_quality_module_desc">Questo modulo ha dei metadata che non sono corretti o sono considerati un segno di scarsa qualità. Si consiglia la rimozione.</string>
+    <string name="safe_message">Questo modulo è stato verificato ed è sicuro, ha superato i controlli di qualità e sicurezza, ed è stato controllato per malware.</string>
+    <string name="update_debug_download_pref">Test del sistema di aggiornamento</string>
+    <string name="changelog_none">Ancora nessuna modifica!</string>
+    <string name="setup_crash_reporting_pii_summary">Potrebbe includere ID o indirizzi IP. Nessun dato verrà usato per altri scopi al di fuori di analizzazioni di crash e miglioramenti in performance.</string>
+    <string name="certificate_error">Il certificato del server non può essere verificato. Assicurati che nulla stia impedendo le connessioni HTTPS per FoxMMM.</string>
+    <string name="pref_category_privacy">Privacy</string>
+    <string name="crash_reporting_pii_desc">Consente di inviare informazioni aggiuntive in rapporti di crash, dei quali alcuni potrebbero contenere informazioni identificabili, come un indirizzo IP o un ID.</string>
+    <string name="crash_reporting_pii">Invia informazioni aggiuntive</string>
+    <string name="setup_crash_reporting_pii">Invia informazioni aggiuntive nei rapporti di crash.</string>
+    <string name="error_creating_cookie_database">Errore nell\'accesso a WebView. La funzionalità potrebbe non essere disponibile.</string>
+    <string name="setup_scroll_down">Per concludere, scorri verso il basso e visualizza tutte le opzioni.</string>
+    <string name="empty_field">L\'URL è richiesto</string>
+    <string name="repo_already_added">La repository esiste già.</string>
+    <string name="other_section">Altro</string>
+    <string name="eula_agree">Continuando, accetti la licenza LGPL-3.0 (https://www.gnu.org/licenses/lgpl-3.0.en.html) e l\'EULA (https://www.androidacy.com/foxmmm-eula/)</string>
+    <string name="analytics_desc">Ci consente di tracciare l\'utilizzo della app e la quantità di installazioni. Conforme al GDPR, usa Matomo, un servizio offerto da Androidacy.</string>
+    <string name="debug_cat">Debugging</string>
+    <string name="announcements">Notizie e aggiornamenti</string>
+    <string name="back">Indietro</string>
+    <string name="showcase_mode_dialogue_message">Un riavvio della app è richiesto, per attivare la modalità showcase.</string>
+    <string name="donate_fox">Dona a Fox2Code</string>
+    <string name="donate_androidacy">Dona ad Androidacy</string>
+    <string name="donate_androidacy_sum">Compra un abbonamento premium per Androidacy, per sostenere la app e la repository.</string>
+    <string name="promo_code_copied">Usa il codice per uno sconto per sulla metà del tuo primo mese!</string>
+    <string name="warning_pls_restart">Ricorda che alcune impostazioni potrebbero non avere effetto fino al riavvio della app.</string>
+    <string name="language_not_available">La lingua %s non è ancora stata tradotta. Vuoi aiutare a farlo\?</string>
+    <string name="blur_desc">Crea un effetto di sfocatura dietro ad alcuni elementi. Ricorda che questo effetto visivo potrebbe influire negativamente su alcuni dispositivi, o addirittura non funzionare su alcuni.</string>
+    <string name="error_encrypted_shared_preferences">Non è stato possibile determinare le preferenze condivise. Ripristina la app.</string>
 </resources>

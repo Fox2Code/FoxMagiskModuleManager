@@ -70,10 +70,7 @@
     <string name="dev_mode_enabled">Povolen režim pro vývojáře</string>
     <string name="force_english_pref">Vynutit Angličtinu</string>
     <string name="disable_low_quality_module_filter_pref">Zakázat filter nekvalitních modulov</string>
-    <string name="disable_low_quality_module_filter_desc">
-        Některé moduly deklarují svá metadata nesprávně, co může spůsobit závady zobrazení, nebo ukazují nízkou kvalitu modulu,
-		zakažte to jen na vlastní riziko!
-    </string>
+    <string name="disable_low_quality_module_filter_desc">Některé moduly deklarují svá metadata nesprávně, co může spůsobit závady zobrazení, nebo ukazují nízkou kvalitu modulu, povolte to jen na vlastní riziko!</string>
     <string name="dns_over_https_pref">Dns přes https</string>
     <string name="dns_over_https_desc">
         V některých případech může opravit problémy s připojením.
@@ -125,9 +122,9 @@
     <string name="link_copied">Odkaz zkopírován</string>
     <string name="require_internet">Tahle operace vyžaduje připojení k internetu</string>
     <string name="androidacy_test_mode_pref">Testovací režim Androidacy</string>
-    <string name="notification_update_title">Nalezeno %i aktualizací modulů</string>
+    <string name="notification_update_title">Nalezeno %1$d aktualizací modulů</string>
     <string name="notification_update_subtitle">Pro spuštění app klikněte</string>
-    <string name="notification_update_pref">Kontrola aktualizace modulů na pozadí</string>
+    <string name="notification_update_pref">Automaticky kontrolovat aktualizace modulů</string>
     <string name="notification_update_desc">Může zvýšit spotřebu baterie</string>
     <string name="notification_update_debug_pref">Zkouška upozornění</string>
     <string name="language_translated_by">Translated by PhSnake</string>
@@ -145,7 +142,7 @@
     <string name="api_key_restart">Klíč API byl změnen. Pro použití změn restartujte app.</string>
     <string name="api_key_unchanged">Klíč API který jste zadal je stejný jako ten co se používá teď.</string>
     <string name="permission_notification_title">Povolit upozornění\?</string>
-    <string name="permission_notification_message">Potřebujeme oprávnění k oznámení, abychom vás mohli upozornit na aktualizace aplikací a modulů. Pokud toto oprávnění neudělíte, kontroly aktualizací na pozadí nepoběží.</string>
+    <string name="permission_notification_message">Potřebujeme oprávnění k oznámení, abychom vás mohli upozornit na aktualizace aplikací a modulů. Pokud toto oprávnění neudělíte, automatické kontroly aktualizací nepoběží.</string>
     <string name="dont_ask_again">Neptejte se znovu</string>
     <string name="force_black_theme_desc">Vynutit černé pozadí AMOLED při použití tmavého motivu. U některých barevných motivů může docházet k problémům s kontrastem.</string>
     <string name="force_black_theme_pref">Vynutit černý motiv</string>
@@ -176,7 +173,7 @@
     <string name="monet_disabled_summary">Monet není kompatibilní s průhlednými motivy.</string>
     <string name="blur_disabled_summary">Blur není kompatibilní s průhlednými motivy.</string>
     <string name="transparent_theme_dialogue_title">Nastavujete průhledný motiv</string>
-    <string name="transparent_theme_dialogue_message">Průhledné motivy nemusí být plně konzistentní a nemusí fungovat na všech ROM. Monet a Blur budou deaktivovány. Můžete to kdykoliv vrátit.</string>
+    <string name="transparent_theme_dialogue_message">Průhledné motivy nemusí být plně konzistentní a nemusí fungovat na všech ROM. Navíc budou Monet a Blur deaktivovány. Můžete to kdykoliv vrátit.</string>
     <string name="custom_repo_always_on">Vlastní repozitáře jsou vždy zapnuty dokud je nesmažete.</string>
     <string name="sentry_dialogue_message">Vyskytla se chyba! Pomozte nám vylepšit aplikaci sdělením některých informací o chybě.
 \nJméno a email nejsou povinné, ale umožní nám Vás kontaktovat jestli by jsme potřebovali víc informací.</string>
@@ -192,7 +189,7 @@
     <string name="setup_message">Vítejte! Tato aplikace vám pomůže nainstalovat a spravovat moduly Magisk. Chcete-li začít, vyberte níže uvedené možnosti. Tyto a další lze konfigurovat z nastavení později.</string>
     <string name="setup_button">Dokončit nastavení</string>
     <string name="api_key">API klíč Androidacy</string>
-    <string name="setup_background_update_check">Kontrola aktualizací na pozadí</string>
+    <string name="setup_background_update_check">Automatická kontrola aktualizací</string>
     <string name="official">Oficiální</string>
     <string name="unofficial">Neoficiální</string>
     <string name="androidacy_webview_update_required">Váš webview je zastaralý. Aktualizujte jej prosím.</string>
@@ -243,4 +240,122 @@
     <string name="setup_title">První instalace</string>
     <string name="notification_update_title_easter_egg">Nalezeno %i aktualizovatelných modulů</string>
     <string name="pref_pkg_info_summary">%1$s v%2$s (%3$d) | %4$s Build</string>
+    <string name="zip_prop_load_failed">Nelze načíst vlastnosti modulu</string>
+    <string name="language_cta">Nevidíte Váš jazyk\?</string>
+    <string name="language_cta_desc">Pomozte nám s prekladem! Klikněte zde pro víc informací.</string>
+    <string name="source_code_summary"><b>Odeslat</b>%1$s@%2$s</string>
+    <string name="no_file_provided">Při otevírání zip-u se nepovedlo nalézt žádný soubor.</string>
+    <string name="zip_load_failed">Soubor zip se nedá načíst</string>
+    <string name="androidacy_thanks">Částečně vyvinutý společností Androidacy</string>
+    <string name="pref_category_contributors">Přispívatelé</string>
+    <string name="fox2code_thanks_desc">Fox2Code je původním tvůrcem aplikace. Bez něj by to nikdy nebylo možné.</string>
+    <string name="fox2code_thanks">Vytvořil Fox2Code</string>
+    <string name="save_logs">Ukládat protokoly do úložiště a sdílet je</string>
+    <string name="error_saving_logs">Protokoly se nedají uložit</string>
+    <string name="share_logs">Sdílet protokoly FoxMMM</string>
+    <string name="keep_tapping_to_enter_hogwarts">Pokračujte v klikání, aby vás přijali do Bradavic!</string>
+    <string name="modules">Moduly</string>
+    <string name="search">Hledat</string>
+    <string name="error_no_extras">ERROR: Chybná data při spuštění</string>
+    <string name="update_debug_warning">Zdá se, že spouštíte debug sestavení. Debug sestavení musíte aktualizovat ručně a aktualizace v aplikaci nejsou podporováný</string>
+    <string name="error_no_action">CHYBA: Byla zadána neplatná akce. Nebude se pokračovat.</string>
+    <string name="update_available">Nalezena aktualizace</string>
+    <string name="checking_for_update">Kontrola aktualizací…</string>
+    <string name="no_update_available">Používáte nejnovější verzi!</string>
+    <string name="download_update">Stáhnout aktualizaci</string>
+    <string name="error_no_asset">CHYBA: Nepovedlo se analyzovat informace o aktualizaci</string>
+    <string name="downloading_update">Stahování aktualizace...%1$d%%</string>
+    <string name="installing_update">Aktualizace se instaluje…</string>
+    <string name="no_file_found">ERROR: Nelze najít aktualizační balíček.</string>
+    <string name="check_for_updates">Skontrolovat aktualizace aplikace</string>
+    <string name="update_debug_download_pref">Testovat mechanismus stahování aktualizací</string>
+    <string name="not_official_build">Tato aplikace není oficiální build FoxMMM.</string>
+    <string name="repo_update_failed_message">Následující repozitáře se nepovedlo aktualizovat:
+\n
+\n%s</string>
+    <string name="reset_api_key">Obnovení klíčů API</string>
+    <string name="upgrade_androidacy_promo">Upgrade na prémiovou verzi</string>
+    <string name="upgrade_androidacy_promo_desc">Přechodem na prémiovou verzi odstraníte reklamy, CAPTCHA a stahování pro úložiště Androidacy a podpoříte Androidacy a autory modulů.</string>
+    <string name="crash_text">Uh-oh, narazili jsme na zádrhel!</string>
+    <string name="feedback_message">Řekněte nám více podrobností o tom, co jste dělali, když se to stalo. Čím více tím lépe!</string>
+    <string name="feedback_submit">Odeslat a restartovat</string>
+    <string name="please_feedback">Pomozte nám prosím tím, že nám řekněte, co jste se snažili udělat, když se to stalo.</string>
+    <string name="sentry_dialogue_disabled">Hlášení o pádu je zakázáno. Chcete-li odeslat zpětnou vazbu, povolte ji.</string>
+    <string name="feedback_name">Název (volitelné)</string>
+    <string name="feedback_email">Email (volitelné)</string>
+    <string name="sentry_dialogue_empty_message">Nezadali jste doplňující zpětnou vazbu.</string>
+    <string name="crash_icon">Ikona pádu</string>
+    <string name="copy_button">Kopírovat text</string>
+    <string name="crash_details">Neznámá příčina</string>
+    <string name="more_details">Více podrobností níže.</string>
+    <string name="crash_details_copied">Stacktrace zkopírován do schránky!</string>
+    <string name="crash_full_stacktrace">Stacktrace:
+\n%1$s</string>
+    <string name="sentry_enable_nag">Vypadá to, že hlášení o selhání je zakázáno. Chcete-li odeslat zpětnou vazbu, povolte jej.</string>
+    <string name="reset_app">Resetovat aplikaci</string>
+    <string name="upgraded_summary">Jste fakt úžasný! Zdá se, že jste své předplatné již upgradovali a podporujete Androidacy.</string>
+    <string name="upgraded">Premium aktivní</string>
+    <string name="reset_warning">Pokud se vám tato obrazovka stále zobrazuje, může pomoci resetování aplikace. To vymaže data aplikace, ale neovlivní to nainstalované moduly.</string>
+    <string name="reset">Reset</string>
+    <string name="reset_app_confirmation">Tím dojde k úplnému vymazání dat aplikace, ale neovlivní to moduly.</string>
+    <string name="error_adding">Přidání vlastního repozitáře selhalo</string>
+    <string name="api_key_mismatch">Klíč API je ve nesprávném formátu</string>
+    <string name="theme_transparent_dark">Tmavý (průhledný)</string>
+    <string name="zip_security_warning">Nainstalovat %s\?</string>
+    <string name="contributors">A samozřejmě děkujeme všem našim přispěvatelům, ať už se jedná o překlady, kód, nebo jen o zábavu! Máme vás všechny rádi.</string>
+    <string name="zip_unpacking">Kontrola modulu…</string>
+    <string name="warning_message">Tento modul má indikátory, že mohl být nainstalován bez vašeho vědomí nebo se může pokoušet skrýt.
+\n
+\nDůrazně doporučujeme odinstalovat.</string>
+    <string name="understand">Rozumím</string>
+    <string name="setup_theme_title">Zvolte motiv</string>
+    <string name="setup_language_button">Zvolte jazyk</string>
+    <string name="title_activity_setup">Průvodce nastavením</string>
+    <string name="action_settings">Nastavení</string>
+    <string name="notification_update_ignore_desc">Seznam modulů, které mají být vyloučeny z kontrol aktualizací</string>
+    <string name="notification_update_ignore_pref">Vyloučit moduly</string>
+    <string name="pref_category_updates">Aktualizace</string>
+    <string name="invalid_excludes">Neplatný vstup</string>
+    <string name="invalid_characters_message">Zadaný seznam modulů je neplatný. Zadejte prosím pouze platné ID modulů oddělené čárkami</string>
+    <string name="background_update_check_excludes">Moduly, které mají být vyloučeny z automatických kontrol aktualizací</string>
+    <string name="title_activity_update">In-app Updater</string>
+    <string name="update_title">Aktualizovat aplikaci</string>
+    <string name="changelog_none">Zatím žádné změny!</string>
+    <string name="update_cancel_button">Storno aktualizace</string>
+    <string name="invalid_repo_url">Zadané URL repozitáře je neplatné</string>
+    <string name="add_repo_message">Repozitáře musí být poskytována přes HTTPS a musí splňovat specifikace uvedené v dokumentaci.</string>
+    <string name="notification_update_summary">Následující moduly mohou být aktualizovány:</string>
+    <string name="notification_update_module_template">%1$s na verzi %2$s</string>
+    <string name="notification_channel_background_update_description">FoxMMM kontroluje aktualizace na pozadí.</string>
+    <string name="notification_channel_category_background_update">Stav aktualizací na pozadí</string>
+    <string name="notification_channel_category_background_update_description">Zobrazuje upozornění při kontrole aktualizací, aby je systém nezabil</string>
+    <string name="notification_update_wifi_desc">Kontrolovat pouze přes WiFi</string>
+    <string name="notification_update_wifi_pref">Vyžadovat WiFi nebo neměřenou síť pro kontrolu aktualizací. Máte-li omezená mobilní data, doporučujeme nechat zapnuté.</string>
+    <string name="background_update_check_excludes_no_modules">Na zařízení nejsou instalovány žádné moduly</string>
+    <string name="auto_updates_notifs">Upozornit, jsou-li nalezeny aktualizace modulu</string>
+    <string name="notification_group_updates">Aktualizace</string>
+    <string name="online">Online</string>
+    <string name="safe">Bezpečný</string>
+    <string name="safe_module">Ověřen bezpečný modul</string>
+    <string name="safe_message">Tento modul byl úložištěm ověřen jako bezpečný, což znamená, že splňuje určité limity kvality a bezpečnosti a je kontrolován na přítomnost malwaru.</string>
+    <string name="notification_update_app_desc">Povolit automatickou kontrolu aktualizací aplikací. Aktualizace se nebudou stahovat automaticky.</string>
+    <string name="notification_update_app_pref">Skontrolovat aktualizace aplikace</string>
+    <string name="notification_channel_category_app_update">Aktualizace aplikace</string>
+    <string name="notification_channel_category_app_update_description">Upozornit je-li dostupná aktualizace aplikace</string>
+    <string name="notification_channel_background_update_app">Je dostupná aktualizace aplikace!</string>
+    <string name="notification_channel_background_update_app_description">Je dostupná aktualizace FoxMMM. Klikněte zde pro aktualizaci.</string>
+    <string name="crash_reporting_headline">Hlášení o selhání</string>
+    <string name="setup_update_check_headline">Kontroly aktualizací</string>
+    <string name="update_button">Čekejte prosím…</string>
+    <string name="notification_channel_background_update">Kontrola aktualizací…</string>
+    <string name="zip_intent_module_install">Vážně chceš nainstalovat modul \"%1$s\" ze ZIP souboru \"%2$s\"\?
+\n
+\nUjisti se, že věříš zdroji tohoto modulu, neboť moduly jsou velice mocné a mohou udělat skoro cokoli.</string>
+    <string name="androidacy_thanks_desc">Obrovské poděkování patří společnosti Androidacy za její integraci a příspěvky do aplikace.</string>
+    <string name="reset_app_message">Tím se zcela odstraní všechna data aplikace a aplikaci se zavře. Moduly nebudou odinstalovány.</string>
+    <string name="update_message">Počkejte prosím, než zkontrolujeme a nainstalujeme aktualizace FoxMMM. Může to trvat pár minut</string>
+    <string name="error_download_update">Při stahování informací o aktualizaci došlo k chybě.</string>
+    <string name="low_quality_module_desc">Tento modul obsahuje metadata, která jsou buď neplatná, nebo jsou považována za označení modulu nízké kvality. Doporučuje se odinstalace.</string>
+    <string name="yer_a_wizard_harry">Jsi čaroděj, Harry!</string>
+    <string name="no_browser">Nemáte nainstalován prohlížeč. Pro pokračování nejaký nainstalujte.</string>
 </resources>
