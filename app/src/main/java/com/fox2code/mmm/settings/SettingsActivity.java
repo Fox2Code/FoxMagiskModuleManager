@@ -1286,6 +1286,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     builder.setView(input);
                     builder.setPositiveButton("OK", (dialog, which) -> {
                         String text = String.valueOf(input.getText());
+                        text = text.trim();
                         // string should not be empty, start with https://, and not contain any spaces. http links are not allowed.
                         if (text.matches("^https://.*") && !text.contains(" ") && !text.isEmpty()) {
                             if (customRepoManager.canAddRepo(text)) {

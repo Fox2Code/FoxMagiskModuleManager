@@ -64,6 +64,12 @@ public class AndroidacyWebAPI {
     void openNativeModuleDialogRaw(String moduleUrl, String moduleId, String installTitle, String checksum, boolean canInstall) {
         if (BuildConfig.DEBUG)
             Timber.d("ModuleDialog, downloadUrl: " + AndroidacyUtil.hideToken(moduleUrl) + ", moduleId: " + moduleId + ", installTitle: " + installTitle + ", checksum: " + checksum + ", canInstall: " + canInstall);
+        // moduleUrl should be a valid URL, i.e. in the androidacy.com domain
+        // if it is not, do not proceed
+        if (!AndroidacyUtil.isAndroidacyFileUrl(moduleUrl)) {
+            Timber.e("ModuleDialog, invalid URL: %s", moduleUrl);
+            return;
+        }
         this.downloadMode = false;
         RepoModule repoModule = AndroidacyRepoData.getInstance().moduleHashMap.get(installTitle);
         String title, description;
@@ -381,8 +387,10 @@ public class AndroidacyWebAPI {
      */
     @JavascriptInterface
     public String getAndroidacyModuleFile(String moduleId, String moduleFile) {
+        moduleId = moduleId.replaceAll("\\.", "").replaceAll("/", "");
         if (moduleFile == null || this.consumedAction || !this.isAndroidacyModule(moduleId))
             return "";
+        moduleFile = moduleFile.replaceAll("\\.", "").replaceAll("/", "");
         File moduleFolder = new File("/data/adb/modules/" + moduleId);
         File absModuleFile = new File(moduleFolder, moduleFile).getAbsoluteFile();
         if (!absModuleFile.getPath().startsWith(moduleFolder.getPath()))
@@ -401,6 +409,7 @@ public class AndroidacyWebAPI {
      */
     @JavascriptInterface
     public boolean setAndroidacyModuleMeta(String moduleId, String content) {
+        moduleId = moduleId.replaceAll("\\.", "").replaceAll("/", "");
         if (content == null || this.consumedAction || !this.isAndroidacyModule(moduleId))
             return false;
         File androidacyMetaFile = new File("/data/adb/modules/" + moduleId + "/.androidacy");
