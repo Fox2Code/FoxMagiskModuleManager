@@ -61,7 +61,7 @@ public class SentryMain {
         });
         // If first_launch pref is not false, refuse to initialize Sentry
         SharedPreferences sharedPreferences = MainApplication.getSharedPreferences("mmm");
-        if (!Objects.equals(sharedPreferences.getString("last_shown_setup", null), "v1")) {
+        if (!Objects.equals(sharedPreferences.getString("last_shown_setup", null), "v2")) {
             return;
         }
         sentryEnabled = sharedPreferences.getBoolean("pref_crash_reporting_enabled", false);

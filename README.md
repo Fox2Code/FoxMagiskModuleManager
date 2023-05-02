@@ -2,6 +2,8 @@
 
 ### Developed by Androidacy. Find us on the web [here](https://www.androidacy.com/?utm_source=fox-readme&utm_medium=web&utm_campagin=github).
 
+_If you're seeing this at the Fox2Code repo, the new repo is at [Androidacy/AndroidacyModuleManager](https://github.com/Androidacy/AndroidacyModuleManager)! The old repo may not receive consistent updates anymore!_
+
 ## About
 
 The official Magisk Manager app has dropped it's support for downloading online modules, leaving users without a way to easily search for and download them. This app was created to help users download and install modules, and manage their own modules.
@@ -9,8 +11,6 @@ The official Magisk Manager app has dropped it's support for downloading online 
 **This app is not officially supported by Magisk or its developers**
 
 **The modules shown in this app are not affiliated with this app or Magisk**.
-
-_If you're seeing this at the Fox2Code repo, the new repo is at [Androidacy/AndroidacyModuleManager](https://github.com/Androidacy/AndroidacyModuleManager)!_
 
 ## Features
 - Download and install modules

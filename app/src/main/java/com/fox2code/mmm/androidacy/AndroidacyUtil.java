@@ -7,6 +7,8 @@ import androidx.annotation.Nullable;
 
 import com.fox2code.mmm.BuildConfig;
 
+import java.util.Objects;
+
 public enum AndroidacyUtil {
     ;
     public static final String REFERRER = "utm_source=FoxMMM&utm_medium=app";
@@ -21,13 +23,13 @@ public enum AndroidacyUtil {
 
     static boolean isAndroidacyLink(@NonNull String url, @NonNull Uri uri) {
         int i; // Check both string and Uri to mitigate parse exploit
-        return url.startsWith("https://") && (i = url.indexOf("/", 8)) != -1 && url.substring(8, i).endsWith("api.androidacy.com") && uri.getHost().endsWith("api.androidacy.com");
+        return url.startsWith("https://") && (i = url.indexOf("/", 8)) != -1 && url.substring(8, i).endsWith("api.androidacy.com") && Objects.requireNonNull(uri.getHost()).endsWith("api.androidacy.com");
     }
 
     public static boolean isAndroidacyFileUrl(@Nullable String url) {
         if (url == null)
             return false;
-        for (String prefix : new String[]{"https://production-api.androidacy.com/magisk/file/", "https://staging-api.androidacy.com/magisk/file/"}) { // Make both staging and non staging act the same
+        for (String prefix : new String[]{"https://production-api.androidacy.com/downloads/", "https://production-api.androidacy.com/magisk/file/", "https://staging-api.androidacy.com/magisk/file/"}) { // Make both staging and non staging act the same
             if (url.startsWith(prefix))
                 return true;
         }

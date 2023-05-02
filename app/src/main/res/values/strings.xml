@@ -403,6 +403,7 @@
     <string name="showcase_mode_dialogue_message">An app restart is required to enable showcase mode.</string>
     <string name="other_section">Other</string>
     <string name="eula_agree">By clicking "finish", you are agreeing to be bound by the LGPL-3.0 (https://www.gnu.org/licenses/lgpl-3.0.en.html) license and the EULA (https://www.androidacy.com/foxmmm-eula/)</string>
+    <string name="eula_agree_v2">I agree to be bound by the LGPL-3.0 (https://www.gnu.org/licenses/lgpl-3.0.en.html) license and the EULA (https://www.androidacy.com/foxmmm-eula/), in addition to any third party terms.</string>
     <string name="analytics_desc">Allow us to track app usage and installs. Fully GDPR compliant and uses Matomo, hosted by Androidacy.</string>
     <string name="debug_cat">Debugging</string>
     <string name="announcements">News and updates</string>
@@ -413,4 +414,5 @@
     <string name="promo_code_copied">Use the copied code for half off your first month!</string>
     <string name="warning_pls_restart">Please note that some settings may not take effect until you restart the app.</string>
     <string name="reinstall">Reinstall</string>
+    <string name="setup_scroll_down_v2">To enable the finsih button, scroll to the bottom and acknowledge you have read and agree to the EULA and license(s).</string>
 </resources>

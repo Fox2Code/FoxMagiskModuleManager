@@ -149,8 +149,8 @@ public final class RepoManager extends SyncManager {
 
     @SuppressWarnings("StatementWithEmptyBody")
     private void populateDefaultCache(RepoData repoData) {
-        // if last_shown_setup is not "v1", them=n refuse to continue
-        if (!MainApplication.getSharedPreferences("mmm").getString("last_shown_setup", "").equals("v1")) {
+        // if last_shown_setup is not "v2", them=n refuse to continue
+        if (!MainApplication.getSharedPreferences("mmm").getString("last_shown_setup", "").equals("v2")) {
             return;
         }
         // make sure repodata is not null

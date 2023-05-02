@@ -5,6 +5,7 @@
     <item
         android:id="@+id/cancel_setup"
         android:checked="false"
+        android:enabled="true"
         android:icon="@drawable/baseline_close_24"
         android:title="@string/cancel"
         app:showAsAction="ifRoom" />

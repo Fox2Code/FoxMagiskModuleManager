@@ -100,7 +100,7 @@ public class BackgroundUpdateChecker extends Worker {
             // check if wifi is connected
             ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             Network networkInfo = connectivityManager.getActiveNetwork();
-            if (networkInfo == null || !connectivityManager.getNetworkCapabilities(networkInfo).hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED)) {
+            if (networkInfo == null || !Objects.requireNonNull(connectivityManager.getNetworkCapabilities(networkInfo)).hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED)) {
                 Timber.w("Background update check: wifi not connected but required");
                 return;
             }
@@ -136,7 +136,7 @@ public class BackgroundUpdateChecker extends Worker {
                     if ("twrp-keep".equals(localModuleInfo.id)) continue;
                     // exclude all modules with id's stored in the pref pref_background_update_check_excludes
                     try {
-                        if (MainApplication.getSharedPreferences("mmm").getStringSet("pref_background_update_check_excludes", null).contains(localModuleInfo.id))
+                        if (Objects.requireNonNull(MainApplication.getSharedPreferences("mmm").getStringSet("pref_background_update_check_excludes", null)).contains(localModuleInfo.id))
                             continue;
                     } catch (Exception ignored) {
                     }
@@ -213,7 +213,7 @@ public class BackgroundUpdateChecker extends Worker {
 
     public static void onMainActivityCreate(Context context) {
         // Refuse to run if first_launch pref is not false
-        if (!Objects.equals(MainApplication.getSharedPreferences("mmm").getString("last_shown_setup", null), "v1"))
+        if (!Objects.equals(MainApplication.getSharedPreferences("mmm").getString("last_shown_setup", null), "v2"))
             return;
         // create notification channel group
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

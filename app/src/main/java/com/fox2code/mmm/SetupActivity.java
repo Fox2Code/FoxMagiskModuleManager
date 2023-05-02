@@ -153,12 +153,9 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
         // Set up the buttons
         // Setup button
         BottomNavigationItemView setupButton = view.findViewById(R.id.setup_finish);
-        // enable finish button when user scrolls to the bottom
-        findViewById(R.id.setupNestedScrollView).setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            if (scrollY > oldScrollY) {
-                setupButton.setEnabled(true);
-            }
-        });
+        // on clicking setup_agree_eula, enable the setup button if it's checked, if it's not, disable it
+        MaterialSwitch agreeEula = view.findViewById(R.id.setup_agree_eula);
+        agreeEula.setOnCheckedChangeListener((buttonView, isChecked) -> setupButton.setEnabled(isChecked));
         setupButton.setOnClickListener(v -> {
             Timber.i("Setup button clicked");
             // get instance of editor
@@ -200,7 +197,7 @@ public class SetupActivity extends FoxActivity implements LanguageActivity {
                 r.close();
                 Timber.d("Realm transaction committed");
             });
-            editor.putString("last_shown_setup", "v1");
+            editor.putString("last_shown_setup", "v2");
             // Commit the changes
             editor.commit();
             // sleep to allow the realm transaction to finish

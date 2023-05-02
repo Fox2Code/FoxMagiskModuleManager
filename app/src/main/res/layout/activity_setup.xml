@@ -48,8 +48,9 @@
                 android:id="@+id/setup_scroll_down"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="2dp"
-                android:text="@string/setup_scroll_down"
+                android:layout_marginHorizontal="2dp"
+                android:layout_marginVertical="4dp"
+                android:text="@string/setup_scroll_down_v2"
                 android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
 
             <!-- Theme radio select. Options are system, light, dark, black, transparent_light -->
@@ -284,14 +285,16 @@
                 android:text="@string/other_section"
                 android:textAppearance="@android:style/TextAppearance.Material.Headline" />
 
-            <com.google.android.material.textview.MaterialTextView
+            <com.google.android.material.materialswitch.MaterialSwitch
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autoLink="web"
+                android:checked="false"
+                android:id="@+id/setup_agree_eula"
                 android:layout_marginHorizontal="2dp"
                 android:layout_marginVertical="4dp"
                 android:textColorLink="@color/blue"
-                android:text="@string/eula_agree"
+                android:text="@string/eula_agree_v2"
                 android:textAppearance="@android:style/TextAppearance.Material.Small"
                 android:drawableStart="@drawable/baseline_library_add_check_24"
                 android:drawablePadding="8dp" />

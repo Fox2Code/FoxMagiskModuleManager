@@ -23,6 +23,8 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.Toast;
@@ -71,6 +73,8 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     private static final int PRECISION = 10000;
     public static boolean doSetupNowRunning = true;
     public static boolean doSetupRestarting = false;
+    public static List<LocalModuleInfo> localModuleInfoList = new ArrayList<>();
+    public static List<RepoModule> onlineModuleInfoList = new ArrayList<>();
     public final ModuleViewListBuilder moduleViewListBuilder;
     public final ModuleViewListBuilder moduleViewListBuilderOnline;
     public LinearProgressIndicator progressIndicator;
@@ -87,8 +91,6 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
     private CardView searchCard;
     private SearchView searchView;
     private boolean initMode;
-    public static List<LocalModuleInfo> localModuleInfoList = new ArrayList<>();
-    public static List<RepoModule> onlineModuleInfoList = new ArrayList<>();
 
     public MainActivity() {
         this.moduleViewListBuilder = new ModuleViewListBuilder(this);
@@ -178,6 +180,40 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 if (newState != RecyclerView.SCROLL_STATE_IDLE)
                     MainActivity.this.searchView.clearFocus();
+                // hide search view when scrolling
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    MainActivity.this.searchCard.animate().translationY(-MainActivity.this.searchCard.getHeight()).setInterpolator(new AccelerateInterpolator(2)).start();
+                }
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                // if the user scrolled up, show the search bar
+                if (dy < 0) {
+                    MainActivity.this.searchCard.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                }
+            }
+        });
+        // same for online
+        this.moduleListOnline.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if (newState != RecyclerView.SCROLL_STATE_IDLE)
+                    MainActivity.this.searchView.clearFocus();
+                // hide search view when scrolling
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    MainActivity.this.searchCard.animate().translationY(-MainActivity.this.searchCard.getHeight()).setInterpolator(new AccelerateInterpolator(2)).start();
+                }
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                // if the user scrolled up, show the search bar
+                if (dy < 0) {
+                    MainActivity.this.searchCard.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                }
             }
         });
         this.searchCard.setRadius(this.searchCard.getHeight() / 2F);
@@ -596,6 +632,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
             });
             NotificationType.NEED_CAPTCHA_ANDROIDACY.autoAdd(moduleViewListBuilder);
             RepoManager.getINSTANCE().updateEnabledStates();
+            RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilder::appendInstalledModules);
             RepoManager.getINSTANCE().runAfterUpdate(moduleViewListBuilderOnline::appendRemoteModules);
             this.moduleViewListBuilder.applyTo(moduleList, moduleViewAdapter);
             this.moduleViewListBuilderOnline.applyTo(moduleListOnline, moduleViewAdapterOnline);
@@ -763,7 +800,7 @@ public class MainActivity extends FoxActivity implements SwipeRefreshLayout.OnRe
         if (BuildConfig.DEBUG) Timber.i("Checking if we need to run setup");
         // Check if this is the first launch using prefs and if doSetupRestarting was passed in the intent
         SharedPreferences prefs = MainApplication.getSharedPreferences("mmm");
-        boolean firstLaunch = !Objects.equals(prefs.getString("last_shown_setup", null), "v1");
+        boolean firstLaunch = !Objects.equals(prefs.getString("last_shown_setup", null), "v2");
         // First launch
         // this is intentionally separate from the above if statement, because it needs to be checked even if the first launch check is true due to some weird edge cases
         if (getIntent().getBooleanExtra("doSetupRestarting", false)) {
