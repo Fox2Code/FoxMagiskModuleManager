@@ -358,4 +358,5 @@
     <string name="low_quality_module_desc">Tento modul obsahuje metadata, která jsou buď neplatná, nebo jsou považována za označení modulu nízké kvality. Doporučuje se odinstalace.</string>
     <string name="yer_a_wizard_harry">Jsi čaroděj, Harry!</string>
     <string name="no_browser">Nemáte nainstalován prohlížeč. Pro pokračování nejaký nainstalujte.</string>
+    <string name="setup_background_update_check_require_wifi">Pro kontrolu aktualizací vyžadovat WiFi</string>
 </resources>
