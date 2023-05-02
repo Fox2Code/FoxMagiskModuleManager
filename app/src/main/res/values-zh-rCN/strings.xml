@@ -387,11 +387,11 @@
     <string name="language_not_available">%s 尚未被翻译。 帮忙翻译一下\?</string>
     <string name="blur_desc">在某些对话框和元素后面创建模糊效果。 请注意，模糊可能在某些设备上表现不佳并且可能不适用于所有人。</string>
     <string name="error_encrypted_shared_preferences">读取共享首选项时出错。 请重置应用程序。</string>
-    <string name="other_section">其它</string>
+    <string name="other_section">其他</string>
     <string name="eula_agree">单击完成，即表示您同意受 LGPL-3 的约束(https://www.gnu.org/licenses/lgpl-3.0.en.html) license and the EULA (https://www.androidacy.com/foxmmm-eula/)</string>
     <string name="analytics_desc">允许我们跟踪应用程序的使用和安装。完全符合 GDPR 并使用由 Androidacy 托管的 Matomo。</string>
     <string name="debug_cat">调试</string>
-    <string name="announcements">新的和更新</string>
+    <string name="announcements">消息和更新</string>
     <string name="back">返回</string>
     <string name="donate_fox">向 Fox2Code 捐赠</string>
     <string name="donate_androidacy">向 Androidacy 捐赠</string>

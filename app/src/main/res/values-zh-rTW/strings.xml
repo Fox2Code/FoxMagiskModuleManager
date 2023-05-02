@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Fox\'s Magisk 模組管理器</string>
+    <string name="app_name">Fox 的 Magisk 模組管理器</string>
     <string name="app_name_short">Fox\'s Mmm</string>
     <string name="fail_root_magisk">無法取得 ROOT 權限或您並沒有裝 Magisk</string>
     <string name="loading">讀取中請稍後…</string>
@@ -264,7 +264,7 @@
     <string name="safe_message">這個模組已被倉庫認證為安全的，表示它通過某種程度的質量以及安全檢查，也通過了病毒檢測。</string>
     <string name="background_update_check_excludes">要從自動更新檢查除開的模組</string>
     <string name="update_title">更新應用程式</string>
-    <string name="update_button">請稍等...</string>
+    <string name="update_button">請稍等…</string>
     <string name="setup_magisk_alt_repo_summary">比原版的規範寬鬆。有大量的模組，不過安全性較低。</string>
     <string name="setup_crash_reporting_summary">錯誤回報以及效能分析回傳。所有提交的報告將會嚴格保證匿名且私密。</string>
     <string name="pref_category_contributors">貢獻者</string>
@@ -345,7 +345,7 @@
     <string name="add_repo_message">倉庫必須使用HTTPS，並且遵循文檔內列出的規範。</string>
     <string name="notification_update_summary">以下模組可以更新：</string>
     <string name="notification_update_module_template">%1$s 到 版本 %2$s</string>
-    <string name="notification_channel_background_update">檢查更新中...</string>
+    <string name="notification_channel_background_update">檢查更新中…</string>
     <string name="notification_channel_background_update_description">FoxMMM在後台檢查更新中。</string>
     <string name="notification_channel_category_background_update">後台更新狀態</string>
     <string name="notification_channel_category_background_update_description">在檢查更新時顯示一個通知，不讓系統自動結束進程</string>
@@ -361,4 +361,40 @@
     <string name="notification_channel_category_app_update_description">當應用程式有更新時通知</string>
     <string name="notification_channel_background_update_app">應用有新的更新！</string>
     <string name="notification_channel_background_update_app_description">FoxMMM有更新。點擊安裝更新。</string>
+    <string name="crash_reporting_headline">錯誤回報</string>
+    <string name="setup_update_check_headline">更新檢查</string>
+    <string name="setup_background_update_check_require_wifi">僅透過WiFi來檢查更新</string>
+    <string name="setup_background_update_check_require_wifi_summary">僅透過WiFi或者無流量限制的連線來檢查更新</string>
+    <string name="setup_app_analytics">允許應用分析回報</string>
+    <string name="clear_app_cache">清楚應用快取</string>
+    <string name="clear_app_cache_desc">一般來說這不是必要的，不過可能可以解決部分遇到的問題。</string>
+    <string name="cache_cleared">快取清除完成</string>
+    <string name="cache_clear_failed">快取清除失敗</string>
+    <string name="clear_cache_dialogue_title">清除應用快取？</string>
+    <string name="clear_cache_dialogue_message">這將會清除應用快取。你的設定將會被保留，不過其他應用相關功能可能會暫時性的需要更長時間來處理。</string>
+    <string name="certificate_error">伺服器憑證無法被驗證。請確保FoxMMM的HTTPS請求沒有被攔截。</string>
+    <string name="pref_category_privacy">隱私</string>
+    <string name="crash_reporting_pii_desc">允許在發生錯誤報告時附帶更多資訊，其中可能包含可個人識別化的資料，例如IP地址以及終端識別碼。</string>
+    <string name="crash_reporting_pii">發送詳細資料</string>
+    <string name="setup_crash_reporting_pii">在錯誤回報中發送更詳細的資料。</string>
+    <string name="setup_crash_reporting_pii_summary">這可能會包含IP地址以及終端識別碼。收到的資料將不會用作分析錯誤以及提升服務品質以外的任何用途。</string>
+    <string name="setup_scroll_down">要完成的按鈕開啟，請滑下去並檢視所有選項。</string>
+    <string name="empty_field">URL不能為空</string>
+    <string name="repo_already_added">倉庫已存在。</string>
+    <string name="other_section">其他</string>
+    <string name="analytics_desc">允許我們追踪應用的使用以及安裝。完全支援並符合GDPR且使用Androidacy運營的Matomo。</string>
+    <string name="debug_cat">偵錯</string>
+    <string name="announcements">消息與更新</string>
+    <string name="back">返回</string>
+    <string name="error_creating_cookie_database">無法訪問WebView。功能將會受限制。</string>
+    <string name="showcase_mode_dialogue_message">啟用展示模式需要重新啟動應用。</string>
+    <string name="eula_agree">點擊完成按鈕的當下，你表明了你同意遵守以及被約束於條約之規範。本條約含 LGPL-3.0 (https://www.gnu.org/licenses/lgpl-3.0.en.html) 許可以及 EULA (https://www.androidacy.com/foxmmm-eula/)</string>
+    <string name="donate_fox">捐款給 Fox2Code</string>
+    <string name="donate_androidacy">捐款給 Androidacy</string>
+    <string name="donate_androidacy_sum">訂閱 Androidacy 的高級會員來支持應用以及倉庫。</string>
+    <string name="promo_code_copied">使用複製的優惠卷來取得首月半價優惠！</string>
+    <string name="warning_pls_restart">某些設定在重啟應用後方能生效。</string>
+    <string name="language_not_available">%s 還尚未被翻譯。來一起翻譯吧？</string>
+    <string name="blur_desc">在某些視窗以及元素啟用模糊效果。這個功能可能在某些裝置上運行效果不佳或完全無法使用。</string>
+    <string name="error_encrypted_shared_preferences">加載共同設定失敗。請重置本應用。</string>
 </resources>

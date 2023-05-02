@@ -386,4 +386,5 @@
     <string name="donate_androidacy_sum">Купите премиальную подписку на Androidacy, чтобы поддерживать приложение и репозиторий.</string>
     <string name="promo_code_copied">Используйте скопированный код и получите половину скидки на первый месяц!</string>
     <string name="warning_pls_restart">Обратите внимание, что некоторые настройки могут не вступить в силу, пока вы не перезапустите приложение.</string>
+    <string name="reinstall">Переустановить</string>
 </resources>
