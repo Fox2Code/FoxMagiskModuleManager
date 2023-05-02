@@ -188,12 +188,13 @@
 }
 
 # Keep all of Cronet API and google's internal classes
--keep class org.chromium.** { *; }
--keep class org.chromium.net.** { *; }
 -keep class com.google.common.util.concurrent.** { *; }
 -keepclassmembers class kotlin.SafePublicationLazyImpl {
     java.lang.Object _value;
 }
+
+# fix bug with androidx work and future
+-keep class androidx.work.impl.utils.futures.* { *; }
 
 # Silence some warnings
 -dontwarn android.os.SystemProperties

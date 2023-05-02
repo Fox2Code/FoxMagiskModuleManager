@@ -128,7 +128,6 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
             return Type.FOOTER;
         } else if (this.separator != null) {
             Timber.i("Module %s is separator", this.moduleId);
-            Thread.dumpStack();
             return Type.SEPARATOR;
         } else if (this.notificationType != null) {
             Timber.i("Module %s is notification", this.moduleId);
@@ -249,7 +248,6 @@ public final class ModuleHolder implements Comparable<ModuleHolder> {
             @Override
             @SuppressWarnings("ConstantConditions")
             public int compare(ModuleHolder o1, ModuleHolder o2) {
-                Thread.dumpStack();
                 return o1.notificationType.compareTo(o2.notificationType);
             }
         }, UPDATABLE(R.string.updatable, true, true) {

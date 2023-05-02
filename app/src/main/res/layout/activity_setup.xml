@@ -288,16 +288,22 @@
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:autoLink="web"
                 android:checked="false"
                 android:id="@+id/setup_agree_eula"
                 android:layout_marginHorizontal="2dp"
                 android:layout_marginVertical="4dp"
-                android:textColorLink="@color/blue"
-                android:text="@string/eula_agree_v2"
+                android:text="@string/eula_sum"
                 android:textAppearance="@android:style/TextAppearance.Material.Small"
                 android:drawableStart="@drawable/baseline_library_add_check_24"
                 android:drawablePadding="8dp" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:textColorLink="@color/blue"
+                android:text="@string/eula_agree_v2"
+                android:textAppearance="@android:style/TextAppearance.Material.Small" />
 
         </LinearLayout>
 
