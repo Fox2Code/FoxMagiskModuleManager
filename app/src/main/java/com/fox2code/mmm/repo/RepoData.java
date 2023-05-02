@@ -410,7 +410,7 @@ public class RepoData extends XRepo {
                 long diffMinutes = diff / (60 * 1000) % 60;
                 Timber.d("Repo " + this.id + " updated: " + diffMinutes + " minutes ago");
                 realm.close();
-                return diffMinutes > (BuildConfig.DEBUG ? 15 : 20);
+                return diffMinutes > (BuildConfig.DEBUG ? 15 : 30);
             } else {
                 Timber.d("Repo " + this.id + " should update could not find repo in database");
                 Timber.d("This is probably an error, please report this to the developer");

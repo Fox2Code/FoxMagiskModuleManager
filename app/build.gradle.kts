@@ -38,8 +38,8 @@ android {
         applicationId = "com.fox2code.mmm"
         minSdk = 24
         targetSdk = 33
-        versionCode = 68
-        versionName = "2.0.1"
+        versionCode = 70
+        versionName = "2.0.2"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -330,7 +330,7 @@ sentry {
 
     autoInstallation {
         enabled.set(true)
-        sentryVersion.set("6.17.0")
+        sentryVersion.set("6.18.1")
     }
 
     includeDependenciesReport.set(true)
@@ -414,7 +414,7 @@ dependencies {
     // implementation("com.google.protobuf:protobuf-javalite:3.22.2")
 
     // google guava, maybe fix a bug
-    implementation("com.google.guava:guava:31.1-android")
+    implementation("com.google.guava:guava:31.1-jre")
 
 
     val libsuVersion = "5.0.5"
@@ -431,12 +431,12 @@ dependencies {
     implementation("com.github.Fox2Code:AndroidANSI:1.0.1")
 
     // sentry
-    implementation("io.sentry:sentry-android:6.17.0")
-    implementation("io.sentry:sentry-android-timber:6.17.0")
-    implementation("io.sentry:sentry-android-fragment:6.17.0")
-    implementation("io.sentry:sentry-android-okhttp:6.17.0")
-    implementation("io.sentry:sentry-kotlin-extensions:6.17.0")
-    implementation("io.sentry:sentry-android-ndk:6.17.0")
+    implementation("io.sentry:sentry-android:6.18.1")
+    implementation("io.sentry:sentry-android-timber:6.18.1")
+    implementation("io.sentry:sentry-android-fragment:6.18.1")
+    implementation("io.sentry:sentry-android-okhttp:6.18.1")
+    implementation("io.sentry:sentry-kotlin-extensions:6.18.1")
+    implementation("io.sentry:sentry-android-ndk:6.18.1")
 
     // Markdown
     // TODO: switch to an updated implementation

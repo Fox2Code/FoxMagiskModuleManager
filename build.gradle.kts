@@ -11,7 +11,7 @@ buildscript {
     extra.apply {
         set("sentryConfigFile", rootProject.file("sentry.properties"))
         set("hasSentryConfig", false)
-        set("sentryVersion", "6.17.0")
+        set("sentryVersion", "6.18.1")
     }
     dependencies {
         classpath("com.android.tools.build:gradle:8.0.0")
