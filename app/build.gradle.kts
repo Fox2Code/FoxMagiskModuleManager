@@ -44,7 +44,7 @@ android {
             useSupportLibrary = true
         }
         multiDexEnabled = true
-        resourceConfigurations.addAll(listOf("ar", "bs", "de", "es-rMX", "fr", "hu", "id", "ja", "nl", "pl", "pt", "pt-rBR", "ro", "ru", "tr", "uk", "zh", "zh-rTW", "en"))
+        resourceConfigurations.addAll(listOf("ar", "bs", "cs", "de", "es-rMX", "fr", "hu", "id", "ja", "nl", "pl", "pt", "pt-rBR", "ro", "ru", "tr", "uk", "zh", "zh-rTW", "en"))
     }
 
     splits {
@@ -55,8 +55,7 @@ android {
             // Enables building multiple APKs per ABI.
             isEnable = true
 
-            // By default all ABIs are included, so use reset() and include to specify that you only
-            // want APKs for x86 and x86_64.
+            // By default all ABIs are included, so use reset()
 
             // Resets the list of ABIs for Gradle to create APKs for to none.
             reset()

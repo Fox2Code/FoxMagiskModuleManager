@@ -627,7 +627,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
             });
             linkClickable.setOnPreferenceLongClickListener(p -> {
                 String toastText = requireContext().getString(R.string.link_copied);
-                clipboard.setPrimaryClip(ClipData.newPlainText(toastText, "https://github.com/Fox2Code/FoxMagiskModuleManager/releases/latest"));
+                clipboard.setPrimaryClip(ClipData.newPlainText(toastText, "https://github.com/Androidacy/MagiskModuleManager/releases/latest"));
                 Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
                 return true;
             });
@@ -646,12 +646,12 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                 linkClickable.setOnPreferenceClickListener(p -> {
                     devModeStep = 0;
                     devModeStepFirstBootIgnore = true;
-                    IntentHelper.openUrl(p.getContext(), "https://github.com/Fox2Code/FoxMagiskModuleManager/issues");
+                    IntentHelper.openUrl(p.getContext(), "https://github.com/Androidacy/MagiskModuleManager/issues");
                     return true;
                 });
                 linkClickable.setOnPreferenceLongClickListener(p -> {
                     String toastText = requireContext().getString(R.string.link_copied);
-                    clipboard.setPrimaryClip(ClipData.newPlainText(toastText, "https://github.com/Fox2Code/FoxMagiskModuleManager/issues"));
+                    clipboard.setPrimaryClip(ClipData.newPlainText(toastText, "https://github.com/Androidacy/MagiskModuleManager/issues"));
                     Toast.makeText(requireContext(), toastText, Toast.LENGTH_SHORT).show();
                     return true;
                 });
@@ -1314,7 +1314,7 @@ public class SettingsActivity extends FoxActivity implements LanguageActivity {
                     });
                     builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
                     builder.setNeutralButton("Docs", (dialog, which) -> {
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/docs/DEVELOPERS.md#custom-repo-format"));
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Androidacy/MagiskModuleManager/blob/master/docs/DEVELOPERS.md#custom-repo-format"));
                         startActivity(intent);
                     });
                     AlertDialog alertDialog = builder.show();

@@ -99,7 +99,7 @@ public enum NotificationType implements NotificationTypeCst {
     },
     UPDATE_AVAILABLE(R.string.app_update_available, R.drawable.ic_baseline_system_update_24,
             androidx.appcompat.R.attr.colorPrimary, com.google.android.material.R.attr.colorOnPrimary, v -> IntentHelper.openUrl(v.getContext(),
-                    "https://github.com/Fox2Code/FoxMagiskModuleManager/releases"), false) {
+                    "https://github.com/Androidacy/MagiskModuleManager/releases"), false) {
         @Override
         public boolean shouldRemove() {
             return !AppUpdateManager.getAppUpdateManager().peekShouldUpdate();

@@ -6,6 +6,6 @@ author=Fox2Code
 description=Fox's Magisk Module Manager example module
 minApi=21
 minMagisk=19000
-support=https://github.com/Fox2Code/FoxMagiskModuleManager
+support=https://github.com/Androidacy/MagiskModuleManager
 donate=https://paypal.me/fox2code
 config=com.fox2code.mmm

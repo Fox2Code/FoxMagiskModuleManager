@@ -382,7 +382,7 @@ public class MainApplication extends FoxApplication implements androidx.work.Con
 
     @Override
     public void onCreate() {
-        supportedLocales.addAll(Arrays.asList("ar", "bs", "de", "es-rMX", "fr", "hu", "id", "ja", "nl", "pl", "pt", "pt-rBR", "ro", "ru", "tr", "uk", "zh", "zh-rTW", "en"));
+        supportedLocales.addAll(Arrays.asList("ar", "bs", "cs", "de", "es-rMX", "fr", "hu", "id", "ja", "nl", "pl", "pt", "pt-rBR", "ro", "ru", "tr", "uk", "zh", "zh-rTW", "en"));
         if (INSTANCE == null) INSTANCE = this;
         relPackageName = this.getPackageName();
         super.onCreate();

@@ -170,7 +170,7 @@ mmm_exec setLastLine "The installer support mmm_exec"
 # Wait to simulate the module doing something
 sleep 5
 mmm_exec hideLoading
-mmm_exec setSupportLink https://github.com/Fox2Code/FoxMagiskModuleManager
+mmm_exec setSupportLink https://github.com/Androidacy/MagiskModuleManager
 ```
 
 [You may look at the examples modules and their codes.](examples)

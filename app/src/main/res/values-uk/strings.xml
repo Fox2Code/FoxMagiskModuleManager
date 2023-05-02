@@ -319,7 +319,7 @@
     <string name="changelog_none">Змін ще немає!</string>
     <string name="update_cancel_button">Скасувати оновлення</string>
     <string name="invalid_repo_url">URL-адреса, яку ви ввели для репозиторію, недійсна</string>
-    <string name="add_repo_message">Репозиторії повинні обслуговуватися за допомогою HTTPS і відповідати специфікаціям, викладеним у <a href="https://github.com/Fox2Code/FoxMagiskModuleManager/blob/master/docs/DEVELOPERS.md#custom-repo-format">документації</a>.</string>
+    <string name="add_repo_message">Репозиторії повинні обслуговуватися за допомогою HTTPS і відповідати специфікаціям, викладеним у <a href="https://github.com/Androidacy/MagiskModuleManager/blob/master/docs/DEVELOPERS.md#custom-repo-format">документації</a>.</string>
     <string name="notification_update_summary">Наступні модулі можуть бути оновлені:</string>
     <string name="notification_update_module_template">%1$s до версії %2$s</string>
     <string name="notification_channel_background_update">Перевірка оновлень…</string>

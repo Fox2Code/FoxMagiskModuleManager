@@ -3,7 +3,7 @@
 
     <PreferenceCategory app:title="@string/warning_pls_restart" app:icon="@drawable/ic_baseline_info_24"/>
 
-    <!-- Custom repos has been announced, check https://github.com/Fox2Code/FoxMagiskModuleManager/issues/131 -->
+    <!-- Custom repos has been announced, check https://github.com/Androidacy/MagiskModuleManager/issues/131 -->
     <PreferenceCategory app:title="@string/pref_category_repos">
         <Preference
             app:icon="@drawable/ic_baseline_extension_24"

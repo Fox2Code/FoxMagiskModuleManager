@@ -28,7 +28,7 @@ public class AppUpdateManager {
     public static final int FLAG_COMPAT_FORCE_HIDE = 0x0080;
     public static final int FLAG_COMPAT_MMT_REBORN = 0x0100;
     public static final int FLAG_COMPAT_ZIP_WRAPPER = 0x0200;
-    public static final String RELEASES_API_URL = "https://api.github.com/repos/Fox2Code/FoxMagiskModuleManager/releases/latest";
+    public static final String RELEASES_API_URL = "https://api.github.com/repos/Androidacy/MagiskModuleManager/releases/latest";
     private static final AppUpdateManager INSTANCE = new AppUpdateManager();
     private final HashMap<String, Integer> compatDataId = new HashMap<>();
     private final Object updateLock = new Object();
