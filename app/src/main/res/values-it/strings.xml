@@ -94,7 +94,8 @@
     <string name="remote_install_title">Installazione remota</string>
     <string name="file_picker_wierd">Il tuo gestore file ha fornito una risposta non valida.</string>
     <string name="use_magisk_install_command_pref">Usa il comando di installazione del modulo magisk</string>
-    <string name="use_magisk_install_command_desc">Questo ha causato dei problemi durante i test per l\'installazione dei moduli, per questo l\'opzione è disponibile solo in modalità sviluppatore. Abilitala a tuo rischio e pericolo!</string>
+    <string name="use_magisk_install_command_desc">Questo ha causato dei problemi durante i test per l\'installazione dei moduli, per questo l\'opzione è disponibile solo in modalità sviluppatore. 
+\nAbilitala a tuo rischio e pericolo!</string>
     <string name="dev_mode_enabled">Modalità sviluppatore attivata</string>
     <string name="dev_mode_disabled">Modalità sviluppatore disattivata</string>
     <string name="force_english_pref">Forza la lingua inglese</string>
